@@ -1,14 +1,14 @@
-import { UserIcon } from '@heroicons/react/solid';
-import * as React from 'react';
-import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
-import { useGroupActions } from '../../../hooks/groups/useGroupActions';
-import useGroupJoinLinks from '../../../hooks/groups/useGroupJoinLinks';
-import { JoinGroupLink } from '../../../models/groups/groups';
-import Layout from '../../layout';
-import SEO from '../../seo';
-import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
-import Breadcrumbs from '../Breadcrumbs';
-import EditJoinLinkModal from './EditJoinLinkModal';
+import { UserIcon } from "@heroicons/react/solid";
+import * as React from "react";
+import { useActiveGroup } from "../../../hooks/groups/useActiveGroup";
+import { useGroupActions } from "../../../hooks/groups/useGroupActions";
+import useGroupJoinLinks from "../../../hooks/groups/useGroupJoinLinks";
+import { JoinGroupLink } from "../../../models/groups/groups";
+import Layout from "../../layout";
+import SEO from "../../seo";
+import TopNavigationBar from "../../TopNavigationBar/TopNavigationBar";
+import Breadcrumbs from "../Breadcrumbs";
+import EditJoinLinkModal from "./EditJoinLinkModal";
 
 const JoinLinksPage = () => {
   const activeGroup = useActiveGroup();
@@ -21,11 +21,7 @@ const JoinLinksPage = () => {
   if (!activeGroup.showAdminView) {
     return (
       <Layout>
-        <SEO
-          title="403 Forbidden"
-          image={null}
-          pathname={window.location.pathname}
-        />
+        <SEO title="403 Forbidden" image={null} />
         <TopNavigationBar />
         <p className="mt-12 text-center">
           You don't have permission to access this page.
@@ -36,11 +32,7 @@ const JoinLinksPage = () => {
 
   return (
     <Layout>
-      <SEO
-        title={`Join Links: ${activeGroup.groupData!.name}`}
-        image={null}
-        pathname={window.location.pathname}
-      />
+      <SEO title={`Join Links: ${activeGroup.groupData!.name}`} image={null} />
       <div className="dark:bg-dark-surface min-h-screen bg-gray-100">
         <TopNavigationBar />
         <nav className="mt-6 mb-4 flex" aria-label="Breadcrumb">
@@ -63,7 +55,7 @@ const JoinLinksPage = () => {
                   className="btn"
                   onClick={async () => {
                     const link = await createJoinLink(
-                      activeGroup.activeGroupId!
+                      activeGroup.activeGroupId!,
                     );
                     setCurLink(link);
                     setIsEditOpen(true);
@@ -77,7 +69,7 @@ const JoinLinksPage = () => {
           <div className="h-4" />
           <div className="overflow-hidden bg-white shadow-sm sm:rounded-md dark:bg-gray-900">
             <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-              {joinLinks?.map(link => (
+              {joinLinks?.map((link) => (
                 <li key={link.id}>
                   <button
                     onClick={() => {
@@ -115,24 +107,24 @@ const JoinLinksPage = () => {
                                 />
                               </svg>
                               <p>
-                                Expires{' '}
+                                Expires{" "}
                                 <i>
                                   {link.expirationTime
                                     ? link.expirationTime
                                         .toDate()
                                         .toString()
                                         .substr(0, 33)
-                                    : 'never'}
+                                    : "never"}
                                 </i>
                               </p>
                             </div>
-                            {link.author.startsWith('REGISTRATION_') && (
+                            {link.author.startsWith("REGISTRATION_") && (
                               <>
                                 <span className="mx-2">&middot;</span>
                                 <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
                                   <UserIcon className="mr-1.5 h-5 w-5 shrink-0 text-gray-400 dark:text-gray-500" />
                                   <p>
-                                    {link.author.replace('REGISTRATION_', '')}
+                                    {link.author.replace("REGISTRATION_", "")}
                                   </p>
                                 </div>
                               </>
@@ -168,7 +160,7 @@ const JoinLinksPage = () => {
       <EditJoinLinkModal
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
-        onSave={link => link && updateJoinLink(link.id, link)}
+        onSave={(link) => link && updateJoinLink(link.id, link)}
         link={curLink!}
       />
     </Layout>

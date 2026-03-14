@@ -1,12 +1,13 @@
-import { Transition } from '@headlessui/react';
-import { Link, navigate } from 'gatsby';
-import * as React from 'react';
-import { useRef, useState } from 'react';
-import { useFirebaseUser } from '../../../context/UserDataContext/UserDataContext';
-import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
-import { useGroupActions } from '../../../hooks/groups/useGroupActions';
-import { usePostActions } from '../../../hooks/groups/usePostActions';
-import { GroupData, isUserAdminOfGroup } from '../../../models/groups/groups';
+import { Transition } from "@headlessui/react";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import * as React from "react";
+import { useRef, useState } from "react";
+import { useFirebaseUser } from "../../../context/UserDataContext/UserDataContext";
+import { useActiveGroup } from "../../../hooks/groups/useActiveGroup";
+import { useGroupActions } from "../../../hooks/groups/useGroupActions";
+import { usePostActions } from "../../../hooks/groups/usePostActions";
+import { GroupData, isUserAdminOfGroup } from "../../../models/groups/groups";
 
 export default function GroupPageHeader(props: { group: GroupData }) {
   const { leaveGroup } = useGroupActions();
@@ -14,15 +15,16 @@ export default function GroupPageHeader(props: { group: GroupData }) {
   const [isActionsOpen, setIsActionsOpen] = useState(false);
   const { showAdminView, setInStudentView } = useActiveGroup();
   const firebaseUser = useFirebaseUser();
+  const router = useRouter();
   const ref = useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
-    const handleClick = e => {
+    const handleClick = (e: any) => {
       if (ref.current?.contains(e.target)) return;
       setIsActionsOpen(false);
     };
-    document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
   return (
@@ -30,7 +32,7 @@ export default function GroupPageHeader(props: { group: GroupData }) {
       <div className="mx-auto max-w-7xl px-4 sm:px-8 md:flex md:items-center md:justify-between">
         <div className="min-w-0 flex-1">
           <h1 className="text-xl font-bold text-white sm:text-3xl">
-            {props.group?.name ?? 'Loading...'}
+            {props.group?.name ?? "Loading..."}
           </h1>
           <p className="mt-2 text-base text-cyan-100 sm:text-lg">
             {props.group?.description}
@@ -86,8 +88,10 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                       onClick={() => {
                         const groupId = props.group?.id;
                         if (groupId) {
-                          createNewPost('assignment').then(postId =>
-                            navigate(`post/${postId}/edit`)
+                          createNewPost("assignment").then((postId) =>
+                            router.push(
+                              `/groups/${groupId}/post/${postId}/edit`,
+                            ),
                           );
                         }
                       }}
@@ -100,8 +104,10 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                       onClick={() => {
                         const groupId = props.group?.id;
                         if (groupId) {
-                          createNewPost('announcement').then(postId =>
-                            navigate(`post/${postId}/edit`)
+                          createNewPost("announcement").then((postId) =>
+                            router.push(
+                              `/groups/${groupId}/post/${postId}/edit`,
+                            ),
                           );
                         }
                       }}
@@ -109,19 +115,19 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                       Create New Announcement
                     </button>
                     <Link
-                      to="edit"
+                      href={"/groups/" + props.group?.id + "/edit"}
                       className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-hidden"
                     >
                       Edit Group
                     </Link>
                     <Link
-                      to="join-links"
+                      href={"/groups/" + props.group?.id + "/join-links"}
                       className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-hidden"
                     >
                       View Join Links
                     </Link>
                     <Link
-                      to="members"
+                      href={"/groups/" + props.group?.id + "/members"}
                       className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-hidden"
                     >
                       View Members
@@ -138,8 +144,8 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                       }}
                     >
                       {showAdminView
-                        ? 'Enter Student View'
-                        : 'Exit Student View'}
+                        ? "Enter Student View"
+                        : "Exit Student View"}
                     </button>
                   )}
                 <button
@@ -150,19 +156,19 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                     if (
                       groupId &&
                       confirm(
-                        'Are you sure you want to leave this group? You will not be able to rejoin unless you are provided with another link.'
+                        "Are you sure you want to leave this group? You will not be able to rejoin unless you are provided with another link.",
                       ) &&
                       prompt(
-                        'Are you REALLY sure? Please type "Yes I am sure I want to leave"'
+                        'Are you REALLY sure? Please type "Yes I am sure I want to leave"',
                       )!
                         .toLowerCase()
-                        .indexOf('yes i am sure i want to leave') > -1
+                        .indexOf("yes i am sure i want to leave") > -1
                     ) {
                       leaveGroup(groupId, firebaseUser!.uid)
-                        .then(() => navigate(`/groups/`))
-                        .catch(e => {
+                        .then(() => router.push(`/groups/`))
+                        .catch((e) => {
                           console.log(e);
-                          alert('Error: ' + e.message);
+                          alert("Error: " + e.message);
                         });
                     }
                   }}

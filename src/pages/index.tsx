@@ -1,4 +1,3 @@
-import { useLocation } from '@gatsbyjs/reach-router';
 import {
   AcademicCapIcon,
   ChartBarIcon,
@@ -9,73 +8,78 @@ import {
   LightningBoltIcon,
   TerminalIcon,
   UserGroupIcon,
-} from '@heroicons/react/outline';
-import classNames from 'classnames';
-import { Link, navigate } from 'gatsby';
-import { StaticImage } from 'gatsby-plugin-image';
-import * as React from 'react';
-import { GlowingRing } from '../components/elements/landing/GlowingRing';
-import { GlowingText } from '../components/elements/landing/GlowingText';
-import { GradientText } from '../components/elements/landing/GradientText';
-import { HighlightedText } from '../components/elements/landing/HighlightedText';
-import ContributorsSection from '../components/Index/ContributorsSection';
-import { CPIProjectCard } from '../components/Index/CPIProjectCard';
-import { Feature } from '../components/Index/Feature';
-import { ProblemsetsFeature } from '../components/Index/features/ProblemsetsFeature';
-import { ProgressTrackingFeature } from '../components/Index/features/ProgressTrackingFeature';
-import { ResourcesFeature } from '../components/Index/features/ResourcesFeature';
-import {
-  EasyFunCoding,
-  NonTrivial,
-  XCamp,
-} from '../components/Index/sponsor-logos';
-import TrustedBy from '../components/Index/TrustedBy';
-import Layout from '../components/layout';
-import SEO from '../components/seo';
-import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
+} from "@heroicons/react/outline";
+import classNames from "classnames";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import Image from "next/image";
+import * as React from "react";
+import { GlowingRing } from "../components/elements/landing/GlowingRing";
+import { GlowingText } from "../components/elements/landing/GlowingText";
+import { GradientText } from "../components/elements/landing/GradientText";
+import { HighlightedText } from "../components/elements/landing/HighlightedText";
+import ContributorsSection from "../components/Index/ContributorsSection";
+import { CPIProjectCard } from "../components/Index/CPIProjectCard";
+import { Feature } from "../components/Index/Feature";
+import { ProblemsetsFeature } from "../components/Index/features/ProblemsetsFeature";
+import { ProgressTrackingFeature } from "../components/Index/features/ProgressTrackingFeature";
+import { ResourcesFeature } from "../components/Index/features/ResourcesFeature";
+import { EasyFunCoding, NonTrivial } from "../components/Index/sponsor-logos";
+import TrustedBy from "../components/Index/TrustedBy";
+import Layout from "../components/layout";
+import SEO from "../components/seo";
+import TopNavigationBar from "../components/TopNavigationBar/TopNavigationBar";
 import {
   useFirebaseUser,
   useIsUserDataLoaded,
-} from '../context/UserDataContext/UserDataContext';
+} from "../context/UserDataContext/UserDataContext";
+import { TeamImagesProvider } from "../context/TeamImagesContext";
+import { GetStaticProps } from "next";
 
-const containerClasses = 'max-w-(--breakpoint-xl) mx-auto px-4 sm:px-6 lg:px-8';
+const containerClasses = "max-w-(--breakpoint-xl) mx-auto px-4 sm:px-6 lg:px-8";
 const headerClasses =
-  'text-4xl md:text-5xl 2xl:text-6xl font-black text-black dark:text-white';
-const headerClassesNoText = 'text-4xl md:text-5xl 2xl:text-6xl font-black';
+  "text-4xl md:text-5xl 2xl:text-6xl font-black text-black dark:text-white";
+const headerClassesNoText = "text-4xl md:text-5xl 2xl:text-6xl font-black";
 const subtextClasses =
-  'text-lg md:text-xl 2xl:text-2xl font-medium max-w-4xl leading-relaxed text-gray-700 dark:text-gray-400';
-const headerSubtextSpacerClasses = 'h-6 2xl:h-12';
+  "text-lg md:text-xl 2xl:text-2xl font-medium max-w-4xl leading-relaxed text-gray-700 dark:text-gray-400";
+const headerSubtextSpacerClasses = "h-6 2xl:h-12";
 const whiteButtonClassesBig =
-  'text-xl bg-white px-6 py-3 md:px-8 md:py-4 rounded-lg font-medium text-gray-900 relative';
+  "text-xl bg-white px-6 py-3 md:px-8 md:py-4 rounded-lg font-medium text-gray-900 relative";
 const whiteButtonClasses =
-  'text-lg md:text-xl bg-white px-4 py-2 md:px-6 md:py-3 rounded-lg font-medium text-gray-900 relative';
+  "text-lg md:text-xl bg-white px-4 py-2 md:px-6 md:py-3 rounded-lg font-medium text-gray-900 relative";
 const usacoTitleClasses =
-  'md:text-center font-black tracking-tight text-5xl sm:text-6xl md:text-7xl 2xl:text-8xl';
+  "md:text-center font-black tracking-tight text-5xl sm:text-6xl md:text-7xl 2xl:text-8xl";
 const linkTextStyles =
-  'text-blue-600 dark:text-blue-300 transition hover:text-purple-600 dark:hover:text-purple-300';
+  "text-blue-600 dark:text-blue-300 transition hover:text-purple-600 dark:hover:text-purple-300";
 
-export default function IndexPage({ path }): JSX.Element {
+interface IndexPageProps {
+  teamImages: {
+    name: string;
+    src: string;
+  }[];
+}
+export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
   const firebaseUser = useFirebaseUser();
   const loading = useIsUserDataLoaded();
-  const location = useLocation();
+  const router = useRouter();
   React.useEffect(() => {
     // User will normally be redirected to the dashboard if the user is logged in, but if user clicks the icon in the top left corner while on the dashboard, they will not be redirected.
     try {
-      if (firebaseUser && location.state.redirect) {
+      if (firebaseUser && router.query.redirect) {
         /* Whether or not the user should be redirected to the dashboard is stored in location.state.redirect, but if the user opens a link straight
         to the landing page, location.state.redirect will be undefined, causing a typeerror, this try catch statements accounts for that */
-        navigate('/dashboard');
+        router.push("/dashboard");
       }
     } catch (e) {
       if (firebaseUser) {
-        navigate('/dashboard');
+        router.push("/dashboard");
       }
     }
-  }, [firebaseUser, loading, location]);
+  }, [firebaseUser, loading, router]);
 
   return (
     <Layout>
-      <SEO title={null} image={null} pathname={path} />
+      <SEO title={null} image={null} />
 
       {/*<a*/}
       {/*  href="http://usaco.org/"*/}
@@ -96,13 +100,13 @@ export default function IndexPage({ path }): JSX.Element {
             <div className="h-24"></div>
 
             <div className="flex md:justify-center dark:hidden">
-              <div className={classNames(usacoTitleClasses, 'mt-4 text-black')}>
+              <div className={classNames(usacoTitleClasses, "mt-4 text-black")}>
                 USACO Guide
               </div>
             </div>
             <div className="invisible flex h-0 md:justify-center dark:visible dark:h-auto">
               <GlowingText
-                className={classNames(usacoTitleClasses, 'mt-4 text-white')}
+                className={classNames(usacoTitleClasses, "mt-4 text-white")}
               >
                 USACO Guide
               </GlowingText>
@@ -111,8 +115,8 @@ export default function IndexPage({ path }): JSX.Element {
             <div className="h-6 sm:h-8"></div>
 
             <p className="text-xl leading-snug font-medium text-gray-800 sm:text-2xl md:text-center md:!leading-normal 2xl:text-3xl dark:text-gray-300">
-              A free collection of{' '}
-              <GradientText>curated, high-quality resources</GradientText>{' '}
+              A free collection of{" "}
+              <GradientText>curated, high-quality resources</GradientText>{" "}
               <br className="hidden md:block" />
               to take you from Bronze to Platinum and beyond.
             </p>
@@ -122,8 +126,8 @@ export default function IndexPage({ path }): JSX.Element {
             <div className="flex md:justify-center">
               <GlowingRing>
                 <Link
-                  to="/dashboard"
-                  className={classNames(whiteButtonClassesBig, 'inline-block')}
+                  href="/dashboard"
+                  className={classNames(whiteButtonClassesBig, "inline-block")}
                 >
                   Get Started
                 </Link>
@@ -203,7 +207,7 @@ export default function IndexPage({ path }): JSX.Element {
           <h2
             className={classNames(
               headerClassesNoText,
-              'text-black dark:text-gray-100'
+              "text-black dark:text-gray-100",
             )}
           >
             <div className="dark:hidden">
@@ -216,10 +220,10 @@ export default function IndexPage({ path }): JSX.Element {
           <div className={headerSubtextSpacerClasses}></div>
           <p className={subtextClasses}>
             Stop wasting time searching for problems and tutorials. The USACO
-            Guide provides a{' '}
+            Guide provides a{" "}
             <b className="text-black dark:text-white">
               comprehensive, organized roadmap
-            </b>{' '}
+            </b>{" "}
             carefully designed and crafted for USACO contestants – available to
             everyone, for free.
           </p>
@@ -276,12 +280,16 @@ export default function IndexPage({ path }): JSX.Element {
             blobClasses="bg-green-200 dark:bg-green-800"
             feature={
               <div className="rounded-lg shadow-lg">
-                <StaticImage
-                  src="../assets/forum-screenshot.png"
+                <Image
+                  src="/assets/forum-screenshot.png"
                   alt="USACO Forum Screenshot"
-                  placeholder="blurred"
+                  placeholder="blur"
+                  blurDataURL={`data:image/svg+xml;base64,${Buffer.from(
+                    `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'/>`,
+                  ).toString("base64")}`}
                   layout="constrained"
                   width={560}
+                  height={315}
                 />
               </div>
             }
@@ -314,7 +322,7 @@ export default function IndexPage({ path }): JSX.Element {
           </div>
           <div className="invisible h-0 dark:visible dark:h-auto">
             <GlowingText
-              className={classNames(headerClassesNoText, 'text-white')}
+              className={classNames(headerClassesNoText, "text-white")}
               extraGlow
             >
               Trusted by thousands.
@@ -324,7 +332,7 @@ export default function IndexPage({ path }): JSX.Element {
           <div className={headerSubtextSpacerClasses}></div>
 
           <p className={subtextClasses}>
-            This guide is written by{' '}
+            This guide is written by{" "}
             <GradientText>top USACO contestants,</GradientText> including
             two-time IOI winner and USACO Problemsetter Benjamin Qi.
           </p>
@@ -337,8 +345,8 @@ export default function IndexPage({ path }): JSX.Element {
           <div className="group relative inline-block">
             <GlowingRing>
               <Link
-                to="/dashboard"
-                className={classNames(whiteButtonClasses, 'inline-block')}
+                href="/dashboard"
+                className={classNames(whiteButtonClasses, "inline-block")}
               >
                 View Guide
               </Link>
@@ -351,11 +359,11 @@ export default function IndexPage({ path }): JSX.Element {
       <div className="bg-white dark:bg-gray-900">
         <div className="h-16 md:h-20 2xl:h-36"></div>
         <div className="px-4 sm:px-6 lg:px-8 2xl:px-16">
-          <h2 className={classNames(headerClasses, 'md:text-center')}>
+          <h2 className={classNames(headerClasses, "md:text-center")}>
             Created by the CP Initiative.
           </h2>
           <div className="h-4 md:h-8"></div>
-          <p className={classNames(subtextClasses, 'mx-auto md:text-center')}>
+          <p className={classNames(subtextClasses, "mx-auto md:text-center")}>
             Here are some of our other projects you might find useful!
           </p>
 
@@ -430,7 +438,7 @@ export default function IndexPage({ path }): JSX.Element {
           </div>
           <div className="invisible h-0 dark:visible dark:h-auto">
             <GlowingText
-              className={classNames(headerClassesNoText, 'text-white')}
+              className={classNames(headerClassesNoText, "text-white")}
               extraGlow
             >
               Join our Team.
@@ -439,7 +447,7 @@ export default function IndexPage({ path }): JSX.Element {
 
           <div className={headerSubtextSpacerClasses}></div>
           <p className={subtextClasses}>
-            The{' '}
+            The{" "}
             <a
               href="https://joincpi.org/"
               target="_blank"
@@ -447,12 +455,12 @@ export default function IndexPage({ path }): JSX.Element {
               className="underline transition hover:text-blue-400"
             >
               Competitive Programming Initiative
-            </a>{' '}
+            </a>{" "}
             is a student-run organization dedicated to promoting competitive
-            programming. Join us in our mission, and{' '}
+            programming. Join us in our mission, and{" "}
             <GradientText>
               earn PVSA volunteer hours and leadership positions
-            </GradientText>{' '}
+            </GradientText>{" "}
             along the way!
           </p>
           <div className="h-8 md:h-12"></div>
@@ -463,7 +471,7 @@ export default function IndexPage({ path }): JSX.Element {
                 href="https://docs.google.com/document/d/13QpXqdiYQwjBLnywGL1FUG7GFdh8SM_1NigIkJl-A7k/edit?usp=sharing"
                 target="_blank"
                 rel="noreferrer"
-                className={classNames(whiteButtonClasses, 'inline-block')}
+                className={classNames(whiteButtonClasses, "inline-block")}
               >
                 Apply Now
               </a>
@@ -479,7 +487,7 @@ export default function IndexPage({ path }): JSX.Element {
           </div>
           <div className="invisible h-0 dark:visible dark:h-auto">
             <GlowingText
-              className={classNames(headerClassesNoText, 'text-white')}
+              className={classNames(headerClassesNoText, "text-white")}
               extraGlow
             >
               Or, help us financially!
@@ -488,7 +496,7 @@ export default function IndexPage({ path }): JSX.Element {
 
           <div className={headerSubtextSpacerClasses}></div>
           <p className={subtextClasses}>
-            We're a <GradientText>501(c)3 nonprofit organization</GradientText>{' '}
+            We're a <GradientText>501(c)3 nonprofit organization</GradientText>{" "}
             — all donations are tax deductible. Since our inception in September
             2020, we've impacted tens of thousands of students across our
             various initiatives.
@@ -501,13 +509,13 @@ export default function IndexPage({ path }): JSX.Element {
                 href="mailto:sponsorship@joincpi.org"
                 target="_blank"
                 rel="noreferrer"
-                className={classNames(whiteButtonClasses, 'inline-block')}
+                className={classNames(whiteButtonClasses, "inline-block")}
               >
                 Sponsor Us
               </a>
             </GlowingRing>
             <span className="ml-4 text-lg font-medium text-gray-400 md:ml-6">
-              or{' '}
+              or{" "}
               <a
                 href="https://www.paypal.com/donate?hosted_button_id=FKG88TSTN82E4"
                 target="_blank"
@@ -527,7 +535,7 @@ export default function IndexPage({ path }): JSX.Element {
               rel="noreferrer"
               className={linkTextStyles}
             >
-              {' '}
+              {" "}
               sponsorship prospectus
             </a>
           </div>
@@ -541,7 +549,7 @@ export default function IndexPage({ path }): JSX.Element {
           <p className="pt-6 font-semibold text-gray-600 uppercase md:text-lg dark:text-gray-400">
             Platinum Sponsors
           </p>
-          <div className="my-8 grid grid-cols-1 items-center gap-4 space-y-5 text-gray-600 sm:grid-cols-2 sm:space-y-0 md:grid-cols-3 lg:my-6 lg:grid-cols-4 dark:text-gray-400">
+          <div className="my-8 grid grid-cols-2 items-center gap-0.5 text-gray-600 md:grid-cols-3 lg:my-6 lg:grid-cols-4 dark:text-gray-400">
             <div className="col-span-1">
               <a
                 href="http://non-trivial.org/"
@@ -549,11 +557,6 @@ export default function IndexPage({ path }): JSX.Element {
                 rel="noreferrer"
               >
                 <NonTrivial />
-              </a>
-            </div>
-            <div className="col-span-1 pt-5 sm:pt-0">
-              <a href="http://x-camp.academy/" target="_blank" rel="noreferrer">
-                <XCamp />
               </a>
             </div>
           </div>
@@ -579,7 +582,7 @@ export default function IndexPage({ path }): JSX.Element {
       {/* Begin FAQ */}
       <div className="dark:bg-dark-surface bg-white">
         <div className="mx-auto max-w-(--breakpoint-xl) px-4 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20 lg:px-8 lg:pt-20 lg:pb-28">
-          <h2 className={classNames(headerClasses, 'dark:text-gray-100')}>
+          <h2 className={classNames(headerClasses, "dark:text-gray-100")}>
             Frequently asked questions
           </h2>
           <div className="pt-10 md:pt-16">
@@ -591,22 +594,22 @@ export default function IndexPage({ path }): JSX.Element {
                   </dt>
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
-                      USACO stands for the{' '}
-                      <a
+                      USACO stands for the{" "}
+                      <Link
                         href="http://www.usaco.org/"
                         target="_blank"
                         rel="noreferrer"
                         className="text-blue-600 underline dark:text-blue-400"
                       >
                         USA Computing Olympiad
-                      </a>
-                      . Check out the{' '}
+                      </Link>
+                      . Check out the{" "}
                       <Link
-                        to="/general/usaco-faq"
+                        href="/general/usaco-faq"
                         className="text-blue-600 underline dark:text-blue-400"
                       >
                         USACO FAQ Page
-                      </Link>{' '}
+                      </Link>{" "}
                       for more information.
                     </p>
                   </dd>
@@ -632,7 +635,7 @@ export default function IndexPage({ path }): JSX.Element {
                     <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
                       If you encounter an issue while using the guide (website
                       bug, typo, broken link, unclear explanation, etc), use the
-                      "Contact Us" button. Alternatively, email us at{' '}
+                      "Contact Us" button. Alternatively, email us at{" "}
                       <a
                         href="mailto:usacoguide@gmail.com"
                         className="text-blue-600 underline dark:text-blue-400"
@@ -649,7 +652,7 @@ export default function IndexPage({ path }): JSX.Element {
                   </dt>
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
-                      Check out the{' '}
+                      Check out the{" "}
                       <a
                         href="https://joincpi.org/?ref=home"
                         target="_blank"
@@ -682,7 +685,7 @@ export default function IndexPage({ path }): JSX.Element {
                   </dt>
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
-                      If you get stuck, head over to the{' '}
+                      If you get stuck, head over to the{" "}
                       <a
                         href="https://forum.usaco.guide"
                         target="_blank"
@@ -690,7 +693,7 @@ export default function IndexPage({ path }): JSX.Element {
                         className="text-blue-600 underline dark:text-blue-400"
                       >
                         USACO Forum
-                      </a>{' '}
+                      </a>{" "}
                       for help.
                     </p>
                   </dd>
@@ -701,9 +704,9 @@ export default function IndexPage({ path }): JSX.Element {
                   </dt>
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
-                      To learn more about contributing, please visit{' '}
+                      To learn more about contributing, please visit{" "}
                       <Link
-                        to="/general/contributing"
+                        href="/general/contributing"
                         className="text-blue-600 underline dark:text-blue-400"
                       >
                         this page
@@ -718,7 +721,7 @@ export default function IndexPage({ path }): JSX.Element {
                   </dt>
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
-                      Yes! Check out our{' '}
+                      Yes! Check out our{" "}
                       <a
                         href="https://github.com/cpinitiative/usaco-guide/?ref=home"
                         target="_blank"
@@ -737,8 +740,9 @@ export default function IndexPage({ path }): JSX.Element {
         </div>
       </div>
       {/*End FAQ*/}
-
-      <ContributorsSection />
+      <TeamImagesProvider value={teamImages}>
+        <ContributorsSection />
+      </TeamImagesProvider>
 
       <div className="bg-gray-100 dark:bg-gray-900">
         <div className="mx-auto max-w-(--breakpoint-xl) px-4 py-12">
@@ -747,8 +751,8 @@ export default function IndexPage({ path }): JSX.Element {
             Initiative.
             <br />
             No part of this website may be reproduced or commercialized in any
-            manner without prior written permission.{' '}
-            <Link to="/license" className="underline">
+            manner without prior written permission.{" "}
+            <Link href="/license" className="underline">
               Learn More.
             </Link>
           </p>
@@ -757,3 +761,22 @@ export default function IndexPage({ path }): JSX.Element {
     </Layout>
   );
 }
+
+export const getStaticProps: GetStaticProps = async () => {
+  try {
+    const { loadTeamImages } = await import("../lib/loadContent");
+    const teamImages = await loadTeamImages();
+    return {
+      props: {
+        teamImages,
+      },
+    };
+  } catch (error) {
+    console.error("Error loading team images:", error);
+    return {
+      props: {
+        teamImages: null,
+      },
+    };
+  }
+};

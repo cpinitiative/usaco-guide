@@ -1,5 +1,5 @@
-import classNames from 'classnames';
-import React from 'react';
+import classNames from "classnames";
+import React from "react";
 
 const TableRow = ({
   source,
@@ -23,8 +23,8 @@ const TableRow = ({
         <div className="flex items-center">
           <svg
             className={classNames(
-              'h-4 w-4 text-blue-400',
-              !starred && 'opacity-0'
+              "h-4 w-4 text-blue-400",
+              !starred && "opacity-0",
             )}
             fill="currentColor"
             viewBox="0 0 20 20"

@@ -1,14 +1,14 @@
 // eslint-disable react/no-unescaped-entities
-import { Link, PageProps } from 'gatsby';
-import * as React from 'react';
-import Layout from '../components/layout';
-import SEO from '../components/seo';
-import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
+import Link from "next/link";
+import * as React from "react";
+import Layout from "../components/layout";
+import SEO from "../components/seo";
+import TopNavigationBar from "../components/TopNavigationBar/TopNavigationBar";
 
-export default function LicensePage(props: PageProps) {
+export default function LicensePage() {
   return (
     <Layout>
-      <SEO title="License and Usage" image={null} pathname={props.path} />
+      <SEO title="License and Usage" />
 
       <TopNavigationBar />
 
@@ -19,14 +19,14 @@ export default function LicensePage(props: PageProps) {
           <p className="mb-4">
             No part of this site may be used, reproduced, redistributed,
             commercialized, or sold without prior written permission, except as
-            permitted under the{' '}
+            permitted under the{" "}
             <a
               rel="license noreferrer"
               className={
-                'text-blue-500 hover:text-blue-700 hover:underline dark:text-blue-400 dark:hover:text-blue-300'
+                "text-blue-500 hover:text-blue-700 hover:underline dark:text-blue-400 dark:hover:text-blue-300"
               }
               href="http://creativecommons.org/licenses/by-nc-sa/4.0/"
-              target={'_blank'}
+              target={"_blank"}
             >
               Creative Commons Attribution-NonCommercial-ShareAlike 4.0
               International License
@@ -48,14 +48,14 @@ export default function LicensePage(props: PageProps) {
 
           <p className="mb-2">
             Note: We provide examples below as a general summary of, but not a
-            substitute for,{' '}
+            substitute for,{" "}
             <a
               rel="license noreferrer"
               className={
-                'text-blue-500 hover:text-blue-700 hover:underline dark:text-blue-400 dark:hover:text-blue-300'
+                "text-blue-500 hover:text-blue-700 hover:underline dark:text-blue-400 dark:hover:text-blue-300"
               }
               href="http://creativecommons.org/licenses/by-nc-sa/4.0/"
-              target={'_blank'}
+              target={"_blank"}
             >
               our license
             </a>
@@ -117,7 +117,7 @@ export default function LicensePage(props: PageProps) {
           <p className="mb-6">
             If you have questions regarding the usage of this site, or would
             like to request to use these resources outside of the authorized use
-            cases described above, please contact us at{' '}
+            cases described above, please contact us at{" "}
             <a
               href="mailto:usacoguide@gmail.com"
               className="text-blue-500 underline hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
@@ -130,7 +130,7 @@ export default function LicensePage(props: PageProps) {
             {/* related to the USACO Guide to the coordinator, Nathan Wang. */}
           </p>
           <Link
-            to="/"
+            href="/"
             className="mb-4 block text-blue-500 underline hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
           >
             &larr; Back to Home

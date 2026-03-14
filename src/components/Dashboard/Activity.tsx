@@ -1,12 +1,10 @@
-import * as React from 'react';
-import CalendarHeatmap from 'react-calendar-heatmap';
-import 'react-calendar-heatmap/dist/styles.css';
+import * as React from "react";
+import CalendarHeatmap from "react-calendar-heatmap";
 import {
   useUserProgressOnModulesActivity,
   useUserProgressOnProblemsActivity,
-} from '../../context/UserDataContext/properties/userProgress';
-import { useActivity } from '../../hooks/useActivity';
-import './heatmap-styles.css';
+} from "../../context/UserDataContext/properties/userProgress";
+import { useActivity } from "../../hooks/useActivity";
 
 type ModuleActivity = ReturnType<typeof useUserProgressOnModulesActivity>[0];
 type ProblemActivity = ReturnType<typeof useUserProgressOnProblemsActivity>[0];
@@ -40,7 +38,7 @@ export function ActivityHeatmap({
             <CalendarHeatmap
               startDate={startDate}
               endDate={endDate}
-              values={Object.keys(activityCount).map(d => ({
+              values={Object.keys(activityCount).map((d) => ({
                 date: new Date(Number(d)),
                 count: activityCount[Number(d)],
               }))}
@@ -48,9 +46,9 @@ export function ActivityHeatmap({
                 if (!value) setActiveDate(null);
                 else setActiveDate(value.date);
               }}
-              classForValue={value => {
+              classForValue={(value) => {
                 if (!value || value.count === 0) {
-                  return 'color-empty';
+                  return "color-empty";
                 }
                 return `color-scale-${Math.min(value.count, 4)}`;
               }}

@@ -3,49 +3,49 @@ import {
   DialogBackdrop,
   DialogPanel,
   DialogTitle,
-} from '@headlessui/react';
-import React, { useState } from 'react';
-import { formatMetadata } from '../../utils/prettierFormatter';
-import Modal from '../Modal';
-import CopyButton from './CopyButton';
+} from "@headlessui/react";
+import React, { useState } from "react";
+import { formatMetadata } from "../../utils/prettierFormatter";
+import Modal from "../Modal";
+import CopyButton from "./CopyButton";
 
 async function addProblem(
   url: string,
   setMetadata: (metadata: string) => void,
-  setStatus: (status: 'Get Metadata' | 'Fetching metadata...') => void,
-  setShowError: (show: boolean) => void
+  setStatus: (status: "Get Metadata" | "Fetching metadata...") => void,
+  setShowError: (show: boolean) => void,
 ) {
   const createUnknownMetadata = () => ({
-    uniqueId: 'unknown',
-    name: 'unknown',
+    uniqueId: "unknown",
+    name: "unknown",
     url,
-    source: 'unknown',
-    difficulty: 'N/A',
+    source: "unknown",
+    difficulty: "N/A",
     isStarred: false,
-    tags: ['Add Tags'],
+    tags: ["Add Tags"],
     solutionMetadata: {
-      kind: 'none',
+      kind: "none",
     },
   });
 
   try {
-    setStatus('Fetching metadata...');
+    setStatus("Fetching metadata...");
 
     let response;
     try {
-      response = await fetch('/api/fetch-metadata', {
-        method: 'POST',
+      response = await fetch("/api/fetch-metadata", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ url }),
       });
     } catch (e) {
       // Network error
-      console.error('Network error:', e);
+      console.error("Network error:", e);
       const metadata = createUnknownMetadata();
       setMetadata(await formatMetadata(JSON.stringify(metadata, null, 2)));
-      setStatus('Get Metadata');
+      setStatus("Get Metadata");
       setShowError(true);
       return;
     }
@@ -55,20 +55,20 @@ async function addProblem(
       result = await response.json();
     } catch (e) {
       // Invalid JSON response
-      console.error('Invalid JSON response:', e);
+      console.error("Invalid JSON response:", e);
       const metadata = createUnknownMetadata();
       setMetadata(await formatMetadata(JSON.stringify(metadata, null, 2)));
-      setStatus('Get Metadata');
+      setStatus("Get Metadata");
       setShowError(true);
       return;
     }
 
     if (!response.ok) {
       // API returned an error status code
-      console.error('API error:', result.error || 'Unknown error');
+      console.error("API error:", result.error || "Unknown error");
       const metadata = createUnknownMetadata();
       setMetadata(await formatMetadata(JSON.stringify(metadata, null, 2)));
-      setStatus('Get Metadata');
+      setStatus("Get Metadata");
       setShowError(true);
       return;
     }
@@ -80,20 +80,20 @@ async function addProblem(
       name: parsed.name,
       url,
       source: parsed.source,
-      difficulty: 'N/A',
+      difficulty: "N/A",
       isStarred: false,
-      tags: ['Add Tags'],
-      solutionMetadata: parsed.solutionMetadata || { kind: 'none' },
+      tags: ["Add Tags"],
+      solutionMetadata: parsed.solutionMetadata || { kind: "none" },
     };
 
     setMetadata(await formatMetadata(JSON.stringify(metadata, null, 2)));
-    setStatus('Get Metadata');
+    setStatus("Get Metadata");
   } catch (e) {
     // This catch block is a final safety net for any unexpected errors
-    console.error('Unexpected error:', e);
+    console.error("Unexpected error:", e);
     const metadata = createUnknownMetadata();
     setMetadata(await formatMetadata(JSON.stringify(metadata, null, 2)));
-    setStatus('Get Metadata');
+    setStatus("Get Metadata");
     setShowError(true);
   }
 }
@@ -102,10 +102,10 @@ export default function AddProblemModal(props: {
   isOpen: boolean;
   onClose: () => void;
 }) {
-  const [link, setLink] = useState('');
-  const [metadata, setMetadata] = useState('// metadata will appear here');
-  const [status, setStatus] = useState<'Get Metadata' | 'Fetching metadata...'>(
-    'Get Metadata'
+  const [link, setLink] = useState("");
+  const [metadata, setMetadata] = useState("// metadata will appear here");
+  const [status, setStatus] = useState<"Get Metadata" | "Fetching metadata...">(
+    "Get Metadata",
   );
   const [showError, setShowError] = useState(false);
   return (
@@ -139,14 +139,14 @@ export default function AddProblemModal(props: {
                 type="text"
                 className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:border-gray-700 dark:bg-gray-900"
                 placeholder="Enter Problem URL"
-                onChange={e => setLink(e.target.value)}
+                onChange={(e) => setLink(e.target.value)}
               />
             </div>
 
             <div className="mt-4">
               <button
                 className="btn"
-                disabled={status === 'Fetching metadata...'}
+                disabled={status === "Fetching metadata..."}
                 onClick={() =>
                   addProblem(link, setMetadata, setStatus, setShowError)
                 }

@@ -1,10 +1,10 @@
-import * as React from 'react';
+import * as React from "react";
 import {
   LANGUAGE_LABELS,
   useSetUserLangSetting,
   useUserLangSetting,
-} from '../../context/UserDataContext/properties/simpleProperties';
-import RadioList from '../elements/RadioList';
+} from "../../context/UserDataContext/properties/simpleProperties";
+import RadioList from "../elements/RadioList";
 
 export default function Language() {
   const lang = useUserLangSetting();
@@ -20,13 +20,13 @@ export default function Language() {
       <div className="h-4" />
       <RadioList
         name="language"
-        options={['cpp', 'java', 'py']}
+        options={["cpp", "java", "py"]}
         value={lang}
         onChange={setLang}
         labelMap={LANGUAGE_LABELS}
         descriptionMap={{
-          java: 'We currently have very limited support for Java beyond Gold.',
-          py: 'We currently have very limited support for Python.',
+          java: "We currently have very limited support for Java beyond Gold.",
+          py: "We currently have very limited support for Python.",
         }}
       />
     </div>

@@ -3,7 +3,7 @@
 // taken from https://github.com/FormidableLabs/prism-react-renderer
 // really dumb issue: when importing from node_modules, gatsby/webpack doesn't tree-shake properly...
 
-import { Component } from 'react';
+import { Component } from "react";
 
 function _defineProperty(obj, key, value) {
   if (key in obj) {
@@ -45,11 +45,11 @@ var newlineRe = /\r\n|\r|\n/; // Empty lines need to contain a single empty toke
 var normalizeEmptyLines = function (line) {
   if (line.length === 0) {
     line.push({
-      types: ['plain'],
-      content: '',
+      types: ["plain"],
+      content: "",
       empty: true,
     });
-  } else if (line.length === 1 && line[0].content === '') {
+  } else if (line.length === 1 && line[0].content === "") {
     line[0].empty = true;
   }
 };
@@ -88,8 +88,8 @@ export var normalizeTokens = function (tokens) {
       var tokenArr = tokenArrStack[stackIndex];
       var token = tokenArr[i]; // Determine content and append type to types if necessary
 
-      if (typeof token === 'string') {
-        types = stackIndex > 0 ? types : ['plain'];
+      if (typeof token === "string") {
+        types = stackIndex > 0 ? types : ["plain"];
         content = token;
       } else {
         types = appendTypes(types, token.type);
@@ -101,7 +101,7 @@ export var normalizeTokens = function (tokens) {
         content = token.content;
       } // If token.content is an array, increase the stack depth and repeat this while-loop
 
-      if (typeof content !== 'string') {
+      if (typeof content !== "string") {
         stackIndex++;
         typeArrStack.push(types);
         tokenArrStack.push(content);
@@ -192,7 +192,7 @@ var Highlight =
 
       Component.apply(this, args);
 
-      _defineProperty(this, 'getThemeDict', function (props) {
+      _defineProperty(this, "getThemeDict", function (props) {
         if (
           this$1.themeDict !== undefined &&
           props.theme === this$1.prevTheme &&
@@ -209,20 +209,20 @@ var Highlight =
         return (this$1.themeDict = themeDict);
       });
 
-      _defineProperty(this, 'getLineProps', function (ref) {
+      _defineProperty(this, "getLineProps", function (ref) {
         var key = ref.key;
         var className = ref.className;
         var style = ref.style;
         var rest$1 = objectWithoutProperties(ref, [
-          'key',
-          'className',
-          'style',
-          'line',
+          "key",
+          "className",
+          "style",
+          "line",
         ]);
         var rest = rest$1;
 
         var output = _extends({}, rest, {
-          className: 'token-line',
+          className: "token-line",
           style: undefined,
           key: undefined,
         });
@@ -245,13 +245,13 @@ var Highlight =
         }
 
         if (className) {
-          output.className += ' ' + className;
+          output.className += " " + className;
         }
 
         return output;
       });
 
-      _defineProperty(this, 'getStyleForToken', function (ref) {
+      _defineProperty(this, "getStyleForToken", function (ref) {
         var types = ref.types;
         var empty = ref.empty;
         var typesSize = types.length;
@@ -259,10 +259,10 @@ var Highlight =
 
         if (themeDict === undefined) {
           return undefined;
-        } else if (typesSize === 1 && types[0] === 'plain') {
+        } else if (typesSize === 1 && types[0] === "plain") {
           return empty
             ? {
-                display: 'inline-block',
+                display: "inline-block",
               }
             : undefined;
         } else if (typesSize === 1 && !empty) {
@@ -271,7 +271,7 @@ var Highlight =
 
         var baseStyle = empty
           ? {
-              display: 'inline-block',
+              display: "inline-block",
             }
           : {}; // $FlowFixMe
 
@@ -281,21 +281,21 @@ var Highlight =
         return Object.assign.apply(Object, [baseStyle].concat(typeStyles));
       });
 
-      _defineProperty(this, 'getTokenProps', function (ref) {
+      _defineProperty(this, "getTokenProps", function (ref) {
         var key = ref.key;
         var className = ref.className;
         var style = ref.style;
         var token = ref.token;
         var rest$1 = objectWithoutProperties(ref, [
-          'key',
-          'className',
-          'style',
-          'token',
+          "key",
+          "className",
+          "style",
+          "token",
         ]);
         var rest = rest$1;
 
         var output = _extends({}, rest, {
-          className: 'token ' + token.types.join(' '),
+          className: "token " + token.types.join(" "),
           children: token.content,
           style: this$1.getStyleForToken(token),
           key: undefined,
@@ -313,7 +313,7 @@ var Highlight =
         }
 
         if (className) {
-          output.className += ' ' + className;
+          output.className += " " + className;
         }
 
         return output;
@@ -339,7 +339,7 @@ var Highlight =
       var tokens = normalizeTokens(mixedTokens);
       return children({
         tokens: tokens,
-        className: 'prism-code language-' + language,
+        className: "prism-code language-" + language,
         style: themeDict !== undefined ? themeDict.root : {},
         getLineProps: this.getLineProps,
         getTokenProps: this.getTokenProps,

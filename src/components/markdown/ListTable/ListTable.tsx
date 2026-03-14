@@ -1,5 +1,5 @@
 // Common list table component used by resource list and problem list
-import React from 'react';
+import React from "react";
 
 export function ListTable({ header, children, ...props }) {
   return (

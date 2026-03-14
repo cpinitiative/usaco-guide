@@ -1,8 +1,8 @@
-import { XIcon } from '@heroicons/react/solid';
-import classNames from 'classnames';
-import React, { useState } from 'react';
-import { AlgoliaEditorFile } from '../../../models/algoliaEditorFile';
-import { EditorFileModal } from '../EditorFileModal';
+import { XIcon } from "@heroicons/react/solid";
+import classNames from "classnames";
+import React, { useState } from "react";
+import { AlgoliaEditorFile } from "../../../models/algoliaEditorFile";
+import { EditorFileModal } from "../EditorFileModal";
 
 export const FileListSidebar: React.FC<{
   className?: string;
@@ -36,8 +36,8 @@ export const FileListSidebar: React.FC<{
         <div className="shrink-0">
           <button
             className={classNames(
-              'text-gray-500 hover:bg-gray-200 hover:text-gray-600 active:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-300',
-              'px-3 py-2 text-sm font-medium transition focus:outline-hidden'
+              "text-gray-500 hover:bg-gray-200 hover:text-gray-600 active:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-300",
+              "px-3 py-2 text-sm font-medium transition focus:outline-hidden",
             )}
             onClick={() => onCloseAllFiles()}
           >
@@ -46,10 +46,10 @@ export const FileListSidebar: React.FC<{
         </div>
       </div>
       <div className="h-1" />
-      {files.map(file => (
+      {files.map((file) => (
         <div
           className={`flex items-center text-gray-500 transition hover:bg-gray-200 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-400 ${
-            activeFile?.path === file ? 'bg-gray-100 dark:bg-gray-900' : ''
+            activeFile?.path === file ? "bg-gray-100 dark:bg-gray-900" : ""
           }`}
           key={file}
         >
@@ -70,8 +70,8 @@ export const FileListSidebar: React.FC<{
       <div className="h-1" />
       <button
         className={classNames(
-          'text-gray-500 hover:bg-gray-200 hover:text-gray-600 active:bg-gray-200 dark:hover:bg-gray-800 dark:hover:text-gray-400 dark:active:bg-gray-800',
-          'w-full px-4 py-2 text-sm font-medium transition focus:outline-hidden'
+          "text-gray-500 hover:bg-gray-200 hover:text-gray-600 active:bg-gray-200 dark:hover:bg-gray-800 dark:hover:text-gray-400 dark:active:bg-gray-800",
+          "w-full px-4 py-2 text-sm font-medium transition focus:outline-hidden",
         )}
         onClick={() => setIsFileModalOpen(true)}
       >

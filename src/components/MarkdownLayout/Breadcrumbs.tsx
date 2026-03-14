@@ -1,17 +1,17 @@
-import { Link } from 'gatsby';
-import * as React from 'react';
-import { SECTION_LABELS } from '../../../content/ordering';
-import { useMarkdownLayout } from '../../context/MarkdownLayoutContext';
-import { SolutionInfo } from '../../models/solution';
+import Link from "next/link";
+import * as React from "react";
+import { SECTION_LABELS } from "../../../content/ordering";
+import { useMarkdownLayout } from "../../context/MarkdownLayoutContext";
+import { SolutionInfo } from "../../models/solution";
 
 const Breadcrumbs = () => {
   const moduleLayoutInfo = useMarkdownLayout();
-  const module = moduleLayoutInfo.markdownLayoutInfo;
-  if (module instanceof SolutionInfo) return null;
+  const moduleInfo = moduleLayoutInfo.markdownLayoutInfo;
+  if (moduleInfo instanceof SolutionInfo) return null;
   return (
     <nav className="dark:text-dark-med-emphasis flex flex-wrap items-center text-sm leading-loose font-medium text-gray-500">
       <Link
-        to="/dashboard/"
+        href="/dashboard/"
         className="dark:hover:text-dark-high-emphasis transition hover:text-gray-700"
       >
         Home
@@ -28,10 +28,10 @@ const Breadcrumbs = () => {
         />
       </svg>
       <Link
-        to={`/${module.section}/`}
+        href={`/${moduleInfo.section}/`}
         className="dark:hover:text-dark-high-emphasis transition hover:text-gray-700"
       >
-        {SECTION_LABELS[module.section]}
+        {SECTION_LABELS[moduleInfo.section]}
       </Link>
       <svg
         className="mx-2 h-5 w-5 shrink-0 text-gray-400"
@@ -44,7 +44,7 @@ const Breadcrumbs = () => {
           clipRule="evenodd"
         />
       </svg>
-      <span className="whitespace-nowrap">{module.title}</span>
+      <span className="whitespace-nowrap">{moduleInfo.title}</span>
     </nav>
   );
 };

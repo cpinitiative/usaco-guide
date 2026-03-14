@@ -1,17 +1,17 @@
-import { navigate } from 'gatsby';
-import * as React from 'react';
+import { useRouter } from "next/router";
+import * as React from "react";
 import {
   useFirebaseUser,
   useIsUserDataLoaded,
-} from '../../../context/UserDataContext/UserDataContext';
-import { useUserPermissions } from '../../../context/UserDataContext/UserPermissionsContext';
-import { useGroupActions } from '../../../hooks/groups/useGroupActions';
-import { useUserGroups } from '../../../hooks/groups/useUserGroups';
-import Layout from '../../layout';
-import SEO from '../../seo';
-import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
-import AdminViewAllGroups from './AdminViewAllGroups';
-import { GroupCard } from './GroupCard';
+} from "../../../context/UserDataContext/UserDataContext";
+import { useUserPermissions } from "../../../context/UserDataContext/UserPermissionsContext";
+import { useGroupActions } from "../../../hooks/groups/useGroupActions";
+import { useUserGroups } from "../../../hooks/groups/useUserGroups";
+import Layout from "../../layout";
+import SEO from "../../seo";
+import TopNavigationBar from "../../TopNavigationBar/TopNavigationBar";
+import AdminViewAllGroups from "./AdminViewAllGroups";
+import { GroupCard } from "./GroupCard";
 
 const GroupSelectPage = () => {
   const firebaseUser = useFirebaseUser();
@@ -19,19 +19,20 @@ const GroupSelectPage = () => {
   const groups = useUserGroups();
   const { createNewGroup } = useGroupActions();
   const permissions = useUserPermissions();
+  const router = useRouter();
 
   const showNotSignedInMessage = isLoaded && !firebaseUser?.uid;
   const showLoading = !showNotSignedInMessage && !groups.isSuccess;
 
   const handleCreateNewGroup = () => {
-    createNewGroup().then(groupId => {
-      navigate(`/groups/${groupId}/edit`);
+    createNewGroup().then((groupId) => {
+      router.push(`/groups/${groupId}/edit`);
     });
   };
 
   return (
     <Layout>
-      <SEO title="My Groups" image={null} pathname={window.location.pathname} />
+      <SEO title="My Groups" image={null} />
       <TopNavigationBar />
       <main>
         <div className="mx-auto max-w-3xl px-4 py-16 lg:px-8">
@@ -60,7 +61,7 @@ const GroupSelectPage = () => {
           {groups.isSuccess &&
             (groups.data && groups.data.length > 0 ? (
               groups.data.map(
-                group => group && <GroupCard key={group.id} group={group} />
+                (group) => group && <GroupCard key={group.id} group={group} />,
               )
             ) : (
               <div>

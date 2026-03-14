@@ -1,4 +1,4 @@
-import { getAuth, onAuthStateChanged, signOut, User } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, signOut, User } from "firebase/auth";
 import {
   doc,
   getFirestore,
@@ -6,19 +6,19 @@ import {
   serverTimestamp,
   setDoc,
   updateDoc,
-} from 'firebase/firestore';
-import debounce from 'lodash/debounce';
-import * as React from 'react';
-import { createContext, ReactNode, useMemo, useRef, useState } from 'react';
-import toast from 'react-hot-toast';
-import { useFirebaseApp } from '../../hooks/useFirebase';
-import { ModuleProgress } from '../../models/module';
-import { ProblemProgress } from '../../models/problem';
-import { ResourceProgress } from '../../models/resource';
-import runMigration from './migration';
-import { Language, Theme } from './properties/simpleProperties';
-import { getLangFromUrl, updateLangURL } from './userLangQueryVariableUtils';
-import { UserPermissionsContextProvider } from './UserPermissionsContext';
+} from "firebase/firestore";
+import debounce from "lodash/debounce";
+import * as React from "react";
+import { createContext, ReactNode, useMemo, useRef, useState } from "react";
+import toast from "react-hot-toast";
+import { useFirebaseApp } from "../../hooks/useFirebase";
+import { ModuleProgress } from "../../models/module";
+import { ProblemProgress } from "../../models/problem";
+import { ResourceProgress } from "../../models/resource";
+import runMigration from "./migration";
+import { Language, Theme } from "./properties/simpleProperties";
+import { getLangFromUrl, updateLangURL } from "./userLangQueryVariableUtils";
+import { UserPermissionsContextProvider } from "./UserPermissionsContext";
 
 // What's actually stored in local storage / firebase
 export type UserData = {
@@ -72,7 +72,7 @@ type UserDataContextAPI = {
     updateFunc: (prevUserData: UserData) => {
       localStorageUpdate: Partial<UserData>;
       firebaseUpdate: object;
-    }
+    },
   ) => void;
   importUserData: (data: Partial<UserData>) => boolean;
   signOut: () => Promise<void>;
@@ -86,15 +86,15 @@ export const assignDefaultsToUserData = (data: object): UserData => {
     hideModules: false,
     showIgnored: true,
     divisionTableQuery: {
-      division: '',
-      season: '',
+      division: "",
+      season: "",
     },
-    lang: 'cpp',
-    lastViewedModule: '',
+    lang: "cpp",
+    lastViewedModule: "",
     lastVisitDate: new Date().getTime(),
     numPageviews: 0,
     pageviewsPerDay: {},
-    theme: 'system',
+    theme: "system",
     userProgressOnModules: {},
     userProgressOnModulesActivity: [],
     userProgressOnProblems: {},
@@ -105,18 +105,18 @@ export const assignDefaultsToUserData = (data: object): UserData => {
 };
 
 // localstorage key for theme. We need this to set light / dark theme the moment the page loads.
-export const themeKey = 'guide:userData:theme';
+export const themeKey = "guide:userData:theme";
 
-const LOCAL_STORAGE_KEY = 'guide:userData:v100';
+const LOCAL_STORAGE_KEY = "guide:userData:v100";
 
 // Todo figure out why we even need defaults
 const UserDataContext = createContext<UserDataContextAPI>({
   userData: assignDefaultsToUserData({}),
-  updateUserData: _ => {},
+  updateUserData: (_) => {},
   signOut: () => Promise.resolve(),
   firebaseUser: null,
   forceFirebaseUserRerender: () => {},
-  importUserData: _ => false,
+  importUserData: (_) => false,
   isLoaded: true,
 });
 
@@ -141,9 +141,9 @@ export const UserDataProvider = ({
     () => {
       // These initial values are what's used during the initial SSG render
       return assignDefaultsToUserData({
-        lang: 'showAll',
+        lang: "showAll",
       });
-    }
+    },
   );
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const numPendingFirebaseWritesRef = useRef(0);
@@ -154,26 +154,26 @@ export const UserDataProvider = ({
     function beforeUnloadListener(this: Window, ev: BeforeUnloadEvent) {
       if (numPendingFirebaseWritesRef.current !== 0) {
         ev.preventDefault();
-        return (ev.returnValue = '');
+        return (ev.returnValue = "");
       }
     }
-    addEventListener('beforeunload', beforeUnloadListener, { capture: true });
+    addEventListener("beforeunload", beforeUnloadListener, { capture: true });
     return () => {
-      removeEventListener('beforeunload', beforeUnloadListener, {
+      removeEventListener("beforeunload", beforeUnloadListener, {
         capture: true,
       });
     };
   }, []);
 
   // Listen for firebase user sign in / sign out
-  useFirebaseApp(firebase => {
+  useFirebaseApp((firebase) => {
     // For the very first firestore data read, we should set the language property
     // to whatever the URL query param is
     let shouldUseLangQueryParam = true;
 
     const auth = getAuth(firebase);
     let snapshotUnsubscribe: null | (() => void) = null;
-    const authUnsubscribe = onAuthStateChanged(auth, user => {
+    const authUnsubscribe = onAuthStateChanged(auth, (user) => {
       if (snapshotUnsubscribe) {
         snapshotUnsubscribe();
         snapshotUnsubscribe = null;
@@ -185,10 +185,10 @@ export const UserDataProvider = ({
 
       // If the user is signed in, sync remote data with local data
       if (user) {
-        const userDoc = doc(getFirestore(firebaseApp), 'users', user.uid);
+        const userDoc = doc(getFirestore(firebaseApp), "users", user.uid);
 
         snapshotUnsubscribe = onSnapshot(userDoc, {
-          next: snapshot => {
+          next: (snapshot) => {
             const data = snapshot.data();
             if (!data) {
               // sync all local data with firebase if the firebase account doesn't exist yet
@@ -205,7 +205,7 @@ export const UserDataProvider = ({
                   // see https://github.com/cpinitiative/usaco-guide/issues/534
                   CREATING_ACCOUNT_FOR_FIRST_TIME: serverTimestamp(),
                 },
-                { merge: true }
+                { merge: true },
               );
             } else {
               const newUserData = assignDefaultsToUserData(data);
@@ -217,16 +217,16 @@ export const UserDataProvider = ({
               }
               localStorage.setItem(
                 LOCAL_STORAGE_KEY,
-                JSON.stringify(newUserData)
+                JSON.stringify(newUserData),
               );
-              console.log('got new fb data', newUserData);
+              console.log("got new fb data", newUserData);
               debouncedSetUserData(newUserData); // Use debounced version here
             }
 
             shouldUseLangQueryParam = false;
             setIsLoaded(true);
           },
-          error: error => {
+          error: (error) => {
             toast.error(error.message);
           },
         });
@@ -239,12 +239,12 @@ export const UserDataProvider = ({
   });
 
   const initializeFromLocalStorage = (
-    { useURLLang } = { useURLLang: true }
+    { useURLLang } = { useURLLang: true },
   ) => {
     let localStorageData: Partial<UserData>;
     try {
       localStorageData = JSON.parse(
-        localStorage.getItem(LOCAL_STORAGE_KEY) ?? '{}'
+        localStorage.getItem(LOCAL_STORAGE_KEY) ?? "{}",
       );
     } catch (e) {
       localStorageData = {};
@@ -276,8 +276,8 @@ export const UserDataProvider = ({
 
   // Add debouncing to prevent excessive Firebase updates
   const debouncedSetUserData = useMemo(
-    () => debounce(data => setUserData(data), 100),
-    []
+    () => debounce((data) => setUserData(data), 100),
+    [],
   );
 
   const userDataAPI: UserDataContextAPI = {
@@ -301,10 +301,10 @@ export const UserDataProvider = ({
     isLoaded,
 
     updateUserData: React.useCallback(
-      updateFunc => {
+      (updateFunc) => {
         if (!isLoaded) {
           throw new Error(
-            'updateUserData() can only be called after user data has been loaded.'
+            "updateUserData() can only be called after user data has been loaded.",
           );
         }
 
@@ -315,16 +315,16 @@ export const UserDataProvider = ({
           // Since we write valid user data to local storage every time the page loads,
           // just assume reading will be valid. If it isn't, the user can always reload
           // the page to get a working version of user data.
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          localStorage.getItem(LOCAL_STORAGE_KEY)!
+
+          localStorage.getItem(LOCAL_STORAGE_KEY)!,
         );
 
         if (firebaseUser) {
           // user is signed in to firebase, do the firebase update path
           const userDoc = doc(
             getFirestore(firebaseApp),
-            'users',
-            firebaseUser.uid
+            "users",
+            firebaseUser.uid,
           );
 
           const changes = updateFunc(latestUserData).firebaseUpdate;
@@ -332,16 +332,16 @@ export const UserDataProvider = ({
 
           numPendingFirebaseWritesRef.current++;
           firebaseUpdatePromise
-            .catch(err => {
-              console.error('Failed to sync to server', changes);
+            .catch((err) => {
+              console.error("Failed to sync to server", changes);
               console.error(err);
               toast.error(
-                'Failed to sync to server: ' +
+                "Failed to sync to server: " +
                   err +
-                  '. Please submit an error report on GitHub with developer console messages.',
+                  ". Please submit an error report on GitHub with developer console messages.",
                 {
                   duration: Infinity,
-                }
+                },
               );
             })
             .finally(() => {
@@ -363,7 +363,7 @@ export const UserDataProvider = ({
           debouncedSetUserData(newUserData); // Use debounced version here
         }
       },
-      [firebaseApp, setUserData, isLoaded, !!firebaseUser]
+      [firebaseApp, setUserData, isLoaded, !!firebaseUser],
     ),
 
     signOut: (): Promise<void> => {
@@ -376,7 +376,7 @@ export const UserDataProvider = ({
     importUserData: (data: Partial<UserData>): boolean => {
       if (
         confirm(
-          'Import user data (beta)? All existing data will be lost. Make sure to back up your data before proceeding.'
+          "Import user data (beta)? All existing data will be lost. Make sure to back up your data before proceeding.",
         )
       ) {
         const updatedData = assignDefaultsToUserData(data);
@@ -388,13 +388,13 @@ export const UserDataProvider = ({
           // be set from the Firebase doc.
           const CREATING_ACCOUNT_FOR_FIRST_TIME = (userData as any)
             .CREATING_ACCOUNT_FOR_FIRST_TIME;
-          setDoc(doc(getFirestore(firebaseApp), 'users', firebaseUser.uid), {
+          setDoc(doc(getFirestore(firebaseApp), "users", firebaseUser.uid), {
             ...data,
             CREATING_ACCOUNT_FOR_FIRST_TIME,
-          }).catch(err => {
+          }).catch((err) => {
             console.error(err);
             alert(
-              `importUserData: Error setting firebase doc. Check console for details.`
+              `importUserData: Error setting firebase doc. Check console for details.`,
             );
           });
         }

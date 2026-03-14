@@ -1,7 +1,7 @@
-import classNames from 'classnames';
-import { useAtomValue, useSetAtom } from 'jotai';
-import * as React from 'react';
-import problemsSchema from '../../../content/problems.schema.json';
+import classNames from "classnames";
+import { useAtomValue, useSetAtom } from "jotai";
+import * as React from "react";
+import problemsSchema from "../../../public/problems.schema.json";
 import {
   activeFileAtom,
   baseTabAtom,
@@ -11,12 +11,12 @@ import {
   tabAtom,
   trueFileAtom,
   trueFilePathAtom,
-} from '../../atoms/editor';
-import { DarkModeContext } from '../../context/DarkModeContext';
-import { formatMarkdown, formatProblems } from '../../utils/prettierFormatter';
-import EditorTabBar from './EditorTabBar';
-import { conf as mdxConf, language as mdxLang } from './mdx-lang';
-const Editor = React.lazy(() => import('./BaseEditor'));
+} from "../../atoms/editor";
+import { DarkModeContext } from "../../context/DarkModeContext";
+import { formatMarkdown, formatProblems } from "../../utils/prettierFormatter";
+import EditorTabBar from "./EditorTabBar";
+import { conf as mdxConf, language as mdxLang } from "./mdx-lang";
+const Editor = React.lazy(() => import("./BaseEditor"));
 
 export const MainEditorInterface = ({ className }): JSX.Element => {
   const activeFile = useAtomValue(activeFileAtom);
@@ -29,10 +29,10 @@ export const MainEditorInterface = ({ className }): JSX.Element => {
 
   const setMarkdown = (x: string | ((prev: string) => Promise<string>)) => {
     if (!activeFile) return;
-    if (typeof x === 'string') {
+    if (typeof x === "string") {
       saveFile({
         path: activeFile.path,
-        update: async prev => ({
+        update: async (prev) => ({
           ...prev,
           markdown: x,
         }),
@@ -40,7 +40,7 @@ export const MainEditorInterface = ({ className }): JSX.Element => {
     } else {
       saveFile({
         path: activeFile.path,
-        update: async prev => ({
+        update: async (prev) => ({
           ...prev,
           markdown: await x(prev.markdown),
         }),
@@ -49,10 +49,10 @@ export const MainEditorInterface = ({ className }): JSX.Element => {
   };
   const setProblems = (x: string | ((prev: string) => Promise<string>)) => {
     if (!activeFile) return;
-    if (typeof x === 'string') {
+    if (typeof x === "string") {
       saveFile({
         path: activeFile.path,
-        update: async prev => ({
+        update: async (prev) => ({
           ...prev,
           problems: x,
         }),
@@ -60,7 +60,7 @@ export const MainEditorInterface = ({ className }): JSX.Element => {
     } else {
       saveFile({
         path: activeFile.path,
-        update: async prev => ({
+        update: async (prev) => ({
           ...prev,
           problems: await x(prev.problems!),
         }),
@@ -69,69 +69,69 @@ export const MainEditorInterface = ({ className }): JSX.Element => {
   };
 
   const handleFormatCode = () => {
-    if (tab === 'content') {
-      setMarkdown(old => formatMarkdown(old));
+    if (tab === "content") {
+      setMarkdown((old) => formatMarkdown(old));
     } else {
-      setProblems(old => formatProblems(old));
+      setProblems((old) => formatProblems(old));
     }
   };
   const tabs = isEditingSolution
-    ? [{ label: 'solution.mdx', value: 'content' }]
+    ? [{ label: "solution.mdx", value: "content" }]
     : [
-        { label: 'module.mdx', value: 'content' },
+        { label: "module.mdx", value: "content" },
         {
-          label: 'module.problems.json',
-          value: 'problems',
+          label: "module.problems.json",
+          value: "problems",
         },
       ];
   return (
-    <div className={classNames('tw-forms-disable-all-descendants', className)}>
+    <div className={classNames("tw-forms-disable-all-descendants", className)}>
       <EditorTabBar
         tabs={tabs}
         activeTab={tab}
-        onTabSelect={tab =>
-          setTab(tab.value === 'content' ? 'content' : 'problems')
+        onTabSelect={(tab) =>
+          setTab(tab.value === "content" ? "content" : "problems")
         }
         onFormatCode={handleFormatCode}
       />
       <Editor
-        theme={darkMode ? 'vs-dark' : 'light'}
+        theme={darkMode ? "vs-dark" : "light"}
         path={useAtomValue(trueFilePathAtom)}
-        language={tab === 'content' ? 'custom-mdx' : 'json'}
+        language={tab === "content" ? "custom-mdx" : "json"}
         value={useAtomValue(trueFileAtom)}
-        onChange={v =>
-          tab === 'content' ? setMarkdown(v ?? '') : setProblems(v ?? '')
+        onChange={(v) =>
+          tab === "content" ? setMarkdown(v ?? "") : setProblems(v ?? "")
         }
         options={{
-          wordWrap: 'on',
+          wordWrap: "on",
           rulers: [80],
           minimap: { enabled: false },
         }}
-        beforeMount={monaco => {
+        beforeMount={(monaco) => {
           // sort of MDX (basically markdown with mdx comments)
-          monaco.languages.register({ id: 'custom-mdx' });
-          monaco.languages.setMonarchTokensProvider('custom-mdx', mdxLang);
-          monaco.languages.setLanguageConfiguration('custom-mdx', mdxConf);
+          monaco.languages.register({ id: "custom-mdx" });
+          monaco.languages.setMonarchTokensProvider("custom-mdx", mdxLang);
+          monaco.languages.setLanguageConfiguration("custom-mdx", mdxConf);
           monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
             validate: true,
             schemas: [
               {
-                fileMatch: ['*.json'],
-                uri: 'https://usaco.guide/problems.schema.json',
+                fileMatch: ["*.json"],
+                uri: "https://usaco.guide/problems.schema.json",
                 schema: problemsSchema,
               },
             ],
           });
         }}
-        onMount={e => {
+        onMount={(e) => {
           setMonacoEditorInstance(e);
           e.getModel().updateOptions({ insertSpaces: false });
           e.addAction({
-            id: 'insert-code',
-            label: 'Insert Code',
-            contextMenuGroupId: 'navigation',
+            id: "insert-code",
+            label: "Insert Code",
+            contextMenuGroupId: "navigation",
             run: function (ed) {
-              ed.trigger('keyboard', 'paste', {
+              ed.trigger("keyboard", "paste", {
                 text: `
 <LanguageSection>
 

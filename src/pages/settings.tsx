@@ -1,17 +1,17 @@
-import { navigate } from 'gatsby';
-import * as React from 'react';
-import UnderlinedTabs from '../components/elements/UnderlinedTabs';
-import Layout from '../components/layout';
-import SEO from '../components/seo';
-import AdminSettings from '../components/Settings/AdminSettings';
-import Authentication from '../components/Settings/Authentication';
-import DarkMode from '../components/Settings/DarkMode';
-import General from '../components/Settings/General';
-import Language from '../components/Settings/Language';
-import Profile from '../components/Settings/Profile';
-import UserData from '../components/Settings/UserData';
-import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
-import { useUserPermissions } from '../context/UserDataContext/UserPermissionsContext';
+import { useRouter } from "next/router";
+import * as React from "react";
+import UnderlinedTabs from "../components/elements/UnderlinedTabs";
+import Layout from "../components/layout";
+import SEO from "../components/seo";
+import AdminSettings from "../components/Settings/AdminSettings";
+import Authentication from "../components/Settings/Authentication";
+import DarkMode from "../components/Settings/DarkMode";
+import General from "../components/Settings/General";
+import Language from "../components/Settings/Language";
+import Profile from "../components/Settings/Profile";
+import UserData from "../components/Settings/UserData";
+import TopNavigationBar from "../components/TopNavigationBar/TopNavigationBar";
+import { useUserPermissions } from "../context/UserDataContext/UserPermissionsContext";
 
 /*
 1. General
@@ -36,35 +36,36 @@ import { useUserPermissions } from '../context/UserDataContext/UserPermissionsCo
  */
 
 export default function SettingsPage(props) {
+  const router = useRouter();
   const { isAdmin } = useUserPermissions();
   const tabs = [
-    'general',
-    'profile',
-    'auth',
-    'user-data',
-    ...(isAdmin ? ['admin'] : []),
+    "general",
+    "profile",
+    "auth",
+    "user-data",
+    ...(isAdmin ? ["admin"] : []),
   ];
   const [tab, setTab] = React.useReducer((prev, next) => {
-    location.replace('#' + next);
+    location.replace("#" + next);
     return next;
-  }, 'general');
+  }, "general");
 
   React.useEffect(() => {
     const handleHashChange = () => {
-      if (window.location.hash == '') return;
+      if (window.location.hash == "") return;
       const hash = window.location.hash.slice(1);
       if (tabs.includes(hash)) {
         setTab(hash);
       }
     };
     handleHashChange();
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashChange', handleHashChange);
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashChange", handleHashChange);
   }, []);
 
   return (
     <Layout>
-      <SEO title="Settings" image={null} pathname={props.path} />
+      <SEO title="Settings" image={null} />
 
       <TopNavigationBar />
 
@@ -72,7 +73,7 @@ export default function SettingsPage(props) {
         <div className="relative mx-auto max-w-xl md:px-8 xl:px-0">
           <button
             className="btn mx-4 mt-8 sm:mx-6 md:mx-0"
-            onClick={() => navigate(-1)}
+            onClick={() => router.back()}
           >
             <svg
               className="mr-2 -ml-1 h-4 w-4"
@@ -102,42 +103,42 @@ export default function SettingsPage(props) {
                 <UnderlinedTabs
                   options={tabs}
                   labelMap={{
-                    general: 'General',
-                    profile: 'Profile',
-                    auth: 'Sign In Methods',
-                    'user-data': 'User Data',
-                    admin: 'Admin Settings',
+                    general: "General",
+                    profile: "Profile",
+                    auth: "Sign In Methods",
+                    "user-data": "User Data",
+                    admin: "Admin Settings",
                   }}
                   value={tab}
-                  onChange={x => setTab(x)}
+                  onChange={(x) => setTab(x)}
                 />
 
                 <div className="h-10" />
 
                 <div className="space-y-10">
-                  {tab === 'general' && (
+                  {tab === "general" && (
                     <>
                       <Language />
                       <DarkMode />
                       <General />
                     </>
                   )}
-                  {tab === 'profile' && (
+                  {tab === "profile" && (
                     <>
                       <Profile />
                     </>
                   )}
-                  {tab === 'auth' && (
+                  {tab === "auth" && (
                     <>
                       <Authentication />
                     </>
                   )}
-                  {tab === 'user-data' && (
+                  {tab === "user-data" && (
                     <>
                       <UserData />
                     </>
                   )}
-                  {tab === 'admin' && (
+                  {tab === "admin" && (
                     <>
                       <AdminSettings />
                     </>

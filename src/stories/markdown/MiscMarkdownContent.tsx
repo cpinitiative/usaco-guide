@@ -1,10 +1,10 @@
-import React from 'react';
-import HTMLComponents from '../../components/markdown/HTMLComponents';
+import React from "react";
+import HTMLComponents from "../../components/markdown/HTMLComponents";
 
 const MiscMarkdownContent = () => (
   <>
     <HTMLComponents.p>
-      This is a demonstration of a warning block. And here's a link:{' '}
+      This is a demonstration of a warning block. And here's a link:{" "}
       <a
         href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
         target="_blank"
@@ -16,12 +16,12 @@ const MiscMarkdownContent = () => (
     </HTMLComponents.p>
     <HTMLComponents.p>
       You shouldn't modify sets when traversing it with set iterators like in
-      any other iterators for{' '}
-      <HTMLComponents.code>Collections</HTMLComponents.code> (this{' '}
+      any other iterators for{" "}
+      <HTMLComponents.code>Collections</HTMLComponents.code> (this{" "}
       <strong>INCLUDES</strong> when using a for-each loop). The only
-      modification possible is using the iterator{' '}
+      modification possible is using the iterator{" "}
       <HTMLComponents.code>remove()</HTMLComponents.code> method which can only
-      be used once before calling the{' '}
+      be used once before calling the{" "}
       <HTMLComponents.code>next()</HTMLComponents.code> method.
     </HTMLComponents.p>
     <p>
@@ -36,8 +36,8 @@ const MiscMarkdownContent = () => (
     <blockquote>
       <HTMLComponents.p>
         A common mistake in implementing the Floyd–Warshall algorithm is to
-        misorder the triply nested loops (The correct order is{' '}
-        <HTMLComponents.code>KIJ</HTMLComponents.code>). The incorrect{' '}
+        misorder the triply nested loops (The correct order is{" "}
+        <HTMLComponents.code>KIJ</HTMLComponents.code>). The incorrect{" "}
         <HTMLComponents.code>IJK</HTMLComponents.code> and
         <HTMLComponents.code>IKJ</HTMLComponents.code> algorithms do not give
         correct solutions for some instance. However, we can prove that if these

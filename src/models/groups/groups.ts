@@ -1,4 +1,4 @@
-import { Timestamp } from 'firebase/firestore';
+import { Timestamp } from "firebase/firestore";
 
 export type GroupData = {
   id: string;
@@ -11,9 +11,9 @@ export type GroupData = {
 };
 
 export enum GroupPermission {
-  MEMBER = 'member',
-  ADMIN = 'admin',
-  OWNER = 'owner',
+  MEMBER = "member",
+  ADMIN = "admin",
+  OWNER = "owner",
 }
 
 export type JoinGroupLink = {
@@ -29,7 +29,7 @@ export type JoinGroupLink = {
 
 export const isUserAdminOfGroup = (
   group: GroupData | undefined,
-  userId: string | undefined
+  userId: string | undefined,
 ): boolean => {
   return !!(
     userId &&

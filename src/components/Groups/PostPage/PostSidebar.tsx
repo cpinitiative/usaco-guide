@@ -1,14 +1,14 @@
-import { Link } from 'gatsby';
-import React from 'react';
-import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
-import { useActivePostProblems } from '../../../hooks/groups/useActivePostProblems';
-import { useUserLeaderboardData } from '../../../hooks/groups/useLeaderboardData';
+import Link from "next/link";
+import React from "react";
+import { useActiveGroup } from "../../../hooks/groups/useActiveGroup";
+import { useActivePostProblems } from "../../../hooks/groups/useActivePostProblems";
+import { useUserLeaderboardData } from "../../../hooks/groups/useLeaderboardData";
 import {
   getTotalPointsFromProblems,
   PostData,
-} from '../../../models/groups/posts';
-import LeaderboardList from '../LeaderboardList/LeaderboardList';
-import SidebarDueDate from '../SidebarDueDate';
+} from "../../../models/groups/posts";
+import LeaderboardList from "../LeaderboardList/LeaderboardList";
+import SidebarDueDate from "../SidebarDueDate";
 
 export default function PostSidebar({
   post,
@@ -21,7 +21,7 @@ export default function PostSidebar({
   const activeGroup = useActiveGroup();
   const userLeaderboardData = useUserLeaderboardData(
     activeGroup.activeGroupId!,
-    activeGroup.activeUserId!
+    activeGroup.activeUserId!,
   );
 
   return (
@@ -42,14 +42,14 @@ export default function PostSidebar({
             />
           </svg>
           <span className="text-sm font-medium text-green-700 dark:text-green-400">
-            {userLeaderboardData?.[post.id!]?.totalPoints ?? 0} /{' '}
+            {userLeaderboardData?.[post.id!]?.totalPoints ?? 0} /{" "}
             {problems && getTotalPointsFromProblems(problems)} points earned
           </span>
         </div>
         <SidebarDueDate post={post} />
         {isMobile && (
           <div>
-            <Link to="leaderboard" className="font-medium hover:underline">
+            <Link href="leaderboard" className="font-medium hover:underline">
               View Assignment Leaderboard &rarr;
             </Link>
           </div>
@@ -66,7 +66,13 @@ export default function PostSidebar({
                 Assignment Leaderboard
               </h3>
               <Link
-                to="leaderboard"
+                href={
+                  "/groups/" +
+                  activeGroup.activeGroupId +
+                  "/post/" +
+                  post.id +
+                  "/leaderboard"
+                }
                 className="text-sm font-medium text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-white"
               >
                 View All &rarr;

@@ -1,16 +1,15 @@
-import { Link } from 'gatsby';
-import { BaseHit, Hit } from 'instantsearch.js';
-import * as React from 'react';
-import { Highlight, useHits } from 'react-instantsearch';
-import { moduleIDToSectionMap } from '../../../content/ordering';
-import { useBlindMode } from '../../context/BlindModeContext';
-import { ConfettiProvider } from '../../context/ConfettiContext';
+import Link from "next/link";
+import { BaseHit, Hit } from "instantsearch.js";
+import * as React from "react";
+import { Highlight, useHits } from "react-instantsearch";
+import { moduleIDToSectionMap } from "../../../content/ordering";
+import { useBlindMode } from "../../context/BlindModeContext";
+import { ConfettiProvider } from "../../context/ConfettiContext";
 import {
   useHideDifficultySetting,
   useHideModulesSetting,
   useShowTagsSetting,
-} from '../../context/UserDataContext/properties/simpleProperties';
-import { useUserProgressOnProblems } from '../../context/UserDataContext/properties/userProgress';
+} from "../../context/UserDataContext/properties/simpleProperties";
 import {
   AlgoliaProblemInfo,
   getProblemURL,
@@ -18,10 +17,11 @@ import {
   ProblemInfo,
   ProblemProgress,
   recentUsaco,
-} from '../../models/problem';
-import DifficultyBox from '../DifficultyBox';
-import Info from '../markdown/Info';
-import ProblemStatusCheckbox from '../markdown/ProblemsList/ProblemStatusCheckbox';
+} from "../../models/problem";
+import DifficultyBox from "../DifficultyBox";
+import Info from "../markdown/Info";
+import ProblemStatusCheckbox from "../markdown/ProblemsList/ProblemStatusCheckbox";
+import { useUserProgressOnProblems } from "../../context/UserDataContext/properties/userProgress";
 
 type AlgoliaProblemInfoHit = Hit<BaseHit> & AlgoliaProblemInfo;
 interface ProblemHitProps {
@@ -36,8 +36,8 @@ function ProblemHit({ hit }: ProblemHitProps) {
 
   if (hit.problemModules.length == 0 && recentUsaco.includes(hit.source)) {
     hit.problemModules.push({
-      id: 'usaco-monthlies',
-      title: 'USACO Monthlies',
+      id: "usaco-monthlies",
+      title: "USACO Monthlies",
     });
   }
   const problem = hit as unknown as ProblemInfo;
@@ -93,10 +93,10 @@ function ProblemHit({ hit }: ProblemHitProps) {
       </div> */}
 
       {hit.solution &&
-        (hit.solution.kind === 'internal' || hit.solution.kind === 'link') && (
+        (hit.solution.kind === "internal" || hit.solution.kind === "link") && (
           <a
             href={
-              hit.solution.kind === 'internal'
+              hit.solution.kind === "internal"
                 ? `${getProblemURL({
                     ...hit,
                     uniqueId: hit.objectID,
@@ -104,7 +104,6 @@ function ProblemHit({ hit }: ProblemHitProps) {
                 : hit.solution.url
             }
             target="_blank"
-            rel="noreferrer"
             className="dark:text-dark-med-emphasis text-sm text-gray-500"
           >
             View Solution
@@ -123,7 +122,7 @@ function ProblemHit({ hit }: ProblemHitProps) {
           <br />
           <a
             href={`https://ide.usaco.guide/usaco/${problem.uniqueId.substring(
-              problem.uniqueId.indexOf('-') + 1
+              problem.uniqueId.indexOf("-") + 1,
             )}`}
             target="_blank"
             rel="noreferrer"
@@ -150,7 +149,7 @@ function ProblemHit({ hit }: ProblemHitProps) {
             {hit.problemModules.map(({ id: moduleID, title: moduleLabel }) => (
               <li key={moduleID}>
                 <Link
-                  to={`/${moduleIDToSectionMap[moduleID]}/${moduleID}/#problem-${hit.objectID}`}
+                  href={`/${moduleIDToSectionMap[moduleID]}/${moduleID}/#problem-${hit.objectID}`}
                   className="text-sm text-blue-600 dark:text-blue-400"
                 >
                   {moduleLabel}
@@ -164,7 +163,7 @@ function ProblemHit({ hit }: ProblemHitProps) {
       <div className="pt-4">
         {!hideDifficulty && <DifficultyBox difficulty={hit.difficulty} />}
         {showTags &&
-          hit.tags?.map(tag => (
+          hit.tags?.map((tag) => (
             <span
               className="dark:text-dark-high-emphasis mr-2 inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs leading-4 font-medium text-gray-800 dark:bg-gray-800"
               key={tag}
@@ -208,8 +207,8 @@ export default function ProblemHits({ shuffle, random }) {
       const unsolvedURLs: string[] = [];
       for (const h of hits) {
         const status: ProblemProgress =
-          userProgressOnProblems[String(h.uniqueId)] || 'Not Attempted';
-        if (status === 'Not Attempted') {
+          userProgressOnProblems[String(h.uniqueId)] || "Not Attempted";
+        if (status === "Not Attempted") {
           unsolvedURLs.push(h.url);
         }
       }
@@ -217,7 +216,7 @@ export default function ProblemHits({ shuffle, random }) {
       if (unsolvedURLs.length > 0) {
         window.open(
           unsolvedURLs[Math.floor(Math.random() * unsolvedURLs.length)],
-          '_blank'
+          "_blank",
         );
       }
     }
@@ -234,7 +233,7 @@ export default function ProblemHits({ shuffle, random }) {
 
   return (
     <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {displayHits.map(hit => (
+      {displayHits.map((hit) => (
         <ProblemHit hit={hit} key={hit.objectID} />
       ))}
     </div>

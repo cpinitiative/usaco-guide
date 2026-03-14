@@ -1,13 +1,13 @@
 /*eslint-disable */
 
-module.exports = () => {
+export default () => {
   function process(node) {
-    if (node.type === 'html') {
-      node.type = 'mdxJsxTextElement';
-      node.name = 'RAWHTML';
+    if (node.type === "html") {
+      node.type = "mdxJsxTextElement";
+      node.name = "RAWHTML";
       node.children = [
         {
-          type: 'text',
+          type: "text",
           value: node.value,
         },
       ];
@@ -17,7 +17,7 @@ module.exports = () => {
     }
   }
 
-  return node => {
+  return (node) => {
     process(node);
   };
 };

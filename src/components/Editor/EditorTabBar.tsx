@@ -1,7 +1,7 @@
-import { Buffer } from 'buffer';
-import classNames from 'classnames';
-import { useAtomValue, useSetAtom } from 'jotai';
-import React, { useCallback, useState } from 'react';
+import { Buffer } from "buffer";
+import classNames from "classnames";
+import { useAtomValue, useSetAtom } from "jotai";
+import React, { useCallback, useState } from "react";
 import {
   branchAtom,
   githubInfoAtom,
@@ -10,9 +10,9 @@ import {
   tabAtom,
   trueFileAtom,
   trueFilePathAtom,
-} from '../../atoms/editor';
-import { useQuizOpen } from '../../context/QuizGeneratorContext';
-import AddProblemModal from './AddProblemModal';
+} from "../../atoms/editor";
+import { useQuizOpen } from "../../context/QuizGeneratorContext";
+import AddProblemModal from "./AddProblemModal";
 
 export interface EditorTab {
   label: string;
@@ -39,27 +39,27 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
   const githubInfo = useAtomValue(githubInfoAtom);
   const octokit = useAtomValue(octokitAtom);
   const branch = useAtomValue(branchAtom);
-  const [commitState, setCommitState] = useState('Commit Code');
-  const [pullState, setPullState] = useState('Pull Code');
+  const [commitState, setCommitState] = useState("Commit Code");
+  const [pullState, setPullState] = useState("Pull Code");
   const filePath = useAtomValue(trueFilePathAtom);
   const file = useAtomValue(trueFileAtom);
   const saveFile = useSetAtom(saveFileAtom);
   const tab = useAtomValue(tabAtom);
   const [dialogOpen, setDialogOpen] = useState(false);
   const updateFile = useCallback(
-    async file => {
+    async (file) => {
       if (!octokit || !githubInfo || !branch) return;
-      setCommitState('Committing...');
+      setCommitState("Committing...");
       let fileSha = undefined;
       try {
         fileSha = (
-          (await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+          (await octokit.request("GET /repos/{owner}/{repo}/contents/{path}", {
             owner: githubInfo.login,
-            repo: 'usaco-guide',
+            repo: "usaco-guide",
             path: filePath,
             ref: branch,
             headers: {
-              'X-GitHub-Api-Version': '2022-11-28',
+              "X-GitHub-Api-Version": "2022-11-28",
             },
           })) as any
         ).data.sha;
@@ -67,71 +67,71 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
         console.log("file doesn't exist yet");
       }
       const response = await octokit.request(
-        'PUT /repos/{owner}/{repo}/contents/{path}',
+        "PUT /repos/{owner}/{repo}/contents/{path}",
         {
           owner: githubInfo.login,
-          repo: 'usaco-guide',
+          repo: "usaco-guide",
           path: filePath,
           message: `Update ${filePath}`,
           branch: branch,
           sha: fileSha,
-          content: Buffer.from(file ?? '').toString('base64'),
+          content: Buffer.from(file ?? "").toString("base64"),
           headers: {
-            'X-GitHub-Api-Version': '2022-11-28',
+            "X-GitHub-Api-Version": "2022-11-28",
           },
-        }
+        },
       );
-      console.log('response: ', response);
-      window.open(response.data.commit.html_url, '_blank');
-      setCommitState('Commit Code');
+      console.log("response: ", response);
+      window.open(response.data.commit.html_url, "_blank");
+      setCommitState("Commit Code");
     },
-    [octokit, githubInfo, branch, filePath]
+    [octokit, githubInfo, branch, filePath],
   );
   const pullCode = useCallback(async () => {
     if (!octokit || !githubInfo || !branch) return;
-    setPullState('Pulling...');
+    setPullState("Pulling...");
     const response = (
-      await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+      await octokit.request("GET /repos/{owner}/{repo}/contents/{path}", {
         owner: githubInfo.login,
-        repo: 'usaco-guide',
+        repo: "usaco-guide",
         path: filePath,
         ref: branch,
         headers: {
-          'X-GitHub-Api-Version': '2022-11-28',
+          "X-GitHub-Api-Version": "2022-11-28",
         },
       })
     ).data;
-    if (!('type' in response) || response.type !== 'file') return; // should not happen
+    if (!("type" in response) || response.type !== "file") return; // should not happen
     saveFile({
       path: filePath,
       async update(f) {
-        if (tab == 'content') {
+        if (tab == "content") {
           return {
             ...f,
-            markdown: Buffer.from(response.content, 'base64').toString('utf-8'),
+            markdown: Buffer.from(response.content, "base64").toString("utf-8"),
           };
         } else {
           return {
             ...f,
-            problems: Buffer.from(response.content, 'base64').toString('utf-8'),
+            problems: Buffer.from(response.content, "base64").toString("utf-8"),
           };
         }
       },
     });
-    setPullState('Pull Code');
+    setPullState("Pull Code");
   }, [octokit, githubInfo, branch, filePath, tab, saveFile]);
   return (
     <>
       <div className="flex bg-gray-50 dark:bg-gray-950">
         <div className="flex-1">
-          {tabs.map(tab => (
+          {tabs.map((tab) => (
             <button
               key={tab.value}
               className={classNames(
                 tab.value === activeTab
-                  ? 'bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-100'
-                  : 'text-gray-500 hover:bg-gray-100 hover:text-gray-600 active:bg-gray-100 dark:hover:bg-gray-900 dark:hover:text-gray-400 dark:active:bg-gray-900',
-                'px-4 py-2 text-sm font-medium transition focus:outline-hidden'
+                  ? "bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-100"
+                  : "text-gray-500 hover:bg-gray-100 hover:text-gray-600 active:bg-gray-100 dark:hover:bg-gray-900 dark:hover:text-gray-400 dark:active:bg-gray-900",
+                "px-4 py-2 text-sm font-medium transition focus:outline-hidden",
               )}
               onClick={() => onTabSelect(tab)}
             >
@@ -142,13 +142,13 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
       </div>
       <div
         className={
-          'flex bg-gray-100 text-gray-600 dark:bg-gray-900 dark:text-gray-400'
+          "flex bg-gray-100 text-gray-600 dark:bg-gray-900 dark:text-gray-400"
         }
       >
         <button
           className={classNames(
-            'hover:bg-gray-200 hover:text-gray-800 active:bg-gray-200 dark:hover:bg-gray-800 dark:hover:text-gray-300 dark:active:bg-gray-800',
-            'px-3 py-2 text-sm font-medium transition focus:outline-hidden'
+            "hover:bg-gray-200 hover:text-gray-800 active:bg-gray-200 dark:hover:bg-gray-800 dark:hover:text-gray-300 dark:active:bg-gray-800",
+            "px-3 py-2 text-sm font-medium transition focus:outline-hidden",
           )}
           onClick={() => setOpen(true)}
           type="button"
@@ -157,18 +157,18 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
         </button>
         <button
           className={classNames(
-            'hover:bg-gray-200 hover:text-gray-800 active:bg-gray-200 dark:hover:bg-gray-800 dark:hover:text-gray-300 dark:active:bg-gray-800',
-            'px-3 py-2 text-sm font-medium transition focus:outline-hidden'
+            "hover:bg-gray-200 hover:text-gray-800 active:bg-gray-200 dark:hover:bg-gray-800 dark:hover:text-gray-300 dark:active:bg-gray-800",
+            "px-3 py-2 text-sm font-medium transition focus:outline-hidden",
           )}
           onClick={() => onFormatCode()}
         >
           Format Code
         </button>
-        {useAtomValue(tabAtom) === 'problems' && (
+        {useAtomValue(tabAtom) === "problems" && (
           <button
             className={classNames(
-              'hover:bg-gray-200 hover:text-gray-800 active:bg-gray-200 dark:hover:bg-gray-800 dark:hover:text-gray-300 dark:active:bg-gray-800',
-              'px-3 py-2 text-sm font-medium transition focus:outline-hidden'
+              "hover:bg-gray-200 hover:text-gray-800 active:bg-gray-200 dark:hover:bg-gray-800 dark:hover:text-gray-300 dark:active:bg-gray-800",
+              "px-3 py-2 text-sm font-medium transition focus:outline-hidden",
             )}
             onClick={() => setDialogOpen(true)}
           >
@@ -178,8 +178,8 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
         {githubInfo && octokit && file && branch && (
           <button
             className={classNames(
-              'hover:bg-gray-200 hover:text-gray-800 active:bg-gray-200 dark:hover:bg-gray-800 dark:hover:text-gray-300 dark:active:bg-gray-800',
-              'px-3 py-2 text-sm font-medium transition focus:outline-hidden'
+              "hover:bg-gray-200 hover:text-gray-800 active:bg-gray-200 dark:hover:bg-gray-800 dark:hover:text-gray-300 dark:active:bg-gray-800",
+              "px-3 py-2 text-sm font-medium transition focus:outline-hidden",
             )}
             onClick={() => updateFile(file)}
           >
@@ -189,8 +189,8 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
         {githubInfo && octokit && file && branch && (
           <button
             className={classNames(
-              'hover:bg-gray-200 hover:text-gray-800 active:bg-gray-200 dark:hover:bg-gray-800 dark:hover:text-gray-300 dark:active:bg-gray-800',
-              'px-3 py-2 text-sm font-medium transition focus:outline-hidden'
+              "hover:bg-gray-200 hover:text-gray-800 active:bg-gray-200 dark:hover:bg-gray-800 dark:hover:text-gray-300 dark:active:bg-gray-800",
+              "px-3 py-2 text-sm font-medium transition focus:outline-hidden",
             )}
             onClick={() => pullCode()}
           >

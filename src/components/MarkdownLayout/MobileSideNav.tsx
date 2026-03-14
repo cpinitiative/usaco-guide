@@ -1,12 +1,12 @@
-import { Transition } from '@headlessui/react';
-import { Link } from 'gatsby';
-import * as React from 'react';
-import { Fragment } from 'react';
-import { useMarkdownLayout } from '../../context/MarkdownLayoutContext';
-import Logo from '../Logo';
-import Breadcrumbs from './Breadcrumbs';
-import SidebarBottomButtons from './SidebarBottomButtons';
-import { SidebarNav } from './SidebarNav/SidebarNav';
+import { Transition } from "@headlessui/react";
+import Link from "next/link";
+import * as React from "react";
+import { Fragment } from "react";
+import { useMarkdownLayout } from "../../context/MarkdownLayoutContext";
+import Logo from "../Logo";
+import Breadcrumbs from "./Breadcrumbs";
+import SidebarBottomButtons from "./SidebarBottomButtons";
+import { SidebarNav } from "./SidebarNav/SidebarNav";
 
 export default function MobileSideNav() {
   const { isMobileNavOpen, setIsMobileNavOpen } = useMarkdownLayout();
@@ -68,7 +68,7 @@ export default function MobileSideNav() {
               <div className="flex h-0 flex-1 flex-col pt-5">
                 <Link
                   className="flex shrink-0 items-center px-4"
-                  to="/dashboard/"
+                  href="/dashboard/"
                 >
                   <Logo />
                 </Link>

@@ -1,34 +1,37 @@
-import dayjs from 'dayjs';
-import { Timestamp } from 'firebase/firestore';
-import { Link, navigate } from 'gatsby';
-import React from 'react';
-import toast from 'react-hot-toast';
-import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
-import { usePost } from '../../../hooks/groups/usePost';
-import { usePostActions } from '../../../hooks/groups/usePostActions';
-import { useProblem } from '../../../hooks/groups/useProblem';
-import Layout from '../../layout';
-import Spoiler from '../../markdown/Spoiler';
-import SEO from '../../seo';
-import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
-import Breadcrumbs from '../Breadcrumbs';
-import SafeMarkdownRenderer from '../SafeMarkdownRenderer';
-import ProblemSidebar from './ProblemSidebar';
-import ProblemSubmission from './ProblemSubmissionInterface';
+import dayjs from "dayjs";
+import { Timestamp } from "firebase/firestore";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import React from "react";
+import toast from "react-hot-toast";
+import { useActiveGroup } from "../../../hooks/groups/useActiveGroup";
+import { usePost } from "../../../hooks/groups/usePost";
+import { usePostActions } from "../../../hooks/groups/usePostActions";
+import { useProblem } from "../../../hooks/groups/useProblem";
+import Layout from "../../layout";
+import Spoiler from "../../markdown/Spoiler";
+import SEO from "../../seo";
+import TopNavigationBar from "../../TopNavigationBar/TopNavigationBar";
+import Breadcrumbs from "../Breadcrumbs";
+import SafeMarkdownRenderer from "../SafeMarkdownRenderer";
+import ProblemSidebar from "./ProblemSidebar";
+import ProblemSubmission from "./ProblemSubmissionInterface";
 
-export default function ProblemPage(props) {
-  const { postId, problemId } = props as {
-    path: string;
-    groupId: string;
-    postId: string;
-    problemId: string;
-  };
+interface ProblemPageProps {
+  groupId: string;
+  postId: string;
+  problemId: string;
+}
+
+export default function ProblemPage(props: ProblemPageProps) {
+  const router = useRouter();
+  const { groupId, postId, problemId } = props;
   const activeGroup = useActiveGroup();
   const post = usePost(postId);
   const problem = useProblem(problemId);
   const { deleteProblem } = usePostActions(activeGroup.groupData!.id);
 
-  if (!problem || post?.type !== 'assignment' || activeGroup.isLoading) {
+  if (!problem || post?.type !== "assignment" || activeGroup.isLoading) {
     return null;
   }
 
@@ -37,7 +40,6 @@ export default function ProblemPage(props) {
       <SEO
         title={`${problem.name} · ${activeGroup.groupData?.name}`}
         image={null}
-        pathname={props.path}
       />
       <TopNavigationBar />
       <nav className="mt-6 mb-4 flex" aria-label="Breadcrumb">
@@ -70,24 +72,21 @@ export default function ProblemPage(props) {
                       onClick={() => {
                         if (
                           confirm(
-                            'Are you sure you want to delete this problem?'
+                            "Are you sure you want to delete this problem?",
                           )
                         ) {
                           deleteProblem(post, problem.id)
                             .then(() => {
                               if (!activeGroup.groupData!) {
-                                throw new Error('No group data');
+                                throw new Error("No group data");
                               }
-                              navigate(
+                              router.push(
                                 `/groups/${activeGroup.groupData!.id}/post/${
                                   post.id
                                 }`,
-                                {
-                                  replace: true,
-                                }
                               );
                             })
-                            .catch(e => toast.error(e.message));
+                            .catch((e) => toast.error(e.message));
                         }
                       }}
                       className="btn"
@@ -108,7 +107,10 @@ export default function ProblemPage(props) {
                       </svg>
                       <span>Delete</span>
                     </button>
-                    <Link to="edit" className="btn">
+                    <Link
+                      href={`/groups/${activeGroup.groupData!.id}/post/${post.id}/problems/${problem.id}/edit`}
+                      className="btn"
+                    >
                       <svg
                         className="mr-2 -ml-1 h-5 w-5 text-gray-400"
                         xmlns="http://www.w3.org/2000/svg"
@@ -134,9 +136,9 @@ export default function ProblemPage(props) {
                     <div className="h-10" />
 
                     <div>
-                      {problem.hints.map(hint => (
+                      {problem.hints.map((hint) => (
                         <Spoiler
-                          title={'Hint: ' + hint.name || 'Hint'}
+                          title={"Hint: " + hint.name || "Hint"}
                           key={hint.id}
                         >
                           <div className="pb-4">
@@ -151,10 +153,10 @@ export default function ProblemPage(props) {
                 )}
 
                 {problem.solution &&
-                  ((problem.solutionReleaseMode == 'due-date' &&
+                  ((problem.solutionReleaseMode == "due-date" &&
                     post.dueTimestamp) ||
-                    problem.solutionReleaseMode == 'now' ||
-                    problem.solutionReleaseMode == 'custom') && (
+                    problem.solutionReleaseMode == "now" ||
+                    problem.solutionReleaseMode == "custom") && (
                     <>
                       <div className="h-10" />
                       <div>
@@ -163,14 +165,14 @@ export default function ProblemPage(props) {
                         </h2>
                       </div>
                       <div className="h-2" />
-                      {problem.solutionReleaseMode == 'now' ||
-                      (problem.solutionReleaseMode == 'due-date' &&
+                      {problem.solutionReleaseMode == "now" ||
+                      (problem.solutionReleaseMode == "due-date" &&
                         post.dueTimestamp &&
                         post.dueTimestamp.toMillis() < Date.now()) ||
-                      (problem.solutionReleaseMode == 'custom' &&
+                      (problem.solutionReleaseMode == "custom" &&
                         problem.solutionReleaseTimestamp.toMillis() <
                           Date.now()) ? (
-                        <Spoiler title={'Show Solution'}>
+                        <Spoiler title={"Show Solution"}>
                           <div className="pb-4">
                             <SafeMarkdownRenderer>
                               {problem.solution}
@@ -178,20 +180,20 @@ export default function ProblemPage(props) {
                           </div>
                         </Spoiler>
                       ) : (
-                        ((problem.solutionReleaseMode == 'due-date' &&
+                        ((problem.solutionReleaseMode == "due-date" &&
                           post.dueTimestamp) ||
-                          problem.solutionReleaseMode == 'custom') && (
+                          problem.solutionReleaseMode == "custom") && (
                           <p className="text-gray-600 italic dark:text-gray-400">
-                            The problem solution will be released on{' '}
+                            The problem solution will be released on{" "}
                             {problem &&
                               dayjs(
                                 (
-                                  (problem.solutionReleaseMode == 'due-date'
+                                  (problem.solutionReleaseMode == "due-date"
                                     ? post.dueTimestamp
-                                    : problem.solutionReleaseMode == 'custom' &&
+                                    : problem.solutionReleaseMode == "custom" &&
                                       problem.solutionReleaseTimestamp) as Timestamp
-                                )?.toDate()
-                              ).format('MMMM DD h:mma')}
+                                )?.toDate(),
+                              ).format("MMMM DD h:mma")}
                             .
                           </p>
                         )

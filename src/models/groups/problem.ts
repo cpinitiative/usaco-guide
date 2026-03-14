@@ -1,4 +1,4 @@
-import { Timestamp } from 'firebase/firestore';
+import { Timestamp } from "firebase/firestore";
 
 export interface ProblemData {
   id: string;
@@ -16,11 +16,11 @@ export type GroupProblemData = ProblemData &
   (
     | {
         usacoGuideId: string | null;
-        solutionReleaseMode: 'due-date' | 'now' | 'never';
+        solutionReleaseMode: "due-date" | "now" | "never";
       }
     | {
         usacoGuideId: string;
-        solutionReleaseMode: 'custom';
+        solutionReleaseMode: "custom";
         solutionReleaseTimestamp: Timestamp;
       }
   );
@@ -48,7 +48,7 @@ export type ProblemHint = {
 export interface ProblemSubmissionResult {
   timestamp: number;
   submissionID: string;
-  status: 'compiling' | 'executing' | 'done';
+  status: "compiling" | "executing" | "done";
   verdict?: ExecutionVerdict;
   testCases: (ProblemSubmissionTestCaseResult | null)[];
 
@@ -73,13 +73,13 @@ export interface ProblemSubmissionTestCaseResult {
 }
 
 export type ExecutionVerdict =
-  | 'AC'
-  | 'WA'
-  | 'RTE'
-  | 'MLE'
-  | 'TLE'
-  | 'CE'
-  | 'IE'; // IE is internal error
+  | "AC"
+  | "WA"
+  | "RTE"
+  | "MLE"
+  | "TLE"
+  | "CE"
+  | "IE"; // IE is internal error
 
 export type FirebaseSubmission =
   | {
@@ -97,59 +97,59 @@ export type FirebaseSubmission =
       id?: string;
       score: number;
       userID: string;
-      type: 'submission-link';
+      type: "submission-link";
       verdict: string;
       timestamp: any;
       link: string;
     };
 
 export const verdictToSymbol: { [key in ExecutionVerdict]: string } = {
-  AC: '*',
-  WA: 'x',
-  RTE: '!',
-  MLE: 'm',
-  TLE: 't',
-  CE: 'c',
-  IE: '?',
+  AC: "*",
+  WA: "x",
+  RTE: "!",
+  MLE: "m",
+  TLE: "t",
+  CE: "c",
+  IE: "?",
 };
 
 export const submissionTextColor: {
-  [key in ExecutionVerdict | 'Pending']: string;
+  [key in ExecutionVerdict | "Pending"]: string;
 } = {
-  AC: 'text-green-800 dark:text-green-200',
-  WA: 'text-red-800 dark:text-red-200',
-  TLE: 'text-red-800 dark:text-red-200',
-  MLE: 'text-red-800 dark:text-red-200',
-  RTE: 'text-red-800 dark:text-red-200',
-  CE: 'text-red-800 dark:text-red-200',
-  IE: 'text-red-800 dark:text-red-200',
-  Pending: 'text-gray-800 dark:text-gray-200',
+  AC: "text-green-800 dark:text-green-200",
+  WA: "text-red-800 dark:text-red-200",
+  TLE: "text-red-800 dark:text-red-200",
+  MLE: "text-red-800 dark:text-red-200",
+  RTE: "text-red-800 dark:text-red-200",
+  CE: "text-red-800 dark:text-red-200",
+  IE: "text-red-800 dark:text-red-200",
+  Pending: "text-gray-800 dark:text-gray-200",
 };
 
 export const submissionCircleColor: {
-  [key in ExecutionVerdict | 'Pending']: string;
+  [key in ExecutionVerdict | "Pending"]: string;
 } = {
-  AC: 'bg-green-400 dark:bg-green-500',
-  WA: 'bg-red-400 dark:bg-red-500',
-  TLE: 'bg-red-400 dark:bg-red-500',
-  MLE: 'bg-red-400 dark:bg-red-500',
-  RTE: 'bg-red-400 dark:bg-red-500',
-  CE: 'bg-red-400 dark:bg-red-500',
-  IE: 'bg-red-400 dark:bg-red-500',
-  Pending: 'bg-gray-400 dark:bg-gray-500',
+  AC: "bg-green-400 dark:bg-green-500",
+  WA: "bg-red-400 dark:bg-red-500",
+  TLE: "bg-red-400 dark:bg-red-500",
+  MLE: "bg-red-400 dark:bg-red-500",
+  RTE: "bg-red-400 dark:bg-red-500",
+  CE: "bg-red-400 dark:bg-red-500",
+  IE: "bg-red-400 dark:bg-red-500",
+  Pending: "bg-gray-400 dark:bg-gray-500",
 };
 
 export const submissionCircleBorderColor: {
-  [key in ExecutionVerdict | 'Pending']: string;
+  [key in ExecutionVerdict | "Pending"]: string;
 } = {
-  AC: 'bg-green-100 dark:bg-green-800',
-  WA: 'bg-red-100 dark:bg-red-800',
-  TLE: 'bg-red-100 dark:bg-red-800',
-  MLE: 'bg-red-100 dark:bg-red-800',
-  RTE: 'bg-red-100 dark:bg-red-800',
-  CE: 'bg-red-100 dark:bg-red-800',
-  IE: 'bg-red-100 dark:bg-red-800',
-  Pending: 'bg-gray-100 dark:bg-gray-800',
+  AC: "bg-green-100 dark:bg-green-800",
+  WA: "bg-red-100 dark:bg-red-800",
+  TLE: "bg-red-100 dark:bg-red-800",
+  MLE: "bg-red-100 dark:bg-red-800",
+  RTE: "bg-red-100 dark:bg-red-800",
+  CE: "bg-red-100 dark:bg-red-800",
+  IE: "bg-red-100 dark:bg-red-800",
+  Pending: "bg-gray-100 dark:bg-gray-800",
 };
 
 export const getSubmissionTimestampString = (submission: FirebaseSubmission) =>
@@ -159,19 +159,19 @@ export const getSubmissionStatus = (submission: FirebaseSubmission) => {
 };
 export const getSubmissionEarnedPoints = (
   submission: FirebaseSubmission,
-  problem: ProblemData
+  problem: ProblemData,
 ) => {
   return parseFloat((submission.score * problem.points).toFixed(1));
 };
 export const getEarnedPointsForProblem = (
   problem: ProblemData,
-  submissions: FirebaseSubmission[]
+  submissions: FirebaseSubmission[],
 ) => {
   return submissions.reduce(
     (oldScore, submission) =>
-      getSubmissionStatus(submission) !== 'Pending'
+      getSubmissionStatus(submission) !== "Pending"
         ? Math.max(oldScore, getSubmissionEarnedPoints(submission, problem))
         : oldScore,
-    0
+    0,
   );
 };

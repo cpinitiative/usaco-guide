@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 export const useAnalyticsEffect = () => {
   React.useEffect(() => {
@@ -7,22 +7,22 @@ export const useAnalyticsEffect = () => {
     } else {
       // google analytics got blocked
       fetch(
-        'https://usaco-guide.firebaseio.com/analytics/no_ga_pageviews.json',
+        "https://usaco-guide.firebaseio.com/analytics/no_ga_pageviews.json",
         {
-          method: 'PUT',
+          method: "PUT",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify({ '.sv': { increment: 1 } }),
-        }
+          body: JSON.stringify({ ".sv": { increment: 1 } }),
+        },
       );
     }
-    fetch('https://usaco-guide.firebaseio.com/pageviews.json', {
-      method: 'PUT',
+    fetch("https://usaco-guide.firebaseio.com/pageviews.json", {
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ '.sv': { increment: 1 } }),
+      body: JSON.stringify({ ".sv": { increment: 1 } }),
     });
   }, []);
 };

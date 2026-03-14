@@ -1,15 +1,15 @@
-import * as React from 'react';
-import { useContext, useState } from 'react';
+import * as React from "react";
+import { useContext, useState } from "react";
 import MODULE_ORDERING, {
   Chapter,
   SECTION_LABELS,
-} from '../../../../content/ordering';
-import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
-import { MarkdownLayoutSidebarModuleLinkInfo } from '../../../models/module';
-import { SolutionInfo } from '../../../models/solution';
-import SectionsDropdown from '../../SectionsDropdown';
-import Accordion from './Accordion';
-import ItemLink from './ItemLink';
+} from "../../../../content/ordering";
+import MarkdownLayoutContext from "../../../context/MarkdownLayoutContext";
+import { MarkdownLayoutSidebarModuleLinkInfo } from "../../../models/module";
+import { SolutionInfo } from "../../../models/solution";
+import SectionsDropdown from "../../SectionsDropdown";
+import Accordion from "./Accordion";
+import ItemLink from "./ItemLink";
 
 export interface NavLinkGroup {
   label: string;
@@ -18,19 +18,19 @@ export interface NavLinkGroup {
 
 export const SidebarNav = () => {
   const { markdownLayoutInfo, sidebarLinks, activeIDs } = useContext(
-    MarkdownLayoutContext
+    MarkdownLayoutContext,
   )!;
 
   let oriSection =
     markdownLayoutInfo instanceof SolutionInfo
-      ? 'general'
+      ? "general"
       : markdownLayoutInfo.section;
   if (markdownLayoutInfo instanceof SolutionInfo) {
     for (const section of Object.keys(
-      SECTION_LABELS
+      SECTION_LABELS,
     ) as (keyof typeof SECTION_LABELS)[]) {
       MODULE_ORDERING[section].forEach((category: Chapter) => {
-        category.items.forEach(moduleID => {
+        category.items.forEach((moduleID) => {
           if (activeIDs.includes(moduleID)) {
             oriSection = section;
           }
@@ -45,7 +45,7 @@ export const SidebarNav = () => {
     return MODULE_ORDERING[activeSection].map((category: Chapter) => ({
       label: category.name,
       children: category.items.map(
-        moduleID => sidebarLinks.find(link => link.id === moduleID)! // lol O(n^2)?
+        (moduleID) => sidebarLinks.find((link) => link.id === moduleID)!, // lol O(n^2)?
       ),
     }));
   }, [activeSection, sidebarLinks]);
@@ -57,21 +57,22 @@ export const SidebarNav = () => {
           <SectionsDropdown
             currentSection={activeSection}
             sidebarNav={true}
-            onSelect={s => setActiveSection(s as any)}
+            onSelect={(s) => setActiveSection(s as any)}
           />
         </div>
       </div>
       <div className="h-0 flex-1 overflow-y-auto">
-        {links.map(group => (
+        {links.map((group) => (
           <Accordion
             key={group.label}
             label={group.label}
             isActive={
-              group.children.findIndex(x => x.id === markdownLayoutInfo.id) !==
-              -1
+              group.children.findIndex(
+                (x) => x.id === markdownLayoutInfo.id,
+              ) !== -1
             }
           >
-            {group.children.map(link => (
+            {group.children.map((link) => (
               <ItemLink key={link.id} link={link} />
             ))}
           </Accordion>

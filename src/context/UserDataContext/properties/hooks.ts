@@ -1,7 +1,7 @@
-import { UserData, useUpdateUserData, useUserData } from '../UserDataContext';
+import { UserData, useUpdateUserData, useUserData } from "../UserDataContext";
 
 export function createUserDataGetter<ReturnValue>(
-  getter: (userData: UserData) => ReturnValue
+  getter: (userData: UserData) => ReturnValue,
 ): () => ReturnValue {
   return () => {
     const userData = useUserData();
@@ -42,13 +42,13 @@ export function createUserDataMutation<T extends unknown[]>(
   ) => {
     localStorageUpdate: Partial<UserData>;
     firebaseUpdate: object;
-  }
+  },
 ): () => (...updatePayload: T) => void {
   return () => {
     const updateUserData = useUpdateUserData();
     return (...updatePayload: T) => {
       updateUserData((prevUserData: UserData) =>
-        updateFunc(prevUserData, ...updatePayload)
+        updateFunc(prevUserData, ...updatePayload),
       );
     };
   };
@@ -59,7 +59,7 @@ export function createUserDataMutation<T extends unknown[]>(
  * where the localStorageUpdate and the firebaseUpdate objects are the same.
  */
 export function createSimpleUserDataMutation<T extends unknown[]>(
-  mutation: (userData: UserData, ...updatePayload: T) => Partial<UserData>
+  mutation: (userData: UserData, ...updatePayload: T) => Partial<UserData>,
 ): () => (...upatePayload: T) => void {
   return createUserDataMutation((userData, ...updatePayload) => {
     const changes = mutation(userData, ...updatePayload);

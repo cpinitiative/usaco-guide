@@ -1,5 +1,5 @@
-import type { BaseHit, Hit } from 'instantsearch.js';
-import { ProblemSolutionInfo } from './problem';
+import type { BaseHit, Hit } from "instantsearch.js";
+import { ProblemSolutionInfo } from "./problem";
 
 export type AlgoliaEditorModuleFile = {
   title: string;
@@ -20,11 +20,11 @@ export type AlgoliaEditorSolutionFile = {
 
 export type AlgoliaEditorFile =
   | ({
-      kind: 'module';
+      kind: "module";
       objectID: string;
     } & AlgoliaEditorModuleFile)
   | ({
-      kind: 'solution';
+      kind: "solution";
       objectID: string;
     } & AlgoliaEditorSolutionFile);
 

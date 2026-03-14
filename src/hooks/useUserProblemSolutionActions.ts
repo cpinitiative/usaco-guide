@@ -8,10 +8,10 @@ import {
   getFirestore,
   Timestamp,
   updateDoc,
-} from 'firebase/firestore';
-import { useFirebaseUser } from '../context/UserDataContext/UserDataContext';
-import { UserSolutionForProblem } from '../models/userSolutionForProblem';
-import { useFirebaseApp } from './useFirebase';
+} from "firebase/firestore";
+import { useFirebaseUser } from "../context/UserDataContext/UserDataContext";
+import { UserSolutionForProblem } from "../models/userSolutionForProblem";
+import { useFirebaseApp } from "./useFirebase";
 
 export default function useUserProblemSolutionActions() {
   const firebaseApp = useFirebaseApp();
@@ -21,48 +21,48 @@ export default function useUserProblemSolutionActions() {
     submitSolution: async (
       solution: Omit<
         UserSolutionForProblem,
-        'userID' | 'userName' | 'id' | 'upvotes' | 'timestamp'
-      >
+        "userID" | "userName" | "id" | "upvotes" | "timestamp"
+      >,
     ) => {
       await addDoc(
-        collection(getFirestore(firebaseApp), 'userProblemSolutions'),
+        collection(getFirestore(firebaseApp), "userProblemSolutions"),
         {
           ...solution,
           userID: firebaseUser?.uid,
           userName: firebaseUser?.displayName,
           upvotes: [],
           timestamp: Timestamp.now(),
-        }
+        },
       );
     },
     deleteSolution: async (solutionID: string) => {
       await deleteDoc(
-        doc(getFirestore(firebaseApp), 'userProblemSolutions', solutionID)
+        doc(getFirestore(firebaseApp), "userProblemSolutions", solutionID),
       );
     },
     mutateSolution: async (
       solutionID: string,
-      updates: Partial<UserSolutionForProblem>
+      updates: Partial<UserSolutionForProblem>,
     ) => {
       await updateDoc(
-        doc(getFirestore(firebaseApp), 'userProblemSolutions', solutionID),
-        updates
+        doc(getFirestore(firebaseApp), "userProblemSolutions", solutionID),
+        updates,
       );
     },
     upvoteSolution: async (solutionID: string) => {
       await updateDoc(
-        doc(getFirestore(firebaseApp), 'userProblemSolutions', solutionID),
+        doc(getFirestore(firebaseApp), "userProblemSolutions", solutionID),
         {
           upvotes: arrayUnion(firebaseUser?.uid),
-        }
+        },
       );
     },
     undoUpvoteSolution: async (solutionID: string) => {
       await updateDoc(
-        doc(getFirestore(firebaseApp), 'userProblemSolutions', solutionID),
+        doc(getFirestore(firebaseApp), "userProblemSolutions", solutionID),
         {
           upvotes: arrayRemove(firebaseUser?.uid),
-        }
+        },
       );
     },
   };

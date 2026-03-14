@@ -1,14 +1,14 @@
-import Tippy from '@tippyjs/react';
-import * as React from 'react';
-import { useRef } from 'react';
-import { Instance } from 'tippy.js';
-import { useDarkMode } from '../../context/DarkModeContext';
-import { useUserLangSetting } from '../../context/UserDataContext/properties/simpleProperties';
-import { ResourceInfo } from '../../models/resource';
-import TextTooltip from '../Tooltip/TextTooltip';
-import Tooltip from '../Tooltip/Tooltip';
-import ListTableRow, { ListTableCell } from './ListTable/ListTableRow';
-import ResourceStatusCheckbox from './ResourceStatusCheckbox';
+import Tippy from "@tippyjs/react";
+import * as React from "react";
+import { useRef } from "react";
+import { Instance } from "tippy.js";
+import { useDarkMode } from "../../context/DarkModeContext";
+import { useUserLangSetting } from "../../context/UserDataContext/properties/simpleProperties";
+import { ResourceInfo } from "../../models/resource";
+import TextTooltip from "../Tooltip/TextTooltip";
+import Tooltip from "../Tooltip/Tooltip";
+import ListTableRow, { ListTableCell } from "./ListTable/ListTableRow";
+import ResourceStatusCheckbox from "./ResourceStatusCheckbox";
 
 export default function ResourcesListItem({
   resource,
@@ -22,7 +22,7 @@ export default function ResourcesListItem({
   const statusCol = (
     <ListTableCell className="pl-4 font-medium whitespace-nowrap sm:pl-6">
       <div
-        style={{ height: '1.25rem' }}
+        style={{ height: "1.25rem" }}
         className="flex items-center justify-center"
       >
         <ResourceStatusCheckbox resource={resource} />
@@ -60,7 +60,7 @@ export default function ResourcesListItem({
         )}
         <a
           href={resource.url}
-          className={resource.starred ? 'pl-1 sm:pl-2' : 'sm:pl-6'}
+          className={resource.starred ? "pl-1 sm:pl-2" : "sm:pl-6"}
           target="_blank"
           rel="nofollow noopener noreferrer"
         >
@@ -81,31 +81,31 @@ export default function ResourcesListItem({
   const more = (
     <div>
       <Tippy
-        onCreate={tippy => (tippyRef.current = tippy)}
+        onCreate={(tippy) => (tippyRef.current = tippy)}
         content={
           <div className="-mx-2 text-left">
             <div>
               <button
                 type="button"
                 className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-hidden dark:text-gray-300 dark:hover:bg-gray-800"
-                onClick={e => {
+                onClick={(e) => {
                   e.preventDefault();
                   setCopied(true);
                   navigator.clipboard.writeText(
                     window.location.href.split(/[?#]/)[0] +
-                      '?lang=' +
+                      "?lang=" +
                       userLang +
-                      '#' +
-                      id
+                      "#" +
+                      id,
                   );
                 }}
               >
-                {copied ? 'Copied!' : 'Copy Permalink'}
+                {copied ? "Copied!" : "Copy Permalink"}
               </button>
             </div>
           </div>
         }
-        theme={darkMode ? 'dark' : 'light'}
+        theme={darkMode ? "dark" : "light"}
         placement="bottom-end"
         arrow={true}
         animation="fade"

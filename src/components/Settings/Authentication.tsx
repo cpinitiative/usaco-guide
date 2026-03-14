@@ -1,6 +1,6 @@
-import { CheckIcon, XIcon } from '@heroicons/react/solid';
-import * as React from 'react';
-import { useFirebaseUser } from '../../context/UserDataContext/UserDataContext';
+import { CheckIcon, XIcon } from "@heroicons/react/solid";
+import * as React from "react";
+import { useFirebaseUser } from "../../context/UserDataContext/UserDataContext";
 
 export default function Authentication() {
   const firebaseUser = useFirebaseUser();
@@ -10,10 +10,10 @@ export default function Authentication() {
 
   if (firebaseUser) {
     linkedWithGoogle = !!firebaseUser.providerData.find(
-      provider => provider.providerId === 'google.com'
+      (provider) => provider.providerId === "google.com",
     );
     linkedWithGithub = !!firebaseUser.providerData.find(
-      provider => provider.providerId === 'github.com'
+      (provider) => provider.providerId === "github.com",
     );
   }
 

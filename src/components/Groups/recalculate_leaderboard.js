@@ -1,8 +1,8 @@
 /* eslint-disable */
 
-const serviceAccount = require('./service.json');
-const admin = require('firebase-admin');
-const fs = require('fs');
+const serviceAccount = require("./service.json");
+const admin = require("firebase-admin");
+const fs = require("fs");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -11,45 +11,45 @@ admin.initializeApp({
 const db = admin.firestore();
 
 (async function () {
-  const groupID = 'UyefpawGOgGFh14ptihn';
-  const group = (await db.collection('groups').doc(groupID).get()).data();
+  const groupID = "UyefpawGOgGFh14ptihn";
+  const group = (await db.collection("groups").doc(groupID).get()).data();
 
   const leaderboardData = {};
   const detailedLeaderboardData = {};
 
   const postsSnapshot = db
-    .collection('groups')
+    .collection("groups")
     .doc(groupID)
-    .collection('posts');
+    .collection("posts");
   postsSnapshot
     .get()
-    .then(async resp => {
+    .then(async (resp) => {
       const posts = [];
-      resp.forEach(x => posts.push(x));
+      resp.forEach((x) => posts.push(x));
       for await (let postDoc of posts) {
-        if (postDoc.data().type === 'assignment') {
+        if (postDoc.data().type === "assignment") {
           const problemsSnapshot = db
-            .collection('groups')
+            .collection("groups")
             .doc(groupID)
-            .collection('posts')
+            .collection("posts")
             .doc(postDoc.id)
-            .collection('problems');
-          await problemsSnapshot.get().then(async resp => {
+            .collection("problems");
+          await problemsSnapshot.get().then(async (resp) => {
             const problems = [];
-            resp.forEach(x => problems.push(x));
+            resp.forEach((x) => problems.push(x));
             for await (let problemDoc of problems) {
               const submissionsSnapshot = db
-                .collection('groups')
+                .collection("groups")
                 .doc(groupID)
-                .collection('posts')
+                .collection("posts")
                 .doc(postDoc.id)
-                .collection('problems')
+                .collection("problems")
                 .doc(problemDoc.id)
-                .collection('submissions')
-                .orderBy('timestamp', 'asc');
-              await submissionsSnapshot.get().then(resp => {
+                .collection("submissions")
+                .orderBy("timestamp", "asc");
+              await submissionsSnapshot.get().then((resp) => {
                 const submissions = [];
-                resp.forEach(x => submissions.push(x));
+                resp.forEach((x) => submissions.push(x));
                 for (let submissionDoc of submissions) {
                   const data = submissionDoc.data();
                   if (group.memberIds.includes(data.userId)) {
@@ -85,24 +85,24 @@ const db = admin.firestore();
                         data.result * problemDoc.data().points,
                         leaderboardData[data.userId][postDoc.id][
                           data.problemId
-                        ] ?? 0
+                        ] ?? 0,
                       );
                     leaderboardData[data.userId][postDoc.id].totalPoints =
                       Object.keys(leaderboardData[data.userId][postDoc.id])
-                        .filter(x => x !== 'totalPoints')
+                        .filter((x) => x !== "totalPoints")
                         .reduce(
                           (acc, cur) =>
                             acc + leaderboardData[data.userId][postDoc.id][cur],
-                          0
+                          0,
                         );
                     leaderboardData[data.userId].totalPoints = Object.keys(
-                      leaderboardData[data.userId]
+                      leaderboardData[data.userId],
                     )
-                      .filter(x => x !== 'totalPoints')
+                      .filter((x) => x !== "totalPoints")
                       .reduce(
                         (acc, cur) =>
                           acc + leaderboardData[data.userId][cur].totalPoints,
-                        0
+                        0,
                       );
                   }
                 }
@@ -115,7 +115,7 @@ const db = admin.firestore();
     .then(async () => {
       async function deleteCollection(db, collectionPath, batchSize) {
         const collectionRef = db.collection(collectionPath);
-        const query = collectionRef.orderBy('__name__').limit(batchSize);
+        const query = collectionRef.orderBy("__name__").limit(batchSize);
 
         return new Promise((resolve, reject) => {
           deleteQueryBatch(db, query, resolve).catch(reject);
@@ -134,7 +134,7 @@ const db = admin.firestore();
 
         // Delete documents in a batch
         const batch = db.batch();
-        snapshot.docs.forEach(doc => {
+        snapshot.docs.forEach((doc) => {
           batch.delete(doc.ref);
         });
         await batch.commit();
@@ -150,13 +150,13 @@ const db = admin.firestore();
 
       const batch = db.batch();
       await Promise.all(
-        Object.keys(leaderboardData).map(async userId => {
+        Object.keys(leaderboardData).map(async (userId) => {
           const user = await admin.auth().getUser(userId);
           batch.set(
             db
-              .collection('groups')
+              .collection("groups")
               .doc(groupID)
-              .collection('leaderboard')
+              .collection("leaderboard")
               .doc(userId),
             {
               ...leaderboardData[userId],
@@ -166,14 +166,14 @@ const db = admin.firestore();
                 displayName: user.displayName,
                 photoURL: user.photoURL,
               },
-            }
+            },
           );
-        })
+        }),
       );
       await batch.commit();
 
       console.log(
-        'Done! Updated ' + Object.keys(leaderboardData).length + ' users'
+        "Done! Updated " + Object.keys(leaderboardData).length + " users",
       );
     });
 })();

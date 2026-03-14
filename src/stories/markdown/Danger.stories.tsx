@@ -1,23 +1,23 @@
-import { StoryFn } from '@storybook/react-webpack5';
-import React, { ComponentProps } from 'react';
-import Danger from '../../components/markdown/Danger';
-import { IncompleteSection as MarkdownIncompleteSection } from '../../components/markdown/IncompleteSection';
-import markdownDecorator from '../../components/markdown/markdownDecoratorForStorybook';
-import MiscMarkdownContent from './MiscMarkdownContent';
+import { StoryFn } from "@storybook/react";
+import React, { ComponentProps } from "react";
+import Danger from "../../components/markdown/Danger";
+import { IncompleteSection as MarkdownIncompleteSection } from "../../components/markdown/IncompleteSection";
+import markdownDecorator from "../../components/markdown/markdownDecoratorForStorybook";
+import MiscMarkdownContent from "./MiscMarkdownContent";
 
 export default {
-  title: 'Markdown/Danger',
+  title: "Markdown/Danger",
   component: Danger,
   decorators: [markdownDecorator],
 };
 
-const Template: StoryFn<ComponentProps<typeof Danger>> = args => (
+const Template: StoryFn<ComponentProps<typeof Danger>> = (args) => (
   <Danger {...args} />
 );
 
 export const Default = Template.bind({});
 Default.args = {
-  title: 'Danger Block',
+  title: "Danger Block",
   children: <MiscMarkdownContent />,
 };
 

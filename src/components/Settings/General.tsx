@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 import {
   useHideDifficultySetting,
   useHideModulesSetting,
@@ -8,8 +8,8 @@ import {
   useSetShowTagsSetting,
   useShowIgnoredSetting,
   useShowTagsSetting,
-} from '../../context/UserDataContext/properties/simpleProperties';
-import Switch from '../elements/Switch';
+} from "../../context/UserDataContext/properties/simpleProperties";
+import Switch from "../elements/Switch";
 
 export default function General(): JSX.Element {
   // todo: I think we should actually just use one massive useUserSettings() hook lol
@@ -26,7 +26,7 @@ export default function General(): JSX.Element {
    * For people behind proxies or with terrible internet - behold the power of long polling!
    */
   React.useEffect(() => {
-    if (localStorage.getItem('USACO_GUIDE_LONG_POLLING') === 'true') {
+    if (localStorage.getItem("USACO_GUIDE_LONG_POLLING") === "true") {
       setIsLongPolling(true);
     } else {
       setIsLongPolling(false);
@@ -35,10 +35,10 @@ export default function General(): JSX.Element {
 
   React.useEffect(() => {
     if (isLongPolling) {
-      localStorage.setItem('USACO_GUIDE_LONG_POLLING', 'true');
+      localStorage.setItem("USACO_GUIDE_LONG_POLLING", "true");
       // console.log('Initializing long polling');
     } else {
-      localStorage.setItem('USACO_GUIDE_LONG_POLLING', 'false');
+      localStorage.setItem("USACO_GUIDE_LONG_POLLING", "false");
       // console.log('Disabling long polling');
     }
   }, [isLongPolling]);
@@ -60,7 +60,7 @@ export default function General(): JSX.Element {
                 Problem Lists and Search: Show Tags
               </p>
             </div>
-            <Switch checked={showTags} onChange={b => setShowTags(b)} />
+            <Switch checked={showTags} onChange={(b) => setShowTags(b)} />
           </li>
           <li className="flex items-center justify-between py-4">
             <div className="flex flex-col">
@@ -73,7 +73,7 @@ export default function General(): JSX.Element {
             </div>
             <Switch
               checked={hideDifficulty}
-              onChange={b => setHideDifficulty(b)}
+              onChange={(b) => setHideDifficulty(b)}
             />
           </li>
           <li className="flex items-center justify-between py-4">
@@ -85,7 +85,7 @@ export default function General(): JSX.Element {
                 Problem Search: Hide Modules
               </p>
             </div>
-            <Switch checked={hideModules} onChange={b => setHideModules(b)} />
+            <Switch checked={hideModules} onChange={(b) => setHideModules(b)} />
           </li>
           <li className="flex items-center justify-between py-4">
             <div className="flex flex-col">
@@ -96,7 +96,7 @@ export default function General(): JSX.Element {
                 Dashboard: Show Ignored Problems & Modules
               </p>
             </div>
-            <Switch checked={showIgnored} onChange={b => setShowIgnored(b)} />
+            <Switch checked={showIgnored} onChange={(b) => setShowIgnored(b)} />
           </li>
           <li className="flex items-center justify-between py-4">
             <div className="flex flex-col">
@@ -104,7 +104,7 @@ export default function General(): JSX.Element {
                 className="text-sm font-medium text-gray-500 dark:text-gray-300"
                 id="privacy-option-2-label"
               >
-                Use Long Polling (Close and reopen tab after toggling) -{' '}
+                Use Long Polling (Close and reopen tab after toggling) -{" "}
                 <span className="font-bold">
                   Enable this option ONLY if you encounter issues connecting to
                   Firebase (nothing loads).
@@ -113,7 +113,7 @@ export default function General(): JSX.Element {
             </div>
             <Switch
               checked={isLongPolling}
-              onChange={b => setIsLongPolling(b)}
+              onChange={(b) => setIsLongPolling(b)}
             />
           </li>
         </ul>

@@ -1,9 +1,9 @@
-import * as React from 'react';
+import * as React from "react";
 import {
   useSetThemeSetting,
   useThemeSetting,
-} from '../../context/UserDataContext/properties/simpleProperties';
-import RadioList from '../elements/RadioList';
+} from "../../context/UserDataContext/properties/simpleProperties";
+import RadioList from "../elements/RadioList";
 
 export default function DarkMode() {
   const theme = useThemeSetting();
@@ -19,12 +19,12 @@ export default function DarkMode() {
       <div className="h-4" />
       <RadioList
         name="theme"
-        options={['light', 'dark', 'system']}
+        options={["light", "dark", "system"]}
         value={theme}
-        onChange={newValue => {
+        onChange={(newValue) => {
           setTheme(newValue);
         }}
-        labelMap={{ light: 'Light Mode', dark: 'Dark Mode', system: 'System' }}
+        labelMap={{ light: "Light Mode", dark: "Dark Mode", system: "System" }}
         descriptionMap={{}}
       />
     </div>

@@ -3,23 +3,23 @@
 // based on mdast-util-to-string
 export default function extractSearchableText(node) {
   if (
-    node.type === 'code' ||
-    node.type === 'import' ||
-    node.type === 'export' ||
-    node.type === 'inlineMath' ||
-    node.name === 'Resources'
+    node.type === "code" ||
+    node.type === "import" ||
+    node.type === "export" ||
+    node.type === "inlineMath" ||
+    node.name === "Resources"
   ) {
-    return '';
+    return "";
   }
   return (
-    (node.type === 'paragraph' || node.type === 'heading' ? ' ' : '') +
+    (node.type === "paragraph" || node.type === "heading" ? " " : "") +
     ((node &&
       (node.value ||
         node.alt ||
         node.title ||
-        ('children' in node && all(node.children)) ||
-        ('length' in node && all(node)))) ||
-      '')
+        ("children" in node && all(node.children)) ||
+        ("length" in node && all(node)))) ||
+      "")
   );
 }
 
@@ -32,5 +32,5 @@ function all(values) {
     result[index] = extractSearchableText(values[index]);
   }
 
-  return result.join('');
+  return result.join("");
 }

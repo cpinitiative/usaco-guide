@@ -1,9 +1,9 @@
-import { ExternalLinkIcon } from '@heroicons/react/solid';
-import * as React from 'react';
-import { useMarkdownProblemLists } from '../../context/MarkdownProblemListsContext';
-import { getProblemURL, ProblemInfo } from '../../models/problem';
-import ProblemsListItemDropdown from './ProblemsList/ProblemsListItemDropdown';
-import ProblemStatusCheckbox from './ProblemsList/ProblemStatusCheckbox';
+import { ExternalLinkIcon } from "@heroicons/react/solid";
+import * as React from "react";
+import { useMarkdownProblemLists } from "../../context/MarkdownProblemListsContext";
+import { getProblemURL, ProblemInfo } from "../../models/problem";
+import ProblemsListItemDropdown from "./ProblemsList/ProblemsListItemDropdown";
+import ProblemStatusCheckbox from "./ProblemsList/ProblemStatusCheckbox";
 
 export default function FocusProblem({
   problem: problemID,
@@ -13,14 +13,14 @@ export default function FocusProblem({
   const [isHovered, setIsHovered] = React.useState(false);
 
   const problemLists = useMarkdownProblemLists()!;
-  const problemList = problemLists.find(x => x.listId === problemID);
+  const problemList = problemLists.find((x) => x.listId === problemID);
 
   if (!problemList) {
     throw new Error("Couldn't find focus problem " + problemID);
   }
   if (problemList.problems.length !== 1) {
     throw new Error(
-      `The focus problem list ${problemID} should have exactly one problem.`
+      `The focus problem list ${problemID} should have exactly one problem.`,
     );
   }
 
@@ -31,10 +31,10 @@ export default function FocusProblem({
   // transform creates a new stacking context :(
   return (
     <div
-      className={`mb-4 block shadow transition dark:bg-gray-900 ${
-        isHovered ? '-translate-y-1 transform shadow-lg' : ''
+      className={`block shadow transition dark:bg-gray-900 mb-4${
+        isHovered ? "-translate-y-1 transform shadow-lg" : ""
       }`}
-      id={'problem-' + problem.uniqueId}
+      id={"problem-" + problem.uniqueId}
     >
       <div className="border-t-4 border-blue-600">
         <div className="flex items-center px-4 sm:px-6">
@@ -86,7 +86,7 @@ export default function FocusProblem({
             Focus Problem – try your best to solve this problem before
             continuing!
           </p>
-          {problem.solution?.kind === 'internal' && (
+          {problem.solution?.kind === "internal" && (
             <a
               href={`${getProblemURL(problem)}/solution`}
               className="mb-0! inline-flex px-4 py-3 text-xs font-normal! text-gray-400! italic hover:underline sm:px-6"

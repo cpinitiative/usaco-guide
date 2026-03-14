@@ -1,24 +1,24 @@
-import { Link } from 'gatsby';
-import * as React from 'react';
-import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
-import Layout from '../../layout';
-import SEO from '../../seo';
-import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
-import Feed from './Feed';
-import GroupPageHeader from './GroupPageHeader';
-import LeaderboardSidebar from './LeaderboardSidebar';
+import Link from "next/link";
+import * as React from "react";
+import { useActiveGroup } from "../../../hooks/groups/useActiveGroup";
+import Layout from "../../layout";
+import SEO from "../../seo";
+import TopNavigationBar from "../../TopNavigationBar/TopNavigationBar";
+import Feed from "./Feed";
+import GroupPageHeader from "./GroupPageHeader";
+import LeaderboardSidebar from "./LeaderboardSidebar";
 
-export default function GroupPage(props) {
+export default function GroupPage() {
   const group = useActiveGroup();
 
   return (
     <Layout>
-      <SEO title={group.groupData?.name} image={null} pathname={props.path} />
+      <SEO title={group.groupData?.name} image={null} />
       <TopNavigationBar />
       <div className="dark:bg-dark-surface min-h-screen bg-gray-100">
         <GroupPageHeader group={group.groupData!} />
         <Link
-          to="leaderboard"
+          href={"/groups/" + group.activeGroupId + "/leaderboard"}
           className="flex items-center justify-between bg-white px-4 py-3 shadow-sm sm:px-8 md:hidden dark:bg-gray-800"
         >
           <span>View Leaderboard</span> &rarr;

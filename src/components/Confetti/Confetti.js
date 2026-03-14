@@ -1,10 +1,10 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import PropTypes from "prop-types";
+import React, { Component } from "react";
 
-import { createCircle, createTriangle, createZigZag } from './confetti-shapes';
-import { getDiameter, random, range, sample } from './Confetti.helpers';
+import { createCircle, createTriangle, createZigZag } from "./confetti-shapes";
+import { getDiameter, random, range, sample } from "./Confetti.helpers";
 
-import Canvas from './Canvas';
+import Canvas from "./Canvas";
 
 class Confetti extends Component {
   static propTypes = {
@@ -23,7 +23,7 @@ class Confetti extends Component {
     // way for the demo, but a more fleshed-out implementation would be:
     // PropTypes.arrayOf(PropTypes.oneOf(['click', 'mount', 'hover']))
     // Custom modification: other waits for generateParticles() to be called.
-    makeItRainOn: PropTypes.oneOf(['click', 'mount', 'other']),
+    makeItRainOn: PropTypes.oneOf(["click", "mount", "other"]),
 
     // The number of particles to generate, spread over the
     // `emitDuration` length.
@@ -61,16 +61,16 @@ class Confetti extends Component {
 
   static defaultProps = {
     shapes: [
-      createZigZag({ fill: '#ca337c' }), // Pink
-      createZigZag({ fill: '#01d1c1' }), // Turquoise
-      createZigZag({ fill: '#f4d345' }), // Yellow
-      createCircle({ fill: '#63d9ea' }), // Blue
-      createCircle({ fill: '#ed5fa6' }), // Pink
-      createCircle({ fill: '#aa87ff' }), // Purple
-      createCircle({ fill: '#26edd5' }), // Turquoise
-      createTriangle({ fill: '#ed5fa6' }), // Pink
-      createTriangle({ fill: '#aa87ff' }), // Purple
-      createTriangle({ fill: '#26edd5' }), // Turquoise
+      createZigZag({ fill: "#ca337c" }), // Pink
+      createZigZag({ fill: "#01d1c1" }), // Turquoise
+      createZigZag({ fill: "#f4d345" }), // Yellow
+      createCircle({ fill: "#63d9ea" }), // Blue
+      createCircle({ fill: "#ed5fa6" }), // Pink
+      createCircle({ fill: "#aa87ff" }), // Purple
+      createCircle({ fill: "#26edd5" }), // Turquoise
+      createTriangle({ fill: "#ed5fa6" }), // Pink
+      createTriangle({ fill: "#aa87ff" }), // Purple
+      createTriangle({ fill: "#26edd5" }), // Turquoise
     ],
     numParticles: 80,
     // By default emit all particles at once.
@@ -89,7 +89,7 @@ class Confetti extends Component {
   };
 
   componentDidMount() {
-    if (this.props.makeItRainOn === 'mount') {
+    if (this.props.makeItRainOn === "mount") {
       this.generateParticles();
     }
   }
@@ -105,7 +105,7 @@ class Confetti extends Component {
   }
 
   generateParticles = () => {
-    const newParticles = range(this.props.numParticles).map(i => {
+    const newParticles = range(this.props.numParticles).map((i) => {
       // Particles can be spread over a duration.
       // Each particle should be "born" at a random time during the emit
       // duration (if this value is 0, they'll all share the same birthdate).
@@ -205,7 +205,7 @@ class Confetti extends Component {
     const { height, width } = this.props;
 
     return this.state.particles
-      .map(particle => {
+      .map((particle) => {
         const age = (now - particle.birth) / 1000;
 
         // Skip a particle if it hasn't been born yet.
@@ -221,7 +221,7 @@ class Confetti extends Component {
 
         const diameter = getDiameter(
           particle.width * particle.scale,
-          particle.height * particle.scale
+          particle.height * particle.scale,
         );
 
         const isOffScreen =
@@ -242,16 +242,16 @@ class Confetti extends Component {
 
         return particle;
       })
-      .filter(particle => !!particle);
+      .filter((particle) => !!particle);
   };
 
-  draw = ctx => {
+  draw = (ctx) => {
     const { width, height } = this.props;
     const { particles } = this.state;
 
     ctx.clearRect(0, 0, width, height);
 
-    particles.forEach(particle => {
+    particles.forEach((particle) => {
       // Apply its new position, in terms of cartesian coordinates.
       ctx.translate(particle.currentPosition.x, particle.currentPosition.y);
 
@@ -273,7 +273,7 @@ class Confetti extends Component {
         imageElem.naturalWidth * particle.scale * -0.5,
         imageElem.naturalHeight * particle.scale * -0.5,
         imageElem.naturalWidth * particle.scale,
-        imageElem.naturalHeight * particle.scale
+        imageElem.naturalHeight * particle.scale,
       );
 
       // Undo all of our transformations, so that our context is restored.
@@ -291,13 +291,13 @@ class Confetti extends Component {
         width={width}
         height={height}
         draw={this.draw}
-        ref={node => (this.canvas = node)}
-        onClick={ev => {
-          if (makeItRainOn === 'click') {
+        ref={(node) => (this.canvas = node)}
+        onClick={(ev) => {
+          if (makeItRainOn === "click") {
             this.generateParticles();
           }
 
-          if (typeof onClick === 'function') {
+          if (typeof onClick === "function") {
             onClick(ev);
           }
         }}

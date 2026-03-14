@@ -1,6 +1,6 @@
-import React from 'react';
-import { ProblemSubmissionResult } from '../../../models/groups/problem';
-import TestCaseResult from './TestCaseResult';
+import React from "react";
+import { ProblemSubmissionResult } from "../../../models/groups/problem";
+import TestCaseResult from "./TestCaseResult";
 
 const OnlineJudgeSubmission = ({
   submission,
@@ -10,21 +10,21 @@ const OnlineJudgeSubmission = ({
   return (
     <div>
       <div>
-        {submission.status === 'compiling' && 'Compiling in progress...'}
-        {submission.status === 'executing' && 'Grading in progress...'}
-        {submission.status === 'done' &&
-          (submission.verdict === 'CE'
-            ? 'Compilation Error'
-            : submission.verdict === 'IE'
-              ? 'Internal Error: ' +
+        {submission.status === "compiling" && "Compiling in progress..."}
+        {submission.status === "executing" && "Grading in progress..."}
+        {submission.status === "done" &&
+          (submission.verdict === "CE"
+            ? "Compilation Error"
+            : submission.verdict === "IE"
+              ? "Internal Error: " +
                 submission.message +
-                ' ' +
+                " " +
                 submission.debugData
-              : 'Done')}
+              : "Done")}
       </div>
-      {submission.verdict !== 'IE' && (
+      {submission.verdict !== "IE" && (
         <>
-          {submission.status === 'done' && submission.verdict !== 'AC' && (
+          {submission.status === "done" && submission.verdict !== "AC" && (
             <p>
               Common issues: Java users should name their class Main. Remember
               to use standard input/output instead of file input/output.
@@ -34,18 +34,18 @@ const OnlineJudgeSubmission = ({
               working on fixing.
             </p>
           )}
-          {submission.verdict === 'CE' && (
+          {submission.verdict === "CE" && (
             <pre className="overflow-auto text-red-800 dark:text-red-200">
               {submission.message}
             </pre>
           )}
-          {submission.verdict !== 'CE' && (
+          {submission.verdict !== "CE" && (
             <div>
               {submission.testCases.map((tc, i) => (
                 <TestCaseResult
                   data={tc}
                   tcNum={i + 1}
-                  key={submission.submissionID + '_' + i}
+                  key={submission.submissionID + "_" + i}
                 />
               ))}
             </div>

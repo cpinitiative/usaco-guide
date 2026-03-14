@@ -1,17 +1,17 @@
-import { InformationCircleIcon } from '@heroicons/react/outline';
-import classNames from 'classnames';
-import { useAtomValue, useSetAtom } from 'jotai';
-import React from 'react';
-import { activeFileAtom, saveFileAtom } from '../../atoms/editor';
-import { useDarkMode } from '../../context/DarkModeContext';
+import { InformationCircleIcon } from "@heroicons/react/outline";
+import classNames from "classnames";
+import { useAtomValue, useSetAtom } from "jotai";
+import React from "react";
+import { activeFileAtom, saveFileAtom } from "../../atoms/editor";
+import { useDarkMode } from "../../context/DarkModeContext";
 import {
   LANGUAGE_LABELS,
   useSetThemeSetting,
   useSetUserLangSetting,
   useUserLangSetting,
-} from '../../context/UserDataContext/properties/simpleProperties';
-import LogoSquare from '../LogoSquare';
-import { fetchFileContent } from './editorUtils';
+} from "../../context/UserDataContext/properties/simpleProperties";
+import LogoSquare from "../LogoSquare";
+import { fetchFileContent } from "./editorUtils";
 
 export const EditorTopNav = (): JSX.Element => {
   const activeFile = useAtomValue(activeFileAtom);
@@ -23,7 +23,7 @@ export const EditorTopNav = (): JSX.Element => {
 
   const handleReloadContent = async () => {
     if (!activeFile) return;
-    if (confirm('Reload file from GitHub? Your local changes will be lost.')) {
+    if (confirm("Reload file from GitHub? Your local changes will be lost.")) {
       const data = await fetchFileContent(activeFile.path);
       // note: we can't use setMarkdown / setProblems in sequence because setProblems would override setMarkdown
       saveFile({
@@ -93,7 +93,7 @@ export const EditorTopNav = (): JSX.Element => {
         {activeFile?.path && (
           <a
             href={`https://github.com/cpinitiative/usaco-guide/blob/master/${encodeURI(
-              activeFile?.path
+              activeFile?.path,
             )}`}
             target="_blank"
             className="inline-flex items-center space-x-2 rounded-md px-3 py-2 text-sm font-medium text-gray-500 transition hover:bg-gray-100 hover:text-gray-700 focus:outline-hidden dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-300"
@@ -105,14 +105,14 @@ export const EditorTopNav = (): JSX.Element => {
       </div>
       <div className="flex items-center">
         <nav className="flex space-x-1" aria-label="Tabs">
-          {(['cpp', 'java', 'py'] as const).map(tab => (
+          {(["cpp", "java", "py"] as const).map((tab) => (
             <button
               key={tab}
               className={classNames(
                 tab === userLang
-                  ? 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300'
-                  : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300',
-                'rounded-md px-3 py-2 text-sm font-medium transition focus:outline-hidden'
+                  ? "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
+                  : "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300",
+                "rounded-md px-3 py-2 text-sm font-medium transition focus:outline-hidden",
               )}
               onClick={() => setUserLang(tab)}
             >
@@ -136,7 +136,7 @@ export const EditorTopNav = (): JSX.Element => {
         <div className="mx-4 block h-6 self-center border-l border-gray-200 dark:border-gray-700" />
 
         <button
-          onClick={() => setTheme(isDarkMode ? 'light' : 'dark')}
+          onClick={() => setTheme(isDarkMode ? "light" : "dark")}
           className="dark:hover:text-dark-high-emphasis -mx-1 rounded-full border-2 border-transparent p-1 text-gray-400 transition hover:text-gray-300 focus:bg-gray-100 focus:text-gray-500 focus:outline-hidden dark:text-gray-400 dark:focus:bg-gray-700"
         >
           {isDarkMode ? (

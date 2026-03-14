@@ -1,20 +1,23 @@
-import { Timestamp } from 'firebase/firestore';
-import { Link, navigate } from 'gatsby';
-import * as React from 'react';
-import { useReducer } from 'react';
-import Flatpickr from 'react-flatpickr';
-import toast from 'react-hot-toast';
-import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
-import { usePost } from '../../../hooks/groups/usePost';
-import { usePostActions } from '../../../hooks/groups/usePostActions';
-import { PostData } from '../../../models/groups/posts';
-import Layout from '../../layout';
-import SEO from '../../seo';
-import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
-import Breadcrumbs from '../Breadcrumbs';
-import MarkdownEditor from '../MarkdownEditor';
+import { Timestamp } from "firebase/firestore";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import * as React from "react";
+import { useReducer } from "react";
+import toast from "react-hot-toast";
+
+const Flatpickr = React.lazy(() => import("react-flatpickr"));
+import { useActiveGroup } from "../../../hooks/groups/useActiveGroup";
+import { usePost } from "../../../hooks/groups/usePost";
+import { usePostActions } from "../../../hooks/groups/usePostActions";
+import { PostData } from "../../../models/groups/posts";
+import Layout from "../../layout";
+import SEO from "../../seo";
+import TopNavigationBar from "../../TopNavigationBar/TopNavigationBar";
+import Breadcrumbs from "../Breadcrumbs";
+import MarkdownEditor from "../MarkdownEditor";
 
 export default function EditPostPage(props) {
+  const router = useRouter();
   const { groupId, postId } = props as {
     path: string;
     groupId: string;
@@ -38,7 +41,7 @@ export default function EditPostPage(props) {
         ...updates,
       } as PostData;
     },
-    null
+    null,
   );
   const { updatePost, deletePost } = usePostActions(groupId);
 
@@ -88,7 +91,6 @@ export default function EditPostPage(props) {
       <SEO
         title={`Edit ${post.name} · ${activeGroup.groupData!.name}`}
         image={undefined}
-        pathname={undefined}
       />
       <TopNavigationBar />
       <nav className="mt-6 mb-4 flex" aria-label="Breadcrumb">
@@ -102,12 +104,12 @@ export default function EditPostPage(props) {
         <div className="md:flex md:items-center md:justify-between md:space-x-4 xl:border-b xl:pb-6 dark:border-gray-700">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-              Edit {post.type === 'assignment' ? 'Assignment' : 'Announcement'}:{' '}
+              Edit {post.type === "assignment" ? "Assignment" : "Announcement"}:{" "}
               {post.name}
             </h1>
           </div>
           <div className="mt-4 flex space-x-3 md:mt-0">
-            <Link to="../" className="btn">
+            <Link href={`/groups/${groupId}/post/${postId}`} className="btn">
               <span>Back</span>
             </Link>
           </div>
@@ -129,7 +131,7 @@ export default function EditPostPage(props) {
                     name="post_name"
                     id="post_name"
                     value={post.name}
-                    onChange={e => editPost({ name: e.target.value })}
+                    onChange={(e) => editPost({ name: e.target.value })}
                     className="input"
                   />
                 </div>
@@ -141,68 +143,90 @@ export default function EditPostPage(props) {
                 </label>
 
                 <div className="mt-1">
-                  <Flatpickr
-                    placeholder={'Choose a post date'}
-                    options={{
-                      dateFormat:
-                        'Posted On'.split('').join('\\\\') +
-                        ' l, F J, Y, h:i K ' +
-                        [
-                          '',
-                          ...(
-                            'UTC' +
-                            // sign is reversed for some reason
-                            (new Date().getTimezoneOffset() > 0 ? '-' : '+') +
-                            Math.abs(new Date().getTimezoneOffset()) / 60
-                          ).split(''),
-                        ].join('\\\\'),
-                      enableTime: true,
-                    }}
-                    value={post.timestamp?.toDate()}
-                    onChange={date =>
-                      editPost({
-                        timestamp: date[0]
-                          ? Timestamp.fromDate(date[0])
-                          : undefined,
-                      })
+                  <React.Suspense
+                    fallback={
+                      <input
+                        className="input"
+                        placeholder="Loading date picker..."
+                        disabled
+                      />
                     }
-                    className="input"
-                  />
+                  >
+                    <Flatpickr
+                      placeholder={"Choose a post date"}
+                      options={{
+                        dateFormat:
+                          "Posted On".split("").join("\\\\") +
+                          " l, F J, Y, h:i K " +
+                          [
+                            "",
+                            ...(
+                              "UTC" +
+                              // sign is reversed for some reason
+                              (new Date().getTimezoneOffset() > 0 ? "-" : "+") +
+                              Math.abs(new Date().getTimezoneOffset()) / 60
+                            ).split(""),
+                          ].join("\\\\"),
+                        enableTime: true,
+                      }}
+                      value={post.timestamp?.toDate()}
+                      onChange={(date) =>
+                        editPost({
+                          timestamp: date[0]
+                            ? Timestamp.fromDate(date[0])
+                            : undefined,
+                        })
+                      }
+                      className="input"
+                    />
+                  </React.Suspense>
                 </div>
               </div>
 
-              {post.type === 'assignment' && (
+              {post.type === "assignment" && (
                 <div className="sm:col-span-4">
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                     Due Date (Optional)
                   </label>
 
                   <div className="mt-1">
-                    <Flatpickr
-                      placeholder={'Choose a due date (optional)'}
-                      options={{
-                        dateFormat:
-                          '\\D\\u\\e l, F J, Y, h:i K ' +
-                          [
-                            '',
-                            ...(
-                              'UTC' +
-                              // sign is reversed for some reason
-                              (new Date().getTimezoneOffset() > 0 ? '-' : '+') +
-                              Math.abs(new Date().getTimezoneOffset()) / 60
-                            ).split(''),
-                          ].join('\\\\'),
-                        enableTime: true,
-                        minDate: post.timestamp?.toDate(),
-                      }}
-                      value={post.dueTimestamp?.toDate()}
-                      onChange={date =>
-                        editPost({
-                          dueTimestamp: Timestamp.fromDate(date[0]),
-                        })
+                    <React.Suspense
+                      fallback={
+                        <input
+                          className="input"
+                          placeholder="Loading date picker..."
+                          disabled
+                        />
                       }
-                      className="input"
-                    />
+                    >
+                      <Flatpickr
+                        placeholder={"Choose a due date (optional)"}
+                        options={{
+                          dateFormat:
+                            "\\D\\u\\e l, F J, Y, h:i K " +
+                            [
+                              "",
+                              ...(
+                                "UTC" +
+                                // sign is reversed for some reason
+                                (new Date().getTimezoneOffset() > 0
+                                  ? "-"
+                                  : "+") +
+                                Math.abs(new Date().getTimezoneOffset()) / 60
+                              ).split(""),
+                            ].join("\\\\"),
+                          enableTime: true,
+                          minDate: post.timestamp?.toDate(),
+                        }}
+                        value={post.dueTimestamp?.toDate()}
+                        onChange={(date) =>
+                          editPost({
+                            dueTimestamp: Timestamp.fromDate(date[0]),
+                          })
+                        }
+                        className="input"
+                      />
+                    </React.Suspense>
                   </div>
                 </div>
               )}
@@ -217,7 +241,7 @@ export default function EditPostPage(props) {
                 <div className="mt-1">
                   <MarkdownEditor
                     value={post.body}
-                    onChange={value => editPost({ body: value })}
+                    onChange={(value) => editPost({ body: value })}
                   />
                 </div>
               </div>
@@ -229,12 +253,10 @@ export default function EditPostPage(props) {
               <button
                 type="button"
                 onClick={() => {
-                  if (confirm('Are you sure you want to delete this post?')) {
+                  if (confirm("Are you sure you want to delete this post?")) {
                     deletePost(post.id!)
-                      .then(() =>
-                        navigate(`/groups/${groupId}`, { replace: true })
-                      )
-                      .catch(e => toast.error(e.message));
+                      .then(() => router.push(`/groups/${groupId}`))
+                      .catch((e) => toast.error(e.message));
                   }
                 }}
                 className="dark:focus:ring-offset-dark-surface inline-flex justify-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-hidden"
@@ -244,7 +266,7 @@ export default function EditPostPage(props) {
               <button
                 type="button"
                 onClick={() =>
-                  updatePost(post.id!, post).then(() => navigate(-1))
+                  updatePost(post.id!, post).then(() => router.back())
                 }
                 className="dark:focus:ring-offset-dark-surface inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden"
               >

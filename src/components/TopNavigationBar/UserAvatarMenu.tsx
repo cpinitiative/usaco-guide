@@ -1,14 +1,14 @@
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
-import type { User } from 'firebase/auth';
-import { Link } from 'gatsby';
-import React from 'react';
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import type { User } from "firebase/auth";
+import Link from "next/link";
+import React from "react";
 
 export interface UserAvatarMenuProps {
   firebaseUser: User;
   onSignOut: () => void;
 }
 
-export const UserAvatarMenu: React.FC<UserAvatarMenuProps> = props => {
+export const UserAvatarMenu: React.FC<UserAvatarMenuProps> = (props) => {
   return (
     <Menu as="div" className="relative inline-block text-left">
       {({ open }) => (
@@ -33,9 +33,16 @@ export const UserAvatarMenu: React.FC<UserAvatarMenuProps> = props => {
               <MenuItem>
                 {({ focus }) => (
                   <span
-                    className={`block w-full px-4 py-2 text-left text-sm leading-5 focus:outline-hidden ${focus ? 'bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100' : 'bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-100'}`}
+                    className={`block w-full px-4 py-2 text-left text-sm leading-5 focus:outline-hidden ${
+                      focus
+                        ? "bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100"
+                        : "bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-100"
+                    }`}
                   >
-                    <Link to="/settings" className="block w-full text-inherit">
+                    <Link
+                      href="/settings"
+                      className="block w-full text-inherit"
+                    >
                       Settings
                     </Link>
                   </span>
@@ -48,7 +55,11 @@ export const UserAvatarMenu: React.FC<UserAvatarMenuProps> = props => {
                       props.onSignOut();
                     }}
                     role="menuitem"
-                    className={`block w-full px-4 py-2 text-left text-sm leading-5 focus:outline-hidden ${focus ? 'bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100' : 'bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-100'}`}
+                    className={`block w-full px-4 py-2 text-left text-sm leading-5 focus:outline-hidden ${
+                      focus
+                        ? "bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100"
+                        : "bg-white text-gray-700 dark:bg-gray-800 dark:text-gray-100"
+                    }`}
                   >
                     Sign out
                   </button>

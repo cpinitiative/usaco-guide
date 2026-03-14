@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 function getWindowDimensions() {
   const { innerWidth: width, innerHeight: height } = window;
@@ -9,17 +9,20 @@ function getWindowDimensions() {
 }
 
 /*eslint-disable */
-function debounce(func, wait, immediate = false) {
-  let timeout;
-  return function () {
-    const context = this,
-      args = arguments;
+function debounce<T extends (...args: any[]) => any>(
+  func: T,
+  wait: number,
+  immediate = false,
+): (this: any, ...args: Parameters<T>) => void {
+  let timeout: ReturnType<typeof setTimeout> | null = null;
+  return function (this: any, ...args: Parameters<T>) {
+    const context = this;
     const later = function () {
       timeout = null;
       if (!immediate) func.apply(context, args);
     };
     const callNow = immediate && !timeout;
-    clearTimeout(timeout);
+    if (timeout) clearTimeout(timeout);
     timeout = setTimeout(later, wait);
     if (callNow) func.apply(context, args);
   };
@@ -41,8 +44,8 @@ export default function useWindowDimensions() {
     handleResize();
 
     const efficientResize = debounce(handleResize, 250);
-    window.addEventListener('resize', efficientResize);
-    return () => window.removeEventListener('resize', efficientResize);
+    window.addEventListener("resize", efficientResize);
+    return () => window.removeEventListener("resize", efficientResize);
   }, []);
 
   // Return default dimensions during SSR, actual dimensions after hydration

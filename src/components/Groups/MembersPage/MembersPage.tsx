@@ -1,14 +1,14 @@
-import { Link } from 'gatsby';
-import * as React from 'react';
-import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
-import useLeaderboardData from '../../../hooks/groups/useLeaderboardData';
-import useMemberInfoForGroup from '../../../hooks/groups/useMemberInfoForGroup';
-import Layout from '../../layout';
-import SEO from '../../seo';
-import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
-import MemberDetail from './MemberDetail';
+import Link from "next/link";
+import * as React from "react";
+import { useActiveGroup } from "../../../hooks/groups/useActiveGroup";
+import useLeaderboardData from "../../../hooks/groups/useLeaderboardData";
+import useMemberInfoForGroup from "../../../hooks/groups/useMemberInfoForGroup";
+import Layout from "../../layout";
+import SEO from "../../seo";
+import TopNavigationBar from "../../TopNavigationBar/TopNavigationBar";
+import MemberDetail from "./MemberDetail";
 
-export default function MembersPage({ path }: { path: string }): JSX.Element {
+export default function MembersPage(): JSX.Element {
   const activeGroup = useActiveGroup();
   const memberInfo = useMemberInfoForGroup(activeGroup.groupData!);
   const leaderboard = useLeaderboardData({
@@ -16,7 +16,7 @@ export default function MembersPage({ path }: { path: string }): JSX.Element {
     maxResults: 200,
   });
   const [activeMemberId, setActiveMemberId] = React.useState<string | null>(
-    null
+    null,
   );
 
   React.useEffect(() => {
@@ -24,17 +24,17 @@ export default function MembersPage({ path }: { path: string }): JSX.Element {
       const id = window.location.hash?.substring(1) || null;
       setActiveMemberId(id);
     };
-    window.addEventListener('hashchange', handler);
+    window.addEventListener("hashchange", handler);
     handler();
 
     return () => {
-      window.removeEventListener('hashchange', handler);
+      window.removeEventListener("hashchange", handler);
     };
   }, []);
 
   const getTotalPointsForMember = (memberId: string) => {
     return (
-      leaderboard?.find(x => x.userInfo?.uid === memberId)?.totalPoints ?? 0
+      leaderboard?.find((x) => x.userInfo?.uid === memberId)?.totalPoints ?? 0
     );
   };
 
@@ -48,11 +48,7 @@ export default function MembersPage({ path }: { path: string }): JSX.Element {
 
   return (
     <Layout>
-      <SEO
-        title={`Members · ${activeGroup.groupData!.name}`}
-        image={null}
-        pathname={path}
-      />
+      <SEO title={`Members · ${activeGroup.groupData!.name}`} image={null} />
       <div className="flex flex-col xl:h-screen xl:overflow-hidden">
         <TopNavigationBar />
 
@@ -64,7 +60,7 @@ export default function MembersPage({ path }: { path: string }): JSX.Element {
             {activeMemberId ? (
               memberInfo ? (
                 <MemberDetail
-                  member={memberInfo.find(x => x?.uid === activeMemberId)!}
+                  member={memberInfo.find((x) => x?.uid === activeMemberId)!}
                 />
               ) : (
                 <div>
@@ -82,7 +78,7 @@ export default function MembersPage({ path }: { path: string }): JSX.Element {
           <aside className="order-first shrink-0 shadow-md lg:flex lg:w-96 lg:flex-col lg:border-r lg:border-gray-200 lg:shadow-none dark:lg:border-gray-700">
             <div className="px-6 pt-6 pb-4">
               <Link
-                to={`/groups/${activeGroup.groupData!.id}`}
+                href={`/groups/${activeGroup.groupData!.id}`}
                 className="text-sm text-gray-600 underline dark:text-gray-300"
               >
                 &larr; Back to group page
@@ -92,7 +88,7 @@ export default function MembersPage({ path }: { path: string }): JSX.Element {
                 Members
               </h2>
               <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
-                {memberInfo?.length ?? 'Loading...'} Members
+                {memberInfo?.length ?? "Loading..."} Members
               </p>
               {/*<form className="mt-6 flex space-x-4" action="#">*/}
               {/*  <div className="flex-1 min-w-0">*/}
@@ -124,7 +120,7 @@ export default function MembersPage({ path }: { path: string }): JSX.Element {
             >
               <div className="relative">
                 <ul className="relative z-0 divide-y divide-gray-200 dark:divide-gray-700">
-                  {memberInfo?.map(member => (
+                  {memberInfo?.map((member) => (
                     <li key={member.uid}>
                       <div className="relative flex items-center space-x-3 px-6 py-5 focus-within:ring-2 focus-within:ring-pink-500 focus-within:ring-inset hover:bg-gray-50 dark:hover:bg-gray-900">
                         <div className="shrink-0">

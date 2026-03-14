@@ -1,7 +1,6 @@
-import * as React from 'react';
-import { BlindModeProvider } from '../context/BlindModeContext';
-import { useAnalyticsEffect } from '../hooks/useAnalyticsEffect';
-import { useUpdateStreakEffect } from '../hooks/useUpdateStreakEffect';
+import * as React from "react";
+import { useAnalyticsEffect } from "../hooks/useAnalyticsEffect";
+import { useUpdateStreakEffect } from "../hooks/useUpdateStreakEffect";
 
 const Layout = ({
   children,
@@ -16,11 +15,7 @@ const Layout = ({
 }): JSX.Element => {
   useAnalyticsEffect();
   useUpdateStreakEffect({ setLastViewedModule });
-  return (
-    <BlindModeProvider>
-      <div className="font-sans">{children}</div>
-    </BlindModeProvider>
-  );
+  return <div className="font-sans">{children}</div>;
 };
 
 export default Layout;

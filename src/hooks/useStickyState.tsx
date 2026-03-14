@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { throttle } from 'throttle-debounce';
+import * as React from "react";
+import { throttle } from "throttle-debounce";
 // source: https://joshwcomeau.com/react/persisting-react-state-in-localstorage/
 // modified to support ssr and throttling
 const saveToLocalStorage = (key: string, value: any) =>
@@ -18,21 +18,21 @@ export default function useStickyState<S>(
   defaultValue: (() => S) | S,
   key: string,
   throttleAmt?: number,
-  defaultValueBeforeLoaded?: S
+  defaultValueBeforeLoaded?: S,
 ): [S, React.Dispatch<React.SetStateAction<S>>] {
   const [value, setValue] = React.useState<S>(
     defaultValueBeforeLoaded !== undefined
       ? defaultValueBeforeLoaded
-      : defaultValue
+      : defaultValue,
   );
   const initialRender = React.useRef(true);
   const [throttledSaveToLocalStorage] = React.useState<
     throttle<(key: string, value: any) => void>
   >(() =>
     throttle(throttleAmt, (k, v) => {
-      console.log('throttled ', v);
+      console.log("throttled ", v);
       saveToLocalStorage(k, v);
-    })
+    }),
   );
 
   React.useEffect(() => {
@@ -47,14 +47,14 @@ export default function useStickyState<S>(
         }
       } else {
         setValue(
-          defaultValue instanceof Function ? defaultValue() : defaultValue
+          defaultValue instanceof Function ? defaultValue() : defaultValue,
         );
       }
 
       initialRender.current = false;
     } else {
       if (throttleAmt) {
-        console.log('c');
+        console.log("c");
         throttledSaveToLocalStorage(key, value);
       } else {
         saveToLocalStorage(key, value);

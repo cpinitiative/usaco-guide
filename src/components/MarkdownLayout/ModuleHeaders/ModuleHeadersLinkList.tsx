@@ -1,5 +1,5 @@
-import * as React from 'react';
-import Info from '../../markdown/Info';
+import * as React from "react";
+import Info from "../../markdown/Info";
 
 export default function ModuleHeadersLinkList(props: {
   title: string;
@@ -8,7 +8,7 @@ export default function ModuleHeadersLinkList(props: {
   return (
     <Info title={props.title}>
       <ul className="list-inside list-disc space-y-1 pl-3">
-        {props.links.map(link => (
+        {props.links.map((link) => (
           <li key={link.url ?? link.label}>
             {link.url ? (
               <a

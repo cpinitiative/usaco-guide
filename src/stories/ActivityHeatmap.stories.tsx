@@ -1,13 +1,13 @@
-import { Meta, StoryFn } from '@storybook/react-webpack5';
-import React from 'react';
-import seedrandom from 'seedrandom';
+import { Meta, StoryFn } from "@storybook/react";
+import React from "react";
+import seedrandom from "seedrandom";
 import {
   ActivityHeatmap,
   ActivityHeatmapProps,
-} from '../components/Dashboard/Activity';
+} from "../components/Dashboard/Activity";
 
 export default {
-  title: 'ActivityHeatmap',
+  title: "ActivityHeatmap",
   component: ActivityHeatmap,
 } as Meta;
 
@@ -15,30 +15,30 @@ const endDate = new Date(Date.UTC(2023, 12));
 const startDate = new Date(endDate);
 startDate.setMonth(endDate.getMonth() - 10);
 
-const Template: StoryFn<ActivityHeatmapProps> = args => (
+const Template: StoryFn<ActivityHeatmapProps> = (args) => (
   <ActivityHeatmap endDate={endDate} {...args} />
 );
 
 const dummyProblem = {
   timestamp: 0,
-  problemID: 'dummy',
-  problemProgress: 'Solved',
+  problemID: "dummy",
+  problemProgress: "Solved",
 };
 const dummyModule = {
   timestamp: 0,
-  moduleID: 'dummy',
-  moduleProgress: 'Complete',
+  moduleID: "dummy",
+  moduleProgress: "Complete",
 };
 
 const orderedModuleActivities: { [key: number]: any[] } = {};
 const orderedProblemActivities: { [key: number]: any[] } = {};
 const randomModuleActivities: { [key: number]: any[] } = {};
 const randomProblemActivities: { [key: number]: any[] } = {};
-const gen = seedrandom('42');
+const gen = seedrandom("42");
 const rng = () => Math.floor(gen() * 5);
 const squeeze = (i: number) =>
   Math.floor(
-    (5 * (i - startDate.getTime())) / (endDate.getTime() - startDate.getTime())
+    (5 * (i - startDate.getTime())) / (endDate.getTime() - startDate.getTime()),
   );
 console.log(squeeze(startDate.getTime()));
 console.log(squeeze(endDate.getTime() - 1));
@@ -50,7 +50,7 @@ for (
   console.log(i.getTime(), squeeze(i.getTime()));
   // generate ordered heatmap data
   orderedModuleActivities[i.getTime()] = Array(squeeze(i.getTime())).fill(
-    dummyModule
+    dummyModule,
   );
   orderedProblemActivities[i.getTime()] = [];
   // generate random heatmap data
@@ -61,7 +61,7 @@ console.log(startDate.getTime(), endDate.getTime());
 // Helper to generate activityCount from activities
 const getActivityCount = (
   moduleActivities: { [key: number]: any[] },
-  problemActivities: { [key: number]: any[] }
+  problemActivities: { [key: number]: any[] },
 ) => {
   const activityCount: { [key: number]: number } = {};
   const allKeys = new Set([
@@ -82,7 +82,7 @@ Ordered.args = {
   problemActivities: orderedProblemActivities,
   activityCount: getActivityCount(
     orderedModuleActivities,
-    orderedProblemActivities
+    orderedProblemActivities,
   ),
 };
 
@@ -92,6 +92,6 @@ Random.args = {
   problemActivities: randomProblemActivities,
   activityCount: getActivityCount(
     randomModuleActivities,
-    randomProblemActivities
+    randomProblemActivities,
   ),
 };

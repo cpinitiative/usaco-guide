@@ -1,5 +1,5 @@
-import { Timestamp } from 'firebase/firestore';
-import { ExecutionVerdict } from './problem';
+import { Timestamp } from "firebase/firestore";
+import { ExecutionVerdict } from "./problem";
 
 export type Leaderboard = {
   [postID: string]: {

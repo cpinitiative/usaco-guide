@@ -1,11 +1,11 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext } from "react";
 // import * as React from 'react';
 import {
   MarkdownLayoutSidebarModuleLinkInfo,
   ModuleInfo,
   ModuleProgress,
-} from '../models/module';
-import { SolutionInfo } from '../models/solution';
+} from "../models/module";
+import { SolutionInfo } from "../models/solution";
 
 // todo this should be split into ModuleInfoContext and SolutionInfoContext or something
 const MarkdownLayoutContext = createContext<{
@@ -25,7 +25,7 @@ export function useMarkdownLayout() {
   const context = useContext(MarkdownLayoutContext);
   if (!context) {
     throw new Error(
-      'useMarkdownLayoutContext must be used within a MarkdownLayoutContext'
+      "useMarkdownLayoutContext must be used within a MarkdownLayoutContext",
     );
   }
   return context;

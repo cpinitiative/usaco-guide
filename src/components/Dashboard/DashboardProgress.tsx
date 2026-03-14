@@ -1,5 +1,5 @@
-import * as React from 'react';
-import Tooltip from '../Tooltip/Tooltip';
+import * as React from "react";
+import Tooltip from "../Tooltip/Tooltip";
 
 const ProgressBar = ({ text, green, yellow, blue }) => {
   return (
@@ -145,7 +145,7 @@ export function DashboardProgressSmall({
 }: ProgressCounts): JSX.Element {
   return (
     <ProgressBarSmall
-      text={completed + '/' + total}
+      text={completed + "/" + total}
       green={total === 0 ? 0 : (completed / total) * 100}
       yellow={total === 0 ? 0 : (inProgress / total) * 100}
       blue={total === 0 ? 0 : (skipped / total) * 100}
@@ -178,14 +178,14 @@ export function UsacoTableProgress({
     <Tooltip
       content={
         is_nan
-          ? 'No Information Available'
+          ? "No Information Available"
           : `${Math.round(completed * 1000) / 10}%`
       }
     >
       {/* The span wrapper is needed for tippy to work */}
       <span className="cursor-pointer">
         <ProgressBarSmall
-          text={''}
+          text={""}
           green={green}
           yellow={yellow}
           blue={blue}

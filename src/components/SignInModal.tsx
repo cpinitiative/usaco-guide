@@ -3,8 +3,8 @@ import {
   DialogBackdrop,
   DialogPanel,
   DialogTitle,
-} from '@headlessui/react';
-import { XIcon } from '@heroicons/react/solid';
+} from "@headlessui/react";
+import { XIcon } from "@heroicons/react/solid";
 import {
   AuthCredential,
   getAuth,
@@ -13,11 +13,11 @@ import {
   linkWithCredential,
   signInWithCredential,
   signInWithPopup,
-} from 'firebase/auth';
-import React from 'react';
-import { useForceFirebaseUserRerender } from '../context/UserDataContext/UserDataContext';
-import { useFirebaseApp } from '../hooks/useFirebase';
-import { LoadingSpinner } from './elements/LoadingSpinner';
+} from "firebase/auth";
+import React from "react";
+import { useForceFirebaseUserRerender } from "../context/UserDataContext/UserDataContext";
+import { useFirebaseApp } from "../hooks/useFirebase";
+import { LoadingSpinner } from "./elements/LoadingSpinner";
 
 export interface SignInModalProps {
   isOpen: boolean;
@@ -34,12 +34,12 @@ export const SignInModal: React.FC<SignInModalProps> = ({
   const [isSigningIn, setIsSigningIn] = React.useState(false);
   const [isLinking, setIsLinking] = React.useState(false);
   const [error, setError] = React.useState<any>(null);
-  const [email, setEmail] = React.useState('');
+  const [email, setEmail] = React.useState("");
   const [credential, setCredential] = React.useState<AuthCredential | null>(
-    null
+    null,
   );
 
-  const diffCredentialMessage = 'auth/account-exists-with-different-credential';
+  const diffCredentialMessage = "auth/account-exists-with-different-credential";
   const handleSignInWithGoogle = () => {
     setIsSigningIn(true);
     setError(null);
@@ -48,7 +48,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
         setIsSigningIn(false);
         onClose();
       })
-      .catch(e => {
+      .catch((e) => {
         if (e.code === diffCredentialMessage) {
           setIsLinking(true);
           const credential = GoogleAuthProvider.credentialFromError(e);
@@ -69,7 +69,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
       .then(() => {
         onClose();
       })
-      .catch(e => {
+      .catch((e) => {
         if (e.code === diffCredentialMessage) {
           setIsLinking(true);
           const credential = GithubAuthProvider.credentialFromError(e);
@@ -89,12 +89,12 @@ export const SignInModal: React.FC<SignInModalProps> = ({
     if (!credential) return;
     try {
       let otherProvider: GoogleAuthProvider | GithubAuthProvider;
-      if (credential.signInMethod === 'github.com') {
+      if (credential.signInMethod === "github.com") {
         otherProvider = new GoogleAuthProvider();
-      } else if (credential.signInMethod === 'google.com') {
+      } else if (credential.signInMethod === "google.com") {
         otherProvider = new GithubAuthProvider();
       } else {
-        throw new Error('Unsupported sign in method');
+        throw new Error("Unsupported sign in method");
       }
       otherProvider.setCustomParameters({ login_hint: email });
       await signInWithPopup(getAuth(firebaseApp), otherProvider);

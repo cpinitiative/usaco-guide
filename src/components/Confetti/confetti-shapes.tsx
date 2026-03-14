@@ -3,17 +3,17 @@ import {
   formatRgbColor,
   mixWithBlack,
   mixWithWhite,
-} from './Confetti.helpers';
+} from "./Confetti.helpers";
 
 // Creates an actual <img> element. This is needed to paint a shape into an
 // HTML canvas.
-const createImageElement = svgString => {
-  if (typeof window === 'undefined') return null;
+const createImageElement = (svgString) => {
+  if (typeof window === "undefined") return null;
 
   // window.btoa creates a base64 encoded string. Combined with the data
   // prefix, it can be used as an image `src`.
   const base64ShapeString =
-    'data:image/svg+xml;base64,' + window.btoa(svgString);
+    "data:image/svg+xml;base64," + window.btoa(svgString);
 
   const imageElement = new Image();
   imageElement.src = base64ShapeString;
@@ -110,7 +110,7 @@ type ShapeProps = {
 export const createShape =
   (shape: string) =>
   ({
-    fill = '#000000',
+    fill = "#000000",
     backsideDarkenAmount = 0.25,
     ...args
   }: ShapeProps = {}) => {
@@ -120,24 +120,24 @@ export const createShape =
     // Get the factory for the provided shape
     let shapeFactory;
     switch (shape) {
-      case 'circle': {
+      case "circle": {
         shapeFactory = circleShapeFactory;
         break;
       }
-      case 'triangle': {
+      case "triangle": {
         shapeFactory = triangleShapeFactory;
         break;
       }
-      case 'rectangle': {
+      case "rectangle": {
         shapeFactory = rectangleShapeFactory;
         break;
       }
-      case 'zigZag': {
+      case "zigZag": {
         shapeFactory = zigZagShapeFactory;
         break;
       }
       default:
-        throw new Error('Unrecognized shape passed to `createShape`');
+        throw new Error("Unrecognized shape passed to `createShape`");
     }
 
     // Create a front and back side, where the back is identical but with a
@@ -154,20 +154,20 @@ export const createShape =
     };
   };
 
-export const createCircle = createShape('circle');
-export const createTriangle = createShape('triangle');
-export const createRectangle = createShape('rectangle');
-export const createZigZag = createShape('zigZag');
+export const createCircle = createShape("circle");
+export const createTriangle = createShape("triangle");
+export const createRectangle = createShape("rectangle");
+export const createZigZag = createShape("zigZag");
 
 export const defaultShapes = [
-  createZigZag({ fill: '#ca337c' }), // Pink
-  createZigZag({ fill: '#01d1c1' }), // Turquoise
-  createZigZag({ fill: '#f4d345' }), // Yellow
-  createCircle({ fill: '#63d9ea' }), // Blue
-  createCircle({ fill: '#ed5fa6' }), // Pink
-  createCircle({ fill: '#aa87ff' }), // Purple
-  createCircle({ fill: '#26edd5' }), // Turquoise
-  createTriangle({ fill: '#ed5fa6' }), // Pink
-  createTriangle({ fill: '#aa87ff' }), // Purple
-  createTriangle({ fill: '#26edd5' }), // Turquoise
+  createZigZag({ fill: "#ca337c" }), // Pink
+  createZigZag({ fill: "#01d1c1" }), // Turquoise
+  createZigZag({ fill: "#f4d345" }), // Yellow
+  createCircle({ fill: "#63d9ea" }), // Blue
+  createCircle({ fill: "#ed5fa6" }), // Pink
+  createCircle({ fill: "#aa87ff" }), // Purple
+  createCircle({ fill: "#26edd5" }), // Turquoise
+  createTriangle({ fill: "#ed5fa6" }), // Pink
+  createTriangle({ fill: "#aa87ff" }), // Purple
+  createTriangle({ fill: "#26edd5" }), // Turquoise
 ];

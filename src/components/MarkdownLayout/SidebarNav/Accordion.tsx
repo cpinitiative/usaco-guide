@@ -1,12 +1,12 @@
-import clsx from 'clsx';
-import * as React from 'react';
-import { useEffect } from 'react';
-import useStickyState from '../../../hooks/useStickyState';
+import clsx from "clsx";
+import * as React from "react";
+import { useEffect } from "react";
+import useStickyState from "../../../hooks/useStickyState";
 
 export default function Accordion({ label, isActive, children }) {
   const [expanded, setExpanded] = useStickyState(
     true,
-    'guide:sidebarnav:isexpanded:' + label
+    "guide:sidebarnav:isexpanded:" + label,
   );
   useEffect(() => {
     if (isActive) setExpanded(true);
@@ -14,8 +14,8 @@ export default function Accordion({ label, isActive, children }) {
   return (
     <div
       className={clsx(
-        'border-b border-gray-200 last:border-b-0 dark:border-gray-800',
-        isActive && 'bg-[#f7faff] dark:bg-[#16191f]'
+        "border-b border-gray-200 last:border-b-0 dark:border-gray-800",
+        isActive && "bg-[#f7faff] dark:bg-[#16191f]",
       )}
     >
       <div

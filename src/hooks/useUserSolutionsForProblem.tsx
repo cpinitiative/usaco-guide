@@ -1,20 +1,20 @@
-import type { CollectionReference } from 'firebase/firestore';
+import type { CollectionReference } from "firebase/firestore";
 import {
   collection,
   getFirestore,
   onSnapshot,
   query,
   where,
-} from 'firebase/firestore';
-import * as React from 'react';
-import toast from 'react-hot-toast';
-import { useFirebaseUser } from '../context/UserDataContext/UserDataContext';
-import { ProblemInfo, ShortProblemInfo } from '../models/problem';
-import { UserSolutionForProblem } from '../models/userSolutionForProblem';
-import { useFirebaseApp } from './useFirebase';
+} from "firebase/firestore";
+import * as React from "react";
+import toast from "react-hot-toast";
+import { useFirebaseUser } from "../context/UserDataContext/UserDataContext";
+import { ProblemInfo, ShortProblemInfo } from "../models/problem";
+import { UserSolutionForProblem } from "../models/userSolutionForProblem";
+import { useFirebaseApp } from "./useFirebase";
 
 export default function useUserSolutionsForProblem(
-  problem: ProblemInfo | ShortProblemInfo
+  problem: ProblemInfo | ShortProblemInfo,
 ) {
   const [solutions, setSolutions] = React.useState<
     UserSolutionForProblem[] | null
@@ -25,7 +25,7 @@ export default function useUserSolutionsForProblem(
   const firebaseUser = useFirebaseUser();
 
   useFirebaseApp(
-    firebaseApp => {
+    (firebaseApp) => {
       const id = problem?.uniqueId;
       if (id) {
         setSolutions(null);
@@ -35,42 +35,42 @@ export default function useUserSolutionsForProblem(
           query(
             collection(
               firestore,
-              'userProblemSolutions'
+              "userProblemSolutions",
             ) as CollectionReference<UserSolutionForProblem>,
-            where('isPublic', '==', true),
-            where('problemID', '==', id)
+            where("isPublic", "==", true),
+            where("problemID", "==", id),
           ),
           {
-            next: snap => {
+            next: (snap) => {
               setSolutions(
-                snap.docs.map(doc => ({ ...doc.data(), id: doc.id }))
+                snap.docs.map((doc) => ({ ...doc.data(), id: doc.id })),
               );
             },
-            error: error => {
+            error: (error) => {
               toast.error(error.message);
             },
-          }
+          },
         );
         const unsubscribe2 = firebaseUser
           ? onSnapshot(
               query(
                 collection(
                   firestore,
-                  'userProblemSolutions'
+                  "userProblemSolutions",
                 ) as CollectionReference<UserSolutionForProblem>,
-                where('problemID', '==', id),
-                where('userID', '==', firebaseUser.uid)
+                where("problemID", "==", id),
+                where("userID", "==", firebaseUser.uid),
               ),
               {
-                next: snap => {
+                next: (snap) => {
                   setCurrentUserSolutions(
-                    snap.docs.map(doc => ({ ...doc.data(), id: doc.id }))
+                    snap.docs.map((doc) => ({ ...doc.data(), id: doc.id })),
                   );
                 },
-                error: error => {
+                error: (error) => {
                   toast.error(error.message);
                 },
-              }
+              },
             )
           : () => {};
         return () => {
@@ -79,7 +79,7 @@ export default function useUserSolutionsForProblem(
         };
       }
     },
-    [problem?.uniqueId, firebaseUser?.uid]
+    [problem?.uniqueId, firebaseUser?.uid],
   );
 
   return {

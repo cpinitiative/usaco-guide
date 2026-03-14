@@ -1,21 +1,21 @@
-import Tippy from '@tippyjs/react';
-import * as React from 'react';
-import { useContext, useRef, useState } from 'react';
-import ConfettiContext from '../../context/ConfettiContext';
-import { useDarkMode } from '../../context/DarkModeContext';
-import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
+import Tippy from "@tippyjs/react";
+import * as React from "react";
+import { useContext, useRef, useState } from "react";
+import ConfettiContext from "../../context/ConfettiContext";
+import { useDarkMode } from "../../context/DarkModeContext";
+import MarkdownLayoutContext from "../../context/MarkdownLayoutContext";
 import {
   replaceIllegalFirebaseCharacters,
   useSetProgressOnModule,
   useSetProgressOnResource,
   useUserProgressOnModules,
   useUserProgressOnResources,
-} from '../../context/UserDataContext/properties/userProgress';
+} from "../../context/UserDataContext/properties/userProgress";
 import {
   ResourceInfo,
   ResourceProgress,
   ResourceProgressOptions,
-} from '../../models/resource';
+} from "../../models/resource";
 
 const ProgressDropdown = ({
   onProgressSelected,
@@ -29,15 +29,15 @@ const ProgressDropdown = ({
 
   const icon = (status: ResourceProgress, equal: boolean) => {
     const colorMap: { [key in ResourceProgress]: string } = {
-      'Not Started': '',
-      Reading: 'text-yellow-300',
-      Practicing: 'text-orange-500',
-      Complete: 'text-green-400',
-      Skipped: 'text-blue-400',
-      Ignored: 'text-purple-400',
+      "Not Started": "",
+      Reading: "text-yellow-300",
+      Practicing: "text-orange-500",
+      Complete: "text-green-400",
+      Skipped: "text-blue-400",
+      Ignored: "text-purple-400",
     };
     const pathMap: { [key in ResourceProgress]: JSX.Element } = {
-      'Not Started': <> </>,
+      "Not Started": <> </>,
       Reading: (
         <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
       ),
@@ -74,7 +74,7 @@ const ProgressDropdown = ({
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 20 20"
         fill="currentColor"
-        className={`h-5 w-5 ${equal ? 'text-white' : colorMap[status]}`}
+        className={`h-5 w-5 ${equal ? "text-white" : colorMap[status]}`}
       >
         {pathMap[status]}
       </svg>
@@ -86,13 +86,13 @@ const ProgressDropdown = ({
       tabIndex={-1}
       className="no-markdown overflow-auto rounded-md py-1 text-sm leading-5 focus:outline-hidden"
     >
-      {ResourceProgressOptions.map(progress => (
+      {ResourceProgressOptions.map((progress) => (
         <li
           role="option"
           className={`${
             activeProgress === progress
-              ? 'bg-indigo-600 text-white dark:bg-indigo-800'
-              : 'dark:text-dark-med-emphasis text-gray-900'
+              ? "bg-indigo-600 text-white dark:bg-indigo-800"
+              : "dark:text-dark-med-emphasis text-gray-900"
           } relative cursor-default py-2 pr-4 pl-10 select-none`}
           key={progress}
           onClick={() => onProgressSelected(progress)}
@@ -100,7 +100,7 @@ const ProgressDropdown = ({
         >
           <span
             className={`${
-              progress === status ? 'font-semibold' : 'font-normal'
+              progress === status ? "font-semibold" : "font-normal"
             } block truncate`}
           >
             {progress}
@@ -133,10 +133,10 @@ const ProgressDropdown = ({
 
 export default function ResourcestatusCheckbox({
   resource,
-  size = 'small',
+  size = "small",
 }: {
   resource: ResourceInfo;
-  size?: 'small' | 'large';
+  size?: "small" | "large";
 }): JSX.Element {
   const darkMode = useDarkMode();
   const markdownLayoutContext = useContext(MarkdownLayoutContext);
@@ -154,20 +154,20 @@ export default function ResourcestatusCheckbox({
     const { markdownLayoutInfo } = markdownLayoutContext;
     const moduleProgress =
       (userProgressOnModules && userProgressOnModules[markdownLayoutInfo.id]) ||
-      'Not Started';
-    if (moduleProgress !== 'Not Started') return;
-    setModuleProgress(markdownLayoutInfo.id, 'Reading');
+      "Not Started";
+    if (moduleProgress !== "Not Started") return;
+    setModuleProgress(markdownLayoutInfo.id, "Reading");
   };
   const status: ResourceProgress =
     userProgressOnResources[replaceIllegalFirebaseCharacters(resource.url!)] ||
-    'Not Started';
+    "Not Started";
   const color: { [key in ResourceProgress]: string } = {
-    'Not Started': 'bg-gray-200 dark:bg-gray-700',
-    Reading: 'bg-yellow-300 dark:bg-yellow-500',
-    Practicing: 'bg-orange-400 dark:bg-orange-600',
-    Complete: 'bg-green-500 dark:bg-green-600',
-    Skipped: 'bg-blue-300 dark:bg-blue-700',
-    Ignored: 'bg-red-100 dark:bg-red-900',
+    "Not Started": "bg-gray-200 dark:bg-gray-700",
+    Reading: "bg-yellow-300 dark:bg-yellow-500",
+    Practicing: "bg-orange-400 dark:bg-orange-600",
+    Complete: "bg-green-500 dark:bg-green-600",
+    Skipped: "bg-blue-300 dark:bg-blue-700",
+    Ignored: "bg-red-100 dark:bg-red-900",
   };
   const tippyRef = useRef<any>(null);
   const showConfetti = useContext(ConfettiContext);
@@ -177,12 +177,12 @@ export default function ResourcestatusCheckbox({
       content={
         <div className="z-20 w-56">
           <ProgressDropdown
-            onProgressSelected={progress => {
+            onProgressSelected={(progress) => {
               tippyRef.current.hide();
               setUserProgressOnResources(resource.url!, progress);
               const Practicing = (x: ResourceProgress) =>
-                x == 'Complete' || x == 'Practicing';
-              if (progress == 'Reading' || Practicing(progress)) {
+                x == "Complete" || x == "Practicing";
+              if (progress == "Reading" || Practicing(progress)) {
                 updateResourceProgressToPracticing();
               }
               if (!Practicing(status) && Practicing(progress)) {
@@ -196,19 +196,19 @@ export default function ResourcestatusCheckbox({
       interactive={true}
       trigger="click"
       placement="bottom-start"
-      theme={darkMode ? 'dark' : 'light'}
+      theme={darkMode ? "dark" : "light"}
       appendTo={() => document.body}
       className="[&>.tippy-content]:!p-0"
     >
       <span
         // onClick={handleClick}
         // onContextMenu={handleRightClick}
-        className={`inline-block ${size === 'small' ? 'h-6 w-6' : 'h-8 w-8'}`}
+        className={`inline-block ${size === "small" ? "h-6 w-6" : "h-8 w-8"}`}
       >
         <span
           className={
             `inline-block ${
-              size === 'small' ? 'h-6 w-6' : 'h-8 w-8'
+              size === "small" ? "h-6 w-6" : "h-8 w-8"
             } cursor-pointer rounded-full transition duration-100 ease-out ` +
             color[status]
           }

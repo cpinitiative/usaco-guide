@@ -1,7 +1,7 @@
-import * as React from 'react';
-import { getProblemURL, ProblemInfo } from '../../../models/problem';
-import TextTooltip from '../../Tooltip/TextTooltip';
-import Tooltip from '../../Tooltip/Tooltip';
+import * as React from "react";
+import { getProblemURL, ProblemInfo } from "../../../models/problem";
+import TextTooltip from "../../Tooltip/TextTooltip";
+import Tooltip from "../../Tooltip/Tooltip";
 
 type ProblemListItemSolutionProps = {
   problem: ProblemInfo;
@@ -9,7 +9,7 @@ type ProblemListItemSolutionProps = {
 };
 
 export default function ProblemListItemSolution(
-  props: ProblemListItemSolutionProps
+  props: ProblemListItemSolutionProps,
 ): JSX.Element {
   const { problem } = props;
   let contents: JSX.Element | null = null;
@@ -23,7 +23,7 @@ export default function ProblemListItemSolution(
         </Tooltip>
       </div>
     );
-  } else if (problem.solution.kind === 'sketch') {
+  } else if (problem.solution.kind === "sketch") {
     contents = (
       <div
         className="cursor-pointer px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
@@ -47,7 +47,7 @@ export default function ProblemListItemSolution(
         </span>
       </div>
     );
-  } else if (problem.solution.kind === 'label') {
+  } else if (problem.solution.kind === "label") {
     const textContent = <>Solution: {problem.solution.label}</>;
     contents = (
       <div className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300">
@@ -60,7 +60,7 @@ export default function ProblemListItemSolution(
         )}
       </div>
     );
-  } else if (problem.solution.kind === 'link') {
+  } else if (problem.solution.kind === "link") {
     contents = (
       <a
         href={problem.solution.url}
@@ -71,7 +71,7 @@ export default function ProblemListItemSolution(
         {problem.solution.label}
       </a>
     );
-  } else if (problem.solution.kind === 'internal') {
+  } else if (problem.solution.kind === "internal") {
     contents = (
       <a
         className={`group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800`}
@@ -80,7 +80,7 @@ export default function ProblemListItemSolution(
         rel="noreferrer"
       >
         <div className="text-left">
-          {problem.solution.hasHints && 'Hints + '}Internal Sol
+          {problem.solution.hasHints && "Hints + "}Internal Sol
         </div>
       </a>
     );
@@ -88,7 +88,7 @@ export default function ProblemListItemSolution(
     throw new Error(
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      "Couldn't determine problem solution type " + problem.solution.kind
+      "Couldn't determine problem solution type " + problem.solution.kind,
     );
   }
   return contents;

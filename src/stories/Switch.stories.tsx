@@ -1,13 +1,13 @@
-import { StoryFn } from '@storybook/react-webpack5';
-import React, { ComponentProps } from 'react';
-import Switch from '../components/elements/Switch';
+import { StoryFn } from "@storybook/react";
+import React, { ComponentProps } from "react";
+import Switch from "../components/elements/Switch";
 
 export default {
-  title: 'Switch',
+  title: "Switch",
   component: Switch,
 };
 
-const Template: StoryFn<ComponentProps<typeof Switch>> = args => (
+const Template: StoryFn<ComponentProps<typeof Switch>> = (args) => (
   <Switch {...args} />
 );
 

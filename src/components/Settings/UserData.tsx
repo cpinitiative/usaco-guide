@@ -1,9 +1,9 @@
-import * as React from 'react';
-import { useState } from 'react';
+import * as React from "react";
+import { useState } from "react";
 import {
   useImportUserDataAction,
   useUserData,
-} from '../../context/UserDataContext/UserDataContext';
+} from "../../context/UserDataContext/UserDataContext";
 
 export default function UserData() {
   const userData = useUserData();
@@ -11,39 +11,39 @@ export default function UserData() {
 
   const handleExportUserData = () => {
     const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(
-      JSON.stringify(userData)
+      JSON.stringify(userData),
     )}`;
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute('href', dataStr);
-    downloadAnchorNode.setAttribute('download', 'usacoguide-userdata.json');
+    const downloadAnchorNode = document.createElement("a");
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", "usacoguide-userdata.json");
     document.body.appendChild(downloadAnchorNode); // required for firefox
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
   };
 
-  const [file, setFile] = useState('');
+  const [file, setFile] = useState("");
   const [resetInput, setResetInput] = useState(0);
 
   // https://stackoverflow.com/questions/61707105/react-app-upload-and-read-json-file-into-variable-without-a-server
-  const handleUpload = e => {
+  const handleUpload = (e) => {
     const file = e.target.files[0];
-    if (file.type !== 'application/json') {
-      alert('Must upload a JSON file.');
+    if (file.type !== "application/json") {
+      alert("Must upload a JSON file.");
       return;
     }
     const fileReader = new FileReader();
-    fileReader.readAsText(file, 'UTF-8');
-    fileReader.onload = e => {
+    fileReader.readAsText(file, "UTF-8");
+    fileReader.onload = (e) => {
       setFile(e.target?.result as any);
     };
   };
 
-  const handleImportUserData = e => {
-    if (file === '') return;
+  const handleImportUserData = (e) => {
+    if (file === "") return;
     try {
       const data = JSON.parse(file);
       if (importUserData(data)) {
-        setFile('');
+        setFile("");
         setResetInput(resetInput + 1); // clears file input
       }
     } catch (e) {
@@ -96,9 +96,9 @@ export default function UserData() {
 
         <button
           className={`${
-            file !== ''
-              ? 'focus:shadow-outline-blue text-gray-700 transition duration-150 ease-in-out hover:text-gray-500 focus:border-blue-300 focus:outline-hidden active:bg-gray-50 active:text-gray-800 dark:text-gray-200'
-              : 'cursor-default text-gray-300 dark:text-gray-600'
+            file !== ""
+              ? "focus:shadow-outline-blue text-gray-700 transition duration-150 ease-in-out hover:text-gray-500 focus:border-blue-300 focus:outline-hidden active:bg-gray-50 active:text-gray-800 dark:text-gray-200"
+              : "cursor-default text-gray-300 dark:text-gray-600"
           } inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm leading-5 font-medium dark:border-gray-600 dark:bg-gray-800`}
           disabled={!file}
           onClick={handleImportUserData}

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 
 const PrefMatrix = [
   [0, 0, 0, 0, 0, 0],
@@ -17,33 +17,33 @@ const PrefixSumInteractive = ({ demo2 = false }) => {
     b = 2;
   // [x0, y0, x1, y1, weight?]
   const [highlightRect, setHighlightRect] = React.useState<number[] | null>(
-    null
+    null,
   );
   const [rectangles, setRectangles] = React.useState<any[]>([]);
 
   const renderCell = (i, j, v) => {
     const classes = [
-      'h-10 w-10 inline-flex items-center justify-center border-b border-r border-gray-200',
+      "h-10 w-10 inline-flex items-center justify-center border-b border-r border-gray-200",
     ];
-    if (i == 0) classes.push('border-t');
-    if (j == 0) classes.push('border-l');
+    if (i == 0) classes.push("border-t");
+    if (j == 0) classes.push("border-l");
     const weight = rectangles.reduce(
       (acc, rect) =>
         i >= rect[0] && i <= rect[2] && j >= rect[1] && j <= rect[3]
           ? acc + rect[4]
           : acc,
-      0
+      0,
     );
     if (weight == -2) {
-      classes.push('bg-red-200 dark:bg-red-700');
+      classes.push("bg-red-200 dark:bg-red-700");
     } else if (weight === -1) {
-      classes.push('bg-red-100 dark:bg-red-800');
+      classes.push("bg-red-100 dark:bg-red-800");
     } else if (weight === 1) {
-      classes.push('bg-blue-100 dark:bg-blue-900');
+      classes.push("bg-blue-100 dark:bg-blue-900");
     } else if (weight === 2) {
-      classes.push('bg-blue-200 dark:bg-blue-700');
+      classes.push("bg-blue-200 dark:bg-blue-700");
     }
-    return <span className={classes.join(' ')}>{v}</span>;
+    return <span className={classes.join(" ")}>{v}</span>;
   };
 
   const renderRow = (row, i) => (
@@ -51,23 +51,23 @@ const PrefixSumInteractive = ({ demo2 = false }) => {
   );
 
   const renderStep = (rectangle, label) => {
-    const isActive = rectangles.some(x =>
-      x.every((v, i) => v === rectangle[i])
+    const isActive = rectangles.some((x) =>
+      x.every((v, i) => v === rectangle[i]),
     );
     return (
       <div
         className={
-          'cursor-pointer rounded-sm border border-gray-300 px-2 py-1 font-mono dark:border-gray-600 ' +
+          "cursor-pointer rounded-sm border border-gray-300 px-2 py-1 font-mono dark:border-gray-600 " +
           (isActive
-            ? 'bg-green-200 dark:bg-green-700'
-            : 'bg-gray-100 dark:bg-gray-800')
+            ? "bg-green-200 dark:bg-green-700"
+            : "bg-gray-100 dark:bg-gray-800")
         }
         onMouseEnter={() => setHighlightRect(rectangle)}
         onMouseLeave={() => setHighlightRect(null)}
         onClick={() => {
           if (isActive) {
             setRectangles(
-              rectangles.filter(x => !x.every((v, i) => v === rectangle[i]))
+              rectangles.filter((x) => !x.every((v, i) => v === rectangle[i])),
             );
           } else {
             setRectangles([...rectangles, rectangle]);
@@ -84,15 +84,15 @@ const PrefixSumInteractive = ({ demo2 = false }) => {
     <div className="overflow-x-auto">
       <div
         className="flex justify-center space-x-8"
-        style={{ minWidth: '34rem' }}
+        style={{ minWidth: "34rem" }}
       >
         <div className="space-y-2 text-right">
           {demo2 ? (
             <>
-              {renderStep([0, 0, A, B, 1], 'add prefix[A][B]')}
-              {renderStep([0, 0, a - 1, B, -1], 'subtract prefix[a-1][B]')}
-              {renderStep([0, 0, A, b - 1, -1], 'subtract prefix[A][b-1]')}
-              {renderStep([0, 0, a - 1, b - 1, 1], 'add prefix[a-1][b-1]')}
+              {renderStep([0, 0, A, B, 1], "add prefix[A][B]")}
+              {renderStep([0, 0, a - 1, B, -1], "subtract prefix[a-1][B]")}
+              {renderStep([0, 0, A, b - 1, -1], "subtract prefix[A][b-1]")}
+              {renderStep([0, 0, a - 1, b - 1, 1], "add prefix[a-1][b-1]")}
               <div
                 className="p-1 font-mono"
                 onMouseEnter={() => setHighlightRect([a, b, A, B])}
@@ -103,13 +103,13 @@ const PrefixSumInteractive = ({ demo2 = false }) => {
             </>
           ) : (
             <>
-              {renderStep([0, 0, prefI - 1, prefJ, 1], 'add prefix[i-1][j]')}
-              {renderStep([0, 0, prefI, prefJ - 1, 1], 'add prefix[i][j-1]')}
+              {renderStep([0, 0, prefI - 1, prefJ, 1], "add prefix[i-1][j]")}
+              {renderStep([0, 0, prefI, prefJ - 1, 1], "add prefix[i][j-1]")}
               {renderStep(
                 [0, 0, prefI - 1, prefJ - 1, -1],
-                'subtract prefix[i-1][j-1]'
+                "subtract prefix[i-1][j-1]",
               )}
-              {renderStep([prefI, prefJ, prefI, prefJ, 1], 'add array[i][j]')}
+              {renderStep([prefI, prefJ, prefI, prefJ, 1], "add array[i][j]")}
               <div
                 className="p-1 font-mono"
                 onMouseEnter={() => setHighlightRect([0, 0, prefI, prefJ])}

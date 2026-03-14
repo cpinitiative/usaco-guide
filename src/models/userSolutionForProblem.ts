@@ -1,4 +1,4 @@
-import { Timestamp } from 'firebase/firestore';
+import { Timestamp } from "firebase/firestore";
 
 export type UserSolutionForProblem = {
   id: string;
@@ -8,6 +8,6 @@ export type UserSolutionForProblem = {
   isPublic: boolean;
   solutionCode: string;
   upvotes: string[];
-  language: 'cpp' | 'java' | 'py' | 'unknown';
+  language: "cpp" | "java" | "py" | "unknown";
   timestamp: Timestamp;
 };

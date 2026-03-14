@@ -1,25 +1,25 @@
-import { arrayUnion } from 'firebase/firestore';
-import { ModuleProgress } from '../../../models/module';
-import { ProblemProgress } from '../../../models/problem';
-import { ResourceProgress } from '../../../models/resource';
-import { createUserDataGetter, createUserDataMutation } from './hooks';
+import { arrayUnion } from "firebase/firestore";
+import { ModuleProgress } from "../../../models/module";
+import { ProblemProgress } from "../../../models/problem";
+import { ResourceProgress } from "../../../models/resource";
+import { createUserDataGetter, createUserDataMutation } from "./hooks";
 
 export const useUserProgressOnModules = createUserDataGetter(
-  userData => userData.userProgressOnModules
+  (userData) => userData.userProgressOnModules,
 );
 export const useUserProgressOnModulesActivity = createUserDataGetter(
-  userData => userData.userProgressOnModulesActivity
+  (userData) => userData.userProgressOnModulesActivity,
 );
 
 export const useUserProgressOnProblemsActivity = createUserDataGetter(
-  userData => userData.userProgressOnProblemsActivity
+  (userData) => userData.userProgressOnProblemsActivity,
 );
 export const useUserProgressOnProblems = createUserDataGetter(
-  userData => userData.userProgressOnProblems
+  (userData) => userData.userProgressOnProblems,
 );
 
 export const useUserProgressOnResources = createUserDataGetter(
-  userData => userData.userProgressOnResources
+  (userData) => userData.userProgressOnResources,
 );
 
 export const useSetProgressOnModule = createUserDataMutation(
@@ -45,7 +45,7 @@ export const useSetProgressOnModule = createUserDataMutation(
         userProgressOnModulesActivity: arrayUnion(newActivityData),
       },
     };
-  }
+  },
 );
 
 export const useSetProgressOnProblem = createUserDataMutation(
@@ -71,11 +71,11 @@ export const useSetProgressOnProblem = createUserDataMutation(
         userProgressOnProblemsActivity: arrayUnion(newActivityData),
       },
     };
-  }
+  },
 );
 
 export const replaceIllegalFirebaseCharacters = (str: string) => {
-  return str.replace(/[^a-zA-Z0-9]/g, ''); // technically only ~*/[] aren't allowed but whatever
+  return str.replace(/[^a-zA-Z0-9]/g, ""); // technically only ~*/[] aren't allowed but whatever
 };
 export const useSetProgressOnResource = createUserDataMutation(
   (userData, resourceID: string, progress: ResourceProgress) => {
@@ -91,5 +91,5 @@ export const useSetProgressOnResource = createUserDataMutation(
         [`userProgressOnResources.${resourceID}`]: progress,
       },
     };
-  }
+  },
 );

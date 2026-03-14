@@ -1,4 +1,4 @@
-import type { CollectionReference } from 'firebase/firestore';
+import type { CollectionReference } from "firebase/firestore";
 import {
   collection,
   doc,
@@ -7,17 +7,17 @@ import {
   onSnapshot,
   query,
   where,
-} from 'firebase/firestore';
-import * as React from 'react';
-import { ReactNode } from 'react';
-import toast from 'react-hot-toast';
+} from "firebase/firestore";
+import * as React from "react";
+import { ReactNode } from "react";
+import toast from "react-hot-toast";
 import {
   useFirebaseUser,
   useIsUserDataLoaded,
-} from '../../context/UserDataContext/UserDataContext';
-import { GroupData, isUserAdminOfGroup } from '../../models/groups/groups';
-import { PostData } from '../../models/groups/posts';
-import { useFirebaseApp } from '../useFirebase';
+} from "../../context/UserDataContext/UserDataContext";
+import { GroupData, isUserAdminOfGroup } from "../../models/groups/groups";
+import { PostData } from "../../models/groups/posts";
+import { useFirebaseApp } from "../useFirebase";
 
 const ActiveGroupContext = React.createContext<{
   activeGroupId: string;
@@ -39,7 +39,7 @@ const ActiveGroupContext = React.createContext<{
 export function ActiveGroupProvider({ children }: { children: ReactNode }) {
   const firebaseUser = useFirebaseUser();
   const isUserLoaded = useIsUserDataLoaded();
-  const [activeGroupId, setActiveGroupId] = React.useState<string>('');
+  const [activeGroupId, setActiveGroupId] = React.useState<string>("");
   const [posts, setPosts] = React.useState<PostData[]>([]);
   const [inStudentView, setInStudentView] = React.useState(false);
   const [activeUserId, setActiveUserId] = React.useState<string>();
@@ -47,7 +47,7 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
   const [groupData, setGroupData] = React.useState<GroupData>();
 
   useFirebaseApp(
-    firebaseApp => {
+    (firebaseApp) => {
       //reset all Group states
       setGroupData(undefined);
       setPosts([]);
@@ -70,57 +70,57 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
         query(
           collection(
             getFirestore(firebaseApp),
-            'groups',
+            "groups",
             activeGroupId,
-            'posts'
+            "posts",
           ) as CollectionReference<PostData>,
-          where('isDeleted', '==', false)
+          where("isDeleted", "==", false),
         ),
-        snap => {
+        (snap) => {
           loadedPosts = true;
-          setPosts(snap.docs.map(doc => ({ ...doc.data(), id: doc.id })));
+          setPosts(snap.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
           if (loadedGroup && loadedPosts) setIsLoading(false);
         },
-        error => {
-          if (error.code === 'permission-denied') {
+        (error) => {
+          if (error.code === "permission-denied") {
             setIsLoading(false);
             setPosts([]);
           } else {
             toast.error(error.message);
           }
-        }
+        },
       );
       const unsubscribeGroup = onSnapshot(
         doc(
           getFirestore(firebaseApp),
-          'groups',
-          activeGroupId
+          "groups",
+          activeGroupId,
         ) as DocumentReference<GroupData>,
-        doc => {
+        (doc) => {
           loadedGroup = true;
           setGroupData(doc.data());
           if (loadedGroup && loadedPosts) setIsLoading(false);
         },
-        error => {
-          if (error.code === 'permission-denied') {
+        (error) => {
+          if (error.code === "permission-denied") {
             setIsLoading(false);
             setGroupData(undefined);
           } else {
             toast.error(error.message);
           }
-        }
+        },
       );
       return () => {
         unsubscribeGroup();
         unsubscribePosts();
       };
     },
-    [activeGroupId, firebaseUser?.uid, isUserLoaded]
+    [activeGroupId, firebaseUser?.uid, isUserLoaded],
   );
 
   const isUserAdmin = isUserAdminOfGroup(
     groupData,
-    activeUserId ?? firebaseUser?.uid
+    activeUserId ?? firebaseUser?.uid,
   );
   return (
     <ActiveGroupContext.Provider
@@ -131,7 +131,7 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
         posts,
         isLoading,
         showAdminView: isUserAdmin && !inStudentView,
-        setInStudentView: newVal => {
+        setInStudentView: (newVal) => {
           setInStudentView(newVal);
           if (!newVal) setActiveUserId(undefined);
         },
@@ -147,7 +147,7 @@ export function ActiveGroupProvider({ children }: { children: ReactNode }) {
 export function useActiveGroup() {
   const context = React.useContext(ActiveGroupContext);
   if (context === null) {
-    throw 'useActiveGroup must be used within a ActiveGroupProvider';
+    throw "useActiveGroup must be used within a ActiveGroupProvider";
   }
   return context;
 }

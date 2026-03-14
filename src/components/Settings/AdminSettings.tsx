@@ -1,17 +1,17 @@
-import { getFunctions, httpsCallable } from 'firebase/functions';
-import React from 'react';
-import toast from 'react-hot-toast';
+import { getFunctions, httpsCallable } from "firebase/functions";
+import React from "react";
+import toast from "react-hot-toast";
 import {
   UserPermissionInformation,
   UserPermissions,
-} from '../../context/UserDataContext/UserPermissionsContext';
-import { useFirebaseApp } from '../../hooks/useFirebase';
-import Switch from '../elements/Switch';
+} from "../../context/UserDataContext/UserPermissionsContext";
+import { useFirebaseApp } from "../../hooks/useFirebase";
+import Switch from "../elements/Switch";
 
 export default function AdminSettings() {
   const firebaseApp = useFirebaseApp();
 
-  const [email, setEmail] = React.useState('');
+  const [email, setEmail] = React.useState("");
   const [searching, setSearching] = React.useState(false);
 
   // the type is actually auth.getUsersResult...
@@ -21,45 +21,45 @@ export default function AdminSettings() {
   >(null);
   const [isUpdating, setIsUpdating] = React.useState(false);
 
-  const editUserPermissions = updates => {
+  const editUserPermissions = (updates) => {
     setUserPermissions({
       ...(userPermissions || {}),
       ...updates,
     });
   };
 
-  const handleSearch = async e => {
+  const handleSearch = async (e) => {
     e?.preventDefault();
 
     setSearching(true);
     try {
       const response = await (httpsCallable(
         getFunctions(firebaseApp),
-        'getUsers'
+        "getUsers",
       )({
         users: [{ email }],
       }) as any);
       if (response.data.users.length === 0) {
-        toast.error('The user with email ' + email + ' could not be found.');
+        toast.error("The user with email " + email + " could not be found.");
       } else {
-        console.log('Got user: ', response.data.users[0]);
+        console.log("Got user: ", response.data.users[0]);
         setUserData(response.data.users[0]);
         setUserPermissions(response.data.users[0].customClaims);
       }
-    } catch (e) {
+    } catch (e: any) {
       toast.error(e.message);
     }
 
     setSearching(false);
   };
 
-  const handleUpdateUserPermissions = async e => {
+  const handleUpdateUserPermissions = async (e) => {
     e.preventDefault();
 
     if (!userData.customClaims?.isAdmin && userPermissions?.isAdmin) {
       if (
         !confirm(
-          'Are you sure you want to grant this user admin permissions? This will give the user complete control over the database!'
+          "Are you sure you want to grant this user admin permissions? This will give the user complete control over the database!",
         )
       ) {
         return;
@@ -71,19 +71,19 @@ export default function AdminSettings() {
     try {
       await httpsCallable(
         getFunctions(firebaseApp),
-        'setUserClaims'
+        "setUserClaims",
       )({
         target: userData.uid,
         claims: userPermissions,
       });
       toast(
-        'Updated user permissions! The target user may have to sign out and sign back in to complete the changes.',
+        "Updated user permissions! The target user may have to sign out and sign back in to complete the changes.",
         {
           duration: 6000,
-        }
+        },
       );
       handleSearch(null);
-    } catch (e) {
+    } catch (e: any) {
       toast.error(e.message);
     }
 
@@ -115,7 +115,7 @@ export default function AdminSettings() {
                   id="search_email"
                   className="input rounded-r-none"
                   value={email}
-                  onChange={e => setEmail(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
@@ -138,7 +138,7 @@ export default function AdminSettings() {
                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                   />
                 </svg>
-                <span>{searching ? 'Searching...' : 'Search'}</span>
+                <span>{searching ? "Searching..." : "Search"}</span>
               </button>
             </div>
           </div>
@@ -164,7 +164,7 @@ export default function AdminSettings() {
                 Account Disabled?
               </div>
               <p className="mt-0.5 text-sm text-gray-900 dark:text-gray-100">
-                {userData.disabled ? 'Yes' : 'No'}
+                {userData.disabled ? "Yes" : "No"}
               </p>
             </div>
             <div className="mb-3">
@@ -188,7 +188,7 @@ export default function AdminSettings() {
           <form onSubmit={handleUpdateUserPermissions}>
             <div>
               <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-                {Object.keys(UserPermissionInformation).map(key => (
+                {Object.keys(UserPermissionInformation).map((key) => (
                   <li
                     className="flex items-center justify-between py-4"
                     key={key}
@@ -203,7 +203,7 @@ export default function AdminSettings() {
                     </div>
                     <Switch
                       checked={userPermissions?.[key] || false}
-                      onChange={b => editUserPermissions({ [key]: b })}
+                      onChange={(b) => editUserPermissions({ [key]: b })}
                     />
                   </li>
                 ))}
@@ -214,7 +214,7 @@ export default function AdminSettings() {
 
             <div className="flex">
               <button type="submit" className="btn" disabled={isUpdating}>
-                {isUpdating ? 'Updating...' : 'Update User Permissions'}
+                {isUpdating ? "Updating..." : "Update User Permissions"}
               </button>
             </div>
           </form>

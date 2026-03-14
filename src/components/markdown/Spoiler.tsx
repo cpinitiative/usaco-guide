@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 export interface SpoilerProps {
   title: string;
@@ -32,12 +32,12 @@ const Spoiler = ({
   const arrChildren = React.Children.toArray(children);
   if (
     arrChildren.length === 1 &&
-    (arrChildren[0] as any).type?.name === 'pre'
+    (arrChildren[0] as any).type?.name === "pre"
   ) {
     expandCodeBlock = true;
   } else if (
     arrChildren.length === 1 &&
-    (arrChildren[0] as any).type?.name === 'LanguageSection'
+    (arrChildren[0] as any).type?.name === "LanguageSection"
   ) {
     // note: this should ideally check each language section to make sure it only has one child
     expandCodeBlock = true;
@@ -49,7 +49,7 @@ const Spoiler = ({
     >
       <p
         className="flex items-start p-4"
-        onClick={e => {
+        onClick={(e) => {
           setShow(!show);
         }}
         style={{ marginBottom: 0 }}

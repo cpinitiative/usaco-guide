@@ -1,20 +1,18 @@
-import { Transition } from '@headlessui/react';
-import { globalHistory } from '@reach/router';
-import * as React from 'react';
-import { Fragment } from 'react';
-import { useMarkdownProblemLists } from '../../../context/MarkdownProblemListsContext';
+import { Transition } from "@headlessui/react";
+import { globalHistory } from "@reach/router";
+import * as React from "react";
+import { Fragment } from "react";
+import { useMarkdownProblemLists } from "../../../context/MarkdownProblemListsContext";
 import {
   useHideDifficultySetting,
   useShowTagsSetting,
-} from '../../../context/UserDataContext/properties/simpleProperties';
-import { ProblemInfo } from '../../../models/problem';
-import { ListTable } from '../ListTable/ListTable';
-import { DivisionProblemInfo } from './DivisionList/DivisionProblemInfo';
-import ProblemsListHeader from './ProblemsListHeader';
-import ProblemsListItem from './ProblemsListItem';
-import SuggestProblemRow from './SuggestProblemRow';
-
-/* eslint-disable react/prop-types */
+} from "../../../context/UserDataContext/properties/simpleProperties";
+import { ProblemInfo } from "../../../models/problem";
+import { ListTable } from "../ListTable/ListTable";
+import { DivisionProblemInfo } from "./DivisionList/DivisionProblemInfo";
+import ProblemsListHeader from "./ProblemsListHeader";
+import ProblemsListItem from "./ProblemsListItem";
+import SuggestProblemRow from "./SuggestProblemRow";
 
 type ProblemsListProps =
   | {
@@ -50,13 +48,13 @@ type AnnotatedProblemsListProps =
 export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
   const markdownProblems = useMarkdownProblemLists()!;
   let problems: ProblemInfo[] | DivisionProblemInfo[];
-  if (typeof unannotatedProps.problems === 'string') {
+  if (typeof unannotatedProps.problems === "string") {
     problems = markdownProblems.find(
-      list => list.listId === unannotatedProps.problems
+      (list) => list.listId === unannotatedProps.problems,
     )!.problems;
     if (!problems) {
       throw new Error(
-        "Couldn't find the problem list with name " + unannotatedProps.problems
+        "Couldn't find the problem list with name " + unannotatedProps.problems,
       );
     }
   } else {
@@ -64,10 +62,10 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
   }
   const props: AnnotatedProblemsListProps = {
     ...unannotatedProps,
-    ...(typeof unannotatedProps.problems === 'string'
+    ...(typeof unannotatedProps.problems === "string"
       ? { tableName: unannotatedProps.problems }
       : {}),
-    isDivisionTable: !(typeof unannotatedProps.problems === 'string'),
+    isDivisionTable: !(typeof unannotatedProps.problems === "string"),
     problems,
   } as AnnotatedProblemsListProps;
   const showTags = useShowTagsSetting();
@@ -78,9 +76,9 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
 
   const shouldShowSolvePercentage =
     props.isDivisionTable &&
-    props.problems!.some(problem => !!problem.percentageSolved);
+    props.problems!.some((problem) => !!problem.percentageSolved);
 
-  const path = globalHistory.location.pathname || '';
+  const path = globalHistory.location.pathname || "";
 
   return (
     <>
@@ -88,7 +86,7 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
         id={`problemlist-${
           props.isDivisionTable === false
             ? props.tableName
-            : 'division-' + props.division
+            : "division-" + props.division
         }`}
         header={
           <ProblemsListHeader
@@ -98,7 +96,7 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
             showSolvePercentage={shouldShowSolvePercentage}
             showPlatinumSolvePercentageMessage={
               props.isDivisionTable
-                ? props.division === 'Platinum'
+                ? props.division === "Platinum"
                 : (undefined as any)
             }
           />
@@ -112,7 +110,7 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
                 problem={problem}
                 showTags={showTags}
                 showDifficulty={showDifficulty}
-                onShowSolutionSketch={problem => {
+                onShowSolutionSketch={(problem) => {
                   setProblem(problem);
                   setShowModal(true);
                 }}
@@ -130,7 +128,7 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
                 problem={problem}
                 showTags={showTags}
                 showDifficulty={showDifficulty}
-                onShowSolutionSketch={problem => {
+                onShowSolutionSketch={(problem) => {
                   setProblem(problem);
                   setShowModal(true);
                 }}
@@ -138,7 +136,7 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
                 showPercent={shouldShowSolvePercentage}
               />
             ))}
-            {!props.hideSuggestProblemButton && path.includes('conclusion') && (
+            {!props.hideSuggestProblemButton && path.includes("conclusion") && (
               <SuggestProblemRow listName={props.tableName!} />
             )}
           </>
@@ -203,7 +201,7 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
                   </svg>
                 </button>
               </div>
-              {problem?.solution?.kind === 'sketch' && (
+              {problem?.solution?.kind === "sketch" && (
                 <div className="sm:flex sm:items-start">
                   <div className="text-left">
                     <h3

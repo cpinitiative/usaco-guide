@@ -1,7 +1,7 @@
-import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react';
-import React, { Suspense } from 'react';
+import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
+import React, { Suspense } from "react";
 
-const SearchModalInterface = React.lazy(() => import('./SearchModalInterface'));
+const SearchModalInterface = React.lazy(() => import("./SearchModalInterface"));
 
 export interface SearchModalProps {
   isOpen: boolean;

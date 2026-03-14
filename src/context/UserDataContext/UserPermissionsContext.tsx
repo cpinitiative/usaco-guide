@@ -1,25 +1,25 @@
-import * as React from 'react';
-import { useFirebaseUser } from './UserDataContext';
+import * as React from "react";
+import { useFirebaseUser } from "./UserDataContext";
 
 // the value is the firebase claim name
-export type UserPermissions = 'isAdmin' | 'canModerate' | 'canCreateGroups';
+export type UserPermissions = "isAdmin" | "canModerate" | "canCreateGroups";
 
 export const UserPermissionInformation: {
   [key in UserPermissions]: { label: string; description: string };
 } = {
   isAdmin: {
-    label: 'Is Admin',
+    label: "Is Admin",
     description:
-      'Admins have permissions to do anything -- add other admins and remove other admins. This is a dangerous permission to grant.',
+      "Admins have permissions to do anything -- add other admins and remove other admins. This is a dangerous permission to grant.",
   },
   canModerate: {
-    label: 'Can Moderate',
+    label: "Can Moderate",
     description:
-      'Users with this permission can delete or mark user solutions as private.',
+      "Users with this permission can delete or mark user solutions as private.",
   },
   canCreateGroups: {
-    label: 'Can Create Groups',
-    description: 'Users with this permission can create Groups.',
+    label: "Can Create Groups",
+    description: "Users with this permission can create Groups.",
   },
 };
 
@@ -47,7 +47,7 @@ export const UserPermissionsContextProvider = ({ children }) => {
             canModerate: !!claims.canModerate,
             canCreateGroups: !!claims.canCreateGroups,
           });
-        }
+        },
       );
     } else {
       setPermissions(defaultPermissions);
@@ -58,7 +58,7 @@ export const UserPermissionsContextProvider = ({ children }) => {
     () => ({
       permissions,
     }),
-    [permissions]
+    [permissions],
   );
 
   return (
@@ -71,7 +71,7 @@ export const UserPermissionsContextProvider = ({ children }) => {
 export function useUserPermissions() {
   const context = React.useContext(UserPermissionsContext);
   if (!context) {
-    throw 'useUserPermissions() must be called inside a UserPermissionsContext.';
+    throw "useUserPermissions() must be called inside a UserPermissionsContext.";
   }
   return context.permissions;
 }

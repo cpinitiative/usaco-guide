@@ -1,7 +1,7 @@
-import { Link } from 'gatsby';
-import * as React from 'react';
-import { GroupData } from '../../models/groups/groups';
-import { PostData } from '../../models/groups/posts';
+import Link from "next/link";
+import * as React from "react";
+import { GroupData } from "../../models/groups/groups";
+import { PostData } from "../../models/groups/posts";
 
 export default function Breadcrumbs({
   className,
@@ -13,11 +13,11 @@ export default function Breadcrumbs({
   post?: PostData;
 }) {
   return (
-    <ol className={'flex items-center space-x-4 ' + className}>
+    <ol className={"flex items-center space-x-4 " + className}>
       <li>
         <div>
           <Link
-            to="/groups"
+            href="/groups"
             className="text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400"
           >
             {/* Heroicon name: solid/home */}
@@ -51,7 +51,7 @@ export default function Breadcrumbs({
             />
           </svg>
           <Link
-            to={`/groups/${group.id}`}
+            href={`/groups/${group.id}`}
             className="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
           >
             {group.name}
@@ -76,7 +76,7 @@ export default function Breadcrumbs({
               />
             </svg>
             <Link
-              to={`/groups/${group.id}/post/${post.id}`}
+              href={`/groups/${group.id}/post/${post.id}`}
               aria-current="page"
               className="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
             >

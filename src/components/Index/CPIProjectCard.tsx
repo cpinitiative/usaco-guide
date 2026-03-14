@@ -1,5 +1,5 @@
-import classNames from 'classnames';
-import React from 'react';
+import classNames from "classnames";
+import React from "react";
 
 export const CPIProjectCard = ({
   icon: Icon,
@@ -19,8 +19,8 @@ export const CPIProjectCard = ({
     <div className="flex-1">
       <div
         className={classNames(
-          'mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-linear-to-br text-white',
-          iconClasses
+          "mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-linear-to-br text-white",
+          iconClasses,
         )}
       >
         <Icon className="h-6 w-6" />

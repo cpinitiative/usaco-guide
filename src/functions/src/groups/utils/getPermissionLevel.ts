@@ -4,13 +4,13 @@ export default function getPermissionLevel(
     ownerIds: string[];
     adminIds: string[];
     memberIds: string[];
-  }
-): 'OWNER' | 'ADMIN' | 'MEMBER' | 'NOT_MEMBER' {
+  },
+): "OWNER" | "ADMIN" | "MEMBER" | "NOT_MEMBER" {
   return groupData.ownerIds.includes(userId)
-    ? 'OWNER'
+    ? "OWNER"
     : groupData.adminIds.includes(userId)
-      ? 'ADMIN'
+      ? "ADMIN"
       : groupData.memberIds.includes(userId)
-        ? 'MEMBER'
-        : 'NOT_MEMBER';
+        ? "MEMBER"
+        : "NOT_MEMBER";
 }

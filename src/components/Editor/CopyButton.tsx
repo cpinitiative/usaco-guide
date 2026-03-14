@@ -1,5 +1,5 @@
 // source: https://codesandbox.io/p/sandbox/copy-to-clipboard-animation-qt8pf
-import React from 'react';
+import React from "react";
 
 export default function CopyButton({ className, onClick }) {
   const [copied, setCopied] = React.useState(false);
@@ -23,16 +23,16 @@ export default function CopyButton({ className, onClick }) {
       <div className="relative h-4 w-4">
         <Clippy
           style={{
-            strokeDasharray: '50 50',
+            strokeDasharray: "50 50",
             strokeDashoffset: copied ? 50 : 100,
-            transition: 'all 300ms ease-in-out',
+            transition: "all 300ms ease-in-out",
           }}
         />
         <Check
           style={{
-            strokeDasharray: '50 50',
+            strokeDasharray: "50 50",
             strokeDashoffset: copied ? 100 : 50,
-            transition: 'all 300ms ease-in-out',
+            transition: "all 300ms ease-in-out",
           }}
         />
       </div>

@@ -1,5 +1,5 @@
-import classNames from 'classnames';
-import * as React from 'react';
+import classNames from "classnames";
+import * as React from "react";
 
 export default function LogoSquare({
   className,
@@ -8,7 +8,7 @@ export default function LogoSquare({
 }): JSX.Element {
   return (
     <svg
-      className={classNames('inline-block', className)}
+      className={classNames("inline-block", className)}
       id="Layer_1"
       data-name="Layer 1"
       xmlns="http://www.w3.org/2000/svg"

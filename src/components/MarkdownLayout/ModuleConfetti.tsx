@@ -1,13 +1,13 @@
-import * as React from 'react';
+import * as React from "react";
 import {
   forwardRef,
   useEffect,
   useImperativeHandle,
   useRef,
   useState,
-} from 'react';
-import useWindowDimensions from '../../hooks/useWindowDimensions';
-import Confetti from '../Confetti';
+} from "react";
+import useWindowDimensions from "../../hooks/useWindowDimensions";
+import Confetti from "../Confetti";
 
 const ModuleConfetti = (props, ref) => {
   const config = {

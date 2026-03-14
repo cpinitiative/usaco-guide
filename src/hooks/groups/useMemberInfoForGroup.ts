@@ -1,8 +1,8 @@
-import { getFunctions, httpsCallable } from 'firebase/functions';
-import React from 'react';
-import toast from 'react-hot-toast';
-import { GroupData } from '../../models/groups/groups';
-import { useFirebaseApp } from '../useFirebase';
+import { getFunctions, httpsCallable } from "firebase/functions";
+import React from "react";
+import toast from "react-hot-toast";
+import { GroupData } from "../../models/groups/groups";
+import { useFirebaseApp } from "../useFirebase";
 
 export type MemberInfo = {
   displayName: string;
@@ -19,7 +19,7 @@ export default function useMemberInfoForGroup(group: GroupData) {
   const [memberInfo, setMemberInfo] = React.useState<MemberInfo[] | null>(null);
 
   useFirebaseApp(
-    firebaseApp => {
+    (firebaseApp) => {
       setMemberInfo(null);
       if (!group) return;
 
@@ -31,19 +31,21 @@ export default function useMemberInfoForGroup(group: GroupData) {
       // if so, we should re-fetch member information.
       if (
         cachedData?.groupId !== group.id ||
-        group.memberIds.some(id => !cachedData?.data.find(x => x.uid === id)) ||
-        cachedData.data.some(x => !group.memberIds.includes(x.uid))
+        group.memberIds.some(
+          (id) => !cachedData?.data.find((x) => x.uid === id),
+        ) ||
+        cachedData.data.some((x) => !group.memberIds.includes(x.uid))
       ) {
         httpsCallable<any, any>(
           getFunctions(firebaseApp),
-          'groups-getMembers'
+          "groups-getMembers",
         )({
           groupId: group.id,
         })
-          .then(d => {
+          .then((d) => {
             if (d?.data?.length > 0) {
               d.data.sort((a, b) =>
-                (a.displayName ?? '').localeCompare(b.displayName ?? '')
+                (a.displayName ?? "").localeCompare(b.displayName ?? ""),
               );
               setMemberInfo(d.data);
               cachedData = {
@@ -51,15 +53,15 @@ export default function useMemberInfoForGroup(group: GroupData) {
                 data: d.data,
               };
             } else {
-              toast.error('Error: Failed to fetch member info for leaderboard');
+              toast.error("Error: Failed to fetch member info for leaderboard");
             }
           })
-          .catch(e => {
+          .catch((e) => {
             toast.error(e.message);
           });
       }
     },
-    [group?.id, group?.memberIds]
+    [group?.id, group?.memberIds],
   );
 
   return memberInfo;

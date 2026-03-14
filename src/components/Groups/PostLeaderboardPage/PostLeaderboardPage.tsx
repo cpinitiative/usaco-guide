@@ -1,29 +1,29 @@
-import type { DocumentReference } from 'firebase/firestore';
-import { doc, getDoc, getFirestore } from 'firebase/firestore';
-import React from 'react';
-import toast from 'react-hot-toast';
-import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
-import { useActivePostProblems } from '../../../hooks/groups/useActivePostProblems';
-import useLeaderboardData from '../../../hooks/groups/useLeaderboardData';
-import { usePost } from '../../../hooks/groups/usePost';
-import { useFirebaseApp } from '../../../hooks/useFirebase';
-import { FirebaseSubmission } from '../../../models/groups/problem';
-import Layout from '../../layout';
-import SEO from '../../seo';
-import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
-import Breadcrumbs from '../Breadcrumbs';
-import { LeaderboardTable } from '../LeaderboardTable/LeaderboardTable';
-import { useProblemSubmissionPopupAction } from '../ProblemSubmissionPopup';
+import type { DocumentReference } from "firebase/firestore";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
+import React from "react";
+import toast from "react-hot-toast";
+import { useActiveGroup } from "../../../hooks/groups/useActiveGroup";
+import { useActivePostProblems } from "../../../hooks/groups/useActivePostProblems";
+import useLeaderboardData from "../../../hooks/groups/useLeaderboardData";
+import { usePost } from "../../../hooks/groups/usePost";
+import { useFirebaseApp } from "../../../hooks/useFirebase";
+import { FirebaseSubmission } from "../../../models/groups/problem";
+import Layout from "../../layout";
+import SEO from "../../seo";
+import TopNavigationBar from "../../TopNavigationBar/TopNavigationBar";
+import Breadcrumbs from "../Breadcrumbs";
+import { LeaderboardTable } from "../LeaderboardTable/LeaderboardTable";
+import { useProblemSubmissionPopupAction } from "../ProblemSubmissionPopup";
 
-export default function PostLeaderboardPage(props) {
-  const { postId, path } = props as {
-    path: string;
-    groupId: string;
-    postId: string;
-  };
+interface PostLeaderboardPageProps {
+  groupId: string;
+  postId: string;
+}
+export default function PostLeaderboardPage(props: PostLeaderboardPageProps) {
+  const { groupId, postId } = props;
   const activeGroup = useActiveGroup();
   const post = usePost(postId);
-  if (!post) throw new Error('Post not found');
+  if (!post) throw new Error("Post not found");
   const { problems } = useActivePostProblems();
   const firebaseApp = useFirebaseApp();
   const leaderboard = useLeaderboardData({
@@ -35,37 +35,33 @@ export default function PostLeaderboardPage(props) {
   const openProblemSubmissionPopup = useProblemSubmissionPopupAction();
   const handleOpenSubmissionsDetail = (
     problemId: string,
-    submissionId: string
+    submissionId: string,
   ) => {
     getDoc(
       doc(
         getFirestore(firebaseApp),
-        'groups',
+        "groups",
         activeGroup.activeGroupId!,
-        'posts',
+        "posts",
         postId,
-        'problems',
+        "problems",
         problemId,
-        'submissions',
-        submissionId
-      ) as DocumentReference<FirebaseSubmission>
+        "submissions",
+        submissionId,
+      ) as DocumentReference<FirebaseSubmission>,
     )
-      .then(doc => {
+      .then((doc) => {
         const submission = { ...doc.data(), id: doc.id } as FirebaseSubmission;
         openProblemSubmissionPopup(submission);
       })
-      .catch(e => {
+      .catch((e) => {
         toast.error("Couldn't get submission: " + e.message);
       });
   };
 
   return (
     <Layout>
-      <SEO
-        title={`Leaderboard: ${post.name}`}
-        image={null}
-        pathname={props.path}
-      />
+      <SEO title={`Leaderboard: ${post.name}`} image={null} />
 
       <TopNavigationBar />
 
@@ -98,19 +94,19 @@ export default function PostLeaderboardPage(props) {
 
         <div className="flex flex-col">
           <LeaderboardTable
-            columns={problems?.map(problem => ({
+            columns={problems?.map((problem) => ({
               id: problem.id,
               tooltip: problem.name,
             }))}
-            rows={leaderboard?.map(item => ({
+            rows={leaderboard?.map((item) => ({
               id: item.userInfo.uid,
               name: item.userInfo.displayName,
               points: item[postId]?.totalPoints ?? 0,
-              items: problems?.map(problem => ({
+              items: problems?.map((problem) => ({
                 id: problem.id,
                 value:
                   item.details[postId]?.[problem.id]?.bestScore?.toFixed(1) ||
-                  '0',
+                  "0",
                 payload: activeGroup.showAdminView &&
                   item.details[postId]?.[problem.id] && {
                     problemId: problem.id,
@@ -119,8 +115,20 @@ export default function PostLeaderboardPage(props) {
                   },
               })),
             }))}
-            onCellClick={(_, { problemId, submissionId }) => {
-              handleOpenSubmissionsDetail(problemId, submissionId);
+            onCellClick={(_, payload) => {
+              if (
+                payload &&
+                typeof payload === "object" &&
+                "problemId" in payload &&
+                "submissionId" in payload
+              ) {
+                handleOpenSubmissionsDetail(
+                  (payload as { problemId: string; submissionId: string })
+                    .problemId,
+                  (payload as { problemId: string; submissionId: string })
+                    .submissionId,
+                );
+              }
             }}
           />
         </div>

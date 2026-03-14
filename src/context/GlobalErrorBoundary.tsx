@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 
 export default class GlobalErrorBoundary extends React.Component<
   { children: React.ReactNode },
@@ -15,7 +15,7 @@ export default class GlobalErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error, info) {
-    console.error('Caught error:', error, info);
+    console.error("Caught error:", error, info);
     this.setState({ error, info });
   }
 
@@ -28,11 +28,11 @@ export default class GlobalErrorBoundary extends React.Component<
           </div>
           <pre className="mx-auto mt-4 max-w-5xl overflow-x-auto font-mono">
             {this.state.error?.stack}
-            {'\n\n'}
+            {"\n\n"}
             Component Stack:{this.state.info?.componentStack}
           </pre>
           <p className="mt-8 text-center">
-            Try{' '}
+            Try{" "}
             <a
               href="mailto:usacoguide@gmail.com"
               target="_blank"
@@ -41,7 +41,7 @@ export default class GlobalErrorBoundary extends React.Component<
             >
               emailing us
             </a>
-            ,{' '}
+            ,{" "}
             <a
               href="https://github.com/cpinitiative/usaco-guide/issues"
               target="_blank"

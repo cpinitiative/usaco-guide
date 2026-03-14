@@ -1,7 +1,7 @@
 import {
   useUserProgressOnModules,
   useUserProgressOnProblems,
-} from '../context/UserDataContext/properties/userProgress';
+} from "../context/UserDataContext/properties/userProgress";
 // import { ProblemProgress } from '../models/problem';
 // import { ModuleProgress } from '../models/module';
 
@@ -11,7 +11,7 @@ const getProgressInfo = (
   completedValues: string[],
   inProgressValues: string[],
   skippedValues: string[],
-  notStartedValues: string[]
+  notStartedValues: string[],
 ) => {
   const res = {
     completed: 0,
@@ -35,10 +35,10 @@ export function useModulesProgressInfo(moduleIDs: string[]) {
   return getProgressInfo(
     moduleIDs,
     userProgressOnModules,
-    ['Complete'],
-    ['Reading', 'Practicing'],
-    ['Skipped'],
-    ['Not Started']
+    ["Complete"],
+    ["Reading", "Practicing"],
+    ["Skipped"],
+    ["Not Started"],
   );
 }
 
@@ -47,9 +47,9 @@ export function useProblemsProgressInfo(problemIDs: string[]) {
   return getProgressInfo(
     problemIDs,
     userProgressOnProblems,
-    ['Solved', 'Reviewing'],
-    ['Solving'],
-    ['Skipped'],
-    ['Not Attempted']
+    ["Solved", "Reviewing"],
+    ["Solving"],
+    ["Skipped"],
+    ["Not Attempted"],
   );
 }

@@ -3,9 +3,9 @@ import {
   DialogBackdrop,
   DialogPanel,
   DialogTitle,
-} from '@headlessui/react';
-import { XIcon } from '@heroicons/react/outline';
-import React, { FormEvent } from 'react';
+} from "@headlessui/react";
+import { XIcon } from "@heroicons/react/outline";
+import React, { FormEvent } from "react";
 
 type SlideoverProps = {
   isOpen: boolean;

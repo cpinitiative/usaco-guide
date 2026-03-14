@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { TOCHeading } from '../../../models/module';
-import genLinksFromTOCHeadings from './genLinksFromTOCHeadings';
+import * as React from "react";
+import { TOCHeading } from "../../../models/module";
+import genLinksFromTOCHeadings from "./genLinksFromTOCHeadings";
 
 const TableOfContentsBlock = ({
   tableOfContents,
@@ -9,8 +9,8 @@ const TableOfContentsBlock = ({
 }) => {
   const links = genLinksFromTOCHeadings(
     tableOfContents,
-    _ =>
-      'block mb-2 transition text-gray-600 dark:text-dark-med-emphasis hover:underline hover:text-blue-600 dark:hover:text-dark-high-emphasis'
+    (_) =>
+      "block mb-2 transition text-gray-600 dark:text-dark-med-emphasis hover:underline hover:text-blue-600 dark:hover:text-dark-high-emphasis",
   );
   return (
     <div>

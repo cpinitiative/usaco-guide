@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 export function ClientOnly({ children }: { children: React.ReactNode }) {
   const [isClient, setIsClient] = useState(false);

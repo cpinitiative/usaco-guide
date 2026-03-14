@@ -1,5 +1,5 @@
-import * as React from 'react';
-import Danger from './Danger';
+import * as React from "react";
+import Danger from "./Danger";
 
 export const IncompleteSection = ({
   children,
@@ -8,7 +8,7 @@ export const IncompleteSection = ({
 }): JSX.Element => {
   return (
     <Danger title="This section is not complete.">
-      Any help would be appreciated! Just submit a Pull Request on{' '}
+      Any help would be appreciated! Just submit a Pull Request on{" "}
       <a
         href="https://github.com/cpinitiative/usaco-guide"
         target="_blank"

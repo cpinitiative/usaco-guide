@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-const markdownDecorator = Story => (
+const markdownDecorator = (Story) => (
   <div className="markdown">
     <Story />
   </div>

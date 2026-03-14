@@ -1,6 +1,7 @@
-import { Link } from 'gatsby';
-import * as React from 'react';
-import LeaderboardList from '../LeaderboardList/LeaderboardList';
+import Link from "next/link";
+import * as React from "react";
+import LeaderboardList from "../LeaderboardList/LeaderboardList";
+import { useActiveGroup } from "../../../hooks/groups/useActiveGroup";
 
 export default function LeaderboardSidebar() {
   return (
@@ -14,7 +15,7 @@ export default function LeaderboardSidebar() {
             Leaderboard
           </h2>
           <Link
-            to="leaderboard"
+            href={"/groups/" + useActiveGroup().activeGroupId + "/leaderboard"}
             className="text-sm font-medium text-gray-800 hover:text-black dark:text-gray-200 dark:hover:text-white"
           >
             View All &rarr;

@@ -1,23 +1,23 @@
-import { StoryFn } from '@storybook/react-webpack5';
-import React, { ComponentProps } from 'react';
-import HTMLComponents from '../../components/markdown/HTMLComponents';
-import markdownDecorator from '../../components/markdown/markdownDecoratorForStorybook';
-import Warning from '../../components/markdown/Warning';
-import MiscMarkdownContent from './MiscMarkdownContent';
+import { StoryFn } from "@storybook/react";
+import React, { ComponentProps } from "react";
+import HTMLComponents from "../../components/markdown/HTMLComponents";
+import markdownDecorator from "../../components/markdown/markdownDecoratorForStorybook";
+import Warning from "../../components/markdown/Warning";
+import MiscMarkdownContent from "./MiscMarkdownContent";
 
 export default {
-  title: 'Markdown/Warning',
+  title: "Markdown/Warning",
   component: Warning,
   decorators: [markdownDecorator],
 };
 
-const Template: StoryFn<ComponentProps<typeof Warning>> = args => (
+const Template: StoryFn<ComponentProps<typeof Warning>> = (args) => (
   <Warning {...args} />
 );
 
 export const Default = Template.bind({});
 Default.args = {
-  title: 'Warning Block',
+  title: "Warning Block",
   children: (
     <>
       <MiscMarkdownContent />

@@ -1,14 +1,15 @@
-import { graphql, useStaticQuery } from 'gatsby';
-import { GatsbyImage } from 'gatsby-plugin-image';
-import * as React from 'react';
-import { useState } from 'react';
-import { useLastVisitInfo } from '../../context/UserDataContext/properties/lastVisit';
+import * as React from "react";
+import { useState } from "react";
+import { useLastVisitInfo } from "../../context/UserDataContext/properties/lastVisit";
+import Link from "next/link";
+import Image from "next/image";
+import { useCowImages } from "../../context/CowImagesContext";
 
 // note: cows will be unlocked in lexicographical order
 
 const ComeBackTimer = ({ tomorrowMilliseconds }) => {
   const [milliseconds, setMilliseconds] = React.useState(
-    tomorrowMilliseconds - Date.now()
+    tomorrowMilliseconds - Date.now(),
   );
 
   React.useEffect(() => {
@@ -30,7 +31,7 @@ const ComeBackTimer = ({ tomorrowMilliseconds }) => {
       <p className="my-2 text-2xl">
         {hours} hours {minutes} minutes {seconds} seconds
       </p>
-      to {days ? 'continue your streak' : 'unlock this cow photo'}!
+      to {days ? "continue your streak" : "unlock this cow photo"}!
       {days ? ` Photo will be unlocked after ${days + 1} days.` : null}
     </div>
   );
@@ -40,7 +41,7 @@ const PhotoCard = ({ img, day, tomorrowMilliseconds, hiddenOnDesktop }) => {
   return (
     <div
       className={
-        'mx-auto mb-8 max-w-[592px]' + (hiddenOnDesktop ? ' lg:hidden' : '')
+        "mx-auto mb-8 max-w-[592px]" + (hiddenOnDesktop ? " lg:hidden" : "")
       }
     >
       <div className="flex flex-col overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
@@ -51,47 +52,33 @@ const PhotoCard = ({ img, day, tomorrowMilliseconds, hiddenOnDesktop }) => {
         </div>
         {/* We set text size to 0px because GatsbyImage is inline block. Without it, there's extra space after the image. */}
         <div className="relative overflow-hidden text-[0px]">
-          {tomorrowMilliseconds >= 0 ? (
+          {tomorrowMilliseconds >= 0 && (
             <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/25 p-4 text-center text-base font-medium text-black dark:bg-black/25 dark:text-white">
               <ComeBackTimer tomorrowMilliseconds={tomorrowMilliseconds} />
             </div>
-          ) : null}
-          <GatsbyImage
-            image={img}
-            className="w-full object-cover"
-            alt="Cow"
-            style={
-              tomorrowMilliseconds >= 0 ? { filter: 'blur(60px)' } : undefined
-            }
-          />
+          )}
+          <div className="relative w-full aspect-[16/9]">
+            <Image
+              src={img.src}
+              alt="Cow"
+              fill
+              sizes="(max-width: 768px) 100vw, 592px"
+              className={`object-cover ${tomorrowMilliseconds >= 0 ? "blur-2xl" : ""}`}
+              priority={day === 1} // Only preload the first image
+            />
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default function DailyStreak({ streak }) {
-  const data: Queries.DailyStreakQuery = useStaticQuery(graphql`
-    query DailyStreak {
-      allFile(
-        filter: { relativePath: { regex: "/^cows/.*/" } }
-        sort: { fields: name }
-      ) {
-        nodes {
-          childImageSharp {
-            gatsbyImageData(quality: 100, layout: CONSTRAINED, width: 592)
-          }
-          name
-        }
-      }
-    }
-  `);
-  // https://www.digitalocean.com/community/tutorials/react-usememo
-  const cows = React.useMemo(() => {
-    return data.allFile.nodes.map(
-      node => node.childImageSharp!.gatsbyImageData
-    );
-  }, []);
+interface DailyStreakProps {
+  streak: number;
+}
+
+export default function DailyStreak({ streak }: DailyStreakProps) {
+  const cows = useCowImages() || [];
   const { lastVisitDate } = useLastVisitInfo();
 
   // we don't want to render streaks during Server-Side Generation
@@ -137,13 +124,13 @@ export default function DailyStreak({ streak }) {
                 </h3>
                 <div className="dark:text-dark-med-emphasis mt-3 space-y-1 text-sm leading-5 text-gray-500">
                   Seeing that you're addicted to USACO Guide, you should
-                  definitely reach out to us regarding{' '}
-                  <a
+                  definitely reach out to us regarding{" "}
+                  <Link
                     href="/general/contributing"
                     className="font-bold text-blue-500"
                   >
                     contributing
-                  </a>
+                  </Link>
                   !
                 </div>
               </div>
@@ -194,7 +181,7 @@ export default function DailyStreak({ streak }) {
             <div className="dark:text-dark-med-emphasis mt-3 space-y-1 text-sm leading-5 text-gray-500">
               <p>
                 You've visited this guide for {streak} consecutive day
-                {streak !== 1 && 's'}.
+                {streak !== 1 && "s"}.
               </p>
               <p>
                 Each (prime) day you visit, you'll unlock a new cow photo (until

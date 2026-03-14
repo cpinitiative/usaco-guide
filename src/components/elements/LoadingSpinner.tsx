@@ -1,15 +1,15 @@
-import classNames from 'classnames';
-import React from 'react';
+import classNames from "classnames";
+import React from "react";
 
 // Taken from play.tailwindcss.com
 export const LoadingSpinner: React.FC<{ className?: string }> = ({
-  className = 'h-4 w-4',
+  className = "h-4 w-4",
 }) => {
   return (
     <svg
       fill="none"
       viewBox="0 0 24 24"
-      className={classNames(className, 'animate-spin')}
+      className={classNames(className, "animate-spin")}
     >
       <circle
         className="opacity-25"

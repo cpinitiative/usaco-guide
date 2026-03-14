@@ -1,13 +1,14 @@
-import { Link, navigate } from 'gatsby';
-import React, { useReducer } from 'react';
-import toast from 'react-hot-toast';
-import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
-import { useGroupActions } from '../../../hooks/groups/useGroupActions';
-import { GroupData } from '../../../models/groups/groups';
-import Layout from '../../layout';
-import SEO from '../../seo';
-import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
-import Breadcrumbs from '../Breadcrumbs';
+import Link from "next/link";
+import { useRouter } from "next/router";
+import React, { useReducer } from "react";
+import toast from "react-hot-toast";
+import { useActiveGroup } from "../../../hooks/groups/useActiveGroup";
+import { useGroupActions } from "../../../hooks/groups/useGroupActions";
+import { GroupData } from "../../../models/groups/groups";
+import Layout from "../../layout";
+import SEO from "../../seo";
+import TopNavigationBar from "../../TopNavigationBar/TopNavigationBar";
+import Breadcrumbs from "../Breadcrumbs";
 
 export default function EditGroupPage(props) {
   const { groupId } = props as {
@@ -19,11 +20,12 @@ export default function EditGroupPage(props) {
   const [group, editGroup] = useReducer(
     (
       old: GroupData | undefined,
-      updates: Partial<GroupData>
+      updates: Partial<GroupData>,
     ): GroupData | undefined => (old ? { ...old, ...updates } : undefined),
-    originalGroup
+    originalGroup,
   );
   const { deleteGroup, updateGroup } = useGroupActions();
+  const router = useRouter();
 
   React.useEffect(() => {
     if (!group && originalGroup) editGroup(originalGroup);
@@ -41,15 +43,11 @@ export default function EditGroupPage(props) {
   }
 
   const handleSave = () =>
-    updateGroup(groupId, group).then(() => navigate('../', { replace: true }));
+    updateGroup(groupId, group).then(() => router.push(`../${groupId}`));
 
   return (
     <Layout>
-      <SEO
-        title={`Edit ${group?.name}`}
-        image={undefined}
-        pathname={undefined}
-      />
+      <SEO title={`Edit ${group?.name}`} image={undefined} />
       <TopNavigationBar />
       <nav className="mt-6 mb-4 flex" aria-label="Breadcrumb">
         <Breadcrumbs
@@ -65,7 +63,7 @@ export default function EditGroupPage(props) {
             </h1>
           </div>
           <div className="mt-4 flex space-x-3 md:mt-0">
-            <Link to="../" className="btn">
+            <Link href={`../${groupId}`} className="btn">
               <span>Back</span>
             </Link>
           </div>
@@ -87,7 +85,7 @@ export default function EditGroupPage(props) {
                     name="group_name"
                     id="group_name"
                     value={group.name}
-                    onChange={e => editGroup({ name: e.target.value })}
+                    onChange={(e) => editGroup({ name: e.target.value })}
                     className="input"
                   />
                 </div>
@@ -106,7 +104,7 @@ export default function EditGroupPage(props) {
                     id="group_description"
                     rows={4}
                     value={group.description}
-                    onChange={e => editGroup({ description: e.target.value })}
+                    onChange={(e) => editGroup({ description: e.target.value })}
                     className="input"
                   />
                 </div>
@@ -120,14 +118,14 @@ export default function EditGroupPage(props) {
                 type="button"
                 onClick={() => {
                   if (
-                    confirm('Are you sure you want to delete this group?') &&
+                    confirm("Are you sure you want to delete this group?") &&
                     confirm(
-                      'Are you REALLY sure? Posts and submissions will be permanently deleted.'
+                      "Are you REALLY sure? Posts and submissions will be permanently deleted.",
                     )
                   ) {
                     deleteGroup(groupId)
-                      .then(() => navigate(`/groups/`, { replace: true }))
-                      .catch(e => toast.error(e.message));
+                      .then(() => router.push(`/groups/`))
+                      .catch((e) => toast.error(e.message));
                   }
                 }}
                 className="dark:focus:ring-offset-dark-surface inline-flex justify-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-hidden"

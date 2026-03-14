@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   useInstantSearch,
   useRefinementList,
   UseRefinementListProps,
-} from 'react-instantsearch';
-import Select from '../Select';
+} from "react-instantsearch";
+import Select from "../Select";
 
 export type SelectionProps = UseRefinementListProps & {
   placeholder: string;
@@ -32,13 +32,13 @@ export default function Selection({
   if (!items) items = refineItems;
   for (const key in items) {
     if (items[key].value instanceof Array) {
-      (items[key].value as string[]).push('null');
+      (items[key].value as string[]).push("null");
     }
   }
   const [refinements, setRefinements] = useState<string[]>([]);
   const { setIndexUiState } = useInstantSearch();
   useEffect(() => {
-    setIndexUiState(prevIndexUiState => ({
+    setIndexUiState((prevIndexUiState) => ({
       refinementList: {
         ...prevIndexUiState.refinementList,
         [attribute]: refinements,
@@ -48,7 +48,7 @@ export default function Selection({
   return (
     <Select
       onChange={(items: any) => {
-        if (isMulti) setRefinements(items.map(item => item.value).flat());
+        if (isMulti) setRefinements(items.map((item) => item.value).flat());
         else if (items) setRefinements([items.value]);
         else setRefinements([]);
       }}
@@ -56,7 +56,7 @@ export default function Selection({
       placeholder={placeholder}
       isMulti={isMulti}
       isSearchable={searchable}
-      options={items.map(item => ({
+      options={items.map((item) => ({
         ...item,
         label: transform ? transform(item.label) : item.label,
       }))}

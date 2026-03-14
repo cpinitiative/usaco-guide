@@ -1,21 +1,19 @@
-import { SearchIcon } from '@heroicons/react/solid';
-import React from 'react';
+import { SearchIcon } from "@heroicons/react/solid";
+import React from "react";
 import {
   Highlight,
   InstantSearch,
   PoweredBy,
   useHits,
   useSearchBox,
-} from 'react-instantsearch';
+} from "react-instantsearch";
 import {
   AlgoliaEditorFile,
   AlgoliaEditorFileHit,
-} from '../../models/algoliaEditorFile';
-import { searchClient } from '../../utils/algoliaSearchClient';
+} from "../../models/algoliaEditorFile";
+import searchClient from "../../utils/algoliaLiteSearchClient";
 
-const indexName = `${
-  process.env.GATSBY_ALGOLIA_INDEX_NAME ?? 'dev'
-}_editorFiles`;
+const indexName = `${process.env.ALGOLIA_INDEX_NAME ?? "dev"}_editorFiles`;
 
 const FileSearch = ({
   onSelect,
@@ -34,7 +32,7 @@ const FileSearch = ({
           placeholder="Search"
           className="dark:bg-dark-surface flex-1 border-0 text-gray-700 focus:ring-0 focus:outline-hidden dark:text-gray-200 dark:placeholder-gray-400"
           value={query}
-          onChange={e => setQuery(e.target.value)}
+          onChange={(e) => setQuery(e.target.value)}
           autoComplete="off"
           autoFocus
         />
@@ -42,10 +40,10 @@ const FileSearch = ({
           <SearchIcon className="h-5 w-5 text-gray-400 dark:text-gray-500" />
         </span>
       </div>
-      {query !== '' && (
+      {query !== "" && (
         <div>
           <div className="max-h-[20rem] divide-y divide-gray-200 overflow-y-auto border-t border-gray-200 dark:divide-gray-700 dark:border-gray-700">
-            {hits.map(hit => (
+            {hits.map((hit) => (
               <button
                 className="block w-full px-5 py-3 text-left transition hover:bg-blue-100 focus:outline-hidden dark:hover:bg-gray-700"
                 key={hit.id}
@@ -53,12 +51,12 @@ const FileSearch = ({
               >
                 <h3 className="font-medium text-gray-600 dark:text-gray-200">
                   <Highlight hit={hit} attribute="title" /> (
-                  {hit.kind === 'module' ? 'Module' : 'Solution'})
+                  {hit.kind === "module" ? "Module" : "Solution"})
                 </h3>
                 <p
                   className={`text-gray-700 **:text-sm! **:leading-4! dark:text-gray-400`}
                 >
-                  <Highlight hit={hit} attribute="id" /> -{' '}
+                  <Highlight hit={hit} attribute="id" /> -{" "}
                   <Highlight hit={hit} attribute="path" />
                 </p>
               </button>

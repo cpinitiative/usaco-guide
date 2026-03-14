@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 interface BlindModeContextType {
   isBlindMode: boolean;
@@ -6,7 +6,7 @@ interface BlindModeContextType {
 }
 
 const BlindModeContext = createContext<BlindModeContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export function BlindModeProvider({ children }: { children: React.ReactNode }) {
@@ -15,18 +15,18 @@ export function BlindModeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     setIsClient(true);
-    const storedValue = localStorage.getItem('blindMode');
-    setIsBlindMode(storedValue === 'true');
+    const storedValue = localStorage.getItem("blindMode");
+    setIsBlindMode(storedValue === "true");
   }, []);
 
   useEffect(() => {
     if (isClient) {
-      localStorage.setItem('blindMode', String(isBlindMode));
+      localStorage.setItem("blindMode", String(isBlindMode));
     }
   }, [isBlindMode, isClient]);
 
   const toggleBlindMode = () => {
-    setIsBlindMode(prev => !prev);
+    setIsBlindMode((prev) => !prev);
   };
 
   return (
@@ -39,7 +39,7 @@ export function BlindModeProvider({ children }: { children: React.ReactNode }) {
 export function useBlindMode() {
   const context = useContext(BlindModeContext);
   if (context === undefined) {
-    throw new Error('useBlindMode must be used within a BlindModeProvider');
+    throw new Error("useBlindMode must be used within a BlindModeProvider");
   }
   return context;
 }

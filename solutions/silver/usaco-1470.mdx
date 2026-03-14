@@ -7,8 +7,6 @@ author: David Xiao
 
 [Official Analysis (C++)](https://usaco.org/current/data/sol_prob1_silver_jan25.html)
 
-# Solution
-
 ## Explanation
 
 Let's analyze the last test case in detail.
@@ -21,11 +19,11 @@ Note that a contribution can only be achieved in one of two ways.
 
 The first way is if a cow was not in a desirable location, and the cow was moved to a desirable location during an operation.
 
-![](usaco-1470/firstscenario.png)
+![](/solutions/silver/usaco-1470/firstscenario.png)
 
 The second way is if a cow was already in a desirable location, and the cow was not moved during an operation.
 
-![](usaco-1470/secondscenario.png)
+![](/solutions/silver/usaco-1470/secondscenario.png)
 
 Let's consider how to calculate the contributions created strictly by the first scenario.
 
@@ -33,15 +31,15 @@ Let a cow at location $i$ try to reach a desirable location at location $j$, whe
 
 The most intuitive way to achieve this is by setting $l$ to $i$ and $r$ to $j$, so that after the operation, $i$ is moved to $j$.
 
-![](usaco-1470/firstscenarioexact.png)
+![](/solutions/silver/usaco-1470/firstscenarioexact.png)
 
 We observe that the same is true if we set $l$ to $i - 1$ and $r$ to $j + 1$.
 
-![](usaco-1470/firstscenarioexpanded.png)
+![](/solutions/silver/usaco-1470/firstscenarioexpanded.png)
 
 Thus, the amount of contributions that can be made from a cow at location $i$ and desirable location at location $j$ is limited by the minimum distance to either end of the order, as after that $l$ or $r$ would violate the given constraints for a valid operation.
 
-![](usaco-1470/firstscenarioall.png)
+![](/solutions/silver/usaco-1470/firstscenarioall.png)
 
 In a 0-indexing system, the contribution from $i$ and $j$ can be written as $\min(i + 1, n - j)$.
 
@@ -82,7 +80,7 @@ $$
 
 For a given cow, consider all desirable locations that it can pair with. Each pair contributes $\min(d_{cow}, d_{des})$ contributions. Thus, to speed up processing, we want to separate the pairs which the given cow is a part of into two groups: ones where contributions are limited by $d_{des}$ because $d_{des} < d_{cow}$, and ones where contributions are limited by $d_{cow}$ because $d_{cow} < d_{des}$. We can partition them by creating a sorted array of all $d_{des}$, then binary searching over this array to determine the index where $d_{des} \geq d_{cow}$. Before this index, contributions will be limited by $d_{des}$, and after this index, contributions will be limited by $d_{cow}$.
 
-![](usaco-1470/firstscenariooptimization.png)
+![](/solutions/silver/usaco-1470/firstscenariooptimization.png)
 
 However, this still results in $\mathcal{O}(N)$ time, since we still have to sum up all $d_{des}$ contributions at the end.
 
@@ -99,6 +97,7 @@ $$
 **Time Complexity:** $\mathcal{O}(N \log N)$
 
 <LanguageSection>
+
 <CPPSection>
 
 ```cpp
@@ -191,6 +190,7 @@ int main() {
 ```
 
 </CPPSection>
+
 <PySection>
 
 ```py
@@ -252,4 +252,5 @@ print(total_contributions)
 ```
 
 </PySection>
+
 </LanguageSection>

@@ -1,15 +1,13 @@
-import * as React from 'react';
-import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
-import useLeaderboardData from '../../../hooks/groups/useLeaderboardData';
-import Layout from '../../layout';
-import SEO from '../../seo';
-import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
-import Breadcrumbs from '../Breadcrumbs';
-import { LeaderboardTable } from '../LeaderboardTable/LeaderboardTable';
+import * as React from "react";
+import { useActiveGroup } from "../../../hooks/groups/useActiveGroup";
+import useLeaderboardData from "../../../hooks/groups/useLeaderboardData";
+import Layout from "../../layout";
+import SEO from "../../seo";
+import TopNavigationBar from "../../TopNavigationBar/TopNavigationBar";
+import Breadcrumbs from "../Breadcrumbs";
+import { LeaderboardTable } from "../LeaderboardTable/LeaderboardTable";
 
-export default function GroupLeaderboardPage(props: {
-  path: string;
-}): JSX.Element {
+export default function GroupLeaderboardPage(): JSX.Element {
   const activeGroup = useActiveGroup();
   const posts = activeGroup.posts;
   const leaderboard = useLeaderboardData({
@@ -20,35 +18,31 @@ export default function GroupLeaderboardPage(props: {
   const assignments = React.useMemo(() => {
     if (!posts || !activeGroup.groupData!.postOrdering) return null;
     return activeGroup
-      .groupData!.postOrdering.map(postId =>
-        posts.find(post => post.id === postId)
+      .groupData!.postOrdering.map((postId) =>
+        posts.find((post) => post.id === postId),
       )
-      .filter(post => post?.type === 'assignment' && post.isPublished);
+      .filter((post) => post?.type === "assignment" && post.isPublished);
   }, [posts]);
 
   const fullWidth = assignments && assignments.length > 10;
 
   return (
     <Layout>
-      <SEO
-        title={`Leaderboard: ${activeGroup.groupData!.name}`}
-        image={null}
-        pathname={props.path}
-      />
+      <SEO title={`Leaderboard: ${activeGroup.groupData!.name}`} image={null} />
 
       <TopNavigationBar />
 
       <nav className="mt-6 mb-4 flex" aria-label="Breadcrumb">
         <Breadcrumbs
           className={`${
-            fullWidth ? '' : 'mx-auto w-full max-w-5xl'
+            fullWidth ? "" : "mx-auto w-full max-w-5xl"
           } px-4 pt-3 pb-4 sm:px-6 lg:px-8`}
           group={activeGroup.groupData!}
         />
       </nav>
 
       <div
-        className={`${fullWidth ? '' : 'mx-auto max-w-5xl'} sm:px-6 lg:px-8`}
+        className={`${fullWidth ? "" : "mx-auto max-w-5xl"} sm:px-6 lg:px-8`}
       >
         <div className="md:flex md:items-center md:justify-between">
           <div className="min-w-0 flex-1 px-4 sm:px-0">
@@ -70,17 +64,17 @@ export default function GroupLeaderboardPage(props: {
 
         <div className="flex flex-col">
           <LeaderboardTable
-            columns={assignments?.map(post => ({
+            columns={assignments?.map((post) => ({
               id: post!.id!,
               tooltip: post!.name!,
             }))}
-            rows={leaderboard?.map(item => ({
+            rows={leaderboard?.map((item) => ({
               id: item.userInfo.uid,
               name: item.userInfo.displayName,
               points: item.totalPoints,
-              items: assignments!.map(postData => ({
+              items: assignments!.map((postData) => ({
                 id: postData!.id!,
-                value: '' + (item[postData!.id!]?.totalPoints ?? 0),
+                value: "" + (item[postData!.id!]?.totalPoints ?? 0),
               })),
             }))}
           />

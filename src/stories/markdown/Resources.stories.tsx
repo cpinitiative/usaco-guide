@@ -1,24 +1,24 @@
-import { StoryFn } from '@storybook/react-webpack5';
-import React, { ComponentProps } from 'react';
-import markdownDecorator from '../../components/markdown/markdownDecoratorForStorybook';
+import { StoryFn } from "@storybook/react";
+import React, { ComponentProps } from "react";
+import markdownDecorator from "../../components/markdown/markdownDecoratorForStorybook";
 import {
   Resource,
   ResourcesList,
-} from '../../components/markdown/ResourcesList';
+} from "../../components/markdown/ResourcesList";
 
 export default {
-  title: 'Markdown/ResourcesList',
+  title: "Markdown/ResourcesList",
   component: ResourcesList,
   decorators: [markdownDecorator],
 };
 
-const Template: StoryFn<ComponentProps<typeof ResourcesList>> = args => (
+const Template: StoryFn<ComponentProps<typeof ResourcesList>> = (args) => (
   <ResourcesList {...args} />
 );
 
 export const Default = Template.bind({});
 Default.args = {
-  title: 'My List',
+  title: "My List",
   children: (
     <>
       <Resource source="CPH" title="16.3 - Successor Graphs" starred>

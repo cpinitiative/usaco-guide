@@ -1,8 +1,8 @@
-import { Link } from 'gatsby';
-import * as React from 'react';
-import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
-import { usePostActions } from '../../../hooks/groups/usePostActions';
-import { getPostTimestampString, PostData } from '../../../models/groups/posts';
+import Link from "next/link";
+import * as React from "react";
+import { useActiveGroup } from "../../../hooks/groups/useActiveGroup";
+import { usePostActions } from "../../../hooks/groups/usePostActions";
+import { getPostTimestampString, PostData } from "../../../models/groups/posts";
 
 export default function PostHeader({ post }: { post: PostData }) {
   const activeGroup = useActiveGroup();
@@ -13,7 +13,7 @@ export default function PostHeader({ post }: { post: PostData }) {
       <div>
         <h1 className="text-2xl leading-tight font-bold text-gray-900 dark:text-gray-100">
           {post.name}
-          {post.isPublished ? '' : ' (Unpublished)'}
+          {post.isPublished ? "" : " (Unpublished)"}
         </h1>
         <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
           {getPostTimestampString(post)}
@@ -21,7 +21,16 @@ export default function PostHeader({ post }: { post: PostData }) {
       </div>
       {activeGroup.showAdminView && (
         <div className="mt-4 flex space-x-3 md:mt-0">
-          <Link to="edit" className="btn">
+          <Link
+            href={
+              "/groups/" +
+              activeGroup.groupData!.id +
+              "/post/" +
+              post.id +
+              "/edit"
+            }
+            className="btn"
+          >
             <svg
               className="mr-2 -ml-1 h-5 w-5 text-gray-400"
               xmlns="http://www.w3.org/2000/svg"
@@ -40,7 +49,7 @@ export default function PostHeader({ post }: { post: PostData }) {
             }
             className="btn"
           >
-            <span>{post.isPublished ? 'Unpublish' : 'Publish'}</span>
+            <span>{post.isPublished ? "Unpublish" : "Publish"}</span>
           </button>
         </div>
       )}

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as React from "react";
 
 export interface OptionalProps {
   /**
@@ -26,7 +26,7 @@ const Optional: React.FC<OptionalProps> = ({ children, title }) => (
       </div>
       <div className="ml-3">
         <h3 className="text-sm leading-5 font-medium text-purple-800 dark:text-purple-200">
-          Optional{title ? `: ${title}` : ''}
+          Optional{title ? `: ${title}` : ""}
         </h3>
         <div className="no-y-margin tailwind-alert tailwind-alert--optional mt-2 text-sm leading-5 text-purple-700 dark:text-purple-300">
           {children}

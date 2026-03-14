@@ -8,9 +8,9 @@ import {
   orderBy,
   query,
   Timestamp,
-} from 'firebase/firestore';
-import React from 'react';
-import { useFirebaseApp } from '../useFirebase';
+} from "firebase/firestore";
+import React from "react";
+import { useFirebaseApp } from "../useFirebase";
 
 export type LeaderboardEntry = {
   totalPoints: number;
@@ -54,14 +54,14 @@ export default function useLeaderboardData({
     }
     const q = query(
       collection(getFirestore(firebaseApp), `groups/${groupId}/leaderboard`),
-      orderBy(postId ? `${postId}.totalPoints` : 'totalPoints', 'desc'),
-      limit(maxResults)
+      orderBy(postId ? `${postId}.totalPoints` : "totalPoints", "desc"),
+      limit(maxResults),
     );
     let alive = true;
-    getDocs(q).then(snap => {
+    getDocs(q).then((snap) => {
       if (!alive) return;
       const newData: LeaderboardEntry[] = [];
-      snap.forEach(doc => newData.push(doc.data() as LeaderboardEntry));
+      snap.forEach((doc) => newData.push(doc.data() as LeaderboardEntry));
       setData(newData);
     });
     return () => {
@@ -74,7 +74,7 @@ export default function useLeaderboardData({
 
 export function useUserLeaderboardData(
   groupId: string,
-  userId: string
+  userId: string,
 ): LeaderboardEntry | null {
   const firebaseApp = useFirebaseApp();
   const [data, setData] = React.useState<LeaderboardEntry | null>(null);
@@ -85,8 +85,8 @@ export function useUserLeaderboardData(
     }
     let alive = true;
     getDoc(
-      doc(getFirestore(firebaseApp), `groups/${groupId}/leaderboard/${userId}`)
-    ).then(snap => {
+      doc(getFirestore(firebaseApp), `groups/${groupId}/leaderboard/${userId}`),
+    ).then((snap) => {
       if (!alive) return;
       setData(snap.data() as LeaderboardEntry);
     });

@@ -1,14 +1,14 @@
-import { Link } from 'gatsby';
-import * as React from 'react';
-import { useActiveGroup } from '../../hooks/groups/useActiveGroup';
-import { useUserLeaderboardData } from '../../hooks/groups/useLeaderboardData';
-import { GroupData } from '../../models/groups/groups';
-import { PostData } from '../../models/groups/posts';
+import Link from "next/link";
+import * as React from "react";
+import { useActiveGroup } from "../../hooks/groups/useActiveGroup";
+import { useUserLeaderboardData } from "../../hooks/groups/useLeaderboardData";
+import { GroupData } from "../../models/groups/groups";
+import { PostData } from "../../models/groups/posts";
 import {
   ProblemData,
   submissionCircleBorderColor,
   submissionCircleColor,
-} from '../../models/groups/problem';
+} from "../../models/groups/problem";
 
 const ProblemListItem = ({
   group,
@@ -27,16 +27,16 @@ const ProblemListItem = ({
   const bestSubmission =
     userLeaderboardData?.details?.[post.id!]?.[problem.id] || null;
   const pointsEarned = bestSubmission?.bestScore || 0;
-  const status = bestSubmission?.bestScoreStatus || 'WA';
+  const status = bestSubmission?.bestScoreStatus || "WA";
 
-  if (!problem) throw new Error('No problem found'); // this shouldn't happen...
+  if (!problem) throw new Error("No problem found"); // this shouldn't happen...
 
   return (
     <div className="dark:bg-dark-surface flex items-center bg-white">
       {dragHandle}
       <div
         className={`relative flex-1 py-5 pr-6 hover:bg-gray-50 sm:py-6 dark:hover:bg-gray-900 ${
-          dragHandle ? 'pl-2' : 'pl-4 sm:pl-6 lg:pl-8 xl:pl-6'
+          dragHandle ? "pl-2" : "pl-4 sm:pl-6 lg:pl-8 xl:pl-6"
         }`}
       >
         <div className="flex items-center justify-between space-x-4">
@@ -54,7 +54,7 @@ const ProblemListItem = ({
               <span className="block">
                 <h2 className="leading-3 font-medium">
                   <Link
-                    to={`/groups/${group.id}/post/${post.id}/problems/${problem.id}`}
+                    href={`/groups/${group.id}/post/${post.id}/problems/${problem.id}`}
                   >
                     <span className="absolute inset-0" aria-hidden="true" />
                     {problem.name}
@@ -100,7 +100,7 @@ const ProblemListItem = ({
           <div className="hidden shrink-0 flex-col items-end space-y-3 sm:flex">
             <p className="flex items-center space-x-4">
               <Link
-                to={`/groups/${group.id}/post/${post.id}/problems/${problem.id}`}
+                href={`/groups/${group.id}/post/${post.id}/problems/${problem.id}`}
                 className="relative text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
               >
                 View Problem

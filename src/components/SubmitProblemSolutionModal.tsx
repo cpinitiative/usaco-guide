@@ -3,14 +3,14 @@ import {
   DialogBackdrop,
   DialogPanel,
   Transition,
-} from '@headlessui/react';
-import className from 'classnames';
-import * as React from 'react';
-import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/simpleProperties';
-import useUserProblemSolutionActions from '../hooks/useUserProblemSolutionActions';
-import { ShortProblemInfo } from '../models/problem';
-import ButtonGroup from './ButtonGroup';
-import TabIndentableTextarea from './elements/TabIndentableTextarea';
+} from "@headlessui/react";
+import className from "classnames";
+import * as React from "react";
+import { LANGUAGE_LABELS } from "../context/UserDataContext/properties/simpleProperties";
+import useUserProblemSolutionActions from "../hooks/useUserProblemSolutionActions";
+import { ShortProblemInfo } from "../models/problem";
+import ButtonGroup from "./ButtonGroup";
+import TabIndentableTextarea from "./elements/TabIndentableTextarea";
 
 export default function SubmitProblemSolutionModal({
   isOpen,
@@ -21,9 +21,9 @@ export default function SubmitProblemSolutionModal({
   onClose: () => void;
   problem: ShortProblemInfo;
 }) {
-  const [solutionCode, setSolutionCode] = React.useState('');
-  const [codeLang, setCodeLang] = React.useState<'cpp' | 'java' | 'py' | null>(
-    null
+  const [solutionCode, setSolutionCode] = React.useState("");
+  const [codeLang, setCodeLang] = React.useState<"cpp" | "java" | "py" | null>(
+    null,
   );
   const [isCodePublic, setIsCodePublic] = React.useState(true);
   const [loading, setLoading] = React.useState(false);
@@ -32,7 +32,7 @@ export default function SubmitProblemSolutionModal({
 
   React.useEffect(() => {
     if (isOpen) {
-      setSolutionCode('');
+      setSolutionCode("");
       setIsCodePublic(true);
       setCodeLang(null);
       setLoading(false);
@@ -40,15 +40,15 @@ export default function SubmitProblemSolutionModal({
     }
   }, [isOpen]);
 
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = event => {
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
 
     if (solutionCode.length < 10) {
-      alert('Your solution seems too short!');
+      alert("Your solution seems too short!");
       return;
     }
     if (!codeLang) {
-      alert('Please select a language.');
+      alert("Please select a language.");
       return;
     }
 
@@ -60,7 +60,7 @@ export default function SubmitProblemSolutionModal({
       language: codeLang,
     })
       .then(() => setShowSuccess(true))
-      .catch(e => alert('Error: ' + e.message))
+      .catch((e) => alert("Error: " + e.message))
       .finally(() => setLoading(false));
   };
 
@@ -75,7 +75,7 @@ export default function SubmitProblemSolutionModal({
             Please keep these in mind when submitting a solution.
             <ol className="ml-5 list-decimal">
               <li>
-                Especially if sharing your code, consider cleaning it up and{' '}
+                Especially if sharing your code, consider cleaning it up and{" "}
                 <b> adding solution notes</b> as a comment at the top.
               </li>
               <li>
@@ -85,10 +85,10 @@ export default function SubmitProblemSolutionModal({
             </ol>
           </p>
           <ButtonGroup
-            options={['cpp', 'java', 'py']}
+            options={["cpp", "java", "py"]}
             labelMap={LANGUAGE_LABELS}
             value={codeLang}
-            onChange={x => setCodeLang(x)}
+            onChange={(x) => setCodeLang(x)}
           />
 
           <div className="mt-3 rounded-md shadow-sm">
@@ -96,7 +96,7 @@ export default function SubmitProblemSolutionModal({
               rows={10}
               className="textarea font-mono"
               value={solutionCode}
-              onChange={e => setSolutionCode(e.target.value)}
+              onChange={(e) => setSolutionCode(e.target.value)}
             />
           </div>
         </div>
@@ -116,23 +116,23 @@ export default function SubmitProblemSolutionModal({
           tabIndex={0}
           onClick={() => setIsCodePublic(!isCodePublic)}
           className={className(
-            'focus:shadow-outline relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden',
-            isCodePublic ? 'bg-blue-600' : 'bg-gray-200'
+            "focus:shadow-outline relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden",
+            isCodePublic ? "bg-blue-600" : "bg-gray-200",
           )}
         >
           <span
             aria-hidden="true"
             className={className(
-              isCodePublic ? 'translate-x-5' : 'translate-x-0',
-              'relative inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out'
+              isCodePublic ? "translate-x-5" : "translate-x-0",
+              "relative inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out",
             )}
           >
             <span
               className={className(
                 isCodePublic
-                  ? 'opacity-0 duration-100 ease-out'
-                  : 'opacity-100 duration-200 ease-in',
-                'absolute inset-0 flex h-full w-full items-center justify-center transition-opacity'
+                  ? "opacity-0 duration-100 ease-out"
+                  : "opacity-100 duration-200 ease-in",
+                "absolute inset-0 flex h-full w-full items-center justify-center transition-opacity",
               )}
             >
               <svg
@@ -152,9 +152,9 @@ export default function SubmitProblemSolutionModal({
             <span
               className={className(
                 isCodePublic
-                  ? 'opacity-100 duration-200 ease-in'
-                  : 'opacity-0 duration-100 ease-out',
-                'absolute inset-0 flex h-full w-full items-center justify-center transition-opacity'
+                  ? "opacity-100 duration-200 ease-in"
+                  : "opacity-0 duration-100 ease-out",
+                "absolute inset-0 flex h-full w-full items-center justify-center transition-opacity",
               )}
             >
               <svg
@@ -264,7 +264,7 @@ export default function SubmitProblemSolutionModal({
                         className="focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base leading-6 font-medium text-white shadow-sm transition duration-150 ease-in-out hover:bg-blue-500 focus:border-blue-700 focus:outline-hidden sm:text-sm sm:leading-5"
                         disabled={loading}
                       >
-                        {loading ? 'Submitting...' : 'Submit Solution'}
+                        {loading ? "Submitting..." : "Submit Solution"}
                       </button>
                     </span>
                     <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
