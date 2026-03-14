@@ -43,7 +43,7 @@ exclusion list. As `train.usaco.org` sometimes crashes, it's added already.
 
 ## MDX Configuration
 
-Update 03/14/2026: Since migrating to Next.js, we use MDX instead of XDM. 
+Update 03/14/2026: Since migrating to Next.js, we use MDX instead of XDM.
 
 MDX configuration is currently handled across two files:
 

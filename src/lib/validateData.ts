@@ -109,7 +109,7 @@ export function validateSolutionRelationships(
       problemsWithInternalSolutions.add(solution.frontmatter.id);
       if (problemsForThisSolution.length === 0) {
         throw new Error(
-          `Couldn't find corresponding problem for internal solution with frontmatter ID ${solution.frontmatter.id}. 
+          `Couldn't find corresponding problem for internal solution with frontmatter ID ${solution.frontmatter.id}.
           If this problem is no longer in any module, add it to content/extraProblems.json.`,
         );
       }

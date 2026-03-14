@@ -121,7 +121,7 @@ export async function queryModulesByDivision(
   const rows = db
     .prepare(
       `
-      SELECT 
+      SELECT
         id,
         file_path,
         frontmatter_json,
@@ -130,7 +130,7 @@ export async function queryModulesByDivision(
         py_oc,
         division,
         git_author_time
-      FROM mdx_content 
+      FROM mdx_content
       WHERE division = ? AND type = ?
     `,
     )
@@ -241,7 +241,7 @@ export async function queryModuleIdAndTitleFromProblemBySolutionId(
   const moduleListRows = db
     .prepare(
       `
-      SELECT module_id, list_id, problems_json 
+      SELECT module_id, list_id, problems_json
       FROM module_problem_lists
     `,
     )
@@ -284,7 +284,7 @@ export async function queryModuleIdAndTitleFromProblemBySolutionId(
   const rows = db
     .prepare(
       `
-    SELECT 
+    SELECT
       module_id as id,
       json_extract(frontmatter_json, '$.title') as title
     FROM module_frontmatter
@@ -303,7 +303,7 @@ export async function queryAllModuleIdsAndTitles(): Promise<
   const rows = db
     .prepare(
       `
-    SELECT 
+    SELECT
       module_id as id,
       json_extract(frontmatter_json, '$.title') as title
     FROM module_frontmatter
@@ -337,7 +337,7 @@ export async function queryAllProblemDashboardInfo(): Promise<
   const rows = db
     .prepare(
       `
-      SELECT 
+      SELECT
         in_module,
         unique_id,
         source,
@@ -366,7 +366,7 @@ export async function queryAllProblems(): Promise<ProblemInfo[]> {
   const rows = db
     .prepare(
       `
-      SELECT 
+      SELECT
         unique_id,
         name,
         url,

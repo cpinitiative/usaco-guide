@@ -560,7 +560,7 @@ async function generateUsacoDivisionsJson(db: Database.Database): Promise<void> 
   // Query all problems and filter for USACO divisions
   const rows = db
     .prepare(`
-      SELECT 
+      SELECT
         unique_id,
         name,
         url,
