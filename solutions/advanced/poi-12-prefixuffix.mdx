@@ -12,9 +12,8 @@ We are given a string $s$ of length $n$. We need to choose a **prefix** $U$ and 
 - They **do not overlap** in the original string.
 - Their length is **maximized**.
 
-Two strings are cyclically equivalent if one can be obtained from the other by **rotating** it. In other words, if we split a string $U$ into two parts $U = AB$, then a cyclic rotation would be $BA$.
 
-If the **cyclic equivalence condition did not exist**, the problem would reduce to finding the **longest prefix that is also a suffix without overlapping**. This is a classic application of the **KMP prefix function**, where we iterate through the border lengths of the string.
+If the **cyclic equivalence** condition did not exist, the problem would reduce to finding the **longest prefix that is also a suffix without overlapping**. This is a classic application of the **KMP prefix function**.
 
 However, because cyclic equivalence is allowed, the prefix and suffix may match **after a rotation**, so we must detect such matches efficiently. This is handled using **rolling hash** to compare substrings quickly.
 
@@ -22,12 +21,15 @@ However, because cyclic equivalence is allowed, the prefix and suffix may match 
 
 ### Visualising the Requirement
 
+
+
 We can think of the structure of the string as follows:
 
-Index:  0       i                 n-i-L     n-i       n  
+```
+Index:      0       i                (n-i-L)  (n-i) n  
 String: |---U---|---V---| . . . . . |---V---|---U---|  
 Length:     i       L                   L       i  
-
+```
 Here:
 
 - $U$ is the prefix that must match the suffix.
@@ -41,7 +43,7 @@ Thus the final candidate length becomes $i + L$.
 
 ### Algorithm Idea
 
-First, compute the **prefix function** (`pi`) using **KMP**. This gives all possible lengths of borders (prefix = suffix) of the string. By repeatedly jumping using `pi[i-1]`, we can enumerate all valid prefix lengths efficiently.
+First, compute the **prefix function** (`pi`) using **KMP**. This gives all possible lengths of borders `prefix = suffix` of the string. 
 
 Next, we need to handle the **cyclic rotation part**. For this we compute an auxiliary array `best[i]` which stores the **maximum length $L$** such that:
 
@@ -68,6 +70,7 @@ This effectively combines:
 - **Rolling hash** to verify the cyclic rotation structure efficiently.
 
 The result is the **maximum valid length** satisfying all conditions.
+
 ---
 
 ## Implementation
