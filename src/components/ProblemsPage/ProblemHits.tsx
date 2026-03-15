@@ -1,5 +1,5 @@
-import { Link } from 'gatsby';
 import { BaseHit, Hit } from 'instantsearch.js';
+import Link from 'next/link';
 import * as React from 'react';
 import { Highlight, useHits } from 'react-instantsearch';
 import { moduleIDToSectionMap } from '../../../content/ordering';
@@ -104,7 +104,6 @@ function ProblemHit({ hit }: ProblemHitProps) {
                 : hit.solution.url
             }
             target="_blank"
-            rel="noreferrer"
             className="dark:text-dark-med-emphasis text-sm text-gray-500"
           >
             View Solution
@@ -150,7 +149,7 @@ function ProblemHit({ hit }: ProblemHitProps) {
             {hit.problemModules.map(({ id: moduleID, title: moduleLabel }) => (
               <li key={moduleID}>
                 <Link
-                  to={`/${moduleIDToSectionMap[moduleID]}/${moduleID}/#problem-${hit.objectID}`}
+                  href={`/${moduleIDToSectionMap[moduleID]}/${moduleID}/#problem-${hit.objectID}`}
                   className="text-sm text-blue-600 dark:text-blue-400"
                 >
                   {moduleLabel}

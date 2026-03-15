@@ -1,4 +1,3 @@
-import React from 'react';
 import { ProblemSubmissionResult } from '../../../models/groups/problem';
 import TestCaseResult from './TestCaseResult';
 

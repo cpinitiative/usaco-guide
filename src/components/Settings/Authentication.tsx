@@ -1,5 +1,4 @@
 import { CheckIcon, XIcon } from '@heroicons/react/solid';
-import * as React from 'react';
 import { useFirebaseUser } from '../../context/UserDataContext/UserDataContext';
 
 export default function Authentication() {

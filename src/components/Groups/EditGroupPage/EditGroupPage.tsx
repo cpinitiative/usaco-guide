@@ -1,4 +1,5 @@
-import { Link, navigate } from 'gatsby';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import React, { useReducer } from 'react';
 import toast from 'react-hot-toast';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
@@ -24,6 +25,7 @@ export default function EditGroupPage(props) {
     originalGroup
   );
   const { deleteGroup, updateGroup } = useGroupActions();
+  const router = useRouter();
 
   React.useEffect(() => {
     if (!group && originalGroup) editGroup(originalGroup);
@@ -41,15 +43,11 @@ export default function EditGroupPage(props) {
   }
 
   const handleSave = () =>
-    updateGroup(groupId, group).then(() => navigate('../', { replace: true }));
+    updateGroup(groupId, group).then(() => router.push(`../${groupId}`));
 
   return (
     <Layout>
-      <SEO
-        title={`Edit ${group?.name}`}
-        image={undefined}
-        pathname={undefined}
-      />
+      <SEO title={`Edit ${group?.name}`} image={undefined} />
       <TopNavigationBar />
       <nav className="mt-6 mb-4 flex" aria-label="Breadcrumb">
         <Breadcrumbs
@@ -65,7 +63,7 @@ export default function EditGroupPage(props) {
             </h1>
           </div>
           <div className="mt-4 flex space-x-3 md:mt-0">
-            <Link to="../" className="btn">
+            <Link href={`../${groupId}`} className="btn">
               <span>Back</span>
             </Link>
           </div>
@@ -126,7 +124,7 @@ export default function EditGroupPage(props) {
                     )
                   ) {
                     deleteGroup(groupId)
-                      .then(() => navigate(`/groups/`, { replace: true }))
+                      .then(() => router.push(`/groups/`))
                       .catch(e => toast.error(e.message));
                   }
                 }}

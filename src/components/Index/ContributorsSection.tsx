@@ -1,20 +1,8 @@
-import { graphql, useStaticQuery } from 'gatsby';
-import { GatsbyImage } from 'gatsby-plugin-image';
-import * as React from 'react';
+import Image from 'next/image';
 import { Member, Members } from '../../../content/team/contributors';
+import { useTeamImages } from '../../context/TeamImagesContext';
 
-const MemberCard = ({
-  member,
-  gatsbyImage,
-}: {
-  member: Member;
-  gatsbyImage:
-    | {
-        readonly gatsbyImageData: import('gatsby-plugin-image').IGatsbyImageData;
-      }
-    | null
-    | undefined;
-}) => {
+const MemberCard = ({ member }: { member: Member }) => {
   const socialMedia = {
     email: {
       icon: (
@@ -115,18 +103,24 @@ const MemberCard = ({
       link: x => `https://reddit.com/user/${x}`,
     },
   };
+  const teamImages = useTeamImages();
+  const image = member.photo
+    ? teamImages.find(x => x.name === member.photo)
+    : undefined;
   return (
     <li
       key={member.name}
       className="group pointer-events-none relative flex justify-center rounded-t-lg border border-transparent pt-8 pb-2 hover:pointer-events-auto hover:border-gray-200 hover:bg-white dark:hover:border-transparent dark:hover:bg-gray-800"
     >
       <div className="flex flex-col items-center gap-2">
-        <div className="pointer-events-auto relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-full lg:h-24 lg:w-24">
-          {gatsbyImage && gatsbyImage.gatsbyImageData ? (
-            <GatsbyImage
-              image={gatsbyImage.gatsbyImageData}
+        <div className="pointer-events-auto relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-full lg:h-20 lg:w-20">
+          {image ? (
+            <Image
+              src={image.src}
               alt={member.name}
-              className="gatsby-image-wrapper-rounded overflow-hidden rounded-full"
+              width={100}
+              height={100}
+              className="object-position-center rounded-full object-cover"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-gray-200 dark:bg-gray-700">
@@ -166,7 +160,7 @@ const MemberCard = ({
               {member.titles.map(title => (
                 <span
                   key={title}
-                  className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-sm font-medium break-words text-gray-800 dark:bg-gray-600 dark:text-neutral-200"
+                  className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-sm font-medium whitespace-nowrap text-gray-800 dark:bg-gray-600 dark:text-neutral-200"
                 >
                   {title}
                 </span>
@@ -180,24 +174,6 @@ const MemberCard = ({
 };
 
 export default function ContributorsSection(): JSX.Element {
-  const data: Queries.ContributorsQuery = useStaticQuery(graphql`
-    query Contributors {
-      allFile(filter: { relativePath: { regex: "/^team/images/.*/" } }) {
-        nodes {
-          childImageSharp {
-            gatsbyImageData(
-              width: 112
-              height: 112
-              quality: 100
-              transformOptions: { cropFocus: CENTER }
-              layout: FIXED
-            )
-          }
-          name
-        }
-      }
-    }
-  `);
   return (
     <div className="bg-gray-100 dark:bg-gray-900">
       <div className="mx-auto max-w-7xl px-4 py-12 text-center sm:px-6 lg:px-8 lg:py-24">
@@ -219,17 +195,7 @@ export default function ContributorsSection(): JSX.Element {
             </h1>*/}
             <ul className="mx-auto grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))]">
               {Members.CurrentMembers.map(member => {
-                const foundImage = member.photo
-                  ? data.allFile.nodes.find(x => x.name === member.photo)
-                  : null;
-
-                return (
-                  <MemberCard
-                    member={member}
-                    key={member.name}
-                    gatsbyImage={foundImage?.childImageSharp || null}
-                  />
-                );
+                return <MemberCard member={member} key={member.name} />;
               })}
             </ul>
 
@@ -238,16 +204,7 @@ export default function ContributorsSection(): JSX.Element {
             </h1>
             <ul className="mx-auto grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))]">
               {Members.FormerMembers.map(member => (
-                <MemberCard
-                  member={member}
-                  key={member.name}
-                  gatsbyImage={
-                    member.photo
-                      ? data.allFile.nodes.find(x => x.name === member.photo)
-                          ?.childImageSharp
-                      : null
-                  }
-                />
+                <MemberCard member={member} key={member.name} />
               ))}
             </ul>
           </div>

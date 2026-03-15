@@ -57,7 +57,10 @@ const UserGroupsProvider = ({
             where(key, 'array-contains', firebaseUser?.uid)
           )
         ).then(snap => {
-          queries[key] = snap.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+          queries[key] = snap.docs.map(doc => ({
+            ...doc.data(),
+            id: doc.id,
+          }));
 
           if (Object.keys(queries).every(x => queries[x] !== null)) {
             setGroups(Object.values(queries).flat());

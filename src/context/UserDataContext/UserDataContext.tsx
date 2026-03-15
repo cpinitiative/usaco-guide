@@ -315,7 +315,7 @@ export const UserDataProvider = ({
           // Since we write valid user data to local storage every time the page loads,
           // just assume reading will be valid. If it isn't, the user can always reload
           // the page to get a working version of user data.
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
           localStorage.getItem(LOCAL_STORAGE_KEY)!
         );
 

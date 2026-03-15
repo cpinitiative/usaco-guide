@@ -104,9 +104,14 @@ export default function ProblemSuggestionModal({
           kind: 'none',
         },
       };
-      editorActions.addProblem(listName, problemToAdd);
-      setLoading(false);
-      onClose();
+      if ('addProblem' in editorActions) {
+        editorActions.addProblem(listName, problemToAdd);
+        setLoading(false);
+        onClose();
+      } else {
+        alert('You are not in editor mode.');
+        setLoading(false);
+      }
       return;
     }
     if (!markdownLayoutInfo) throw new Error('No markdown layout info');
@@ -443,23 +448,53 @@ export default function ProblemSuggestionModal({
                 </p>
               )}
               <div className="mt-6 space-y-6">
-                {createdIssueLink ? (
-                  <>
-                    {successMessage}
-                    <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 dark:bg-gray-900">
-                      <button
-                        type="button"
-                        onClick={onClose}
-                        className="focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base leading-6 font-medium text-white shadow-sm transition duration-150 ease-in-out hover:bg-blue-500 focus:border-blue-700 focus:outline-hidden sm:ml-3 sm:w-auto sm:text-sm sm:leading-5"
-                      >
-                        Done
-                      </button>
-                    </div>
-                  </>
-                ) : (
-                  form
-                )}
+                {createdIssueLink ? successMessage : form}
               </div>
+            </div>
+            <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 dark:bg-gray-900">
+              {createdIssueLink ? (
+                <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
+                  <button
+                    type="button"
+                    onClick={() => onClose()}
+                    className="focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base leading-6 font-medium text-white shadow-sm transition duration-150 ease-in-out hover:bg-blue-500 focus:border-blue-700 focus:outline-hidden sm:text-sm sm:leading-5"
+                  >
+                    Done
+                  </button>
+                </span>
+              ) : (
+                <>
+                  <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
+                    <button
+                      type="submit"
+                      className={
+                        'focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base leading-6 font-medium text-white shadow-sm transition duration-150 ease-in-out hover:bg-blue-500 focus:border-blue-700 focus:outline-hidden sm:text-sm sm:leading-5 ' +
+                        (loading ? 'bg-blue-400' : 'bg-blue-600')
+                      }
+                      disabled={loading}
+                    >
+                      {inEditor
+                        ? 'Add Problem'
+                        : loading
+                          ? 'Submitting...'
+                          : 'Submit Suggestion'}
+                    </button>
+                  </span>
+                  <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
+                    <button
+                      type="button"
+                      className={
+                        'focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-gray-300 px-4 py-2 text-base leading-6 font-medium text-gray-700 shadow-sm transition duration-150 ease-in-out hover:text-gray-500 focus:border-blue-300 focus:outline-hidden sm:text-sm sm:leading-5 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 ' +
+                        (loading ? 'bg-gray-100' : 'bg-white')
+                      }
+                      onClick={() => onClose()}
+                      disabled={loading}
+                    >
+                      Cancel
+                    </button>
+                  </span>
+                </>
+              )}
             </div>
           </DialogPanel>
         </div>

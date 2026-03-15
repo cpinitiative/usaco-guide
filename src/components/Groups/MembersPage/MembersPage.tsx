@@ -1,4 +1,4 @@
-import { Link } from 'gatsby';
+import Link from 'next/link';
 import * as React from 'react';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import useLeaderboardData from '../../../hooks/groups/useLeaderboardData';
@@ -8,7 +8,7 @@ import SEO from '../../seo';
 import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import MemberDetail from './MemberDetail';
 
-export default function MembersPage({ path }: { path: string }): JSX.Element {
+export default function MembersPage(): JSX.Element {
   const activeGroup = useActiveGroup();
   const memberInfo = useMemberInfoForGroup(activeGroup.groupData!);
   const leaderboard = useLeaderboardData({
@@ -48,11 +48,7 @@ export default function MembersPage({ path }: { path: string }): JSX.Element {
 
   return (
     <Layout>
-      <SEO
-        title={`Members · ${activeGroup.groupData!.name}`}
-        image={null}
-        pathname={path}
-      />
+      <SEO title={`Members · ${activeGroup.groupData!.name}`} image={null} />
       <div className="flex flex-col xl:h-screen xl:overflow-hidden">
         <TopNavigationBar />
 
@@ -82,7 +78,7 @@ export default function MembersPage({ path }: { path: string }): JSX.Element {
           <aside className="order-first shrink-0 shadow-md lg:flex lg:w-96 lg:flex-col lg:border-r lg:border-gray-200 lg:shadow-none dark:lg:border-gray-700">
             <div className="px-6 pt-6 pb-4">
               <Link
-                to={`/groups/${activeGroup.groupData!.id}`}
+                href={`/groups/${activeGroup.groupData!.id}`}
                 className="text-sm text-gray-600 underline dark:text-gray-300"
               >
                 &larr; Back to group page

@@ -1,4 +1,3 @@
-import { graphql, useStaticQuery } from 'gatsby';
 import * as React from 'react';
 import { useContext, useState } from 'react';
 import {
@@ -17,6 +16,7 @@ import {
 } from '../../context/UserDataContext/properties/userProgress';
 import { ModuleInfo } from '../../models/module';
 import { SolutionInfo } from '../../models/solution';
+import { MdxFrontmatter } from '../../types/content';
 import ForumCTA from '../ForumCTA';
 import DesktopSidebar from './DesktopSidebar';
 import MobileAppBar from './MobileAppBar';
@@ -62,13 +62,17 @@ const ContentContainer = ({ children, tableOfContents }) => (
   </main>
 );
 
+interface MarkdownLayoutProps {
+  frontmatter: MdxFrontmatter[];
+  children: React.ReactNode;
+  markdownData: ModuleInfo | SolutionInfo;
+}
+
 export default function MarkdownLayout({
   markdownData,
   children,
-}: {
-  markdownData: ModuleInfo | SolutionInfo;
-  children: React.ReactNode;
-}) {
+  frontmatter,
+}: MarkdownLayoutProps) {
   const userProgressOnModules = useUserProgressOnModules();
   const setModuleProgress = useSetProgressOnModule();
   const lang = useUserLangSetting();
@@ -81,26 +85,17 @@ export default function MarkdownLayout({
   const tableOfContents =
     lang in markdownData.toc ? markdownData.toc[lang] : markdownData.toc['cpp'];
 
-  const data = useStaticQuery(graphql`
-    query {
-      allXdm(filter: { fileAbsolutePath: { regex: "/content/" } }) {
-        nodes {
-          frontmatter {
-            title
-            id
-          }
-        }
-      }
-    }
-  `);
   const moduleLinks = React.useMemo(() => {
-    return data.allXdm.nodes.map(cur => ({
-      id: cur.frontmatter.id,
-      title: cur.frontmatter.title,
-      section: moduleIDToSectionMap[cur.frontmatter.id],
-      url: moduleIDToURLMap[cur.frontmatter.id],
+    return frontmatter.map(cur => ({
+      id: cur.id,
+      title: cur.title,
+      section: moduleIDToSectionMap[cur.id],
+      url: moduleIDToURLMap[cur.id],
+      cppOc: null,
+      javaOc: null,
+      pyOc: null,
     }));
-  }, [data.allXdm]);
+  }, [frontmatter]);
   const showConfetti = useContext(ConfettiContext);
   const handleCompletionChange = progress => {
     if (moduleProgress === progress) return;

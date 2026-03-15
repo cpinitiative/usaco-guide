@@ -1,5 +1,4 @@
-import { navigate } from 'gatsby-link';
-import * as React from 'react';
+import { useRouter } from 'next/router';
 import toast from 'react-hot-toast';
 import { useFirebaseUser } from '../../../context/UserDataContext/UserDataContext';
 import getPermissionLevel from '../../../functions/src/groups/utils/getPermissionLevel';
@@ -15,6 +14,7 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
     activeGroup.activeGroupId!,
     member.uid
   );
+  const router = useRouter();
 
   if (!member) {
     return (
@@ -155,7 +155,7 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
                   'Viewing group as member. Do not submit any problems. Reload the page to undo.'
                 );
                 activeGroup.setActiveUserId(member.uid);
-                navigate(`/groups/${activeGroup.activeGroupId!}`);
+                router.push(`/groups/${activeGroup.activeGroupId!}`);
               }}
             >
               View Group as Member

@@ -1,5 +1,5 @@
 import { SearchIcon } from '@heroicons/react/solid';
-import { Link } from 'gatsby';
+import Link from 'next/link';
 import React from 'react';
 import {
   Configure,
@@ -12,9 +12,9 @@ import {
 } from 'react-instantsearch';
 import { moduleIDToURLMap, SECTION_LABELS } from '../../../content/ordering';
 import { AlgoliaModuleInfoHit } from '../../models/module';
-import { searchClient } from '../../utils/algoliaSearchClient';
+import searchClient from '../../utils/algoliaLiteSearchClient';
 
-const indexName = `${process.env.GATSBY_ALGOLIA_INDEX_NAME ?? 'dev'}_modules`;
+const indexName = `${process.env.ALGOLIA_INDEX_NAME ?? 'dev'}_modules`;
 
 const ModuleSearch = () => {
   const { query, refine: setQuery } = useSearchBox();
@@ -40,7 +40,7 @@ const ModuleSearch = () => {
           <div className="max-h-[20rem] divide-y divide-gray-200 overflow-y-auto border-t border-gray-200 sm:max-h-[40rem] dark:divide-gray-700 dark:border-gray-700">
             {hits.map(hit => (
               <Link
-                to={moduleIDToURLMap[hit.id]}
+                href={moduleIDToURLMap[hit.id]}
                 className="block px-5 py-3 transition hover:bg-blue-100 dark:hover:bg-gray-700"
                 key={hit.id}
               >

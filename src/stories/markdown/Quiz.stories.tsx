@@ -1,4 +1,3 @@
-import React from 'react';
 import Quiz from '../../components/markdown/Quiz';
 
 export default {

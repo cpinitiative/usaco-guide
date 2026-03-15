@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { TOCHeading } from '../../../models/module';
 import genLinksFromTOCHeadings from './genLinksFromTOCHeadings';
 

@@ -1,7 +1,6 @@
 // Heavily inspired by https://joshwcomeau.com/
 
 import classNames from 'classnames';
-import * as React from 'react';
 import Tooltip from './Tooltip';
 
 const TextTooltip = ({

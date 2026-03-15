@@ -17,8 +17,8 @@ import {
   UserGroupIcon,
 } from '@heroicons/react/solid';
 import classNames from 'classnames';
-import { Link } from 'gatsby';
-import * as React from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { useSignIn } from '../../context/SignInContext';
 import {
@@ -42,6 +42,7 @@ export default function TopNavigationBar({
   hidePromoBar = false,
   redirectToDashboard = false,
 }) {
+  const router = useRouter();
   const firebaseUser = useFirebaseUser();
   const signOut = useSignOutAction();
   const isLoaded = useIsUserDataLoaded();
@@ -132,6 +133,9 @@ export default function TopNavigationBar({
       key: 'adv',
     },
   ];
+
+  const isProblemsActive = router.pathname.startsWith('/problems');
+
   return (
     <>
       {!hidePromoBar && (
@@ -154,8 +158,7 @@ export default function TopNavigationBar({
           <div className="flex h-16 justify-between">
             <div className="flex px-2 lg:px-0">
               <Link
-                to={linkLogoToIndex ? '/' : '/dashboard'}
-                state={{ redirect: redirectToDashboard }}
+                href={linkLogoToIndex ? '/' : '/dashboard'}
                 className="flex shrink-0 items-center"
               >
                 <div className="block sm:hidden">
@@ -168,12 +171,12 @@ export default function TopNavigationBar({
               <div className={`hidden space-x-8 lg:ml-8 lg:flex`}>
                 <SectionsDropdown currentSection={currentSection} />
                 <Link
-                  to="/problems/"
-                  getProps={({ isCurrent }) => ({
-                    className: isCurrent
-                      ? 'inline-flex items-center px-1 pt-0.5 border-b-2 border-blue-500 dark:border-blue-700 text-base font-medium leading-6 text-gray-900 dark:text-dark-high-emphasis focus:outline-hidden focus:border-blue-700 dark:focus:border-blue-500 transition'
-                      : 'inline-flex items-center px-1 pt-0.5 border-b-2 border-transparent text-base font-medium leading-6 text-gray-500 hover:text-gray-900 hover:border-gray-300  focus:outline-hidden focus:text-gray-900 focus:border-gray-300 dark:text-dark-high-emphasis dark:hover:border-gray-500 dark:focus:border-gray-500 transition',
-                  })}
+                  href="/problems/"
+                  className={
+                    isProblemsActive
+                      ? 'dark:text-dark-high-emphasis inline-flex items-center border-b-2 border-blue-500 px-1 pt-0.5 text-base leading-6 font-medium text-gray-900 transition focus:border-blue-700 focus:outline-hidden dark:border-blue-700 dark:focus:border-blue-500'
+                      : 'dark:text-dark-high-emphasis inline-flex items-center border-b-2 border-transparent px-1 pt-0.5 text-base leading-6 font-medium text-gray-500 transition hover:border-gray-300 hover:text-gray-900 focus:border-gray-300 focus:text-gray-900 focus:outline-hidden dark:hover:border-gray-500 dark:focus:border-gray-500'
+                  }
                 >
                   Problems
                 </Link>
@@ -201,7 +204,7 @@ export default function TopNavigationBar({
                     <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black/5">
                       <div className="relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8 lg:grid-cols-2 dark:bg-gray-800">
                         <Link
-                          to="/groups/"
+                          href="/groups/"
                           className="-m-3 flex items-start rounded-lg p-3 transition duration-150 ease-in-out hover:bg-gray-100 dark:hover:bg-gray-700"
                         >
                           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-blue-500 text-white sm:h-12 sm:w-12">
@@ -337,7 +340,7 @@ export default function TopNavigationBar({
 
                   {/* Settings button */}
                   <Link
-                    to="/settings"
+                    href="/settings"
                     className="dark:text-dark-med-emphasis dark:hover:text-dark-high-emphasis rounded-full border-2 border-transparent p-1 text-gray-400 transition hover:text-gray-300 focus:bg-gray-100 focus:text-gray-500 focus:outline-hidden dark:focus:bg-gray-700"
                     aria-label="Settings"
                   >
@@ -370,7 +373,7 @@ export default function TopNavigationBar({
         {/*
         Mobile menu, toggle classes based on menu state.
 
-        Menu open: "block", Menu closed: "hidden
+        Menu open: "block", Menu closed: "hidden"
       */}
         <div className={`${isMobileNavOpen ? 'block' : 'hidden'} lg:hidden`}>
           <div className="grid grid-cols-1 divide-y divide-gray-300 pb-6 dark:divide-gray-800">
@@ -379,7 +382,7 @@ export default function TopNavigationBar({
                 {solutions.map(item => (
                   <Link
                     key={item.name}
-                    to={item.href}
+                    href={item.href}
                     className="group -m-3 flex items-center rounded-md p-3 hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
                     <item.icon
@@ -396,7 +399,7 @@ export default function TopNavigationBar({
             <div className="px-4 py-5">
               <div className="grid grid-cols-2 gap-x-8 gap-y-4">
                 <Link
-                  to="/groups/"
+                  href="/groups/"
                   className="group -m-3 flex items-center rounded-md p-3 hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   <UserGroupIcon
@@ -430,7 +433,7 @@ export default function TopNavigationBar({
               <nav className="grid gap-y-8">
                 <Link
                   key="Problems"
-                  to="/problems"
+                  href="/problems"
                   className="group -m-3 flex items-center rounded-md p-3 hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   <QuestionMarkCircleIcon
@@ -455,7 +458,7 @@ export default function TopNavigationBar({
                 </a>
                 <Link
                   key="Settings"
-                  to="/settings"
+                  href="/settings"
                   className="group -m-3 flex items-center rounded-md p-3 hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
                   <CogIcon

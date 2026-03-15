@@ -1,5 +1,5 @@
-import { StoryFn } from '@storybook/react-webpack5';
-import React, { ComponentProps } from 'react';
+import { StoryFn } from '@storybook/react';
+import { ComponentProps } from 'react';
 import HTMLComponents from '../../components/markdown/HTMLComponents';
 import markdownDecorator from '../../components/markdown/markdownDecoratorForStorybook';
 import Optional from '../../components/markdown/Optional';

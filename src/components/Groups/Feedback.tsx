@@ -7,7 +7,7 @@ import {
   setDoc,
   updateDoc,
 } from 'firebase/firestore';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useFirebaseUser } from '../../context/UserDataContext/UserDataContext';
 import { useFirebaseApp } from '../../hooks/useFirebase';
@@ -53,60 +53,56 @@ export default function Feedback({ videoId }): JSX.Element {
       <div className="text-center">
         <span className="justify-left flex items-center space-x-2">
           <div className="font-medium">How was the video?</div>
-          {[
-            ['😨', 'very_bad', 'very bad'],
-            ['🤨', 'bad'],
-            ['😀', 'good'],
-            ['😍', 'great'],
-          ].map(
-            ([emoji, key, name]: [
-              string,
-              'very_bad' | 'bad' | 'good' | 'great',
-              string,
-            ]) => (
-              <button
-                key={key}
-                type="button"
-                title={`Rate video as ${name || key}`}
-                className={classNames(
-                  baseClasses,
-                  selected === key ? selectedClasses : unselectedClasses
-                )}
-                onClick={() => {
-                  if (selected === key) {
-                    setSelected(null);
-                    updateDoc(doc(db, 'videos', videoId, 'feedback', uid), {
-                      rating: null,
-                    });
-                  } else {
-                    setSelected(key);
-                    if (key == 'very_bad' || key == 'bad') {
-                      setShowAdditionalFeedback(true);
-                    }
-                    toast.promise(
-                      setDoc(
-                        doc(db, 'videos', videoId, 'feedback', uid),
-                        {
-                          rating: key,
-                        },
-                        { merge: true }
-                      ),
-                      {
-                        loading: 'Submitting...',
-                        success: 'Thanks for the feedback!',
-                        error: err => {
-                          console.log(err);
-                          return 'Error submitting feedback.';
-                        },
-                      }
-                    );
+          {(
+            [
+              ['😨', 'very_bad', 'very bad'],
+              ['🤨', 'bad', 'bad'],
+              ['😀', 'good', 'good'],
+              ['😍', 'great', 'great'],
+            ] as const
+          ).map(([emoji, key, name]) => (
+            <button
+              key={key}
+              type="button"
+              title={`Rate video as ${name || key}`}
+              className={classNames(
+                baseClasses,
+                selected === key ? selectedClasses : unselectedClasses
+              )}
+              onClick={() => {
+                if (selected === key) {
+                  setSelected(null);
+                  updateDoc(doc(db, 'videos', videoId, 'feedback', uid), {
+                    rating: null,
+                  });
+                } else {
+                  setSelected(key);
+                  if (key == 'very_bad' || key == 'bad') {
+                    setShowAdditionalFeedback(true);
                   }
-                }}
-              >
-                {emoji}
-              </button>
-            )
-          )}
+                  toast.promise(
+                    setDoc(
+                      doc(db, 'videos', videoId, 'feedback', uid),
+                      {
+                        rating: key,
+                      },
+                      { merge: true }
+                    ),
+                    {
+                      loading: 'Submitting...',
+                      success: 'Thanks for the feedback!',
+                      error: err => {
+                        console.log(err);
+                        return 'Error submitting feedback.';
+                      },
+                    }
+                  );
+                }
+              }}
+            >
+              {emoji}
+            </button>
+          ))}
           {!showAdditionalFeedback && (
             <button
               title={'Write us a private comment'}

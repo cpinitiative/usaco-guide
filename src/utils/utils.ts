@@ -1,9 +1,10 @@
 import MODULE_ORDERING from '../../content/ordering';
 import { ModuleInfo } from '../models/module';
+import { MdxContent } from '../types/content';
 
 export const getModulesForDivision = (
   allModules: {
-    [key: string]: Queries.SyllabusQuery['modules']['nodes'][0];
+    [key: string]: MdxContent;
   },
   division: keyof typeof MODULE_ORDERING
 ) => {
@@ -22,7 +23,7 @@ export const getModulesForDivision = (
   }));
 };
 
-export function graphqlToModuleInfo(mdx): ModuleInfo {
+export function graphqlToModuleInfo(mdx: MdxContent): ModuleInfo {
   return new ModuleInfo(
     mdx.frontmatter.id,
     mdx.fields.division,
@@ -34,7 +35,7 @@ export function graphqlToModuleInfo(mdx): ModuleInfo {
     mdx.frontmatter.description,
     mdx.frontmatter.frequency,
     mdx.toc,
-    mdx.parent.relativePath,
+    mdx.fileAbsolutePath,
     mdx.fields.gitAuthorTime
   );
 }

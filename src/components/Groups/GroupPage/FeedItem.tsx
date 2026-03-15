@@ -1,7 +1,7 @@
 import { Transition } from '@headlessui/react';
 import { CheckIcon, ClipboardListIcon } from '@heroicons/react/outline';
 import { BookmarkIcon } from '@heroicons/react/solid';
-import { Link } from 'gatsby';
+import Link from 'next/link';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
@@ -105,7 +105,7 @@ export default function FeedItem({
       {dragHandle}
       <div className="flex flex-1">
         <Link
-          to={`/groups/${group.id}/post/${post.id}`}
+          href={`/groups/${group.id}/post/${post.id}`}
           className="flex flex-1 space-x-4"
         >
           <div className="shrink-0 self-center">

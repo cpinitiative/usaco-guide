@@ -1,5 +1,3 @@
-import React from 'react';
-
 const markdownDecorator = Story => (
   <div className="markdown">
     <Story />

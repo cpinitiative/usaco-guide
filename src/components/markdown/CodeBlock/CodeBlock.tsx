@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import { themes } from 'prism-react-renderer';
 import * as React from 'react';
 import { SpoilerContext } from '../Spoiler';
-import Highlight from './SyntaxHighlighting/Highlight';
+import Highlight from './SyntaxHighlighting/Highlight.js';
 import Prism from './SyntaxHighlighting/prism';
 
 const Line = ({ className = '', ...props }) => (

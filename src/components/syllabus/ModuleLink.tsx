@@ -1,6 +1,5 @@
 import clsx from 'clsx';
-import { Link } from 'gatsby';
-import * as React from 'react';
+import Link from 'next/link';
 import {
   LANGUAGE_LABELS,
   useUserLangSetting,
@@ -118,7 +117,7 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
           'link-with-progress-container--syllabus--small'
       )}
     >
-      <Link to={link.url}>
+      <Link href={link.url}>
         <div className="link-with-progress-link link-with-progress-link--syllabus group py-3 text-xl leading-6">
           <p
             className={`${

@@ -1,6 +1,6 @@
 import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react';
 import { useSetAtom } from 'jotai';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { createNewInternalSolutionFileAtom } from '../../atoms/editor';
 import { AlgoliaEditorSolutionFile } from '../../models/algoliaEditorFile';
 import Select from '../Select';
@@ -79,7 +79,13 @@ export default function AddFileModal(props) {
                         'Content-Type': 'application/json',
                       },
                       body: JSON.stringify({ url: fileURL }),
-                    }).then(res => res.json())
+                    })
+                      .then(res => res.json())
+                      .catch(e => {
+                        setFileStatus('Create File');
+                        props.onClose();
+                        console.error(e);
+                      })
                   ).data;
                   props.onClose();
                   createSol({

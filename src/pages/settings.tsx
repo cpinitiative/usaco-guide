@@ -1,4 +1,4 @@
-import { navigate } from 'gatsby';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import UnderlinedTabs from '../components/elements/UnderlinedTabs';
 import Layout from '../components/layout';
@@ -36,6 +36,7 @@ import { useUserPermissions } from '../context/UserDataContext/UserPermissionsCo
  */
 
 export default function SettingsPage(props) {
+  const router = useRouter();
   const { isAdmin } = useUserPermissions();
   const tabs = [
     'general',
@@ -64,7 +65,7 @@ export default function SettingsPage(props) {
 
   return (
     <Layout>
-      <SEO title="Settings" image={null} pathname={props.path} />
+      <SEO title="Settings" image={null} />
 
       <TopNavigationBar />
 
@@ -72,7 +73,7 @@ export default function SettingsPage(props) {
         <div className="relative mx-auto max-w-xl md:px-8 xl:px-0">
           <button
             className="btn mx-4 mt-8 sm:mx-6 md:mx-0"
-            onClick={() => navigate(-1)}
+            onClick={() => router.back()}
           >
             <svg
               className="mr-2 -ml-1 h-4 w-4"

@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { useAtomValue, useSetAtom } from 'jotai';
 import * as React from 'react';
-import problemsSchema from '../../../content/problems.schema.json';
+import problemsSchema from '../../../public/problems.schema.json';
 import {
   activeFileAtom,
   baseTabAtom,

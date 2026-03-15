@@ -1,5 +1,4 @@
-import { navigate } from 'gatsby';
-import * as React from 'react';
+import { useRouter } from 'next/router';
 import {
   useFirebaseUser,
   useIsUserDataLoaded,
@@ -19,19 +18,20 @@ const GroupSelectPage = () => {
   const groups = useUserGroups();
   const { createNewGroup } = useGroupActions();
   const permissions = useUserPermissions();
+  const router = useRouter();
 
   const showNotSignedInMessage = isLoaded && !firebaseUser?.uid;
   const showLoading = !showNotSignedInMessage && !groups.isSuccess;
 
   const handleCreateNewGroup = () => {
     createNewGroup().then(groupId => {
-      navigate(`/groups/${groupId}/edit`);
+      router.push(`/groups/${groupId}/edit`);
     });
   };
 
   return (
     <Layout>
-      <SEO title="My Groups" image={null} pathname={window.location.pathname} />
+      <SEO title="My Groups" image={null} />
       <TopNavigationBar />
       <main>
         <div className="mx-auto max-w-3xl px-4 py-16 lg:px-8">

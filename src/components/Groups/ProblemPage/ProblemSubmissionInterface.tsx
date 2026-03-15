@@ -125,7 +125,7 @@ export default function ProblemSubmissionInterface({
           <input
             id="submission-link"
             type="url"
-            className="input"
+            className="input p-2"
             value={submissionLink}
             onChange={e => setSubmissionLink(e.target.value)}
           />
@@ -155,7 +155,7 @@ export default function ProblemSubmissionInterface({
         problem.id
       );
       setSubmissionID(submissionID);
-    } catch (error) {
+    } catch (error: any) {
       alert('Failed to submit solution: ' + error.message);
     }
   };
@@ -221,7 +221,7 @@ export default function ProblemSubmissionInterface({
           onChange={e => editSubmission({ sourceCode: e.target.value })}
           className={`input font-mono${
             isDragActive ? 'border-blue-600 ring-1 ring-blue-600' : ''
-          }`}
+          } p-2`}
           placeholder="Paste code, or drag and drop a file over this textbox."
           required
         />

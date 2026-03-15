@@ -1,7 +1,6 @@
 import { InformationCircleIcon } from '@heroicons/react/outline';
 import classNames from 'classnames';
 import { useAtomValue, useSetAtom } from 'jotai';
-import React from 'react';
 import { activeFileAtom, saveFileAtom } from '../../atoms/editor';
 import { useDarkMode } from '../../context/DarkModeContext';
 import {

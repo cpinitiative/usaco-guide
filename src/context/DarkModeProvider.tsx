@@ -31,9 +31,15 @@ export function DarkModeProvider({ children }) {
 
   useEffect(() => {
     setIsClient(true);
+
+    // Check if dark class was already set (from SSR or previous state)
+    const hasDarkClass = document.documentElement.classList.contains('dark');
+
     if (!isLoaded) {
-      setDarkMode(document.documentElement.classList.contains('dark'));
+      setDarkMode(hasDarkClass);
+      return;
     }
+
     if (theme === 'system') {
       if (!window.matchMedia) {
         setDarkMode(false);
