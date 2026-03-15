@@ -125,8 +125,8 @@ def format_path(path: str):
 		elif line.strip() == "```":
 			if lang is not None:  # end of lang block
 				# if contains_banned_terms(prog):  # don't format
-				# 	print(f"skipping formatting {path}")
-				# 	nlines += prog
+				#       print(f"skipping formatting {path}")
+				#       nlines += prog
 				# else:
 				prog = [comment_codesnip(lang, prog_line) for prog_line in prog]
 				prog = [match_indentation(line, prog_line) for prog_line in prog]
