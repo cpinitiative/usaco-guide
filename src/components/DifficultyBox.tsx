@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { ProblemDifficulty } from '../models/problem';
 import TextTooltip from './Tooltip/TextTooltip';
 

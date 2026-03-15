@@ -1,4 +1,4 @@
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   activeFileAtom,
@@ -18,7 +18,9 @@ import {
 import { FileListSidebar } from './FileListSidebar';
 
 function GithubActions() {
-  const [fork, setFork] = useAtom(forkAtom);
+  const [fork, setFork] = useAtom(
+    forkAtom as PrimitiveAtom<string | undefined>
+  );
   const githubInfo = useAtomValue(githubInfoAtom);
   const octokit = useAtomValue(octokitAtom);
   const [branch, setBranch] = useAtom(branchAtom);
@@ -206,7 +208,7 @@ function GithubSidebar({ loading }: { loading: boolean }) {
         ) : (
           <a
             href={`https://github.com/login/oauth/authorize?client_id=${
-              process.env.GATSBY_EDITOR_CLIENT_ID
+              process.env.EDITOR_CLIENT_ID
             }&redirect_uri=${
               process.env.NODE_ENV === 'development'
                 ? 'http://localhost:8000/editor'

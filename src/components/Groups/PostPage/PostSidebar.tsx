@@ -1,5 +1,4 @@
-import { Link } from 'gatsby';
-import React from 'react';
+import Link from 'next/link';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useActivePostProblems } from '../../../hooks/groups/useActivePostProblems';
 import { useUserLeaderboardData } from '../../../hooks/groups/useLeaderboardData';
@@ -49,7 +48,7 @@ export default function PostSidebar({
         <SidebarDueDate post={post} />
         {isMobile && (
           <div>
-            <Link to="leaderboard" className="font-medium hover:underline">
+            <Link href="leaderboard" className="font-medium hover:underline">
               View Assignment Leaderboard &rarr;
             </Link>
           </div>
@@ -66,7 +65,13 @@ export default function PostSidebar({
                 Assignment Leaderboard
               </h3>
               <Link
-                to="leaderboard"
+                href={
+                  '/groups/' +
+                  activeGroup.activeGroupId +
+                  '/post/' +
+                  post.id +
+                  '/leaderboard'
+                }
                 className="text-sm font-medium text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-white"
               >
                 View All &rarr;

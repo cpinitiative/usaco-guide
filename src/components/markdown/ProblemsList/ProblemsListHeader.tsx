@@ -1,4 +1,3 @@
-import * as React from 'react';
 import TextTooltip from '../../Tooltip/TextTooltip';
 
 type ProblemsListHeaderProps = {

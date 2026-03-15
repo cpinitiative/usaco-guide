@@ -143,8 +143,7 @@ export default function ContactUsSlideover({
       email === '' ||
       !validateEmail(email) ||
       topic === '' ||
-      message.length < 10 ||
-      !firebaseUser
+      message.length < 10
     ) {
       return;
     }
@@ -163,7 +162,7 @@ export default function ContactUsSlideover({
       setMessage('');
       setShowSuccess(true);
       setIssueLink(response.data as string);
-    } catch (e) {
+    } catch (e: any) {
       setSubmitEnabled(true);
       alert('Form submission failed: ' + e.message);
     } finally {
@@ -286,11 +285,6 @@ export default function ContactUsSlideover({
         )}
         {!showSuccess && (
           <div className="space-y-6 pb-5">
-            {!firebaseUser && (
-              <p className="mt-2 text-sm text-red-600 dark:text-red-400">
-                You must be logged in to submit the contact form!
-              </p>
-            )}
             <Field
               label="Name (will not be shown publicly)"
               id="contact_name"
@@ -469,11 +463,6 @@ export default function ContactUsSlideover({
               >
                 Message (markdown is supported)
               </label>
-              {showErrors && !firebaseUser && (
-                <p className="mt-2 text-sm text-red-600 dark:text-red-400">
-                  You must be logged in to submit the contact form!
-                </p>
-              )}
               <div className="relative rounded-md shadow-sm">
                 <textarea
                   id="contact_message"

@@ -1,0 +1,177 @@
+---
+id: poi-12-prefixuffix
+source: POI
+title: 2012 - Prefixuffix
+author: Ashok Narayan
+---
+## Explanation
+
+We are given a string $s$ of length $n$. We need to choose a **prefix** $U$ and a **suffix** $U'$ of the same length such that:
+
+- They are **cyclically equivalent**.
+- They **do not overlap** in the original string.
+- Their length is **maximized**.
+
+
+If the **cyclic equivalence** condition did not exist, the problem would reduce to finding the **longest prefix that is also a suffix without overlapping**. This is a classic application of the **KMP prefix function**.
+
+However, because cyclic equivalence is allowed, the prefix and suffix may match **after a rotation**, so we must detect such matches efficiently. This is handled using **rolling hash** to compare substrings quickly.
+
+---
+
+### Visualising the Requirement
+
+
+
+We can think of the structure of the string as follows:
+
+```
+Index:  0       i                 n-i-L    n-i      n
+String: |---U---|---V---| . . . . . |---V---|---U---|
+Length:     i       L                   L       i
+```
+Here:
+
+- $U$ is the prefix that must match the suffix.
+- $V$ is a middle segment that appears on both sides of the center.
+- The prefix and suffix must **not overlap**, so $2i \le n$.
+- The middle parts $V$ must match as well to satisfy the **cyclic rotation condition**.
+
+Thus the final candidate length becomes $i + L$.
+
+---
+
+### Algorithm Idea
+
+First, compute the **prefix function** (`pi`) using **KMP**. This gives all possible lengths of borders `prefix = suffix` of the string.
+
+Next, we need to handle the **cyclic rotation part**. For this we compute an auxiliary array `best[i]` which stores the **maximum length $L$** such that:
+
+- substring $s[i \dots i+L-1]$
+- matches substring $s[n-i-L \dots n-1-i]$
+
+This comparison must be fast because it occurs many times. Therefore we use **rolling hash** so each substring comparison takes $O(1)$ time.
+
+We fill `best[i]` from right to left:
+
+- Start with `best[i] = best[i+1] + 2`.
+- Shrink it until the two substrings match and the segments do not overlap.
+
+Finally:
+
+1. Start with `ans = best[0]`.
+2. Iterate over all border lengths using the prefix function.
+3. If a border length $i$ satisfies $2i \le n$, update
+   $ans = \max(ans, i + best[i])$.
+
+This effectively combines:
+
+- **KMP** to enumerate valid prefix–suffix candidates.
+- **Rolling hash** to verify the cyclic rotation structure efficiently.
+
+The result is the **maximum valid length** satisfying all conditions.
+
+---
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n)$
+
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 1e6 + 5;
+const long long BASE = 31;
+const long long MOD = 998244353;
+
+// BeginCodeSnip{KMP and Rolling Hash}
+long long normalize(long long x) {
+	x %= MOD;
+	if (x < 0) x += MOD;
+	return x;
+}
+
+vector<int> prefix_function(const string &s) {
+	int n = s.size();
+	vector<int> pi(n);
+
+	for (int i = 1; i < n; i++) {
+		int j = pi[i - 1];
+
+		while (j > 0 && s[i] != s[j]) { j = pi[j - 1]; }
+
+		if (s[i] == s[j]) j++;
+
+		pi[i] = j;
+	}
+
+	return pi;
+}
+
+struct RollingHash {
+	vector<long long> pref;
+	vector<long long> power;
+
+	RollingHash(const string &s) {
+		int n = s.size();
+		pref.assign(n + 1, 0);
+		power.assign(n + 1, 1);
+
+		for (int i = 0; i < n; i++) {
+			pref[i + 1] = normalize(pref[i] * BASE + s[i]);
+			power[i + 1] = normalize(power[i] * BASE);
+		}
+	}
+
+	long long get(int l, int r) {
+		return normalize(pref[r + 1] - pref[l] * power[r - l + 1]);
+	}
+};
+// EndCodeSnip
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int n;
+	string s;
+
+	cin >> n >> s;
+
+	RollingHash hasher(s);
+	vector<int> pi = prefix_function(s);
+
+	vector<int> best(n);
+
+	for (int i = n / 2 - 1; i >= 0; --i) {
+		best[i] = best[i + 1] + 2;
+
+		while (best[i] > 0) {
+			int len = best[i];
+
+			if (i + len - 1 >= n - i - len ||
+			    hasher.get(i, i + len - 1) != hasher.get(n - i - len, n - 1 - i))
+				best[i]--;
+			else break;
+		}
+	}
+
+	int ans = best[0];
+
+	for (int i = pi[n - 1]; i > 0; i = pi[i - 1])
+		if (i * 2 <= n) ans = max(ans, i + best[i]);
+
+	cout << ans << '\n';
+
+	return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>

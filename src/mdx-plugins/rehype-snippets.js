@@ -1,8 +1,8 @@
 /*eslint-disable */
 'use strict';
 
-const visit = require('unist-util-visit');
-const nodeToString = require('hast-util-to-string');
+import { visit } from 'unist-util-visit';
+// const nodeToString = require('hast-util-to-string');
 
 const replacements = {
   'Benq Template': `//BeginCodeSnip{Benq Template}
@@ -316,7 +316,7 @@ void setIO(string name = "") {
 //EndCodeSnip`,
 };
 
-module.exports = options => {
+export default options => {
   options = options || {};
 
   return tree => {

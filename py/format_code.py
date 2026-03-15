@@ -50,15 +50,21 @@ def format_prog_py(prog: List[str]):
 
 
 def format_prog_clang(lang: str, prog: List[str]):
-	tmp_file = tempfile.NamedTemporaryFile(suffix=f".{lang}")
-	with open(tmp_file.name, "w") as f:
-		f.write("".join(prog))
-	subprocess.check_output(
-		[f"clang-format -i -style='{CLANG_FORMAT_STYLE}' {f.name}"],
-		shell=True,
-	)
-	with open(tmp_file.name, "r") as f:
-		return f.readlines()
+	fd, tmp_path = tempfile.mkstemp(suffix=f".{lang}")
+	try:
+		os.close(fd)  # Must close before reopening on Windows
+		with open(tmp_path, "w", encoding="utf-8") as f:
+			f.write("".join(prog))
+		subprocess.check_output(
+			["clang-format", "-i", f"-style={CLANG_FORMAT_STYLE}", tmp_path],
+		)
+		with open(tmp_path, "r", encoding="utf-8") as f:
+			return f.readlines()
+	finally:
+		try:
+			os.unlink(tmp_path)
+		except OSError:
+			pass
 
 
 def format_prog(lang: str, prog: List[str]):
@@ -103,7 +109,7 @@ def comment_codesnip(lang: str, line: str):
 
 def format_path(path: str):
 	# print("formatting", path)
-	with open(path, "r") as f:
+	with open(path, "r", encoding="utf-8") as f:
 		lines = f.readlines()
 	lang = None
 	nlines = []
@@ -119,8 +125,8 @@ def format_path(path: str):
 		elif line.strip() == "```":
 			if lang is not None:  # end of lang block
 				# if contains_banned_terms(prog):  # don't format
-				# 	print(f"skipping formatting {path}")
-				# 	nlines += prog
+				#       print(f"skipping formatting {path}")
+				#       nlines += prog
 				# else:
 				prog = [comment_codesnip(lang, prog_line) for prog_line in prog]
 				prog = [match_indentation(line, prog_line) for prog_line in prog]
@@ -137,7 +143,7 @@ def format_path(path: str):
 			prog.append(line)
 		else:  # outside of program block
 			nlines.append(line)
-	with open(path, "w") as f:
+	with open(path, "w", encoding="utf-8") as f:
 		f.write("".join(nlines))
 	assert lang is None
 

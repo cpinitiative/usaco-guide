@@ -1,5 +1,4 @@
-import { Link } from 'gatsby';
-import * as React from 'react';
+import Link from 'next/link';
 import { useContext } from 'react';
 import ContactUsSlideoverContext from '../../context/ContactUsSlideoverContext';
 import { useMarkdownLayout } from '../../context/MarkdownLayoutContext';
@@ -12,7 +11,7 @@ const SidebarBottomButtons = () => {
       <div className="flex shrink-0 border-t border-gray-200 dark:border-gray-800">
         <Link
           className="group dark:text-dark-med-emphasis dark:hover:text-dark-high-emphasis dark:focus:text-dark-high-emphasis flex flex-1 items-center p-4 text-sm leading-5 font-medium text-gray-600 transition duration-150 ease-in-out hover:bg-gray-50 hover:text-gray-900 focus:bg-gray-100 focus:outline-hidden dark:hover:bg-gray-900 dark:focus:bg-gray-900"
-          to="/settings"
+          href="/settings"
         >
           <svg
             className="mr-4 h-6 w-6 text-gray-400 transition duration-150 ease-in-out group-hover:text-gray-500 group-focus:text-gray-500 dark:text-gray-500 dark:group-hover:text-gray-400"

@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { PostData } from '../../../models/groups/posts';
 import SafeMarkdownRenderer from '../SafeMarkdownRenderer';
 

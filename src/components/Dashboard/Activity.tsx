@@ -1,12 +1,10 @@
 import * as React from 'react';
 import CalendarHeatmap from 'react-calendar-heatmap';
-import 'react-calendar-heatmap/dist/styles.css';
 import {
   useUserProgressOnModulesActivity,
   useUserProgressOnProblemsActivity,
 } from '../../context/UserDataContext/properties/userProgress';
 import { useActivity } from '../../hooks/useActivity';
-import './heatmap-styles.css';
 
 type ModuleActivity = ReturnType<typeof useUserProgressOnModulesActivity>[0];
 type ProblemActivity = ReturnType<typeof useUserProgressOnProblemsActivity>[0];

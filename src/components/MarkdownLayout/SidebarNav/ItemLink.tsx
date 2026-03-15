@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { Link } from 'gatsby';
+import Link from 'next/link';
 import * as React from 'react';
 import { useContext } from 'react';
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
@@ -51,7 +51,7 @@ const ItemLink = ({
         className={`link-with-progress-container ${linkWithProgressColorClass}`}
       >
         <Link
-          to={`${link.url}${
+          href={`${link.url}${
             typeof location !== 'undefined' ? location.search : ''
           }`}
         >

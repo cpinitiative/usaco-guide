@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { Timestamp } from 'firebase/firestore';
-import { Link, navigate } from 'gatsby';
-import React from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import toast from 'react-hot-toast';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePost } from '../../../hooks/groups/usePost';
@@ -16,13 +16,15 @@ import SafeMarkdownRenderer from '../SafeMarkdownRenderer';
 import ProblemSidebar from './ProblemSidebar';
 import ProblemSubmission from './ProblemSubmissionInterface';
 
-export default function ProblemPage(props) {
-  const { postId, problemId } = props as {
-    path: string;
-    groupId: string;
-    postId: string;
-    problemId: string;
-  };
+interface ProblemPageProps {
+  groupId: string;
+  postId: string;
+  problemId: string;
+}
+
+export default function ProblemPage(props: ProblemPageProps) {
+  const router = useRouter();
+  const { groupId, postId, problemId } = props;
   const activeGroup = useActiveGroup();
   const post = usePost(postId);
   const problem = useProblem(problemId);
@@ -37,7 +39,6 @@ export default function ProblemPage(props) {
       <SEO
         title={`${problem.name} · ${activeGroup.groupData?.name}`}
         image={null}
-        pathname={props.path}
       />
       <TopNavigationBar />
       <nav className="mt-6 mb-4 flex" aria-label="Breadcrumb">
@@ -78,13 +79,10 @@ export default function ProblemPage(props) {
                               if (!activeGroup.groupData!) {
                                 throw new Error('No group data');
                               }
-                              navigate(
+                              router.push(
                                 `/groups/${activeGroup.groupData!.id}/post/${
                                   post.id
-                                }`,
-                                {
-                                  replace: true,
-                                }
+                                }`
                               );
                             })
                             .catch(e => toast.error(e.message));
@@ -108,7 +106,10 @@ export default function ProblemPage(props) {
                       </svg>
                       <span>Delete</span>
                     </button>
-                    <Link to="edit" className="btn">
+                    <Link
+                      href={`/groups/${activeGroup.groupData!.id}/post/${post.id}/problems/${problem.id}/edit`}
+                      className="btn"
+                    >
                       <svg
                         className="mr-2 -ml-1 h-5 w-5 text-gray-400"
                         xmlns="http://www.w3.org/2000/svg"

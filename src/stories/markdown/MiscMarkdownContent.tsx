@@ -1,4 +1,3 @@
-import React from 'react';
 import HTMLComponents from '../../components/markdown/HTMLComponents';
 
 const MiscMarkdownContent = () => (

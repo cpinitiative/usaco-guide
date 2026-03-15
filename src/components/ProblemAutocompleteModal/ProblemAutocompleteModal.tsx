@@ -4,10 +4,9 @@ import {
   DialogPanel,
   DialogTitle,
 } from '@headlessui/react';
-import * as React from 'react';
 import { InstantSearch } from 'react-instantsearch';
 import { AlgoliaProblemInfo } from '../../models/problem';
-import { searchClient } from '../../utils/algoliaSearchClient';
+import searchClient from '../../utils/algoliaLiteSearchClient';
 import { indexName, ProblemAutocomplete } from './ProblemAutocomplete';
 
 export interface ProblemAutocompleteModalProps {

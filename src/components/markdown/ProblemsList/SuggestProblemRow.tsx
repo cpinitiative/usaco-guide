@@ -1,5 +1,4 @@
 import { globalHistory } from '@reach/router';
-import * as React from 'react';
 import { useContext } from 'react';
 import { EditorContext } from '../../../context/EditorContext';
 import ProblemSuggestionModalContext from '../../../context/ProblemSuggestionModalContext';

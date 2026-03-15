@@ -1,5 +1,5 @@
-import { StoryFn } from '@storybook/react-webpack5';
-import React, { ComponentProps } from 'react';
+import { StoryFn } from '@storybook/react';
+import { ComponentProps } from 'react';
 import { LoadingSpinner } from '../components/elements/LoadingSpinner';
 
 export default {

@@ -1,11 +1,11 @@
-import remarkAutolinkHeadings from 'remark-autolink-headings';
-import remarkExternalLinks from 'remark-external-links';
+import { compile as mdxCompile } from '@mdx-js/mdx';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import rehypeExternalLinks from 'rehype-external-links';
+import rehypeSlug from 'rehype-slug';
 import remarkFrontmatter from 'remark-frontmatter';
 import gfm from 'remark-gfm';
 import remarkMath from 'remark-math';
-import { remarkMdxFrontmatter } from 'remark-mdx-frontmatter';
-import remarkSlug from 'remark-slug';
-import { compile as xdmCompile } from 'xdm/lib/compile';
+import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
 import customRehypeKatex from '../../mdx-plugins/rehype-math';
 import rehypeSnippets from '../../mdx-plugins/rehype-snippets';
 import remarkToC from '../../mdx-plugins/remark-toc';
@@ -24,21 +24,26 @@ const compile = async ({ markdown, problems }) => {
       }));
 
     const tableOfContents = {};
-    const compiledResult = await xdmCompile(
+    const compiledResult = await mdxCompile(
       markdown.replace(/<!--/g, '{/* ').replace(/-->/g, '*/}'),
       {
         remarkPlugins: [
           gfm,
           remarkMath,
-          remarkExternalLinks,
           remarkFrontmatter,
           [remarkMdxFrontmatter, { name: 'frontmatter' }],
           [remarkToC, { tableOfContents }],
-          remarkSlug,
+        ],
+        rehypePlugins: [
+          rehypeSlug,
+          customRehypeKatex,
+          rehypeSnippets,
+          [rehypeExternalLinks, { target: '_blank', rel: ['nofollow'] }],
           [
-            remarkAutolinkHeadings,
+            rehypeAutolinkHeadings,
             {
-              linkProperties: {
+              behavior: 'prepend',
+              properties: {
                 ariaHidden: 'true',
                 tabIndex: -1,
                 className: 'anchor before',
@@ -50,8 +55,8 @@ const compile = async ({ markdown, problems }) => {
             },
           ],
         ],
-        rehypePlugins: [customRehypeKatex, rehypeSnippets],
         outputFormat: 'function-body',
+        jsxImportSource: 'react',
       }
     );
 

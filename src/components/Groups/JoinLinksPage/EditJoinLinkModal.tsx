@@ -1,10 +1,11 @@
 import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react';
 import { Timestamp } from 'firebase/firestore';
 import * as React from 'react';
-import Flatpickr from 'react-flatpickr';
 import { JoinGroupLink } from '../../../models/groups/groups';
 import Switch from '../../elements/Switch';
 import Tooltip from '../../Tooltip/Tooltip';
+
+const Flatpickr = React.lazy(() => import('react-flatpickr'));
 
 export default function EditJoinLinkModal({
   isOpen,
@@ -171,34 +172,46 @@ export default function EditJoinLinkModal({
                           </label>
 
                           <div className="mt-1">
-                            <Flatpickr
-                              placeholder={'Choose an expiry date date'}
-                              options={{
-                                dateFormat:
-                                  'Expires on'.split('').join('\\\\') +
-                                  ' l, F J, Y, h:i K ' +
-                                  [
-                                    '',
-                                    ...(
-                                      'UTC' +
-                                      // sign is reversed for some reason
-                                      (new Date().getTimezoneOffset() > 0
-                                        ? '-'
-                                        : '+') +
-                                      Math.abs(new Date().getTimezoneOffset()) /
-                                        60
-                                    ).split(''),
-                                  ].join('\\\\'),
-                                enableTime: true,
-                              }}
-                              value={link.expirationTime?.toDate()}
-                              onChange={date =>
-                                editLink({
-                                  expirationTime: Timestamp.fromDate(date[0]),
-                                })
+                            <React.Suspense
+                              fallback={
+                                <input
+                                  className="input"
+                                  placeholder="Loading date picker..."
+                                  disabled
+                                />
                               }
-                              className="input"
-                            />
+                            >
+                              <Flatpickr
+                                placeholder={'Choose an expiry date date'}
+                                options={{
+                                  dateFormat:
+                                    'Expires on'.split('').join('\\\\') +
+                                    ' l, F J, Y, h:i K ' +
+                                    [
+                                      '',
+                                      ...(
+                                        'UTC' +
+                                        // sign is reversed for some reason
+                                        (new Date().getTimezoneOffset() > 0
+                                          ? '-'
+                                          : '+') +
+                                        Math.abs(
+                                          new Date().getTimezoneOffset()
+                                        ) /
+                                          60
+                                      ).split(''),
+                                    ].join('\\\\'),
+                                  enableTime: true,
+                                }}
+                                value={link.expirationTime?.toDate()}
+                                onChange={date =>
+                                  editLink({
+                                    expirationTime: Timestamp.fromDate(date[0]),
+                                  })
+                                }
+                                className="input"
+                              />
+                            </React.Suspense>
                           </div>
                         </div>
                       )}

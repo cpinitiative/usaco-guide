@@ -1,4 +1,4 @@
-import { graphql, PageProps } from 'gatsby';
+import { GetStaticProps } from 'next';
 import * as React from 'react';
 import {
   moduleIDToSectionMap,
@@ -15,6 +15,7 @@ import Layout from '../components/layout';
 import divToProbs from '../components/markdown/ProblemsList/DivisionList/div_to_probs.json';
 import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
+import { CowImagesProvider } from '../context/CowImagesContext';
 import { useSignIn } from '../context/SignInContext';
 import { useLastVisitInfo } from '../context/UserDataContext/properties/lastVisit';
 import {
@@ -31,18 +32,42 @@ import {
   useProblemsProgressInfo,
 } from '../utils/getProgressInfo';
 
-export default function DashboardPage(props: PageProps) {
-  const { modules, problems } = props.data as any;
-  const moduleIDToName = modules.edges.reduce((acc, cur) => {
-    acc[cur.node.frontmatter.id] = cur.node.frontmatter.title;
-    return acc;
-  }, {});
+interface DashboardProps {
+  loadedModuleInfo: {
+    id: string;
+    title: string;
+  }[];
+  loadedProblemInfo: {
+    inModule: boolean;
+    uniqueId: string;
+    source: string;
+    name: string;
+    moduleId: string;
+  }[];
+  cowImages: {
+    name: string;
+    src: string;
+  }[];
+}
+
+export default function DashboardPage({
+  loadedModuleInfo,
+  loadedProblemInfo,
+  cowImages,
+}: DashboardProps) {
+  const moduleIDToName = loadedModuleInfo.reduce(
+    (acc, cur) => {
+      acc[cur.id] = cur.title;
+      return acc;
+    },
+    {} as { [key: string]: string }
+  );
   const problemIDMap = React.useMemo(() => {
     // 1. problems in modules
-    const res = problems.edges.reduce((acc, cur) => {
-      const problem = cur.node;
+    const res = loadedProblemInfo.reduce((acc, cur) => {
+      const problem = cur;
       // ignore problems that don't have an associated module (extraProblems.json)
-      if (problem.module) {
+      if (problem.inModule) {
         if (!(problem.uniqueId in acc)) {
           acc[problem.uniqueId] = {
             label: `${problem.source}: ${problem.name}`,
@@ -50,10 +75,10 @@ export default function DashboardPage(props: PageProps) {
           };
         }
         acc[problem.uniqueId].modules.push({
-          url: `${moduleIDToURLMap[problem.module.frontmatter.id]}/#problem-${
+          url: `${moduleIDToURLMap[problem.moduleId]}/#problem-${
             problem.uniqueId
           }`,
-          moduleId: problem.module.frontmatter.id,
+          moduleId: problem.moduleId,
         });
       }
       return acc;
@@ -77,7 +102,7 @@ export default function DashboardPage(props: PageProps) {
       }
     }
     return res;
-  }, [problems]);
+  }, [loadedProblemInfo]);
   const lastViewedModuleID = useLastViewedModule();
   const userProgressOnModules = useUserProgressOnModules();
   const userProgressOnProblems = useUserProgressOnProblems();
@@ -154,7 +179,7 @@ export default function DashboardPage(props: PageProps) {
 
   return (
     <Layout>
-      <SEO title="Dashboard" image={null} pathname={props.path} />
+      <SEO title="Dashboard" image={null} />
 
       <div className="dark:bg-dark-surface min-h-screen bg-gray-100">
         <TopNavigationBar linkLogoToIndex={true} redirectToDashboard={false} />
@@ -253,7 +278,9 @@ export default function DashboardPage(props: PageProps) {
                     </div>
                   </Card>
                 </div>
-                <DailyStreak streak={consecutiveVisits} />
+                <CowImagesProvider value={cowImages}>
+                  <DailyStreak streak={consecutiveVisits} />
+                </CowImagesProvider>
               </div>
             </div>
           </main>
@@ -263,31 +290,31 @@ export default function DashboardPage(props: PageProps) {
   );
 }
 
-export const pageQuery = graphql`
-  query {
-    modules: allXdm(filter: { fileAbsolutePath: { regex: "/content/" } }) {
-      edges {
-        node {
-          frontmatter {
-            title
-            id
-          }
-        }
-      }
+export const getStaticProps: GetStaticProps = async () => {
+  try {
+    const { loadCowImages } = await import('../lib/loadContent');
+    const { queryAllModuleIdsAndTitles, queryAllProblemDashboardInfo } =
+      await import('../lib/queryContent');
+    const loadedModuleInfo = await queryAllModuleIdsAndTitles();
+    if (!loadedModuleInfo || loadedModuleInfo.length === 0) {
+      console.error('No modules loaded or failed to load modules');
+      return { notFound: true };
     }
-    problems: allProblemInfo {
-      edges {
-        node {
-          uniqueId
-          name
-          source
-          module {
-            frontmatter {
-              id
-            }
-          }
-        }
-      }
+    const loadedProblemInfo = await queryAllProblemDashboardInfo();
+    if (!loadedProblemInfo || loadedProblemInfo.length === 0) {
+      console.error('No problems loaded or failed to load problems');
+      return { notFound: true };
     }
+    const cowImages = await loadCowImages();
+    return {
+      props: {
+        loadedModuleInfo,
+        loadedProblemInfo,
+        cowImages,
+      },
+    };
+  } catch (error) {
+    console.error('Error loading dashboard data:', error);
+    return { notFound: true };
   }
-`;
+};

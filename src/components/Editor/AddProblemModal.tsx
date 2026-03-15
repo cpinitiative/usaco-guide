@@ -4,7 +4,7 @@ import {
   DialogPanel,
   DialogTitle,
 } from '@headlessui/react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { formatMetadata } from '../../utils/prettierFormatter';
 import Modal from '../Modal';
 import CopyButton from './CopyButton';

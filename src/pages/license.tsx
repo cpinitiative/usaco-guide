@@ -1,14 +1,13 @@
 // eslint-disable react/no-unescaped-entities
-import { Link, PageProps } from 'gatsby';
-import * as React from 'react';
+import Link from 'next/link';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 
-export default function LicensePage(props: PageProps) {
+export default function LicensePage() {
   return (
     <Layout>
-      <SEO title="License and Usage" image={null} pathname={props.path} />
+      <SEO title="License and Usage" />
 
       <TopNavigationBar />
 
@@ -130,7 +129,7 @@ export default function LicensePage(props: PageProps) {
             {/* related to the USACO Guide to the coordinator, Nathan Wang. */}
           </p>
           <Link
-            to="/"
+            href="/"
             className="mb-4 block text-blue-500 underline hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
           >
             &larr; Back to Home

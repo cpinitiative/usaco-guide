@@ -16,7 +16,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { MenuIcon } from '@heroicons/react/solid';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useGroupActions } from '../../../hooks/groups/useGroupActions';
 import { useUserLeaderboardData } from '../../../hooks/groups/useLeaderboardData';

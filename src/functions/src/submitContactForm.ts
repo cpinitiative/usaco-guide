@@ -6,8 +6,17 @@ if (admin.apps.length === 0) {
   admin.initializeApp();
 }
 
-const submitContactForm = functions.https.onCall(async data => {
-  const { name, email, moduleName, url, lang, topic, message } = data;
+const submitContactForm = functions.https.onCall(async request => {
+  const { name, email, moduleName, url, lang, topic, message } =
+    request.data as {
+      name: string;
+      email: string;
+      moduleName?: string;
+      url?: string;
+      lang?: string;
+      topic: string;
+      message: string;
+    };
   if (!name || !topic || !message || !email) {
     throw new functions.https.HttpsError(
       'invalid-argument',

@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import React from 'react';
 import { ProblemDifficulty } from '../../../models/problem';
 
 import { difficultyClasses } from '../../DifficultyBox';

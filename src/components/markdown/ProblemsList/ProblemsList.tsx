@@ -14,8 +14,6 @@ import ProblemsListHeader from './ProblemsListHeader';
 import ProblemsListItem from './ProblemsListItem';
 import SuggestProblemRow from './SuggestProblemRow';
 
-/* eslint-disable react/prop-types */
-
 type ProblemsListProps =
   | {
       title?: string;

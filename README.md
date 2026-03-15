@@ -1,4 +1,4 @@
-![USACO Guide](./src/assets/banner-image-big.jpg)
+![USACO Guide](/assets/banner-image-big.jpg)
 
 # USACO Guide
 
@@ -26,12 +26,12 @@ Content Authors to join our team to help us improve the Guide! Learn more
 Our front-end is built with:
 
 - React
-- Gatsby
+- Next.js
 - Typescript
 - Tailwind CSS
 - [Storybook](https://storybook.js.org/) and
   [Chromatic](https://www.chromatic.com/)
-- MDX (JSX in Markdown) with XDM compiler
+- MDX (JSX in Markdown) with @mdx-js/mdx compiler
 - Firebase
 
 ## Contact Info

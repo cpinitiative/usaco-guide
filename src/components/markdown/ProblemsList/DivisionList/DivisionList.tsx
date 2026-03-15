@@ -1,6 +1,5 @@
 import { Transition } from '@headlessui/react';
-import { graphql, useStaticQuery } from 'gatsby';
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { moduleIDToURLMap } from '../../../../../content/ordering';
 import {
   useDivisionTableQuery,
@@ -10,6 +9,7 @@ import {
   ProblemDifficulty,
   ProblemSolutionInfo,
 } from '../../../../models/problem';
+import { ProblemInfo } from '../../../../types/content';
 import { ProblemsList } from '../ProblemsList';
 import contestToPoints from './contest_to_points.json';
 import divToProbs from './div_to_probs.json';
@@ -17,7 +17,7 @@ import { DivisionProblemInfo } from './DivisionProblemInfo';
 import idToSol from './id_to_sol.json';
 
 const startYear = 2016;
-const endYear = 2026; // manually increment this for a new season
+const endYear = 2025; // manually increment this for a new season
 const allYears = `All (${startYear - 1} - ${endYear})`;
 const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 
@@ -158,41 +158,44 @@ const DivisionButton = ({
   );
 };
 
-export function DivisionList(props): JSX.Element {
-  const data: Queries.DivisionListQuery = useStaticQuery(graphql`
-    query DivisionList {
-      allProblemInfo(
-        filter: { source: { in: ["Bronze", "Silver", "Gold", "Platinum"] } }
-      ) {
-        nodes {
-          solution {
-            kind
-            label
-            labelTooltip
-            sketch
-            url
-            hasHints
-          }
-          uniqueId
-          url
-          tags
-          difficulty
-          module {
-            frontmatter {
-              id
-            }
-          }
+export default function DivisionList(): JSX.Element {
+  const [problems, setProblems] = useState<ProblemInfo[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  // Move all hooks to the top
+  const divisionTableQuery = useDivisionTableQuery();
+  const setDivisionTableQuery = useSetDivisionTableQuery();
+  const [divisionHash, setDivisionHash] = React.useState('');
+  const [seasonHash, setSeasonHash] = React.useState('');
+
+  useEffect(() => {
+    const loadProblems = async () => {
+      try {
+        // Try to load from static JSON file first
+        const response = await fetch('/usaco-divisions.json');
+        if (!response.ok) {
+          throw new Error('Failed to load problems data');
         }
+        const data = await response.json();
+        setProblems(data.problems);
+      } catch (err) {
+        console.error('Error loading problems:', err);
+        setError('Failed to load problems. Please try again later.');
+      } finally {
+        setIsLoading(false);
       }
-    }
-  `);
+    };
+
+    loadProblems();
+  }, []);
+
   const probToLink: { [key: string]: string } = {};
   const probToURL: { [key: string]: string } = {};
   const probToTags: { [key: string]: string[] } = {};
   const probToDifficulty: { [key: string]: ProblemDifficulty } = {};
   const probToSol: { [key: string]: ProblemSolutionInfo } = {};
-  for (const node of data.allProblemInfo.nodes) {
-    const problem = node;
+
+  for (const problem of problems) {
     const uniqueId = problem.uniqueId;
     probToLink[uniqueId] =
       problem.module! &&
@@ -269,18 +272,18 @@ export function DivisionList(props): JSX.Element {
     }
   }
 
-  const divisionTableQuery = useDivisionTableQuery();
-  const setDivisionTableQuery = useSetDivisionTableQuery();
+  // Calculate derived state after hooks
+  const curDivision = divisions.includes(
+    divisionHash || divisionTableQuery?.division || ''
+  )
+    ? divisionHash || divisionTableQuery?.division || divisions[0]
+    : divisions[0];
 
-  const [divisionHash, setDivisionHash] = React.useState('');
-  const [seasonHash, setSeasonHash] = React.useState('');
-  let curDivision =
-    divisionHash || (divisionTableQuery && divisionTableQuery.division);
-  if (!divisions.includes(curDivision)) curDivision = divisions[0];
-
-  let curSeason =
-    seasonHash || (divisionTableQuery && divisionTableQuery.season);
-  if (!seasons.includes(curSeason)) curSeason = seasons[seasons.length - 1];
+  const curSeason = seasons.includes(
+    seasonHash || divisionTableQuery?.season || ''
+  )
+    ? seasonHash || divisionTableQuery?.season || seasons[seasons.length - 1]
+    : seasons[seasons.length - 1];
 
   useEffect(() => {
     // https://dev.to/vvo/how-to-solve-window-is-not-defined-errors-in-react-and-next-js-5f97
@@ -300,65 +303,85 @@ export function DivisionList(props): JSX.Element {
     }
   }, []);
 
-  const problems: DivisionProblemInfo[] =
+  const filteredProblems: DivisionProblemInfo[] =
     divisionToSeasonToProbs[curDivision][curSeason];
 
-  const someHavePercent = problems.some(problem => !!problem.percentageSolved);
+  const someHavePercent = filteredProblems.some(
+    problem => !!problem.percentageSolved
+  );
   const sortOrders = ['By Contest'];
   if (someHavePercent) sortOrders.push('By Percent');
   const [sortOrder, setSortOrder] = React.useState('Sort: ' + sortOrders[0]);
   const sortedProblems = React.useMemo(() => {
-    if (!someHavePercent) return problems;
-    return [...problems].sort(
+    if (!someHavePercent) return filteredProblems;
+    return [...filteredProblems].sort(
       (a, b) => (b.percentageSolved || 0) - (a.percentageSolved || 0)
     );
-  }, [problems]);
+  }, [filteredProblems]);
+
+  if (isLoading) {
+    return <div className="py-4 text-center">Loading problems...</div>;
+  }
+
+  if (error) {
+    return <div className="py-4 text-center text-red-600">{error}</div>;
+  }
 
   return (
     <>
-      <div className="mb-4 flex items-center space-x-4">
-        <DivisionButton
-          options={divisions}
-          state={curDivision}
-          onChange={newDivision => {
-            if (curDivision === newDivision) return;
-            setDivisionHash('');
-            setSeasonHash('');
-            setDivisionTableQuery({
-              division: newDivision,
-              season: curSeason,
-            });
-          }}
-        />
-        <DivisionButton
-          options={seasons}
-          state={curSeason}
-          onChange={newSeason => {
-            if (curSeason === newSeason) return;
-            setDivisionHash('');
-            setSeasonHash('');
-            setDivisionTableQuery({
-              division: curDivision,
-              season: newSeason,
-            });
-          }}
-        />
-        {sortOrders.length > 1 && (
-          <DivisionButton
-            options={sortOrders}
-            state={sortOrder}
-            onChange={newOrder => {
-              setSortOrder('Sort: ' + newOrder);
-            }}
-          />
-        )}
-      </div>
+      {isLoading ? (
+        <div className="py-4 text-center">Loading problems...</div>
+      ) : error ? (
+        <div className="py-4 text-center text-red-600">{error}</div>
+      ) : (
+        <div>
+          <div className="mb-4 flex items-center space-x-4">
+            <DivisionButton
+              options={divisions}
+              state={curDivision}
+              onChange={newDivision => {
+                if (curDivision === newDivision) return;
+                setDivisionHash('');
+                setSeasonHash('');
+                setDivisionTableQuery({
+                  division: newDivision,
+                  season: curSeason,
+                });
+              }}
+            />
+            <DivisionButton
+              options={seasons}
+              state={curSeason}
+              onChange={newSeason => {
+                if (curSeason === newSeason) return;
+                setDivisionHash('');
+                setSeasonHash('');
+                setDivisionTableQuery({
+                  division: curDivision,
+                  season: newSeason,
+                });
+              }}
+            />
+            {sortOrders.length > 1 && (
+              <DivisionButton
+                options={sortOrders}
+                state={sortOrder}
+                onChange={newOrder => {
+                  setSortOrder('Sort: ' + newOrder);
+                }}
+              />
+            )}
+          </div>
 
-      <ProblemsList
-        problems={sortOrder.endsWith('Percent') ? sortedProblems : problems}
-        division={curDivision}
-        modules={true}
-      />
+          <ProblemsList
+            problems={
+              sortOrder.endsWith('Percent') ? sortedProblems : filteredProblems
+            }
+            division={curDivision}
+            modules={true}
+          />
+        </div>
+      )}
     </>
   );
 }
