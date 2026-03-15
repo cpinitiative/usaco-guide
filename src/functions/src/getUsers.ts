@@ -1,11 +1,11 @@
-import admin from "firebase-admin";
-import * as functions from "firebase-functions";
+import admin from 'firebase-admin';
+import * as functions from 'firebase-functions';
 
 if (admin.apps.length === 0) {
   admin.initializeApp();
 }
 
-export default functions.https.onCall(async (request) => {
+export default functions.https.onCall(async request => {
   const { users } = request.data as {
     users: ({ uid: string } | { email: string })[];
   };
@@ -14,24 +14,24 @@ export default functions.https.onCall(async (request) => {
 
   if (!callerUid || !users || users.length === 0) {
     throw new functions.https.HttpsError(
-      "invalid-argument",
-      "The function was not called with the correct data, or the caller is not logged in.",
+      'invalid-argument',
+      'The function was not called with the correct data, or the caller is not logged in.'
     );
   }
   const classesPermissions = await admin
     .firestore()
-    .collection("classes")
-    .doc("permissions")
+    .collection('classes')
+    .doc('permissions')
     .get()
-    .then((snapshot) => snapshot.data());
+    .then(snapshot => snapshot.data());
   if (
     !caller.customClaims.isAdmin &&
     !classesPermissions?.admins?.includes(callerUid) &&
     !classesPermissions?.instructors?.includes(callerUid)
   ) {
     throw new functions.https.HttpsError(
-      "permission-denied",
-      "Caller is not an admin or instructor.",
+      'permission-denied',
+      'Caller is not an admin or instructor.'
     );
   }
   const getUserPromises: Promise<admin.auth.GetUsersResult>[] = [];
@@ -49,6 +49,6 @@ export default functions.https.onCall(async (request) => {
     {
       notFound: [] as admin.auth.UserIdentifier[],
       users: [] as admin.auth.UserRecord[],
-    },
+    }
   );
 });

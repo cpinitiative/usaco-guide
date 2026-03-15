@@ -54,6 +54,6 @@ export const mixWithWhite = (color: RGBColor, amount: number) => {
 
 // Stringify the color in an `rgba()` format.
 export const formatRgbColor = (color: RGBColor) =>
-  "rgba(" +
+  'rgba(' +
   `${Math.floor(color.r * 255)}, ${Math.floor(color.g * 255)}, ` +
   `${Math.floor(color.b * 255)}, ${color.a.toFixed(2)})`;

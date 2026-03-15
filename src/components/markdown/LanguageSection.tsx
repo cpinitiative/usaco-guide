@@ -1,19 +1,19 @@
-import * as React from "react";
+import * as React from 'react';
 import {
   Language,
   LANGUAGE_LABELS,
   useUserLangSetting,
-} from "../../context/UserDataContext/properties/simpleProperties";
-import Danger from "./Danger";
+} from '../../context/UserDataContext/properties/simpleProperties';
+import Danger from './Danger';
 
 const useSectionFromLang = (sections: {
   [key in Language]?: React.ReactNode;
 }) => {
   const userLang = useUserLangSetting();
-  if (userLang === "showAll") {
+  if (userLang === 'showAll') {
     return (
       <>
-        {(Object.keys(sections) as Language[]).map((lang) => (
+        {(Object.keys(sections) as Language[]).map(lang => (
           <div key={lang}>
             <p className="text-lg font-bold">{LANGUAGE_LABELS[lang]}</p>
             {sections[lang]}
@@ -24,8 +24,8 @@ const useSectionFromLang = (sections: {
   }
 
   if (!sections.hasOwnProperty(userLang)) {
-    const langs = ["cpp", "java", "py"] as const;
-    let fallbackLang: Language = "cpp";
+    const langs = ['cpp', 'java', 'py'] as const;
+    let fallbackLang: Language = 'cpp';
     for (const lang of langs) {
       if (sections.hasOwnProperty(lang)) {
         fallbackLang = lang;
@@ -38,19 +38,19 @@ const useSectionFromLang = (sections: {
           LANGUAGE_LABELS[userLang]
         }.${
           fallbackLang
-            ? " Defaulting to " + LANGUAGE_LABELS[fallbackLang] + "."
-            : ""
+            ? ' Defaulting to ' + LANGUAGE_LABELS[fallbackLang] + '.'
+            : ''
         }`}
       >
         {/* Please choose a different default language for now.  */}
-        Submitting a Pull Request on{" "}
+        Submitting a Pull Request on{' '}
         <a
           href="https://github.com/cpinitiative/usaco-guide"
           target="_blank"
           rel="noreferrer"
         >
           GitHub
-        </a>{" "}
+        </a>{' '}
         to help add support for {LANGUAGE_LABELS[userLang]} would be
         appreciated!
       </Danger>
@@ -71,11 +71,11 @@ export const LanguageSection = (props: {
 }): React.ReactNode => {
   const sections: { [key in Language]?: React.ReactNode } = {};
   const typeToLang = {
-    CPPSection: "cpp",
-    JavaSection: "java",
-    PySection: "py",
+    CPPSection: 'cpp',
+    JavaSection: 'java',
+    PySection: 'py',
   } as const;
-  React.Children.map(props.children, (child) => {
+  React.Children.map(props.children, child => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const type = (child as any).type.name as keyof typeof typeToLang;
     sections[typeToLang[type]] = child;

@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 
 const TeamImagesContext = React.createContext<
   | {
@@ -30,7 +30,7 @@ export function TeamImagesProvider({
 export function useTeamImages() {
   const images = React.useContext(TeamImagesContext);
   if (!images) {
-    throw new Error("useTeamImages must be used within a TeamImagesProvider");
+    throw new Error('useTeamImages must be used within a TeamImagesProvider');
   }
   return images;
 }

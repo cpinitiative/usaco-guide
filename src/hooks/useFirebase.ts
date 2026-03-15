@@ -1,16 +1,16 @@
-import { FirebaseApp } from "firebase/app";
-import * as React from "react";
-import { FirebaseAppContext } from "../context/FirebaseContext";
+import { FirebaseApp } from 'firebase/app';
+import * as React from 'react';
+import { FirebaseAppContext } from '../context/FirebaseContext';
 
 function useFirebaseApp(): FirebaseApp;
 function useFirebaseApp(
   fn: (firebaseApp: FirebaseApp) => void | (() => void),
-  dep?: React.DependencyList,
+  dep?: React.DependencyList
 ): undefined;
 
 function useFirebaseApp(
   fn?: (firebaseApp: FirebaseApp) => void | (() => void),
-  dep: React.DependencyList = [],
+  dep: React.DependencyList = []
 ): FirebaseApp | undefined {
   const firebaseApp = React.useContext(FirebaseAppContext);
   React.useEffect(() => {

@@ -1,25 +1,25 @@
-import { getFunctions, httpsCallable } from "firebase/functions";
-import { useRouter } from "next/router";
-import * as React from "react";
-import { useSignIn } from "../../context/SignInContext";
+import { getFunctions, httpsCallable } from 'firebase/functions';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import { useSignIn } from '../../context/SignInContext';
 import {
   useFirebaseUser,
   useIsUserDataLoaded,
-} from "../../context/UserDataContext/UserDataContext";
-import { useUserGroups } from "../../hooks/groups/useUserGroups";
-import { useFirebaseApp } from "../../hooks/useFirebase";
-import Layout from "../layout";
-import SEO from "../seo";
-import TopNavigationBar from "../TopNavigationBar/TopNavigationBar";
+} from '../../context/UserDataContext/UserDataContext';
+import { useUserGroups } from '../../hooks/groups/useUserGroups';
+import { useFirebaseApp } from '../../hooks/useFirebase';
+import Layout from '../layout';
+import SEO from '../seo';
+import TopNavigationBar from '../TopNavigationBar/TopNavigationBar';
 
-const getQuery = (name) => {
+const getQuery = name => {
   const url = window.location.href;
-  name = name.replace(/[[\]]/g, "\\$&");
-  const regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+  name = name.replace(/[[\]]/g, '\\$&');
+  const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
     results = regex.exec(url);
   if (!results) return null;
-  if (!results[2]) return "";
-  return decodeURIComponent(results[2].replace(/\+/g, " "));
+  if (!results[2]) return '';
+  return decodeURIComponent(results[2].replace(/\+/g, ' '));
 };
 
 const JoinGroupPage = () => {
@@ -37,21 +37,21 @@ const JoinGroupPage = () => {
   const firebaseApp = useFirebaseApp();
   const userGroups = useUserGroups();
 
-  const joinKey = typeof window === "undefined" ? "" : getQuery("key");
+  const joinKey = typeof window === 'undefined' ? '' : getQuery('key');
   const showLoading = isLoading || !isLoaded || !firebaseApp;
   const showNotSignedInMessage = !showLoading && !firebaseUser?.uid;
 
   useFirebaseApp(
-    (firebaseApp) => {
+    firebaseApp => {
       setError(null);
       setIsLoading(true);
       httpsCallable(
         getFunctions(firebaseApp),
-        "groups-getJoinKeyInfo",
+        'groups-getJoinKeyInfo'
       )({
         key: joinKey,
       })
-        .then((r) => {
+        .then(r => {
           const data = r.data as {
             success: boolean;
             errorCode?: string;
@@ -64,14 +64,14 @@ const JoinGroupPage = () => {
             setError({ errorCode: data.errorCode, message: data.message });
           }
         })
-        .catch((e) => {
+        .catch(e => {
           setError(e);
         })
         .finally(() => {
           setIsLoading(false);
         });
     },
-    [joinKey],
+    [joinKey]
   );
 
   return (
@@ -83,13 +83,13 @@ const JoinGroupPage = () => {
           {showNotSignedInMessage && (
             <div>
               <p className="text-center text-2xl font-medium">
-                Please{" "}
+                Please{' '}
                 <button
                   className="text-blue-600 underline focus:outline-hidden"
                   onClick={() => signIn()}
                 >
                   sign in
-                </button>{" "}
+                </button>{' '}
                 to access Groups.
               </p>
             </div>
@@ -112,7 +112,7 @@ const JoinGroupPage = () => {
           {!showLoading && !showNotSignedInMessage && groupName && (
             <>
               <p className="text-center text-lg sm:text-2xl">
-                Do you want to join the group{" "}
+                Do you want to join the group{' '}
                 <span className="font-bold">{groupName}</span>?
               </p>
 
@@ -123,11 +123,11 @@ const JoinGroupPage = () => {
                     setIsJoining(true);
                     httpsCallable(
                       getFunctions(firebaseApp),
-                      "groups-join",
+                      'groups-join'
                     )({
                       key: joinKey,
                     })
-                      .then((r) => {
+                      .then(r => {
                         const data = r.data as {
                           success: boolean;
                           errorCode?: string;
@@ -138,7 +138,7 @@ const JoinGroupPage = () => {
                           userGroups.invalidateData();
                           router.push(`/groups/${data.groupId}`);
                         } else {
-                          if (data.errorCode === "ALREADY_IN_GROUP") {
+                          if (data.errorCode === 'ALREADY_IN_GROUP') {
                             router.push(`/groups/${data.groupId}`);
                           }
                           setError({
@@ -147,7 +147,7 @@ const JoinGroupPage = () => {
                           });
                         }
                       })
-                      .catch((e) => {
+                      .catch(e => {
                         setError(e);
                       })
                       .finally(() => setIsJoining(false));
@@ -155,7 +155,7 @@ const JoinGroupPage = () => {
                   className="btn-primary"
                   disabled={isJoining}
                 >
-                  {isJoining ? "Joining..." : "Join Group"}
+                  {isJoining ? 'Joining...' : 'Join Group'}
                 </button>
               </div>
             </>

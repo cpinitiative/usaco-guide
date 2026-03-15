@@ -4,15 +4,15 @@ import {
   MenuItem,
   MenuItems,
   Transition,
-} from "@headlessui/react";
-import { ChevronDownIcon } from "@heroicons/react/solid";
-import classNames from "classnames";
-import React, { Fragment, useId } from "react";
-import { ModuleProgress, ModuleProgressOptions } from "../../models/module";
+} from '@headlessui/react';
+import { ChevronDownIcon } from '@heroicons/react/solid';
+import classNames from 'classnames';
+import { Fragment, useId } from 'react';
+import { ModuleProgress, ModuleProgressOptions } from '../../models/module';
 
 const moduleProgressToIcon = (status: ModuleProgress): JSX.Element => {
   switch (status) {
-    case "Reading":
+    case 'Reading':
       return (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -23,7 +23,7 @@ const moduleProgressToIcon = (status: ModuleProgress): JSX.Element => {
           <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z" />
         </svg>
       );
-    case "Practicing":
+    case 'Practicing':
       return (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -34,7 +34,7 @@ const moduleProgressToIcon = (status: ModuleProgress): JSX.Element => {
           <path d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" />
         </svg>
       );
-    case "Complete":
+    case 'Complete':
       return (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -45,7 +45,7 @@ const moduleProgressToIcon = (status: ModuleProgress): JSX.Element => {
           <path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
         </svg>
       );
-    case "Skipped":
+    case 'Skipped':
       return (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -65,7 +65,7 @@ const moduleProgressToIcon = (status: ModuleProgress): JSX.Element => {
           />
         </svg>
       );
-    case "Ignored":
+    case 'Ignored':
       return (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -105,12 +105,12 @@ const MarkCompleteButton = ({
               type="button"
               id={menuId}
               className={`inline-flex w-full justify-center rounded-md border border-gray-300 pr-4 shadow-sm dark:border-gray-800 ${
-                state === "Not Started" ? "pl-4" : "pl-3"
+                state === 'Not Started' ? 'pl-4' : 'pl-3'
               } dark:focus:ring-offset-dark-surface bg-white py-2 text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-gray-100`}
             >
               {moduleProgressToIcon(state as ModuleProgress)}
               <span
-                className={`flex-1${state === "Not Started" ? "" : "ml-1.5"}`}
+                className={`flex-1${state === 'Not Started' ? '' : 'ml-1.5'}`}
               >
                 {state}
               </span>
@@ -136,21 +136,21 @@ const MarkCompleteButton = ({
               static
               className={`${
                 dropdownAbove
-                  ? "bottom-0 mb-12 origin-bottom-right"
-                  : "origin-top-right"
+                  ? 'bottom-0 mb-12 origin-bottom-right'
+                  : 'origin-top-right'
               } absolute right-0 z-10 mt-2 w-36 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-hidden dark:bg-gray-800`}
             >
               <div className="py-1">
-                {ModuleProgressOptions.map((option) => (
+                {ModuleProgressOptions.map(option => (
                   <MenuItem key={option}>
                     {({ active }) => (
                       <button
                         onClick={() => onChange(option)}
                         className={classNames(
-                          "flex w-full items-center px-3 py-2 text-left text-sm",
+                          'flex w-full items-center px-3 py-2 text-left text-sm',
                           active
-                            ? "bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-gray-100"
-                            : "text-gray-700 dark:text-gray-200",
+                            ? 'bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-gray-100'
+                            : 'text-gray-700 dark:text-gray-200'
                         )}
                         role="menuitem"
                       >

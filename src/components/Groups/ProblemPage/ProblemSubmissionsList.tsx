@@ -1,4 +1,3 @@
-import * as React from "react";
 import {
   FirebaseSubmission,
   getSubmissionEarnedPoints,
@@ -8,8 +7,8 @@ import {
   submissionCircleBorderColor,
   submissionCircleColor,
   submissionTextColor,
-} from "../../../models/groups/problem";
-import { useProblemSubmissionPopupAction } from "../ProblemSubmissionPopup";
+} from '../../../models/groups/problem';
+import { useProblemSubmissionPopupAction } from '../ProblemSubmissionPopup';
 
 const SubmissionListItem = ({
   problem,
@@ -88,12 +87,12 @@ export default function ProblemSubmissionsList({
   }
   return (
     <ul>
-      {submissions.map((submission) => (
+      {submissions.map(submission => (
         <SubmissionListItem
           problem={problem}
           submission={submission}
           key={
-            "submissionID" in submission
+            'submissionID' in submission
               ? submission.submissionID
               : submission.timestamp
           }

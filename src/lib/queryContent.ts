@@ -1,11 +1,11 @@
-import { getDatabase } from "./database";
+import { ProblemDifficulty, ProblemSolutionInfo } from '../models/problem';
 import {
   MdxContent,
-  ProblemInfo,
   MdxFrontmatter,
   ModuleProblemLists,
-} from "../types/content";
-import { ProblemDifficulty, ProblemSolutionInfo } from "../models/problem";
+  ProblemInfo,
+} from '../types/content';
+import { getDatabase } from './database';
 
 /**
  * Query solution by ID
@@ -13,8 +13,8 @@ import { ProblemDifficulty, ProblemSolutionInfo } from "../models/problem";
 export async function querySolution(id: string): Promise<MdxContent | null> {
   const db = await getDatabase();
   const row = db
-    .prepare("SELECT * FROM mdx_content WHERE id = ? AND type = ?")
-    .get(id, "solution") as any;
+    .prepare('SELECT * FROM mdx_content WHERE id = ? AND type = ?')
+    .get(id, 'solution') as any;
 
   if (!row) return null;
 
@@ -27,8 +27,8 @@ export async function querySolution(id: string): Promise<MdxContent | null> {
 export async function queryModule(id: string): Promise<MdxContent | null> {
   const db = await getDatabase();
   const row = db
-    .prepare("SELECT * FROM mdx_content WHERE id = ? AND type = ?")
-    .get(id, "module") as any;
+    .prepare('SELECT * FROM mdx_content WHERE id = ? AND type = ?')
+    .get(id, 'module') as any;
 
   if (!row) return null;
 
@@ -36,18 +36,18 @@ export async function queryModule(id: string): Promise<MdxContent | null> {
 }
 
 export async function queryModuleProblemsLists(
-  id: string,
+  id: string
 ): Promise<ModuleProblemLists | null> {
   const db = await getDatabase();
   const rows = db
     .prepare(
-      "SELECT list_id, problems_json FROM module_problem_lists WHERE module_id = ?",
+      'SELECT list_id, problems_json FROM module_problem_lists WHERE module_id = ?'
     )
     .all(id) as any[];
 
   if (rows.length === 0) return null;
 
-  const problemLists = rows.map((row) => ({
+  const problemLists = rows.map(row => ({
     listId: row.list_id,
     problems: JSON.parse(row.problems_json) as ProblemInfo[],
   }));
@@ -65,9 +65,9 @@ export async function queryAllModuleFrontmatter(): Promise<
   Array<{ filePath: string; frontmatter: MdxFrontmatter; division: string }>
 > {
   const db = await getDatabase();
-  const rows = db.prepare("SELECT * FROM module_frontmatter").all() as any[];
+  const rows = db.prepare('SELECT * FROM module_frontmatter').all() as any[];
 
-  return rows.map((row) => ({
+  return rows.map(row => ({
     filePath: row.file_path,
     frontmatter: JSON.parse(row.frontmatter_json),
     division: row.division,
@@ -78,11 +78,11 @@ export async function queryAllModuleFrontmatter(): Promise<
  * Query problem by unique ID
  */
 export async function queryProblem(
-  uniqueId: string,
+  uniqueId: string
 ): Promise<ProblemInfo | null> {
   const db = await getDatabase();
   const row = db
-    .prepare("SELECT problem_data_json FROM problems WHERE unique_id = ?")
+    .prepare('SELECT problem_data_json FROM problems WHERE unique_id = ?')
     .get(uniqueId) as any;
 
   if (!row) return null;
@@ -103,9 +103,9 @@ export async function queryProblem(
  */
 export async function queryAllProblemIds(): Promise<string[]> {
   const db = await getDatabase();
-  const rows = db.prepare("SELECT unique_id FROM problems").all() as any[];
+  const rows = db.prepare('SELECT unique_id FROM problems').all() as any[];
 
-  return rows.map((row) => row.unique_id);
+  return rows.map(row => row.unique_id);
 }
 
 /**
@@ -114,7 +114,7 @@ export async function queryAllProblemIds(): Promise<string[]> {
  * Optimized to exclude large fields (body, toc, mdast) for listing pages
  */
 export async function queryModulesByDivision(
-  division: string,
+  division: string
 ): Promise<{ [key: string]: MdxContent }> {
   const db = await getDatabase();
   // Only select fields needed for listing pages to reduce payload size
@@ -132,9 +132,9 @@ export async function queryModulesByDivision(
         git_author_time
       FROM mdx_content
       WHERE division = ? AND type = ?
-    `,
+    `
     )
-    .all(division, "module") as any[];
+    .all(division, 'module') as any[];
 
   const result: { [key: string]: MdxContent } = {};
   for (const row of rows) {
@@ -150,7 +150,7 @@ export async function queryModulesByDivision(
  * Returns an array of objects containing problem IDs and their module IDs for problems in modules of the given division
  */
 export async function queryProblemDataByDivision(
-  division: string,
+  division: string
 ): Promise<Array<{ id: string; moduleId: string }>> {
   const db = await getDatabase();
   // Join problems with module_frontmatter to get division
@@ -161,7 +161,7 @@ export async function queryProblemDataByDivision(
       FROM problems p
       INNER JOIN module_frontmatter mf ON p.module_id = mf.module_id
       WHERE mf.division = ? AND p.in_module = 1
-    `,
+    `
     )
     .all(division) as Array<{ id: string; moduleId: string }>;
 
@@ -186,11 +186,11 @@ export async function queryProblemSlugsForSolutionsIds(): Promise<string[]> {
       FROM solution_frontmatter sf
       INNER JOIN problems p ON sf.solution_id = p.unique_id
       INNER JOIN problem_slugs ps ON p.unique_id = ps.unique_id
-    `,
+    `
     )
     .all() as Array<{ slug: string }>;
 
-  return rows.map((row) => row.slug);
+  return rows.map(row => row.slug);
 }
 
 /**
@@ -198,13 +198,13 @@ export async function queryProblemSlugsForSolutionsIds(): Promise<string[]> {
  * Takes a slug and returns the corresponding solution
  */
 export async function querySolutionByProblemSlug(
-  slug: string,
+  slug: string
 ): Promise<MdxContent | null> {
   const db = await getDatabase();
 
   // Get the unique_id from the slug
   const slugRow = db
-    .prepare("SELECT unique_id FROM problem_slugs WHERE slug = ?")
+    .prepare('SELECT unique_id FROM problem_slugs WHERE slug = ?')
     .get(slug) as { unique_id: string } | null;
 
   if (!slugRow) {
@@ -215,8 +215,8 @@ export async function querySolutionByProblemSlug(
 
   // Get the solution using the unique_id
   const solutionRow = db
-    .prepare("SELECT * FROM mdx_content WHERE id = ? AND type = ?")
-    .get(uniqueId, "solution") as any;
+    .prepare('SELECT * FROM mdx_content WHERE id = ? AND type = ?')
+    .get(uniqueId, 'solution') as any;
 
   if (!solutionRow) {
     return null;
@@ -233,7 +233,7 @@ export async function querySolutionByProblemSlug(
  * Returns only modules that actually exist (matching the !!problem.module filter)
  */
 export async function queryModuleIdAndTitleFromProblemBySolutionId(
-  uniqueId: string,
+  uniqueId: string
 ): Promise<{ id: string; title: string }[]> {
   const db = await getDatabase();
 
@@ -243,7 +243,7 @@ export async function queryModuleIdAndTitleFromProblemBySolutionId(
       `
       SELECT module_id, list_id, problems_json
       FROM module_problem_lists
-    `,
+    `
     )
     .all() as any[];
 
@@ -252,7 +252,7 @@ export async function queryModuleIdAndTitleFromProblemBySolutionId(
   // Check each module's problem lists to see if they contain this problem
   for (const row of moduleListRows) {
     const problemList: ProblemInfo[] = JSON.parse(row.problems_json);
-    const hasProblem = problemList.some((p) => p.uniqueId === uniqueId);
+    const hasProblem = problemList.some(p => p.uniqueId === uniqueId);
 
     if (hasProblem) {
       moduleIds.add(row.module_id);
@@ -263,7 +263,7 @@ export async function queryModuleIdAndTitleFromProblemBySolutionId(
   if (moduleIds.size === 0) {
     const problemRow = db
       .prepare(
-        "SELECT module_id FROM problems WHERE unique_id = ? AND module_id IS NOT NULL",
+        'SELECT module_id FROM problems WHERE unique_id = ? AND module_id IS NOT NULL'
       )
       .get(uniqueId) as { module_id: string } | null;
 
@@ -279,8 +279,8 @@ export async function queryModuleIdAndTitleFromProblemBySolutionId(
   }
 
   const placeholders = Array.from(moduleIds)
-    .map(() => "?")
-    .join(",");
+    .map(() => '?')
+    .join(',');
   const rows = db
     .prepare(
       `
@@ -289,7 +289,7 @@ export async function queryModuleIdAndTitleFromProblemBySolutionId(
       json_extract(frontmatter_json, '$.title') as title
     FROM module_frontmatter
     WHERE module_id IN (${placeholders})
-  `,
+  `
     )
     .all(...Array.from(moduleIds)) as { id: string; title: string }[];
 
@@ -307,7 +307,7 @@ export async function queryAllModuleIdsAndTitles(): Promise<
       module_id as id,
       json_extract(frontmatter_json, '$.title') as title
     FROM module_frontmatter
-  `,
+  `
     )
     .all() as { id: string; title: string }[];
 
@@ -316,7 +316,7 @@ export async function queryAllModuleIdsAndTitles(): Promise<
 
 export async function queryUsacoId(id: string): Promise<boolean> {
   const db = await getDatabase();
-  const row = db.prepare("SELECT * FROM usaco_ids WHERE id = ?").get(id) as any;
+  const row = db.prepare('SELECT * FROM usaco_ids WHERE id = ?').get(id) as any;
   return !!row;
 }
 
@@ -344,11 +344,11 @@ export async function queryAllProblemDashboardInfo(): Promise<
         name,
         module_id
       FROM problems
-    `,
+    `
     )
     .all() as any[];
 
-  return rows.map((row) => ({
+  return rows.map(row => ({
     inModule: Boolean(row.in_module),
     uniqueId: row.unique_id,
     source: row.source,
@@ -380,7 +380,7 @@ export async function queryAllProblems(): Promise<ProblemInfo[]> {
         module_id
       FROM problems
       ORDER BY source, name
-    `,
+    `
     )
     .all() as any[];
 
@@ -395,8 +395,8 @@ export async function queryAllProblems(): Promise<ProblemInfo[]> {
       sourceDescription: row.source_description,
       isStarred: Boolean(row.is_starred),
       difficulty: row.difficulty as ProblemDifficulty,
-      tags: JSON.parse(row.tags_json || "[]"),
-      solution: JSON.parse(row.solution_json || "{}") as ProblemSolutionInfo,
+      tags: JSON.parse(row.tags_json || '[]'),
+      solution: JSON.parse(row.solution_json || '{}') as ProblemSolutionInfo,
       inModule: Boolean(row.in_module),
       moduleId: row.module_id,
     };
@@ -416,9 +416,9 @@ export async function queryUsacoDivisionProblems(): Promise<ProblemInfo[]> {
 
   // Filter problems to only include USACO divisions
   return allProblems.filter(
-    (problem) =>
+    problem =>
       problem.source &&
-      ["Bronze", "Silver", "Gold", "Platinum"].includes(problem.source),
+      ['Bronze', 'Silver', 'Gold', 'Platinum'].includes(problem.source)
   );
 }
 
@@ -448,7 +448,7 @@ function deserializeMdxContent(row: any): MdxContent {
  */
 function deserializeMdxContentLight(row: any): MdxContent {
   return {
-    body: "", // Empty body for listing pages
+    body: '', // Empty body for listing pages
     fileAbsolutePath: row.file_path,
     frontmatter: JSON.parse(row.frontmatter_json),
     toc: { cpp: [], java: [], py: [] }, // Empty TOC for listing pages

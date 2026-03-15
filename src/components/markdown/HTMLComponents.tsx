@@ -1,8 +1,8 @@
-import * as React from "react";
-import { useDarkMode } from "../../context/DarkModeContext";
-import CodeBlock from "./CodeBlock/CodeBlock";
-import MarkdownImage from "./MarkdownImage";
-import { MATHDIV, MATHSPAN } from "./MathComponents";
+import * as React from 'react';
+import { useDarkMode } from '../../context/DarkModeContext';
+import CodeBlock from './CodeBlock/CodeBlock';
+import MarkdownImage from './MarkdownImage';
+import { MATHDIV, MATHSPAN } from './MathComponents';
 // Note: try to avoid adding inline styles here; rather, use css selectors to target them.
 // Otherwise it's really hard to override some of these styles
 
@@ -11,7 +11,7 @@ export const OffsetAnchor = ({ id, ...props }): JSX.Element => (
     id={id}
     {...props}
     className="absolute"
-    style={{ bottom: "60px", height: "2px" }}
+    style={{ bottom: '60px', height: '2px' }}
   />
 );
 
@@ -58,7 +58,7 @@ const inlineCode = (props): JSX.Element => (
 );
 const a = ({ children, ...props }) => (
   <a
-    target={!props.href || props.href.startsWith("#") ? undefined : "_blank"}
+    target={!props.href || props.href.startsWith('#') ? undefined : '_blank'}
     {...props}
   >
     {children}
@@ -68,8 +68,8 @@ const pre = ({ children, copyButton = true, ...props }) => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const isDarkMode = useDarkMode();
 
-  const isMATHSPAN = children.props.className?.includes("math-inline");
-  const isMATHDIV = children.props.className?.includes("math-display");
+  const isMATHSPAN = children.props.className?.includes('math-inline');
+  const isMATHDIV = children.props.className?.includes('math-display');
 
   if (isMATHDIV) {
     return MATHDIV({
@@ -94,7 +94,7 @@ const pre = ({ children, copyButton = true, ...props }) => {
   );
 };
 
-const HeaderLink: React.FC = (props) => {
+const HeaderLink: React.FC = props => {
   return (
     <svg
       fill="none"

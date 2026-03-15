@@ -1,19 +1,18 @@
-import * as React from "react";
-import { useRouter } from "next/router";
-import toast from "react-hot-toast";
-import { useFirebaseUser } from "../../../context/UserDataContext/UserDataContext";
-import getPermissionLevel from "../../../functions/src/groups/utils/getPermissionLevel";
-import { useActiveGroup } from "../../../hooks/groups/useActiveGroup";
-import { useGroupActions } from "../../../hooks/groups/useGroupActions";
-import { useUserLeaderboardData } from "../../../hooks/groups/useLeaderboardData";
-import { MemberInfo } from "../../../hooks/groups/useMemberInfoForGroup";
+import { useRouter } from 'next/router';
+import toast from 'react-hot-toast';
+import { useFirebaseUser } from '../../../context/UserDataContext/UserDataContext';
+import getPermissionLevel from '../../../functions/src/groups/utils/getPermissionLevel';
+import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import { useGroupActions } from '../../../hooks/groups/useGroupActions';
+import { useUserLeaderboardData } from '../../../hooks/groups/useLeaderboardData';
+import { MemberInfo } from '../../../hooks/groups/useMemberInfoForGroup';
 export default function MemberDetail({ member }: { member: MemberInfo }) {
   const activeGroup = useActiveGroup();
   const { removeMemberFromGroup, updateMemberPermissions } = useGroupActions();
   const { uid: userId } = useFirebaseUser()!;
   const userLeaderboardData = useUserLeaderboardData(
     activeGroup.activeGroupId!,
-    member.uid,
+    member.uid
   );
   const router = useRouter();
 
@@ -26,7 +25,7 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
   }
   const permissionLevel = getPermissionLevel(
     member.uid,
-    activeGroup.groupData!,
+    activeGroup.groupData!
   );
 
   return (
@@ -91,25 +90,25 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
               onClick={() => {
                 if (
                   confirm(
-                    "Are you sure you want to remove this member from the group?",
+                    'Are you sure you want to remove this member from the group?'
                   )
                 ) {
                   removeMemberFromGroup(activeGroup.activeGroupId!, member.uid)
                     .then(() =>
                       toast.success(
-                        "This member has been successfully removed from the group.",
-                      ),
+                        'This member has been successfully removed from the group.'
+                      )
                     )
-                    .catch((e) => toast.error(e));
+                    .catch(e => toast.error(e));
                 }
               }}
             >
               Remove From Group
             </button>
 
-            {(["OWNER", "ADMIN", "MEMBER"] as ("OWNER" | "ADMIN" | "MEMBER")[])
-              .filter((p) => p !== permissionLevel)
-              .map((newPermission) => (
+            {(['OWNER', 'ADMIN', 'MEMBER'] as ('OWNER' | 'ADMIN' | 'MEMBER')[])
+              .filter(p => p !== permissionLevel)
+              .map(newPermission => (
                 <button
                   key={newPermission}
                   className="btn"
@@ -117,34 +116,34 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
                     if (
                       confirm(
                         `Are you sure you want to ${
-                          ["OWNER", "ADMIN", "MEMBER"].indexOf(newPermission) <
-                          ["OWNER", "ADMIN", "MEMBER"].indexOf(permissionLevel)
-                            ? "promote"
-                            : "demote"
+                          ['OWNER', 'ADMIN', 'MEMBER'].indexOf(newPermission) <
+                          ['OWNER', 'ADMIN', 'MEMBER'].indexOf(permissionLevel)
+                            ? 'promote'
+                            : 'demote'
                         } ${
                           member.displayName
-                        } to ${newPermission.toLowerCase()}?`,
+                        } to ${newPermission.toLowerCase()}?`
                       )
                     ) {
                       updateMemberPermissions(
                         activeGroup.activeGroupId!,
                         member.uid,
-                        newPermission,
+                        newPermission
                       )
                         .then(() =>
                           toast.success(
-                            `${member.displayName} now has permission level ${newPermission}.`,
-                          ),
+                            `${member.displayName} now has permission level ${newPermission}.`
+                          )
                         )
-                        .catch((e) => toast.error(e));
+                        .catch(e => toast.error(e));
                     }
                   }}
                 >
-                  {["OWNER", "ADMIN", "MEMBER"].indexOf(newPermission) <
-                  ["OWNER", "ADMIN", "MEMBER"].indexOf(permissionLevel)
-                    ? "Promote"
-                    : "Demote"}{" "}
-                  to{" "}
+                  {['OWNER', 'ADMIN', 'MEMBER'].indexOf(newPermission) <
+                  ['OWNER', 'ADMIN', 'MEMBER'].indexOf(permissionLevel)
+                    ? 'Promote'
+                    : 'Demote'}{' '}
+                  to{' '}
                   {newPermission.charAt(0).toUpperCase() +
                     newPermission.substring(1).toLowerCase()}
                 </button>
@@ -153,7 +152,7 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
               className="btn"
               onClick={() => {
                 alert(
-                  "Viewing group as member. Do not submit any problems. Reload the page to undo.",
+                  'Viewing group as member. Do not submit any problems. Reload the page to undo.'
                 );
                 activeGroup.setActiveUserId(member.uid);
                 router.push(`/groups/${activeGroup.activeGroupId!}`);

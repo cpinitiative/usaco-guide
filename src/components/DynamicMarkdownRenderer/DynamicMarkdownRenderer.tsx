@@ -1,10 +1,10 @@
-import * as React from "react";
-import { useEffect, useRef, useState } from "react";
+import * as React from 'react';
+import { useEffect, useRef, useState } from 'react';
 // eslint-disable-next-line
 // @ts-ignore
-import { Fragment, jsx, jsxs } from "react/jsx-runtime";
-import { MarkdownProblemListsProvider } from "../../context/MarkdownProblemListsContext";
-import { components } from "../markdown/MDXComponents";
+import { Fragment, jsx, jsxs } from 'react/jsx-runtime';
+import { MarkdownProblemListsProvider } from '../../context/MarkdownProblemListsContext';
+import { components } from '../markdown/MDXComponents';
 
 class ErrorBoundary extends React.Component<{ children?: React.ReactNode }> {
   state: {
@@ -77,7 +77,7 @@ export default function DynamicMarkdownRenderer({
   };
 
   React.useEffect(() => {
-    const worker = new Worker(new URL("./mdx-renderer.js", import.meta.url));
+    const worker = new Worker(new URL('./mdx-renderer.js', import.meta.url));
     worker.onmessage = ({ data }) => {
       currentlyCompilingRef.current = null;
       if (data.compiledResult) {
@@ -90,7 +90,7 @@ export default function DynamicMarkdownRenderer({
           }).default({ components });
         } catch (e) {
           if (e instanceof Error) setError(e);
-          else setError(new Error("Unknown Error: " + e));
+          else setError(new Error('Unknown Error: ' + e));
         }
         if (content) setError(null);
         setMdxContent(content);
@@ -108,7 +108,7 @@ export default function DynamicMarkdownRenderer({
 
   useEffect(() => {
     waitingToBeCompiledRef.current = {
-      markdown: markdown ?? "",
+      markdown: markdown ?? '',
       problems,
     };
     requestMarkdownCompilation();

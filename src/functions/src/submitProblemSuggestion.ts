@@ -1,14 +1,14 @@
-import axios from "axios";
-import * as admin from "firebase-admin";
-import * as functions from "firebase-functions";
-import prettier from "prettier";
+import axios from 'axios';
+import * as admin from 'firebase-admin';
+import * as functions from 'firebase-functions';
+import prettier from 'prettier';
 import {
   autoGenerateSolutionMetadata,
   generateProblemUniqueId,
   PROBLEM_DIFFICULTY_OPTIONS,
   ProblemDifficulty,
   ProblemMetadata,
-} from "../../models/problem";
+} from '../../models/problem';
 
 const problemSuggestionReviewers = {
   general: [],
@@ -23,17 +23,17 @@ if (admin.apps.length === 0) {
   admin.initializeApp();
 }
 
-const submitProblemSuggestion = functions.https.onCall(async (request) => {
+const submitProblemSuggestion = functions.https.onCall(async request => {
   if (!request.auth?.uid) {
     throw new functions.https.HttpsError(
-      "permission-denied",
-      "You must be logged in to suggest a problem!",
+      'permission-denied',
+      'You must be logged in to suggest a problem!'
     );
   }
   const submitterName = await admin
     .auth()
     .getUser(request.auth.uid)
-    .then((userRecord) => userRecord.displayName);
+    .then(userRecord => userRecord.displayName);
 
   const {
     name,
@@ -69,22 +69,22 @@ const submitProblemSuggestion = functions.https.onCall(async (request) => {
     !filePath
   ) {
     throw new functions.https.HttpsError(
-      "invalid-argument",
-      "One or more required arguments were not passed.",
+      'invalid-argument',
+      'One or more required arguments were not passed.'
     );
   }
 
   // TODO: increase validation?
-  if (filePath.indexOf("..") > -1) {
+  if (filePath.indexOf('..') > -1) {
     throw new functions.https.HttpsError(
-      "invalid-argument",
-      "The filePath argument contained an unexpected value.",
+      'invalid-argument',
+      'The filePath argument contained an unexpected value.'
     );
   }
   const tagsArr = tags
-    .split(",")
-    .map((tag) => tag.trim())
-    .filter((tag) => tag.length > 0);
+    .split(',')
+    .map(tag => tag.trim())
+    .filter(tag => tag.length > 0);
   const generatedProblemId = generateProblemUniqueId(source, name, link);
   const suggestedProblem: ProblemMetadata = {
     uniqueId: generatedProblemId,
@@ -95,7 +95,7 @@ const submitProblemSuggestion = functions.https.onCall(async (request) => {
     isStarred: false,
     tags: tagsArr,
     solutionMetadata: autoGenerateSolutionMetadata(source, name, link) || {
-      kind: "none",
+      kind: 'none',
     },
   };
 
@@ -103,42 +103,40 @@ const submitProblemSuggestion = functions.https.onCall(async (request) => {
     `User \`${request.auth?.uid}\` suggested adding the problem [${name}](${link}) ` +
     `to the \`${problemListName}\` table of the module [${moduleName}](${problemTableLink}).\n\n` +
     `**Automatically Generated JSON:**\n` +
-    "```json\n" +
+    '```json\n' +
     JSON.stringify(suggestedProblem, null, 2) +
-    "\n```\n" +
+    '\n```\n' +
     `**Additional Notes**:${
-      additionalNotes ? "\n" + additionalNotes : " None"
+      additionalNotes ? '\n' + additionalNotes : ' None'
     }\n\n` +
-    (source === "other"
+    (source === 'other'
       ? `**Warning: The source of this problem is currently set to \`other\`. You must correct the problem source and the solution before merging.**\n`
-      : "") +
+      : '') +
     `*This PR was automatically generated from a user-submitted problem suggestion on the USACO guide.*`;
   const key = functions.config().problemsuggestion.issueapikey;
   const githubAPI = axios.create({
-    baseURL: "https://api.github.com",
+    baseURL: 'https://api.github.com',
     auth: {
-      username: "maggieliu05",
+      username: 'maggieliu05',
       password: key,
     },
   });
 
   const masterRefsReq = await githubAPI.get(
-    "/repos/cpinitiative/usaco-guide/git/refs/heads",
+    '/repos/cpinitiative/usaco-guide/git/refs/heads'
   );
-  const masterRef = masterRefsReq.data.find(
-    (r) => r.ref == "refs/heads/master",
-  );
+  const masterRef = masterRefsReq.data.find(r => r.ref == 'refs/heads/master');
   const masterHash = masterRef.object.sha;
 
-  const branchNameBase = "problem-suggestion/" + generatedProblemId;
+  const branchNameBase = 'problem-suggestion/' + generatedProblemId;
   let increment = 0;
   let foundEmptyBranch = false;
   for (increment; increment < 5; increment++) {
     try {
       await githubAPI.get(
         `/repos/cpinitiative/usaco-guide/branches/${
-          branchNameBase + (increment === 0 ? "" : "-" + increment)
-        }`,
+          branchNameBase + (increment === 0 ? '' : '-' + increment)
+        }`
       );
     } catch (error: any) {
       if (error.response && error.response.status === 404) {
@@ -149,26 +147,26 @@ const submitProblemSuggestion = functions.https.onCall(async (request) => {
   }
   if (!foundEmptyBranch) {
     throw new functions.https.HttpsError(
-      "already-exists",
-      "More than five suggestions with the same generated problem ID already exist.",
+      'already-exists',
+      'More than five suggestions with the same generated problem ID already exist.'
     );
   }
-  const branchName = branchNameBase + (increment === 0 ? "" : "-" + increment);
-  await githubAPI.post("/repos/cpinitiative/usaco-guide/git/refs", {
-    ref: "refs/heads/" + branchName,
+  const branchName = branchNameBase + (increment === 0 ? '' : '-' + increment);
+  await githubAPI.post('/repos/cpinitiative/usaco-guide/git/refs', {
+    ref: 'refs/heads/' + branchName,
     sha: masterHash,
   });
 
   const oldFileDataReq = await githubAPI.get(
     `/repos/cpinitiative/usaco-guide/contents/content/${filePath.replace(
       /\.mdx$/,
-      ".problems.json",
-    )}?ref=${branchName}`,
+      '.problems.json'
+    )}?ref=${branchName}`
   );
   const oldFileHash = oldFileDataReq.data.sha;
   const oldFileData = Buffer.from(
     oldFileDataReq.data.content,
-    "base64",
+    'base64'
   ).toString();
 
   const parsedOldFileData = JSON.parse(oldFileData);
@@ -188,78 +186,78 @@ const submitProblemSuggestion = functions.https.onCall(async (request) => {
         PROBLEM_DIFFICULTY_OPTIONS.indexOf(b.data.difficulty);
       return difficultyDiff !== 0 ? difficultyDiff : a.index - b.index;
     })
-    .map((prob) => prob.data);
+    .map(prob => prob.data);
 
   // Use pretty JSON.stringify because it inserts a newline before all objects, which forces prettier to then convert
   // these objects into multiline ones.
-  const newContent = JSON.stringify(parsedOldFileData, null, 2) + "\n";
+  const newContent = JSON.stringify(parsedOldFileData, null, 2) + '\n';
   const formattedNewContent = await prettier.format(newContent, {
-    endOfLine: "lf",
+    endOfLine: 'lf',
     semi: true,
     singleQuote: true,
     tabWidth: 2,
     useTabs: false,
-    trailingComma: "es5",
-    arrowParens: "avoid",
-    parser: "json",
+    trailingComma: 'es5',
+    arrowParens: 'avoid',
+    parser: 'json',
   });
 
   await githubAPI.put(
     `/repos/cpinitiative/usaco-guide/contents/content/${filePath.replace(
       /\.mdx$/,
-      ".problems.json",
+      '.problems.json'
     )}`,
     {
-      content: Buffer.from(formattedNewContent).toString("base64"),
+      content: Buffer.from(formattedNewContent).toString('base64'),
       message: `Feat: add suggested problem '${name}'`,
       branch: branchName,
       sha: oldFileHash,
-    },
+    }
   );
 
   const createdPullRequestReq = await githubAPI.post(
-    "/repos/cpinitiative/usaco-guide/pulls",
+    '/repos/cpinitiative/usaco-guide/pulls',
     {
       head: branchName,
-      base: "master",
+      base: 'master',
       maintainer_can_modify: true,
       title: `Problem Suggestion: Add "${name}" to ${moduleName}`,
       body: body,
-    },
+    }
   );
 
   const useProblemSuggestionReviewers = false;
   if (useProblemSuggestionReviewers) {
     const reviewersReq = await githubAPI.get(
-      `/repos/cpinitiative/usaco-guide/pulls/${createdPullRequestReq.data.number}/requested_reviewers`,
+      `/repos/cpinitiative/usaco-guide/pulls/${createdPullRequestReq.data.number}/requested_reviewers`
     );
     const reviewersToRemove = reviewersReq.data.users
-      .map((user) => user.login)
-      .filter((user) => !problemSuggestionReviewers[section].includes(user));
+      .map(user => user.login)
+      .filter(user => !problemSuggestionReviewers[section].includes(user));
     const keptReviewers = reviewersReq.data.users
-      .map((user) => user.login)
-      .filter((user) => problemSuggestionReviewers[section].includes(user));
+      .map(user => user.login)
+      .filter(user => problemSuggestionReviewers[section].includes(user));
     await githubAPI.delete(
       `/repos/cpinitiative/usaco-guide/pulls/${createdPullRequestReq.data.number}/requested_reviewers`,
       {
         data: {
           reviewers: reviewersToRemove,
-          team_reviewers: reviewersReq.data.teams.map((team) => team.slug),
+          team_reviewers: reviewersReq.data.teams.map(team => team.slug),
         },
-      },
+      }
     );
     if (
       problemSuggestionReviewers[section].filter(
-        (u) => !keptReviewers.includes(u),
+        u => !keptReviewers.includes(u)
       ).length > 0
     ) {
       await githubAPI.post(
         `/repos/cpinitiative/usaco-guide/pulls/${createdPullRequestReq.data.number}/requested_reviewers`,
         {
           reviewers: problemSuggestionReviewers[section].filter(
-            (u) => !keptReviewers.includes(u),
+            u => !keptReviewers.includes(u)
           ),
-        },
+        }
       );
     }
   }
@@ -267,7 +265,7 @@ const submitProblemSuggestion = functions.https.onCall(async (request) => {
   // post to /issues/ because github treats all PRs as issues, so the shared features between them (such as labels) use issue api
   await githubAPI.post(
     `/repos/cpinitiative/usaco-guide/issues/${createdPullRequestReq.data.number}/labels`,
-    ["Problem Suggestion"],
+    ['Problem Suggestion']
   );
 
   return createdPullRequestReq.data.html_url;

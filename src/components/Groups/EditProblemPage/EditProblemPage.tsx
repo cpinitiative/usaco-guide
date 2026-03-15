@@ -1,5 +1,5 @@
-import { CheckIcon, XIcon } from "@heroicons/react/solid";
-import { RouteComponentProps } from "@reach/router";
+import { CheckIcon, XIcon } from '@heroicons/react/solid';
+import { RouteComponentProps } from '@reach/router';
 import {
   collection,
   getDocs,
@@ -7,33 +7,33 @@ import {
   limit,
   query,
   Timestamp,
-} from "firebase/firestore";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import * as React from "react";
-import { useReducer } from "react";
-import toast from "react-hot-toast";
-
-const Flatpickr = React.lazy(() => import("react-flatpickr"));
-import { useActiveGroup } from "../../../hooks/groups/useActiveGroup";
-import { usePost } from "../../../hooks/groups/usePost";
-import { usePostActions } from "../../../hooks/groups/usePostActions";
-import { useProblem } from "../../../hooks/groups/useProblem";
-import { useFirebaseApp } from "../../../hooks/useFirebase";
-import { GroupProblemData } from "../../../models/groups/problem";
+} from 'firebase/firestore';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import { useReducer } from 'react';
+import toast from 'react-hot-toast';
+import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import { usePost } from '../../../hooks/groups/usePost';
+import { usePostActions } from '../../../hooks/groups/usePostActions';
+import { useProblem } from '../../../hooks/groups/useProblem';
+import { useFirebaseApp } from '../../../hooks/useFirebase';
+import { GroupProblemData } from '../../../models/groups/problem';
 import {
   AlgoliaProblemInfo,
   getProblemURL,
   ProblemInfo,
-} from "../../../models/problem";
-import ButtonGroup from "../../ButtonGroup";
-import Layout from "../../layout";
-import ProblemAutocompleteModal from "../../ProblemAutocompleteModal/ProblemAutocompleteModal";
-import SEO from "../../seo";
-import TopNavigationBar from "../../TopNavigationBar/TopNavigationBar";
-import Breadcrumbs from "../Breadcrumbs";
-import MarkdownEditor from "../MarkdownEditor";
-import EditProblemHintSection from "./EditProblemHintSection";
+} from '../../../models/problem';
+import ButtonGroup from '../../ButtonGroup';
+import Layout from '../../layout';
+import ProblemAutocompleteModal from '../../ProblemAutocompleteModal/ProblemAutocompleteModal';
+import SEO from '../../seo';
+import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
+import Breadcrumbs from '../Breadcrumbs';
+import MarkdownEditor from '../MarkdownEditor';
+import EditProblemHintSection from './EditProblemHintSection';
+
+const Flatpickr = React.lazy(() => import('react-flatpickr'));
 
 type Props = RouteComponentProps<{
   groupId: string;
@@ -44,12 +44,12 @@ type Props = RouteComponentProps<{
 export default function EditProblemPage(props: Props) {
   const { groupId, postId, problemId } = props;
   if (!groupId || !postId || !problemId) {
-    throw "Misplaced EditProblemPage component! This should be under the param URL with :groupId, :postId, and :problemId";
+    throw 'Misplaced EditProblemPage component! This should be under the param URL with :groupId, :postId, and :problemId';
   }
   const firebaseApp = useFirebaseApp();
   const activeGroup = useActiveGroup();
   const post = usePost(postId);
-  if (!post) throw new Error("Post not found");
+  if (!post) throw new Error('Post not found');
   const originalProblem = useProblem(problemId);
   const [problem, editProblem] = useReducer(
     (oldProblem, updates: Partial<GroupProblemData>): GroupProblemData => {
@@ -57,12 +57,12 @@ export default function EditProblemPage(props: Props) {
         ...oldProblem,
         ...updates,
       };
-      if (merged.solutionReleaseMode === "custom" && !merged.usacoGuideId) {
-        merged.usacoGuideId = "";
+      if (merged.solutionReleaseMode === 'custom' && !merged.usacoGuideId) {
+        merged.usacoGuideId = '';
       }
       return merged as GroupProblemData;
     },
-    originalProblem,
+    originalProblem
   );
   const { saveProblem, deleteProblem } = usePostActions(groupId);
   const [isSearchOpen, setIsSearchOpen] = React.useState(false);
@@ -80,11 +80,11 @@ export default function EditProblemPage(props: Props) {
       query(
         collection(
           getFirestore(firebaseApp),
-          `groups/${groupId}/posts/${postId}/problems/${problemId}/submissions`,
+          `groups/${groupId}/posts/${postId}/problems/${problemId}/submissions`
         ),
-        limit(1),
-      ),
-    ).then((resp) => {
+        limit(1)
+      )
+    ).then(resp => {
       if (resp.docs.length === 0) {
         setCanEditPoints(true);
       }
@@ -92,12 +92,12 @@ export default function EditProblemPage(props: Props) {
   }, [firebaseApp, postId, problemId]);
 
   const handleDeleteProblem = () => {
-    if (confirm("Are you sure you want to delete this problem?")) {
+    if (confirm('Are you sure you want to delete this problem?')) {
       deleteProblem(post, problem.id)
         .then(() => {
-          router.push("../../../");
+          router.push('../../../');
         })
-        .catch((e) => toast.error(e.message));
+        .catch(e => toast.error(e.message));
     }
   };
   const handleSaveProblem = () => {
@@ -114,26 +114,26 @@ export default function EditProblemPage(props: Props) {
       name: problem.name,
       body: `See [${problem.url}](${problem.url})`,
       solution:
-        problem.solution?.kind == "internal"
+        problem.solution?.kind == 'internal'
           ? `See [https://usaco.guide${[
               getProblemURL(problemInfo),
             ]}/solution](https://usaco.guide${[
               getProblemURL(problemInfo),
             ]}/solution)`
-          : problem.solution?.kind == "link"
+          : problem.solution?.kind == 'link'
             ? `See [${problem.solution.url}](${problem.solution.url})`
-            : problem.solution?.kind == "label"
+            : problem.solution?.kind == 'label'
               ? problem.solution.label
-              : problem.solution?.kind === "sketch"
+              : problem.solution?.kind === 'sketch'
                 ? problem.solution.sketch
-                : "",
+                : '',
 
       source: problem.source,
       difficulty: problem.difficulty,
       usacoGuideId: problem.objectID,
     });
   };
-  if (post.type !== "assignment") {
+  if (post.type !== 'assignment') {
     return null;
   }
 
@@ -196,11 +196,11 @@ export default function EditProblemPage(props: Props) {
                 {problem.usacoGuideId ? (
                   <b className="block text-sm font-medium text-green-700 dark:text-green-200">
                     <CheckIcon
-                      className={"mr-2 inline h-5 w-5 text-green-700"}
+                      className={'mr-2 inline h-5 w-5 text-green-700'}
                     />
                     This problem is linked to a USACO Guide Problem (
                     <button
-                      className={"text-blue-700 hover:underline"}
+                      className={'text-blue-700 hover:underline'}
                       onClick={() => editProblem({ usacoGuideId: null })}
                     >
                       Unlink
@@ -209,7 +209,7 @@ export default function EditProblemPage(props: Props) {
                   </b>
                 ) : (
                   <b className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                    <XIcon className={"mr-1 inline h-4 w-4 text-gray-700"} />
+                    <XIcon className={'mr-1 inline h-4 w-4 text-gray-700'} />
                     This problem is not linked to a USACO Guide Problem. To link
                     this problem to a USACO Guide Problem, import a problem from
                     above.
@@ -229,7 +229,7 @@ export default function EditProblemPage(props: Props) {
                     name="problem_name"
                     id="problem_name"
                     value={problem.name}
-                    onChange={(e) => editProblem({ name: e.target.value })}
+                    onChange={e => editProblem({ name: e.target.value })}
                     className="input"
                   />
                 </div>
@@ -242,7 +242,7 @@ export default function EditProblemPage(props: Props) {
                 <div className="mt-1">
                   <MarkdownEditor
                     value={problem.body}
-                    onChange={(value) => editProblem({ body: value })}
+                    onChange={value => editProblem({ body: value })}
                   />
                 </div>
               </div>
@@ -253,8 +253,8 @@ export default function EditProblemPage(props: Props) {
                 </label>
                 <div className="mt-2">
                   <MarkdownEditor
-                    value={problem.solution || ""}
-                    onChange={(value) => editProblem({ solution: value })}
+                    value={problem.solution || ''}
+                    onChange={value => editProblem({ solution: value })}
                   />
                 </div>
               </div>
@@ -266,27 +266,27 @@ export default function EditProblemPage(props: Props) {
 
                   <div className="mt-2">
                     <ButtonGroup
-                      options={["due-date", "now", "never", "custom"]}
+                      options={['due-date', 'now', 'never', 'custom']}
                       value={problem.solutionReleaseMode}
                       labelMap={{
-                        "due-date": "After Assignment Due Date",
-                        now: "Immediately",
-                        never: "Never",
-                        custom: "Custom Time",
+                        'due-date': 'After Assignment Due Date',
+                        now: 'Immediately',
+                        never: 'Never',
+                        custom: 'Custom Time',
                       }}
-                      onChange={(selected) =>
+                      onChange={selected =>
                         editProblem({
                           solutionReleaseMode: selected,
                         })
                       }
                     />
-                    {problem.solutionReleaseMode == "due-date" && (
+                    {problem.solutionReleaseMode == 'due-date' && (
                       <p className="mt-2 text-sm text-gray-500">
                         If a due date is not set, the solution will not be
                         released.
                       </p>
                     )}
-                    {problem.solutionReleaseMode === "custom" && (
+                    {problem.solutionReleaseMode === 'custom' && (
                       <React.Suspense
                         fallback={
                           <input
@@ -297,29 +297,29 @@ export default function EditProblemPage(props: Props) {
                         }
                       >
                         <Flatpickr
-                          placeholder={"Choose a release time"}
+                          placeholder={'Choose a release time'}
                           options={{
                             dateFormat:
-                              "l, F J, Y, h:i K " +
+                              'l, F J, Y, h:i K ' +
                               [
-                                "",
+                                '',
                                 ...(
-                                  "UTC" +
+                                  'UTC' +
                                   // sign is reversed for some reason
                                   (new Date().getTimezoneOffset() > 0
-                                    ? "-"
-                                    : "+") +
+                                    ? '-'
+                                    : '+') +
                                   Math.abs(new Date().getTimezoneOffset()) / 60
-                                ).split(""),
-                              ].join("\\\\"),
+                                ).split(''),
+                              ].join('\\\\'),
                             enableTime: true,
                           }}
                           value={problem.solutionReleaseTimestamp?.toDate()}
-                          onChange={(date) => {
+                          onChange={date => {
                             console.log(date);
                             editProblem({
                               solutionReleaseTimestamp: Timestamp.fromDate(
-                                date[0],
+                                date[0]
                               ),
                             });
                           }}
@@ -343,7 +343,7 @@ export default function EditProblemPage(props: Props) {
                     name="source"
                     id="source"
                     value={problem.source}
-                    onChange={(e) => editProblem({ source: e.target.value })}
+                    onChange={e => editProblem({ source: e.target.value })}
                     className="input"
                   />
                 </div>
@@ -362,7 +362,7 @@ export default function EditProblemPage(props: Props) {
                     name="points"
                     id="points"
                     value={problem.points}
-                    onChange={(e) => {
+                    onChange={e => {
                       if (canEditPoints) {
                         editProblem({ points: parseInt(e.target.value) });
                       }
@@ -391,9 +391,7 @@ export default function EditProblemPage(props: Props) {
                     name="difficulty"
                     id="difficulty"
                     value={problem.difficulty}
-                    onChange={(e) =>
-                      editProblem({ difficulty: e.target.value })
-                    }
+                    onChange={e => editProblem({ difficulty: e.target.value })}
                     className="input"
                   />
                 </div>
@@ -402,7 +400,7 @@ export default function EditProblemPage(props: Props) {
               <div className="sm:col-span-4">
                 <EditProblemHintSection
                   problem={problem}
-                  onChange={(newHints) => editProblem({ hints: newHints })}
+                  onChange={newHints => editProblem({ hints: newHints })}
                 />
               </div>
             </div>

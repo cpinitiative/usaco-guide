@@ -1,8 +1,7 @@
-import Link from "next/link";
-import * as React from "react";
-import { useContext } from "react";
-import ContactUsSlideoverContext from "../../context/ContactUsSlideoverContext";
-import { useMarkdownLayout } from "../../context/MarkdownLayoutContext";
+import Link from 'next/link';
+import { useContext } from 'react';
+import ContactUsSlideoverContext from '../../context/ContactUsSlideoverContext';
+import { useMarkdownLayout } from '../../context/MarkdownLayoutContext';
 
 const SidebarBottomButtons = () => {
   const { setIsContactUsSlideoverOpen } = useContext(ContactUsSlideoverContext);

@@ -1,4 +1,4 @@
-import classNames from "classnames";
+import classNames from 'classnames';
 import {
   arrayUnion,
   doc,
@@ -6,30 +6,30 @@ import {
   getFirestore,
   setDoc,
   updateDoc,
-} from "firebase/firestore";
-import React, { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import { useFirebaseUser } from "../../context/UserDataContext/UserDataContext";
-import { useFirebaseApp } from "../../hooks/useFirebase";
+} from 'firebase/firestore';
+import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import { useFirebaseUser } from '../../context/UserDataContext/UserDataContext';
+import { useFirebaseApp } from '../../hooks/useFirebase';
 
 export default function Feedback({ videoId }): JSX.Element {
   const firebaseApp = useFirebaseApp();
   const db = getFirestore(firebaseApp);
   const { uid } = useFirebaseUser()!;
   const baseClasses =
-    "rounded-full border h-8 w-8 text-xl transform transition focus:outline-hidden";
-  const unselectedClasses = "hover:scale-110 border-gray-200";
-  const selectedClasses = "scale-110 border-cyan-600";
+    'rounded-full border h-8 w-8 text-xl transform transition focus:outline-hidden';
+  const unselectedClasses = 'hover:scale-110 border-gray-200';
+  const selectedClasses = 'scale-110 border-cyan-600';
 
   const [selected, setSelected] = useState<
-    "very_bad" | "bad" | "good" | "great" | null
+    'very_bad' | 'bad' | 'good' | 'great' | null
   >(null);
-  const [comment, setComment] = useState("");
+  const [comment, setComment] = useState('');
   const [showAdditionalFeedback, setShowAdditionalFeedback] = useState(false);
 
   useEffect(() => {
     if (!db || !uid) return;
-    getDoc(doc(db, "videos", videoId, "feedback", uid)).then((data) => {
+    getDoc(doc(db, 'videos', videoId, 'feedback', uid)).then(data => {
       setSelected(data.data()?.rating || null);
     });
   }, [uid, db]);
@@ -55,10 +55,10 @@ export default function Feedback({ videoId }): JSX.Element {
           <div className="font-medium">How was the video?</div>
           {(
             [
-              ["😨", "very_bad", "very bad"],
-              ["🤨", "bad", "bad"],
-              ["😀", "good", "good"],
-              ["😍", "great", "great"],
+              ['😨', 'very_bad', 'very bad'],
+              ['🤨', 'bad', 'bad'],
+              ['😀', 'good', 'good'],
+              ['😍', 'great', 'great'],
             ] as const
           ).map(([emoji, key, name]) => (
             <button
@@ -67,35 +67,35 @@ export default function Feedback({ videoId }): JSX.Element {
               title={`Rate video as ${name || key}`}
               className={classNames(
                 baseClasses,
-                selected === key ? selectedClasses : unselectedClasses,
+                selected === key ? selectedClasses : unselectedClasses
               )}
               onClick={() => {
                 if (selected === key) {
                   setSelected(null);
-                  updateDoc(doc(db, "videos", videoId, "feedback", uid), {
+                  updateDoc(doc(db, 'videos', videoId, 'feedback', uid), {
                     rating: null,
                   });
                 } else {
                   setSelected(key);
-                  if (key == "very_bad" || key == "bad") {
+                  if (key == 'very_bad' || key == 'bad') {
                     setShowAdditionalFeedback(true);
                   }
                   toast.promise(
                     setDoc(
-                      doc(db, "videos", videoId, "feedback", uid),
+                      doc(db, 'videos', videoId, 'feedback', uid),
                       {
                         rating: key,
                       },
-                      { merge: true },
+                      { merge: true }
                     ),
                     {
-                      loading: "Submitting...",
-                      success: "Thanks for the feedback!",
-                      error: (err) => {
+                      loading: 'Submitting...',
+                      success: 'Thanks for the feedback!',
+                      error: err => {
                         console.log(err);
-                        return "Error submitting feedback.";
+                        return 'Error submitting feedback.';
                       },
-                    },
+                    }
                   );
                 }
               }}
@@ -105,10 +105,10 @@ export default function Feedback({ videoId }): JSX.Element {
           ))}
           {!showAdditionalFeedback && (
             <button
-              title={"Write us a private comment"}
+              title={'Write us a private comment'}
               type="button"
               className={classNames(
-                "ml-4 h-8 transform rounded-full border px-2 text-sm transition hover:border-cyan-600 focus:outline-hidden",
+                'ml-4 h-8 transform rounded-full border px-2 text-sm transition hover:border-cyan-600 focus:outline-hidden'
               )}
               onClick={() => setShowAdditionalFeedback(true)}
             >
@@ -119,40 +119,40 @@ export default function Feedback({ videoId }): JSX.Element {
       </div>
       {showAdditionalFeedback && (
         <form
-          onSubmit={(e) => {
+          onSubmit={e => {
             e.preventDefault();
             setShowAdditionalFeedback(false);
             const originalComment = comment;
-            setComment("");
+            setComment('');
             toast.promise(
               setDoc(
-                doc(db, "videos", videoId, "feedback", uid),
+                doc(db, 'videos', videoId, 'feedback', uid),
                 {
                   comments: arrayUnion(originalComment),
                 },
-                { merge: true },
+                { merge: true }
               ),
               {
-                loading: "Submitting...",
-                success: "Thanks for your comment!",
-                error: (err) => {
+                loading: 'Submitting...',
+                success: 'Thanks for your comment!',
+                error: err => {
                   console.log(err);
-                  return "Error submitting comment.";
+                  return 'Error submitting comment.';
                 },
-              },
+              }
             );
           }}
         >
           <textarea
             required
             style={{
-              height: "4rem",
-              minHeight: "4rem",
+              height: '4rem',
+              minHeight: '4rem',
             }}
             className="mt-4 mr-2 w-full rounded-md border-gray-300 px-2 py-2 text-sm placeholder-gray-500 focus:border-cyan-500 focus:ring-cyan-500"
             placeholder="Tell us how you felt about the video..."
             value={comment}
-            onChange={(e) => setComment(e.target.value)}
+            onChange={e => setComment(e.target.value)}
           />
           <div className="block">
             <button

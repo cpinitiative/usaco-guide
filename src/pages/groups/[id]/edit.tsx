@@ -1,8 +1,8 @@
+import { useRouter } from 'next/router';
+import EditGroupPage from '../../../components/Groups/EditGroupPage/EditGroupPage';
 import Wrapper, {
   GroupPageWrapper,
-} from "../../../components/Groups/GroupWrappers";
-import { useRouter } from "next/router";
-import EditGroupPage from "../../../components/Groups/EditGroupPage/EditGroupPage";
+} from '../../../components/Groups/GroupWrappers';
 
 const Edit = () => {
   const router = useRouter();

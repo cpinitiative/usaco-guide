@@ -1,8 +1,8 @@
-import React, { lazy, Suspense } from "react";
-import { isDevelopment, lazyLoadConfig } from "../../utils/lazyLoad";
+import React, { lazy, Suspense } from 'react';
+import { isDevelopment, lazyLoadConfig } from '../../utils/lazyLoad';
 
 // Lazy load the EditorPage component
-const EditorPage = lazy(() => import("../../components/Editor/EditorPage"));
+const EditorPage = lazy(() => import('../../components/Editor/EditorPage'));
 
 export default function EditorPageContainer(): JSX.Element | null {
   const [hasMounted, setHasMounted] = React.useState(false);

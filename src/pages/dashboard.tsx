@@ -1,36 +1,36 @@
-import * as React from "react";
+import { GetStaticProps } from 'next';
+import * as React from 'react';
 import {
   moduleIDToSectionMap,
   moduleIDToURLMap,
   SECTION_LABELS,
-} from "../../content/ordering";
-import ActiveItems, { ActiveItem } from "../components/Dashboard/ActiveItems";
-import Activity from "../components/Dashboard/Activity";
-import DailyStreak from "../components/Dashboard/DailyStreak";
-import Card from "../components/Dashboard/DashboardCard";
-import DashboardProgress from "../components/Dashboard/DashboardProgress";
-import WelcomeBackBanner from "../components/Dashboard/WelcomeBackBanner";
-import Layout from "../components/layout";
-import divToProbs from "../components/markdown/ProblemsList/DivisionList/div_to_probs.json";
-import SEO from "../components/seo";
-import TopNavigationBar from "../components/TopNavigationBar/TopNavigationBar";
-import { useSignIn } from "../context/SignInContext";
-import { useLastVisitInfo } from "../context/UserDataContext/properties/lastVisit";
+} from '../../content/ordering';
+import ActiveItems, { ActiveItem } from '../components/Dashboard/ActiveItems';
+import Activity from '../components/Dashboard/Activity';
+import DailyStreak from '../components/Dashboard/DailyStreak';
+import Card from '../components/Dashboard/DashboardCard';
+import DashboardProgress from '../components/Dashboard/DashboardProgress';
+import WelcomeBackBanner from '../components/Dashboard/WelcomeBackBanner';
+import Layout from '../components/layout';
+import divToProbs from '../components/markdown/ProblemsList/DivisionList/div_to_probs.json';
+import SEO from '../components/seo';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
+import { CowImagesProvider } from '../context/CowImagesContext';
+import { useSignIn } from '../context/SignInContext';
+import { useLastVisitInfo } from '../context/UserDataContext/properties/lastVisit';
 import {
   useLastViewedModule,
   useShowIgnoredSetting,
-} from "../context/UserDataContext/properties/simpleProperties";
+} from '../context/UserDataContext/properties/simpleProperties';
 import {
   useUserProgressOnModules,
   useUserProgressOnProblems,
-} from "../context/UserDataContext/properties/userProgress";
-import { useFirebaseUser } from "../context/UserDataContext/UserDataContext";
+} from '../context/UserDataContext/properties/userProgress';
+import { useFirebaseUser } from '../context/UserDataContext/UserDataContext';
 import {
   useModulesProgressInfo,
   useProblemsProgressInfo,
-} from "../utils/getProgressInfo";
-import { GetStaticProps } from "next";
-import { CowImagesProvider } from "../context/CowImagesContext";
+} from '../utils/getProgressInfo';
 
 interface DashboardProps {
   loadedModuleInfo: {
@@ -60,7 +60,7 @@ export default function DashboardPage({
       acc[cur.id] = cur.title;
       return acc;
     },
-    {} as { [key: string]: string },
+    {} as { [key: string]: string }
   );
   const problemIDMap = React.useMemo(() => {
     // 1. problems in modules
@@ -85,7 +85,7 @@ export default function DashboardPage({
     }, {});
 
     // 2. problems in USACO monthly table
-    const divisions = ["Bronze", "Silver", "Gold", "Platinum"];
+    const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
     for (const division of divisions) {
       for (const probInfo of divToProbs[division]) {
         const id = `usaco-${probInfo[0]}`;
@@ -115,59 +115,59 @@ export default function DashboardPage({
   const activeModules: ActiveItem[] = React.useMemo(() => {
     return Object.keys(userProgressOnModules)
       .filter(
-        (x) =>
-          (userProgressOnModules[x] === "Reading" ||
-            userProgressOnModules[x] === "Practicing" ||
-            userProgressOnModules[x] === "Skipped" ||
-            (showIgnored && userProgressOnModules[x] === "Ignored")) &&
-          moduleIDToSectionMap.hasOwnProperty(x),
+        x =>
+          (userProgressOnModules[x] === 'Reading' ||
+            userProgressOnModules[x] === 'Practicing' ||
+            userProgressOnModules[x] === 'Skipped' ||
+            (showIgnored && userProgressOnModules[x] === 'Ignored')) &&
+          moduleIDToSectionMap.hasOwnProperty(x)
       )
-      .map((x) => ({
+      .map(x => ({
         label: `${SECTION_LABELS[moduleIDToSectionMap[x]]}: ${
           moduleIDToName[x]
         }`,
         url: moduleIDToURLMap[x],
         status: userProgressOnModules[x] as
-          | "Skipped"
-          | "Reading"
-          | "Practicing"
-          | "Ignored",
+          | 'Skipped'
+          | 'Reading'
+          | 'Practicing'
+          | 'Ignored',
       }));
   }, [userProgressOnModules, showIgnored]);
   const activeProblems: ActiveItem[] = React.useMemo(() => {
     return Object.keys(userProgressOnProblems)
       .filter(
-        (x) =>
-          (userProgressOnProblems[x] === "Reviewing" ||
-            userProgressOnProblems[x] === "Solving" ||
-            userProgressOnProblems[x] === "Skipped" ||
-            (showIgnored && userProgressOnProblems[x] === "Ignored")) &&
-          problemIDMap.hasOwnProperty(x),
+        x =>
+          (userProgressOnProblems[x] === 'Reviewing' ||
+            userProgressOnProblems[x] === 'Solving' ||
+            userProgressOnProblems[x] === 'Skipped' ||
+            (showIgnored && userProgressOnProblems[x] === 'Ignored')) &&
+          problemIDMap.hasOwnProperty(x)
       )
-      .map((x) => ({
+      .map(x => ({
         label: problemIDMap[x].label,
         url: problemIDMap[x].modules[0].url,
         status: userProgressOnProblems[x] as
-          | "Reviewing"
-          | "Solving"
-          | "Skipped"
-          | "Ignored",
+          | 'Reviewing'
+          | 'Solving'
+          | 'Skipped'
+          | 'Ignored',
       }));
   }, [userProgressOnProblems, showIgnored]);
 
   const lastViewedSection =
-    moduleIDToSectionMap[lastViewedModuleID] || "general";
+    moduleIDToSectionMap[lastViewedModuleID] || 'general';
   const moduleProgressIDs = Object.keys(moduleIDToName).filter(
-    (x) => moduleIDToSectionMap[x] === lastViewedSection,
+    x => moduleIDToSectionMap[x] === lastViewedSection
   );
   const allModulesProgressInfo = useModulesProgressInfo(moduleProgressIDs);
 
   const problemStatisticsIDs = React.useMemo(() => {
-    return Object.keys(problemIDMap).filter((problemID) =>
+    return Object.keys(problemIDMap).filter(problemID =>
       problemIDMap[problemID].modules.some(
         (module: { url: string; moduleId: string }) =>
-          moduleIDToSectionMap[module.moduleId] === lastViewedSection,
-      ),
+          moduleIDToSectionMap[module.moduleId] === lastViewedSection
+      )
     );
   }, [problemIDMap, lastViewedSection]);
   const allProblemsProgressInfo = useProblemsProgressInfo(problemStatisticsIDs);
@@ -196,17 +196,17 @@ export default function DashboardPage({
                       </>
                     ) : (
                       <span>
-                        Not signed in.{" "}
+                        Not signed in.{' '}
                         <a
                           href="#"
-                          onClick={(e) => {
+                          onClick={e => {
                             e.preventDefault();
                             signIn();
                           }}
                           className="text-blue-600 underline dark:text-blue-300"
                         >
                           Sign in now!
-                        </a>{" "}
+                        </a>{' '}
                       </span>
                     )}
                   </div>
@@ -292,17 +292,17 @@ export default function DashboardPage({
 
 export const getStaticProps: GetStaticProps = async () => {
   try {
-    const { loadCowImages } = await import("../lib/loadContent");
+    const { loadCowImages } = await import('../lib/loadContent');
     const { queryAllModuleIdsAndTitles, queryAllProblemDashboardInfo } =
-      await import("../lib/queryContent");
+      await import('../lib/queryContent');
     const loadedModuleInfo = await queryAllModuleIdsAndTitles();
     if (!loadedModuleInfo || loadedModuleInfo.length === 0) {
-      console.error("No modules loaded or failed to load modules");
+      console.error('No modules loaded or failed to load modules');
       return { notFound: true };
     }
     const loadedProblemInfo = await queryAllProblemDashboardInfo();
     if (!loadedProblemInfo || loadedProblemInfo.length === 0) {
-      console.error("No problems loaded or failed to load problems");
+      console.error('No problems loaded or failed to load problems');
       return { notFound: true };
     }
     const cowImages = await loadCowImages();
@@ -314,7 +314,7 @@ export const getStaticProps: GetStaticProps = async () => {
       },
     };
   } catch (error) {
-    console.error("Error loading dashboard data:", error);
+    console.error('Error loading dashboard data:', error);
     return { notFound: true };
   }
 };

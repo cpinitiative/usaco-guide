@@ -1,12 +1,12 @@
-import path from "path";
+import path from 'path';
 
 /**
  * Loads and processes cow images from the assets directory
  * @returns Array of objects containing image data
  */
 export async function loadCowImages() {
-  const { readdir } = await import("fs/promises");
-  const assetsDir = path.join(process.cwd(), "public", "assets");
+  const { readdir } = await import('fs/promises');
+  const assetsDir = path.join(process.cwd(), 'public', 'assets');
   const cowImages: Array<{
     name: string;
     src: string;
@@ -14,7 +14,7 @@ export async function loadCowImages() {
 
   try {
     // Recursively find all image files in the assets directory
-    const findImages = async (dir: string, basePath: string = "") => {
+    const findImages = async (dir: string, basePath: string = '') => {
       const entries = await readdir(dir, { withFileTypes: true });
 
       for (const entry of entries) {
@@ -29,8 +29,8 @@ export async function loadCowImages() {
           /\.(jpg|jpeg|png|webp|gif)$/i.test(entry.name) // Common image extensions
         ) {
           const publicPath = path
-            .relative(path.join(process.cwd(), "public"), fullPath)
-            .replace(/\\/g, "/");
+            .relative(path.join(process.cwd(), 'public'), fullPath)
+            .replace(/\\/g, '/');
           cowImages.push({
             name: path.parse(entry.name).name,
             src: `/${publicPath}`,
@@ -45,28 +45,28 @@ export async function loadCowImages() {
     cowImages.sort((a, b) => a.name.localeCompare(b.name));
     return cowImages;
   } catch (error) {
-    console.error("Error loading cow images:", error);
+    console.error('Error loading cow images:', error);
     return [];
   }
 }
 
 export const loadTeamImages = async () => {
-  const { readdir } = await import("fs/promises");
+  const { readdir } = await import('fs/promises');
   const teamImagesDir = path.join(
     process.cwd(),
-    "public",
-    "content",
-    "team",
-    "images",
+    'public',
+    'content',
+    'team',
+    'images'
   );
-  console.log("Loading team images from", teamImagesDir);
+  console.log('Loading team images from', teamImagesDir);
   const teamImages: Array<{
     name: string;
     src: string;
   }> = [];
   try {
     // Recursively find all image files in the assets directory
-    const findImages = async (dir: string, basePath: string = "") => {
+    const findImages = async (dir: string, basePath: string = '') => {
       const entries = await readdir(dir, { withFileTypes: true });
 
       for (const entry of entries) {
@@ -81,8 +81,8 @@ export const loadTeamImages = async () => {
         ) {
           // Remove the 'public' prefix from the path
           const publicPath = path
-            .relative(path.join(process.cwd(), "public"), fullPath)
-            .replace(/\\/g, "/");
+            .relative(path.join(process.cwd(), 'public'), fullPath)
+            .replace(/\\/g, '/');
 
           teamImages.push({
             name: path.basename(entry.name, path.extname(entry.name)),
@@ -95,9 +95,9 @@ export const loadTeamImages = async () => {
     await findImages(teamImagesDir);
     return teamImages;
   } catch (error) {
-    console.error("Error loading team images:", error);
+    console.error('Error loading team images:', error);
     return [];
   }
 };
 
-export type { MdxContent, ProblemInfo } from "../types/content";
+export type { MdxContent, ProblemInfo } from '../types/content';

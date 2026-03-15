@@ -1,6 +1,6 @@
-import admin from "firebase-admin";
-import * as functions from "firebase-functions";
-import getJoinKeyData from "./utils/getJoinKeyData";
+import admin from 'firebase-admin';
+import * as functions from 'firebase-functions';
+import getJoinKeyData from './utils/getJoinKeyData';
 interface submitToProblemArgs {
   key: string;
 }
@@ -9,7 +9,7 @@ if (admin.apps.length === 0) {
   admin.initializeApp();
 }
 
-export default functions.https.onCall(async (request) => {
+export default functions.https.onCall(async request => {
   const { key } = request.data as submitToProblemArgs;
   const callerUid = request.auth?.uid;
 
@@ -25,16 +25,16 @@ export default functions.https.onCall(async (request) => {
   }
   const groupData = await admin
     .firestore()
-    .collection("groups")
+    .collection('groups')
     .doc(keyData.groupId)
     .get()
-    .then((snapshot) => snapshot.data());
+    .then(snapshot => snapshot.data());
   if (!groupData) {
     return {
       success: false,
-      errorCode: "GROUP_NOT_FOUND",
+      errorCode: 'GROUP_NOT_FOUND',
       message:
-        "We were unable to find the requested group. It may have been deleted.",
+        'We were unable to find the requested group. It may have been deleted.',
     };
   } else if (
     groupData.memberIds.includes(callerUid) ||
@@ -43,7 +43,7 @@ export default functions.https.onCall(async (request) => {
   ) {
     return {
       success: false,
-      errorCode: "ALREADY_IN_GROUP",
+      errorCode: 'ALREADY_IN_GROUP',
       message: "You're already in this group, so you can't join it again.",
       groupId: keyData.groupId,
     };
@@ -51,14 +51,14 @@ export default functions.https.onCall(async (request) => {
   await Promise.all([
     admin
       .firestore()
-      .collection("groups")
+      .collection('groups')
       .doc(keyData.groupId)
       .update({
         memberIds: admin.firestore.FieldValue.arrayUnion(callerUid),
       }),
     admin
       .firestore()
-      .collection("group-join-links")
+      .collection('group-join-links')
       .doc(key)
       .update({
         usedBy: admin.firestore.FieldValue.arrayUnion(callerUid),

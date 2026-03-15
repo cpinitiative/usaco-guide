@@ -1,6 +1,5 @@
-import { RadioGroup } from "@headlessui/react";
-import classNames from "classnames";
-import React from "react";
+import { RadioGroup } from '@headlessui/react';
+import classNames from 'classnames';
 
 export default function RadioList({
   name,
@@ -26,12 +25,12 @@ export default function RadioList({
             value={option}
             className={({ checked }) =>
               classNames(
-                "relative flex cursor-pointer border p-4 focus:outline-hidden",
-                idx === 0 && "rounded-tl-md rounded-tr-md",
-                idx === options.length - 1 && "rounded-br-md rounded-bl-md",
+                'relative flex cursor-pointer border p-4 focus:outline-hidden',
+                idx === 0 && 'rounded-tl-md rounded-tr-md',
+                idx === options.length - 1 && 'rounded-br-md rounded-bl-md',
                 checked
-                  ? "z-10 border-blue-200 bg-blue-50 dark:border-blue-700 dark:bg-blue-900"
-                  : "border-gray-200 dark:border-gray-700",
+                  ? 'z-10 border-blue-200 bg-blue-50 dark:border-blue-700 dark:bg-blue-900'
+                  : 'border-gray-200 dark:border-gray-700'
               )
             }
           >
@@ -40,12 +39,12 @@ export default function RadioList({
                 <span
                   className={classNames(
                     checked
-                      ? "border-transparent bg-blue-600 dark:bg-blue-500"
-                      : "border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-700",
+                      ? 'border-transparent bg-blue-600 dark:bg-blue-500'
+                      : 'border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-700',
                     active
-                      ? "ring-2 ring-blue-500 ring-offset-2 dark:ring-offset-gray-700"
-                      : "",
-                    "mt-0.5 flex h-4 w-4 cursor-pointer items-center justify-center rounded-full border",
+                      ? 'ring-2 ring-blue-500 ring-offset-2 dark:ring-offset-gray-700'
+                      : '',
+                    'mt-0.5 flex h-4 w-4 cursor-pointer items-center justify-center rounded-full border'
                   )}
                   aria-hidden="true"
                 >
@@ -58,10 +57,10 @@ export default function RadioList({
                   <RadioGroup.Label
                     as="span"
                     className={classNames(
-                      "block text-sm font-medium",
+                      'block text-sm font-medium',
                       checked
-                        ? "text-blue-900 dark:text-blue-100"
-                        : "text-gray-900 dark:text-gray-100",
+                        ? 'text-blue-900 dark:text-blue-100'
+                        : 'text-gray-900 dark:text-gray-100'
                     )}
                   >
                     {labelMap[option]}
@@ -70,10 +69,10 @@ export default function RadioList({
                     <RadioGroup.Description
                       as="span"
                       className={classNames(
-                        "block text-sm",
+                        'block text-sm',
                         checked
-                          ? "text-blue-700 dark:text-blue-300"
-                          : "text-gray-500 dark:text-gray-400",
+                          ? 'text-blue-700 dark:text-blue-300'
+                          : 'text-gray-500 dark:text-gray-400'
                       )}
                     >
                       {descriptionMap[option]}

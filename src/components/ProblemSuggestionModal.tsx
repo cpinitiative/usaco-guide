@@ -1,11 +1,11 @@
-import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
-import * as React from "react";
-import { useContext } from "react";
-import { SECTION_LABELS } from "../../content/ordering";
-import { EditorContext } from "../context/EditorContext";
-import MarkdownLayoutContext from "../context/MarkdownLayoutContext";
-import useProblemSuggestionAction from "../hooks/useProblemSuggestionAction";
-import { ModuleInfo } from "../models/module";
+import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react';
+import * as React from 'react';
+import { useContext } from 'react';
+import { SECTION_LABELS } from '../../content/ordering';
+import { EditorContext } from '../context/EditorContext';
+import MarkdownLayoutContext from '../context/MarkdownLayoutContext';
+import useProblemSuggestionAction from '../hooks/useProblemSuggestionAction';
+import { ModuleInfo } from '../models/module';
 import {
   autoGenerateSolutionMetadata,
   generateProblemUniqueId,
@@ -13,9 +13,9 @@ import {
   ProblemDifficulty,
   ProblemMetadata,
   probSources,
-} from "../models/problem";
-import ButtonGroup from "./ButtonGroup";
-import Select from "./Select";
+} from '../models/problem';
+import ButtonGroup from './ButtonGroup';
+import Select from './Select';
 
 export default function ProblemSuggestionModal({
   isOpen,
@@ -26,17 +26,17 @@ export default function ProblemSuggestionModal({
   onClose: () => void;
   listName: string;
 }): JSX.Element {
-  const [name, setName] = React.useState("");
-  const [link, setLink] = React.useState("");
+  const [name, setName] = React.useState('');
+  const [link, setLink] = React.useState('');
   const [difficulty, setDifficulty] = React.useState<ProblemDifficulty | null>(
-    null,
+    null
   );
-  const [tags, setTags] = React.useState("");
-  const [additionalNotes, setAdditionalNotes] = React.useState("");
-  const [source, setSource] = React.useState("");
+  const [tags, setTags] = React.useState('');
+  const [additionalNotes, setAdditionalNotes] = React.useState('');
+  const [source, setSource] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [createdIssueLink, setCreatedIssueLink] = React.useState<string | null>(
-    null,
+    null
   );
 
   const submitSuggestion = useProblemSuggestionAction();
@@ -45,29 +45,29 @@ export default function ProblemSuggestionModal({
 
   // will be null if in editor
   const markdownLayoutInfo = useContext(
-    MarkdownLayoutContext,
+    MarkdownLayoutContext
   )?.markdownLayoutInfo;
 
   React.useEffect(() => {
     if (isOpen) {
-      setName("");
-      setLink("");
+      setName('');
+      setLink('');
       setDifficulty(null);
-      setTags("");
-      setAdditionalNotes("");
+      setTags('');
+      setAdditionalNotes('');
       setLoading(false);
       setCreatedIssueLink(null);
     }
   }, [isOpen]);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = event => {
     event.preventDefault();
     if (!difficulty) {
-      alert("Please set the problem difficulty.");
+      alert('Please set the problem difficulty.');
       return;
     }
     if (!source) {
-      alert("Please set the problem source.");
+      alert('Please set the problem source.');
       return;
     }
 
@@ -75,19 +75,19 @@ export default function ProblemSuggestionModal({
 
     // is there a better way to do this? this just identifies the table based on the permalink of the first problem of the table.
     const problemTableLink =
-      window.location.href.split(/[?#]/)[0] + "#problemlist-" + listName;
+      window.location.href.split(/[?#]/)[0] + '#problemlist-' + listName;
 
     if (editorActions.inEditor) {
       const tagsArr = tags
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter((tag) => tag.length > 0);
-      let generatedProblemId = "";
+        .split(',')
+        .map(tag => tag.trim())
+        .filter(tag => tag.length > 0);
+      let generatedProblemId = '';
       try {
         generatedProblemId = generateProblemUniqueId(source, name, link);
       } catch (e) {
         alert(
-          "Error generating problem ID from URL. Check console for details.",
+          'Error generating problem ID from URL. Check console for details.'
         );
         setLoading(false);
         return;
@@ -101,20 +101,20 @@ export default function ProblemSuggestionModal({
         isStarred: false,
         tags: tagsArr,
         solutionMetadata: autoGenerateSolutionMetadata(source, name, link) || {
-          kind: "none",
+          kind: 'none',
         },
       };
-      if ("addProblem" in editorActions) {
+      if ('addProblem' in editorActions) {
         editorActions.addProblem(listName, problemToAdd);
         setLoading(false);
         onClose();
       } else {
-        alert("You are not in editor mode.");
+        alert('You are not in editor mode.');
         setLoading(false);
       }
       return;
     }
-    if (!markdownLayoutInfo) throw new Error("No markdown layout info");
+    if (!markdownLayoutInfo) throw new Error('No markdown layout info');
     const moduleName = `${
       SECTION_LABELS[(markdownLayoutInfo as ModuleInfo).section]
     } - ${markdownLayoutInfo.title}`;
@@ -132,45 +132,45 @@ export default function ProblemSuggestionModal({
       section: (markdownLayoutInfo as ModuleInfo).section,
       source,
     })
-      .then((response) => {
+      .then(response => {
         setCreatedIssueLink(response.data);
       })
-      .catch((e) => {
-        alert("Problem Suggestion Error: " + e.message);
+      .catch(e => {
+        alert('Problem Suggestion Error: ' + e.message);
       })
       .finally(() => setLoading(false));
   };
-  const getLabel = (source) => {
+  const getLabel = source => {
     const map = {
-      "Old Bronze": "Old USACO Bronze (Before Dec 2015)",
-      "Old Silver": "Old USACO Silver (Before Dec 2015)",
-      "Old Gold": "Old USACO Gold (Before Dec 2015)",
-      Bronze: "Recent USACO Bronze (Dec 2015 and Later)",
-      Silver: "Recent USACO Silver (Dec 2015 and Later)",
-      Gold: "Recent USACO Gold (Dec 2015 and Later)",
-      Platinum: "USACO Platinum",
+      'Old Bronze': 'Old USACO Bronze (Before Dec 2015)',
+      'Old Silver': 'Old USACO Silver (Before Dec 2015)',
+      'Old Gold': 'Old USACO Gold (Before Dec 2015)',
+      Bronze: 'Recent USACO Bronze (Dec 2015 and Later)',
+      Silver: 'Recent USACO Silver (Dec 2015 and Later)',
+      Gold: 'Recent USACO Gold (Dec 2015 and Later)',
+      Platinum: 'USACO Platinum',
     };
     if (map[source]) return map[source];
     return probSources[source][1];
   };
   const isAdditionalPractice = markdownLayoutInfo?.title.includes(
-    "Additional Practice",
+    'Additional Practice'
   );
   const sourceOptions = [
     ...Object.keys(probSources)
-      .map((source) => ({
+      .map(source => ({
         label: getLabel(source),
         value: source,
       }))
       .filter(
-        (val) =>
+        val =>
           !isAdditionalPractice ||
-          (!val.label.includes("Recent USACO") &&
-            !val.label.includes("Platinum")),
+          (!val.label.includes('Recent USACO') &&
+            !val.label.includes('Platinum'))
       ),
     {
-      label: "Other",
-      value: "other",
+      label: 'Other',
+      value: 'other',
     },
   ];
 
@@ -190,7 +190,7 @@ export default function ProblemSuggestionModal({
               placeholder="Ex: Steeplechase (Please do NOT include the source)"
               value={name}
               disabled={loading}
-              onChange={(e) => setName(e.target.value)}
+              onChange={e => setName(e.target.value)}
               required
             />
           ) : (
@@ -199,7 +199,7 @@ export default function ProblemSuggestionModal({
               className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:border-gray-700 dark:bg-gray-900"
               placeholder="Ex: USACO December 2012 Silver - Steeplechase"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={e => setName(e.target.value)}
               required
               disabled={loading}
             />
@@ -216,7 +216,7 @@ export default function ProblemSuggestionModal({
             className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:border-gray-700 dark:bg-gray-900"
             placeholder="https://..."
             value={link}
-            onChange={(e) => setLink(e.target.value)}
+            onChange={e => setLink(e.target.value)}
             required
             disabled={loading}
           />
@@ -229,7 +229,7 @@ export default function ProblemSuggestionModal({
         {isAdditionalPractice && (
           <p className="text-sm text-gray-500 dark:text-gray-400">
             We are not accepting recent USACO problems for additional practice
-            modules, as they can already be viewed{" "}
+            modules, as they can already be viewed{' '}
             <a
               href="/general/usaco-monthlies"
               target="_blank"
@@ -244,9 +244,9 @@ export default function ProblemSuggestionModal({
         <div className="relative mt-2 rounded-md shadow-sm">
           <Select
             options={sourceOptions}
-            value={sourceOptions.find((s) => s.value == source)}
-            onChange={(o) => setSource(o.value)}
-            className={"tw-forms-disable mt-1 block w-full text-sm"}
+            value={sourceOptions.find(s => s.value == source)}
+            onChange={o => setSource(o.value)}
+            className={'tw-forms-disable mt-1 block w-full text-sm'}
             isDisabled={loading}
           />
         </div>
@@ -262,14 +262,14 @@ export default function ProblemSuggestionModal({
           <ButtonGroup
             options={PROBLEM_DIFFICULTY_OPTIONS}
             value={difficulty}
-            onChange={(x) => setDifficulty(x)}
+            onChange={x => setDifficulty(x)}
             disabled={loading}
           />
         </div>
       </div>
       <div>
         <label className="block font-medium text-gray-700 dark:text-gray-200">
-          {!inEditor && "Suggested "}Tags (separated with comma and space)
+          {!inEditor && 'Suggested '}Tags (separated with comma and space)
         </label>
         <div className="relative mt-2 rounded-md shadow-sm">
           <input
@@ -277,7 +277,7 @@ export default function ProblemSuggestionModal({
             className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:border-gray-700 dark:bg-gray-900"
             placeholder="DP, Dijkstra"
             value={tags}
-            onChange={(e) => setTags(e.target.value)}
+            onChange={e => setTags(e.target.value)}
             disabled={loading}
           />
         </div>
@@ -296,7 +296,7 @@ export default function ProblemSuggestionModal({
                 rows={3}
                 className="block w-full rounded-md border-gray-300 shadow-sm transition focus:border-blue-500 focus:ring-blue-500 sm:text-sm sm:leading-5 dark:border-gray-700 dark:bg-gray-900"
                 value={additionalNotes}
-                onChange={(e) => setAdditionalNotes(e.target.value)}
+                onChange={e => setAdditionalNotes(e.target.value)}
                 placeholder="Optional. Links to solutions or reasons to add the problem would be helpful. Markdown is supported."
                 disabled={loading}
               />
@@ -308,22 +308,22 @@ export default function ProblemSuggestionModal({
         <button
           type="submit"
           className={
-            "focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base leading-6 font-medium text-white shadow-sm transition duration-150 ease-in-out hover:bg-blue-500 focus:border-blue-700 focus:outline-hidden sm:ml-3 sm:w-auto sm:text-sm sm:leading-5 " +
-            (loading ? "bg-blue-400" : "bg-blue-600")
+            'focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base leading-6 font-medium text-white shadow-sm transition duration-150 ease-in-out hover:bg-blue-500 focus:border-blue-700 focus:outline-hidden sm:ml-3 sm:w-auto sm:text-sm sm:leading-5 ' +
+            (loading ? 'bg-blue-400' : 'bg-blue-600')
           }
           disabled={loading}
         >
           {inEditor
-            ? "Add Problem"
+            ? 'Add Problem'
             : loading
-              ? "Submitting..."
-              : "Submit Suggestion"}
+              ? 'Submitting...'
+              : 'Submit Suggestion'}
         </button>
         <button
           type="button"
           className={
-            "focus:shadow-outline-blue mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 px-4 py-2 text-base leading-6 font-medium text-gray-700 shadow-sm transition duration-150 ease-in-out hover:text-gray-500 focus:border-blue-300 focus:outline-hidden sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm sm:leading-5 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 " +
-            (loading ? "bg-gray-100" : "bg-white")
+            'focus:shadow-outline-blue mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 px-4 py-2 text-base leading-6 font-medium text-gray-700 shadow-sm transition duration-150 ease-in-out hover:text-gray-500 focus:border-blue-300 focus:outline-hidden sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm sm:leading-5 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 ' +
+            (loading ? 'bg-gray-100' : 'bg-white')
           }
           onClick={onClose}
           disabled={loading}
@@ -357,7 +357,7 @@ export default function ProblemSuggestionModal({
           <div className="dark:text-dark-high-emphasis mt-2 text-sm leading-5 text-green-700">
             <p>
               Thanks for helping to improve the USACO Guide. You can track the
-              progress of your suggestion here:{" "}
+              progress of your suggestion here:{' '}
               <a
                 href={createdIssueLink ?? undefined}
                 target="_blank"
@@ -423,7 +423,7 @@ export default function ProblemSuggestionModal({
                 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100"
                 id="modal-headline"
               >
-                {inEditor ? "Add a Problem" : "Suggest a Problem"}
+                {inEditor ? 'Add a Problem' : 'Suggest a Problem'}
               </h3>
               {inEditor ? (
                 <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -435,7 +435,7 @@ export default function ProblemSuggestionModal({
                   Help us improve the USACO Guide by suggesting a problem to
                   add!
                   <br />
-                  This will be submitted as a public{" "}
+                  This will be submitted as a public{' '}
                   <a
                     href="https://github.com/cpinitiative/usaco-guide/pulls"
                     target="_blank"
@@ -468,24 +468,24 @@ export default function ProblemSuggestionModal({
                     <button
                       type="submit"
                       className={
-                        "focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base leading-6 font-medium text-white shadow-sm transition duration-150 ease-in-out hover:bg-blue-500 focus:border-blue-700 focus:outline-hidden sm:text-sm sm:leading-5 " +
-                        (loading ? "bg-blue-400" : "bg-blue-600")
+                        'focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base leading-6 font-medium text-white shadow-sm transition duration-150 ease-in-out hover:bg-blue-500 focus:border-blue-700 focus:outline-hidden sm:text-sm sm:leading-5 ' +
+                        (loading ? 'bg-blue-400' : 'bg-blue-600')
                       }
                       disabled={loading}
                     >
                       {inEditor
-                        ? "Add Problem"
+                        ? 'Add Problem'
                         : loading
-                          ? "Submitting..."
-                          : "Submit Suggestion"}
+                          ? 'Submitting...'
+                          : 'Submit Suggestion'}
                     </button>
                   </span>
                   <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
                     <button
                       type="button"
                       className={
-                        "focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-gray-300 px-4 py-2 text-base leading-6 font-medium text-gray-700 shadow-sm transition duration-150 ease-in-out hover:text-gray-500 focus:border-blue-300 focus:outline-hidden sm:text-sm sm:leading-5 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 " +
-                        (loading ? "bg-gray-100" : "bg-white")
+                        'focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-gray-300 px-4 py-2 text-base leading-6 font-medium text-gray-700 shadow-sm transition duration-150 ease-in-out hover:text-gray-500 focus:border-blue-300 focus:outline-hidden sm:text-sm sm:leading-5 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 ' +
+                        (loading ? 'bg-gray-100' : 'bg-white')
                       }
                       onClick={() => onClose()}
                       disabled={loading}

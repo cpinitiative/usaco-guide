@@ -1,15 +1,15 @@
-const fs = require("fs");
-const path = require("path");
-const { promisify } = require("util");
+const fs = require('fs');
+const path = require('path');
+const { promisify } = require('util');
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 
 const DEBUG = false;
 
 // Configuration
-const SEARCH_DIRECTORIES = ["content", "solutions"]; // Add all directories to search
-const FILE_EXTENSIONS = [".js", ".jsx", ".ts", ".tsx", ".md", ".mdx"]; // File types to process
-const EXCLUDE_DIRECTORIES = ["node_modules", ".next", "public"]; // Directories to exclude
+const SEARCH_DIRECTORIES = ['content', 'solutions']; // Add all directories to search
+const FILE_EXTENSIONS = ['.js', '.jsx', '.ts', '.tsx', '.md', '.mdx']; // File types to process
+const EXCLUDE_DIRECTORIES = ['node_modules', '.next', 'public']; // Directories to exclude
 
 /**
  * Replaces relative imports in a file with absolute paths.
@@ -17,7 +17,7 @@ const EXCLUDE_DIRECTORIES = ["node_modules", ".next", "public"]; // Directories 
  */
 async function processFile(filePath) {
   try {
-    let fileContent = await readFile(filePath, "utf8");
+    let fileContent = await readFile(filePath, 'utf8');
     let hasChanged = false;
 
     // A more specific regex to capture relative paths.
@@ -30,7 +30,7 @@ async function processFile(filePath) {
       let relativePath = p2;
 
       // Check if the import contains 'src/assets'
-      if (relativePath.includes("src/assets")) {
+      if (relativePath.includes('src/assets')) {
         const baseName = path.basename(relativePath);
         hasChanged = true;
         return `/assets/${baseName}${p3}`;
@@ -40,14 +40,14 @@ async function processFile(filePath) {
         // Normalize the path to be relative to the project root or desired base
         const normalizedPath = path
           .relative(path.resolve(), absolutePath)
-          .replace(/\\/g, "/");
+          .replace(/\\/g, '/');
         hasChanged = true;
         return `/${p1}${normalizedPath}${p3}`;
       }
     });
 
     if (hasChanged) {
-      if (!DEBUG) await writeFile(filePath, newContent, "utf8");
+      if (!DEBUG) await writeFile(filePath, newContent, 'utf8');
       console.log(`File updated: ${filePath}`);
       if (DEBUG) console.log(newContent);
       return true;
@@ -97,13 +97,13 @@ async function walkDirectory(directory) {
 }
 
 async function runMigration() {
-  console.log("Starting static assets path migration...");
+  console.log('Starting static assets path migration...');
 
   const startTime = Date.now();
   const { filesProcessed, filesUpdated } = await walkDirectory(process.cwd());
   const duration = (Date.now() - startTime) / 1000;
 
-  console.log("\nMigration complete!");
+  console.log('\nMigration complete!');
   console.log(`Processed ${filesProcessed} files`);
   console.log(`Updated ${filesUpdated} files`);
   console.log(`Time taken: ${duration.toFixed(2)} seconds`);

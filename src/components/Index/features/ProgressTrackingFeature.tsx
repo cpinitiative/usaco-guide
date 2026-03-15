@@ -1,5 +1,3 @@
-import React from "react";
-
 export const ProgressTrackingFeature = (): JSX.Element => {
   return (
     <div className="-m-4">
@@ -49,15 +47,15 @@ export const ProgressTrackingFeature = (): JSX.Element => {
                   <div className="flex h-4 overflow-hidden bg-gray-200 text-xs">
                     <div
                       className="flex flex-col justify-center bg-green-500 text-center whitespace-nowrap text-white shadow-none"
-                      style={{ width: "50%" }}
+                      style={{ width: '50%' }}
                     />
                     <div
                       className="flex flex-col justify-center bg-yellow-300 text-center whitespace-nowrap text-white shadow-none"
-                      style={{ width: "25%" }}
+                      style={{ width: '25%' }}
                     />
                     <div
                       className="flex flex-col justify-center bg-blue-500 text-center whitespace-nowrap text-white shadow-none"
-                      style={{ width: "16.66667%" }}
+                      style={{ width: '16.66667%' }}
                     />
                   </div>
                   <div className="text-right">

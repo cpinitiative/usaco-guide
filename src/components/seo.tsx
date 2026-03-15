@@ -1,6 +1,6 @@
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { siteMetadata } from "../../next.config";
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { siteMetadata } from '../../next.config';
 
 interface SEOProps {
   description?: string;
@@ -16,7 +16,7 @@ interface SEOProps {
 
 const SEO: React.FC<SEOProps> = ({
   description,
-  lang = "en",
+  lang = 'en',
   meta = [],
   title,
   image,
@@ -26,7 +26,7 @@ const SEO: React.FC<SEOProps> = ({
   const siteTitle = siteMetadata.title;
   const metaDescription = description || siteMetadata.description;
   const canonicalUrl = `${siteUrl}${asPath}`;
-  const defaultImage = "/assets/social-media-image.jpg";
+  const defaultImage = '/assets/social-media-image.jpg';
 
   const metaImage = image || {
     src: defaultImage,
@@ -38,36 +38,36 @@ const SEO: React.FC<SEOProps> = ({
 
   const metaTags = [
     {
-      name: "description",
+      name: 'description',
       content: metaDescription,
     },
     {
-      name: "keywords",
-      content: siteMetadata.keywords.join(","),
+      name: 'keywords',
+      content: siteMetadata.keywords.join(','),
     },
     {
-      property: "og:title",
-      content: title || "USACO Guide",
+      property: 'og:title',
+      content: title || 'USACO Guide',
     },
     {
-      property: "og:type",
-      content: "website",
+      property: 'og:type',
+      content: 'website',
     },
     {
-      property: "og:image",
+      property: 'og:image',
       content: fullImageUrl,
     },
     {
-      property: "og:image:width",
+      property: 'og:image:width',
       content: metaImage.width.toString(),
     },
     {
-      property: "og:image:height",
+      property: 'og:image:height',
       content: metaImage.height.toString(),
     },
     {
-      name: "twitter:card",
-      content: "summary",
+      name: 'twitter:card',
+      content: 'summary',
     },
   ];
 
@@ -77,7 +77,7 @@ const SEO: React.FC<SEOProps> = ({
       <title>{title ? `${title} · ${siteTitle}` : siteTitle}</title>
       <meta name="description" content={metaDescription} />
       <link rel="canonical" href={canonicalUrl} />
-      {metaTags.concat(meta).map((meta) => (
+      {metaTags.concat(meta).map(meta => (
         <meta key={meta.name || meta.property} {...meta} />
       ))}
       <meta name="viewport" content="width=device-width, initial-scale=1" />

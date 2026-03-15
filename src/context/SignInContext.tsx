@@ -1,5 +1,5 @@
-import React from "react";
-import { SignInModal } from "../components/SignInModal";
+import React from 'react';
+import { SignInModal } from '../components/SignInModal';
 
 export const SignInContext = React.createContext<{
   signIn: () => void;
@@ -7,7 +7,7 @@ export const SignInContext = React.createContext<{
 export function useSignIn() {
   const context = React.useContext(SignInContext);
   if (!context) {
-    throw new Error("useSignInContext must be used within a SignInProvider");
+    throw new Error('useSignInContext must be used within a SignInProvider');
   }
   return context;
 }

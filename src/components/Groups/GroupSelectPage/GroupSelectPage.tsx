@@ -1,17 +1,16 @@
-import { useRouter } from "next/router";
-import * as React from "react";
+import { useRouter } from 'next/router';
 import {
   useFirebaseUser,
   useIsUserDataLoaded,
-} from "../../../context/UserDataContext/UserDataContext";
-import { useUserPermissions } from "../../../context/UserDataContext/UserPermissionsContext";
-import { useGroupActions } from "../../../hooks/groups/useGroupActions";
-import { useUserGroups } from "../../../hooks/groups/useUserGroups";
-import Layout from "../../layout";
-import SEO from "../../seo";
-import TopNavigationBar from "../../TopNavigationBar/TopNavigationBar";
-import AdminViewAllGroups from "./AdminViewAllGroups";
-import { GroupCard } from "./GroupCard";
+} from '../../../context/UserDataContext/UserDataContext';
+import { useUserPermissions } from '../../../context/UserDataContext/UserPermissionsContext';
+import { useGroupActions } from '../../../hooks/groups/useGroupActions';
+import { useUserGroups } from '../../../hooks/groups/useUserGroups';
+import Layout from '../../layout';
+import SEO from '../../seo';
+import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
+import AdminViewAllGroups from './AdminViewAllGroups';
+import { GroupCard } from './GroupCard';
 
 const GroupSelectPage = () => {
   const firebaseUser = useFirebaseUser();
@@ -25,7 +24,7 @@ const GroupSelectPage = () => {
   const showLoading = !showNotSignedInMessage && !groups.isSuccess;
 
   const handleCreateNewGroup = () => {
-    createNewGroup().then((groupId) => {
+    createNewGroup().then(groupId => {
       router.push(`/groups/${groupId}/edit`);
     });
   };
@@ -61,7 +60,7 @@ const GroupSelectPage = () => {
           {groups.isSuccess &&
             (groups.data && groups.data.length > 0 ? (
               groups.data.map(
-                (group) => group && <GroupCard key={group.id} group={group} />,
+                group => group && <GroupCard key={group.id} group={group} />
               )
             ) : (
               <div>

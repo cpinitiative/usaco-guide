@@ -1,4 +1,3 @@
-import * as React from "react";
 const Vercel = () => (
   <svg
     className="max-h-12"

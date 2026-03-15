@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import { Component } from 'react';
 
 class Canvas extends Component {
   componentDidMount() {
-    this.ctx = this.canvas.getContext("2d");
+    this.ctx = this.canvas.getContext('2d');
 
     this.scale();
     this.props.draw(this.ctx);
@@ -24,8 +24,8 @@ class Canvas extends Component {
     this.canvas.width = this.props.width * ratio;
     this.canvas.height = this.props.height * ratio;
 
-    this.canvas.style.width = this.props.width + "px";
-    this.canvas.style.height = this.props.height + "px";
+    this.canvas.style.width = this.props.width + 'px';
+    this.canvas.style.height = this.props.height + 'px';
 
     this.ctx.scale(ratio, ratio);
   };
@@ -35,7 +35,7 @@ class Canvas extends Component {
 
     return (
       <canvas
-        ref={(node) => (this.canvas = node)}
+        ref={node => (this.canvas = node)}
         width={width}
         height={height}
         {...delegatedProps}

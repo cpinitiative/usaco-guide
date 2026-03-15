@@ -1,6 +1,5 @@
-import * as React from "react";
-import { useMarkdownLayout } from "../../context/MarkdownLayoutContext";
-import NavBar from "./NavBar";
+import { useMarkdownLayout } from '../../context/MarkdownLayoutContext';
+import NavBar from './NavBar';
 
 export default function MobileAppBar() {
   const { setIsMobileNavOpen } = useMarkdownLayout();

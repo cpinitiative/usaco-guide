@@ -1,27 +1,27 @@
-import { useAtomValue, useSetAtom } from "jotai";
-import * as React from "react";
-import { useState } from "react";
-import { activeFileAtom, saveFileAtom } from "../../atoms/editor";
-import { EditorContext } from "../../context/EditorContext";
-import { MarkdownProblemListsProvider } from "../../context/MarkdownProblemListsContext";
-import { ProblemSuggestionModalProvider } from "../../context/ProblemSuggestionModalContext";
+import { useAtomValue, useSetAtom } from 'jotai';
+import * as React from 'react';
+import { useState } from 'react';
+import { activeFileAtom, saveFileAtom } from '../../atoms/editor';
+import { EditorContext } from '../../context/EditorContext';
+import { MarkdownProblemListsProvider } from '../../context/MarkdownProblemListsContext';
+import { ProblemSuggestionModalProvider } from '../../context/ProblemSuggestionModalContext';
 import {
   PROBLEM_DIFFICULTY_OPTIONS,
   ProblemMetadata,
-} from "../../models/problem";
-import { formatMarkdown } from "../../utils/prettierFormatter";
-import QuizGeneratorModal from "../QuizGeneratorModal";
+} from '../../models/problem';
+import { formatMarkdown } from '../../utils/prettierFormatter';
+import QuizGeneratorModal from '../QuizGeneratorModal';
 
 const RawMarkdownRenderer = React.lazy(
-  () => import("../DynamicMarkdownRenderer/DynamicMarkdownRenderer"),
+  () => import('../DynamicMarkdownRenderer/DynamicMarkdownRenderer')
 );
 
 export const EditorOutput = (): JSX.Element => {
   const activeFile = useAtomValue(activeFileAtom);
   const saveFile = useSetAtom(saveFileAtom);
 
-  const markdown: string = activeFile?.markdown ?? "";
-  const problems: string = activeFile?.problems ?? "";
+  const markdown: string = activeFile?.markdown ?? '';
+  const problems: string = activeFile?.problems ?? '';
 
   const [
     markdownProblemListsProviderValue,
@@ -29,10 +29,10 @@ export const EditorOutput = (): JSX.Element => {
   ] = useState<{ listId: string; problems: any }[]>([]);
   React.useEffect(() => {
     try {
-      const parsedProblems = JSON.parse(problems || "{}");
+      const parsedProblems = JSON.parse(problems || '{}');
       const problemsList = Object.keys(parsedProblems)
-        .filter((key) => key !== "MODULE_ID")
-        .map((key) => ({
+        .filter(key => key !== 'MODULE_ID')
+        .map(key => ({
           listId: key,
           problems: parsedProblems[key],
         }));
@@ -44,7 +44,7 @@ export const EditorOutput = (): JSX.Element => {
 
   const handleAddProblem = async (
     listId: string,
-    problemMetadata: ProblemMetadata,
+    problemMetadata: ProblemMetadata
   ) => {
     const parsedOldFileData = JSON.parse(problems);
     const tableToEdit = parsedOldFileData[listId];
@@ -63,15 +63,15 @@ export const EditorOutput = (): JSX.Element => {
           PROBLEM_DIFFICULTY_OPTIONS.indexOf(b.data.difficulty);
         return difficultyDiff !== 0 ? difficultyDiff : a.index - b.index;
       })
-      .map((prob) => prob.data);
+      .map(prob => prob.data);
 
     // Use pretty JSON.stringify because it inserts a newline before all objects, which forces prettier to then convert
     // these objects into multiline ones.
-    const newContent = JSON.stringify(parsedOldFileData, null, 2) + "\n";
+    const newContent = JSON.stringify(parsedOldFileData, null, 2) + '\n';
     const formattedNewContent = await formatMarkdown(newContent);
     saveFile({
       path: activeFile!.path,
-      update: async (prev) => ({
+      update: async prev => ({
         ...prev,
         problems: formattedNewContent,
       }),

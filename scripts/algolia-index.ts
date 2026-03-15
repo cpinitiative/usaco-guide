@@ -1,9 +1,9 @@
-import { getAlgoliaRecords } from "../src/utils/algolia-queries";
-import searchClient from "../src/utils/algoliaSearchClient";
+import { getAlgoliaRecords } from '../src/utils/algolia-queries';
+import searchClient from '../src/utils/algoliaSearchClient';
 
 async function runIndexing() {
   if (!process.env.ALGOLIA_APP_ID) {
-    console.log("Algolia app ID not found - skipping indexing");
+    console.log('Algolia app ID not found - skipping indexing');
     return;
   }
 
@@ -13,7 +13,7 @@ async function runIndexing() {
     await Promise.all(
       records.map(async ({ records: indexRecords, indexName }) => {
         console.log(
-          `Indexing ${indexRecords.length} records to ${indexName}...`,
+          `Indexing ${indexRecords.length} records to ${indexName}...`
         );
 
         // Use Algolia v5 API
@@ -23,15 +23,15 @@ async function runIndexing() {
         });
 
         console.log(
-          `Successfully indexed ${indexRecords.length} objects to ${indexName}`,
+          `Successfully indexed ${indexRecords.length} objects to ${indexName}`
         );
         return response;
-      }),
+      })
     );
 
-    console.log("Algolia indexing complete");
+    console.log('Algolia indexing complete');
   } catch (error) {
-    console.error("Algolia indexing failed:", error);
+    console.error('Algolia indexing failed:', error);
     process.exit(1);
   }
 }

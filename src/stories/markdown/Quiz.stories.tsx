@@ -1,8 +1,7 @@
-import React from "react";
-import Quiz from "../../components/markdown/Quiz";
+import Quiz from '../../components/markdown/Quiz';
 
 export default {
-  title: "Markdown/Quiz",
+  title: 'Markdown/Quiz',
 };
 
 export const Default = (): JSX.Element => (

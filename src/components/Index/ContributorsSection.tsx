@@ -1,7 +1,6 @@
-import * as React from "react";
-import { Member, Members } from "../../../content/team/contributors";
-import Image from "next/image";
-import { useTeamImages } from "../../context/TeamImagesContext";
+import Image from 'next/image';
+import { Member, Members } from '../../../content/team/contributors';
+import { useTeamImages } from '../../context/TeamImagesContext';
 
 const MemberCard = ({ member }: { member: Member }) => {
   const socialMedia = {
@@ -19,7 +18,7 @@ const MemberCard = ({ member }: { member: Member }) => {
           <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
         </svg>
       ),
-      link: (x) => `mailto:${x}`,
+      link: x => `mailto:${x}`,
     },
     facebook: {
       icon: (
@@ -31,7 +30,7 @@ const MemberCard = ({ member }: { member: Member }) => {
           />
         </svg>
       ),
-      link: (x) => `https://www.facebook.com/${x}`,
+      link: x => `https://www.facebook.com/${x}`,
     },
     linkedin: {
       icon: (
@@ -39,7 +38,7 @@ const MemberCard = ({ member }: { member: Member }) => {
           <path d="M365 1414h231v-694h-231v694zm246-908q-1-52-36-86t-93-34-94.5 34-36.5 86q0 51 35.5 85.5t92.5 34.5h1q59 0 95-34.5t36-85.5zm585 908h231v-398q0-154-73-233t-193-79q-136 0-209 117h2v-101h-231q3 66 0 694h231v-388q0-38 7-56 15-35 45-59.5t74-24.5q116 0 116 157v371zm468-998v960q0 119-84.5 203.5t-203.5 84.5h-960q-119 0-203.5-84.5t-84.5-203.5v-960q0-119 84.5-203.5t203.5-84.5h960q119 0 203.5 84.5t84.5 203.5z" />
         </svg>
       ),
-      link: (x) => x,
+      link: x => x,
     },
     github: {
       icon: (
@@ -51,7 +50,7 @@ const MemberCard = ({ member }: { member: Member }) => {
           />
         </svg>
       ),
-      link: (x) => `https://github.com/${x}`,
+      link: x => `https://github.com/${x}`,
     },
     codeforces: {
       icon: (
@@ -59,7 +58,7 @@ const MemberCard = ({ member }: { member: Member }) => {
           <path d="M4.5 7.5C5.328 7.5 6 8.172 6 9v10.5c0 .828-.672 1.5-1.5 1.5h-3C.673 21 0 20.328 0 19.5V9c0-.828.673-1.5 1.5-1.5h3zm9-4.5c.828 0 1.5.672 1.5 1.5v15c0 .828-.672 1.5-1.5 1.5h-3c-.827 0-1.5-.672-1.5-1.5v-15c0-.828.673-1.5 1.5-1.5h3zm9 7.5c.828 0 1.5.672 1.5 1.5v7.5c0 .828-.672 1.5-1.5 1.5h-3c-.828 0-1.5-.672-1.5-1.5V12c0-.828.672-1.5 1.5-1.5h3z" />
         </svg>
       ),
-      link: (x) => `https://codeforces.com/profile/${x}`,
+      link: x => `https://codeforces.com/profile/${x}`,
     },
     website: {
       icon: (
@@ -67,7 +66,7 @@ const MemberCard = ({ member }: { member: Member }) => {
           <path d="M16.36,14C16.44,13.34 16.5,12.68 16.5,12C16.5,11.32 16.44,10.66 16.36,10H19.74C19.9,10.64 20,11.31 20,12C20,12.69 19.9,13.36 19.74,14M14.59,19.56C15.19,18.45 15.65,17.25 15.97,16H18.92C17.96,17.65 16.43,18.93 14.59,19.56M14.34,14H9.66C9.56,13.34 9.5,12.68 9.5,12C9.5,11.32 9.56,10.65 9.66,10H14.34C14.43,10.65 14.5,11.32 14.5,12C14.5,12.68 14.43,13.34 14.34,14M12,19.96C11.17,18.76 10.5,17.43 10.09,16H13.91C13.5,17.43 12.83,18.76 12,19.96M8,8H5.08C6.03,6.34 7.57,5.06 9.4,4.44C8.8,5.55 8.35,6.75 8,8M5.08,16H8C8.35,17.25 8.8,18.45 9.4,19.56C7.57,18.93 6.03,17.65 5.08,16M4.26,14C4.1,13.36 4,12.69 4,12C4,11.31 4.1,10.64 4.26,10H7.64C7.56,10.66 7.5,11.32 7.5,12C7.5,12.68 7.56,13.34 7.64,14M12,4.03C12.83,5.23 13.5,6.57 13.91,8H10.09C10.5,6.57 11.17,5.23 12,4.03M18.92,8H15.97C15.65,6.75 15.19,5.55 14.59,4.44C16.43,5.07 17.96,6.34 18.92,8M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
         </svg>
       ),
-      link: (x) => x,
+      link: x => x,
     },
     youtube: {
       icon: (
@@ -93,7 +92,7 @@ const MemberCard = ({ member }: { member: Member }) => {
           ></path>
         </svg>
       ),
-      link: (x) => x,
+      link: x => x,
     },
     reddit: {
       icon: (
@@ -101,12 +100,12 @@ const MemberCard = ({ member }: { member: Member }) => {
           <path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z" />
         </svg>
       ),
-      link: (x) => `https://reddit.com/user/${x}`,
+      link: x => `https://reddit.com/user/${x}`,
     },
   };
   const teamImages = useTeamImages();
   const image = member.photo
-    ? teamImages.find((x) => x.name === member.photo)
+    ? teamImages.find(x => x.name === member.photo)
     : undefined;
   return (
     <li
@@ -121,7 +120,7 @@ const MemberCard = ({ member }: { member: Member }) => {
               alt={member.name}
               width={100}
               height={100}
-              className="rounded-full object-cover object-position-center"
+              className="object-position-center rounded-full object-cover"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-gray-200 dark:bg-gray-700">
@@ -140,10 +139,10 @@ const MemberCard = ({ member }: { member: Member }) => {
           <div className="flex flex-col gap-3 px-5 pb-5">
             <ul className="flex justify-center gap-3">
               {Object.keys(socialMedia)
-                .filter((sm) => member.hasOwnProperty(sm))
-                .map((sm) => (
+                .filter(sm => member.hasOwnProperty(sm))
+                .map(sm => (
                   <li key={sm} className="h-[26.5px]">
-                    {" "}
+                    {' '}
                     {/* 26.5px is the amount of spacing which keeps the social media and titles aligned nicely so please try not to touch it */}
                     <a
                       key={member.name + sm}
@@ -158,7 +157,7 @@ const MemberCard = ({ member }: { member: Member }) => {
                 ))}
             </ul>
             <div className="flex flex-wrap gap-1">
-              {member.titles.map((title) => (
+              {member.titles.map(title => (
                 <span
                   key={title}
                   className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-sm font-medium whitespace-nowrap text-gray-800 dark:bg-gray-600 dark:text-neutral-200"
@@ -195,7 +194,7 @@ export default function ContributorsSection(): JSX.Element {
               Current Team Members
             </h1>*/}
             <ul className="mx-auto grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))]">
-              {Members.CurrentMembers.map((member) => {
+              {Members.CurrentMembers.map(member => {
                 return <MemberCard member={member} key={member.name} />;
               })}
             </ul>
@@ -204,7 +203,7 @@ export default function ContributorsSection(): JSX.Element {
               Former Team Members
             </h1>
             <ul className="mx-auto grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))]">
-              {Members.FormerMembers.map((member) => (
+              {Members.FormerMembers.map(member => (
                 <MemberCard member={member} key={member.name} />
               ))}
             </ul>

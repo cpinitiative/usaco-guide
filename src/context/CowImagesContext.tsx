@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 
 const CowImagesContext = React.createContext<
   | {
@@ -27,7 +27,7 @@ export function CowImagesProvider({ children, value }: CowImagesProviderProps) {
 export function useCowImages() {
   const images = React.useContext(CowImagesContext);
   if (!images) {
-    throw new Error("useCowImages must be used within a CowImagesProvider");
+    throw new Error('useCowImages must be used within a CowImagesProvider');
   }
   return images;
 }

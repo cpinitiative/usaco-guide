@@ -1,11 +1,11 @@
-import { StoryFn } from "@storybook/react";
-import React, { ComponentProps } from "react";
-import AsteriskComponent from "../components/Tooltip/Asterisk";
-import TextTooltipComponent from "../components/Tooltip/TextTooltip";
-import Tooltip from "../components/Tooltip/Tooltip";
+import { StoryFn } from '@storybook/react';
+import React, { ComponentProps } from 'react';
+import AsteriskComponent from '../components/Tooltip/Asterisk';
+import TextTooltipComponent from '../components/Tooltip/TextTooltip';
+import Tooltip from '../components/Tooltip/Tooltip';
 
 export default {
-  title: "Tooltip",
+  title: 'Tooltip',
   component: Tooltip,
   // tooltips move around and cause false positive change detection :(
   parameters: {
@@ -13,7 +13,7 @@ export default {
   },
 };
 
-const Template: StoryFn<ComponentProps<typeof Tooltip>> = (args) => {
+const Template: StoryFn<ComponentProps<typeof Tooltip>> = args => {
   // We need to use a ref here because tippy by default appends to the end of the body element
   // Storybook dark mode doesn't add the dark class to the html element, so dark mode styles won't work otherwise
   const ref = React.useRef<HTMLDivElement>(null);
@@ -48,7 +48,7 @@ Base.args = {
 
 export const BaseCompact = Template.bind({});
 BaseCompact.args = {
-  type: "compact",
+  type: 'compact',
   content: (
     <>
       This is some <b>React</b>!
@@ -58,7 +58,7 @@ BaseCompact.args = {
 
 const TextTooltipTemplate: StoryFn<
   ComponentProps<typeof TextTooltipComponent>
-> = (args) => {
+> = args => {
   // We need to use a ref here because tippy by default appends to the end of the body element
   // Storybook dark mode doesn't add the dark class to the html element, so dark mode styles won't work otherwise
   const ref = React.useRef<HTMLDivElement>(null);
@@ -95,7 +95,7 @@ TextTooltip.args = {
 
 export const TextTooltipCompact = TextTooltipTemplate.bind({});
 TextTooltipCompact.args = {
-  type: "compact",
+  type: 'compact',
   content: (
     <>
       This is some <b>React</b>!
@@ -105,7 +105,7 @@ TextTooltipCompact.args = {
 
 const AsteriskTooltipTemplate: StoryFn<
   ComponentProps<typeof AsteriskComponent>
-> = (args) => {
+> = args => {
   // We need to use a ref here because tippy by default appends to the end of the body element
   // Storybook dark mode doesn't add the dark class to the html element, so dark mode styles won't work otherwise
   const ref = React.useRef<HTMLDivElement>(null);

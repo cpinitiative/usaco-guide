@@ -1,7 +1,7 @@
 # Front End Documentation
 
-If you are familiar with Next.js development, just run `yarn` and `yarn dev`
-to get started.
+If you are familiar with Next.js development, just run `yarn` and `yarn dev` to
+get started.
 
 ## Quickstart
 
@@ -48,16 +48,32 @@ Update 03/14/2026: Since migrating to Next.js, we use MDX instead of XDM.
 MDX configuration is currently handled across two files:
 
 1. [src/lib/parseMdxFile.ts](../src/lib/parseMdxFile.ts)
-  - MDX Compilation: Uses @mdx-js/mdx to compile MDX into a JavaScript function-body, handling the migration-specific shift from XDM to MDX.
-  - Plugin Orchestration: Manages a complex pipeline of Remark (AST transformation) and Rehype (HTML transformation) plugins to handle Math (KaTeX), GitHub Flavored Markdown (GFM), table of contents generation, and slug creation.
-  - Validation: Performs integrity checks, such as ensuring language-specific sections (C++, Java, Python) are correctly structured within the file.
-  - Metadata Extraction: Extracts frontmatter (using gray-matter) and maps files to their specific curriculum divisions (e.g., Bronze, Silver) based on the project's ordering logic.
+
+- MDX Compilation: Uses @mdx-js/mdx to compile MDX into a JavaScript
+  function-body, handling the migration-specific shift from XDM to MDX.
+- Plugin Orchestration: Manages a complex pipeline of Remark (AST
+  transformation) and Rehype (HTML transformation) plugins to handle Math
+  (KaTeX), GitHub Flavored Markdown (GFM), table of contents generation, and
+  slug creation.
+- Validation: Performs integrity checks, such as ensuring language-specific
+  sections (C++, Java, Python) are correctly structured within the file.
+- Metadata Extraction: Extracts frontmatter (using gray-matter) and maps files
+  to their specific curriculum divisions (e.g., Bronze, Silver) based on the
+  project's ordering logic.
+
 2. [scripts/index-content.ts](../scripts/index-content.ts)
-  - Database Schema Management: Defines and initializes the normalized SQLite schema, including tables for MDX content, problems, frontmatter, and slugs.
-  - Batch Processing: Efficiently scans the /content and /solutions directories, processing files in batches to manage memory and CPU pressure.
-  - Problem Indexing: Parses .problems.json files to catalog problem metadata, difficulty levels, and solution mappings.
-  - Persistence: Saves the compiled output from parseMdxFile.ts and Git timestamps into the database using atomic transactions.
-  - Artifact Generation: Generates supplementary JSON files (like usaco-divisions.json) in the /public directory for client-side use.
+
+- Database Schema Management: Defines and initializes the normalized SQLite
+  schema, including tables for MDX content, problems, frontmatter, and slugs.
+- Batch Processing: Efficiently scans the /content and /solutions directories,
+  processing files in batches to manage memory and CPU pressure.
+- Problem Indexing: Parses .problems.json files to catalog problem metadata,
+  difficulty levels, and solution mappings.
+- Persistence: Saves the compiled output from parseMdxFile.ts and Git timestamps
+  into the database using atomic transactions.
+- Artifact Generation: Generates supplementary JSON files (like
+  usaco-divisions.json) in the /public directory for client-side use.
+
 ## Credits
 
 - Confetti taken from Josh Comeau:

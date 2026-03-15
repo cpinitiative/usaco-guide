@@ -1,8 +1,8 @@
+import { useRouter } from 'next/router';
+import GroupLeaderboardPage from '../../../components/Groups/GroupLeaderboardPage/GroupLeaderboardPage';
 import Wrapper, {
   GroupPageWrapper,
-} from "../../../components/Groups/GroupWrappers";
-import { useRouter } from "next/router";
-import GroupLeaderboardPage from "../../../components/Groups/GroupLeaderboardPage/GroupLeaderboardPage";
+} from '../../../components/Groups/GroupWrappers';
 
 const Leaderboard = () => {
   const router = useRouter();

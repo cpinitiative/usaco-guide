@@ -1,6 +1,6 @@
-import dayjs from "dayjs";
-import { Timestamp } from "firebase/firestore";
-import { FirebaseSubmission, ProblemData } from "./problem";
+import dayjs from 'dayjs';
+import { Timestamp } from 'firebase/firestore';
+import { FirebaseSubmission, ProblemData } from './problem';
 
 export type PostData = {
   id?: string;
@@ -25,10 +25,10 @@ export type PostData = {
   problemOrdering: string[] | null;
 } & (
   | {
-      type: "announcement";
+      type: 'announcement';
     }
   | {
-      type: "assignment";
+      type: 'assignment';
       dueTimestamp: Timestamp | null;
     }
 );
@@ -38,47 +38,47 @@ export type PostData = {
  * Otherwise returns the posting time as a human-readable string
  */
 export const getPostTimestampString = (post: PostData) => {
-  if (post.type === "assignment" && post.dueTimestamp) {
-    return "Due on " + getPostDueDateString(post);
+  if (post.type === 'assignment' && post.dueTimestamp) {
+    return 'Due on ' + getPostDueDateString(post);
   } else {
-    return "Posted on " + getPostDateString(post);
+    return 'Posted on ' + getPostDateString(post);
   }
 };
 export const getPostDateString = (post: PostData) =>
   post.timestamp
-    ? dayjs(post.timestamp.toDate()).format("MMMM DD h:mma")
+    ? dayjs(post.timestamp.toDate()).format('MMMM DD h:mma')
     : null;
 export const getPostDueDateString = (post: PostData) =>
-  post.type === "assignment" && post.dueTimestamp
-    ? dayjs(post.dueTimestamp.toDate()).format("MMMM DD h:mma")
+  post.type === 'assignment' && post.dueTimestamp
+    ? dayjs(post.dueTimestamp.toDate()).format('MMMM DD h:mma')
     : null;
 export const getTotalPointsFromProblems = (problems: ProblemData[]) =>
   problems.reduce((acc, cur) => acc + cur.points, 0);
 export const getSubmissionTimestampString = (submission: FirebaseSubmission) =>
-  dayjs(submission?.timestamp?.toDate()).format("MMMM DD h:mma");
+  dayjs(submission?.timestamp?.toDate()).format('MMMM DD h:mma');
 export const getSubmissionStatus = (submission: FirebaseSubmission) => {
   return submission.verdict;
 };
 export const getSubmissionEarnedPoints = (
   submission: FirebaseSubmission,
-  problem: ProblemData,
+  problem: ProblemData
 ) => {
   return Math.round(submission.score * problem.points);
 };
 export const getEarnedPointsForProblem = (
   problem: ProblemData,
-  submissions: FirebaseSubmission[],
+  submissions: FirebaseSubmission[]
 ) => {
   return submissions.reduce(
     (oldScore, submission) =>
       Math.max(oldScore, getSubmissionEarnedPoints(submission, problem)),
-    0,
+    0
   );
 };
 export const getTotalPointsOfPost = (post: PostData): number => {
   return Object.keys(post.pointsPerProblem || {}).reduce(
     (acc, cur) => acc + post.pointsPerProblem[cur],
-    0,
+    0
   );
 };
 /* Warning: should really use postordering in groupdata rather than this... */

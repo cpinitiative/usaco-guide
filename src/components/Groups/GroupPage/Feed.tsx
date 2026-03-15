@@ -6,23 +6,23 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-} from "@dnd-kit/core";
+} from '@dnd-kit/core';
 import {
   arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   useSortable,
   verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { MenuIcon } from "@heroicons/react/solid";
-import React, { useEffect, useState } from "react";
-import { useActiveGroup } from "../../../hooks/groups/useActiveGroup";
-import { useGroupActions } from "../../../hooks/groups/useGroupActions";
-import { useUserLeaderboardData } from "../../../hooks/groups/useLeaderboardData";
-import { GroupData } from "../../../models/groups/groups";
-import { PostData, sortPostsComparator } from "../../../models/groups/posts";
-import FeedItem from "./FeedItem";
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { MenuIcon } from '@heroicons/react/solid';
+import { useEffect, useState } from 'react';
+import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import { useGroupActions } from '../../../hooks/groups/useGroupActions';
+import { useUserLeaderboardData } from '../../../hooks/groups/useLeaderboardData';
+import { GroupData } from '../../../models/groups/groups';
+import { PostData, sortPostsComparator } from '../../../models/groups/posts';
+import FeedItem from './FeedItem';
 
 function SortableItem(props: {
   id: string;
@@ -73,7 +73,7 @@ export default function Feed(): JSX.Element {
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    }),
+    })
   );
 
   useEffect(() => {
@@ -86,30 +86,30 @@ export default function Feed(): JSX.Element {
       // where immediately after creating a new post the post ordering and post length will be off...
       setItems(
         group.posts
-          .filter((post) => {
+          .filter(post => {
             if (!group.showAdminView && !post.isPublished) return false;
             return true;
           })
           .sort(sortPostsComparator)
           .reverse()
-          .map((x) => x.id!),
+          .map(x => x.id!)
       );
     } else {
       setItems(group.groupData.postOrdering);
     }
   }, [group.groupData?.postOrdering, group.posts]);
 
-  const handleDragStart = (event) => {
+  const handleDragStart = event => {
     const { active } = event;
 
     setActiveId(active.id);
   };
 
-  const handleDragEnd = (event) => {
+  const handleDragEnd = event => {
     const { active, over } = event;
 
     if (active.id !== over.id) {
-      setItems((items) => {
+      setItems(items => {
         const oldIndex = items.indexOf(active.id);
         const newIndex = items.indexOf(over.id);
 
@@ -124,12 +124,12 @@ export default function Feed(): JSX.Element {
 
   const userLeaderboardData = useUserLeaderboardData(
     group.activeGroupId!,
-    group.activeUserId!,
+    group.activeUserId!
   );
 
   return (
     <div>
-      {group.isLoading && "Loading posts..."}
+      {group.isLoading && 'Loading posts...'}
       {!group.isLoading &&
         (group.showAdminView ? (
           <DndContext
@@ -143,12 +143,12 @@ export default function Feed(): JSX.Element {
               strategy={verticalListSortingStrategy}
             >
               <div className="divide-y divide-solid divide-gray-200 sm:space-y-4 sm:divide-none dark:divide-gray-600">
-                {items.map((id) => (
+                {items.map(id => (
                   <SortableItem
                     key={id}
                     id={id}
                     group={group.groupData!}
-                    post={group.posts.find((x) => x.id === id)!}
+                    post={group.posts.find(x => x.id === id)!}
                     userPoints={userLeaderboardData?.[id]?.totalPoints ?? null}
                     isBeingDragged={activeId === id}
                   />
@@ -159,7 +159,7 @@ export default function Feed(): JSX.Element {
               {activeId ? (
                 <FeedItem
                   group={group.groupData!}
-                  post={group.posts.find((x) => x.id === activeId)!}
+                  post={group.posts.find(x => x.id === activeId)!}
                   userPoints={
                     userLeaderboardData?.[activeId]?.totalPoints ?? null
                   }
@@ -174,8 +174,8 @@ export default function Feed(): JSX.Element {
           </DndContext>
         ) : (
           <div className="divide-y divide-solid divide-gray-200 sm:space-y-4 sm:divide-none dark:divide-gray-600">
-            {items.map((id) => {
-              const post = group.posts.find((x) => x.id === id);
+            {items.map(id => {
+              const post = group.posts.find(x => x.id === id);
               if (!post!.isPublished) return null;
               return (
                 <FeedItem

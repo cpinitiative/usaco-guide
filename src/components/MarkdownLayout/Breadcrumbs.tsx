@@ -1,8 +1,7 @@
-import Link from "next/link";
-import * as React from "react";
-import { SECTION_LABELS } from "../../../content/ordering";
-import { useMarkdownLayout } from "../../context/MarkdownLayoutContext";
-import { SolutionInfo } from "../../models/solution";
+import Link from 'next/link';
+import { SECTION_LABELS } from '../../../content/ordering';
+import { useMarkdownLayout } from '../../context/MarkdownLayoutContext';
+import { SolutionInfo } from '../../models/solution';
 
 const Breadcrumbs = () => {
   const moduleLayoutInfo = useMarkdownLayout();

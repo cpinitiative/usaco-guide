@@ -3,19 +3,19 @@ import {
   CollectionReference,
   getDocs,
   getFirestore,
-} from "@firebase/firestore";
-import React, { useState } from "react";
-import { useFirebaseUser } from "../../../context/UserDataContext/UserDataContext";
-import { useFirebaseApp } from "../../../hooks/useFirebase";
-import { GroupData } from "../../../models/groups/groups";
-import { GroupCard } from "./GroupCard";
+} from '@firebase/firestore';
+import { useState } from 'react';
+import { useFirebaseUser } from '../../../context/UserDataContext/UserDataContext';
+import { useFirebaseApp } from '../../../hooks/useFirebase';
+import { GroupData } from '../../../models/groups/groups';
+import { GroupCard } from './GroupCard';
 
 export default function AdminViewAllGroups(): JSX.Element {
   const firebaseUser = useFirebaseUser();
   const [groups, setGroups] = useState<GroupData[] | null>(null);
 
   useFirebaseApp(
-    (firebaseApp) => {
+    firebaseApp => {
       if (!firebaseUser?.uid) {
         setGroups(null);
         return;
@@ -24,13 +24,13 @@ export default function AdminViewAllGroups(): JSX.Element {
       getDocs(
         collection(
           getFirestore(firebaseApp),
-          "groups",
-        ) as CollectionReference<GroupData>,
-      ).then((result) => {
-        setGroups(result.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+          'groups'
+        ) as CollectionReference<GroupData>
+      ).then(result => {
+        setGroups(result.docs.map(doc => ({ ...doc.data(), id: doc.id })));
       });
     },
-    [firebaseUser?.uid],
+    [firebaseUser?.uid]
   );
 
   return (
@@ -40,7 +40,7 @@ export default function AdminViewAllGroups(): JSX.Element {
           <p className="text-2xl font-medium">Loading...</p>
         </div>
       ) : (
-        groups.map((group) => <GroupCard key={group.id} group={group} />)
+        groups.map(group => <GroupCard key={group.id} group={group} />)
       )}
     </>
   );

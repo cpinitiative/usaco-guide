@@ -1,25 +1,25 @@
-import { Transition } from "@headlessui/react";
-import React, { Fragment, useEffect, useState } from "react";
-import { moduleIDToURLMap } from "../../../../../content/ordering";
+import { Transition } from '@headlessui/react';
+import React, { Fragment, useEffect, useState } from 'react';
+import { moduleIDToURLMap } from '../../../../../content/ordering';
 import {
   useDivisionTableQuery,
   useSetDivisionTableQuery,
-} from "../../../../context/UserDataContext/properties/simpleProperties";
+} from '../../../../context/UserDataContext/properties/simpleProperties';
 import {
   ProblemDifficulty,
   ProblemSolutionInfo,
-} from "../../../../models/problem";
-import { ProblemsList } from "../ProblemsList";
-import contestToPoints from "./contest_to_points.json";
-import divToProbs from "./div_to_probs.json";
-import { DivisionProblemInfo } from "./DivisionProblemInfo";
-import idToSol from "./id_to_sol.json";
-import { ProblemInfo } from "../../../../types/content";
+} from '../../../../models/problem';
+import { ProblemInfo } from '../../../../types/content';
+import { ProblemsList } from '../ProblemsList';
+import contestToPoints from './contest_to_points.json';
+import divToProbs from './div_to_probs.json';
+import { DivisionProblemInfo } from './DivisionProblemInfo';
+import idToSol from './id_to_sol.json';
 
 const startYear = 2016;
 const endYear = 2025; // manually increment this for a new season
 const allYears = `All (${startYear - 1} - ${endYear})`;
-const divisions = ["Bronze", "Silver", "Gold", "Platinum"];
+const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 
 const getSeasons = () => {
   const res: string[] = [];
@@ -33,13 +33,13 @@ const getSeasons = () => {
 const seasons = getSeasons();
 
 const color: { [key: string]: string } = {
-  Bronze: "bg-red-800",
-  Silver: "bg-gray-400",
-  Gold: "bg-yellow-300",
-  Platinum: "bg-gray-200",
+  Bronze: 'bg-red-800',
+  Silver: 'bg-gray-400',
+  Gold: 'bg-yellow-300',
+  Platinum: 'bg-gray-200',
 };
 
-const getCircle = (option) => {
+const getCircle = option => {
   return (
     divisions.includes(option) && (
       <span className="inline-block h-5 w-5 p-0.5">
@@ -63,18 +63,18 @@ const DivisionButton = ({
   dropdownAbove?: boolean;
 }) => {
   const [show, setShow] = React.useState(false);
-  const handleSelect = (option) => {
+  const handleSelect = option => {
     setShow(false);
     onChange(option);
   };
   const ref = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
-    const handleClick = (e) => {
+    const handleClick = e => {
       if (ref.current?.contains(e.target)) return;
       setShow(false);
     };
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
   }, []);
 
   return (
@@ -84,7 +84,7 @@ const DivisionButton = ({
           <button
             type="button"
             className={`inline-flex w-full justify-center rounded-md border border-gray-300 pr-4 dark:border-gray-800 ${
-              getCircle(state) ? "pl-3" : "pl-4"
+              getCircle(state) ? 'pl-3' : 'pl-4'
             } dark:text-dark-high-emphasis dark:hover:text-dark-high-emphasis focus:shadow-outline-blue bg-white py-2 text-sm leading-5 font-medium text-gray-700 transition duration-150 ease-in-out hover:text-gray-500 focus:border-blue-300 focus:outline-hidden dark:bg-gray-900`}
             id="options-menu"
             aria-haspopup="true"
@@ -94,7 +94,7 @@ const DivisionButton = ({
           >
             {getCircle(state)}
 
-            <span className={`flex-1 ${getCircle(state) ? "ml-2" : ""}`}>
+            <span className={`flex-1 ${getCircle(state) ? 'ml-2' : ''}`}>
               {state}
             </span>
 
@@ -126,8 +126,8 @@ const DivisionButton = ({
         <div
           className={`${
             dropdownAbove
-              ? "bottom-0 mb-12 origin-bottom-right"
-              : "origin-top-right"
+              ? 'bottom-0 mb-12 origin-bottom-right'
+              : 'origin-top-right'
           } absolute right-0 z-10 mt-2 rounded-md shadow-lg`} // w-36
         >
           <div className="rounded-md bg-white shadow-xs dark:bg-gray-900">
@@ -137,7 +137,7 @@ const DivisionButton = ({
               aria-orientation="vertical"
               aria-labelledby="options-menu"
             >
-              {options.map((option) => (
+              {options.map(option => (
                 <button
                   key={option}
                   onClick={() => handleSelect(option)}
@@ -145,7 +145,7 @@ const DivisionButton = ({
                   role="menuitem"
                 >
                   {getCircle(option)}
-                  <span className={`flex-1 ${getCircle(option) ? "ml-2" : ""}`}>
+                  <span className={`flex-1 ${getCircle(option) ? 'ml-2' : ''}`}>
                     {option}
                   </span>
                 </button>
@@ -165,22 +165,22 @@ export default function DivisionList(): JSX.Element {
   // Move all hooks to the top
   const divisionTableQuery = useDivisionTableQuery();
   const setDivisionTableQuery = useSetDivisionTableQuery();
-  const [divisionHash, setDivisionHash] = React.useState("");
-  const [seasonHash, setSeasonHash] = React.useState("");
+  const [divisionHash, setDivisionHash] = React.useState('');
+  const [seasonHash, setSeasonHash] = React.useState('');
 
   useEffect(() => {
     const loadProblems = async () => {
       try {
         // Try to load from static JSON file first
-        const response = await fetch("/usaco-divisions.json");
+        const response = await fetch('/usaco-divisions.json');
         if (!response.ok) {
-          throw new Error("Failed to load problems data");
+          throw new Error('Failed to load problems data');
         }
         const data = await response.json();
         setProblems(data.problems);
       } catch (err) {
-        console.error("Error loading problems:", err);
-        setError("Failed to load problems. Please try again later.");
+        console.error('Error loading problems:', err);
+        setError('Failed to load problems. Please try again later.');
       } finally {
         setIsLoading(false);
       }
@@ -242,8 +242,8 @@ export default function DivisionList(): JSX.Element {
         name: probInfo[2],
         uniqueId: id,
         solution: probToSol[id] || {
-          kind: "link",
-          label: "External Sol",
+          kind: 'link',
+          label: 'External Sol',
           url: `http://www.usaco.org/current/data/${idToSol[probInfo[0]]}`,
         },
         moduleLink: probToLink[id],
@@ -252,12 +252,12 @@ export default function DivisionList(): JSX.Element {
         difficulty: probToDifficulty[id],
         url:
           probToURL[id] ||
-          "http://www.usaco.org/index.php?page=viewproblem2&cpid=" +
+          'http://www.usaco.org/index.php?page=viewproblem2&cpid=' +
             probInfo[0], // problems not in modules won't have URLs
         source: contest,
       };
       let year = +probInfo[1].substring(0, 4);
-      if (probInfo[1].includes("December")) {
+      if (probInfo[1].includes('December')) {
         year++;
       }
       const season = `${year - 1} - ${year}`;
@@ -274,13 +274,13 @@ export default function DivisionList(): JSX.Element {
 
   // Calculate derived state after hooks
   const curDivision = divisions.includes(
-    divisionHash || divisionTableQuery?.division || "",
+    divisionHash || divisionTableQuery?.division || ''
   )
     ? divisionHash || divisionTableQuery?.division || divisions[0]
     : divisions[0];
 
   const curSeason = seasons.includes(
-    seasonHash || divisionTableQuery?.season || "",
+    seasonHash || divisionTableQuery?.season || ''
   )
     ? seasonHash || divisionTableQuery?.season || seasons[seasons.length - 1]
     : seasons[seasons.length - 1];
@@ -293,7 +293,7 @@ export default function DivisionList(): JSX.Element {
       for (const division of divisions) {
         for (const season of seasons) {
           for (const prob of divisionToSeasonToProbs[division][season]) {
-            if ("#problem-" + prob.uniqueId === hash) {
+            if ('#problem-' + prob.uniqueId === hash) {
               setDivisionHash(division);
               setSeasonHash(season);
             }
@@ -307,42 +307,42 @@ export default function DivisionList(): JSX.Element {
     divisionToSeasonToProbs[curDivision][curSeason];
 
   const someHavePercent = filteredProblems.some(
-    (problem) => !!problem.percentageSolved,
+    problem => !!problem.percentageSolved
   );
-  const sortOrders = ["By Contest"];
-  if (someHavePercent) sortOrders.push("By Percent");
-  const [sortOrder, setSortOrder] = React.useState("Sort: " + sortOrders[0]);
+  const sortOrders = ['By Contest'];
+  if (someHavePercent) sortOrders.push('By Percent');
+  const [sortOrder, setSortOrder] = React.useState('Sort: ' + sortOrders[0]);
   const sortedProblems = React.useMemo(() => {
     if (!someHavePercent) return filteredProblems;
     return [...filteredProblems].sort(
-      (a, b) => (b.percentageSolved || 0) - (a.percentageSolved || 0),
+      (a, b) => (b.percentageSolved || 0) - (a.percentageSolved || 0)
     );
   }, [filteredProblems]);
 
   if (isLoading) {
-    return <div className="text-center py-4">Loading problems...</div>;
+    return <div className="py-4 text-center">Loading problems...</div>;
   }
 
   if (error) {
-    return <div className="text-center py-4 text-red-600">{error}</div>;
+    return <div className="py-4 text-center text-red-600">{error}</div>;
   }
 
   return (
     <>
       {isLoading ? (
-        <div className="text-center py-4">Loading problems...</div>
+        <div className="py-4 text-center">Loading problems...</div>
       ) : error ? (
-        <div className="text-center py-4 text-red-600">{error}</div>
+        <div className="py-4 text-center text-red-600">{error}</div>
       ) : (
         <div>
           <div className="mb-4 flex items-center space-x-4">
             <DivisionButton
               options={divisions}
               state={curDivision}
-              onChange={(newDivision) => {
+              onChange={newDivision => {
                 if (curDivision === newDivision) return;
-                setDivisionHash("");
-                setSeasonHash("");
+                setDivisionHash('');
+                setSeasonHash('');
                 setDivisionTableQuery({
                   division: newDivision,
                   season: curSeason,
@@ -352,10 +352,10 @@ export default function DivisionList(): JSX.Element {
             <DivisionButton
               options={seasons}
               state={curSeason}
-              onChange={(newSeason) => {
+              onChange={newSeason => {
                 if (curSeason === newSeason) return;
-                setDivisionHash("");
-                setSeasonHash("");
+                setDivisionHash('');
+                setSeasonHash('');
                 setDivisionTableQuery({
                   division: curDivision,
                   season: newSeason,
@@ -366,8 +366,8 @@ export default function DivisionList(): JSX.Element {
               <DivisionButton
                 options={sortOrders}
                 state={sortOrder}
-                onChange={(newOrder) => {
-                  setSortOrder("Sort: " + newOrder);
+                onChange={newOrder => {
+                  setSortOrder('Sort: ' + newOrder);
                 }}
               />
             )}
@@ -375,7 +375,7 @@ export default function DivisionList(): JSX.Element {
 
           <ProblemsList
             problems={
-              sortOrder.endsWith("Percent") ? sortedProblems : filteredProblems
+              sortOrder.endsWith('Percent') ? sortedProblems : filteredProblems
             }
             division={curDivision}
             modules={true}

@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense } from 'react';
 
 // Lazy loading wrapper component
 export const LazyLoad = ({ children }: { children: React.ReactNode }) => {
@@ -6,7 +6,7 @@ export const LazyLoad = ({ children }: { children: React.ReactNode }) => {
 };
 
 // Development mode check
-export const isDevelopment = process.env.NODE_ENV === "development";
+export const isDevelopment = process.env.NODE_ENV === 'development';
 
 // Lazy loading configuration
 // set enabled to false to disable lazy loading

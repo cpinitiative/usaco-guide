@@ -1,5 +1,5 @@
-import * as React from "react";
-import { PrismTheme } from "prism-react-renderer";
+import { PrismTheme } from 'prism-react-renderer';
+import * as React from 'react';
 
 declare class Highlight extends React.Component<{
   Prism: any;

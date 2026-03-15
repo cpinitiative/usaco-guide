@@ -1,11 +1,11 @@
 /*eslint-disable */
-"use strict";
+'use strict';
 
-import { visit } from "unist-util-visit";
+import { visit } from 'unist-util-visit';
 // const nodeToString = require('hast-util-to-string');
 
 const replacements = {
-  "Benq Template": `//BeginCodeSnip{Benq Template}
+  'Benq Template': `//BeginCodeSnip{Benq Template}
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -290,7 +290,7 @@ static class Kattio extends PrintWriter {
 \tpublic long nextLong() { return Long.parseLong(next()); }
 }
 //EndCodeSnip`,
-  "CPP Short Template": `//BeginCodeSnip{C++ Short Template}
+  'CPP Short Template': `//BeginCodeSnip{C++ Short Template}
 #include <bits/stdc++.h> // see /general/running-code-locally
 using namespace std;
 
@@ -316,29 +316,29 @@ void setIO(string name = "") {
 //EndCodeSnip`,
 };
 
-export default (options) => {
+export default options => {
   options = options || {};
 
-  return (tree) => {
-    visit(tree, "element", visitor);
+  return tree => {
+    visit(tree, 'element', visitor);
   };
 
   function visitor(node, index, parent) {
-    if (!parent || parent.tagName !== "pre" || node.tagName !== "code") {
+    if (!parent || parent.tagName !== 'pre' || node.tagName !== 'code') {
       return;
     }
     if (node.children.length !== 1) {
-      throw "Expected only one child for a code block";
+      throw 'Expected only one child for a code block';
     }
     const newValue = [];
-    for (const line of node.children[0].value.split("\n")) {
+    for (const line of node.children[0].value.split('\n')) {
       let found = false;
       for (const key of Object.keys(replacements)) {
         const results = line.match(
-          new RegExp(`^(\\s*).*?(CodeSnip\\{${key}\\})`),
+          new RegExp(`^(\\s*).*?(CodeSnip\\{${key}\\})`)
         );
         if (results) {
-          for (const snippetLine of replacements[key].split("\n")) {
+          for (const snippetLine of replacements[key].split('\n')) {
             newValue.push(`${results[1]}${snippetLine}`);
           }
           found = true;
@@ -347,6 +347,6 @@ export default (options) => {
       }
       if (!found) newValue.push(line);
     }
-    node.children[0].value = newValue.join("\n");
+    node.children[0].value = newValue.join('\n');
   }
 };

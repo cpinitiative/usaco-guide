@@ -1,6 +1,6 @@
 async function needsRebuild(): Promise<boolean> {
-  const { access } = await import("fs/promises");
-  const { DB_FILE } = await import("../src/lib/constants");
+  const { access } = await import('fs/promises');
+  const { DB_FILE } = await import('../src/lib/constants');
   // In production, always rebuild
   // if (process.env.NODE_ENV === 'production') return true;
 
@@ -8,7 +8,7 @@ async function needsRebuild(): Promise<boolean> {
     // Check if both cache files exist
     await access(DB_FILE);
     console.log(
-      "Using cached content. Run with NODE_ENV=production to force rebuild.",
+      'Using cached content. Run with NODE_ENV=production to force rebuild.'
     );
     return false;
   } catch (error) {
@@ -18,10 +18,10 @@ async function needsRebuild(): Promise<boolean> {
 }
 
 async function load() {
-  console.log("Starting to load content...");
+  console.log('Starting to load content...');
   const rebuild = await needsRebuild();
   if (rebuild) {
-    await import("./index-content");
+    await import('./index-content');
   }
 }
 

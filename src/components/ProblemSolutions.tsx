@@ -1,25 +1,25 @@
-import { ExternalLinkIcon } from "@heroicons/react/solid";
-import { Filter } from "bad-words";
-import * as React from "react";
-import { useState } from "react";
+import { ExternalLinkIcon } from '@heroicons/react/solid';
+import { Filter } from 'bad-words';
+import * as React from 'react';
+import { useState } from 'react';
 import {
   moduleIDToSectionMap,
   moduleIDToURLMap,
   SECTION_LABELS,
-} from "../../content/ordering";
-import ContactUsSlideover from "../components/ContactUsSlideover/ContactUsSlideover";
-import { useDarkMode } from "../context/DarkModeContext";
-import { useSignIn } from "../context/SignInContext";
+} from '../../content/ordering';
+import ContactUsSlideover from '../components/ContactUsSlideover/ContactUsSlideover';
+import { useDarkMode } from '../context/DarkModeContext';
+import { useSignIn } from '../context/SignInContext';
 import {
   LANGUAGE_LABELS,
   useUserLangSetting,
-} from "../context/UserDataContext/properties/simpleProperties";
-import { useFirebaseUser } from "../context/UserDataContext/UserDataContext";
-import { useUserPermissions } from "../context/UserDataContext/UserPermissionsContext";
-import useUserProblemSolutionActions from "../hooks/useUserProblemSolutionActions";
-import useUserSolutionsForProblem from "../hooks/useUserSolutionsForProblem";
-import { ShortProblemInfo } from "../models/problem";
-import CodeBlock from "./markdown/CodeBlock/CodeBlock";
+} from '../context/UserDataContext/properties/simpleProperties';
+import { useFirebaseUser } from '../context/UserDataContext/UserDataContext';
+import { useUserPermissions } from '../context/UserDataContext/UserPermissionsContext';
+import useUserProblemSolutionActions from '../hooks/useUserProblemSolutionActions';
+import useUserSolutionsForProblem from '../hooks/useUserSolutionsForProblem';
+import { ShortProblemInfo } from '../models/problem';
+import CodeBlock from './markdown/CodeBlock/CodeBlock';
 
 export default function ProblemSolutions({
   modulesThatHaveProblem,
@@ -41,7 +41,7 @@ export default function ProblemSolutions({
   const canModerate = useUserPermissions().canModerate;
   const isDarkMode = useDarkMode();
   const filter = new Filter();
-  const langArr: ("cpp" | "java" | "py")[] = ["cpp", "java", "py"];
+  const langArr: ('cpp' | 'java' | 'py')[] = ['cpp', 'java', 'py'];
   langArr.sort(function (first, second) {
     if (first === lang && second !== lang) {
       return -1;
@@ -52,13 +52,13 @@ export default function ProblemSolutions({
   });
 
   const publicSolutions = (solutions ?? []).filter(
-    (submission) => submission.userID !== firebaseUser?.uid,
+    submission => submission.userID !== firebaseUser?.uid
   );
 
   publicSolutions?.sort((a, b) => b.upvotes.length - a.upvotes.length);
 
   const moduleHeaderLinks: { label: string; url?: string }[] =
-    modulesThatHaveProblem.map((module) => {
+    modulesThatHaveProblem.map(module => {
       return {
         label: `${SECTION_LABELS[moduleIDToSectionMap[module.id]]} - ${
           module.title
@@ -90,7 +90,7 @@ export default function ProblemSolutions({
               </h3>
               <div className="no-y-margin mt-1 text-sm leading-5 text-gray-700 dark:text-gray-300">
                 <ul className="list-inside list-disc space-y-1 pl-3">
-                  {moduleHeaderLinks.map((link) => (
+                  {moduleHeaderLinks.map(link => (
                     <li key={link.url ?? link.label}>
                       {link.url ? (
                         <a
@@ -133,7 +133,7 @@ export default function ProblemSolutions({
           className="btn-primary my-4"
           onClick={() => (firebaseUser ? showSubmitSolutionModal() : signIn())}
         >
-          {firebaseUser ? "Submit a Solution" : "Sign in to submit a solution"}
+          {firebaseUser ? 'Submit a Solution' : 'Sign in to submit a solution'}
         </button>
         <button
           className="btn-primary mx-3 my-4"
@@ -152,20 +152,20 @@ export default function ProblemSolutions({
           My Solutions
         </h3>
         <div className="space-y-6">
-          {currentUserSolutions?.map((submission) => (
+          {currentUserSolutions?.map(submission => (
             <div key={submission.id}>
               <h4 className="mb-2 text-gray-700 dark:text-gray-100">
                 {submission.language
                   ? LANGUAGE_LABELS[submission.language]
-                  : "Unknown Language"}{" "}
+                  : 'Unknown Language'}{' '}
                 | Votes: {submission.upvotes.length}. (
-                {submission.isPublic ? "Public" : "Private"}){" "}
+                {submission.isPublic ? 'Public' : 'Private'}){' '}
                 <button
                   className="text-blue-600 hover:underline dark:text-blue-300"
                   onClick={() => {
                     if (
                       confirm(
-                        "Are you sure you want to delete this submission?",
+                        'Are you sure you want to delete this submission?'
                       )
                     ) {
                       deleteSolution(submission.id);
@@ -178,7 +178,7 @@ export default function ProblemSolutions({
               <div className="text-sm leading-normal">
                 <CodeBlock
                   className={
-                    submission.language !== "unknown"
+                    submission.language !== 'unknown'
                       ? `language-${submission.language}`
                       : undefined
                   }
@@ -191,12 +191,12 @@ export default function ProblemSolutions({
           ))}
           {currentUserSolutions?.length === 0 && <span>No solutions yet!</span>}
         </div>
-        {langArr.map((lang) => {
-          const filteredSubmissions = publicSolutions.filter((submission) => {
+        {langArr.map(lang => {
+          const filteredSubmissions = publicSolutions.filter(submission => {
             return (
               submission.language == lang &&
               !filter.isProfane(submission.solutionCode) &&
-              !filter.isProfane(submission.userName ?? "Unknown User")
+              !filter.isProfane(submission.userName ?? 'Unknown User')
             );
           });
           return (
@@ -207,11 +207,11 @@ export default function ProblemSolutions({
                 {filteredSubmissions.length})
               </h4>
               <div className="space-y-6">
-                {filteredSubmissions.map((submission) => (
+                {filteredSubmissions.map(submission => (
                   <div key={submission.id}>
                     <h4 className="mb-2 text-gray-700 dark:text-gray-100">
-                      {submission.userName ?? "Unknown User"} | Votes:{" "}
-                      {submission.upvotes.length}.{" "}
+                      {submission.userName ?? 'Unknown User'} | Votes:{' '}
+                      {submission.upvotes.length}.{' '}
                       {firebaseUser?.uid && (
                         <button
                           className="text-blue-600 hover:underline focus:outline-hidden dark:text-blue-300"
@@ -226,8 +226,8 @@ export default function ProblemSolutions({
                           }}
                         >
                           {submission.upvotes.includes(firebaseUser?.uid)
-                            ? "(Undo Upvote)"
-                            : "(Upvote)"}
+                            ? '(Undo Upvote)'
+                            : '(Upvote)'}
                         </button>
                       )}
                       {canModerate && (
@@ -236,7 +236,7 @@ export default function ProblemSolutions({
                           onClick={() => {
                             if (
                               confirm(
-                                "Are you sure you want to make this solution private? (Currently it's nontrivial to undo this...)",
+                                "Are you sure you want to make this solution private? (Currently it's nontrivial to undo this...)"
                               )
                             ) {
                               mutateSolution(submission.id, {
@@ -254,7 +254,7 @@ export default function ProblemSolutions({
                           onClick={() => {
                             if (
                               confirm(
-                                "Are you sure you want to delete this solution?",
+                                'Are you sure you want to delete this solution?'
                               )
                             ) {
                               deleteSolution(submission.id);
@@ -268,7 +268,7 @@ export default function ProblemSolutions({
                     <div className="text-sm leading-normal">
                       <CodeBlock
                         className={
-                          submission.language !== "unknown"
+                          submission.language !== 'unknown'
                             ? `language-${submission.language}`
                             : undefined
                         }

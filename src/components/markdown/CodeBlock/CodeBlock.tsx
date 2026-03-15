@@ -2,56 +2,56 @@
 
 // File taken from https://github.com/FormidableLabs/prism-react-renderer/issues/54
 
-import clsx from "clsx";
-import { themes } from "prism-react-renderer";
-import * as React from "react";
-import { SpoilerContext } from "../Spoiler";
-import Highlight from "./SyntaxHighlighting/Highlight.js";
-import Prism from "./SyntaxHighlighting/prism";
+import clsx from 'clsx';
+import { themes } from 'prism-react-renderer';
+import * as React from 'react';
+import { SpoilerContext } from '../Spoiler';
+import Highlight from './SyntaxHighlighting/Highlight.js';
+import Prism from './SyntaxHighlighting/prism';
 
-const Line = ({ className = "", ...props }) => (
-  <div className={clsx(className, "table-row")} {...props} />
+const Line = ({ className = '', ...props }) => (
+  <div className={clsx(className, 'table-row')} {...props} />
 );
 
-const LineNo = ({ className = "", ...props }) => (
+const LineNo = ({ className = '', ...props }) => (
   <span
     className={clsx(
       className,
-      "table-cell text-right whitespace-nowrap opacity-50 select-none [&::before]:content-[attr(data-line-number)]",
+      'table-cell text-right whitespace-nowrap opacity-50 select-none [&::before]:content-[attr(data-line-number)]'
     )}
     {...props}
   />
 );
 
-const LineSnip = ({ className = "", ...props }) => (
+const LineSnip = ({ className = '', ...props }) => (
   <span
     className={clsx(
       className,
-      "user-select-none table-cell w-4 pr-2 whitespace-nowrap",
+      'user-select-none table-cell w-4 pr-2 whitespace-nowrap'
     )}
     {...props}
   />
 );
 
-const CodeSnipButtonIcon = ({ className = "", ...props }) => (
+const CodeSnipButtonIcon = ({ className = '', ...props }) => (
   <svg
     className={clsx(
       className,
-      "text-green-700/40 hover:text-green-600/50 dark:text-[rgba(156,220,254,0.3)] dark:hover:text-[rgba(156,220,254,0.7)]",
+      'text-green-700/40 hover:text-green-600/50 dark:text-[rgba(156,220,254,0.3)] dark:hover:text-[rgba(156,220,254,0.7)]'
     )}
     {...props}
   />
 );
 
-const LineContent = ({ className = "", ...props }) => (
-  <span className={clsx(className, "table-cell")} {...props} />
+const LineContent = ({ className = '', ...props }) => (
+  <span className={clsx(className, 'table-cell')} {...props} />
 );
 
-const CodeSnippetLineContent = ({ className = "", ...props }) => (
+const CodeSnippetLineContent = ({ className = '', ...props }) => (
   <span
     className={clsx(
       className,
-      "text-[#006600] dark:text-[#00bb00] [&:hover>span]:cursor-pointer [&:hover>span]:text-[#006600c0] dark:[&:hover>span]:text-[#00bb00c0]",
+      'text-[#006600] dark:text-[#00bb00] [&:hover>span]:cursor-pointer [&:hover>span]:text-[#006600c0] dark:[&:hover>span]:text-[#00bb00c0]'
     )}
     {...props}
   />
@@ -66,7 +66,7 @@ const CodeSnipButton = ({
   snipID: number;
   showSnip: boolean;
   onShowSnipChange: (snipID: number, showSnip: boolean) => void;
-  buttonDir: "Up" | "Down" | "Left" | "Right";
+  buttonDir: 'Up' | 'Down' | 'Left' | 'Right';
 }) => {
   return (
     <CodeSnipButtonIcon
@@ -74,16 +74,16 @@ const CodeSnipButton = ({
       viewBox="0 0 24 24"
       stroke="currentColor"
       className={
-        "h-4 translate-y-0.5 transform cursor-pointer transition" +
-        (buttonDir == "Up"
-          ? " rotate-180"
-          : buttonDir == "Down"
-            ? ""
-            : buttonDir == "Left"
-              ? " rotate-90"
-              : buttonDir == "Right"
-                ? " -rotate-90"
-                : "")
+        'h-4 translate-y-0.5 transform cursor-pointer transition' +
+        (buttonDir == 'Up'
+          ? ' rotate-180'
+          : buttonDir == 'Down'
+            ? ''
+            : buttonDir == 'Left'
+              ? ' rotate-90'
+              : buttonDir == 'Right'
+                ? ' -rotate-90'
+                : '')
       }
       onClick={() => onShowSnipChange(snipID, !showSnip)}
     >
@@ -145,11 +145,11 @@ class CodeBlock extends React.Component<
   calculateCodeSnipShow() {
     let i = 0;
     let prev = -1;
-    let prevVal = "";
-    let prevIndentation = "";
+    let prevVal = '';
+    let prevIndentation = '';
     const codeSnipShowDefault: boolean[] = [];
     const code = this.getCode();
-    for (const line of code.split("\n")) {
+    for (const line of code.split('\n')) {
       if (prev == -1) {
         const found = line.match(/^(\s*).*?BeginCodeSnip{(.*?)}/); // BeginCodeSnip{...}
         if (found != null) {
@@ -177,7 +177,7 @@ class CodeBlock extends React.Component<
   }
 
   getCode() {
-    return this.props.children.replace(/^[\r\n]+|[\r\n]+$/g, "");
+    return this.props.children.replace(/^[\r\n]+|[\r\n]+$/g, '');
   }
 
   setCollapsed(_collapsed): void {
@@ -185,7 +185,7 @@ class CodeBlock extends React.Component<
   }
 
   setCodeSnipShow(id, val): void {
-    this.setState((state) => {
+    this.setState(state => {
       const codeSnipShow = state.codeSnipShow;
       codeSnipShow[id] = val;
       return { codeSnipShow: codeSnipShow };
@@ -197,14 +197,14 @@ class CodeBlock extends React.Component<
     maxLines,
     getLineProps,
     getTokenProps,
-    isDarkMode,
+    isDarkMode
   ): JSX.Element {
     const codeSnips = this.codeSnips;
     let curSnip = 0;
     let delta = 1;
     return tokens.map((line, i) => {
       if (maxLines == 0) return null;
-      if (line.length === 1 && line[0].content === "") line[0].content = "\n";
+      if (line.length === 1 && line[0].content === '') line[0].content = '\n';
       if (curSnip < codeSnips.length && i >= codeSnips[curSnip].begin) {
         // inside code snip
         if (i == codeSnips[curSnip].begin) {
@@ -214,14 +214,14 @@ class CodeBlock extends React.Component<
             return (
               // press to show code snip
               <Line key={i} {...getLineProps({ line, key: i })}>
-                <LineNo data-line-number={".."} />
+                <LineNo data-line-number={'..'} />
                 <LineSnip>
                   <CodeSnipButton
                     onShowSnipChange={this.setCodeSnipShow}
                     snipID={curSnip}
                     showSnip={false}
-                    buttonDir={"Right"}
-                  />{" "}
+                    buttonDir={'Right'}
+                  />{' '}
                   {/*this.state.codeSnipShow[curSnip] is false*/}
                 </LineSnip>
                 <CodeSnippetLineContent
@@ -233,7 +233,7 @@ class CodeBlock extends React.Component<
                     Code Snippet
                     {codeSnips[curSnip].value
                       ? `: ${codeSnips[curSnip].value}`
-                      : ""}{" "}
+                      : ''}{' '}
                     (Click to expand)
                   </span>
                 </CodeSnippetLineContent>
@@ -264,10 +264,10 @@ class CodeBlock extends React.Component<
                 showSnip={true}
                 buttonDir={
                   isFirst
-                    ? "Down"
-                    : "Up" /*isFirst: down; isLast: up. This is so poorly implemented .-.*/
+                    ? 'Down'
+                    : 'Up' /*isFirst: down; isLast: up. This is so poorly implemented .-.*/
                 }
-              />{" "}
+              />{' '}
               {/*this.state.codeSnipShow[curSnip] is true*/}
             </LineSnip>
           ) : (
@@ -287,7 +287,7 @@ class CodeBlock extends React.Component<
     const code = this.getCode();
     const className = this.props.className;
     const linesOfCode =
-      code.split("\n").length +
+      code.split('\n').length +
       1 -
       this.codeSnips.reduce((acc, cur) => acc + (cur.end - cur.begin), 0);
     const isCodeBlockExpandable =
@@ -295,9 +295,9 @@ class CodeBlock extends React.Component<
         .expandCodeBlock && linesOfCode > 15;
     const isDarkMode = this.props.isDarkMode;
 
-    let language = className?.replace(/language-/, "");
-    if (language == "py") language = "python";
-    if (!["cpp", "java", "python"].includes(language ?? "")) {
+    let language = className?.replace(/language-/, '');
+    if (language == 'py') language = 'python';
+    if (!['cpp', 'java', 'python'].includes(language ?? '')) {
       // no styling, just a regular pre tag
       return (
         <pre className="-mx-4 mb-4 bg-gray-100 p-4 break-all whitespace-pre-wrap sm:-mx-6 md:mx-0 md:rounded-sm dark:bg-gray-900">
@@ -318,7 +318,7 @@ class CodeBlock extends React.Component<
     // }
 
     const collapsed = this.state.collapsed;
-    const rightOffset = String(language!.length * 8 + 40) + "px";
+    const rightOffset = String(language!.length * 8 + 40) + 'px';
     return (
       <div className="relative isolate">
         {this.props.copyButton ? (
@@ -330,7 +330,7 @@ class CodeBlock extends React.Component<
             className="code-block-copy-button focus:outline-hidden"
             style={
               {
-                "--right-offset": rightOffset,
+                '--right-offset': rightOffset,
               } as React.CSSProperties
             }
           >
@@ -346,18 +346,18 @@ class CodeBlock extends React.Component<
           {({ className, style, tokens, getLineProps, getTokenProps }) => (
             <div
               className={
-                "gatsby-highlight " + (isDarkMode ? "dark-mode" : "light-mode")
+                'gatsby-highlight ' + (isDarkMode ? 'dark-mode' : 'light-mode')
               }
               data-language={language}
             >
               <pre
                 className={
-                  "relative -mx-4 mb-4 p-4 break-all whitespace-pre-wrap sm:-mx-6 md:mx-0 md:rounded-sm " +
+                  'relative -mx-4 mb-4 p-4 break-all whitespace-pre-wrap sm:-mx-6 md:mx-0 md:rounded-sm ' +
                   className
                 }
                 style={{
                   ...style,
-                  ...(!isDarkMode && { backgroundColor: "rgb(249, 250, 251)" }),
+                  ...(!isDarkMode && { backgroundColor: 'rgb(249, 250, 251)' }),
                   // In light mode, override background color with tailwind's bg-gray-50
                 }}
               >
@@ -367,35 +367,35 @@ class CodeBlock extends React.Component<
                       10,
                       getLineProps,
                       getTokenProps,
-                      isDarkMode,
+                      isDarkMode
                     )
                   : this.renderTokens(
                       tokens,
                       -1,
                       getLineProps,
                       getTokenProps,
-                      isDarkMode,
+                      isDarkMode
                     )}
                 {tokens.length > 15 && !collapsed && <div className="h-8" />}
                 {isCodeBlockExpandable && tokens.length > 15 && (
                   <div
                     className={
-                      (collapsed ? "h-full" : "h-12") +
-                      " group absolute inset-x-0 bottom-0 flex cursor-pointer items-end justify-center lg:rounded-b"
+                      (collapsed ? 'h-full' : 'h-12') +
+                      ' group absolute inset-x-0 bottom-0 flex cursor-pointer items-end justify-center lg:rounded-b'
                     }
                     onClick={() => this.setCollapsed(!collapsed)}
                   >
                     <div
                       className={
-                        (collapsed ? "h-20" : "h-12") +
-                        " absolute inset-x-0 bottom-0 flex items-end justify-center"
+                        (collapsed ? 'h-20' : 'h-12') +
+                        ' absolute inset-x-0 bottom-0 flex items-end justify-center'
                       }
                       style={
                         collapsed && isCodeBlockExpandable
                           ? {
                               background: isDarkMode
-                                ? "linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)"
-                                : "linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%)",
+                                ? 'linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)'
+                                : 'linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%)',
                             }
                           : undefined
                       }
@@ -405,9 +405,9 @@ class CodeBlock extends React.Component<
                         viewBox="0 0 24 24"
                         stroke="currentColor"
                         className={clsx(
-                          "mb-2 h-6 w-6 transform transition group-hover:-translate-y-2",
-                          !collapsed && "rotate-180",
-                          isDarkMode ? "text-white" : "text-black",
+                          'mb-2 h-6 w-6 transform transition group-hover:-translate-y-2',
+                          !collapsed && 'rotate-180',
+                          isDarkMode ? 'text-white' : 'text-black'
                         )}
                       >
                         <path

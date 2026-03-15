@@ -1,5 +1,4 @@
-import * as React from "react";
-import TextTooltip from "../../Tooltip/TextTooltip";
+import TextTooltip from '../../Tooltip/TextTooltip';
 
 type ProblemsListHeaderProps = {
   showTags: boolean;
@@ -16,7 +15,7 @@ type ProblemsListHeaderProps = {
 );
 
 export default function ProblemsListHeader(
-  props: ProblemsListHeaderProps,
+  props: ProblemsListHeaderProps
 ): JSX.Element {
   return (
     <tr className="border-b border-gray-200 bg-gray-50 pr-4 md:pr-6 dark:border-gray-700 dark:bg-gray-800">
@@ -28,7 +27,7 @@ export default function ProblemsListHeader(
       </th>
 
       <th className="px-3 py-3 text-left text-xs leading-4 font-medium tracking-wider uppercase">
-        {props.isDivisionTable ? "Contest" : "Source"}
+        {props.isDivisionTable ? 'Contest' : 'Source'}
       </th>
 
       <th className="px-3 py-3 text-left text-xs leading-4 font-medium tracking-wider whitespace-nowrap uppercase sm:pl-9">
@@ -42,8 +41,8 @@ export default function ProblemsListHeader(
               <TextTooltip
                 content={
                   props.showPlatinumSolvePercentageMessage
-                    ? "Percentage of points scored by the top 10 USA pre-college participants."
-                    : "Percentage of points scored by pre-college promoters. Can be interpreted as a combination of difficulty + how strong the test data is."
+                    ? 'Percentage of points scored by the top 10 USA pre-college participants.'
+                    : 'Percentage of points scored by pre-college promoters. Can be interpreted as a combination of difficulty + how strong the test data is.'
                 }
               >
                 Percent

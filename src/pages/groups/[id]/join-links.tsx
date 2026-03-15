@@ -1,8 +1,8 @@
+import { useRouter } from 'next/router';
 import Wrapper, {
   GroupPageWrapper,
-} from "../../../components/Groups/GroupWrappers";
-import { useRouter } from "next/router";
-import JoinLinksPage from "../../../components/Groups/JoinLinksPage/JoinLinksPage";
+} from '../../../components/Groups/GroupWrappers';
+import JoinLinksPage from '../../../components/Groups/JoinLinksPage/JoinLinksPage';
 
 const JoinLinks = () => {
   const router = useRouter();

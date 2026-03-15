@@ -1,8 +1,7 @@
-import Link from "next/link";
-import * as React from "react";
-import Layout from "../components/layout";
-import SEO from "../components/seo";
-import TopNavigationBar from "../components/TopNavigationBar/TopNavigationBar";
+import Link from 'next/link';
+import Layout from '../components/layout';
+import SEO from '../components/seo';
+import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 
 export default function NotFoundPage() {
   return (

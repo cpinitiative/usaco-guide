@@ -1,7 +1,7 @@
-import { updateProfile } from "firebase/auth";
-import React from "react";
-import toast from "react-hot-toast";
-import { useFirebaseUser } from "../../context/UserDataContext/UserDataContext";
+import { updateProfile } from 'firebase/auth';
+import React from 'react';
+import toast from 'react-hot-toast';
+import { useFirebaseUser } from '../../context/UserDataContext/UserDataContext';
 
 export default function Profile(): JSX.Element {
   const firebaseUser = useFirebaseUser();
@@ -16,12 +16,12 @@ export default function Profile(): JSX.Element {
     }
   }, [firebaseUser?.displayName]);
 
-  const handleSubmit = (e) => {
-    if (!firebaseUser) throw new Error("User not logged in");
+  const handleSubmit = e => {
+    if (!firebaseUser) throw new Error('User not logged in');
     e.preventDefault();
     updateProfile(firebaseUser, { displayName: name });
 
-    toast.success("Username updated");
+    toast.success('Username updated');
   };
 
   return (
@@ -48,7 +48,7 @@ export default function Profile(): JSX.Element {
                 id="display_name"
                 className="input"
                 value={name ?? undefined}
-                onChange={(e) => setName(e.target.value)}
+                onChange={e => setName(e.target.value)}
               />
             </div>
           </div>

@@ -1,6 +1,5 @@
-import Link from "next/link";
-import * as React from "react";
-import useSuffix from "./useSuffix";
+import Link from 'next/link';
+import useSuffix from './useSuffix';
 
 const LinksToEdit = ({ className = null as string | null }) => {
   return (

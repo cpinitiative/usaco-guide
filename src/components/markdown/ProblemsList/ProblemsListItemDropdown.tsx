@@ -1,13 +1,13 @@
-import Tippy from "@tippyjs/react";
-import React from "react";
-import { Instance } from "tippy.js";
-import { useDarkMode } from "../../../context/DarkModeContext";
-import useUserSolutionsForProblem from "../../../hooks/useUserSolutionsForProblem";
-import { getProblemURL, isUsaco, ProblemInfo } from "../../../models/problem";
-import TextTooltip from "../../Tooltip/TextTooltip";
-import { DivisionProblemInfo } from "./DivisionList/DivisionProblemInfo";
-import ProblemListItemSolution from "./ProblemListItemSolution";
-import { ProblemsListItemProps } from "./ProblemsListItem";
+import Tippy from '@tippyjs/react';
+import React from 'react';
+import { Instance } from 'tippy.js';
+import { useDarkMode } from '../../../context/DarkModeContext';
+import useUserSolutionsForProblem from '../../../hooks/useUserSolutionsForProblem';
+import { getProblemURL, isUsaco, ProblemInfo } from '../../../models/problem';
+import TextTooltip from '../../Tooltip/TextTooltip';
+import { DivisionProblemInfo } from './DivisionList/DivisionProblemInfo';
+import ProblemListItemSolution from './ProblemListItemSolution';
+import { ProblemsListItemProps } from './ProblemsListItem';
 
 function ViewSolutionsContent({
   problem,
@@ -17,7 +17,7 @@ function ViewSolutionsContent({
   const { solutions, currentUserSolutions } =
     useUserSolutionsForProblem(problem);
   let viewSolutionsContent = (
-    <>View User Solutions ({solutions?.length ?? "..."})</>
+    <>View User Solutions ({solutions?.length ?? '...'})</>
   );
   if (currentUserSolutions?.length) {
     viewSolutionsContent = (
@@ -55,7 +55,7 @@ function ViewSolutionsContent({
 }
 
 export default function ProblemsListItemDropdown(
-  props: ProblemsListItemProps & { isFocusProblem: boolean },
+  props: ProblemsListItemProps & { isFocusProblem: boolean }
 ) {
   const [copied, setCopied] = React.useState(false);
 
@@ -65,7 +65,7 @@ export default function ProblemsListItemDropdown(
   const solutionContent = isFocusProblem ? (
     <></>
   ) : isDivisionTable ? (
-    props?.problem?.solution?.kind == "internal" ? (
+    props?.problem?.solution?.kind == 'internal' ? (
       <a
         className={`group flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800`}
         href={`${getProblemURL(problem)}/solution`}
@@ -73,7 +73,7 @@ export default function ProblemsListItemDropdown(
         rel="noreferrer"
       >
         <div className="text-left">
-          {props.problem.solution.hasHints && "Hints + "}Internal Sol
+          {props.problem.solution.hasHints && 'Hints + '}Internal Sol
         </div>
       </a>
     ) : (
@@ -91,7 +91,7 @@ export default function ProblemsListItemDropdown(
 
   return (
     <Tippy
-      onCreate={(tippy) => (tippyRef.current = tippy)}
+      onCreate={tippy => (tippyRef.current = tippy)}
       content={
         isDropdownShown ? (
           <div className="-mx-2 text-left">
@@ -100,23 +100,23 @@ export default function ProblemsListItemDropdown(
             <button
               type="button"
               className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-hidden dark:text-gray-300 dark:hover:bg-gray-800"
-              onClick={(e) => {
+              onClick={e => {
                 e.preventDefault();
                 setCopied(true);
                 navigator.clipboard.writeText(
                   window.location.href.split(/[?#]/)[0] +
-                    "#problem-" +
-                    problem.uniqueId,
+                    '#problem-' +
+                    problem.uniqueId
                 );
               }}
             >
-              {copied ? "Copied!" : "Copy Permalink"}
+              {copied ? 'Copied!' : 'Copy Permalink'}
             </button>
             {isUsaco(problem.source) && (
               <a
                 className="block w-full px-4 py-2 text-left text-sm font-normal! text-gray-700! hover:bg-gray-100! hover:text-gray-900! focus:outline-hidden dark:text-gray-300! dark:hover:bg-gray-800!"
                 href={`https://ide.usaco.guide/usaco/${problem.uniqueId.substring(
-                  problem.uniqueId.indexOf("-") + 1,
+                  problem.uniqueId.indexOf('-') + 1
                 )}`}
                 target="_blank"
                 rel="noreferrer"
@@ -126,10 +126,10 @@ export default function ProblemsListItemDropdown(
             )}
           </div>
         ) : (
-          ""
+          ''
         )
       }
-      theme={darkMode ? "dark" : "light"}
+      theme={darkMode ? 'dark' : 'light'}
       placement="bottom-end"
       arrow={true}
       animation="fade"

@@ -1,6 +1,4 @@
-import * as React from "react";
-
-export const MATHDIV = (props) => {
+export const MATHDIV = props => {
   return (
     <div
       className={props.className}
@@ -10,7 +8,7 @@ export const MATHDIV = (props) => {
   );
 };
 
-export const MATHSPAN = (props) => {
+export const MATHSPAN = props => {
   return (
     <span
       className={props.className}

@@ -1,6 +1,6 @@
-import * as React from "react";
-import { useAnalyticsEffect } from "../hooks/useAnalyticsEffect";
-import { useUpdateStreakEffect } from "../hooks/useUpdateStreakEffect";
+import * as React from 'react';
+import { useAnalyticsEffect } from '../hooks/useAnalyticsEffect';
+import { useUpdateStreakEffect } from '../hooks/useUpdateStreakEffect';
 
 const Layout = ({
   children,

@@ -4,17 +4,17 @@ import {
   DialogDescription,
   DialogPanel,
   DialogTitle,
-} from "@headlessui/react";
-import { Meta, StoryFn } from "@storybook/react";
-import React from "react";
-import { DarkModeContext } from "../context/DarkModeContext";
+} from '@headlessui/react';
+import { Meta, StoryFn } from '@storybook/react';
+import React from 'react';
+import { DarkModeContext } from '../context/DarkModeContext';
 
 export default {
-  title: "Modal",
+  title: 'Modal',
   component: Dialog,
 } as Meta;
 
-const Template: StoryFn<{ isOpen?: boolean }> = (args) => {
+const Template: StoryFn<{ isOpen?: boolean }> = args => {
   const [modalOpen, setModalOpen] = React.useState(args.isOpen ?? false);
   const darkMode = React.useContext(DarkModeContext);
   return (
@@ -41,7 +41,7 @@ const Template: StoryFn<{ isOpen?: boolean }> = (args) => {
             </span>
             <DialogPanel
               transition
-              className={`w-full max-w-md transform rounded-lg bg-white p-5 shadow-lg transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[enter]:ease-out data-[leave]:duration-200 data-[leave]:ease-in data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95 dark:bg-black dark:text-white ${darkMode ? "dark" : ""}`}
+              className={`w-full max-w-md transform rounded-lg bg-white p-5 shadow-lg transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[enter]:ease-out data-[leave]:duration-200 data-[leave]:ease-in data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95 dark:bg-black dark:text-white ${darkMode ? 'dark' : ''}`}
             >
               <div className="flex flex-col items-start">
                 <DialogTitle as="h3" className="text-lg font-bold">

@@ -1,4 +1,4 @@
-import { TableOfContents } from "./module";
+import { TableOfContents } from './module';
 
 export class SolutionInfo {
   constructor(
@@ -8,6 +8,6 @@ export class SolutionInfo {
     public author: string | null,
     public contributors: string | null,
     public toc: TableOfContents,
-    public fileRelativePath: string,
+    public fileRelativePath: string
   ) {}
 }

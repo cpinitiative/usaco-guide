@@ -1,12 +1,11 @@
-import * as React from "react";
-import useUserProblemSubmissions from "../../../hooks/groups/useUserProblemSubmissions";
-import { PostData } from "../../../models/groups/posts";
+import useUserProblemSubmissions from '../../../hooks/groups/useUserProblemSubmissions';
+import { PostData } from '../../../models/groups/posts';
 import {
   getEarnedPointsForProblem,
   GroupProblemData,
-} from "../../../models/groups/problem";
-import SidebarDueDate from "../SidebarDueDate";
-import ProblemSubmissionsList from "./ProblemSubmissionsList";
+} from '../../../models/groups/problem';
+import SidebarDueDate from '../SidebarDueDate';
+import ProblemSubmissionsList from './ProblemSubmissionsList';
 
 export default function ProblemSidebar({
   post,
@@ -37,7 +36,7 @@ export default function ProblemSidebar({
             />
           </svg>
           <span className="text-sm font-medium text-green-700 dark:text-green-400">
-            {getEarnedPointsForProblem(problem, submissions)} / {problem.points}{" "}
+            {getEarnedPointsForProblem(problem, submissions)} / {problem.points}{' '}
             points earned
           </span>
         </div>

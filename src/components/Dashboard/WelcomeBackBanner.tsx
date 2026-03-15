@@ -1,5 +1,4 @@
-import Link from "next/link";
-import * as React from "react";
+import Link from 'next/link';
 
 export default function WelcomeBackBanner({
   lastViewedModuleURL,
@@ -9,13 +8,13 @@ export default function WelcomeBackBanner({
     <div className="w-full bg-white shadow-sm lg:rounded-lg dark:bg-gray-800">
       <Link
         className="block px-4 py-6 sm:flex sm:items-center sm:justify-between sm:p-8"
-        href={lastViewedModuleURL || "/general/using-this-guide"}
+        href={lastViewedModuleURL || '/general/using-this-guide'}
       >
         <div>
           <h3 className="dark:text-dark-high-emphasis text-xl leading-7 font-medium text-black sm:text-2xl">
             {lastViewedModuleURL
-              ? "Welcome Back!"
-              : "Welcome to the USACO Guide!"}
+              ? 'Welcome Back!'
+              : 'Welcome to the USACO Guide!'}
           </h3>
           <div className="mt-2 font-medium text-blue-600 dark:text-blue-300">
             <p>

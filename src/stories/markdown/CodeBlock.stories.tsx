@@ -1,16 +1,16 @@
-import { StoryFn } from "@storybook/react";
-import React, { ComponentProps } from "react";
-import CodeBlock from "../../components/markdown/CodeBlock/CodeBlock";
-import markdownDecorator from "../../components/markdown/markdownDecoratorForStorybook";
-import { useDarkMode } from "../../context/DarkModeContext";
+import { StoryFn } from '@storybook/react';
+import { ComponentProps } from 'react';
+import CodeBlock from '../../components/markdown/CodeBlock/CodeBlock';
+import markdownDecorator from '../../components/markdown/markdownDecoratorForStorybook';
+import { useDarkMode } from '../../context/DarkModeContext';
 
 export default {
-  title: "Markdown/CodeBlock",
+  title: 'Markdown/CodeBlock',
   component: CodeBlock,
   decorators: [markdownDecorator],
 };
 
-const Template: StoryFn<ComponentProps<typeof CodeBlock>> = (args) => {
+const Template: StoryFn<ComponentProps<typeof CodeBlock>> = args => {
   const isDarkMode = useDarkMode();
 
   return <CodeBlock {...args} isDarkMode={isDarkMode} />;
@@ -18,7 +18,7 @@ const Template: StoryFn<ComponentProps<typeof CodeBlock>> = (args) => {
 
 export const Default = Template.bind({});
 Default.args = {
-  className: "language-cpp",
+  className: 'language-cpp',
   children: `
 This is a code block
 
@@ -78,7 +78,7 @@ It should collapse w/ 15 lines (not including code snip)
 
 export const ShortCodeSnip = Template.bind({});
 ShortCodeSnip.args = {
-  className: "language-cpp",
+  className: 'language-cpp',
   children: `
 //BeginCodeSnip{C++ Short Template}
 #include <bits/stdc++.h> // see /general/running-code-locally
@@ -109,7 +109,7 @@ void setIO(string name = "") {
 
 export const JavaLanguage = Template.bind({});
 JavaLanguage.args = {
-  className: "language-java",
+  className: 'language-java',
   children: `
 Note the positioning of the copy block.
 `,
@@ -117,7 +117,7 @@ Note the positioning of the copy block.
 
 export const PyLanguage = Template.bind({});
 PyLanguage.args = {
-  className: "language-py",
+  className: 'language-py',
   children: `
 Note the positioning of the copy block.
 `,
@@ -125,7 +125,7 @@ Note the positioning of the copy block.
 
 export const UnknownLanguage = Template.bind({});
 UnknownLanguage.args = {
-  className: "language-sh",
+  className: 'language-sh',
   children: `
 This shouldn't have syntax highlighting
 `,

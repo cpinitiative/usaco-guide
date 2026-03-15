@@ -1,29 +1,29 @@
-import React, { useState } from "react";
-import { Chapter } from "../../../content/ordering";
+import { useState } from 'react';
+import { Chapter } from '../../../content/ordering';
 
 import {
   HitsPerPage,
   InstantSearch,
   Pagination,
   PoweredBy,
-} from "react-instantsearch";
+} from 'react-instantsearch';
 
-import SECTIONS from "../../../content/ordering";
-import BlindModeToggle from "../../components/BlindModeToggle";
-import Layout from "../../components/layout";
-import ProblemHits from "../../components/ProblemsPage/ProblemHits";
-import SearchBox from "../../components/ProblemsPage/SearchBox";
+import { GetStaticProps } from 'next';
+import SECTIONS from '../../../content/ordering';
+import BlindModeToggle from '../../components/BlindModeToggle';
+import Layout from '../../components/layout';
+import ProblemHits from '../../components/ProblemsPage/ProblemHits';
+import SearchBox from '../../components/ProblemsPage/SearchBox';
 import Selection, {
   SelectionProps,
-} from "../../components/ProblemsPage/Selection";
-import TagsRefinementList from "../../components/ProblemsPage/TagsRefinementList";
-import SEO from "../../components/seo";
-import TopNavigationBar from "../../components/TopNavigationBar/TopNavigationBar";
-import { useUserProgressOnProblems } from "../../context/UserDataContext/properties/userProgress";
-import searchClient from "../../utils/algoliaLiteSearchClient";
-import { GetStaticProps } from "next";
+} from '../../components/ProblemsPage/Selection';
+import TagsRefinementList from '../../components/ProblemsPage/TagsRefinementList';
+import SEO from '../../components/seo';
+import TopNavigationBar from '../../components/TopNavigationBar/TopNavigationBar';
+import { useUserProgressOnProblems } from '../../context/UserDataContext/properties/userProgress';
+import searchClient from '../../utils/algoliaLiteSearchClient';
 
-const indexName = `${process.env.ALGOLIA_INDEX_NAME ?? "dev"}_problems`;
+const indexName = `${process.env.ALGOLIA_INDEX_NAME ?? 'dev'}_problems`;
 
 interface ProblemsPageProps {
   problemIds: string[];
@@ -35,71 +35,71 @@ export default function ProblemsPage({ problemIds }: ProblemsPageProps) {
   const [random, sendRandom] = useState(0);
   const selectionMetadata: SelectionProps[] = [
     {
-      attribute: "difficulty",
+      attribute: 'difficulty',
       limit: 500,
-      placeholder: "Difficulty",
+      placeholder: 'Difficulty',
       searchable: false,
       isMulti: true,
     },
     {
-      attribute: "problemModules.title",
+      attribute: 'problemModules.title',
       limit: 500,
-      placeholder: "Modules",
+      placeholder: 'Modules',
       searchable: true,
       isMulti: true,
     },
     {
-      attribute: "source",
+      attribute: 'source',
       limit: 500,
-      placeholder: "Source",
+      placeholder: 'Source',
       searchable: true,
       isMulti: true,
     },
     {
-      attribute: "isStarred",
+      attribute: 'isStarred',
       limit: 500,
-      placeholder: "Starred",
+      placeholder: 'Starred',
       searchable: false,
-      transformLabel: (label) => (label == "true" ? "Yes" : "No"),
+      transformLabel: label => (label == 'true' ? 'Yes' : 'No'),
       isMulti: false,
     },
     {
-      attribute: "problemModules.id",
+      attribute: 'problemModules.id',
       limit: 500,
-      placeholder: "Section",
+      placeholder: 'Section',
       searchable: false,
       isMulti: true,
       items: (
         [
-          ["General", SECTIONS.general],
-          ["Bronze", SECTIONS.bronze],
-          ["Silver", SECTIONS.silver],
-          ["Gold", SECTIONS.gold],
-          ["Platinum", SECTIONS.plat],
-          ["Advanced", SECTIONS.adv],
+          ['General', SECTIONS.general],
+          ['Bronze', SECTIONS.bronze],
+          ['Silver', SECTIONS.silver],
+          ['Gold', SECTIONS.gold],
+          ['Platinum', SECTIONS.plat],
+          ['Advanced', SECTIONS.adv],
         ] as unknown as [string, Chapter[]][]
       ).map(([section, chapters]) => ({
         label: section,
-        value: chapters.map((chapter) => chapter.items).flat(),
+        value: chapters.map(chapter => chapter.items).flat(),
       })),
     },
     {
-      attribute: "objectID",
+      attribute: 'objectID',
       limit: 500,
-      placeholder: "Status",
+      placeholder: 'Status',
       searchable: false,
       isMulti: true,
       items: [
-        "Not Attempted",
-        "Solving",
-        "Reviewing",
-        "Skipped",
-        "Ignored",
-        "Solved",
-      ].map((label) => ({
+        'Not Attempted',
+        'Solving',
+        'Reviewing',
+        'Skipped',
+        'Ignored',
+        'Solved',
+      ].map(label => ({
         label,
         value: problemIds.filter(
-          (id) => (userProgress[id] ?? "Not Attempted") == label,
+          id => (userProgress[id] ?? 'Not Attempted') == label
         ),
       })),
     },
@@ -133,7 +133,7 @@ export default function ProblemsPage({ problemIds }: ProblemsPageProps) {
             </div>
             <div className="col-span-5 px-1 py-0.5 sm:col-span-6 md:col-span-7 lg:col-span-8 xl:col-span-8">
               <div className="mb-5 grid grid-cols-1 items-center gap-x-5 gap-y-3 sm:grid-cols-2 lg:grid-cols-6">
-                {selectionMetadata.map((props) => (
+                {selectionMetadata.map(props => (
                   <div
                     className="tw-forms-disable-all-descendants col-span-2 sm:col-span-3 md:col-span-1 lg:col-span-2"
                     key={props.attribute}
@@ -146,10 +146,10 @@ export default function ProblemsPage({ problemIds }: ProblemsPageProps) {
                 <button
                   onClick={() => sendShuffle(shuffle + 1)}
                   className="inline-flex items-center rounded-md border border-blue-500 bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none dark:border-blue-400 dark:bg-blue-600 dark:text-white dark:hover:bg-blue-700"
-                  title={"Shuffle problems"}
+                  title={'Shuffle problems'}
                 >
                   <svg
-                    className={"mr-2 h-5 w-5 text-gray-200"}
+                    className={'mr-2 h-5 w-5 text-gray-200'}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -167,10 +167,10 @@ export default function ProblemsPage({ problemIds }: ProblemsPageProps) {
                 <button
                   onClick={() => sendRandom(random + 1)}
                   className="inline-flex items-center rounded-md border border-blue-500 bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none dark:border-blue-400 dark:bg-blue-600 dark:text-white dark:hover:bg-blue-700"
-                  title={"Go to a random unsolved problem"}
+                  title={'Go to a random unsolved problem'}
                 >
                   <svg
-                    className={"mr-2 h-5 w-5 text-gray-200"}
+                    className={'mr-2 h-5 w-5 text-gray-200'}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -191,9 +191,9 @@ export default function ProblemsPage({ problemIds }: ProblemsPageProps) {
                 <Pagination showLast={true} className="pr-4" />
                 <HitsPerPage
                   items={[
-                    { label: "24 hits per page", value: 24, default: true },
-                    { label: "32 hits per page", value: 32 },
-                    { label: "48 hits per page", value: 48 },
+                    { label: '24 hits per page', value: 24, default: true },
+                    { label: '32 hits per page', value: 32 },
+                    { label: '48 hits per page', value: 48 },
                   ]}
                   className="mt-1 lg:mt-0"
                 />
@@ -208,15 +208,15 @@ export default function ProblemsPage({ problemIds }: ProblemsPageProps) {
 
 export const getStaticProps: GetStaticProps = async () => {
   try {
-    const { queryAllProblemIds } = await import("../../lib/queryContent");
+    const { queryAllProblemIds } = await import('../../lib/queryContent');
     const problemIds = await queryAllProblemIds();
     if (!problemIds) {
-      console.error("Failed to load problem IDs");
+      console.error('Failed to load problem IDs');
       return { notFound: true };
     }
     return { props: { problemIds } };
   } catch (error) {
-    console.error("Error loading problem IDs:", error);
+    console.error('Error loading problem IDs:', error);
     return { notFound: true };
   }
 };

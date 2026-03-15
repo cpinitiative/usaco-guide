@@ -1,5 +1,5 @@
-import clsx from "clsx";
-import React from "react";
+import clsx from 'clsx';
+import React from 'react';
 
 export default function ListTableRow({
   id,
@@ -12,20 +12,20 @@ export default function ListTableRow({
 
   React.useEffect(() => {
     const hashHandler = (): void => {
-      setIsActive(window?.location?.hash === "#" + id);
+      setIsActive(window?.location?.hash === '#' + id);
     };
     hashHandler();
 
-    window.addEventListener("hashchange", hashHandler, false);
+    window.addEventListener('hashchange', hashHandler, false);
     return (): void =>
-      window.removeEventListener("hashchange", hashHandler, false);
+      window.removeEventListener('hashchange', hashHandler, false);
   }, [id]);
 
   return (
     <tr
       className={clsx(
-        isActive && "bg-[#fdfdea]! dark:bg-[#3c3c00]!",
-        "relative",
+        isActive && 'bg-[#fdfdea]! dark:bg-[#3c3c00]!',
+        'relative'
       )}
     >
       <td id={id} className="absolute bottom-[120px] h-[2px]" />
@@ -41,5 +41,5 @@ export function ListTableCell({
   children: React.ReactNode;
   className?: string;
 }): JSX.Element {
-  return <td className={clsx("px-3 py-4 text-sm", className)}>{children}</td>;
+  return <td className={clsx('px-3 py-4 text-sm', className)}>{children}</td>;
 }

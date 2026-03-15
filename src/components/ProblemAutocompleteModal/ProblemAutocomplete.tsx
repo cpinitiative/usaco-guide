@@ -1,8 +1,7 @@
-import type { BaseHit, Hit } from "instantsearch.js";
-import * as React from "react";
-import { useHits, useSearchBox } from "react-instantsearch";
-import { ALGOLIA_INDEX_NAME } from "../../constants/algolia";
-import { AlgoliaProblemInfo } from "../../models/problem";
+import type { BaseHit, Hit } from 'instantsearch.js';
+import { useHits, useSearchBox } from 'react-instantsearch';
+import { ALGOLIA_INDEX_NAME } from '../../constants/algolia';
+import { AlgoliaProblemInfo } from '../../models/problem';
 
 type AlgoliaProblemInfoHit = Hit<BaseHit> & AlgoliaProblemInfo;
 
@@ -22,18 +21,18 @@ const ProblemAutocompleteHit = ({
         <div className="flex items-center justify-between">
           <span className="font-medium">{`${hit.source}: ${hit.name}`}</span>
           <span>
-            {hit.isStarred ? "Starred • " : ""}
+            {hit.isStarred ? 'Starred • ' : ''}
             {hit.difficulty}
           </span>
         </div>
         <div className="text-sm text-gray-700 group-hover:text-sky-100 md:flex md:items-center md:justify-between dark:text-gray-300">
           <span>
-            Tags: {hit.tags?.length > 0 ? hit.tags.join(", ") : "None"}
+            Tags: {hit.tags?.length > 0 ? hit.tags.join(', ') : 'None'}
           </span>
           <span className="max-w-xs truncate">
-            Appears in{" "}
+            Appears in{' '}
             {hit.problemModules &&
-              `${hit.problemModules.map((x) => `${x.title}`).join(", ")}`}
+              `${hit.problemModules.map(x => `${x.title}`).join(', ')}`}
           </span>
         </div>
       </button>
@@ -63,18 +62,18 @@ export function ProblemAutocomplete({
           className="input"
           placeholder="Problem Name"
           value={query}
-          onChange={(e) => setQuery(e.currentTarget.value)}
+          onChange={e => setQuery(e.currentTarget.value)}
         />
       </div>
       <ul
         className="mt-2 space-y-2 overflow-y-auto"
-        style={{ height: "40rem" }}
+        style={{ height: '40rem' }}
       >
-        {hits.map((hit) => (
+        {hits.map(hit => (
           <ProblemAutocompleteHit
             hit={hit}
             key={hit.objectID}
-            onClick={(p) => onProblemSelect(p)}
+            onClick={p => onProblemSelect(p)}
           />
         ))}
       </ul>

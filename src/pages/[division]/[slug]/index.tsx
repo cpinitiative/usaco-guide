@@ -1,21 +1,21 @@
-import * as React from "react";
-import { useEffect } from "react";
-import { GetStaticProps, GetStaticPaths } from "next";
-import Layout from "../../../components/layout";
-import Markdown from "../../../components/markdown/Markdown";
-import SEO from "../../../components/seo";
-import { useIsUserDataLoaded } from "../../../context/UserDataContext/UserDataContext";
-import { graphqlToModuleInfo } from "../../../utils/utils";
-import { MarkdownProblemListsProvider } from "../../../context/MarkdownProblemListsContext";
+import { GetStaticPaths, GetStaticProps } from 'next';
+import Head from 'next/head';
+import * as React from 'react';
+import { useEffect } from 'react';
+import { SECTION_LABELS } from '../../../../content/ordering';
+import Layout from '../../../components/layout';
+import Markdown from '../../../components/markdown/Markdown';
+import MarkdownLayout from '../../../components/MarkdownLayout/MarkdownLayout';
+import SEO from '../../../components/seo';
+import { ConfettiProvider } from '../../../context/ConfettiContext';
+import { MarkdownProblemListsProvider } from '../../../context/MarkdownProblemListsContext';
+import { useIsUserDataLoaded } from '../../../context/UserDataContext/UserDataContext';
 import {
   MdxContent,
   MdxFrontmatter,
   ModuleProblemLists,
-} from "../../../types/content";
-import MarkdownLayout from "../../../components/MarkdownLayout/MarkdownLayout";
-import Head from "next/head";
-import { SECTION_LABELS } from "../../../../content/ordering";
-import { ConfettiProvider } from "../../../context/ConfettiContext";
+} from '../../../types/content';
+import { graphqlToModuleInfo } from '../../../utils/utils';
 
 interface ModulePageProps {
   moduleData: MdxContent;
@@ -30,7 +30,7 @@ export default function ModuleTemplate({
 }: ModulePageProps): JSX.Element {
   const moduleInfo = React.useMemo(
     () => graphqlToModuleInfo(moduleData),
-    [moduleData],
+    [moduleData]
   );
   const isLoaded = useIsUserDataLoaded();
 
@@ -103,7 +103,7 @@ export default function ModuleTemplate({
 export const getStaticPaths: GetStaticPaths = async () => {
   // Load all modules to generate paths
   const { queryAllModuleFrontmatter } = await import(
-    "../../../lib/queryContent"
+    '../../../lib/queryContent'
   );
   const data = await queryAllModuleFrontmatter();
   const paths = data
@@ -123,16 +123,16 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export const getStaticProps: GetStaticProps = async context => {
   try {
     const { queryModule, queryModuleProblemsLists, queryAllModuleFrontmatter } =
-      await import("../../../lib/queryContent");
+      await import('../../../lib/queryContent');
     const { division, slug } = context.params as {
       division: string;
       slug: string;
     };
     if (!division || !slug) {
-      console.error("Missing division or slug in params");
+      console.error('Missing division or slug in params');
       return { notFound: true };
     }
     const mod = await queryModule(slug);
@@ -142,7 +142,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     }
     const frontmatterData = await queryAllModuleFrontmatter();
     if (!frontmatterData) {
-      console.error("No module frontmatter found");
+      console.error('No module frontmatter found');
       return { notFound: true };
     }
     const moduleProblemLists = await queryModuleProblemsLists(slug);
@@ -150,7 +150,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       props: {
         moduleData: mod,
         moduleProblemLists: moduleProblemLists ?? null,
-        frontmatter: frontmatterData.map((x) => x.frontmatter),
+        frontmatter: frontmatterData.map(x => x.frontmatter),
       },
     };
   } catch (error) {

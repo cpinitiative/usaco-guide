@@ -1,6 +1,5 @@
-import * as React from "react";
-import { PostData } from "../../../models/groups/posts";
-import SafeMarkdownRenderer from "../SafeMarkdownRenderer";
+import { PostData } from '../../../models/groups/posts';
+import SafeMarkdownRenderer from '../SafeMarkdownRenderer';
 
 export default function PostBody({ post }: { post: PostData }) {
   return (

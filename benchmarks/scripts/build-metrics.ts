@@ -1,8 +1,8 @@
-import { exec } from "child_process";
-import { promisify } from "util";
-import { performance } from "node:perf_hooks";
-import { saveResults } from "./utils";
-import fetch from "node-fetch";
+import { exec } from 'child_process';
+import fetch from 'node-fetch';
+import { performance } from 'node:perf_hooks';
+import { promisify } from 'util';
+import { saveResults } from './utils';
 
 const execAsync = promisify(exec);
 
@@ -13,7 +13,7 @@ interface BuildMetrics {
 }
 
 async function runCommand(
-  cmd: string,
+  cmd: string
 ): Promise<{ stdout: string; stderr: string }> {
   console.log(`Running: ${cmd}`);
   return execAsync(cmd);
@@ -21,12 +21,12 @@ async function runCommand(
 
 async function measureColdBuild(): Promise<number> {
   try {
-    await runCommand("rm -rf .next .vercel .cache");
+    await runCommand('rm -rf .next .vercel .cache');
     const start = performance.now();
-    await runCommand("yarn build");
+    await runCommand('yarn build');
     return performance.now() - start;
   } catch (error) {
-    console.error("Cold build failed:", error);
+    console.error('Cold build failed:', error);
     throw error;
   }
 }
@@ -34,10 +34,10 @@ async function measureColdBuild(): Promise<number> {
 async function measureWarmBuild(): Promise<number> {
   try {
     const start = performance.now();
-    await runCommand("yarn build");
+    await runCommand('yarn build');
     return performance.now() - start;
   } catch (error) {
-    console.error("Warm build failed:", error);
+    console.error('Warm build failed:', error);
     throw error;
   }
 }
@@ -52,7 +52,7 @@ async function measureDevStartup(): Promise<number> {
     // Start the dev server
     const start = performance.now();
 
-    serverProcess = exec("yarn dev");
+    serverProcess = exec('yarn dev');
 
     // Wait for server to be ready by polling the health/ready endpoint
     const maxAttempts = 60; // 60 seconds timeout
@@ -61,7 +61,7 @@ async function measureDevStartup(): Promise<number> {
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
         // Next.js typically starts on port 3000
-        const response = await fetch("http://localhost:3000", {
+        const response = await fetch('http://localhost:3000', {
           timeout: 2000,
         });
 
@@ -73,21 +73,21 @@ async function measureDevStartup(): Promise<number> {
       } catch (error) {
         // Server not ready yet, continue polling
         if (attempt === maxAttempts) {
-          throw new Error("Dev server failed to start within timeout period");
+          throw new Error('Dev server failed to start within timeout period');
         }
 
         // Wait before next attempt
-        await new Promise((resolve) => setTimeout(resolve, pollInterval));
+        await new Promise(resolve => setTimeout(resolve, pollInterval));
       }
     }
 
-    throw new Error("Dev server failed to start");
+    throw new Error('Dev server failed to start');
   } finally {
     // Clean up: kill the dev server process
     if (serverProcess) {
       serverProcess.kill();
       // Give it a moment to clean up
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise(resolve => setTimeout(resolve, 1000));
     }
   }
 }
@@ -105,13 +105,13 @@ export async function measureBuildMetrics(iterations = 5): Promise<void> {
     const duration = await measureColdBuild();
     metrics.BUILD_COLD.push(duration);
     console.log(
-      `Cold build ${i + 1} completed in ${(duration / 1000).toFixed(2)}s`,
+      `Cold build ${i + 1} completed in ${(duration / 1000).toFixed(2)}s`
     );
   }
 
   // Warm up build cache
-  console.log("\n--- Warming up build cache ---");
-  await runCommand("yarn build");
+  console.log('\n--- Warming up build cache ---');
+  await runCommand('yarn build');
 
   // Measure warm builds
   for (let i = 0; i < iterations; i++) {
@@ -119,7 +119,7 @@ export async function measureBuildMetrics(iterations = 5): Promise<void> {
     const duration = await measureWarmBuild();
     metrics.BUILD_WARM.push(duration);
     console.log(
-      `Warm build ${i + 1} completed in ${(duration / 1000).toFixed(2)}s`,
+      `Warm build ${i + 1} completed in ${(duration / 1000).toFixed(2)}s`
     );
   }
 
@@ -132,34 +132,34 @@ export async function measureBuildMetrics(iterations = 5): Promise<void> {
   }
 
   // Save results
-  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
   const results = [
     ...metrics.BUILD_COLD.map((duration, i) => ({
-      metric: "BUILD_COLD",
+      metric: 'BUILD_COLD',
       value: duration,
-      unit: "ms",
+      unit: 'ms',
       timestamp: new Date().toISOString(),
       iteration: i + 1,
     })),
     ...metrics.BUILD_WARM.map((duration, i) => ({
-      metric: "BUILD_WARM",
+      metric: 'BUILD_WARM',
       value: duration,
-      unit: "ms",
+      unit: 'ms',
       timestamp: new Date().toISOString(),
       iteration: i + 1,
     })),
     ...metrics.DEV_STARTUP.map((duration, i) => ({
-      metric: "DEV_STARTUP",
+      metric: 'DEV_STARTUP',
       value: duration,
-      unit: "ms",
+      unit: 'ms',
       timestamp: new Date().toISOString(),
       iteration: i + 1,
     })),
   ];
 
   await saveResults(results, `build-metrics-${timestamp}`);
-  console.log("\n--- Build Metrics Completed ---");
-  console.log("Results saved to benchmarks/data/");
+  console.log('\n--- Build Metrics Completed ---');
+  console.log('Results saved to benchmarks/data/');
 }
 
 // Run if this file is executed directly

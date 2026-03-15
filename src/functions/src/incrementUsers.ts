@@ -1,5 +1,5 @@
-import admin from "firebase-admin";
-import * as functions from "firebase-functions/v1";
+import admin from 'firebase-admin';
+import * as functions from 'firebase-functions/v1';
 
 if (admin.apps.length === 0) {
   admin.initializeApp();
@@ -8,8 +8,8 @@ if (admin.apps.length === 0) {
 export default functions.auth.user().onCreate(() => {
   return admin
     .database()
-    .ref("/num_users")
-    .transaction((legacyUserCount) => {
+    .ref('/num_users')
+    .transaction(legacyUserCount => {
       return (legacyUserCount || 0) + 1;
     });
 });
