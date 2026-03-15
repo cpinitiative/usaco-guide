@@ -1,19 +1,19 @@
-import { Transition } from "@headlessui/react";
-import { CheckIcon, ClipboardListIcon } from "@heroicons/react/outline";
-import { BookmarkIcon } from "@heroicons/react/solid";
-import Link from "next/link";
-import React, { useState } from "react";
-import toast from "react-hot-toast";
-import { useActiveGroup } from "../../../hooks/groups/useActiveGroup";
-import { usePostActions } from "../../../hooks/groups/usePostActions";
-import { GroupData } from "../../../models/groups/groups";
+import { Transition } from '@headlessui/react';
+import { CheckIcon, ClipboardListIcon } from '@heroicons/react/outline';
+import { BookmarkIcon } from '@heroicons/react/solid';
+import Link from 'next/link';
+import React, { useState } from 'react';
+import toast from 'react-hot-toast';
+import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import { usePostActions } from '../../../hooks/groups/usePostActions';
+import { GroupData } from '../../../models/groups/groups';
 import {
   getPostTimestampString,
   getTotalPointsOfPost,
   PostData,
-} from "../../../models/groups/posts";
-import Tooltip from "../../Tooltip/Tooltip";
-import PostExportModal from "./PostExportModal";
+} from '../../../models/groups/posts';
+import Tooltip from '../../Tooltip/Tooltip';
+import PostExportModal from './PostExportModal';
 
 const AnnouncementIcon = () => {
   return (
@@ -44,11 +44,11 @@ const AssignmentIcon = ({ pointsEarned, totalPoints }) => {
       <div
         className={
           (fullySolved
-            ? "bg-green-600"
+            ? 'bg-green-600'
             : inProgress
-              ? "bg-orange-600"
-              : "bg-sky-700") +
-          " inline-flex items-center justify-center rounded-full p-2"
+              ? 'bg-orange-600'
+              : 'bg-sky-700') +
+          ' inline-flex items-center justify-center rounded-full p-2'
         }
       >
         {fullySolved ? (
@@ -84,22 +84,22 @@ export default function FeedItem({
   const ref = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
-    const handleClick = (e) => {
+    const handleClick = e => {
       if (!ref.current || ref.current.contains(e.target)) return;
       setShowDropdown(false);
     };
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
   }, []);
 
   return (
     <div
       className={`${
         isBeingDragged
-          ? "bg-gray-200 dark:bg-gray-900"
-          : "bg-white hover:bg-cyan-50 dark:bg-gray-800 dark:hover:bg-cyan-900"
+          ? 'bg-gray-200 dark:bg-gray-900'
+          : 'bg-white hover:bg-cyan-50 dark:bg-gray-800 dark:hover:bg-cyan-900'
       } shadow ${
-        dragHandle ? "pr-4 sm:pr-6" : "px-4 sm:px-6"
+        dragHandle ? 'pr-4 sm:pr-6' : 'px-4 sm:px-6'
       } flex transition sm:rounded-lg`}
     >
       {dragHandle}
@@ -109,7 +109,7 @@ export default function FeedItem({
           className="flex flex-1 space-x-4"
         >
           <div className="shrink-0 self-center">
-            {post.type === "announcement" ? (
+            {post.type === 'announcement' ? (
               <AnnouncementIcon />
             ) : (
               <AssignmentIcon
@@ -124,7 +124,7 @@ export default function FeedItem({
               className="flex items-center text-base font-medium text-gray-900 dark:text-gray-100"
             >
               {post.name}
-              {post.isPublished ? "" : " (Unpublished)"}
+              {post.isPublished ? '' : ' (Unpublished)'}
               {post.isPinned && (
                 <BookmarkIcon className="ml-1 h-5 w-5 text-gray-300 dark:text-gray-500" />
               )}
@@ -141,7 +141,7 @@ export default function FeedItem({
                 type="button"
                 className="flex items-center pl-4 text-gray-400 hover:text-gray-600 focus:outline-hidden dark:hover:text-gray-200"
                 id="options-menu-0"
-                onClick={(e) => {
+                onClick={e => {
                   setShowDropdown(!showDropdown);
                   e.preventDefault();
                 }}
@@ -209,18 +209,16 @@ export default function FeedItem({
                       />
                     </svg>
                     <span>
-                      {post.isPublished ? "Unpublish Post" : "Publish Post"}
+                      {post.isPublished ? 'Unpublish Post' : 'Publish Post'}
                     </span>
                   </button>
                   <button
                     type="button"
                     onClick={() => {
                       if (
-                        confirm("Are you sure you want to delete this post?")
+                        confirm('Are you sure you want to delete this post?')
                       ) {
-                        deletePost(post.id!).catch((e) =>
-                          toast.error(e.message),
-                        );
+                        deletePost(post.id!).catch(e => toast.error(e.message));
                       }
                     }}
                     className="flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
@@ -246,7 +244,7 @@ export default function FeedItem({
                     type="button"
                     onClick={() => {
                       setShowExportModal(true);
-                      console.log("toggled");
+                      console.log('toggled');
                     }}
                     className="flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                     role="menuitem"

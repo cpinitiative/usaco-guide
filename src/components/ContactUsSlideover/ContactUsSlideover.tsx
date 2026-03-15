@@ -1,14 +1,14 @@
-import * as React from "react";
-import { useContext, useEffect, useState } from "react";
-import { SECTION_LABELS } from "../../../content/ordering";
-import MarkdownLayoutContext from "../../context/MarkdownLayoutContext";
-import { useUserLangSetting } from "../../context/UserDataContext/properties/simpleProperties";
-import { useFirebaseUser } from "../../context/UserDataContext/UserDataContext";
-import useContactFormAction from "../../hooks/useContactFormAction";
-import useStickyState from "../../hooks/useStickyState";
-import { ModuleInfo } from "../../models/module";
-import { SolutionInfo } from "../../models/solution";
-import SlideoverForm from "./SlideoverForm";
+import * as React from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { SECTION_LABELS } from '../../../content/ordering';
+import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
+import { useUserLangSetting } from '../../context/UserDataContext/properties/simpleProperties';
+import { useFirebaseUser } from '../../context/UserDataContext/UserDataContext';
+import useContactFormAction from '../../hooks/useContactFormAction';
+import useStickyState from '../../hooks/useStickyState';
+import { ModuleInfo } from '../../models/module';
+import { SolutionInfo } from '../../models/solution';
+import SlideoverForm from './SlideoverForm';
 
 // Warning: this file is insanely messy. This should be rewritten soon :)
 
@@ -32,10 +32,10 @@ const Field = ({
           type="text"
           id={id}
           className={
-            "input" +
+            'input' +
             (errorMsg
-              ? " border-red-300 pr-10 text-red-900 placeholder-red-300 focus:border-red-300 focus:ring-red-300 dark:border-red-300 dark:text-red-300 dark:focus:border-red-300 dark:focus:ring-red-300"
-              : "")
+              ? ' border-red-300 pr-10 text-red-900 placeholder-red-300 focus:border-red-300 focus:ring-red-300 dark:border-red-300 dark:text-red-300 dark:focus:border-red-300 dark:focus:ring-red-300'
+              : '')
           }
           value={value}
           onChange={onChange}
@@ -74,27 +74,27 @@ export function validateEmail(email) {
 export default function ContactUsSlideover({
   isOpen,
   onClose,
-  defaultLocation = "",
+  defaultLocation = '',
 }: {
   isOpen: boolean;
   onClose: () => void;
   defaultLocation?: string;
 }): JSX.Element {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [location, setLocation] = useState(defaultLocation);
-  const [topic, setTopic] = useStickyState("", "contact_form_topic");
+  const [topic, setTopic] = useStickyState('', 'contact_form_topic');
   const topics = [
-    ["Mistake", "typo, broken link, wrong time complexity, wrong code"],
-    ["Unclear Explanation"],
-    ["Website Bug"],
-    ["Suggestion"],
-    ["Request - Missing Section or Solution"],
-    ["Other"],
+    ['Mistake', 'typo, broken link, wrong time complexity, wrong code'],
+    ['Unclear Explanation'],
+    ['Website Bug'],
+    ['Suggestion'],
+    ['Request - Missing Section or Solution'],
+    ['Other'],
   ];
-  const [message, setMessage] = useStickyState("", "contact_form_message");
+  const [message, setMessage] = useStickyState('', 'contact_form_message');
   const [showSuccess, setShowSuccess] = useState(false);
-  const [issueLink, setIssueLink] = useState("");
+  const [issueLink, setIssueLink] = useState('');
   const [submitEnabled, setSubmitEnabled] = useState(true);
   const [showErrors, setShowErrors] = useState(false);
 
@@ -107,21 +107,21 @@ export default function ContactUsSlideover({
       const activeModule = markdownContext?.markdownLayoutInfo;
       if (activeModule && activeModule instanceof ModuleInfo) {
         setLocation(
-          `${SECTION_LABELS[activeModule.section]} - ${activeModule.title}`,
+          `${SECTION_LABELS[activeModule.section]} - ${activeModule.title}`
         );
       } else if (activeModule && activeModule instanceof SolutionInfo) {
         setLocation(`Solution: ${activeModule.title}`);
-      } else setLocation("");
+      } else setLocation('');
     }
   }, [markdownContext?.markdownLayoutInfo]);
 
   const firebaseUser = useFirebaseUser();
   useEffect(() => {
     if (!firebaseUser) return;
-    if (email === "") {
+    if (email === '') {
       setEmail(firebaseUser.email!);
     }
-    if (name === "") {
+    if (name === '') {
       setName(firebaseUser.displayName!);
     }
   }, [firebaseUser]);
@@ -134,15 +134,15 @@ export default function ContactUsSlideover({
     }
   }, [isOpen]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
 
     setShowErrors(true);
     if (
-      name === "" ||
-      email === "" ||
+      name === '' ||
+      email === '' ||
       !validateEmail(email) ||
-      topic === "" ||
+      topic === '' ||
       message.length < 10
     ) {
       return;
@@ -158,13 +158,13 @@ export default function ContactUsSlideover({
         topic,
         message,
       });
-      setTopic("");
-      setMessage("");
+      setTopic('');
+      setMessage('');
       setShowSuccess(true);
       setIssueLink(response.data as string);
     } catch (e: any) {
       setSubmitEnabled(true);
-      alert("Form submission failed: " + e.message);
+      alert('Form submission failed: ' + e.message);
     } finally {
       setShowErrors(false);
     }
@@ -178,7 +178,7 @@ export default function ContactUsSlideover({
       subtitle={
         <>
           Contact us about anything: suggestions, bugs, assistance, and more!
-          This will be submitted as a public{" "}
+          This will be submitted as a public{' '}
           <a
             href="https://github.com/cpinitiative/usaco-guide/issues"
             target="_blank"
@@ -258,7 +258,7 @@ export default function ContactUsSlideover({
                 <div className="dark:text-dark-high-emphasis mt-2 text-sm leading-5 text-green-700">
                   <p>
                     Your message has been submitted as an issue in our GitHub
-                    repository. You can track the issue here:{" "}
+                    repository. You can track the issue here:{' '}
                     <a
                       href={issueLink}
                       target="_blank"
@@ -289,22 +289,22 @@ export default function ContactUsSlideover({
               label="Name (will not be shown publicly)"
               id="contact_name"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={e => setName(e.target.value)}
               errorMsg={
-                showErrors && name === "" ? "This field is required." : null
+                showErrors && name === '' ? 'This field is required.' : null
               }
             />
             <Field
               label="Email (will not be shown publicly)"
               id="contact_email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={e => setEmail(e.target.value)}
               errorMsg={
                 showErrors
-                  ? email === ""
-                    ? "This field is required."
+                  ? email === ''
+                    ? 'This field is required.'
                     : !validateEmail(email)
-                      ? "Please enter a valid email address."
+                      ? 'Please enter a valid email address.'
                       : null
                   : null
               }
@@ -313,7 +313,7 @@ export default function ContactUsSlideover({
               label="Module or Solution (if applicable)"
               id="contact_module"
               value={location}
-              onChange={(e) => setLocation(e.target.value)}
+              onChange={e => setLocation(e.target.value)}
             />
             <fieldset className="space-y-2">
               <legend className="dark:text-dark-high-emphasis text-sm leading-5 font-medium text-gray-900">
@@ -321,7 +321,7 @@ export default function ContactUsSlideover({
               </legend>
               <div className="text-sm">
                 The USACO Guide is not affiliated with the USACO. If you
-                encounter any issues with{" "}
+                encounter any issues with{' '}
                 <a
                   className="text-blue-600 hover:underline dark:text-blue-300"
                   target="_blank"
@@ -329,8 +329,8 @@ export default function ContactUsSlideover({
                   href="http://usaco.org"
                 >
                   usaco.org
-                </a>{" "}
-                (e.g., trouble{" "}
+                </a>{' '}
+                (e.g., trouble{' '}
                 <a
                   className="text-blue-600 hover:underline dark:text-blue-300"
                   target="_blank"
@@ -352,7 +352,7 @@ export default function ContactUsSlideover({
               </div>
               <div className="text-sm">
                 <strong>
-                  If you have any questions about{" "}
+                  If you have any questions about{' '}
                   <a
                     className="text-blue-600 hover:underline dark:text-blue-300"
                     target="_blank"
@@ -361,7 +361,7 @@ export default function ContactUsSlideover({
                   >
                     CPI classes
                   </a>
-                  , please email{" "}
+                  , please email{' '}
                   <a
                     className="text-blue-600 hover:underline dark:text-blue-300"
                     target="_blank"
@@ -369,7 +369,7 @@ export default function ContactUsSlideover({
                     href="mailto:classes@joincpi.org"
                   >
                     classes@joincpi.org
-                  </a>{" "}
+                  </a>{' '}
                   rather than submitting this form.
                 </strong>
               </div>
@@ -392,11 +392,11 @@ export default function ContactUsSlideover({
                           htmlFor={`contact_topic_${idx}`}
                           className="dark:text-dark-high-emphasis font-medium text-gray-900"
                         >
-                          {t[0]} {t.length > 1 ? `(e.g., ${t[1]})` : ""}
+                          {t[0]} {t.length > 1 ? `(e.g., ${t[1]})` : ''}
                         </label>
-                        {topic === t[0] && t[0].includes("Mistake") && (
+                        {topic === t[0] && t[0].includes('Mistake') && (
                           <div>
-                            Submitting a pull request{" "}
+                            Submitting a pull request{' '}
                             <a
                               className="text-blue-600 hover:underline dark:text-blue-300"
                               target="_blank"
@@ -404,8 +404,8 @@ export default function ContactUsSlideover({
                               href="https://github.com/cpinitiative/usaco-guide/pulls"
                             >
                               here
-                            </a>{" "}
-                            is the preferred way to fix a mistake. See{" "}
+                            </a>{' '}
+                            is the preferred way to fix a mistake. See{' '}
                             <a
                               className="text-blue-600 hover:underline dark:text-blue-300"
                               target="_blank"
@@ -413,13 +413,13 @@ export default function ContactUsSlideover({
                               href="/general/contributing"
                             >
                               this module
-                            </a>{" "}
+                            </a>{' '}
                             for how to contribute.
                           </div>
                         )}
-                        {topic === t[0] && t[0].startsWith("Unclear") && (
+                        {topic === t[0] && t[0].startsWith('Unclear') && (
                           <div>
-                            You may get a faster response by reaching out on the{" "}
+                            You may get a faster response by reaching out on the{' '}
                             <a
                               className="text-blue-600 hover:underline dark:text-blue-300"
                               href="https://forum.usaco.guide/"
@@ -427,14 +427,14 @@ export default function ContactUsSlideover({
                               rel="noreferrer"
                             >
                               USACO Guide forum
-                            </a>{" "}
+                            </a>{' '}
                             instead.
                           </div>
                         )}
-                        {topic === t[0] && t[0].includes("Website Bug") && (
+                        {topic === t[0] && t[0].includes('Website Bug') && (
                           <div>
                             If you are reporting a loss of user data, please
-                            include the information listed{" "}
+                            include the information listed{' '}
                             <a
                               className="text-blue-600 hover:underline dark:text-blue-300"
                               href="https://github.com/cpinitiative/usaco-guide/issues/3396#issuecomment-1414102550"
@@ -449,7 +449,7 @@ export default function ContactUsSlideover({
                     </div>
                   </div>
                 ))}
-                {showErrors && topic === "" && (
+                {showErrors && topic === '' && (
                   <p className="mt-2 text-sm text-red-600 dark:text-red-400">
                     This field is required.
                   </p>
@@ -468,13 +468,13 @@ export default function ContactUsSlideover({
                   id="contact_message"
                   rows={4}
                   className={
-                    "textarea " +
+                    'textarea ' +
                     (showErrors && message.length < 10
-                      ? "border-red-300 text-red-900 placeholder-red-300 focus:border-red-300 focus:ring-red-300 dark:border-red-300 dark:text-red-300 dark:focus:border-red-300 dark:focus:ring-red-300"
-                      : "")
+                      ? 'border-red-300 text-red-900 placeholder-red-300 focus:border-red-300 focus:ring-red-300 dark:border-red-300 dark:text-red-300 dark:focus:border-red-300 dark:focus:ring-red-300'
+                      : '')
                   }
                   value={message}
-                  onChange={(e) => setMessage(e.target.value)}
+                  onChange={e => setMessage(e.target.value)}
                 />
                 {showErrors && message.length < 10 && (
                   <div className="pointer-events-none absolute top-0 right-0 flex items-center pt-2 pr-3">

@@ -1,17 +1,17 @@
-import { StoryFn } from "@storybook/react";
-import React, { ComponentProps } from "react";
-import { ListTable } from "../../components/markdown/ListTable/ListTable";
-import markdownDecorator from "../../components/markdown/markdownDecoratorForStorybook";
-import ProblemsListHeader from "../../components/markdown/ProblemsList/ProblemsListHeader";
-import ProblemsListItem from "../../components/markdown/ProblemsList/ProblemsListItem";
+import { StoryFn } from '@storybook/react';
+import { ComponentProps } from 'react';
+import { ListTable } from '../../components/markdown/ListTable/ListTable';
+import markdownDecorator from '../../components/markdown/markdownDecoratorForStorybook';
+import ProblemsListHeader from '../../components/markdown/ProblemsList/ProblemsListHeader';
+import ProblemsListItem from '../../components/markdown/ProblemsList/ProblemsListItem';
 
 export default {
-  title: "Markdown/ProblemsList",
+  title: 'Markdown/ProblemsList',
   component: ListTable,
   decorators: [markdownDecorator],
 };
 
-const Template: StoryFn<ComponentProps<typeof ListTable>> = (args) => (
+const Template: StoryFn<ComponentProps<typeof ListTable>> = args => (
   <ListTable {...args} />
 );
 
@@ -32,16 +32,16 @@ Default.args = {
         onShowSolutionSketch={() => {}}
         isDivisionTable={false}
         problem={{
-          uniqueId: "usaco-1234",
-          name: "Problem 1",
-          url: "https://www.google.com",
-          source: "Codeforces",
-          sourceDescription: "Codeforces Problem 1",
-          difficulty: "Easy",
+          uniqueId: 'usaco-1234',
+          name: 'Problem 1',
+          url: 'https://www.google.com',
+          source: 'Codeforces',
+          sourceDescription: 'Codeforces Problem 1',
+          difficulty: 'Easy',
           isStarred: false,
-          tags: ["tag1", "tag2"],
+          tags: ['tag1', 'tag2'],
           solution: {
-            kind: "internal",
+            kind: 'internal',
             hasHints: false,
           },
         }}
@@ -52,16 +52,16 @@ Default.args = {
         onShowSolutionSketch={() => {}}
         isDivisionTable={false}
         problem={{
-          uniqueId: "usaco-1235",
-          name: "2007 - Training",
-          url: "https://www.google.com",
-          source: "IOI",
-          sourceDescription: "Olympiad in Informatics",
-          difficulty: "Very Hard",
+          uniqueId: 'usaco-1235',
+          name: '2007 - Training',
+          url: 'https://www.google.com',
+          source: 'IOI',
+          sourceDescription: 'Olympiad in Informatics',
+          difficulty: 'Very Hard',
           isStarred: true,
-          tags: ["tag1", "tag2"],
+          tags: ['tag1', 'tag2'],
           solution: {
-            kind: "internal",
+            kind: 'internal',
             hasHints: false,
           },
         }}

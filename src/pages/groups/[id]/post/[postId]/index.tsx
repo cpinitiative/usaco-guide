@@ -1,9 +1,9 @@
+import { useRouter } from 'next/router';
 import Wrapper, {
   GroupPageWrapper,
   PostPageWrapper,
-} from "../../../../../components/Groups/GroupWrappers";
-import { useRouter } from "next/router";
-import PostPage from "../../../../../components/Groups/PostPage/PostPage";
+} from '../../../../../components/Groups/GroupWrappers';
+import PostPage from '../../../../../components/Groups/PostPage/PostPage';
 
 const Index = () => {
   const router = useRouter();

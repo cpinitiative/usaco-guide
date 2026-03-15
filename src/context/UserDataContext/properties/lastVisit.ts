@@ -1,8 +1,8 @@
-import { increment } from "firebase/firestore";
-import { UserData } from "../UserDataContext";
-import { createUserDataGetter, createUserDataMutation } from "./hooks";
+import { increment } from 'firebase/firestore';
+import { UserData } from '../UserDataContext';
+import { createUserDataGetter, createUserDataMutation } from './hooks';
 
-export const useLastVisitInfo = createUserDataGetter((userData) => {
+export const useLastVisitInfo = createUserDataGetter(userData => {
   return {
     lastVisitDate: userData.lastVisitDate,
     consecutiveVisits: userData.consecutiveVisits,
@@ -16,7 +16,7 @@ export const useSetLastVisitDate = createUserDataMutation(
     {
       lastVisitDate,
       lastViewedModule,
-    }: { lastVisitDate: number; lastViewedModule?: string },
+    }: { lastVisitDate: number; lastViewedModule?: string }
   ) => {
     const timeSinceLastVisit = lastVisitDate - userData.lastVisitDate;
     const oneDay = 1000 * 60 * 60 * 20,
@@ -31,19 +31,19 @@ export const useSetLastVisitDate = createUserDataMutation(
     };
 
     if (timeSinceLastVisit >= oneDay && timeSinceLastVisit <= twoDays) {
-      changes.localStorageUpdate["lastVisitDate"] = lastVisitDate;
-      changes.firebaseUpdate["lastVisitDate"] = lastVisitDate;
-      changes.localStorageUpdate["consecutiveVisits"] =
+      changes.localStorageUpdate['lastVisitDate'] = lastVisitDate;
+      changes.firebaseUpdate['lastVisitDate'] = lastVisitDate;
+      changes.localStorageUpdate['consecutiveVisits'] =
         userData.consecutiveVisits + 1;
       changes.firebaseUpdate[`consecutiveVisits`] = increment(1);
     } else if (timeSinceLastVisit > twoDays) {
-      changes.localStorageUpdate["lastVisitDate"] = lastVisitDate;
-      changes.firebaseUpdate["lastVisitDate"] = lastVisitDate;
-      changes.localStorageUpdate["consecutiveVisits"] = 1;
+      changes.localStorageUpdate['lastVisitDate'] = lastVisitDate;
+      changes.firebaseUpdate['lastVisitDate'] = lastVisitDate;
+      changes.localStorageUpdate['consecutiveVisits'] = 1;
       changes.firebaseUpdate[`consecutiveVisits`] = 1;
     }
-    changes.localStorageUpdate["numPageviews"] = userData.numPageviews + 1;
-    changes.localStorageUpdate["pageviewsPerDay"] = {
+    changes.localStorageUpdate['numPageviews'] = userData.numPageviews + 1;
+    changes.localStorageUpdate['pageviewsPerDay'] = {
       ...userData.pageviewsPerDay,
     };
 
@@ -66,5 +66,5 @@ export const useSetLastVisitDate = createUserDataMutation(
     }
 
     return changes;
-  },
+  }
 );

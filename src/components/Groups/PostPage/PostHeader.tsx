@@ -1,8 +1,7 @@
-import Link from "next/link";
-import * as React from "react";
-import { useActiveGroup } from "../../../hooks/groups/useActiveGroup";
-import { usePostActions } from "../../../hooks/groups/usePostActions";
-import { getPostTimestampString, PostData } from "../../../models/groups/posts";
+import Link from 'next/link';
+import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import { usePostActions } from '../../../hooks/groups/usePostActions';
+import { getPostTimestampString, PostData } from '../../../models/groups/posts';
 
 export default function PostHeader({ post }: { post: PostData }) {
   const activeGroup = useActiveGroup();
@@ -13,7 +12,7 @@ export default function PostHeader({ post }: { post: PostData }) {
       <div>
         <h1 className="text-2xl leading-tight font-bold text-gray-900 dark:text-gray-100">
           {post.name}
-          {post.isPublished ? "" : " (Unpublished)"}
+          {post.isPublished ? '' : ' (Unpublished)'}
         </h1>
         <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
           {getPostTimestampString(post)}
@@ -23,11 +22,11 @@ export default function PostHeader({ post }: { post: PostData }) {
         <div className="mt-4 flex space-x-3 md:mt-0">
           <Link
             href={
-              "/groups/" +
+              '/groups/' +
               activeGroup.groupData!.id +
-              "/post/" +
+              '/post/' +
               post.id +
-              "/edit"
+              '/edit'
             }
             className="btn"
           >
@@ -49,7 +48,7 @@ export default function PostHeader({ post }: { post: PostData }) {
             }
             className="btn"
           >
-            <span>{post.isPublished ? "Unpublish" : "Publish"}</span>
+            <span>{post.isPublished ? 'Unpublish' : 'Publish'}</span>
           </button>
         </div>
       )}

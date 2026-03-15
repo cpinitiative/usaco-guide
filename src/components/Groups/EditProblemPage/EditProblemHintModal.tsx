@@ -3,11 +3,11 @@ import {
   DialogBackdrop,
   DialogPanel,
   DialogTitle,
-} from "@headlessui/react";
-import * as React from "react";
-import { v4 as uuidv4 } from "uuid";
-import { ProblemHint } from "../../../models/groups/problem";
-import MarkdownEditor from "../MarkdownEditor";
+} from '@headlessui/react';
+import * as React from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import { ProblemHint } from '../../../models/groups/problem';
+import MarkdownEditor from '../MarkdownEditor';
 
 export default function EditProblemHintModal({
   isOpen,
@@ -22,8 +22,8 @@ export default function EditProblemHintModal({
 }) {
   const defaultHint: ProblemHint = {
     id: uuidv4(),
-    name: "",
-    body: "",
+    name: '',
+    body: '',
   };
   const [hint, setHint] = React.useState<ProblemHint>(defaultHint);
   const [isFullyOpen, setIsFullyOpen] = React.useState(false);
@@ -49,7 +49,7 @@ export default function EditProblemHintModal({
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
     onSave(hint);
     setHint(defaultHint);
@@ -87,7 +87,7 @@ export default function EditProblemHintModal({
                 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100"
                 id="modal-headline"
               >
-                {initialHint ? "Edit Hint" : "Add New Hint"}
+                {initialHint ? 'Edit Hint' : 'Add New Hint'}
               </DialogTitle>
               <div className="mt-4 space-y-6">
                 <div>
@@ -103,7 +103,7 @@ export default function EditProblemHintModal({
                       name="hint_name"
                       id="hint_name"
                       value={hint.name}
-                      onChange={(e) => editHint({ name: e.target.value })}
+                      onChange={e => editHint({ name: e.target.value })}
                       className="input"
                       placeholder="Optional"
                     />
@@ -120,12 +120,12 @@ export default function EditProblemHintModal({
                     {isFullyOpen ? (
                       <MarkdownEditor
                         value={hint.body}
-                        onChange={(value) => editHint({ body: value })}
+                        onChange={value => editHint({ body: value })}
                       />
                     ) : (
                       <textarea
                         value={hint.body}
-                        onChange={(e) => editHint({ body: e.target.value })}
+                        onChange={e => editHint({ body: e.target.value })}
                         className="input min-h-[200px]"
                         placeholder="Enter hint content..."
                       />
@@ -155,7 +155,7 @@ export default function EditProblemHintModal({
                   type="button"
                   className="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden sm:col-start-1 sm:mt-0 sm:text-sm"
                   onClick={() => {
-                    if (confirm("Are you sure you want to delete this hint?")) {
+                    if (confirm('Are you sure you want to delete this hint?')) {
                       onSave(null);
                       onClose();
                     }

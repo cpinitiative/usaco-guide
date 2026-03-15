@@ -1,6 +1,6 @@
-import * as React from "react";
-import { ProblemData, ProblemHint } from "../../../models/groups/problem";
-import EditProblemHintModal from "./EditProblemHintModal";
+import * as React from 'react';
+import { ProblemData, ProblemHint } from '../../../models/groups/problem';
+import EditProblemHintModal from './EditProblemHintModal';
 
 export default function EditProblemHintSection({
   problem,
@@ -18,7 +18,7 @@ export default function EditProblemHintSection({
       // hint was deleted
       if (!currentProblemHint) return; // should not happen
       const hintIdx = problem.hints.findIndex(
-        (hint) => hint.id === currentProblemHint.id,
+        hint => hint.id === currentProblemHint.id
       );
       if (hintIdx === -1) {
         throw new Error("Couldn't find hint to delete");
@@ -29,7 +29,7 @@ export default function EditProblemHintSection({
     } else {
       if (currentProblemHint) {
         const hintIdx = problem.hints.findIndex(
-          (hint) => hint.id === currentProblemHint.id,
+          hint => hint.id === currentProblemHint.id
         );
         if (hintIdx === -1) {
           throw new Error("Couldn't find hint to edit");
@@ -52,12 +52,12 @@ export default function EditProblemHintSection({
       <div>
         <div className="mt-4 flow-root">
           <ul className="-my-5 divide-y divide-gray-200 dark:divide-gray-700">
-            {problem.hints.map((hint) => (
+            {problem.hints.map(hint => (
               <li className="py-4" key={hint.id}>
                 <div className="flex items-center space-x-4">
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium text-gray-900 dark:text-gray-200">
-                      {hint.name || "Hint"}
+                      {hint.name || 'Hint'}
                     </p>
                     <p className="truncate text-sm text-gray-500 dark:text-gray-400">
                       {hint.body}

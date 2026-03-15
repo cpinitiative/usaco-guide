@@ -1,8 +1,7 @@
-import classNames from "classnames";
-import React from "react";
-import { ProblemDifficulty } from "../../../models/problem";
+import classNames from 'classnames';
+import { ProblemDifficulty } from '../../../models/problem';
 
-import { difficultyClasses } from "../../DifficultyBox";
+import { difficultyClasses } from '../../DifficultyBox';
 
 const TableRow = ({
   source,
@@ -26,8 +25,8 @@ const TableRow = ({
         <div className="flex items-center">
           <svg
             className={classNames(
-              "h-4 w-4 text-blue-400",
-              !starred && "opacity-0",
+              'h-4 w-4 text-blue-400',
+              !starred && 'opacity-0'
             )}
             fill="currentColor"
             viewBox="0 0 20 20"
@@ -37,7 +36,7 @@ const TableRow = ({
           {/* Change the text color to the blue in the actual pages */}
           <span
             className="truncate text-blue-600 sm:pl-2 dark:text-blue-300"
-            style={{ maxWidth: "20rem" }}
+            style={{ maxWidth: '20rem' }}
           >
             {title}
           </span>
@@ -46,7 +45,7 @@ const TableRow = ({
       <td className="py-4 pr-4 leading-5 whitespace-nowrap md:pr-6">
         <span
           className={
-            "inline-flex rounded-full px-2 text-xs leading-5 font-semibold " +
+            'inline-flex rounded-full px-2 text-xs leading-5 font-semibold ' +
             difficultyClasses[difficulty]
           }
         >

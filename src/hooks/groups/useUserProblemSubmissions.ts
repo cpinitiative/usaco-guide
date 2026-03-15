@@ -1,20 +1,20 @@
-import type { CollectionReference } from "firebase/firestore";
+import type { CollectionReference } from 'firebase/firestore';
 import {
   collection,
   getFirestore,
   onSnapshot,
   query,
   where,
-} from "firebase/firestore";
-import * as React from "react";
-import toast from "react-hot-toast";
-import { FirebaseSubmission } from "../../models/groups/problem";
-import { useFirebaseApp } from "../useFirebase";
-import { useActiveGroup } from "./useActiveGroup";
+} from 'firebase/firestore';
+import * as React from 'react';
+import toast from 'react-hot-toast';
+import { FirebaseSubmission } from '../../models/groups/problem';
+import { useFirebaseApp } from '../useFirebase';
+import { useActiveGroup } from './useActiveGroup';
 
 export default function useUserProblemSubmissions(
   postId: string,
-  problemId: string,
+  problemId: string
 ) {
   const [submissions, setSubmissions] = React.useState<
     FirebaseSubmission[] | null
@@ -22,38 +22,38 @@ export default function useUserProblemSubmissions(
   const activeGroup = useActiveGroup();
 
   useFirebaseApp(
-    (firebaseApp) => {
+    firebaseApp => {
       if (problemId && activeGroup.activeUserId && activeGroup?.activeGroupId) {
         return onSnapshot(
           query(
             collection(
               getFirestore(firebaseApp),
-              "groups",
+              'groups',
               activeGroup.activeGroupId!,
-              "posts",
+              'posts',
               postId,
-              "problems",
+              'problems',
               problemId,
-              "submissions",
+              'submissions'
             ) as CollectionReference<FirebaseSubmission>,
-            where("userID", "==", activeGroup.activeUserId),
+            where('userID', '==', activeGroup.activeUserId)
           ),
           {
-            next: (snap) => {
+            next: snap => {
               setSubmissions(
                 snap.docs
-                  .map((doc) => ({ ...doc.data(), id: doc.id }))
-                  .sort((a, b) => b.timestamp - a.timestamp),
+                  .map(doc => ({ ...doc.data(), id: doc.id }))
+                  .sort((a, b) => b.timestamp - a.timestamp)
               );
             },
-            error: (error) => {
+            error: error => {
               toast.error(error.message);
             },
-          },
+          }
         );
       }
     },
-    [activeGroup.activeUserId, postId, problemId, activeGroup?.activeGroupId],
+    [activeGroup.activeUserId, postId, problemId, activeGroup?.activeGroupId]
   );
 
   return submissions;

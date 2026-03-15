@@ -1,15 +1,15 @@
-import { visit } from "unist-util-visit";
+import { visit } from 'unist-util-visit';
 
 export default function remarkExtractImages(options = {}) {
   if (!options.images) {
     options.images = [];
   }
 
-  return (tree) => {
+  return tree => {
     visit(tree, (node, index, parent) => {
       // Process markdown images ![alt](src "title")
-      if (node.type === "image") {
-        const src = node.url || "";
+      if (node.type === 'image') {
+        const src = node.url || '';
         const caption = node.title || node.alt || null;
 
         options.images.push({
@@ -21,11 +21,11 @@ export default function remarkExtractImages(options = {}) {
 
       // Process HTML img tags <img src="" alt="" title="">
       if (
-        node.type === "mdxJsxFlowElement" ||
-        node.type === "mdxJsxTextElement"
+        node.type === 'mdxJsxFlowElement' ||
+        node.type === 'mdxJsxTextElement'
       ) {
-        if (node.name === "img" && node.properties) {
-          const src = node.properties.src || "";
+        if (node.name === 'img' && node.properties) {
+          const src = node.properties.src || '';
           const caption = node.properties.title || node.properties.alt || null;
 
           options.images.push({
@@ -37,13 +37,13 @@ export default function remarkExtractImages(options = {}) {
       }
 
       // Process linked images (image wrapped in a link)
-      if (node.type === "link" && parent && index !== null) {
+      if (node.type === 'link' && parent && index !== null) {
         const children = node.children || [];
-        if (children.length === 1 && children[0].type === "image") {
+        if (children.length === 1 && children[0].type === 'image') {
           const imageNode = children[0];
-          const src = imageNode.url || "";
+          const src = imageNode.url || '';
           const caption = imageNode.title || imageNode.alt || null;
-          const originalImageLink = node.url || "";
+          const originalImageLink = node.url || '';
 
           options.images.push({
             src,

@@ -1,8 +1,8 @@
-import * as React from "react";
-import { useEffect, useState } from "react";
-import { DarkModeContext } from "./DarkModeContext";
-import { useThemeSetting } from "./UserDataContext/properties/simpleProperties";
-import { useIsUserDataLoaded } from "./UserDataContext/UserDataContext";
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { DarkModeContext } from './DarkModeContext';
+import { useThemeSetting } from './UserDataContext/properties/simpleProperties';
+import { useIsUserDataLoaded } from './UserDataContext/UserDataContext';
 
 export function DarkModeProvider({ children }) {
   const theme = useThemeSetting();
@@ -13,17 +13,17 @@ export function DarkModeProvider({ children }) {
     if (prev !== next && isClient) {
       // Only modify DOM on client
       if (next) {
-        document.documentElement.classList.add("dark");
+        document.documentElement.classList.add('dark');
       } else {
-        document.documentElement.classList.remove("dark");
+        document.documentElement.classList.remove('dark');
       }
-      document.documentElement.classList.add("transitioning-color-scheme");
+      document.documentElement.classList.add('transitioning-color-scheme');
       setTimeout(
         () =>
           document.documentElement.classList.remove(
-            "transitioning-color-scheme",
+            'transitioning-color-scheme'
           ),
-        0,
+        0
       );
     }
     return next;
@@ -33,33 +33,33 @@ export function DarkModeProvider({ children }) {
     setIsClient(true);
 
     // Check if dark class was already set (from SSR or previous state)
-    const hasDarkClass = document.documentElement.classList.contains("dark");
+    const hasDarkClass = document.documentElement.classList.contains('dark');
 
     if (!isLoaded) {
       setDarkMode(hasDarkClass);
       return;
     }
 
-    if (theme === "system") {
+    if (theme === 'system') {
       if (!window.matchMedia) {
         setDarkMode(false);
         return;
       }
 
-      const query = window.matchMedia("(prefers-color-scheme: dark)");
+      const query = window.matchMedia('(prefers-color-scheme: dark)');
 
       setDarkMode(query.matches);
 
-      const onChange = (e) => setDarkMode(e.matches);
+      const onChange = e => setDarkMode(e.matches);
       // some browsers don't support addEventListener
       if (query.addEventListener) {
-        query.addEventListener("change", onChange);
-        return () => query.removeEventListener("change", onChange);
+        query.addEventListener('change', onChange);
+        return () => query.removeEventListener('change', onChange);
       }
     } else {
-      if (theme === "light") setDarkMode(false);
-      else if (theme === "dark") setDarkMode(true);
-      else throw new Error("Unknown theme " + theme);
+      if (theme === 'light') setDarkMode(false);
+      else if (theme === 'dark') setDarkMode(true);
+      else throw new Error('Unknown theme ' + theme);
     }
   }, [theme, isLoaded]);
 

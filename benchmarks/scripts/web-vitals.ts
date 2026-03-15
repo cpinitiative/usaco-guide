@@ -1,9 +1,8 @@
-import { promisify } from "util";
-import { exec } from "child_process";
-import { readFile } from "fs/promises";
-import { join } from "path";
-import { saveResults } from "./utils";
-import { calculateStats } from "./utils";
+import { exec } from 'child_process';
+import { readFile } from 'fs/promises';
+import { join } from 'path';
+import { promisify } from 'util';
+import { calculateStats, saveResults } from './utils';
 
 const execAsync = promisify(exec);
 
@@ -28,21 +27,21 @@ interface LighthouseResult {
 }
 
 const PAGES_TO_TEST = [
-  "/",
-  "/dashboard",
-  "/problems", // Add more pages as needed
+  '/',
+  '/dashboard',
+  '/problems', // Add more pages as needed
 ];
 
 async function runLighthouse(
   url: string,
-  outputPath: string,
+  outputPath: string
 ): Promise<LighthouseResult> {
   const { stdout } = await execAsync(
-    `npx lighthouse ${url} --output=json --output-path=${outputPath} --chrome-flags="--headless --no-sandbox --disable-gpu" --only-categories=performance`,
+    `npx lighthouse ${url} --output=json --output-path=${outputPath} --chrome-flags="--headless --no-sandbox --disable-gpu" --only-categories=performance`
   );
 
   const result = JSON.parse(
-    await readFile(outputPath, "utf-8"),
+    await readFile(outputPath, 'utf-8')
   ) as LighthouseResult;
   return result;
 }
@@ -52,11 +51,11 @@ export async function measureWebVitals(iterations = 5): Promise<void> {
   const timestamp = new Date().toISOString();
 
   // Start the production server in the background
-  const serverProcess = exec("yarn start");
+  const serverProcess = exec('yarn start');
 
   try {
     // Wait for server to be ready
-    await new Promise((resolve) => setTimeout(resolve, 10000));
+    await new Promise(resolve => setTimeout(resolve, 10000));
 
     for (const page of PAGES_TO_TEST) {
       const url = `http://localhost:3000${page}`;
@@ -81,20 +80,20 @@ export async function measureWebVitals(iterations = 5): Promise<void> {
 
           // Extract metrics
           metrics.LCP.push(
-            result.audits["largest-contentful-paint"].numericValue,
+            result.audits['largest-contentful-paint'].numericValue
           );
           metrics.FCP.push(
-            result.audits["first-contentful-paint"].numericValue,
+            result.audits['first-contentful-paint'].numericValue
           );
           metrics.CLS.push(
-            result.audits["cumulative-layout-shift"].numericValue,
+            result.audits['cumulative-layout-shift'].numericValue
           );
           metrics.INP.push(
-            result.audits["interaction-to-next-paint"]?.numericValue || 0,
+            result.audits['interaction-to-next-paint']?.numericValue || 0
           );
-          metrics.TBT.push(result.audits["total-blocking-time"].numericValue);
-          metrics.SI.push(result.audits["speed-index"].numericValue);
-          metrics.TTI.push(result.audits["interactive"].numericValue);
+          metrics.TBT.push(result.audits['total-blocking-time'].numericValue);
+          metrics.SI.push(result.audits['speed-index'].numericValue);
+          metrics.TTI.push(result.audits['interactive'].numericValue);
 
           // Clean up
           await execAsync(`rm ${outputPath}`);
@@ -112,7 +111,7 @@ export async function measureWebVitals(iterations = 5): Promise<void> {
         results.push({
           metric: `web.vitals.${metric.toLowerCase()}`,
           value: stats.mean,
-          unit: metric === "CLS" ? "unitless" : "ms",
+          unit: metric === 'CLS' ? 'unitless' : 'ms',
           timestamp,
           page,
           stats: {
@@ -126,21 +125,18 @@ export async function measureWebVitals(iterations = 5): Promise<void> {
     }
 
     // Save results
-    await saveResults(
-      results,
-      `web-vitals-${timestamp.replace(/[:.]/g, "-")}`,
-    );
+    await saveResults(results, `web-vitals-${timestamp.replace(/[:.]/g, '-')}`);
 
-    console.log("\n--- Web Vitals Metrics ---");
+    console.log('\n--- Web Vitals Metrics ---');
     console.table(
       results.map(({ metric, value, unit, page, stats }) => ({
         Page: page,
-        Metric: metric.split(".").pop(),
-        Value: `${value.toFixed(2)}${unit === "ms" ? "ms" : ""}`,
+        Metric: metric.split('.').pop(),
+        Value: `${value.toFixed(2)}${unit === 'ms' ? 'ms' : ''}`,
         Min: `${stats.min.toFixed(2)}`,
         Max: `${stats.max.toFixed(2)}`,
         P95: `${stats.p95.toFixed(2)}`,
-      })),
+      }))
     );
   } finally {
     // Clean up

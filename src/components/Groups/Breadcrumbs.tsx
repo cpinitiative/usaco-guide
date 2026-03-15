@@ -1,7 +1,6 @@
-import Link from "next/link";
-import * as React from "react";
-import { GroupData } from "../../models/groups/groups";
-import { PostData } from "../../models/groups/posts";
+import Link from 'next/link';
+import { GroupData } from '../../models/groups/groups';
+import { PostData } from '../../models/groups/posts';
 
 export default function Breadcrumbs({
   className,
@@ -13,7 +12,7 @@ export default function Breadcrumbs({
   post?: PostData;
 }) {
   return (
-    <ol className={"flex items-center space-x-4 " + className}>
+    <ol className={'flex items-center space-x-4 ' + className}>
       <li>
         <div>
           <Link

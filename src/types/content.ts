@@ -1,6 +1,6 @@
-import { SectionID } from "../../content/ordering";
-import { ModuleFrequency } from "../models/module";
-import { ProblemDifficulty, ProblemSolutionInfo } from "../models/problem";
+import { SectionID } from '../../content/ordering';
+import { ModuleFrequency } from '../models/module';
+import { ProblemDifficulty, ProblemSolutionInfo } from '../models/problem';
 
 export interface Heading {
   depth: number;

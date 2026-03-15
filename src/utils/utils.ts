@@ -1,18 +1,18 @@
-import MODULE_ORDERING from "../../content/ordering";
-import { ModuleInfo } from "../models/module";
-import { MdxContent } from "../types/content";
+import MODULE_ORDERING from '../../content/ordering';
+import { ModuleInfo } from '../models/module';
+import { MdxContent } from '../types/content';
 
 export const getModulesForDivision = (
   allModules: {
     [key: string]: MdxContent;
   },
-  division: keyof typeof MODULE_ORDERING,
+  division: keyof typeof MODULE_ORDERING
 ) => {
-  return MODULE_ORDERING[division].map((k) => ({
+  return MODULE_ORDERING[division].map(k => ({
     name: k.name,
-    items: k.items.map((k2) => {
+    items: k.items.map(k2 => {
       if (!allModules.hasOwnProperty(k2)) {
-        throw "Module not found: " + k2;
+        throw 'Module not found: ' + k2;
       }
       return {
         ...allModules[k2 as string],
@@ -36,11 +36,11 @@ export function graphqlToModuleInfo(mdx: MdxContent): ModuleInfo {
     mdx.frontmatter.frequency,
     mdx.toc,
     mdx.fileAbsolutePath,
-    mdx.fields.gitAuthorTime,
+    mdx.fields.gitAuthorTime
   );
 }
 
 // https://stackoverflow.com/questions/2218999/how-to-remove-all-duplicates-from-an-array-of-objects
 export function removeDuplicates<T>(arr: T[]): T[] {
-  return [...new Map(arr.map((item) => [JSON.stringify(item), item])).values()];
+  return [...new Map(arr.map(item => [JSON.stringify(item), item])).values()];
 }

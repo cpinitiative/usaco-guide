@@ -3,14 +3,14 @@ import {
   DialogBackdrop,
   DialogPanel,
   DialogTitle,
-} from "@headlessui/react";
-import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/outline";
-import { XIcon } from "@heroicons/react/solid";
-import React, { useMemo } from "react";
-import { useDarkMode } from "../context/DarkModeContext";
-import { useQuizOpen } from "../context/QuizGeneratorContext";
-import CopyButton from "./Editor/CopyButton";
-import CodeBlock from "./markdown/CodeBlock/CodeBlock";
+} from '@headlessui/react';
+import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/outline';
+import { XIcon } from '@heroicons/react/solid';
+import React, { useMemo } from 'react';
+import { useDarkMode } from '../context/DarkModeContext';
+import { useQuizOpen } from '../context/QuizGeneratorContext';
+import CopyButton from './Editor/CopyButton';
+import CodeBlock from './markdown/CodeBlock/CodeBlock';
 
 interface Answer {
   answer: string;
@@ -27,11 +27,11 @@ export default function QuizGeneratorModal(): JSX.Element {
   const { open, setOpen } = useQuizOpen();
   const isDarkMode = useDarkMode();
   const [quiz, setQuiz] = React.useState<Question[]>([
-    { question: "", answers: [] },
+    { question: '', answers: [] },
   ]);
   const closeModal = () => {
     setOpen(false);
-    setQuiz([{ question: "", answers: [] }]);
+    setQuiz([{ question: '', answers: [] }]);
   };
 
   const editQuiz = (func: (q: Question[]) => Question[]) => {
@@ -41,16 +41,16 @@ export default function QuizGeneratorModal(): JSX.Element {
   };
 
   const changeQuestion = (newQuestion: string, idx: number) => {
-    editQuiz((prev) => {
+    editQuiz(prev => {
       prev[idx].question = newQuestion;
       return prev;
     });
   };
 
   const addQuestion = () => {
-    editQuiz((prev) => {
+    editQuiz(prev => {
       prev.push({
-        question: "",
+        question: '',
         answers: [],
       });
       return prev;
@@ -58,17 +58,17 @@ export default function QuizGeneratorModal(): JSX.Element {
   };
 
   const deleteQuestion = (questionIdx: number) => {
-    editQuiz((prev) => {
+    editQuiz(prev => {
       prev.splice(questionIdx, 1);
       return prev;
     });
   };
 
   const addAnswer = (questionIdx: number) => {
-    editQuiz((prev) => {
+    editQuiz(prev => {
       prev[questionIdx].answers.push({
-        answer: "",
-        explanation: "",
+        answer: '',
+        explanation: '',
         correct: false,
       });
       return prev;
@@ -76,7 +76,7 @@ export default function QuizGeneratorModal(): JSX.Element {
   };
 
   const deleteAnswer = (questionIdx: number, answerIdx: number) => {
-    editQuiz((prev) => {
+    editQuiz(prev => {
       prev[questionIdx].answers.splice(answerIdx, 1);
       return prev;
     });
@@ -87,9 +87,9 @@ export default function QuizGeneratorModal(): JSX.Element {
     newExplanation: string,
     newCorrect: boolean,
     questionIdx: number,
-    answerIdx: number,
+    answerIdx: number
   ) => {
-    editQuiz((prev) => {
+    editQuiz(prev => {
       prev[questionIdx].answers[answerIdx].answer = newAnswer;
       prev[questionIdx].answers[answerIdx].explanation = newExplanation;
       prev[questionIdx].answers[answerIdx].correct = newCorrect;
@@ -102,25 +102,25 @@ export default function QuizGeneratorModal(): JSX.Element {
   ${
     quiz
       .map(
-        (question) =>
+        question =>
           `<Quiz.Question>
-    ${question.question.replace(/\n/g, "\n    ") /* 4 spaces */}
+    ${question.question.replace(/\n/g, '\n    ') /* 4 spaces */}
     ${
       question.answers
         .map(
-          (answer) =>
-            `<Quiz.Answer${answer.correct ? " correct" : ""}>
-      ${answer.answer.replace(/\n/g, "\n      ") /* 6 spaces */}
+          answer =>
+            `<Quiz.Answer${answer.correct ? ' correct' : ''}>
+      ${answer.answer.replace(/\n/g, '\n      ') /* 6 spaces */}
       <Quiz.Explanation>
-        ${answer.explanation.replace(/\n/g, "\n        ") /* 8 spaces */}
+        ${answer.explanation.replace(/\n/g, '\n        ') /* 8 spaces */}
       </Quiz.Explanation>
-    </Quiz.Answer>`,
+    </Quiz.Answer>`
         )
-        .join("\n    ") /* 4 spaces */
+        .join('\n    ') /* 4 spaces */
     }
-  </Quiz.Question>`,
+  </Quiz.Question>`
       )
-      .join("\n  ") /* 2 spaces */
+      .join('\n  ') /* 2 spaces */
   }
 </Quiz>`;
     return code;
@@ -142,65 +142,65 @@ export default function QuizGeneratorModal(): JSX.Element {
             transition
             className="h-auto w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white p-8 text-left align-middle shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[enter]:ease-out data-[leave]:duration-200 data-[leave]:ease-in data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95 dark:bg-black"
           >
-            <div className={"flex items-center justify-between"}>
+            <div className={'flex items-center justify-between'}>
               <DialogTitle
                 as="h3"
                 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200"
               >
                 Quiz Generator
               </DialogTitle>
-              <button className={"btn"} onClick={() => addQuestion()}>
+              <button className={'btn'} onClick={() => addQuestion()}>
                 Add question
               </button>
             </div>
-            <div className={"mt-4 space-y-8"}>
+            <div className={'mt-4 space-y-8'}>
               {quiz.map((question, idx) => (
                 <div
                   key={idx}
                   className="flex border-l-4 focus-within:border-blue-500 dark:border-gray-800 dark:focus-within:border-blue-900"
                 >
-                  <div className={"mx-2"}>
+                  <div className={'mx-2'}>
                     <button onClick={() => deleteQuestion(idx)}>
-                      <XIcon className={"h-4 w-4"} />
+                      <XIcon className={'h-4 w-4'} />
                     </button>
                   </div>
-                  <div className={"grow"}>
+                  <div className={'grow'}>
                     <label htmlFor={`question-${idx + 1}`}>
                       Question {idx + 1}
                     </label>
                     <textarea
                       id={`question-${idx + 1}`}
                       value={question.question}
-                      onChange={(e) => changeQuestion(e.target.value, idx)}
+                      onChange={e => changeQuestion(e.target.value, idx)}
                       className={
-                        "mt-2 block w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900"
+                        'mt-2 block w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900'
                       }
                     />
-                    <div className={"ml-4"}>
-                      <h5 className={"my-2 font-medium"}>Answers</h5>
-                      <div className={"space-y-4"}>
+                    <div className={'ml-4'}>
+                      <h5 className={'my-2 font-medium'}>Answers</h5>
+                      <div className={'space-y-4'}>
                         {question.answers.map((answer, i) => (
-                          <div key={i} className={"flex"}>
-                            <div className={"mr-1"}>
+                          <div key={i} className={'flex'}>
+                            <div className={'mr-1'}>
                               <button onClick={() => deleteAnswer(idx, i)}>
-                                <XIcon className={"h-4 w-4"} />
+                                <XIcon className={'h-4 w-4'} />
                               </button>
                             </div>
-                            <div className={"w-full"}>
-                              <div className={"flex w-full items-center gap-6"}>
+                            <div className={'w-full'}>
+                              <div className={'flex w-full items-center gap-6'}>
                                 <textarea
                                   value={answer.answer}
-                                  onChange={(e) =>
+                                  onChange={e =>
                                     changeAnswer(
                                       e.target.value,
                                       answer.explanation,
                                       answer.correct,
                                       idx,
-                                      i,
+                                      i
                                     )
                                   }
                                   className={
-                                    "block grow rounded-md border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900"
+                                    'block grow rounded-md border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900'
                                   }
                                   placeholder={`Answer ${i + 1}`}
                                 />
@@ -211,36 +211,36 @@ export default function QuizGeneratorModal(): JSX.Element {
                                       answer.explanation,
                                       !answer.correct,
                                       idx,
-                                      i,
+                                      i
                                     )
                                   }
                                   className={
-                                    "w-18 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-hidden md:w-24"
+                                    'w-18 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-hidden md:w-24'
                                   }
                                 >
                                   {quiz[idx].answers[i].correct ? (
                                     <div
                                       className={
-                                        "flex items-center gap-2 text-green-600 dark:text-green-300"
+                                        'flex items-center gap-2 text-green-600 dark:text-green-300'
                                       }
                                     >
                                       <CheckCircleIcon
-                                        className={"h-4 w-4 md:h-6 md:w-6"}
+                                        className={'h-4 w-4 md:h-6 md:w-6'}
                                       />
-                                      <span className={"text-xs md:text-sm"}>
+                                      <span className={'text-xs md:text-sm'}>
                                         Correct
                                       </span>
                                     </div>
                                   ) : (
                                     <div
                                       className={
-                                        "flex items-center gap-2 text-red-600 dark:text-red-300"
+                                        'flex items-center gap-2 text-red-600 dark:text-red-300'
                                       }
                                     >
                                       <XCircleIcon
-                                        className={"h-4 w-4 md:h-6 md:w-6"}
+                                        className={'h-4 w-4 md:h-6 md:w-6'}
                                       />
-                                      <span className={"text-xs md:text-sm"}>
+                                      <span className={'text-xs md:text-sm'}>
                                         Incorrect
                                       </span>
                                     </div>
@@ -249,27 +249,27 @@ export default function QuizGeneratorModal(): JSX.Element {
                               </div>
                               <textarea
                                 className={
-                                  "mt-2 block w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900"
+                                  'mt-2 block w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900'
                                 }
                                 value={answer.explanation}
-                                onChange={(e) =>
+                                onChange={e =>
                                   changeAnswer(
                                     answer.answer,
                                     e.target.value,
                                     answer.correct,
                                     idx,
-                                    i,
+                                    i
                                   )
                                 }
-                                placeholder={"Explanation"}
+                                placeholder={'Explanation'}
                               />
                             </div>
                           </div>
                         ))}
                       </div>
-                      <div className={"my-2 flex w-full justify-end"}>
+                      <div className={'my-2 flex w-full justify-end'}>
                         <button
-                          className={"btn"}
+                          className={'btn'}
                           onClick={() => addAnswer(idx)}
                         >
                           Add answer
@@ -279,7 +279,7 @@ export default function QuizGeneratorModal(): JSX.Element {
                   </div>
                 </div>
               ))}
-              <div className={"relative text-sm"}>
+              <div className={'relative text-sm'}>
                 <CopyButton
                   onClick={() => {
                     navigator.clipboard.writeText(code);

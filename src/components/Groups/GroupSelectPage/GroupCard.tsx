@@ -1,6 +1,5 @@
-import Link from "next/link";
-import React from "react";
-import { GroupData } from "../../../models/groups/groups";
+import Link from 'next/link';
+import { GroupData } from '../../../models/groups/groups';
 
 export const GroupCard = ({ group }: { group: GroupData }): JSX.Element => {
   return (

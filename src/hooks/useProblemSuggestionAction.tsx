@@ -1,6 +1,6 @@
-import { getFunctions, httpsCallable } from "firebase/functions";
-import { useCallback } from "react";
-import { useFirebaseApp } from "./useFirebase";
+import { getFunctions, httpsCallable } from 'firebase/functions';
+import { useCallback } from 'react';
+import { useFirebaseApp } from './useFirebase';
 
 export default function useProblemSuggestionAction() {
   const firebaseApp = useFirebaseApp();
@@ -21,18 +21,18 @@ export default function useProblemSuggestionAction() {
     }) => {
       if (!source) {
         throw new Error(
-          "Please select a source (You can select 'other' if you can't find the correct source)",
+          "Please select a source (You can select 'other' if you can't find the correct source)"
         );
       }
       if (!difficulty) {
-        throw new Error("Please select a difficulty");
+        throw new Error('Please select a difficulty');
       }
       if (!firebaseApp) {
-        throw new Error("Too fast! Please wait ten seconds and try again.");
+        throw new Error('Too fast! Please wait ten seconds and try again.');
       }
       const submitProblemSuggestion = httpsCallable<any, any>(
         getFunctions(firebaseApp),
-        "submitProblemSuggestion",
+        'submitProblemSuggestion'
       );
       return submitProblemSuggestion({
         name,
@@ -48,6 +48,6 @@ export default function useProblemSuggestionAction() {
         filePath,
       });
     },
-    [firebaseApp],
+    [firebaseApp]
   );
 }

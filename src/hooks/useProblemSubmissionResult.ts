@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from "react";
-import { ProblemSubmissionResult } from "../models/groups/problem";
+import { useEffect, useRef, useState } from 'react';
+import { ProblemSubmissionResult } from '../models/groups/problem';
 
 export default function useProblemSubmissionResult(
-  submissionID: string | null,
+  submissionID: string | null
 ) {
   const [result, setResult] = useState<ProblemSubmissionResult | null>(null);
   const currentSubmission = useRef(0);
@@ -11,7 +11,7 @@ export default function useProblemSubmissionResult(
     if (!submissionID) return;
     const queryResult = async (curSubmission, submissionID) => {
       const res = await fetch(
-        `https://ggzk2rm2ad.execute-api.us-west-1.amazonaws.com/Prod/submissions/${submissionID}`,
+        `https://ggzk2rm2ad.execute-api.us-west-1.amazonaws.com/Prod/submissions/${submissionID}`
       );
       const data = await res.json();
 
@@ -19,7 +19,7 @@ export default function useProblemSubmissionResult(
 
       setResult(data);
 
-      if (res.ok && data.status !== "done") {
+      if (res.ok && data.status !== 'done') {
         setTimeout(() => queryResult(curSubmission, submissionID), 1000);
       }
     };

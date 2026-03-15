@@ -1,13 +1,13 @@
+import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 import Wrapper, {
   GroupPageWrapper,
   PostPageWrapper,
-} from "../../../../../components/Groups/GroupWrappers";
-import { useRouter } from "next/router";
-import dynamic from "next/dynamic";
+} from '../../../../../components/Groups/GroupWrappers';
 
 const EditPostPage = dynamic(
-  () => import("../../../../../components/Groups/EditPostPage/EditPostPage"),
-  { ssr: false },
+  () => import('../../../../../components/Groups/EditPostPage/EditPostPage'),
+  { ssr: false }
 );
 
 const Index = () => {

@@ -1,8 +1,8 @@
 import {
   useUserProgressOnModulesActivity,
   useUserProgressOnProblemsActivity,
-} from "../context/UserDataContext/properties/userProgress";
-import { ModuleActivity, ProblemActivity } from "../models/activity";
+} from '../context/UserDataContext/properties/userProgress';
+import { ModuleActivity, ProblemActivity } from '../models/activity';
 
 export const useActivity = () => {
   const userProgressOnModulesActivity = useUserProgressOnModulesActivity();
@@ -14,14 +14,14 @@ export const useActivity = () => {
   const moduleIDs: [string, number][] = [];
   for (const activity of userProgressOnModulesActivity) {
     if (
-      activity.moduleProgress === "Practicing" ||
-      activity.moduleProgress === "Complete"
+      activity.moduleProgress === 'Practicing' ||
+      activity.moduleProgress === 'Complete'
     ) {
       const newDate = new Date(activity.timestamp);
       newDate.setHours(0, 0, 0, 0);
       if (
         moduleIDs.some(
-          (m) => m[0] === activity.moduleID && m[1] === newDate.getTime(),
+          m => m[0] === activity.moduleID && m[1] === newDate.getTime()
         )
       ) {
         continue;
@@ -39,12 +39,12 @@ export const useActivity = () => {
 
   const problemIDs: [string, number][] = [];
   for (const activity of userProgressOnProblemsActivity) {
-    if (activity.problemProgress === "Solved") {
+    if (activity.problemProgress === 'Solved') {
       const newDate = new Date(activity.timestamp);
       newDate.setHours(0, 0, 0, 0);
       if (
         problemIDs.some(
-          (p) => p[0] === activity.problemID && p[1] === newDate.getTime(),
+          p => p[0] === activity.problemID && p[1] === newDate.getTime()
         )
       ) {
         continue;

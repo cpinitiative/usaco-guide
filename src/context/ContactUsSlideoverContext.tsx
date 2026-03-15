@@ -1,13 +1,12 @@
-import * as React from "react";
-import { createContext, useState } from "react";
-import ContactUsSlideover from "../components/ContactUsSlideover/ContactUsSlideover";
+import { createContext, useState } from 'react';
+import ContactUsSlideover from '../components/ContactUsSlideover/ContactUsSlideover';
 
 const ContactUsSlideoverContext = createContext<{
   isContactUsSlideoverOpen: boolean;
   setIsContactUsSlideoverOpen: (boolean) => void;
 }>({
   isContactUsSlideoverOpen: false,
-  setIsContactUsSlideoverOpen: (x) => {},
+  setIsContactUsSlideoverOpen: x => {},
 });
 
 export default ContactUsSlideoverContext;

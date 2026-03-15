@@ -1,11 +1,11 @@
-import * as React from "react";
-import { TOCHeading } from "../../../models/module";
+import * as React from 'react';
+import { TOCHeading } from '../../../models/module';
 
 export default function genLinksFromTOCHeadings(
   headings: TOCHeading[],
-  getClasses: (heading: TOCHeading) => string,
+  getClasses: (heading: TOCHeading) => string
 ) {
-  const indentationLevels = ["0", "1.5rem", "3rem", "4.5rem"];
+  const indentationLevels = ['0', '1.5rem', '3rem', '4.5rem'];
   const links: React.ReactNode[] = [];
   let curDepth = -1;
   let indentIdx = 0;
@@ -20,7 +20,7 @@ export default function genLinksFromTOCHeadings(
     links.push(
       <a
         key={heading.slug}
-        href={"#" + heading.slug}
+        href={'#' + heading.slug}
         className={getClasses(heading)}
         style={{
           marginLeft: indentationLevels[indentIdx],
@@ -29,13 +29,13 @@ export default function genLinksFromTOCHeadings(
             ((idx !== 0 && headings[idx - 1].depth > heading.depth) ||
               (idx !== headings.length - 1 &&
                 headings[idx + 1].depth > heading.depth))
-              ? "1rem"
+              ? '1rem'
               : indentIdx === 0
-                ? "0.5rem"
+                ? '0.5rem'
                 : 0,
         }}
         dangerouslySetInnerHTML={{ __html: heading.value }}
-      />,
+      />
     );
   });
   return links;

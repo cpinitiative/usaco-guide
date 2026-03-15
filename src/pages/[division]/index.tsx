@@ -1,43 +1,43 @@
-import * as React from "react";
-import { GetStaticProps, GetStaticPaths } from "next";
+import { GetStaticPaths, GetStaticProps } from 'next';
+import * as React from 'react';
 import {
   moduleIDToSectionMap,
-  SectionID,
   SECTION_LABELS,
   SECTION_SEO_DESCRIPTION,
   SECTION_SEO_TITLES,
-} from "../../../content/ordering";
+  SectionID,
+} from '../../../content/ordering';
 import DashboardProgress, {
   DashboardProgressSmall,
-} from "../../components/Dashboard/DashboardProgress";
-import SEO from "../../components/seo";
-import ModuleLink from "../../components/syllabus/ModuleLink";
-import TopNavigationBar from "../../components/TopNavigationBar/TopNavigationBar";
-import { ModuleFrequency, ModuleLinkInfo } from "../../models/module";
+} from '../../components/Dashboard/DashboardProgress';
+import Layout from '../../components/layout';
+import SEO from '../../components/seo';
+import ModuleLink from '../../components/syllabus/ModuleLink';
+import TopNavigationBar from '../../components/TopNavigationBar/TopNavigationBar';
+import { ModuleFrequency, ModuleLinkInfo } from '../../models/module';
+import { MdxContent } from '../../types/content';
 import {
   useModulesProgressInfo,
   useProblemsProgressInfo,
-} from "../../utils/getProgressInfo";
-import { getModulesForDivision } from "../../utils/utils";
-import { MdxContent } from "../../types/content";
-import Layout from "../../components/layout";
+} from '../../utils/getProgressInfo';
+import { getModulesForDivision } from '../../utils/utils';
 
 const HeroBGColor: { [key in SectionID]: string } = {
-  general: "bg-blue-700 dark:bg-blue-900",
-  bronze: "bg-orange-800 dark:bg-orange-900",
-  silver: "bg-teal-700 dark:bg-teal-900",
-  gold: "bg-yellow-700 dark:bg-yellow-900",
-  plat: "bg-purple-700 dark:bg-purple-900",
-  adv: "bg-green-700 dark:bg-green-900",
+  general: 'bg-blue-700 dark:bg-blue-900',
+  bronze: 'bg-orange-800 dark:bg-orange-900',
+  silver: 'bg-teal-700 dark:bg-teal-900',
+  gold: 'bg-yellow-700 dark:bg-yellow-900',
+  plat: 'bg-purple-700 dark:bg-purple-900',
+  adv: 'bg-green-700 dark:bg-green-900',
 };
 
 const HeroTextColor: { [key in SectionID]: string } = {
-  general: "text-teal-200",
-  bronze: "text-orange-100",
-  silver: "text-teal-100",
-  gold: "text-yellow-100",
-  plat: "text-purple-100",
-  adv: "text-green-100",
+  general: 'text-teal-200',
+  bronze: 'text-orange-100',
+  silver: 'text-teal-100',
+  gold: 'text-yellow-100',
+  plat: 'text-purple-100',
+  adv: 'text-green-100',
 };
 
 const topicsWarning = (
@@ -62,7 +62,7 @@ const SECTION_DESCRIPTION: { [key in SectionID]: React.ReactNode } = {
     <>
       {topicsWarning}
       <br />
-      If you prefer videos instead of text, check out CPI's free{" "}
+      If you prefer videos instead of text, check out CPI's free{' '}
       <a
         href="https://joincpi.org/video-classes"
         target="_blank"
@@ -104,11 +104,11 @@ export default function SyllabusTemplate({
   allModules,
   problemData,
 }: SyllabusProps) {
-  const problemIDs = problemData.map((p) => p.id);
+  const problemIDs = problemData.map(p => p.id);
   const section = getModulesForDivision(allModules, division);
 
   const moduleIDs = section.reduce((acc, curr) => {
-    return [...acc, ...curr.items.map((x) => x.frontmatter.id)];
+    return [...acc, ...curr.items.map(x => x.frontmatter.id)];
   }, [] as string[]);
 
   const moduleProgressInfo = useModulesProgressInfo(moduleIDs);
@@ -116,11 +116,11 @@ export default function SyllabusTemplate({
   const problemsProgressInfo = useProblemsProgressInfo(problemIDs);
   const useProgressBarForCategory = (category: (typeof section)[0]) => {
     const categoryModuleIds = category.items.map(
-      (module) => module.frontmatter.id,
+      module => module.frontmatter.id
     );
     const categoryProblemIds = problemData
-      .filter((p) => categoryModuleIds.includes(p.moduleId))
-      .map((p) => p.id);
+      .filter(p => categoryModuleIds.includes(p.moduleId))
+      .map(p => p.id);
     const problemsProgressInfo = useProblemsProgressInfo(categoryProblemIds);
     return (
       categoryProblemIds.length > 0 && (
@@ -186,7 +186,7 @@ export default function SyllabusTemplate({
               </div>
             </div>
             <div className="syllabus-dotted-line-container mx-auto max-w-(--breakpoint-xl) space-y-6 px-4 py-12">
-              {section.map((category) => (
+              {section.map(category => (
                 <div
                   key={category.name}
                   className="group/category flex flex-col md:flex-row"
@@ -204,7 +204,7 @@ export default function SyllabusTemplate({
                     </p>
                   </div>
                   <div className="flex-1 pl-12">
-                    {category.items.map((item) => (
+                    {category.items.map(item => (
                       <ModuleLink
                         key={item.frontmatter.id}
                         link={
@@ -219,7 +219,7 @@ export default function SyllabusTemplate({
                             item.javaOc,
                             item.pyOc,
                             [],
-                            item.fields?.gitAuthorTime,
+                            item.fields?.gitAuthorTime
                           )
                         }
                       />
@@ -237,12 +237,12 @@ export default function SyllabusTemplate({
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const paths = [
-    { params: { division: "bronze" } },
-    { params: { division: "silver" } },
-    { params: { division: "gold" } },
-    { params: { division: "plat" } },
-    { params: { division: "adv" } },
-    { params: { division: "general" } },
+    { params: { division: 'bronze' } },
+    { params: { division: 'silver' } },
+    { params: { division: 'gold' } },
+    { params: { division: 'plat' } },
+    { params: { division: 'adv' } },
+    { params: { division: 'general' } },
   ];
   return {
     paths,
@@ -250,20 +250,20 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export const getStaticProps: GetStaticProps = async context => {
   try {
     const { queryModulesByDivision, queryProblemDataByDivision } = await import(
-      "../../lib/queryContent"
+      '../../lib/queryContent'
     );
     const { division } = context.params as { division: SectionID };
     const allModules = await queryModulesByDivision(division);
     if (!allModules) {
-      console.error("Failed to load modules for division:", division);
+      console.error('Failed to load modules for division:', division);
       return { notFound: true };
     }
     const problemData = await queryProblemDataByDivision(division);
     if (!problemData) {
-      console.error("Failed to query problem data for division:", division);
+      console.error('Failed to query problem data for division:', division);
       return { notFound: true };
     }
     return {
@@ -274,7 +274,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       },
     };
   } catch (error) {
-    console.error("Error in getStaticProps:", error);
+    console.error('Error in getStaticProps:', error);
     return { notFound: true };
   }
 };

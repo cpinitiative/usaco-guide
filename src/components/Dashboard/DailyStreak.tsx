@@ -1,15 +1,15 @@
-import * as React from "react";
-import { useState } from "react";
-import { useLastVisitInfo } from "../../context/UserDataContext/properties/lastVisit";
-import Link from "next/link";
-import Image from "next/image";
-import { useCowImages } from "../../context/CowImagesContext";
+import Image from 'next/image';
+import Link from 'next/link';
+import * as React from 'react';
+import { useState } from 'react';
+import { useCowImages } from '../../context/CowImagesContext';
+import { useLastVisitInfo } from '../../context/UserDataContext/properties/lastVisit';
 
 // note: cows will be unlocked in lexicographical order
 
 const ComeBackTimer = ({ tomorrowMilliseconds }) => {
   const [milliseconds, setMilliseconds] = React.useState(
-    tomorrowMilliseconds - Date.now(),
+    tomorrowMilliseconds - Date.now()
   );
 
   React.useEffect(() => {
@@ -31,7 +31,7 @@ const ComeBackTimer = ({ tomorrowMilliseconds }) => {
       <p className="my-2 text-2xl">
         {hours} hours {minutes} minutes {seconds} seconds
       </p>
-      to {days ? "continue your streak" : "unlock this cow photo"}!
+      to {days ? 'continue your streak' : 'unlock this cow photo'}!
       {days ? ` Photo will be unlocked after ${days + 1} days.` : null}
     </div>
   );
@@ -41,7 +41,7 @@ const PhotoCard = ({ img, day, tomorrowMilliseconds, hiddenOnDesktop }) => {
   return (
     <div
       className={
-        "mx-auto mb-8 max-w-[592px]" + (hiddenOnDesktop ? " lg:hidden" : "")
+        'mx-auto mb-8 max-w-[592px]' + (hiddenOnDesktop ? ' lg:hidden' : '')
       }
     >
       <div className="flex flex-col overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
@@ -57,13 +57,13 @@ const PhotoCard = ({ img, day, tomorrowMilliseconds, hiddenOnDesktop }) => {
               <ComeBackTimer tomorrowMilliseconds={tomorrowMilliseconds} />
             </div>
           )}
-          <div className="relative w-full aspect-[16/9]">
+          <div className="relative aspect-[16/9] w-full">
             <Image
               src={img.src}
               alt="Cow"
               fill
               sizes="(max-width: 768px) 100vw, 592px"
-              className={`object-cover ${tomorrowMilliseconds >= 0 ? "blur-2xl" : ""}`}
+              className={`object-cover ${tomorrowMilliseconds >= 0 ? 'blur-2xl' : ''}`}
               priority={day === 1} // Only preload the first image
             />
           </div>
@@ -124,7 +124,7 @@ export default function DailyStreak({ streak }: DailyStreakProps) {
                 </h3>
                 <div className="dark:text-dark-med-emphasis mt-3 space-y-1 text-sm leading-5 text-gray-500">
                   Seeing that you're addicted to USACO Guide, you should
-                  definitely reach out to us regarding{" "}
+                  definitely reach out to us regarding{' '}
                   <Link
                     href="/general/contributing"
                     className="font-bold text-blue-500"
@@ -181,7 +181,7 @@ export default function DailyStreak({ streak }: DailyStreakProps) {
             <div className="dark:text-dark-med-emphasis mt-3 space-y-1 text-sm leading-5 text-gray-500">
               <p>
                 You've visited this guide for {streak} consecutive day
-                {streak !== 1 && "s"}.
+                {streak !== 1 && 's'}.
               </p>
               <p>
                 Each (prime) day you visit, you'll unlock a new cow photo (until

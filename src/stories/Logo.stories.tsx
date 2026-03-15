@@ -1,9 +1,8 @@
-import React from "react";
-import Logo from "../components/Logo";
-import LogoSquare from "../components/LogoSquare";
+import Logo from '../components/Logo';
+import LogoSquare from '../components/LogoSquare';
 
 export default {
-  title: "Logo",
+  title: 'Logo',
 };
 
 export const Default = (): JSX.Element => (

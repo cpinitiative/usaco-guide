@@ -1,7 +1,7 @@
-import * as React from "react";
-import { defaultShapes } from "./confetti-shapes.js";
-import { getDiameter, random, range, sample } from "./Confetti.helpers";
-import type { Particle, Shape } from "./types";
+import * as React from 'react';
+import { defaultShapes } from './confetti-shapes.js';
+import { getDiameter, random, range, sample } from './Confetti.helpers';
+import type { Particle, Shape } from './types';
 
 type State = {
   particles: (Particle | null)[];
@@ -94,7 +94,7 @@ class Particles extends React.PureComponent<Props, State> {
   }
 
   generateParticles = () => {
-    const newParticles = range(this.props.numParticles).map((i) => {
+    const newParticles = range(this.props.numParticles).map(i => {
       // Particles can be spread over a duration.
       // Each particle should be "born" at a random time during the emit
       // duration (if this value is 0, they'll all share the same birthdate).
@@ -193,7 +193,7 @@ class Particles extends React.PureComponent<Props, State> {
     const { height, width } = this.props;
 
     return this.state.particles
-      .map((particle) => {
+      .map(particle => {
         const age = (now - particle.birth) / 1000;
 
         // Skip a particle if it hasn't been born yet.
@@ -209,7 +209,7 @@ class Particles extends React.PureComponent<Props, State> {
 
         const diameter = getDiameter(
           particle.width * particle.scale,
-          particle.height * particle.scale,
+          particle.height * particle.scale
         );
 
         const isOffScreen =
@@ -230,7 +230,7 @@ class Particles extends React.PureComponent<Props, State> {
 
         return particle;
       })
-      .filter((particle) => !!particle);
+      .filter(particle => !!particle);
   };
 
   render() {

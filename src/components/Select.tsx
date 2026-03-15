@@ -1,6 +1,5 @@
-import React from "react";
-import Select from "react-select";
-import { useDarkMode } from "../context/DarkModeContext";
+import Select from 'react-select';
+import { useDarkMode } from '../context/DarkModeContext';
 export default function StyledSelect(props) {
   const darkMode = useDarkMode();
   return (
@@ -10,45 +9,45 @@ export default function StyledSelect(props) {
         !darkMode
           ? undefined
           : {
-              control: (provided) => ({
+              control: provided => ({
                 ...provided,
-                backgroundColor: "#111827",
-                borderColor: "#374151",
+                backgroundColor: '#111827',
+                borderColor: '#374151',
               }),
-              menuList: (provided) => ({
+              menuList: provided => ({
                 ...provided,
-                borderColor: "#374151",
-                borderWidth: "1px",
-                borderRadius: "6px",
+                borderColor: '#374151',
+                borderWidth: '1px',
+                borderRadius: '6px',
               }),
-              menu: (provided) => ({
+              menu: provided => ({
                 ...provided,
-                backgroundColor: "#111827",
+                backgroundColor: '#111827',
               }),
-              indicatorSeparator: (provided) => ({
+              indicatorSeparator: provided => ({
                 ...provided,
-                backgroundColor: "#374151",
+                backgroundColor: '#374151',
               }),
-              indicatorsContainer: (provided) => ({
+              indicatorsContainer: provided => ({
                 ...provided,
-                color: "#374151",
+                color: '#374151',
               }),
-              singleValue: (provided) => ({
+              singleValue: provided => ({
                 ...provided,
-                color: "rgba(255, 255, 255, 0.87)",
+                color: 'rgba(255, 255, 255, 0.87)',
               }),
-              input: (provided) => ({
+              input: provided => ({
                 ...provided,
-                color: "rgba(255, 255, 255, 0.87)",
+                color: 'rgba(255, 255, 255, 0.87)',
               }),
               option: (provided, { isFocused, isSelected }) => ({
                 ...provided,
                 ...(isFocused
                   ? {
-                      backgroundColor: "#4d94ff",
+                      backgroundColor: '#4d94ff',
                     }
                   : isSelected
-                    ? { backgroundColor: "#0063e6" }
+                    ? { backgroundColor: '#0063e6' }
                     : {}),
               }),
             }

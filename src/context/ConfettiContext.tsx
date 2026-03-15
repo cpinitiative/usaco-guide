@@ -1,6 +1,5 @@
-import * as React from "react";
-import { createContext, useRef } from "react";
-import ModuleConfetti from "../components/MarkdownLayout/ModuleConfetti";
+import { createContext, useRef } from 'react';
+import ModuleConfetti from '../components/MarkdownLayout/ModuleConfetti';
 
 const ConfettiContext = createContext<(() => void) | null>(null);
 

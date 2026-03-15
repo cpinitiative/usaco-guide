@@ -1,5 +1,4 @@
-import * as React from "react";
-import { getPostDueDateString, PostData } from "../../models/groups/posts";
+import { getPostDueDateString, PostData } from '../../models/groups/posts';
 
 export default function SidebarDueDate({ post }: { post: PostData }) {
   return getPostDueDateString(post) ? (

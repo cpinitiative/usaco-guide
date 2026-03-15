@@ -1,43 +1,43 @@
-import * as React from "react";
-import { useDarkMode } from "../../context/DarkModeContext";
+import * as React from 'react';
+import { useDarkMode } from '../../context/DarkModeContext';
 
-const SimpleMDE = React.lazy(() => import("react-simplemde-editor"));
+const SimpleMDE = React.lazy(() => import('react-simplemde-editor'));
 
 export default function MarkdownEditor({ value, onChange }) {
   const darkMode = useDarkMode();
 
   return (
-    <div className={darkMode ? "dark-mde-container" : "mde-container"}>
+    <div className={darkMode ? 'dark-mde-container' : 'mde-container'}>
       <React.Suspense fallback={<div>Loading editor...</div>}>
         <SimpleMDE
           onChange={onChange}
           value={value}
           options={{
             toolbar: [
-              "bold",
-              "italic",
-              "strikethrough",
-              "|",
-              "heading-1",
-              "heading-2",
-              "heading-3",
-              "|",
-              "link",
-              "image",
-              "|",
-              "quote",
+              'bold',
+              'italic',
+              'strikethrough',
+              '|',
+              'heading-1',
+              'heading-2',
+              'heading-3',
+              '|',
+              'link',
+              'image',
+              '|',
+              'quote',
               {
-                name: "custom",
+                name: 'custom',
                 action: function customFunction(editor) {
-                  editor.codemirror.replaceSelection("```java\n\n```");
+                  editor.codemirror.replaceSelection('```java\n\n```');
                 },
-                className: "fa fa-code",
-                title: "Custom Button",
+                className: 'fa fa-code',
+                title: 'Custom Button',
               },
-              "|",
-              "ordered-list",
-              "unordered-list",
-              "table",
+              '|',
+              'ordered-list',
+              'unordered-list',
+              'table',
             ],
             shortcuts: {
               toggleSideBySide: null,

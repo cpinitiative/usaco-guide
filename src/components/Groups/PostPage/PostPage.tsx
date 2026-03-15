@@ -1,24 +1,23 @@
-import { RouteComponentProps } from "@reach/router";
-import * as React from "react";
-import { useActiveGroup } from "../../../hooks/groups/useActiveGroup";
-import { usePost } from "../../../hooks/groups/usePost";
-import Layout from "../../layout";
-import SEO from "../../seo";
-import TopNavigationBar from "../../TopNavigationBar/TopNavigationBar";
-import Breadcrumbs from "../Breadcrumbs";
-import PostBody from "./PostBody";
-import PostHeader from "./PostHeader";
-import PostProblems from "./PostProblems";
-import PostSidebar from "./PostSidebar";
+import { RouteComponentProps } from '@reach/router';
+import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import { usePost } from '../../../hooks/groups/usePost';
+import Layout from '../../layout';
+import SEO from '../../seo';
+import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
+import Breadcrumbs from '../Breadcrumbs';
+import PostBody from './PostBody';
+import PostHeader from './PostHeader';
+import PostProblems from './PostProblems';
+import PostSidebar from './PostSidebar';
 
 export default function PostPage(
   props: RouteComponentProps<{
     groupId: string;
     postId: string;
-  }>,
+  }>
 ) {
   if (!props.groupId || !props.postId) {
-    throw "Misplaced PostPage component! This should be under the param URL with :groupId and :postId";
+    throw 'Misplaced PostPage component! This should be under the param URL with :groupId and :postId';
   }
   const { postId } = props;
   const activeGroup = useActiveGroup();
@@ -55,7 +54,7 @@ export default function PostPage(
       <nav className="mt-6 mb-4 flex" aria-label="Breadcrumb">
         <Breadcrumbs
           className={`${
-            post.type === "announcement" ? "max-w-4xl" : "max-w-7xl"
+            post.type === 'announcement' ? 'max-w-4xl' : 'max-w-7xl'
           } mx-auto w-full px-4 pt-3 pb-4 sm:px-6 lg:px-8`}
           group={activeGroup.groupData!}
         />
@@ -65,7 +64,7 @@ export default function PostPage(
         tabIndex={-1}
       >
         <div className="pb-8 xl:pb-10">
-          {post.type === "assignment" ? (
+          {post.type === 'assignment' ? (
             <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 xl:grid xl:max-w-(--breakpoint-xl) xl:grid-cols-3">
               <div className="xl:col-span-2 xl:border-r xl:border-gray-200 xl:pr-8 dark:border-gray-700">
                 <div>

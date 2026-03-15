@@ -1,23 +1,23 @@
-import { RouteComponentProps } from "@reach/router";
-import { ReactElement, useEffect } from "react";
-import {
-  ActiveGroupProvider,
-  useActiveGroup,
-} from "../../hooks/groups/useActiveGroup";
+import { RouteComponentProps } from '@reach/router';
+import Link from 'next/link';
+import { ReactElement, useEffect } from 'react';
+import { useSignIn } from '../../context/SignInContext';
 import {
   useFirebaseUser,
   useIsUserDataLoaded,
-} from "../../context/UserDataContext/UserDataContext";
-import { useSignIn } from "../../context/SignInContext";
-import Layout from "../layout";
-import TopNavigationBar from "../TopNavigationBar/TopNavigationBar";
-import SEO from "../seo";
-import Link from "next/link";
+} from '../../context/UserDataContext/UserDataContext';
+import {
+  ActiveGroupProvider,
+  useActiveGroup,
+} from '../../hooks/groups/useActiveGroup';
 import {
   ActivePostProblemsProvider,
   useActivePostProblems,
-} from "../../hooks/groups/useActivePostProblems";
-import { ProblemSubmissionPopupProvider } from "./ProblemSubmissionPopup";
+} from '../../hooks/groups/useActivePostProblems';
+import Layout from '../layout';
+import SEO from '../seo';
+import TopNavigationBar from '../TopNavigationBar/TopNavigationBar';
+import { ProblemSubmissionPopupProvider } from './ProblemSubmissionPopup';
 
 interface GroupPageWrapperProps extends RouteComponentProps {
   children?: React.ReactNode;
@@ -45,7 +45,7 @@ export function GroupPageWrapper(props: GroupPageWrapperProps): ReactElement {
         <TopNavigationBar />
         <main className="py-10 text-center">
           <p className="text-2xl font-medium">
-            You need to sign in to access groups.{" "}
+            You need to sign in to access groups.{' '}
             <button
               onClick={signIn}
               className="text-blue-600 underline focus:outline-hidden dark:text-blue-300"
@@ -79,7 +79,7 @@ export function GroupPageWrapper(props: GroupPageWrapperProps): ReactElement {
         <SEO title="Group Not Found" />
         <main className="py-10 text-center">
           <p className="text-2xl font-medium">
-            Group not found.{" "}
+            Group not found.{' '}
             <Link
               href="/groups"
               className="text-blue-600 underline dark:text-blue-400"

@@ -1,17 +1,17 @@
-import { StoryFn } from "@storybook/react";
-import React, { ComponentProps } from "react";
-import HTMLComponents from "../../components/markdown/HTMLComponents";
-import markdownDecorator from "../../components/markdown/markdownDecoratorForStorybook";
+import { StoryFn } from '@storybook/react';
+import React, { ComponentProps } from 'react';
+import HTMLComponents from '../../components/markdown/HTMLComponents';
+import markdownDecorator from '../../components/markdown/markdownDecoratorForStorybook';
 
-const MarkdownComponent: React.FC = (props) => <div {...props} />;
+const MarkdownComponent: React.FC = props => <div {...props} />;
 
 export default {
-  title: "Markdown/Content",
+  title: 'Markdown/Content',
   component: MarkdownComponent,
   decorators: [markdownDecorator],
 };
 
-const Template: StoryFn<ComponentProps<typeof MarkdownComponent>> = (args) => (
+const Template: StoryFn<ComponentProps<typeof MarkdownComponent>> = args => (
   <MarkdownComponent {...args} />
 );
 
@@ -47,19 +47,19 @@ Lists.args = {
         <li>
           <div className="flex-1">
             <p>
-              The{" "}
+              The{' '}
               <a
                 target="_blank"
                 href="http://www.usaco.org/"
                 rel="nofollow noopener noreferrer"
               >
                 USACO
-              </a>{" "}
+              </a>{' '}
               website has problems from 2011 onwards.
             </p>
             <ul>
               <li>
-                We provide a list of recent USACO problems (2015 onwards){" "}
+                We provide a list of recent USACO problems (2015 onwards){' '}
                 <a target="_blank" href="/general/usaco-monthlies">
                   here
                 </a>
@@ -81,13 +81,13 @@ Lists.args = {
                 rel="nofollow noopener noreferrer"
               >
                 Codeforces
-              </a>{" "}
+              </a>{' '}
               -- you can search by tag, difficulty level, etc.
             </p>
             <ol>
               <li>
                 <div className="flex-1">
-                  We provide a list of recent USACO problems (2015 onwards){" "}
+                  We provide a list of recent USACO problems (2015 onwards){' '}
                   <a target="_blank" href="/general/usaco-monthlies">
                     here
                   </a>
@@ -119,10 +119,10 @@ Lists.args = {
         <li>
           <div className="flex-1">
             <p>
-              For additional sources of problems, check the{" "}
+              For additional sources of problems, check the{' '}
               <a target="_blank" href="/general/contests">
                 contests
-              </a>{" "}
+              </a>{' '}
               page.
             </p>
           </div>
@@ -137,7 +137,7 @@ InlineCode.args = {
   children: (
     <>
       <p>
-        This is a test of some inline code:{" "}
+        This is a test of some inline code:{' '}
         <HTMLComponents.code>rick.astley()</HTMLComponents.code>!
       </p>
     </>
@@ -146,8 +146,8 @@ InlineCode.args = {
 
 const fakeCode = new Array(20)
   .fill(null)
-  .map((_) => `import java.io.*`)
-  .join("\n");
+  .map(_ => `import java.io.*`)
+  .join('\n');
 
 export const CodeInLists = Template.bind({});
 CodeInLists.args = {
@@ -166,7 +166,7 @@ CodeInLists.args = {
             <p>
               Be <em>consistent</em> about formatting your code, unlike the
               following snippet. We don't care about which one you use (
-              <code className="inline-code">a+b</code> or{" "}
+              <code className="inline-code">a+b</code> or{' '}
               <code className="inline-code">a + b</code>), but pick one and
               stick with it!
             </p>

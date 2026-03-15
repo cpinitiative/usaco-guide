@@ -1,13 +1,13 @@
-import { StoryFn } from "@storybook/react";
-import React, { ComponentProps } from "react";
-import { LoadingSpinner } from "../components/elements/LoadingSpinner";
+import { StoryFn } from '@storybook/react';
+import { ComponentProps } from 'react';
+import { LoadingSpinner } from '../components/elements/LoadingSpinner';
 
 export default {
-  title: "LoadingSpinner",
+  title: 'LoadingSpinner',
   component: LoadingSpinner,
 };
 
-const Template: StoryFn<ComponentProps<typeof LoadingSpinner>> = (args) => (
+const Template: StoryFn<ComponentProps<typeof LoadingSpinner>> = args => (
   <LoadingSpinner {...args} />
 );
 
@@ -16,5 +16,5 @@ Default.args = {};
 
 export const Large = Template.bind({});
 Large.args = {
-  className: "h-6 w-6",
+  className: 'h-6 w-6',
 };

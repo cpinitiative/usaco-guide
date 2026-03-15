@@ -1,33 +1,32 @@
-import * as React from "react";
-import { useContext, useState } from "react";
+import * as React from 'react';
+import { useContext, useState } from 'react';
 import {
   moduleIDToSectionMap,
   moduleIDToURLMap,
-} from "../../../content/ordering";
-import ConfettiContext from "../../context/ConfettiContext";
-import { ContactUsSlideoverProvider } from "../../context/ContactUsSlideoverContext";
-import MarkdownLayoutContext from "../../context/MarkdownLayoutContext";
-import { ProblemSolutionContext } from "../../context/ProblemSolutionContext";
-import { ProblemSuggestionModalProvider } from "../../context/ProblemSuggestionModalContext";
-import { useUserLangSetting } from "../../context/UserDataContext/properties/simpleProperties";
+} from '../../../content/ordering';
+import ConfettiContext from '../../context/ConfettiContext';
+import { ContactUsSlideoverProvider } from '../../context/ContactUsSlideoverContext';
+import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
+import { ProblemSolutionContext } from '../../context/ProblemSolutionContext';
+import { ProblemSuggestionModalProvider } from '../../context/ProblemSuggestionModalContext';
+import { useUserLangSetting } from '../../context/UserDataContext/properties/simpleProperties';
 import {
   useSetProgressOnModule,
   useUserProgressOnModules,
-} from "../../context/UserDataContext/properties/userProgress";
-import { ModuleInfo } from "../../models/module";
-import { SolutionInfo } from "../../models/solution";
-import ForumCTA from "../ForumCTA";
-import DesktopSidebar from "./DesktopSidebar";
-import MobileAppBar from "./MobileAppBar";
-import MobileSideNav from "./MobileSideNav";
-import ModuleHeaders from "./ModuleHeaders/ModuleHeaders";
-import ModuleProgressUpdateBanner from "./ModuleProgressUpdateBanner";
-import NavBar from "./NavBar";
-import NotSignedInWarning from "./NotSignedInWarning";
-import TableOfContentsBlock from "./TableOfContents/TableOfContentsBlock";
-import TableOfContentsSidebar from "./TableOfContents/TableOfContentsSidebar";
-import { MdxContent } from "../../lib/loadContent";
-import { MdxFrontmatter } from "../../types/content";
+} from '../../context/UserDataContext/properties/userProgress';
+import { ModuleInfo } from '../../models/module';
+import { SolutionInfo } from '../../models/solution';
+import { MdxFrontmatter } from '../../types/content';
+import ForumCTA from '../ForumCTA';
+import DesktopSidebar from './DesktopSidebar';
+import MobileAppBar from './MobileAppBar';
+import MobileSideNav from './MobileSideNav';
+import ModuleHeaders from './ModuleHeaders/ModuleHeaders';
+import ModuleProgressUpdateBanner from './ModuleProgressUpdateBanner';
+import NavBar from './NavBar';
+import NotSignedInWarning from './NotSignedInWarning';
+import TableOfContentsBlock from './TableOfContents/TableOfContentsBlock';
+import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
 
 const ContentContainer = ({ children, tableOfContents }) => (
   <main
@@ -39,7 +38,7 @@ const ContentContainer = ({ children, tableOfContents }) => (
         {/* Placeholder for the sidebar */}
         <div
           className="order-1 hidden shrink-0 lg:block"
-          style={{ width: "20rem" }}
+          style={{ width: '20rem' }}
         />
         {tableOfContents.length > 1 && (
           <div className="order-3 mt-48 mr-6 ml-6 hidden w-64 shrink-0 2xl:block">
@@ -81,13 +80,13 @@ export default function MarkdownLayout({
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const moduleProgress =
     (userProgressOnModules && userProgressOnModules[markdownData.id]) ||
-    "Not Started";
+    'Not Started';
 
   const tableOfContents =
-    lang in markdownData.toc ? markdownData.toc[lang] : markdownData.toc["cpp"];
+    lang in markdownData.toc ? markdownData.toc[lang] : markdownData.toc['cpp'];
 
   const moduleLinks = React.useMemo(() => {
-    return frontmatter.map((cur) => ({
+    return frontmatter.map(cur => ({
       id: cur.id,
       title: cur.title,
       section: moduleIDToSectionMap[cur.id],
@@ -98,12 +97,12 @@ export default function MarkdownLayout({
     }));
   }, [frontmatter]);
   const showConfetti = useContext(ConfettiContext);
-  const handleCompletionChange = (progress) => {
+  const handleCompletionChange = progress => {
     if (moduleProgress === progress) return;
     setModuleProgress(markdownData.id, progress);
     if (
-      moduleProgress !== "Complete" &&
-      (progress === "Practicing" || progress === "Complete")
+      moduleProgress !== 'Complete' &&
+      (progress === 'Practicing' || progress === 'Complete')
     ) {
       showConfetti!();
     }
@@ -115,7 +114,7 @@ export default function MarkdownLayout({
   if (markdownData instanceof ModuleInfo) {
     activeIDs.push(markdownData.id);
   } else {
-    activeIDs = problemSolutionContext!.modulesThatHaveProblem.map((x) => x.id);
+    activeIDs = problemSolutionContext!.modulesThatHaveProblem.map(x => x.id);
   }
 
   return (
@@ -144,7 +143,7 @@ export default function MarkdownLayout({
 
               <ModuleHeaders moduleLinks={moduleLinks} />
 
-              <div className={tableOfContents.length > 1 ? "2xl:hidden" : ""}>
+              <div className={tableOfContents.length > 1 ? '2xl:hidden' : ''}>
                 <TableOfContentsBlock tableOfContents={tableOfContents} />
               </div>
 

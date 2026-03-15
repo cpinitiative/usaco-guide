@@ -1,30 +1,29 @@
-import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 export default function TrustedBy() {
   const [numUsers, setNumUsers] = useState(-1);
   const [numPageviews, setNumPageviews] = useState(-1);
   const [numStars, setNumStars] = useState(-1);
   useEffect(() => {
-    fetch("https://usaco-guide.firebaseio.com/pageviews.json")
-      .then((resp) => resp.json())
-      .then((pageviews) => {
+    fetch('https://usaco-guide.firebaseio.com/pageviews.json')
+      .then(resp => resp.json())
+      .then(pageviews => {
         setNumPageviews(parseInt(pageviews));
       });
-    fetch("https://usaco-guide.firebaseio.com/num_users.json")
-      .then((resp) => resp.json())
-      .then((numUsers) => {
+    fetch('https://usaco-guide.firebaseio.com/num_users.json')
+      .then(resp => resp.json())
+      .then(numUsers => {
         setNumUsers(parseInt(numUsers));
       });
-    fetch("https://api.github.com/repos/cpinitiative/usaco-guide")
-      .then((resp) => resp.json())
-      .then((data) => {
+    fetch('https://api.github.com/repos/cpinitiative/usaco-guide')
+      .then(resp => resp.json())
+      .then(data => {
         setNumStars(data.stargazers_count);
       });
   }, []);
 
-  const usersText = Math.floor(numUsers / 1000) + "k";
-  const pageviewsText = (numPageviews / 1000000).toFixed(1) + "M";
+  const usersText = Math.floor(numUsers / 1000) + 'k';
+  const pageviewsText = (numPageviews / 1000000).toFixed(1) + 'M';
 
   return (
     <div className="max-w-4xl">
@@ -35,7 +34,7 @@ export default function TrustedBy() {
           </dt>
           <dd
             className={`order-1 text-4xl leading-normal font-extrabold text-blue-500 sm:text-5xl sm:leading-normal ${
-              numUsers === -1 ? "opacity-0" : "opacity-100"
+              numUsers === -1 ? 'opacity-0' : 'opacity-100'
             } transition`}
             title={numUsers !== -1 ? `${numUsers} registered users` : undefined}
           >
@@ -48,7 +47,7 @@ export default function TrustedBy() {
           </dt>
           <dd
             className={`order-1 text-4xl leading-normal font-extrabold text-blue-500 sm:text-5xl sm:leading-normal ${
-              numPageviews === -1 ? "opacity-0" : "opacity-100"
+              numPageviews === -1 ? 'opacity-0' : 'opacity-100'
             } transition`}
             title={
               numPageviews !== -1 ? `${numPageviews} pageviews` : undefined
@@ -63,7 +62,7 @@ export default function TrustedBy() {
           </dt>
           <dd
             className={`order-1 text-4xl leading-normal font-extrabold text-blue-500 sm:text-5xl sm:leading-normal ${
-              numStars === -1 ? "opacity-0" : "opacity-100"
+              numStars === -1 ? 'opacity-0' : 'opacity-100'
             } transition`}
           >
             {numStars}

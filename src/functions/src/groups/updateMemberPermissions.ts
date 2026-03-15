@@ -1,19 +1,19 @@
-import admin from "firebase-admin";
-import * as functions from "firebase-functions";
-import { GroupData } from "../../../models/groups/groups";
-import getMembershipKey from "./utils/getMembershipKey";
-import getPermissionLevel from "./utils/getPermissionLevel";
+import admin from 'firebase-admin';
+import * as functions from 'firebase-functions';
+import { GroupData } from '../../../models/groups/groups';
+import getMembershipKey from './utils/getMembershipKey';
+import getPermissionLevel from './utils/getPermissionLevel';
 interface UpdateMemberPermissionsArgs {
   groupId: string;
   targetUid: string;
-  newPermissionLevel: "OWNER" | "ADMIN" | "MEMBER";
+  newPermissionLevel: 'OWNER' | 'ADMIN' | 'MEMBER';
 }
 
 if (admin.apps.length === 0) {
   admin.initializeApp();
 }
 
-export default functions.https.onCall(async (request) => {
+export default functions.https.onCall(async request => {
   const { groupId, targetUid, newPermissionLevel } =
     request.data as UpdateMemberPermissionsArgs;
   const callerUid = request.auth?.uid;
@@ -21,58 +21,58 @@ export default functions.https.onCall(async (request) => {
   if (targetUid === callerUid) {
     return {
       success: false,
-      errorCode: "UPDATING_SELF",
+      errorCode: 'UPDATING_SELF',
     };
-  } else if (!["OWNER", "ADMIN", "MEMBER"].includes(newPermissionLevel)) {
+  } else if (!['OWNER', 'ADMIN', 'MEMBER'].includes(newPermissionLevel)) {
     return {
       success: false,
-      errorCode: "INVALID_NEW_PERMISSION_LEVEL",
+      errorCode: 'INVALID_NEW_PERMISSION_LEVEL',
     };
   }
 
   const groupDataSnapshot = await admin
     .firestore()
-    .collection("groups")
+    .collection('groups')
     .doc(groupId)
     .get();
   if (!groupDataSnapshot.exists) {
     return {
       success: false,
-      errorCode: "GROUP_NOT_FOUND",
+      errorCode: 'GROUP_NOT_FOUND',
     };
   }
   const groupData = groupDataSnapshot.data() as GroupData;
   const permissionLevel = getPermissionLevel(callerUid, groupData);
 
-  if (permissionLevel === "NOT_MEMBER") {
+  if (permissionLevel === 'NOT_MEMBER') {
     return {
       success: false,
-      errorCode: "GROUP_NOT_FOUND",
+      errorCode: 'GROUP_NOT_FOUND',
     };
-  } else if (permissionLevel !== "OWNER") {
+  } else if (permissionLevel !== 'OWNER') {
     return {
       success: false,
-      errorCode: "PERMISSION_DENIED",
+      errorCode: 'PERMISSION_DENIED',
     };
   }
 
   const targetPermissionLevel = getPermissionLevel(targetUid, groupData);
 
-  if (targetPermissionLevel === "NOT_MEMBER") {
+  if (targetPermissionLevel === 'NOT_MEMBER') {
     return {
       success: false,
-      errorCode: "MEMBER_NOT_FOUND",
+      errorCode: 'MEMBER_NOT_FOUND',
     };
   } else if (targetPermissionLevel === newPermissionLevel) {
     return {
       success: false,
-      errorCode: "ALREADY_NEW_PERMISSION_LEVEL",
+      errorCode: 'ALREADY_NEW_PERMISSION_LEVEL',
     };
   }
 
   await admin
     .firestore()
-    .collection("groups")
+    .collection('groups')
     .doc(groupId)
     .update({
       [getMembershipKey(targetPermissionLevel)]:

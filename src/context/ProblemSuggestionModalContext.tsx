@@ -1,8 +1,8 @@
-import * as React from "react";
-import { createContext, useContext, useState } from "react";
-import ProblemSuggestionModal from "../components/ProblemSuggestionModal";
-import { EditorContext } from "./EditorContext";
-import { useFirebaseUser } from "./UserDataContext/UserDataContext";
+import * as React from 'react';
+import { createContext, useContext, useState } from 'react';
+import ProblemSuggestionModal from '../components/ProblemSuggestionModal';
+import { EditorContext } from './EditorContext';
+import { useFirebaseUser } from './UserDataContext/UserDataContext';
 
 const ProblemSuggestionModalContext = createContext<{
   openProblemSuggestionModal: (listName: string) => void;
@@ -18,12 +18,12 @@ export const ProblemSuggestionModalProvider = ({
   children: React.ReactNode;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [listName, setListName] = useState<string>("");
+  const [listName, setListName] = useState<string>('');
   const firebaseUser = useFirebaseUser();
   const { inEditor } = useContext(EditorContext);
   const openProblemSuggestionModal = (listName: string) => {
     if (!firebaseUser && !inEditor) {
-      alert("You need to be signed in to suggest problems!");
+      alert('You need to be signed in to suggest problems!');
       return;
     }
     setListName(listName);
@@ -31,8 +31,8 @@ export const ProblemSuggestionModalProvider = ({
   };
 
   React.useEffect(() => {
-    if (isOpen) document.body.classList.add("overflow-hidden");
-    else document.body.classList.remove("overflow-hidden");
+    if (isOpen) document.body.classList.add('overflow-hidden');
+    else document.body.classList.remove('overflow-hidden');
   }, [isOpen]);
 
   return (

@@ -1,8 +1,8 @@
-import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
-import React from "react";
-import { AlgoliaEditorFile } from "../../models/algoliaEditorFile";
-import AddFileModal from "./AddFileModal";
-import EditorFileModalInterface from "./EditorFileModalInterface";
+import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react';
+import React from 'react';
+import { AlgoliaEditorFile } from '../../models/algoliaEditorFile';
+import AddFileModal from './AddFileModal';
+import EditorFileModalInterface from './EditorFileModalInterface';
 
 export interface EditorFileModalProps {
   isOpen: boolean;

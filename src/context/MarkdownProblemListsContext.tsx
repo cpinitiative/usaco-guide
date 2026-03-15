@@ -1,5 +1,5 @@
-import * as React from "react";
-import { ProblemInfo } from "../models/problem";
+import * as React from 'react';
+import { ProblemInfo } from '../models/problem';
 
 /**
  * This stores the problem lists *for the active module only*.
@@ -27,7 +27,7 @@ export function useMarkdownProblems() {
   const lists = useMarkdownProblemLists();
   const problems = React.useMemo(() => {
     let all: ProblemInfo[] = [];
-    lists?.forEach((list) => {
+    lists?.forEach(list => {
       all = [...all, ...list.problems];
     });
     return all;

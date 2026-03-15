@@ -1,5 +1,3 @@
-import * as React from "react";
-
 const ForumCTA = (): JSX.Element => {
   return (
     <div className="mb-4 bg-gray-50 sm:rounded-lg dark:bg-gray-900">

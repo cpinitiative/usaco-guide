@@ -1,6 +1,5 @@
-import * as React from "react";
-import { ModuleInfo } from "../../models/module";
-import { SolutionInfo } from "../../models/solution";
+import { ModuleInfo } from '../../models/module';
+import { SolutionInfo } from '../../models/solution';
 
 export default function ModuleFeedback({
   markdownData,
@@ -14,7 +13,7 @@ export default function ModuleFeedback({
       </h2>
 
       <p className="mb-4 text-gray-600 dark:text-gray-400">
-        Leave suggestions for us by making a post on the{" "}
+        Leave suggestions for us by making a post on the{' '}
         <a
           href="https://forum.usaco.guide/"
           target="_blank"

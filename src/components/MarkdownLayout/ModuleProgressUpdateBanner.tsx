@@ -1,9 +1,8 @@
-import * as React from "react";
-import { useMarkdownLayout } from "../../context/MarkdownLayoutContext";
-import { ModuleInfo } from "../../models/module";
-import { ClientOnly } from "../ClientOnly";
-import TextTooltip from "../Tooltip/TextTooltip";
-import MarkCompleteButton from "./MarkCompleteButton";
+import { useMarkdownLayout } from '../../context/MarkdownLayoutContext';
+import { ModuleInfo } from '../../models/module';
+import { ClientOnly } from '../ClientOnly';
+import TextTooltip from '../Tooltip/TextTooltip';
+import MarkCompleteButton from './MarkCompleteButton';
 
 export default function ModuleProgressUpdateBanner() {
   const {

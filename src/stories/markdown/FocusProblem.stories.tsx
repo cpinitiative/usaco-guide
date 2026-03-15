@@ -1,12 +1,12 @@
-import { StoryFn } from "@storybook/react";
-import React, { ComponentProps } from "react";
-import FocusProblem from "../../components/markdown/FocusProblem";
-import markdownDecorator from "../../components/markdown/markdownDecoratorForStorybook";
-import { MarkdownProblemListsProvider } from "../../context/MarkdownProblemListsContext";
-import { ProblemInfo } from "../../models/problem";
+import { StoryFn } from '@storybook/react';
+import { ComponentProps } from 'react';
+import FocusProblem from '../../components/markdown/FocusProblem';
+import markdownDecorator from '../../components/markdown/markdownDecoratorForStorybook';
+import { MarkdownProblemListsProvider } from '../../context/MarkdownProblemListsContext';
+import { ProblemInfo } from '../../models/problem';
 
 export default {
-  title: "Markdown/FocusProblem",
+  title: 'Markdown/FocusProblem',
   component: FocusProblem,
   decorators: [markdownDecorator],
 };
@@ -16,36 +16,36 @@ const problemLists: {
   problems: ProblemInfo[];
 }[] = [
   {
-    listId: "focus",
+    listId: 'focus',
     problems: [
       {
-        uniqueId: "cfgym-102951A",
-        name: "Maximum Distance",
-        url: "https://codeforces.com/gym/102951/problem/A",
-        source: "CF",
-        difficulty: "Easy",
+        uniqueId: 'cfgym-102951A',
+        name: 'Maximum Distance',
+        url: 'https://codeforces.com/gym/102951/problem/A',
+        source: 'CF',
+        difficulty: 'Easy',
         isStarred: false,
         tags: [],
         solution: {
-          kind: "internal",
+          kind: 'internal',
         },
       },
     ],
   },
   {
-    listId: "focus2",
+    listId: 'focus2',
     problems: [
       {
-        uniqueId: "cfgym-102951A",
-        name: "Maximum Distance",
-        url: "https://codeforces.com/gym/102951/problem/A",
-        source: "CF",
-        difficulty: "Easy",
+        uniqueId: 'cfgym-102951A',
+        name: 'Maximum Distance',
+        url: 'https://codeforces.com/gym/102951/problem/A',
+        source: 'CF',
+        difficulty: 'Easy',
         isStarred: false,
         tags: [],
         solution: {
-          kind: "link",
-          label: "In Module",
+          kind: 'link',
+          label: 'In Module',
           url: `https://usaco.guide/bronze/intro-complete/#problem-cfgym-102951A`,
         },
       },
@@ -53,7 +53,7 @@ const problemLists: {
   },
 ];
 
-const Template: StoryFn<ComponentProps<typeof FocusProblem>> = (args) => (
+const Template: StoryFn<ComponentProps<typeof FocusProblem>> = args => (
   <MarkdownProblemListsProvider value={problemLists}>
     <FocusProblem {...args} />
   </MarkdownProblemListsProvider>
@@ -61,10 +61,10 @@ const Template: StoryFn<ComponentProps<typeof FocusProblem>> = (args) => (
 
 export const Default = Template.bind({});
 Default.args = {
-  problem: "focus2",
+  problem: 'focus2',
 };
 
 export const WithInternalSolution = Template.bind({});
 WithInternalSolution.args = {
-  problem: "focus",
+  problem: 'focus',
 };

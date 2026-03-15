@@ -1,5 +1,4 @@
-import classNames from "classnames";
-import React from "react";
+import classNames from 'classnames';
 
 export const HighlightedText = ({
   dark = false,
@@ -8,8 +7,8 @@ export const HighlightedText = ({
   dark?: boolean;
   children: string;
 }): JSX.Element => {
-  const bg = dark ? "bg-yellow-700" : "bg-yellow-400";
+  const bg = dark ? 'bg-yellow-700' : 'bg-yellow-400';
   return (
-    <span className={classNames("rounded-lg px-1.5", bg)}>{children}</span>
+    <span className={classNames('rounded-lg px-1.5', bg)}>{children}</span>
   );
 };

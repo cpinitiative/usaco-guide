@@ -19,11 +19,14 @@
 
 ## Overview
 
-Currently, the [USACO Guide](https://github.com/cpinitiative/usaco-guide) repository uses Gatsby. This repository contains the code for the migration to Next.js. The goal of this migration is a framework change to improve:
+Currently, the [USACO Guide](https://github.com/cpinitiative/usaco-guide)
+repository uses Gatsby. This repository contains the code for the migration to
+Next.js. The goal of this migration is a framework change to improve:
 
 - Performance
   - Faster builds, faster development startup, and faster content compilation
-  - Better user performance ([Core Web Vitals](https://developers.google.com/search/docs/appearance/core-web-vitals))
+  - Better user performance
+    ([Core Web Vitals](https://developers.google.com/search/docs/appearance/core-web-vitals))
 - Maintainability
   - Modern React framework with up-to-date MDX plugins
   - Simplified build pipeline
@@ -32,7 +35,8 @@ Currently, the [USACO Guide](https://github.com/cpinitiative/usaco-guide) reposi
 
 ## Current Status
 
-This migration is **in progress**. Many core features have already been implemented.
+This migration is **in progress**. Many core features have already been
+implemented.
 
 ### Completed/Mostly Completed
 
@@ -40,8 +44,10 @@ This migration is **in progress**. Many core features have already been implemen
 - [x] Create solutions pages
 - [x] Create user solutions pages
 - [x] Copy over `api/` directory and convert Gatsby syntax to Next.js syntax
-- [x] Implement Groups (Set each component to the proper file under `pages/`, i have already converted the components)
-- [x] Implement editor (investigate why auth isn't working; might be bc dev mode)
+- [x] Implement Groups (Set each component to the proper file under `pages/`, i
+      have already converted the components)
+- [x] Implement editor (investigate why auth isn't working; might be bc dev
+      mode)
 - [x] Configure redirects
 - [x] Configure webpack
 - [x] Update algolia config for Next.js (indexing script in `/scripts`)
@@ -54,44 +60,68 @@ This migration is **in progress**. Many core features have already been implemen
 
 **Note:**
 
-All static files (e.g., images, videos, etc.) have been moved to the [/public/](../public/) directory because Next.js can only serve static files from there. The [migrate-imports.cjs](../scripts/migrate-imports.cjs) script was used to update all relative imports to absolute imports in the [/content/](../content/) and [/solutions/](../solutions/) directories.
+All static files (e.g., images, videos, etc.) have been moved to the
+[/public/](../public/) directory because Next.js can only serve static files
+from there. The [migrate-imports.cjs](../scripts/migrate-imports.cjs) script was
+used to update all relative imports to absolute imports in the
+[/content/](../content/) and [/solutions/](../solutions/) directories.
 
 ## Motivation
 
 ### Why Next.js?
 
-Gatsby has served the USACO Guide well, but several issues have arisen over time:
+Gatsby has served the USACO Guide well, but several issues have arisen over
+time:
 
-- Gatsby’s [GraphQL data layer](https://www.gatsbyjs.com/docs/reference/graphql-data-layer/graphql-api/) centralizes all content into a schema and abstracts execution details
-  - This prevents developers from optimizing data processing and loading, leading to long development server startup and build times.
+- Gatsby’s
+  [GraphQL data layer](https://www.gatsbyjs.com/docs/reference/graphql-data-layer/graphql-api/)
+  centralizes all content into a schema and abstracts execution details
+  - This prevents developers from optimizing data processing and loading,
+    leading to long development server startup and build times.
 - The Gatsby plugin ecosystem is outdated
-  - When attempting to update dependencies (e.g., `gatsby-plugin-postcss`), peer dependency conflicts arise. This forces the repository to rely on outdated or deprecated dependencies to maintain functionality. Additionally, segment fault issues have been reported to occur in recent Gatsby releases.
+  - When attempting to update dependencies (e.g., `gatsby-plugin-postcss`), peer
+    dependency conflicts arise. This forces the repository to rely on outdated
+    or deprecated dependencies to maintain functionality. Additionally, segment
+    fault issues have been reported to occur in recent Gatsby releases.
 - Local development can become slow and inconsistent
-  - For instance, because of reliance on outdated dependencies, the Hot Module Replacement (HMR) is triggered continuously, which eventually leads to memory leaks.
+  - For instance, because of reliance on outdated dependencies, the Hot Module
+    Replacement (HMR) is triggered continuously, which eventually leads to
+    memory leaks.
 
-Next.js offers a modern React framework with up-to-date MDX plugins, increased control over data processing, and flexible rendering. This supports our goal of increasing performance, supporting long-term maintainability, and avoiding framework-specific workarounds.
+Next.js offers a modern React framework with up-to-date MDX plugins, increased
+control over data processing, and flexible rendering. This supports our goal of
+increasing performance, supporting long-term maintainability, and avoiding
+framework-specific workarounds.
 
 ## Architecture Changes
 
 In the previous Gatsby repository, the `gatsby-node.ts` file orchestrated:
 
-- GraphQL node creation for `.mdx` and `.json` files from the `content/` and `solutions/` directories
+- GraphQL node creation for `.mdx` and `.json` files from the `content/` and
+  `solutions/` directories
 - Dynamic page creation for the syllabus, module, and solution pages
 - Schema customization using type definitions
 - Development and build-time webpack configuration
 
-The Next.js system design replicates this functionality while adapting to the changes in the framework.
+The Next.js system design replicates this functionality while adapting to the
+changes in the framework.
 
 ### High-Level Architecture
 
-The migration replaces Gatsby’s GraphQL-based build with a two-phase static pipeline: a prebuild content ingestion phase and a parallelized page generation phase.
+The migration replaces Gatsby’s GraphQL-based build with a two-phase static
+pipeline: a prebuild content ingestion phase and a parallelized page generation
+phase.
 
 ![Infrastructure Diagram](<usaco-next infrastructure-2026-02-09-212647.png>)
 
 1. Ingestion phase (prebuild, single execution)
-   - Traverses filesystem to process and load content sources (`.mdx` and `.json`)
+   - Traverses filesystem to process and load content sources (`.mdx` and
+     `.json`)
    - Performs expensive content processing exactly once
-   - Persists [normalized](https://www.geeksforgeeks.org/dbms/introduction-of-database-normalization/), queryable representations into a local [SQLite](https://www.npmjs.com/package/@types/better-sqlite3) database
+   - Persists
+     [normalized](https://www.geeksforgeeks.org/dbms/introduction-of-database-normalization/),
+     queryable representations into a local
+     [SQLite](https://www.npmjs.com/package/@types/better-sqlite3) database
 
 2. Page generation phase (Next.js build)
    - Pages query only the data they require
@@ -100,7 +130,8 @@ The migration replaces Gatsby’s GraphQL-based build with a two-phase static pi
 
 Invariants:
 
-- All content must be representable without filesystem access during page generation.
+- All content must be representable without filesystem access during page
+  generation.
 - Page components must not directly parse MDX or JSON.
 
 ### Ingestion Layer (Prebuild Indexing)
@@ -115,14 +146,18 @@ Key Characteristics:
   - Walks `/content` and `/solutions` exactly once
   - No page reprocessing
 - Explicit parsing steps
-  - MDX parsing, frontmatter extraction, and problem metadata processing are all separated into functions
+  - MDX parsing, frontmatter extraction, and problem metadata processing are all
+    separated into functions
 - Batch-oriented execution
   - Files are processed in batches to control memory and CPU pressure
 - Transactional persistence
-  - SQLite writes occur inside [transactions](https://www.geeksforgeeks.org/sql/sql-transactions/) to guarantee atomicity and performance
+  - SQLite writes occur inside
+    [transactions](https://www.geeksforgeeks.org/sql/sql-transactions/) to
+    guarantee atomicity and performance
 
-This phase outputs a fully populated SQLite database (`/public/data/content.db`) that represents
-the complete content universe. This phase replaces Gatsby’s `onCreateNode` function and repeated content parsing during page generation.
+This phase outputs a fully populated SQLite database (`/public/data/content.db`)
+that represents the complete content universe. This phase replaces Gatsby’s
+`onCreateNode` function and repeated content parsing during page generation.
 
 ### Persistence Layer
 
@@ -158,15 +193,21 @@ This layer encapsulates:
 
 - Connection lifecycle management
 - Read-only vs. writable modes
-- [Singleton](https://www.geeksforgeeks.org/system-design/singleton-design-pattern/) enforcement
+- [Singleton](https://www.geeksforgeeks.org/system-design/singleton-design-pattern/)
+  enforcement
 
-It enforces a single access abstraction so higher layers never interact with SQLite directly. This provides easier refactoring and prevents accidental write access during rendering.
+It enforces a single access abstraction so higher layers never interact with
+SQLite directly. This provides easier refactoring and prevents accidental write
+access during rendering.
 
 ### Query Layer
 
 File: [queryContent.ts](../src/lib/queryContent.ts)
 
-This layer provides query functions to abstract away SQL queries. For example, the `querySolution` and `queryModule` functions take an `id: string` as an explicit argument and return the proper data from the database. These functions use explicit types to match the expected content.
+This layer provides query functions to abstract away SQL queries. For example,
+the `querySolution` and `queryModule` functions take an `id: string` as an
+explicit argument and return the proper data from the database. These functions
+use explicit types to match the expected content.
 
 ### Page Generation (Next.js)
 
@@ -186,10 +227,12 @@ During `next build`:
 
 **Core Bottlenecks:**
 
-- **MDX Processing**: $\mathcal{O}(M \times (C + I \times (F + \text{ImageProcessing})))$
+- **MDX Processing**:
+  $\mathcal{O}(M \times (C + I \times (F + \text{ImageProcessing})))$
   - $M$ = ~883 MDX files, $C$ = content size, $I$ = images per file
   - Each file processed with 9 remark + 3 rehype plugins = high constant factor
-  - Image processing: $\mathcal{O}(I \times F)$ where $F$ = total files in system
+  - Image processing: $\mathcal{O}(I \times F)$ where $F$ = total files in
+    system
 - **Solution-to-Problem Filtering**: $\mathcal{O}(S \times P)$ (quadratic)
   - $S$ = solutions, $P$ = ~1451 problems
   - Each solution scans all problems to find matches
@@ -210,12 +253,14 @@ $\mathcal{O}(M \times C \times I \times \text{ImageProcessing} + S \times P + M_
 
 #### Next.js Migration Complexity
 
-The new architecture eliminates these bottlenecks through separation of concerns:
+The new architecture eliminates these bottlenecks through separation of
+concerns:
 
 **One-Time Ingestion Phase:**
 
 - File system traversal: $\mathcal{O}(n)$ where $n$ = total content files
-- MDX processing: $\mathcal{O}(M \times C)$ (single pass, no repeated image lookups)
+- MDX processing: $\mathcal{O}(M \times C)$ (single pass, no repeated image
+  lookups)
 - Problem deduplication: $\mathcal{O}(P)$ (efficient Map-based)
 - Git operations: Amortized $\mathcal{O}(n)$ (batched commands)
 - Database indexing: $\mathcal{O}(N \log N)$ where $N$ = total rows
@@ -223,18 +268,21 @@ The new architecture eliminates these bottlenecks through separation of concerns
 **Build Phase:**
 
 - Per-page queries: $\mathcal{O}(1)$ to $\mathcal{O}(\log n)$ (indexed lookups)
-- Parallel generation: $\mathcal{O}(p \times \log n)$ where $p$ = pages in parallel
+- Parallel generation: $\mathcal{O}(p \times \log n)$ where $p$ = pages in
+  parallel
 - No content parsing: MDX pre-compiled during ingestion
 
 **Overall Next.js Complexity:**
 
 - **Ingestion phase:** $\mathcal{O}(n + M \times C + N \log N)$
-- **Build phase:** $\mathcal{O}(p \times q \times \log n)$, where $q$ is a small constant number of queries per page
+- **Build phase:** $\mathcal{O}(p \times q \times \log n)$, where $q$ is a small
+  constant number of queries per page
 
 **Algorithmic Gains:**
 
 - Eliminated $\mathcal{O}(S \times P)$ quadratic solution filtering
-- Reduced git operations from $\mathcal{O}(M \times G)$ to amortized $\mathcal{O}(n)$ via batching
+- Reduced git operations from $\mathcal{O}(M \times G)$ to amortized
+  $\mathcal{O}(n)$ via batching
 - Replaced repeated MDX compilation with single-pass processing
 
 ### Database Schema Design
@@ -370,7 +418,8 @@ Gatsby and Next.js will be compared across:
    - BUILD_WARM - Cached production build time
    - DEV_STARTUP - Development server startup latency
 
-Additionally, CONTENT_INGEST_TIME (time to parse + index content) will be measured for Next.js.
+Additionally, CONTENT_INGEST_TIME (time to parse + index content) will be
+measured for Next.js.
 
 2. Query performance
    - CONTENT_QUERY_LATENCY_AVG - Average/mean query latency
@@ -387,7 +436,8 @@ It is still being decided which GraphQL vs. SQL queries to benchmark.
    - Core Web Vitals (LCP, CLS, INP, FCP)
    - BUNDLE_SIZE - Total JavaScript bundle size
 
-[Benchmarks](/benchmarks/) will be tracked over time and included in PRs when relevant.
+[Benchmarks](/benchmarks/) will be tracked over time and included in PRs when
+relevant.
 
 ### Framework Benchmarks Comparison
 

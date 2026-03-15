@@ -1,5 +1,4 @@
-import React from "react";
-import TextTooltip from "../../Tooltip/TextTooltip";
+import TextTooltip from '../../Tooltip/TextTooltip';
 
 export interface LeaderboardTableProps {
   columns?: {
@@ -20,10 +19,10 @@ export interface LeaderboardTableProps {
 }
 
 export const LeaderboardTable = (
-  props: LeaderboardTableProps,
+  props: LeaderboardTableProps
 ): JSX.Element | null => {
   const problemCellStyles =
-    "w-16 text-center border-l border-gray-200 dark:border-gray-700 px-3";
+    'w-16 text-center border-l border-gray-200 dark:border-gray-700 px-3';
 
   if (!props.rows || !props.columns) return null;
 
@@ -60,7 +59,7 @@ export const LeaderboardTable = (
                     scope="col"
                     className={
                       problemCellStyles +
-                      " py-3 text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-300"
+                      ' py-3 text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-300'
                     }
                     key={id}
                   >
@@ -74,8 +73,8 @@ export const LeaderboardTable = (
                 <tr
                   className={
                     idx % 2 === 0
-                      ? "bg-white dark:bg-gray-900"
-                      : "bg-gray-50 dark:bg-gray-800"
+                      ? 'bg-white dark:bg-gray-900'
+                      : 'bg-gray-50 dark:bg-gray-800'
                   }
                   key={person.id}
                 >
@@ -95,10 +94,10 @@ export const LeaderboardTable = (
                     <td
                       className={
                         problemCellStyles +
-                        " py-4 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-100" +
+                        ' py-4 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-gray-100' +
                         (payload
-                          ? " cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700"
-                          : "")
+                          ? ' cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700'
+                          : '')
                       }
                       key={id}
                       onClick={() =>

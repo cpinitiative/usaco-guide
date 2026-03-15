@@ -1,7 +1,6 @@
-import * as React from "react";
-import { useActiveGroup } from "../../../hooks/groups/useActiveGroup";
-import useLeaderboardData from "../../../hooks/groups/useLeaderboardData";
-import { MemberInfo } from "../../../hooks/groups/useMemberInfoForGroup";
+import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import useLeaderboardData from '../../../hooks/groups/useLeaderboardData';
+import { MemberInfo } from '../../../hooks/groups/useMemberInfoForGroup';
 
 const LeaderboardListItem = ({
   place,

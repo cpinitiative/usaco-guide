@@ -1,7 +1,7 @@
 import { exec } from 'child_process';
-import { promisify } from 'util';
 import { performance } from 'node:perf_hooks';
-import { saveResults, BenchmarkResult } from './utils';
+import { promisify } from 'util';
+import { BenchmarkResult, saveResults } from './utils';
 
 const execAsync = promisify(exec);
 
@@ -36,7 +36,9 @@ async function measureLintTime(): Promise<number> {
 async function countOutdatedDependencies(): Promise<number> {
   try {
     // Get outdated packages in JSON format
-    const { stdout } = await execAsync('npm outdated --json', { maxBuffer: 10 * 1024 * 1024 }); // 10MB buffer
+    const { stdout } = await execAsync('npm outdated --json', {
+      maxBuffer: 10 * 1024 * 1024,
+    }); // 10MB buffer
 
     if (!stdout.trim()) {
       return 0; // No outdated dependencies
@@ -56,7 +58,10 @@ async function countOutdatedDependencies(): Promise<number> {
         const outdatedPackages = JSON.parse(error.stdout);
         return Object.keys(outdatedPackages).length;
       } catch (parseError) {
-        console.error('Failed to parse outdated packages from error output:', parseError);
+        console.error(
+          'Failed to parse outdated packages from error output:',
+          parseError
+        );
       }
     }
     console.error('Failed to check outdated dependencies:', error);
@@ -68,7 +73,7 @@ export async function measureCodeQuality(iterations = 3): Promise<void> {
   const metrics: CodeQualityMetrics = {
     TS_CHECK_TIME: [],
     LINT_TIME: [],
-    FRESH_DEPS: 0
+    FRESH_DEPS: 0,
   };
 
   // Measure TypeScript check time

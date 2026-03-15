@@ -1,5 +1,5 @@
-import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
-import React from "react";
+import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react';
+import React from 'react';
 
 export type ModalProps = {
   children: React.ReactNode;
@@ -12,7 +12,7 @@ export default function Modal({
   children,
   isOpen,
   onClose,
-  bg = "bg-black/25",
+  bg = 'bg-black/25',
 }: ModalProps) {
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-10">

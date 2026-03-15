@@ -1,5 +1,5 @@
-import { BaseHit, Hit } from "instantsearch.js";
-import { SectionID } from "../../content/ordering";
+import { BaseHit, Hit } from 'instantsearch.js';
+import { SectionID } from '../../content/ordering';
 
 export type MarkdownLayoutSidebarModuleLinkInfo = {
   id: string;
@@ -22,9 +22,9 @@ export class ModuleLinkInfo {
     public javaOc: number | null = 0,
     public pyOc: number | null = 0,
     public probs?: any,
-    public gitAuthorTime?: any,
+    public gitAuthorTime?: any
   ) {
-    if (this.id === "using-this-guide" || this.id === "working-mdx") {
+    if (this.id === 'using-this-guide' || this.id === 'working-mdx') {
       // The "Using This Guide" and "Working With MDX" modules are complete already, but
       // they contain an <IncompleteModule> tag. We want to ignore it and manually mark it as complete.
       this.isIncomplete = false;
@@ -60,27 +60,27 @@ export class ModuleInfo extends ModuleLinkInfo {
     public frequency: ModuleFrequency,
     public toc: TableOfContents,
     public fileRelativePath: string,
-    public gitAuthorTime: any,
+    public gitAuthorTime: any
   ) {
     super(id, section, title);
   }
 }
 
 export type ModuleProgress =
-  | "Not Started"
-  | "Reading"
-  | "Practicing"
-  | "Complete"
-  | "Skipped"
-  | "Ignored";
+  | 'Not Started'
+  | 'Reading'
+  | 'Practicing'
+  | 'Complete'
+  | 'Skipped'
+  | 'Ignored';
 
 export const ModuleProgressOptions: ModuleProgress[] = [
-  "Not Started",
-  "Reading",
-  "Practicing",
-  "Complete",
-  "Skipped",
-  "Ignored",
+  'Not Started',
+  'Reading',
+  'Practicing',
+  'Complete',
+  'Skipped',
+  'Ignored',
 ];
 
 export type AlgoliaModuleInfo = {

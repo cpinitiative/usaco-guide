@@ -1,5 +1,5 @@
-import * as React from "react";
-import { ProblemMetadata } from "../models/problem";
+import * as React from 'react';
+import { ProblemMetadata } from '../models/problem';
 
 export const EditorContext = React.createContext<
   | { inEditor: null }
@@ -7,7 +7,7 @@ export const EditorContext = React.createContext<
   | {
       addProblem: (
         listId: string,
-        problemMetadata: ProblemMetadata,
+        problemMetadata: ProblemMetadata
       ) => Promise<void>;
       inEditor: true;
     }

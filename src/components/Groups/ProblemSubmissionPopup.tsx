@@ -1,14 +1,14 @@
-import { Dialog, DialogBackdrop, DialogPanel } from "@headlessui/react";
-import * as React from "react";
-import { useContext } from "react";
-import { useDarkMode } from "../../context/DarkModeContext";
-import useProblemSubmissionResult from "../../hooks/useProblemSubmissionResult";
+import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react';
+import * as React from 'react';
+import { useContext } from 'react';
+import { useDarkMode } from '../../context/DarkModeContext';
+import useProblemSubmissionResult from '../../hooks/useProblemSubmissionResult';
 import {
   FirebaseSubmission,
   getSubmissionStatus,
   getSubmissionTimestampString,
-} from "../../models/groups/problem";
-import CodeBlock from "../markdown/CodeBlock/CodeBlock";
+} from '../../models/groups/problem';
+import CodeBlock from '../markdown/CodeBlock/CodeBlock';
 
 const ProblemSubmissionPopupContext = React.createContext<{
   showPopup: boolean;
@@ -19,12 +19,10 @@ const ProblemSubmissionPopupContext = React.createContext<{
 
 function ProblemSubmissionPopup() {
   const popupContext = useContext(ProblemSubmissionPopupContext);
-  if (!popupContext) throw new Error("No ProblemSubmissionPopupContext");
+  if (!popupContext) throw new Error('No ProblemSubmissionPopupContext');
   const submission = popupContext.submission;
   const submissionResult = useProblemSubmissionResult(
-    submission && "submissionID" in submission
-      ? submission?.submissionID
-      : null,
+    submission && 'submissionID' in submission ? submission?.submissionID : null
   );
   const isDarkMode = useDarkMode();
 
@@ -98,16 +96,16 @@ function ProblemSubmissionPopup() {
                         {getSubmissionTimestampString(submission)}
                       </h4>
                       <p className="text-sm text-gray-500 dark:text-gray-400">
-                        {"Status: " + getSubmissionStatus(submission)}
+                        {'Status: ' + getSubmissionStatus(submission)}
                       </p>
                     </div>
                   </div>
 
                   <div className="mt-4">
                     <div className="mt-2 rounded-md">
-                      {"link" in submission ? (
+                      {'link' in submission ? (
                         <p className="px-4 text-base sm:px-6">
-                          Submission Link:{" "}
+                          Submission Link:{' '}
                           <a
                             className="font-medium underline"
                             href={submission.link}
@@ -122,7 +120,7 @@ function ProblemSubmissionPopup() {
                           className={`language-${submission.language}`}
                           isDarkMode={isDarkMode}
                         >
-                          {submissionResult?.sourceCode ?? "Loading..."}
+                          {submissionResult?.sourceCode ?? 'Loading...'}
                         </CodeBlock>
                       )}
                     </div>
@@ -150,7 +148,7 @@ function ProblemSubmissionPopup() {
 export function ProblemSubmissionPopupProvider({ children }) {
   const [showPopup, setShowPopup] = React.useState(false);
   const [submission, setSubmission] = React.useState<FirebaseSubmission | null>(
-    null,
+    null
   );
   return (
     <ProblemSubmissionPopupContext.Provider
@@ -170,7 +168,7 @@ export function ProblemSubmissionPopupProvider({ children }) {
 export function useProblemSubmissionPopupAction() {
   const popupContext = useContext(ProblemSubmissionPopupContext);
   if (!popupContext) {
-    throw "useProblemSubmissionPopupAction() must be used in a ProblemSubmissionPopupContext";
+    throw 'useProblemSubmissionPopupAction() must be used in a ProblemSubmissionPopupContext';
   }
 
   return (submission: FirebaseSubmission) => {

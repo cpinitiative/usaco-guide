@@ -1,5 +1,4 @@
-import React from "react";
-import { useBlindMode } from "../context/BlindModeContext";
+import { useBlindMode } from '../context/BlindModeContext';
 
 export default function BlindModeToggle() {
   const { isBlindMode, toggleBlindMode } = useBlindMode();
@@ -12,7 +11,7 @@ export default function BlindModeToggle() {
     >
       <svg
         className={`mr-2 h-5 w-5 ${
-          isBlindMode ? "text-blue-500" : "text-gray-400"
+          isBlindMode ? 'text-blue-500' : 'text-gray-400'
         }`}
         fill="none"
         stroke="currentColor"
@@ -32,7 +31,7 @@ export default function BlindModeToggle() {
           d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
         />
       </svg>
-      {isBlindMode ? "Show tags" : "Hide tags"}
+      {isBlindMode ? 'Show tags' : 'Hide tags'}
     </button>
   );
 }

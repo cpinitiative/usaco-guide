@@ -1,13 +1,12 @@
-import React from "react";
-import { olympiads, ProblemInfo, probSources } from "../../../models/problem";
-import { UsacoTableProgress } from "../../Dashboard/DashboardProgress";
-import DifficultyBox from "../../DifficultyBox";
-import TextTooltip from "../../Tooltip/TextTooltip";
-import Tooltip from "../../Tooltip/Tooltip";
-import ListTableRow, { ListTableCell } from "../ListTable/ListTableRow";
-import { DivisionProblemInfo } from "./DivisionList/DivisionProblemInfo";
-import ProblemsListItemDropdown from "./ProblemsListItemDropdown";
-import ProblemStatusCheckbox from "./ProblemStatusCheckbox";
+import { olympiads, ProblemInfo, probSources } from '../../../models/problem';
+import { UsacoTableProgress } from '../../Dashboard/DashboardProgress';
+import DifficultyBox from '../../DifficultyBox';
+import TextTooltip from '../../Tooltip/TextTooltip';
+import Tooltip from '../../Tooltip/Tooltip';
+import ListTableRow, { ListTableCell } from '../ListTable/ListTableRow';
+import { DivisionProblemInfo } from './DivisionList/DivisionProblemInfo';
+import ProblemsListItemDropdown from './ProblemsListItemDropdown';
+import ProblemStatusCheckbox from './ProblemStatusCheckbox';
 
 export type ProblemsListItemProps = {
   showTags: boolean;
@@ -29,7 +28,7 @@ export type ProblemsListItemProps = {
 );
 
 export default function ProblemsListItem(
-  props: ProblemsListItemProps,
+  props: ProblemsListItemProps
 ): JSX.Element {
   const { isDivisionTable, problem } = props;
   const id = `problem-${problem.uniqueId}`;
@@ -37,7 +36,7 @@ export default function ProblemsListItem(
   const statusCol = (
     <ListTableCell className="font-medium whitespace-nowrap">
       <div
-        style={{ height: "1.25rem" }}
+        style={{ height: '1.25rem' }}
         className="flex items-center justify-center"
       >
         <ProblemStatusCheckbox problem={problem} />
@@ -51,23 +50,23 @@ export default function ProblemsListItem(
           olympiads[problem.source as keyof typeof olympiads]?.[1])
       : null;
 
-  let resultsUrl = ""; // used only for division tables
+  let resultsUrl = ''; // used only for division tables
   if (isDivisionTable) {
-    const parts = problem.source.split(" ");
+    const parts = problem.source.split(' ');
     parts[0] = parts[0].substring(2);
 
     if (parseInt(parts[0]) >= 26) {
       // season26contest1results
       let index = 0;
-      if (parts[1] == "First") index = 1;
-      else if (parts[1] == "Second") index = 2;
-      else if (parts[1] == "Third") index = 3;
-      else if (parts[1] == "Fourth") index = 4; // unsure of how US Open will be formatted yet, for now just use fourth + 4.
+      if (parts[1] == 'First') index = 1;
+      else if (parts[1] == 'Second') index = 2;
+      else if (parts[1] == 'Third') index = 3;
+      else if (parts[1] == 'Fourth') index = 4; // unsure of how US Open will be formatted yet, for now just use fourth + 4.
 
       resultsUrl = `http://www.usaco.org/index.php?page=season${parts[0]}contest${index}results`;
     } else {
       // dec24results
-      if (parts[1] === "US") parts[1] = "open";
+      if (parts[1] === 'US') parts[1] = 'open';
       else parts[1] = parts[1].toLowerCase().substring(0, 3);
       resultsUrl = `http://www.usaco.org/index.php?page=${parts[1]}${parts[0]}results`;
     }
@@ -76,8 +75,8 @@ export default function ProblemsListItem(
     <ListTableCell className="font-medium whitespace-nowrap">
       <a
         href={resultsUrl}
-        className={"truncate"}
-        style={{ maxWidth: "15rem" }}
+        className={'truncate'}
+        style={{ maxWidth: '15rem' }}
         target="_blank"
         rel="nofollow noopener noreferrer"
       >
@@ -112,10 +111,10 @@ export default function ProblemsListItem(
           href={problem.url}
           className={
             (isDivisionTable == false && problem.isStarred
-              ? "pl-1 sm:pl-2"
-              : "sm:pl-6") + " problem-list-item-anchor truncate"
+              ? 'pl-1 sm:pl-2'
+              : 'sm:pl-6') + ' problem-list-item-anchor truncate'
           }
-          style={{ maxWidth: "20rem" }}
+          style={{ maxWidth: '20rem' }}
           target="_blank"
           rel="nofollow noopener noreferrer"
         >
@@ -151,7 +150,7 @@ export default function ProblemsListItem(
             className="dark:text-dark-med-emphasis text-gray-500"
           >
             <summary>Show Tags</summary>
-            <span className="text-xs">{problem.tags.sort().join(", ")}</span>
+            <span className="text-xs">{problem.tags.sort().join(', ')}</span>
           </details>
         ) : null}
       </ListTableCell>

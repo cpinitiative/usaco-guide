@@ -9,37 +9,37 @@
 //   );
 // }
 
-import { useRouter } from "next/router";
-import { useAtomValue, useSetAtom, WritableAtom } from "jotai";
-import React, { lazy } from "react";
-import Split from "react-split";
+import { useAtomValue, useSetAtom, WritableAtom } from 'jotai';
+import { useRouter } from 'next/router';
+import React, { lazy } from 'react';
+import Split from 'react-split';
 import {
   filesListAtom,
   monacoEditorInstanceAtom,
   openOrCreateExistingFileAtom,
   tokenAtom,
-} from "../../atoms/editor";
-import QuizGeneratorProvider from "../../context/QuizGeneratorContext";
-import { LazyLoad } from "../../utils/lazyLoad";
-import Layout from "../layout";
-import SEO from "../seo";
+} from '../../atoms/editor';
+import QuizGeneratorProvider from '../../context/QuizGeneratorContext';
+import { LazyLoad } from '../../utils/lazyLoad';
+import Layout from '../layout';
+import SEO from '../seo';
 
 // Lazy load heavy components
 const EditorOutput = lazy(() =>
-  import("./EditorOutput").then((module) => ({ default: module.EditorOutput })),
+  import('./EditorOutput').then(module => ({ default: module.EditorOutput }))
 );
 const EditorSidebar = lazy(() =>
-  import("./EditorSidebar/EditorSidebar").then((module) => ({
+  import('./EditorSidebar/EditorSidebar').then(module => ({
     default: module.EditorSidebar,
-  })),
+  }))
 );
 const EditorTopNav = lazy(() =>
-  import("./EditorTopNav").then((module) => ({ default: module.EditorTopNav })),
+  import('./EditorTopNav').then(module => ({ default: module.EditorTopNav }))
 );
 const MainEditorInterface = lazy(() =>
-  import("./MainEditorInterface").then((module) => ({
+  import('./MainEditorInterface').then(module => ({
     default: module.MainEditorInterface,
-  })),
+  }))
 );
 
 export default function EditorPage(): JSX.Element {
@@ -48,25 +48,25 @@ export default function EditorPage(): JSX.Element {
   const editor = useAtomValue(monacoEditorInstanceAtom);
   const openOrCreateExistingFile = useSetAtom(openOrCreateExistingFileAtom);
   const setToken = useSetAtom(
-    tokenAtom as WritableAtom<string | null, [string | null], void>,
+    tokenAtom as WritableAtom<string | null, [string | null], void>
   );
 
   React.useEffect(() => {
     const code = query.code as string;
     if (!code) return;
-    fetch("/api/get-token", {
-      method: "POST",
+    fetch('/api/get-token', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({ code }),
     })
-      .then((res) => res.json())
-      .then((json) => {
+      .then(res => res.json())
+      .then(json => {
         console.log(json);
         setToken(json.token);
       });
-    router.replace("/editor", undefined, { shallow: true });
+    router.replace('/editor', undefined, { shallow: true });
   }, [query.code, setToken]);
 
   const filesList = useAtomValue(filesListAtom);
@@ -87,7 +87,7 @@ export default function EditorPage(): JSX.Element {
             <EditorTopNav />
           </LazyLoad>
 
-          {typeof window !== "undefined" && (
+          {typeof window !== 'undefined' && (
             <Split
               className="relative h-full flex-1 overflow-hidden [&>.gutter.gutter-horizontal]:cursor-ew-resize [&>.gutter.gutter-horizontal]:bg-gray-100 dark:[&>.gutter.gutter-horizontal]:bg-gray-900 [&>div,&>.gutter.gutter-horizontal]:float-left [&>div,&>.gutter.gutter-horizontal]:h-full"
               onDrag={() => {

@@ -1,23 +1,23 @@
-import { StoryFn } from "@storybook/react";
-import React, { ComponentProps } from "react";
-import HTMLComponents from "../../components/markdown/HTMLComponents";
-import markdownDecorator from "../../components/markdown/markdownDecoratorForStorybook";
-import Optional from "../../components/markdown/Optional";
-import MiscMarkdownContent from "./MiscMarkdownContent";
+import { StoryFn } from '@storybook/react';
+import { ComponentProps } from 'react';
+import HTMLComponents from '../../components/markdown/HTMLComponents';
+import markdownDecorator from '../../components/markdown/markdownDecoratorForStorybook';
+import Optional from '../../components/markdown/Optional';
+import MiscMarkdownContent from './MiscMarkdownContent';
 
 export default {
-  title: "Markdown/Optional",
+  title: 'Markdown/Optional',
   component: Optional,
   decorators: [markdownDecorator],
 };
 
-const Template: StoryFn<ComponentProps<typeof Optional>> = (args) => (
+const Template: StoryFn<ComponentProps<typeof Optional>> = args => (
   <Optional {...args} />
 );
 
 export const Default = Template.bind({});
 Default.args = {
-  title: "Optional Block",
+  title: 'Optional Block',
   children: (
     <>
       <MiscMarkdownContent />

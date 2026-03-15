@@ -4,32 +4,31 @@ import {
   MenuItem,
   MenuItems,
   Transition,
-} from "@headlessui/react";
-import { ChevronDownIcon, ExternalLinkIcon } from "@heroicons/react/solid";
-import classNames from "classnames";
-import Link from "next/link";
-import * as React from "react";
-import { Fragment, useContext } from "react";
+} from '@headlessui/react';
+import { ChevronDownIcon, ExternalLinkIcon } from '@heroicons/react/solid';
+import classNames from 'classnames';
+import Link from 'next/link';
+import { Fragment, useContext } from 'react';
 import {
   moduleIDToSectionMap,
   moduleIDToURLMap,
   SECTION_LABELS,
-} from "../../../../content/ordering";
-import { useMarkdownLayout } from "../../../context/MarkdownLayoutContext";
-import { useMarkdownProblems } from "../../../context/MarkdownProblemListsContext";
-import { ProblemSolutionContext } from "../../../context/ProblemSolutionContext";
+} from '../../../../content/ordering';
+import { useMarkdownLayout } from '../../../context/MarkdownLayoutContext';
+import { useMarkdownProblems } from '../../../context/MarkdownProblemListsContext';
+import { ProblemSolutionContext } from '../../../context/ProblemSolutionContext';
 import {
   LANGUAGE_LABELS,
   useSetUserLangSetting,
   useUserLangSetting,
-} from "../../../context/UserDataContext/properties/simpleProperties";
-import { ModuleInfo, ModuleLinkInfo } from "../../../models/module";
-import { useProblemsProgressInfo } from "../../../utils/getProgressInfo";
-import { ClientOnly } from "../../ClientOnly";
-import { DashboardProgressSmall } from "../../Dashboard/DashboardProgress";
-import { Frequency } from "../../Frequency";
-import MarkCompleteButton from "../MarkCompleteButton";
-import useSuffix from "../TableOfContents/useSuffix";
+} from '../../../context/UserDataContext/properties/simpleProperties';
+import { ModuleInfo, ModuleLinkInfo } from '../../../models/module';
+import { useProblemsProgressInfo } from '../../../utils/getProgressInfo';
+import { ClientOnly } from '../../ClientOnly';
+import { DashboardProgressSmall } from '../../Dashboard/DashboardProgress';
+import { Frequency } from '../../Frequency';
+import MarkCompleteButton from '../MarkCompleteButton';
+import useSuffix from '../TableOfContents/useSuffix';
 
 export default function ModuleHeaders({
   moduleLinks,
@@ -49,7 +48,7 @@ export default function ModuleHeaders({
   try {
     const markdownProblems = useMarkdownProblems();
     if (markdownData instanceof ModuleInfo) {
-      problemIDs = markdownProblems.map((problem) => problem.uniqueId);
+      problemIDs = markdownProblems.map(problem => problem.uniqueId);
     }
   } catch (e) {
     console.log(e);
@@ -63,8 +62,8 @@ export default function ModuleHeaders({
   // either prerequisites for modules or appears in for problems
   let moduleHeaderLinks: { label: string; url?: string }[];
   if (markdownData instanceof ModuleInfo) {
-    moduleHeaderLinks = (markdownData.prerequisites || []).map((prereq) => {
-      const moduleLink = moduleLinks.find((x) => x.id === prereq);
+    moduleHeaderLinks = (markdownData.prerequisites || []).map(prereq => {
+      const moduleLink = moduleLinks.find(x => x.id === prereq);
       return moduleLink
         ? {
             label: `${SECTION_LABELS[moduleLink.section]} - ${
@@ -80,12 +79,12 @@ export default function ModuleHeaders({
     // this is displayed within a problem solution
     if (!problemSolutionContext) {
       throw new Error(
-        "ModuleHeader is being used to render a problem; ProblemSolutionContext must be defined",
+        'ModuleHeader is being used to render a problem; ProblemSolutionContext must be defined'
       );
     }
     const modulesThatHaveProblem =
       problemSolutionContext.modulesThatHaveProblem;
-    moduleHeaderLinks = modulesThatHaveProblem.map((module) => {
+    moduleHeaderLinks = modulesThatHaveProblem.map(module => {
       return {
         label: `${SECTION_LABELS[moduleIDToSectionMap[module.id]]} - ${
           module.title
@@ -120,7 +119,7 @@ export default function ModuleHeaders({
             {markdownData.author && (
               <p className={`dark:text-dark-med-emphasis mt-1 text-gray-500`}>
                 Author
-                {markdownData.author.indexOf(",") !== -1 ? "s" : ""}:{" "}
+                {markdownData.author.indexOf(',') !== -1 ? 's' : ''}:{' '}
                 {markdownData.author}
               </p>
             )}
@@ -129,7 +128,7 @@ export default function ModuleHeaders({
                 className={`dark:text-dark-med-emphasis text-xs text-gray-500`}
               >
                 Contributor
-                {markdownData.contributors.indexOf(",") !== -1 ? "s" : ""}:{" "}
+                {markdownData.contributors.indexOf(',') !== -1 ? 's' : ''}:{' '}
                 {markdownData.contributors}
               </p>
             )}
@@ -170,7 +169,7 @@ export default function ModuleHeaders({
                   <div className="-mt-1">
                     <MenuButton
                       className="-mx-1 inline-flex w-full items-center rounded-md px-1 text-sm font-medium text-gray-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-50 focus:outline-hidden dark:text-gray-200 dark:focus:ring-offset-gray-900"
-                      style={{ width: "fit-content" }}
+                      style={{ width: 'fit-content' }}
                     >
                       Language: {LANGUAGE_LABELS[lang]}
                       <ChevronDownIcon
@@ -195,15 +194,15 @@ export default function ModuleHeaders({
                       className="absolute left-0 z-10 mt-2 w-56 origin-top-left rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-hidden dark:bg-gray-800"
                     >
                       <div className="py-1">
-                        {(["cpp", "java", "py"] as const).map((lang) => (
+                        {(['cpp', 'java', 'py'] as const).map(lang => (
                           <MenuItem key={lang}>
                             {({ active }) => (
                               <button
                                 className={classNames(
                                   active
-                                    ? "bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-gray-100"
-                                    : "text-gray-700 dark:text-gray-300",
-                                  "block w-full px-4 py-2 text-left text-sm focus:outline-hidden",
+                                    ? 'bg-gray-100 text-gray-900 dark:bg-gray-700 dark:text-gray-100'
+                                    : 'text-gray-700 dark:text-gray-300',
+                                  'block w-full px-4 py-2 text-left text-sm focus:outline-hidden'
                                 )}
                                 onClick={() => setLang(lang)}
                               >
@@ -233,12 +232,12 @@ export default function ModuleHeaders({
               <div className="h-4 sm:h-6" />
               <h3 className="my-0 text-sm leading-5 font-medium text-gray-800 dark:text-gray-200">
                 {markdownData instanceof ModuleInfo
-                  ? "Prerequisites"
-                  : "Appears In"}
+                  ? 'Prerequisites'
+                  : 'Appears In'}
               </h3>
               <div className="no-y-margin mt-1 text-sm leading-5 text-gray-700 dark:text-gray-300">
                 <ul className="list-inside list-disc space-y-1 pl-3">
-                  {moduleHeaderLinks.map((link) => (
+                  {moduleHeaderLinks.map(link => (
                     <li key={link.url ?? link.label}>
                       {link.url ? (
                         <a

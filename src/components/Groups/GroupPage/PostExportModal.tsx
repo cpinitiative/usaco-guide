@@ -3,7 +3,7 @@ import {
   DialogBackdrop,
   DialogPanel,
   DialogTitle,
-} from "@headlessui/react";
+} from '@headlessui/react';
 import {
   arrayUnion,
   collection,
@@ -14,14 +14,14 @@ import {
   query,
   serverTimestamp,
   writeBatch,
-} from "firebase/firestore";
-import React, { useState } from "react";
-import { useFirebaseUser } from "../../../context/UserDataContext/UserDataContext";
-import { useUserGroups } from "../../../hooks/groups/useUserGroups";
-import { useFirebaseApp } from "../../../hooks/useFirebase";
-import { GroupData } from "../../../models/groups/groups";
-import { PostData } from "../../../models/groups/posts";
-import { GroupProblemData } from "../../../models/groups/problem";
+} from 'firebase/firestore';
+import React, { useState } from 'react';
+import { useFirebaseUser } from '../../../context/UserDataContext/UserDataContext';
+import { useUserGroups } from '../../../hooks/groups/useUserGroups';
+import { useFirebaseApp } from '../../../hooks/useFirebase';
+import { GroupData } from '../../../models/groups/groups';
+import { PostData } from '../../../models/groups/posts';
+import { GroupProblemData } from '../../../models/groups/problem';
 
 export default function PostExportModal(props: {
   showExportModal: boolean;
@@ -39,26 +39,23 @@ export default function PostExportModal(props: {
     const q = query(
       collection(
         getFirestore(firebaseApp),
-        "groups",
+        'groups',
         props.group.id,
-        "posts",
+        'posts',
         props.post.id!,
-        "problems",
-      ) as CollectionReference<GroupProblemData>,
+        'problems'
+      ) as CollectionReference<GroupProblemData>
     );
 
     const snap = await getDocs(q);
-    setProblems(snap.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    setProblems(snap.docs.map(doc => ({ ...doc.data(), id: doc.id })));
 
     console.log(g.name);
     if (groupsUsedMap.has(g.id)) {
       setGroupsUsedMap(
         new Map(
-          groupsUsedMap.set(
-            g.id,
-            new MapData(!groupsUsedMap.get(g.id).used, g),
-          ),
-        ),
+          groupsUsedMap.set(g.id, new MapData(!groupsUsedMap.get(g.id).used, g))
+        )
       );
       console.log(groupsUsedMap.get(g.id).used);
     } else {
@@ -69,10 +66,10 @@ export default function PostExportModal(props: {
   }
 
   async function exportSelectedPosts() {
-    console.log("cont");
+    console.log('cont');
     console.log(problems);
     const type = props.post.type;
-    const defaultPost: Omit<PostData, "timestamp"> = {
+    const defaultPost: Omit<PostData, 'timestamp'> = {
       name: props.post.name,
       isPublished: props.post.isPublished,
       isPinned: props.post.isPinned,
@@ -81,38 +78,38 @@ export default function PostExportModal(props: {
       type,
       pointsPerProblem: props.post.pointsPerProblem,
       problemOrdering: props.post.problemOrdering,
-      ...(type === "announcement"
+      ...(type === 'announcement'
         ? {}
         : {
             dueTimestamp: null,
           }),
     };
 
-    console.log("gm " + groupsUsedMap.size);
-    console.log("Problem load " + problems.length);
+    console.log('gm ' + groupsUsedMap.size);
+    console.log('Problem load ' + problems.length);
     groupsUsedMap.forEach((value: MapData, key: string) => {
       if (value.used) {
         const firestore = getFirestore(firebaseApp);
         const batch = writeBatch(firestore);
         const docRef = doc(
-          collection(getFirestore(firebaseApp), "groups", key, "posts"),
+          collection(getFirestore(firebaseApp), 'groups', key, 'posts')
         );
 
         batch.set(docRef, { ...defaultPost, timestamp: serverTimestamp() });
-        batch.update(doc(firestore, "groups", key), {
+        batch.update(doc(firestore, 'groups', key), {
           postOrdering: arrayUnion(docRef.id),
         });
 
-        problems.map(async (problem) => {
+        problems.map(async problem => {
           const docRef2 = doc(
             collection(
               getFirestore(firebaseApp),
-              "groups",
+              'groups',
               key,
-              "posts",
+              'posts',
               docRef.id,
-              "problems",
-            ),
+              'problems'
+            )
           );
 
           problem.id = docRef2.id;
@@ -121,11 +118,11 @@ export default function PostExportModal(props: {
 
           batch.set(docRef2, { ...(problem as any) });
           batch.update(
-            doc(getFirestore(firebaseApp), "groups", key, "posts", docRef.id),
+            doc(getFirestore(firebaseApp), 'groups', key, 'posts', docRef.id),
             {
               [`pointsPerProblem.${docRef2.id}`]: problem.points,
               [`problemOrdering`]: arrayUnion(docRef2.id),
-            },
+            }
           );
           console.log(problem);
         });
@@ -172,7 +169,7 @@ export default function PostExportModal(props: {
                     <div className="block">
                       {groups.isSuccess &&
                         (groups.data && groups.data.length > 0 ? (
-                          groups.data.map((group) =>
+                          groups.data.map(group =>
                             group &&
                             group.ownerIds.includes(firebaseUser!.uid) ? (
                               <div key={group.id}>
@@ -189,7 +186,7 @@ export default function PostExportModal(props: {
                                   </span>
                                 </label>
                               </div>
-                            ) : null,
+                            ) : null
                           )
                         ) : (
                           <div>

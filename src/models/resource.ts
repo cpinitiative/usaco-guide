@@ -1,4 +1,4 @@
-import { ModuleProgress, ModuleProgressOptions } from "./module";
+import { ModuleProgress, ModuleProgressOptions } from './module';
 
 export type ResourceInfo = {
   source: string;

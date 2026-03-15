@@ -1,15 +1,14 @@
-import Link from "next/link";
-import * as React from "react";
-import { difficultyClasses } from "../DifficultyBox";
-import DashboardCard from "./DashboardCard";
+import Link from 'next/link';
+import { difficultyClasses } from '../DifficultyBox';
+import DashboardCard from './DashboardCard';
 
 type ActiveItemStatus =
-  | "Skipped"
-  | "Ignored"
-  | "Reading" // only for modules
-  | "Practicing" // only for modules
-  | "Solving" // only for problems
-  | "Reviewing"; // only for problems
+  | 'Skipped'
+  | 'Ignored'
+  | 'Reading' // only for modules
+  | 'Practicing' // only for modules
+  | 'Solving' // only for problems
+  | 'Reviewing'; // only for problems
 
 export type ActiveItem = {
   label: string;
@@ -19,12 +18,12 @@ export type ActiveItem = {
 
 const statusClasses: { [key in ActiveItemStatus]: string } = {
   Skipped: difficultyClasses.Normal,
-  Ignored: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-100",
+  Ignored: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-100',
   Reading:
-    "bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100",
+    'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100',
   Practicing: difficultyClasses.Easy,
   Solving:
-    "bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100",
+    'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100',
   Reviewing: difficultyClasses.Insane,
 };
 
@@ -32,7 +31,7 @@ export default function ActiveItems({
   type,
   items,
 }: {
-  type: "problems" | "modules";
+  type: 'problems' | 'modules';
   items: ActiveItem[];
 }): JSX.Element {
   items.sort((a, b) => {
@@ -53,18 +52,18 @@ export default function ActiveItems({
     const astatus = statusVal[a.status];
     const bstatus = statusVal[b.status];
     if (astatus != bstatus) return astatus - bstatus;
-    const getLabel = (x) => {
+    const getLabel = x => {
       // put active USACO problems first
       const secs = [
-        "General",
-        "Bronze",
-        "Old Bronze",
-        "Silver",
-        "Old Silver",
-        "Gold",
-        "Old Gold",
-        "Platinum",
-        "Advanced",
+        'General',
+        'Bronze',
+        'Old Bronze',
+        'Silver',
+        'Old Silver',
+        'Gold',
+        'Old Gold',
+        'Platinum',
+        'Advanced',
       ];
       for (let i = 0; i < secs.length; ++i) if (x.startsWith(secs[i])) return i;
       return 100;
@@ -78,17 +77,17 @@ export default function ActiveItems({
     <DashboardCard>
       <div className="px-4 py-5 sm:p-6">
         <h3 className="dark:text-dark-high-emphasis text-lg leading-6 font-medium text-gray-800">
-          Active {type === "problems" ? "Problems" : "Modules"}
+          Active {type === 'problems' ? 'Problems' : 'Modules'}
         </h3>
         <div className="mt-4 text-gray-500">
           {items.map((item, idx) => (
-            <p className={idx === 0 ? "" : "mt-2"} key={item.url}>
+            <p className={idx === 0 ? '' : 'mt-2'} key={item.url}>
               <Link href={item.url}>
                 <div className="font-medium text-blue-600 transition duration-150 ease-in-out hover:text-blue-500 dark:text-blue-300 dark:hover:text-blue-200">
                   {item.label}
                   <span
                     className={
-                      "ml-2 inline-flex items-center rounded-full px-2.5 py-0.5 text-xs leading-4 font-medium " +
+                      'ml-2 inline-flex items-center rounded-full px-2.5 py-0.5 text-xs leading-4 font-medium ' +
                       statusClasses[item.status]
                     }
                   >

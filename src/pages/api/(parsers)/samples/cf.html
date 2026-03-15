@@ -10,8 +10,8 @@
       function gtag() {
         dataLayer.push(arguments);
       }
-      gtag("js", new Date());
-      gtag("config", "UA-743380-5");
+      gtag('js', new Date());
+      gtag('config', 'UA-743380-5');
     </script>
 
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
@@ -27,16 +27,16 @@
       src="//codeforces.org/s/74039/js/jquery-1.8.3.js"
     ></script>
     <script type="application/javascript">
-      window.locale = "en";
+      window.locale = 'en';
       window.standaloneContest = false;
       function adjustViewport() {
         var screenWidthPx = Math.min($(window).width(), window.screen.width);
         var siteWidthPx = 1100; // min width of site
         var ratio = Math.min(screenWidthPx / siteWidthPx, 1.0);
-        var viewport = "width=device-width, initial-scale=" + ratio;
-        $("#viewport").attr("content", viewport);
-        var style = $("<style>html * { max-height: 1000000px; }</style>");
-        $("html > head").append(style);
+        var viewport = 'width=device-width, initial-scale=' + ratio;
+        $('#viewport').attr('content', viewport);
+        var style = $('<style>html * { max-height: 1000000px; }</style>');
+        $('html > head').append(style);
       }
 
       if (
@@ -47,10 +47,10 @@
 
       /* Protection against trailing dot in domain. */
       let hostLength = window.location.host.length;
-      if (hostLength > 1 && window.location.host[hostLength - 1] === ".") {
+      if (hostLength > 1 && window.location.host[hostLength - 1] === '.') {
         window.location =
           window.location.protocol +
-          "//" +
+          '//' +
           window.location.host.substring(0, hostLength - 1);
       }
     </script>
@@ -517,18 +517,18 @@
       };
 
       var queryMobile = Codeforces.queryString.mobile;
-      if (queryMobile === "true" || queryMobile === "false") {
-        Codeforces.putToStorage("useMobile", queryMobile === "true");
+      if (queryMobile === 'true' || queryMobile === 'false') {
+        Codeforces.putToStorage('useMobile', queryMobile === 'true');
       } else {
-        var useMobile = Codeforces.getFromStorage("useMobile");
+        var useMobile = Codeforces.getFromStorage('useMobile');
         if (useMobile === true || useMobile === false) {
           if (useMobile != false) {
             Codeforces.redirect(
               Codeforces.updateUrlParameter(
                 document.location.href,
-                "mobile",
-                useMobile,
-              ),
+                'mobile',
+                useMobile
+              )
             );
           }
         }
@@ -544,13 +544,13 @@
     <script type="text/javascript">
       $(document).ready(function () {
         (function () {
-          jQuery.expr[":"].containsCI = function (elem, index, match) {
+          jQuery.expr[':'].containsCI = function (elem, index, match) {
             return (
               !match ||
               !match.length ||
               match.length < 4 ||
               !match[3] ||
-              (elem.textContent || elem.innerText || jQuery(elem).text() || "")
+              (elem.textContent || elem.innerText || jQuery(elem).text() || '')
                 .toLowerCase()
                 .indexOf(match[3].toLowerCase()) >= 0
             );
@@ -565,7 +565,7 @@
             if (originalOptions.data !== undefined) {
               if (
                 Object.prototype.toString.call(originalOptions.data) ===
-                "[object String]"
+                '[object String]'
               ) {
                 data = $.deparam(originalOptions.data);
               }
@@ -577,23 +577,23 @@
         });
 
         window.getCodeforcesServerTime = function (callback) {
-          $.post("/data/time", {}, callback, "json");
+          $.post('/data/time', {}, callback, 'json');
         };
 
         window.updateTypography = function () {
-          $("div.ttypography code").addClass("tt");
-          $("div.ttypography pre>code")
-            .addClass("prettyprint")
-            .removeClass("tt");
-          $("div.ttypography table").addClass("bordertable");
+          $('div.ttypography code').addClass('tt');
+          $('div.ttypography pre>code')
+            .addClass('prettyprint')
+            .removeClass('tt');
+          $('div.ttypography table').addClass('bordertable');
           prettyPrint();
         };
 
         $.ajaxSetup({
-          scriptCharset: "utf-8",
-          contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+          scriptCharset: 'utf-8',
+          contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
           headers: {
-            "X-Csrf-Token": Codeforces.getCsrfToken(),
+            'X-Csrf-Token': Codeforces.getCsrfToken(),
           },
         });
 
@@ -602,8 +602,8 @@
         Codeforces.signForms();
 
         setTimeout(function () {
-          $(".second-level-menu-list").lavaLamp({
-            fx: "backout",
+          $('.second-level-menu-list').lavaLamp({
+            fx: 'backout',
             speed: 700,
           });
         }, 100);
@@ -614,60 +614,60 @@
         function showAnnouncements(json) {
           //info("j=" + JSON.stringify(json));
 
-          if (json.t != "a") {
+          if (json.t != 'a') {
             return;
           }
 
           setTimeout(function () {
-            Codeforces.showAnnouncements(json.d, "en");
+            Codeforces.showAnnouncements(json.d, 'en');
           }, Math.random() * 500);
         }
 
         function showEventCatcherUserMessage(json) {
-          if (json.t == "s") {
+          if (json.t == 's') {
             var points = json.d[5];
             var passedTestCount = json.d[7];
             var judgedTestCount = json.d[8];
             var verdict = preparedVerdictFormats[json.d[12]];
-            var verdictPrototypeDiv = $(".verdictPrototypeDiv");
+            var verdictPrototypeDiv = $('.verdictPrototypeDiv');
             verdictPrototypeDiv.html(verdict);
             if (judgedTestCount != null && judgedTestCount != undefined) {
               verdictPrototypeDiv
-                .find(".verdict-format-judged")
+                .find('.verdict-format-judged')
                 .text(judgedTestCount);
             }
             if (passedTestCount != null && passedTestCount != undefined) {
               verdictPrototypeDiv
-                .find(".verdict-format-passed")
+                .find('.verdict-format-passed')
                 .text(passedTestCount);
             }
             if (points != null && points != undefined) {
-              verdictPrototypeDiv.find(".verdict-format-points").text(points);
+              verdictPrototypeDiv.find('.verdict-format-points').text(points);
             }
             Codeforces.showMessage(verdictPrototypeDiv.text());
           }
         }
 
-        $(".clickable-title").each(function () {
-          var title = $(this).attr("data-title");
+        $('.clickable-title').each(function () {
+          var title = $(this).attr('data-title');
           if (title) {
-            var tmp = document.createElement("DIV");
+            var tmp = document.createElement('DIV');
             tmp.innerHTML = title;
-            $(this).attr("title", tmp.textContent || tmp.innerText || "");
+            $(this).attr('title', tmp.textContent || tmp.innerText || '');
           }
         });
 
-        $(".clickable-title")
+        $('.clickable-title')
           .click(function () {
-            var title = $(this).attr("data-title");
+            var title = $(this).attr('data-title');
             if (title) {
               Codeforces.alert(title);
             } else {
-              Codeforces.alert($(this).attr("title"));
+              Codeforces.alert($(this).attr('title'));
             }
           })
-          .css("position", "relative")
-          .css("bottom", "3px");
+          .css('position', 'relative')
+          .css('bottom', '3px');
 
         Codeforces.showDelayedMessage();
 
@@ -684,7 +684,7 @@
               Codeforces.getContestChannel(),
               Codeforces.getParticipantChannel(),
               Codeforces.getTalkChannel(),
-            ],
+            ]
           );
 
           if (Codeforces.getParticipantChannel()) {
@@ -692,7 +692,7 @@
               Codeforces.getParticipantChannel(),
               function (json) {
                 showAnnouncements(json);
-              },
+              }
             );
           }
 
@@ -701,7 +701,7 @@
               Codeforces.getContestChannel(),
               function (json) {
                 showAnnouncements(json);
-              },
+              }
             );
           }
 
@@ -710,7 +710,7 @@
               Codeforces.getGlobalChannel(),
               function (json) {
                 showAnnouncements(json);
-              },
+              }
             );
           }
 
@@ -719,7 +719,7 @@
               Codeforces.getUserChannel(),
               function (json) {
                 showAnnouncements(json);
-              },
+              }
             );
           }
 
@@ -728,14 +728,14 @@
               Codeforces.getUserShowMessageChannel(),
               function (json) {
                 showEventCatcherUserMessage(json);
-              },
+              }
             );
           }
         }
 
-        Codeforces.setupContestTimes("/data/contests");
+        Codeforces.setupContestTimes('/data/contests');
         Codeforces.setupSpoilers();
-        Codeforces.setupTutorials("/data/problemTutorial");
+        Codeforces.setupTutorials('/data/problemTutorial');
       });
     </script>
 
@@ -842,10 +842,10 @@
 
       <script type="text/javascript">
         $(document).ready(function () {
-          $("input.search").focus(function () {
-            if ($(this).attr("data-isPlaceholder") === "true") {
-              $(this).val("");
-              $(this).removeAttr("data-isPlaceholder");
+          $('input.search').focus(function () {
+            if ($(this).attr('data-isPlaceholder') === 'true') {
+              $(this).val('');
+              $(this).removeAttr('data-isPlaceholder');
             }
           });
         });
@@ -908,27 +908,27 @@
             </div>
             <script>
               $(function () {
-                $(".ContestVirtualFrame .sidebar-caption-icon").click(
+                $('.ContestVirtualFrame .sidebar-caption-icon').click(
                   function () {
-                    $(this).toggleClass("la-angle-down la-angle-right");
+                    $(this).toggleClass('la-angle-down la-angle-right');
                     const $target = $(this).parent().next();
                     $target.toggle();
-                    const dataPageUrl = $target.attr("data-page-url");
-                    const collapsed = $(this).hasClass("la-angle-right");
+                    const dataPageUrl = $target.attr('data-page-url');
+                    const collapsed = $(this).hasClass('la-angle-right');
                     const params = {
-                      action: "setCollapsed",
-                      sidebarFrameSimpleClassName: "ContestVirtualFrame",
+                      action: 'setCollapsed',
+                      sidebarFrameSimpleClassName: 'ContestVirtualFrame',
                       collapsed,
                     };
                     $.each($target[0].attributes, function (i, a) {
                       const name = a.name;
-                      if (name.startsWith("data-extra-key-")) {
+                      if (name.startsWith('data-extra-key-')) {
                         const key = a.value;
                         const keyIndex = parseInt(
-                          name.substring("data-extra-key-".length),
+                          name.substring('data-extra-key-'.length)
                         );
                         const value = $target.attr(
-                          "data-extra-value-" + keyIndex,
+                          'data-extra-value-' + keyIndex
                         );
                         params[key] = value;
                       }
@@ -937,16 +937,16 @@
                       dataPageUrl,
                       params,
                       function (result) {
-                        if (result["success"] !== "true") {
+                        if (result['success'] !== 'true') {
                           Codeforces.showMessage(
-                            "Failed to save collapsed state.",
+                            'Failed to save collapsed state.'
                           );
                         }
                       },
-                      "json",
+                      'json'
                     );
                     return false;
-                  },
+                  }
                 );
               });
             </script>
@@ -1124,34 +1124,34 @@
           </form>
 
           <script type="text/javascript">
-            $(".tag-box img").click(function () {
-              var tagName = $(this).attr("value");
+            $('.tag-box img').click(function () {
+              var tagName = $(this).attr('value');
               Codeforces.confirm(
-                "Are you sure you want to remove this tag?",
+                'Are you sure you want to remove this tag?',
                 function () {
-                  $("#removeTagForm input[name=tagName]").val(tagName);
-                  $("#removeTagForm").submit();
+                  $('#removeTagForm input[name=tagName]').val(tagName);
+                  $('#removeTagForm').submit();
                 },
                 function () {},
-                "Yes",
-                "No",
+                'Yes',
+                'No'
               );
             });
 
-            $("#addTagLink").click(function () {
+            $('#addTagLink').click(function () {
               $(this).hide();
-              $("#addTagLabel").show();
+              $('#addTagLabel').show();
               return false;
             });
 
-            $("#addTagSelect").change(function () {
+            $('#addTagSelect').change(function () {
               var tagName = $(this).val();
-              if (tagName === "") {
-                $("#addTagLabel").hide();
-                $("#addTagLink").show();
+              if (tagName === '') {
+                $('#addTagLabel').hide();
+                $('#addTagLink').show();
               } else {
-                $("#addTagForm input[name=tagName]").val(tagName);
-                $("#addTagForm").submit();
+                $('#addTagForm input[name=tagName]').val(tagName);
+                $('#addTagForm').submit();
               }
             });
           </script>
@@ -1160,7 +1160,7 @@
             #new-resource-form tr td {
               padding-top: 0.5em;
             }
-            #new-resource-form input:not([type="submit"]) {
+            #new-resource-form input:not([type='submit']) {
               font-size: 0.8em;
             }
             #new-resource-form select {
@@ -1172,10 +1172,10 @@
             .resource-locale {
               color: #666;
               font-family:
-                Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console",
-                "Lucida Sans Typewriter", "DejaVu Sans Mono",
-                "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L",
-                Monaco, "Courier New", Courier, monospace;
+                Consolas, 'Andale Mono WT', 'Andale Mono', 'Lucida Console',
+                'Lucida Sans Typewriter', 'DejaVu Sans Mono',
+                'Bitstream Vera Sans Mono', 'Liberation Mono', 'Nimbus Mono L',
+                Monaco, 'Courier New', Courier, monospace;
             }
           </style>
           <div class="roundbox sidebox sidebar-menu borderTopRound" style="">
@@ -1304,46 +1304,46 @@
               let result = [];
 
               if (
-                node.tagName === "SCRIPT" ||
-                node.tagName === "math" ||
+                node.tagName === 'SCRIPT' ||
+                node.tagName === 'math' ||
                 (node.classList &&
-                  node.classList.contains("input-output-copier"))
+                  node.classList.contains('input-output-copier'))
               )
                 return [];
 
-              if (node.tagName === "NOBR") {
+              if (node.tagName === 'NOBR') {
                 result.push(OPENING_SPACE);
               }
 
               if (node.nodeType === Node.TEXT_NODE) {
                 let s = node.textContent;
                 if (!pre) {
-                  s = s.replace(/\s+/g, " ");
+                  s = s.replace(/\s+/g, ' ');
                 }
                 if (s.length > 0) {
                   result.push(s);
                 }
               }
 
-              if (pre && node.tagName === "BR") {
-                result.push("\n");
+              if (pre && node.tagName === 'BR') {
+                result.push('\n');
               }
 
               node.childNodes.forEach(function (child) {
-                result.push(nodeToText(child, node.tagName === "PRE").join(""));
+                result.push(nodeToText(child, node.tagName === 'PRE').join(''));
               });
 
               if (
-                node.tagName === "DIV" ||
-                node.tagName === "P" ||
-                node.tagName === "PRE" ||
-                node.tagName === "UL" ||
-                node.tagName === "LI"
+                node.tagName === 'DIV' ||
+                node.tagName === 'P' ||
+                node.tagName === 'PRE' ||
+                node.tagName === 'UL' ||
+                node.tagName === 'LI'
               ) {
-                result.push("\n");
+                result.push('\n');
               }
 
-              if (node.tagName === "NOBR") {
+              if (node.tagName === 'NOBR') {
                 result.push(CLOSING_SPACE);
               }
 
@@ -1352,40 +1352,40 @@
 
             const isSpecial = function (c) {
               return (
-                c === "," || c === "." || c === ";" || c === ")" || c === " "
+                c === ',' || c === '.' || c === ';' || c === ')' || c === ' '
               );
             };
 
             const convertStatementToText = function (statmentNode) {
               const text = nodeToText(statmentNode, false)
-                .join("")
-                .replace(/ +/g, " ")
-                .replace(/\n\n+/g, "\n\n");
+                .join('')
+                .replace(/ +/g, ' ')
+                .replace(/\n\n+/g, '\n\n');
               let result = [];
               for (let i = 0; i < text.length; i++) {
                 const c = text.charAt(i);
                 if (c === OPENING_SPACE) {
                   if (
                     !(
-                      (i > 0 && text.charAt(i - 1) === "(") ||
-                      (result.length > 0 && result[result.length - 1] === " ")
+                      (i > 0 && text.charAt(i - 1) === '(') ||
+                      (result.length > 0 && result[result.length - 1] === ' ')
                     )
                   ) {
-                    result.push("+");
+                    result.push('+');
                   }
                 } else if (c === CLOSING_SPACE) {
                   if (!(i + 1 < text.length && isSpecial(text.charAt(i + 1)))) {
-                    result.push("-");
+                    result.push('-');
                   }
                 } else {
                   result.push(c);
                 }
               }
               return result
-                .join("")
-                .split("\n")
-                .map((value) => value.trim())
-                .join("\n");
+                .join('')
+                .split('\n')
+                .map(value => value.trim())
+                .join('\n');
             };
           </script>
           <div class="diff-popup"></div>
@@ -1556,44 +1556,44 @@
           <script>
             $(function () {
               Codeforces.addMathJaxListener(function () {
-                let $problem = $("div[problemindex=D]");
-                let uuid = $problem.attr("data-uuid");
+                let $problem = $('div[problemindex=D]');
+                let uuid = $problem.attr('data-uuid');
                 let statementText = convertStatementToText(
-                  $problem.find(".ttypography").get(0),
+                  $problem.find('.ttypography').get(0)
                 );
 
                 let previousStatementText = Codeforces.getFromStorage(uuid);
                 if (previousStatementText) {
                   if (previousStatementText !== statementText) {
-                    $problem.find(".diff-notifier").show();
+                    $problem.find('.diff-notifier').show();
 
-                    $problem.find(".diff-notifier-close").click(function () {
+                    $problem.find('.diff-notifier-close').click(function () {
                       Codeforces.putToStorageTtl(
                         uuid,
                         statementText,
-                        6 * 60 * 60,
+                        6 * 60 * 60
                       );
-                      $problem.find(".diff-notifier").hide();
+                      $problem.find('.diff-notifier').hide();
                     });
 
-                    $problem.find("a.view-changes").click(function () {
+                    $problem.find('a.view-changes').click(function () {
                       $.post(
-                        "/data/diff",
+                        '/data/diff',
                         {
-                          action: "getDiff",
+                          action: 'getDiff',
                           a: previousStatementText,
                           b: statementText,
                         },
                         function (result) {
-                          if (result["success"] === "true") {
+                          if (result['success'] === 'true') {
                             Codeforces.facebox(
-                              ".diff-popup",
-                              "//codeforces.org/s/74039",
+                              '.diff-popup',
+                              '//codeforces.org/s/74039'
                             );
-                            $("#facebox .diff-popup").html(result["diff"]);
+                            $('#facebox .diff-popup').html(result['diff']);
                           }
                         },
-                        "json",
+                        'json'
                       );
                     });
                   }
@@ -1614,128 +1614,128 @@
                 );
               }
 
-              const inputFileDiv = $("div.input-file");
+              const inputFileDiv = $('div.input-file');
               const inputFile = inputFileDiv.text();
-              const outputFileDiv = $("div.output-file");
+              const outputFileDiv = $('div.output-file');
               const outputFile = outputFileDiv.text();
 
               if (
-                !endsWith(inputFile, "standard input") &&
-                !endsWith(inputFile, "standard input")
+                !endsWith(inputFile, 'standard input') &&
+                !endsWith(inputFile, 'standard input')
               ) {
-                inputFileDiv.attr("style", "font-weight: bold");
+                inputFileDiv.attr('style', 'font-weight: bold');
               }
 
               if (
-                !endsWith(outputFile, "standard output") &&
-                !endsWith(outputFile, "standard output")
+                !endsWith(outputFile, 'standard output') &&
+                !endsWith(outputFile, 'standard output')
               ) {
-                outputFileDiv.attr("style", "font-weight: bold");
+                outputFileDiv.attr('style', 'font-weight: bold');
               }
 
-              const titleDiv = $("div.header div.title");
+              const titleDiv = $('div.header div.title');
 
               String.prototype.replaceAll = function (search, replace) {
                 return this.split(search).join(replace);
               };
 
-              $(".sample-test .title").each(function () {
-                const preId = ("id" + Math.random()).replaceAll(".", "0");
-                const cpyId = ("id" + Math.random()).replaceAll(".", "0");
+              $('.sample-test .title').each(function () {
+                const preId = ('id' + Math.random()).replaceAll('.', '0');
+                const cpyId = ('id' + Math.random()).replaceAll('.', '0');
 
-                $(this).parent().find("pre").attr("id", preId);
+                $(this).parent().find('pre').attr('id', preId);
                 const $copy = $(
                   "<div title='Copy' data-clipboard-target='#" +
                     preId +
                     "' id='" +
                     cpyId +
-                    "' class='input-output-copier'>Copy</div>",
+                    "' class='input-output-copier'>Copy</div>"
                 );
                 $(this).append($copy);
 
-                const clipboard = new Clipboard("#" + cpyId, {
+                const clipboard = new Clipboard('#' + cpyId, {
                   text: function (trigger) {
-                    const pre = document.querySelector("#" + preId);
-                    const lines = pre.querySelectorAll(".test-example-line");
+                    const pre = document.querySelector('#' + preId);
+                    const lines = pre.querySelectorAll('.test-example-line');
                     return Codeforces.filterClipboardText(
                       pre.innerText,
-                      lines.length,
+                      lines.length
                     );
                   },
                 });
 
-                const isInput = $(this).parent().hasClass("input");
+                const isInput = $(this).parent().hasClass('input');
 
-                clipboard.on("success", function (e) {
+                clipboard.on('success', function (e) {
                   if (isInput) {
                     Codeforces.showMessage(
-                      "The example input has been copied into the clipboard",
+                      'The example input has been copied into the clipboard'
                     );
                   } else {
                     Codeforces.showMessage(
-                      "The example output has been copied into the clipboard",
+                      'The example output has been copied into the clipboard'
                     );
                   }
                   e.clearSelection();
                 });
               });
 
-              $(".test-form-item input").change(function () {
+              $('.test-form-item input').change(function () {
                 addPendingSubmissionMessage(
-                  $($(this).closest("form")),
-                  "You changed the answer, do not forget to submit it if you want to save the changes",
+                  $($(this).closest('form')),
+                  'You changed the answer, do not forget to submit it if you want to save the changes'
                 );
                 const index = $(this)
-                  .closest(".problemindexholder")
-                  .attr("problemindex");
-                let test = "";
+                  .closest('.problemindexholder')
+                  .attr('problemindex');
+                let test = '';
                 $(this)
-                  .closest("form input")
+                  .closest('form input')
                   .each(function () {
-                    const test_ = $(this).attr("name");
-                    if (test_ && test_.substring(0, 4) === "test") {
+                    const test_ = $(this).attr('name');
+                    if (test_ && test_.substring(0, 4) === 'test') {
                       test = test_;
                     }
                   });
                 if (index.length > 0 && test.length > 0) {
-                  const indexTest = index + "::" + test;
+                  const indexTest = index + '::' + test;
                   window.changedTests.add(indexTest);
                 }
               });
 
-              $(window).on("beforeunload", function () {
+              $(window).on('beforeunload', function () {
                 if (window.changedTests.size > 0) {
-                  return "Dialog text here";
+                  return 'Dialog text here';
                 }
               });
 
-              autosize($(".test-explanation textarea"));
+              autosize($('.test-explanation textarea'));
 
-              $(".test-example-line").hover(
+              $('.test-example-line').hover(
                 function () {
                   $(this)
-                    .attr("class")
-                    .split(" ")
-                    .forEach((clazz) => {
+                    .attr('class')
+                    .split(' ')
+                    .forEach(clazz => {
                       if (
-                        clazz.substr(0, "test-example-line-".length) ===
-                        "test-example-line-"
+                        clazz.substr(0, 'test-example-line-'.length) ===
+                        'test-example-line-'
                       ) {
-                        let end = clazz.substr("test-example-line-".length);
-                        if (end !== "even" && end !== "odd" && end !== "0") {
+                        let end = clazz.substr('test-example-line-'.length);
+                        if (end !== 'even' && end !== 'odd' && end !== '0') {
                           let top = 1e20;
                           let left = 1e20;
-                          let problem = $(this).closest(".problemindexholder");
+                          let problem = $(this).closest('.problemindexholder');
                           $(this)
-                            .closest(".input")
-                            .find("." + clazz)
-                            .css("background-color", "#FFFDE7")
+                            .closest('.input')
+                            .find('.' + clazz)
+                            .css('background-color', '#FFFDE7')
                             .each(function () {
                               top = Math.min(top, $(this).offset().top);
                               left = Math.min(left, $(this).offset().left);
                             });
                           let testCaseMarker = problem.find(
-                            ".testCaseMarker_" + end,
+                            '.testCaseMarker_' + end
                           );
                           if (testCaseMarker.length === 0) {
                             const html =
@@ -1744,7 +1744,7 @@
                               ' notice"></div>';
                             problem.append($(html));
                             testCaseMarker = problem.find(
-                              ".testCaseMarker_" + end,
+                              '.testCaseMarker_' + end
                             );
                           }
                           if (testCaseMarker) {
@@ -1759,24 +1759,24 @@
                 },
                 function () {
                   $(this)
-                    .attr("class")
-                    .split(" ")
-                    .forEach((clazz) => {
+                    .attr('class')
+                    .split(' ')
+                    .forEach(clazz => {
                       if (
-                        clazz.substr(0, "test-example-line-".length) ===
-                        "test-example-line-"
+                        clazz.substr(0, 'test-example-line-'.length) ===
+                        'test-example-line-'
                       ) {
-                        let end = clazz.substr("test-example-line-".length);
-                        if (end !== "even" && end !== "odd" && end !== "0") {
-                          $("." + clazz).css("background-color", "");
+                        let end = clazz.substr('test-example-line-'.length);
+                        if (end !== 'even' && end !== 'odd' && end !== '0') {
+                          $('.' + clazz).css('background-color', '');
                           $(this)
-                            .closest(".problemindexholder")
-                            .find(".testCaseMarker_" + end)
+                            .closest('.problemindexholder')
+                            .find('.testCaseMarker_' + end)
                             .hide();
                         }
                       }
                     });
-                },
+                }
               );
             });
           </script>
@@ -1831,23 +1831,23 @@
       </div>
       <script type="text/javascript">
         $(function () {
-          $(".switchToMobile").click(function () {
+          $('.switchToMobile').click(function () {
             Codeforces.redirect(
               Codeforces.updateUrlParameter(
                 document.location.href,
-                "mobile",
-                "true",
-              ),
+                'mobile',
+                'true'
+              )
             );
             return false;
           });
-          $(".switchToDesktop").click(function () {
+          $('.switchToDesktop').click(function () {
             Codeforces.redirect(
               Codeforces.updateUrlParameter(
                 document.location.href,
-                "mobile",
-                "false",
-              ),
+                'mobile',
+                'false'
+              )
             );
             return false;
           });
@@ -1856,46 +1856,46 @@
       <script type="text/javascript">
         $(document).ready(function () {
           if ($(window).width() < 1600) {
-            $(".button-up")
-              .css("width", "30px")
-              .css("line-height", "30px")
-              .css("font-size", "20px");
+            $('.button-up')
+              .css('width', '30px')
+              .css('line-height', '30px')
+              .css('font-size', '20px');
           }
 
           if ($(window).width() >= 1200) {
             $(window).scroll(function () {
               if ($(this).scrollTop() > 100) {
-                $(".button-up").fadeIn();
+                $('.button-up').fadeIn();
               } else {
-                $(".button-up").fadeOut();
+                $('.button-up').fadeOut();
               }
             });
 
-            $(".button-up").click(function () {
-              $("body,html").animate(
+            $('.button-up').click(function () {
+              $('body,html').animate(
                 {
                   scrollTop: 0,
                 },
-                500,
+                500
               );
               return false;
             });
 
-            $(".button-up").hover(
+            $('.button-up').hover(
               function () {
                 $(this)
                   .animate({
-                    opacity: "1",
+                    opacity: '1',
                   })
-                  .css({ "background-color": "#e7ebf0", color: "#6a86a4" });
+                  .css({ 'background-color': '#e7ebf0', color: '#6a86a4' });
               },
               function () {
                 $(this)
                   .animate({
-                    opacity: "0.7",
+                    opacity: '0.7',
                   })
-                  .css({ background: "none", color: "#d3dbe4" });
-              },
+                  .css({ background: 'none', color: '#d3dbe4' });
+              }
             );
           }
           Codeforces.focusOnError();
@@ -1979,7 +1979,7 @@
           <script type="text/javascript">
             $(document).ready(function () {
               // Create new ':containsIgnoreCase' selector for search
-              jQuery.expr[":"].containsIgnoreCase = function (a, i, m) {
+              jQuery.expr[':'].containsIgnoreCase = function (a, i, m) {
                 return (
                   jQuery(a).text().toUpperCase().indexOf(m[3].toUpperCase()) >=
                   0
@@ -1989,120 +1989,120 @@
               if (window.updateDatatableFilter == undefined) {
                 window.updateDatatableFilter = function (i) {
                   var parent = $(i).parent().parent().parent().parent();
-                  $("tr.no-items", parent).remove();
-                  $("tr", parent).hide().removeClass("visible");
+                  $('tr.no-items', parent).remove();
+                  $('tr', parent).hide().removeClass('visible');
                   var text = $(i).val();
                   if (text) {
-                    $("tr" + ":containsIgnoreCase('" + text + "')", parent)
+                    $('tr' + ":containsIgnoreCase('" + text + "')", parent)
                       .show()
-                      .addClass("visible");
+                      .addClass('visible');
                   } else {
-                    parent.find(".rowCount").text("");
-                    $("tr", parent).show().addClass("visible");
+                    parent.find('.rowCount').text('');
+                    $('tr', parent).show().addClass('visible');
                   }
 
                   var found = false;
                   var visibleRowCount = 0;
-                  $("tr", parent).each(function () {
+                  $('tr', parent).each(function () {
                     if (!found) {
-                      if ($(this).find("th").size() > 0) {
-                        $(this).show().addClass("visible");
+                      if ($(this).find('th').size() > 0) {
+                        $(this).show().addClass('visible');
                         found = true;
                       }
                     }
-                    if ($(this).hasClass("visible")) {
+                    if ($(this).hasClass('visible')) {
                       visibleRowCount++;
                     }
                   });
                   if (text) {
                     parent
-                      .find(".rowCount")
-                      .text("Matches: " + (visibleRowCount - (found ? 1 : 0)));
+                      .find('.rowCount')
+                      .text('Matches: ' + (visibleRowCount - (found ? 1 : 0)));
                   }
                   if (visibleRowCount == (found ? 1 : 0)) {
                     $(
-                      '<tr class=\'no-items visible\'><td style="text-align:left;"colspan="32">No items<\/td><\/tr>',
-                    ).appendTo($(parent).find("table"));
+                      '<tr class=\'no-items visible\'><td style="text-align:left;"colspan="32">No items<\/td><\/tr>'
+                    ).appendTo($(parent).find('table'));
                   }
-                  $(parent).find("tr td").removeClass("dark");
-                  $(parent).find("tr.visible:odd td").addClass("dark");
+                  $(parent).find('tr td').removeClass('dark');
+                  $(parent).find('tr.visible:odd td').addClass('dark');
                 };
 
-                $(".datatable .closed").click(function () {
+                $('.datatable .closed').click(function () {
                   var parent = $(this).parent();
                   $(this).hide();
-                  $(".filter", parent).fadeIn(function () {
-                    $("input", parent)
-                      .val("")
+                  $('.filter', parent).fadeIn(function () {
+                    $('input', parent)
+                      .val('')
                       .focus()
-                      .css("border", "1px solid #aaa");
+                      .css('border', '1px solid #aaa');
                   });
                 });
 
-                $(".datatable .opened").click(function () {
+                $('.datatable .opened').click(function () {
                   var parent = $(this).parent().parent();
-                  $(".filter", parent).fadeOut(function () {
-                    $(".closed", parent).show();
-                    $("input", parent)
-                      .val("")
+                  $('.filter', parent).fadeOut(function () {
+                    $('.closed', parent).show();
+                    $('input', parent)
+                      .val('')
                       .each(function () {
                         window.updateDatatableFilter(this);
                       });
                   });
                 });
 
-                $(".datatable .filter input").keyup(function (e) {
+                $('.datatable .filter input').keyup(function (e) {
                   window.updateDatatableFilter(this);
                   e.preventDefault();
                   e.stopPropagation();
                 });
 
-                $(".datatable table").each(function () {
+                $('.datatable table').each(function () {
                   var found = false;
-                  $("tr", this).each(function () {
-                    if (!found && $(this).find("th").size() == 0) {
+                  $('tr', this).each(function () {
+                    if (!found && $(this).find('th').size() == 0) {
                       found = true;
                     }
                   });
                   if (!found) {
                     $(
-                      '<tr class=\'no-items visible\'><td style="text-align:left;"colspan="32">No items<\/td><\/tr>',
+                      '<tr class=\'no-items visible\'><td style="text-align:left;"colspan="32">No items<\/td><\/tr>'
                     ).appendTo(this);
                   }
                 });
 
                 // Applies styles to datatables.
-                $(".datatable").each(function () {
-                  $(this).find("tr:first th").addClass("top");
-                  $(this).find("tr:last td").addClass("bottom");
-                  $(this).find("tr:odd td").addClass("dark");
+                $('.datatable').each(function () {
+                  $(this).find('tr:first th').addClass('top');
+                  $(this).find('tr:last td').addClass('bottom');
+                  $(this).find('tr:odd td').addClass('dark');
                   $(this)
-                    .find("tr td:first-child, tr th:first-child")
-                    .addClass("left");
+                    .find('tr td:first-child, tr th:first-child')
+                    .addClass('left');
                   $(this)
-                    .find("tr td:last-child, tr th:last-child")
-                    .addClass("right");
+                    .find('tr td:last-child, tr th:last-child')
+                    .addClass('right');
                 });
 
-                $(".datatable table.tablesorter").each(function () {
-                  $(this).bind("sortEnd", function () {
-                    $(".datatable").each(function () {
+                $('.datatable table.tablesorter').each(function () {
+                  $(this).bind('sortEnd', function () {
+                    $('.datatable').each(function () {
                       $(this)
-                        .find("th, td")
-                        .removeClass("top")
-                        .removeClass("bottom")
-                        .removeClass("left")
-                        .removeClass("right")
-                        .removeClass("dark");
-                      $(this).find("tr:first th").addClass("top");
-                      $(this).find("tr:last td").addClass("bottom");
-                      $(this).find("tr:odd td").addClass("dark");
+                        .find('th, td')
+                        .removeClass('top')
+                        .removeClass('bottom')
+                        .removeClass('left')
+                        .removeClass('right')
+                        .removeClass('dark');
+                      $(this).find('tr:first th').addClass('top');
+                      $(this).find('tr:last td').addClass('bottom');
+                      $(this).find('tr:odd td').addClass('dark');
                       $(this)
-                        .find("tr td:first-child, tr th:first-child")
-                        .addClass("left");
+                        .find('tr td:first-child, tr th:first-child')
+                        .addClass('left');
                       $(this)
-                        .find("tr td:last-child, tr th:last-child")
-                        .addClass("right");
+                        .find('tr td:last-child, tr th:last-child')
+                        .addClass('right');
                     });
                   });
                 });
@@ -2113,36 +2113,36 @@
       </div>
       <script type="application/javascript">
         $(function () {
-          $(".userListMarker").click(function () {
+          $('.userListMarker').click(function () {
             $.post(
-              "/data/lists",
-              { action: "findTouched" },
+              '/data/lists',
+              { action: 'findTouched' },
               function (json) {
-                Codeforces.facebox(".userListsFacebox");
-                var tbody = $("#facebox tbody");
+                Codeforces.facebox('.userListsFacebox');
+                var tbody = $('#facebox tbody');
                 tbody.empty();
                 for (var i in json) {
                   tbody.append(
-                    $("<tr></tr>").append(
-                      $("<td></td>")
-                        .attr("data-readKey", json[i].readKey)
-                        .text(json[i].name),
-                    ),
+                    $('<tr></tr>').append(
+                      $('<td></td>')
+                        .attr('data-readKey', json[i].readKey)
+                        .text(json[i].name)
+                    )
                   );
                 }
                 Codeforces.updateDatatables();
                 tbody
-                  .find("td")
-                  .css("cursor", "pointer")
+                  .find('td')
+                  .css('cursor', 'pointer')
                   .click(function () {
                     document.location = Codeforces.updateUrlParameter(
                       document.location.href,
-                      "list",
-                      $(this).attr("data-readKey"),
+                      'list',
+                      $(this).attr('data-readKey')
                     );
                   });
               },
-              "json",
+              'json'
             );
           });
         });
@@ -2150,17 +2150,17 @@
     </div>
     <script type="application/javascript">
       if (
-        "serviceWorker" in navigator &&
-        "fetch" in window &&
-        "caches" in window
+        'serviceWorker' in navigator &&
+        'fetch' in window &&
+        'caches' in window
       ) {
         navigator.serviceWorker
-          .register("/service-worker-74039.js")
+          .register('/service-worker-74039.js')
           .then(function (registration) {
-            console.log("Service worker registered: ", registration);
+            console.log('Service worker registered: ', registration);
           })
           .catch(function (error) {
-            console.log("Registration failed: ", error);
+            console.log('Registration failed: ', error);
           });
       }
     </script>
@@ -2168,32 +2168,32 @@
       (function () {
         var js =
           "window['__CF$cv$params']={r:'84b445204ee89e76',t:'MTcwNjIyNTA3MC41MjAwMDA='};_cpo=document.createElement('script');_cpo.nonce='',_cpo.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js',document.getElementsByTagName('head')[0].appendChild(_cpo);";
-        var _0xh = document.createElement("iframe");
+        var _0xh = document.createElement('iframe');
         _0xh.height = 1;
         _0xh.width = 1;
-        _0xh.style.position = "absolute";
+        _0xh.style.position = 'absolute';
         _0xh.style.top = 0;
         _0xh.style.left = 0;
-        _0xh.style.border = "none";
-        _0xh.style.visibility = "hidden";
+        _0xh.style.border = 'none';
+        _0xh.style.visibility = 'hidden';
         document.body.appendChild(_0xh);
         function handler() {
           var _0xi = _0xh.contentDocument || _0xh.contentWindow.document;
           if (_0xi) {
-            var _0xj = _0xi.createElement("script");
+            var _0xj = _0xi.createElement('script');
             _0xj.innerHTML = js;
-            _0xi.getElementsByTagName("head")[0].appendChild(_0xj);
+            _0xi.getElementsByTagName('head')[0].appendChild(_0xj);
           }
         }
-        if (document.readyState !== "loading") {
+        if (document.readyState !== 'loading') {
           handler();
         } else if (window.addEventListener) {
-          document.addEventListener("DOMContentLoaded", handler);
+          document.addEventListener('DOMContentLoaded', handler);
         } else {
           var prev = document.onreadystatechange || function () {};
           document.onreadystatechange = function (e) {
             prev(e);
-            if (document.readyState !== "loading") {
+            if (document.readyState !== 'loading') {
               document.onreadystatechange = prev;
               handler();
             }

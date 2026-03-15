@@ -1,17 +1,17 @@
-import * as React from "react";
-import { GetStaticProps, GetStaticPaths } from "next";
+import { GetStaticPaths, GetStaticProps } from 'next';
+import * as React from 'react';
+import MarkdownLayout from '../../../../components/MarkdownLayout/MarkdownLayout';
+import Layout from '../../../../components/layout';
+import Markdown from '../../../../components/markdown/Markdown';
+import SEO from '../../../../components/seo';
+import { ConfettiProvider } from '../../../../context/ConfettiContext';
+import { ProblemSolutionContext } from '../../../../context/ProblemSolutionContext';
+import { SolutionInfo } from '../../../../models/solution';
 import {
   MdxContent,
   MdxFrontmatter,
   ProblemInfo,
-} from "../../../../types/content";
-import { SolutionInfo } from "../../../../models/solution";
-import Layout from "../../../../components/layout";
-import SEO from "../../../../components/seo";
-import { ConfettiProvider } from "../../../../context/ConfettiContext";
-import { ProblemSolutionContext } from "../../../../context/ProblemSolutionContext";
-import MarkdownLayout from "../../../../components/MarkdownLayout/MarkdownLayout";
-import Markdown from "../../../../components/markdown/Markdown";
+} from '../../../../types/content';
 
 interface SolutionTemplateProps {
   solutionForSlug: MdxContent;
@@ -37,7 +37,7 @@ export default function SolutionTemplate({
       solutionForSlug.frontmatter.author,
       solutionForSlug.frontmatter.contributors ?? null,
       solutionForSlug.toc,
-      solutionForSlug.fileAbsolutePath,
+      solutionForSlug.fileAbsolutePath
     );
   }, [solutionForSlug]);
 
@@ -73,11 +73,13 @@ export default function SolutionTemplate({
 export const getStaticPaths: GetStaticPaths = async () => {
   try {
     const { queryProblemSlugsForSolutionsIds } = await import(
-      "../../../../lib/queryContent"
+      '../../../../lib/queryContent'
     );
-    const paths = (await queryProblemSlugsForSolutionsIds()).map((slug) => ({
+    const paths = (await queryProblemSlugsForSolutionsIds()).map(slug => ({
       params: {
-        slug: slug.startsWith('/problems/') ? slug.substring('/problems/'.length) : slug
+        slug: slug.startsWith('/problems/')
+          ? slug.substring('/problems/'.length)
+          : slug,
       },
     }));
     return {
@@ -85,7 +87,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
       fallback: false,
     };
   } catch (error) {
-    console.error("Error loading problem file paths:", error);
+    console.error('Error loading problem file paths:', error);
     return {
       paths: [],
       fallback: false,
@@ -93,14 +95,14 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }
 };
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export const getStaticProps: GetStaticProps = async context => {
   try {
     const {
       querySolutionByProblemSlug,
       queryModuleIdAndTitleFromProblemBySolutionId,
       queryProblem,
       queryAllModuleFrontmatter,
-    } = await import("../../../../lib/queryContent");
+    } = await import('../../../../lib/queryContent');
     const { slug } = context.params as {
       slug: string;
     };
@@ -116,11 +118,11 @@ export const getStaticProps: GetStaticProps = async (context) => {
     }
     const modulesThatHaveProblem =
       await queryModuleIdAndTitleFromProblemBySolutionId(
-        solutionForSlug.frontmatter.id,
+        solutionForSlug.frontmatter.id
       );
     if (!modulesThatHaveProblem) {
       console.error(
-        `Problems not found for solution id: ${solutionForSlug.frontmatter.id}`,
+        `Problems not found for solution id: ${solutionForSlug.frontmatter.id}`
       );
       return {
         notFound: true,
@@ -130,7 +132,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     const problemInfo = await queryProblem(solutionForSlug.frontmatter.id);
     if (!problemInfo) {
       console.error(
-        `Problem not found for solution id: ${solutionForSlug.frontmatter.id}`,
+        `Problem not found for solution id: ${solutionForSlug.frontmatter.id}`
       );
       return {
         notFound: true,
@@ -138,7 +140,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     }
     const loadedModuleFrontmatter = await queryAllModuleFrontmatter();
     if (!loadedModuleFrontmatter) {
-      console.error("Failed to load module frontmatter");
+      console.error('Failed to load module frontmatter');
       return {
         notFound: true,
       };
@@ -148,13 +150,11 @@ export const getStaticProps: GetStaticProps = async (context) => {
         solutionForSlug,
         modulesThatHaveProblem,
         problemInfo,
-        frontmatter: loadedModuleFrontmatter.map(
-          (module) => module.frontmatter,
-        ),
+        frontmatter: loadedModuleFrontmatter.map(module => module.frontmatter),
       },
     };
   } catch (error) {
-    console.error("Error loading problem file paths:", error);
+    console.error('Error loading problem file paths:', error);
     return {
       notFound: true,
     };

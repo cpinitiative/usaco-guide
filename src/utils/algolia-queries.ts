@@ -1,25 +1,25 @@
-import { moduleIDToSectionMap } from "../../content/ordering";
-import {
-  AlgoliaEditorModuleFile,
-  AlgoliaEditorSolutionFile,
-} from "../models/algoliaEditorFile";
-import { AlgoliaProblemInfo } from "../models/problem";
-import extractSearchableText from "./extract-searchable-text";
+import { moduleIDToSectionMap } from '../../content/ordering';
 import {
   queryAllModuleFrontmatter,
   queryAllProblemDashboardInfo,
-  queryProblem,
-  queryModuleIdAndTitleFromProblemBySolutionId,
   queryModule,
+  queryModuleIdAndTitleFromProblemBySolutionId,
+  queryProblem,
   querySolution,
-} from "../lib/queryContent";
+} from '../lib/queryContent';
+import {
+  AlgoliaEditorModuleFile,
+  AlgoliaEditorSolutionFile,
+} from '../models/algoliaEditorFile';
+import { AlgoliaProblemInfo } from '../models/problem';
+import extractSearchableText from './extract-searchable-text';
 
 export async function getModuleRecords() {
   const modules = await queryAllModuleFrontmatter();
 
   return modules
-    .filter((m) => m.frontmatter.id in moduleIDToSectionMap)
-    .map(async (m) => {
+    .filter(m => m.frontmatter.id in moduleIDToSectionMap)
+    .map(async m => {
       const fullModule = await queryModule(m.frontmatter.id);
       return {
         objectID: m.frontmatter.id,
@@ -28,7 +28,7 @@ export async function getModuleRecords() {
         division: m.division,
         content: fullModule?.mdast
           ? extractSearchableText(fullModule.mdast)
-          : "",
+          : '',
       };
     });
 }
@@ -36,7 +36,7 @@ export async function getModuleRecords() {
 export async function getProblemRecords() {
   const problems = await queryAllProblemDashboardInfo();
   const modules = await queryAllModuleFrontmatter();
-  const moduleFiles = modules.map((m) => ({
+  const moduleFiles = modules.map(m => ({
     title: m.frontmatter.title,
     id: m.frontmatter.id,
     path: m.filePath,
@@ -48,17 +48,17 @@ export async function getProblemRecords() {
     if (!fullProblem) continue;
 
     const existingProblem = records.find(
-      (x) => x.objectID === fullProblem.uniqueId,
+      x => x.objectID === fullProblem.uniqueId
     );
     const problemModules = await queryModuleIdAndTitleFromProblemBySolutionId(
-      fullProblem.uniqueId,
+      fullProblem.uniqueId
     );
-    const problemModulesWithPath = problemModules.map((module) => {
-      const moduleFile = moduleFiles.find((m) => m.id === module.id);
+    const problemModulesWithPath = problemModules.map(module => {
+      const moduleFile = moduleFiles.find(m => m.id === module.id);
       return {
         id: module.id,
         title: module.title,
-        path: moduleFile?.path || "",
+        path: moduleFile?.path || '',
       };
     });
 
@@ -67,8 +67,8 @@ export async function getProblemRecords() {
         ...new Set([...existingProblem.tags, ...(fullProblem.tags || [])]),
       ];
 
-      problemModulesWithPath.forEach((module) => {
-        if (!existingProblem.problemModules.find((m) => m.id === module.id)) {
+      problemModulesWithPath.forEach(module => {
+        if (!existingProblem.problemModules.find(m => m.id === module.id)) {
           existingProblem.problemModules.push(module);
         }
       });
@@ -83,9 +83,7 @@ export async function getProblemRecords() {
         isStarred: fullProblem.isStarred || false,
         solution: fullProblem.solution
           ? (Object.fromEntries(
-              Object.entries(fullProblem.solution).filter(
-                ([_, v]) => v != null,
-              ),
+              Object.entries(fullProblem.solution).filter(([_, v]) => v != null)
             ) as any)
           : null,
         problemModules: problemModulesWithPath,
@@ -100,7 +98,7 @@ export async function getEditorFileRecords() {
   const modules = await queryAllModuleFrontmatter();
   const problems = await queryAllProblemDashboardInfo();
 
-  const moduleFiles: AlgoliaEditorModuleFile[] = modules.map((m) => ({
+  const moduleFiles: AlgoliaEditorModuleFile[] = modules.map(m => ({
     title: m.frontmatter.title,
     id: m.frontmatter.id,
     path: m.filePath,
@@ -114,24 +112,24 @@ export async function getEditorFileRecords() {
 
     const solution = await querySolution(problemInfo.uniqueId);
     const problemModules = await queryModuleIdAndTitleFromProblemBySolutionId(
-      problemInfo.uniqueId,
+      problemInfo.uniqueId
     );
-    const problemModulesWithPath = problemModules.map((module) => {
-      const moduleFile = moduleFiles.find((m) => m.id === module.id);
+    const problemModulesWithPath = problemModules.map(module => {
+      const moduleFile = moduleFiles.find(m => m.id === module.id);
       return {
         id: module.id,
         title: module.title,
-        path: moduleFile?.path || "",
+        path: moduleFile?.path || '',
       };
     });
 
     const existingFile = solutionFiles.find(
-      (file) => file.id === problemInfo.uniqueId,
+      file => file.id === problemInfo.uniqueId
     );
 
     if (existingFile) {
-      problemModulesWithPath.forEach((module) => {
-        if (!existingFile.problemModules.find((m) => m.id === module.id)) {
+      problemModulesWithPath.forEach(module => {
+        if (!existingFile.problemModules.find(m => m.id === module.id)) {
           existingFile.problemModules.push(module);
         }
       });
@@ -154,24 +152,24 @@ export async function getEditorFileRecords() {
 
   return [
     ...moduleFiles.map<
-      { kind: "module"; objectID: string } & AlgoliaEditorModuleFile
-    >((x) => ({
+      { kind: 'module'; objectID: string } & AlgoliaEditorModuleFile
+    >(x => ({
       ...x,
-      kind: "module",
+      kind: 'module',
       objectID: x.id,
     })),
     ...solutionFiles.map<
-      { kind: "solution"; objectID: string } & AlgoliaEditorSolutionFile
-    >((x) => ({
+      { kind: 'solution'; objectID: string } & AlgoliaEditorSolutionFile
+    >(x => ({
       ...x,
-      kind: "solution",
+      kind: 'solution',
       objectID: x.id,
     })),
   ];
 }
 
 export async function getAlgoliaRecords() {
-  const indexPrefix = process.env.ALGOLIA_INDEX_NAME ?? "dev";
+  const indexPrefix = process.env.ALGOLIA_INDEX_NAME ?? 'dev';
 
   const [moduleRecords, problemRecords, fileRecords] = await Promise.all([
     Promise.all(await getModuleRecords()),
@@ -182,35 +180,35 @@ export async function getAlgoliaRecords() {
   return [
     {
       records: moduleRecords,
-      indexName: indexPrefix + "_modules",
-      matchFields: ["title", "description", "content", "id", "division"],
+      indexName: indexPrefix + '_modules',
+      matchFields: ['title', 'description', 'content', 'id', 'division'],
     },
     {
       records: problemRecords,
-      indexName: indexPrefix + "_problems",
+      indexName: indexPrefix + '_problems',
       matchFields: [
-        "source",
-        "name",
-        "tags",
-        "url",
-        "difficulty",
-        "isStarred",
-        "tags",
-        "problemModules",
-        "solution",
+        'source',
+        'name',
+        'tags',
+        'url',
+        'difficulty',
+        'isStarred',
+        'tags',
+        'problemModules',
+        'solution',
       ],
     },
     {
       records: fileRecords,
-      indexName: indexPrefix + "_editorFiles",
+      indexName: indexPrefix + '_editorFiles',
       matchFields: [
-        "kind",
-        "title",
-        "id",
-        "source",
-        "solutions",
-        "path",
-        "problemModules",
+        'kind',
+        'title',
+        'id',
+        'source',
+        'solutions',
+        'path',
+        'problemModules',
       ],
     },
   ];

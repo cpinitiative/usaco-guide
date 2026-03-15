@@ -135,38 +135,38 @@ export type ProblemInfo = {
 
 export type ProblemSolutionInfo =
   | {
-    kind: 'internal';
-    // The URL for internal solutions are well defined: /problems/[problem-slug]/solution
-    hasHints?: boolean;
-  }
+      kind: 'internal';
+      // The URL for internal solutions are well defined: /problems/[problem-slug]/solution
+      hasHints?: boolean;
+    }
   | {
-    kind: 'link';
-    /**
-     * Ex: External Sol or CPH 5.3
-     */
-    label: string;
-    url: string;
-  }
+      kind: 'link';
+      /**
+       * Ex: External Sol or CPH 5.3
+       */
+      label: string;
+      url: string;
+    }
   | {
-    /*
+      /*
 If the label is just text. Used for certain sources like Codeforces
 Ex:
 - label = Check CF
 - labelTooltip = "Check content materials, located to the right of the problem statement
 */
-    kind: 'label';
-    label: string;
-    labelTooltip: string | null;
-  }
+      kind: 'label';
+      label: string;
+      labelTooltip: string | null;
+    }
   | {
-    /*
+      /*
 Not recommended -- use internal solutions instead.
 Used if there's a super short solution sketch that's not a full editorial.
 Latex *is* allowed with the new implementation of problems.
 */
-    kind: 'sketch';
-    sketch: string;
-  }
+      kind: 'sketch';
+      sketch: string;
+    }
   | null; // null if there's no solution for this problem
 
 export type AlgoliaProblemInfo = Omit<ProblemInfo, 'uniqueId'> & {
@@ -183,57 +183,57 @@ export type ProblemMetadata = Omit<ProblemInfo, 'solution'> & {
 
 export type ProblemSolutionMetadata =
   | {
-    // auto generate problem solution label based off of the given site
-    // For sites like Codeforces: "Check contest materials, located to the right of the problem statement."
-    kind: 'autogen-label-from-site';
-    // The site to generate it from. Sometimes this may differ from the source; for example, Codeforces could be the site while Baltic OI could be the source if Codeforces was hosting a Baltic OI problem.
-    site: string;
-  }
+      // auto generate problem solution label based off of the given site
+      // For sites like Codeforces: "Check contest materials, located to the right of the problem statement."
+      kind: 'autogen-label-from-site';
+      // The site to generate it from. Sometimes this may differ from the source; for example, Codeforces could be the site while Baltic OI could be the source if Codeforces was hosting a Baltic OI problem.
+      site: string;
+    }
   | {
-    // internal solution
-    kind: 'internal';
-    hasHints?: boolean;
-  }
+      // internal solution
+      kind: 'internal';
+      hasHints?: boolean;
+    }
   | {
-    // URL solution
-    // Use this for links to PDF solutions, etc
-    kind: 'link';
-    url: string;
-  }
+      // URL solution
+      // Use this for links to PDF solutions, etc
+      kind: 'link';
+      url: string;
+    }
   | {
-    // Competitive Programming Handbook
-    // Ex: 5.3 or something
-    kind: 'CPH';
-    section: string;
-  }
+      // Competitive Programming Handbook
+      // Ex: 5.3 or something
+      kind: 'CPH';
+      section: string;
+    }
   | {
-    // USACO solution, generates it based off of the USACO problem ID
-    // ex. 1113 is mapped to sol_prob1_gold_feb21.html
-    kind: 'USACO';
-    usacoId: string;
-  }
+      // USACO solution, generates it based off of the USACO problem ID
+      // ex. 1113 is mapped to sol_prob1_gold_feb21.html
+      kind: 'USACO';
+      usacoId: string;
+    }
   | {
-    // IOI solution, generates it based off of the year
-    // ex. Maps year = 2001 to https://ioinformatics.org/page/ioi-2001/27
-    kind: 'IOI';
-    year: number;
-  }
+      // IOI solution, generates it based off of the year
+      // ex. Maps year = 2001 to https://ioinformatics.org/page/ioi-2001/27
+      kind: 'IOI';
+      year: number;
+    }
   | {
-    // no solution exists
-    kind: 'none';
-  }
+      // no solution exists
+      kind: 'none';
+    }
   | {
-    // for focus problems, when the solution is presented in the module of the problem
-    kind: 'in-module';
-    moduleId: string;
-  }
+      // for focus problems, when the solution is presented in the module of the problem
+      kind: 'in-module';
+      moduleId: string;
+    }
   | {
-    /**
-     * @deprecated
-     */
-    kind: 'sketch';
-    sketch: string;
-  };
+      /**
+       * @deprecated
+       */
+      kind: 'sketch';
+      sketch: string;
+    };
 
 // Checks if a given source is USACO
 export const isUsaco = (source: string): boolean => {
@@ -288,10 +288,11 @@ export function getProblemURL(
 ): string {
   // USACO and CSES sometimes have duplicate problem names
   // so we should add the ID to the URL
-  return `/problems/${isUsaco(problem.source) || problem.source === 'CSES'
-    ? problem.uniqueId
-    : slug(problem.source)
-    }-${slug(problem.name.replace(' - ', ''))}`;
+  return `/problems/${
+    isUsaco(problem.source) || problem.source === 'CSES'
+      ? problem.uniqueId
+      : slug(problem.source)
+  }-${slug(problem.name.replace(' - ', ''))}`;
 }
 
 /**
@@ -387,7 +388,7 @@ export const getProblemInfo = (
     if (!id_to_sol.hasOwnProperty(solutionMetadata.usacoId)) {
       throw new Error(
         "Couldn't find a corresponding USACO external solution for USACO problem ID " +
-        solutionMetadata.usacoId
+          solutionMetadata.usacoId
       );
     }
     sol = {
@@ -416,8 +417,9 @@ export const getProblemInfo = (
     sol = {
       kind: 'link',
       label: 'In Module',
-      url: `https://usaco.guide/${ordering.moduleIDToSectionMap[solutionMetadata.moduleId]
-        }/${solutionMetadata.moduleId}#problem-${info.uniqueId}`,
+      url: `https://usaco.guide/${
+        ordering.moduleIDToSectionMap[solutionMetadata.moduleId]
+      }/${solutionMetadata.moduleId}#problem-${info.uniqueId}`,
     };
   } else if (solutionMetadata.kind === 'sketch') {
     sol = {
