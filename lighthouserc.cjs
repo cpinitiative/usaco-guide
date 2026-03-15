@@ -8,7 +8,6 @@ module.exports = {
         'http://localhost:3000/general/',
       ],
     },
-    assert: {},
     upload: {
       target: 'temporary-public-storage',
     },
