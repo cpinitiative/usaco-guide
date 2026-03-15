@@ -1,0 +1,43 @@
+---
+id: usaco-496
+source: USACO Gold 2014 December
+title: Cow Jog
+author: David Zhao
+---
+
+[Official Analysis](https://usaco.org/current/data/sol_cowjog_gold.html)
+
+## Explanation
+
+This problem wants the minimum number of lanes (longest increasing subsequences) such that no cows overlap during running.
+
+Notice that if two cows have p_{i+1}+T*s_{i+1} >= p_{i}+T*s_{i} they must have passed each other along the way. So we look for longest
+increasing subsequences of p+T*s in the input, which is already sorted by p.
+
+## Implementation
+
+**Time Complexity:** $\matchcal{O}(N\logN)$
+
+<LanguageSection>
+<CPPSection>
+#include <bits/stdc++.h>
+using namespace std;
+int main()
+{
+	freopen("cowjog.in","r",stdin);
+	freopen("cowjog.out","w",stdout);
+	int n, t;
+	cin>>n>>t;
+	uint_fast64_t lds[100'000], *last=lds;
+	for(int i=0;i<n;++i){//finds the min # of strictly increasing subsequences
+		uint_fast64_t pos, spd;
+		cin>>pos>>spd;
+		pos+=spd*t;//1 billion*1 billion
+		auto it = upper_bound(lds,last,pos,greater{});
+		*it = pos;
+		last += (it==last);
+	}
+	cout<<last-lds<<'\n';
+}
+</CPPSection>
+</LanguageSection>
