@@ -9,12 +9,12 @@ author: David Zhao
 
 ## Explanation
 
-This problem wants the minimum number of lanes (longest increasing subsequences) such that no cows overlap during running.
+We are asked to calculate the minimum number of lanes (longest increasing subsequences), such that no cows overlap while running.
 
-Since the input is already sorted by $p$, notice that if two cows have $p_{i}+T \cdot s_{i} >= p_{i+1}+T \cdot s_{i+1}$ they must have passed each other along the way.
+Since the input is already sorted by $p$, notice that if two cows have $p_{i}+T \cdot s_{i} \geq p_{i+1}+T \cdot s_{i+1}$, they must have passed each other along the way.
 
-We want to ensure the opposite within each lane: $p_{i}+T \cdot s_{i} < p_{i+1}+T \cdot s_{i+1}$
-So we count longest strictly increasing subsequences of $p+T \cdot s$ which is the same as the length of the longest non-increasing subsequence.
+We want to ensure the opposite within each lane: $p_{i}+T \cdot s_{i} < p_{i+1}+T \cdot s_{i+1}$, so we calculate the minimum longest strictly increasing subsequences of $p+T \cdot s$.
+This is equivalent to the length of the longest non-increasing subsequence, as mentioned [in the module](/gold/lis#application-2---minimum-number-of-increasing-sequences).
 
 ## Implementation
 
@@ -22,20 +22,24 @@ So we count longest strictly increasing subsequences of $p+T \cdot s$ which is t
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
+
 int main() {
 	freopen("cowjog.in", "r", stdin);
 	freopen("cowjog.out", "w", stdout);
+
 	int n, t;
 	cin >> n >> t;
 	vector<long long> lds;
-	lds.reserve(n);
-	for (int i = 0; i < n; ++i) {  // find the min # of strictly increasing subsequences
+
+	// find min # of strictly increasing subsequences
+	for (int i = 0; i < n; ++i) {  
 		long long pos, spd;
 		cin >> pos >> spd;
-		pos += spd * t;  // 1 billion*1 billion
+		pos += spd * t;
 		auto it = upper_bound(lds.begin(), lds.end(), pos, greater{});
 		if (it == lds.end()) {
 			lds.push_back(pos);
@@ -43,10 +47,10 @@ int main() {
 			*it = pos;
 		}
 	}
+
 	cout << lds.size() << '\n';
 }
 ```
+
 </CPPSection>
 </LanguageSection>
-
-```cpp
