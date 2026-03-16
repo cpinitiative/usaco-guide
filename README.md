@@ -1,4 +1,4 @@
-![USACO Guide](/assets/banner-image-big.jpg)
+![USACO Guide](/public/assets/banner-image-big.jpg)
 
 # USACO Guide
 
