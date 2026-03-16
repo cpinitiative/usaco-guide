@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 // @ts-ignore
 import { Fragment, jsx, jsxs } from 'react/jsx-runtime';
 import { MarkdownProblemListsProvider } from '../../context/MarkdownProblemListsContext';
+import { compileMdxForEditor } from '../../lib/compileMdxForEditor';
 import { components } from '../markdown/MDXComponents';
 
 class ErrorBoundary extends React.Component<{ children?: React.ReactNode }> {
@@ -56,62 +57,40 @@ export default function DynamicMarkdownRenderer({
     setMarkdownProblemListsProviderValue,
   ] = useState([]);
   const [error, setError] = useState<Error | null>(null);
-  const workerRef = useRef<Worker | null>(null);
-  const currentlyCompilingRef = useRef<{
-    markdown: string;
-    problems: string;
-  } | null>(null);
-  const waitingToBeCompiledRef = useRef<{
-    markdown: string;
-    problems: string;
-  } | null>(null);
-
-  const requestMarkdownCompilation = () => {
-    if (workerRef.current === null) return;
-    if (currentlyCompilingRef.current !== null) return;
-    const data = waitingToBeCompiledRef.current;
-    if (data === null) return;
-    currentlyCompilingRef.current = data;
-    waitingToBeCompiledRef.current = null;
-    workerRef.current.postMessage(data);
-  };
-
-  React.useEffect(() => {
-    const worker = new Worker(new URL('./mdx-renderer.js', import.meta.url));
-    worker.onmessage = ({ data }) => {
-      currentlyCompilingRef.current = null;
-      if (data.compiledResult) {
-        let content = null;
-        try {
-          content = new Function(data.compiledResult)({
-            Fragment,
-            jsx,
-            jsxs,
-          }).default({ components });
-        } catch (e) {
-          if (e instanceof Error) setError(e);
-          else setError(new Error('Unknown Error: ' + e));
-        }
-        if (content) setError(null);
-        setMdxContent(content);
-        setMarkdownProblemListsProviderValue(data.problemsList);
-      } else {
-        setError(data.error);
-        setMdxContent(null);
-      }
-      requestMarkdownCompilation();
-    };
-    workerRef.current = worker;
-    requestMarkdownCompilation();
-    return () => worker.terminate();
-  }, []);
+  const compileSeqRef = useRef(0);
 
   useEffect(() => {
-    waitingToBeCompiledRef.current = {
-      markdown: markdown ?? '',
-      problems,
-    };
-    requestMarkdownCompilation();
+    const seq = ++compileSeqRef.current;
+    const nextMarkdown = markdown ?? '';
+    const nextProblems = problems ?? '';
+
+    setMdxContent(null);
+
+    (async () => {
+      try {
+        const { compiledResult, problemsList } = await compileMdxForEditor({
+          markdown: nextMarkdown,
+          problems: nextProblems,
+        });
+
+        const content = new Function(compiledResult)({
+          Fragment,
+          jsx,
+          jsxs,
+        }).default({ components });
+
+        if (compileSeqRef.current !== seq) return;
+        setError(null);
+        setMdxContent(content);
+        setMarkdownProblemListsProviderValue(problemsList);
+      } catch (e) {
+        if (compileSeqRef.current !== seq) return;
+        const err =
+          e instanceof Error ? e : new Error('Unknown Error: ' + String(e));
+        setError(err);
+        setMdxContent(null);
+      }
+    })();
   }, [markdown, problems]);
 
   if (error) {
@@ -126,6 +105,12 @@ export default function DynamicMarkdownRenderer({
           This error has also been logged to the console.
         </p>
       </div>
+    );
+  }
+
+  if (!mdxContent) {
+    return (
+      <p className="text-sm text-gray-600 dark:text-gray-300">Compiling…</p>
     );
   }
 
