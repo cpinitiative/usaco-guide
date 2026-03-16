@@ -22,7 +22,10 @@ const VideoComponent = ({ link }: { link: string }) => {
 
         // Embed/shorts formats: /embed/VIDEOID, /shorts/VIDEOID
         const parts = url.pathname.split('/').filter(Boolean);
-        if (parts.length >= 2 && (parts[0] === 'embed' || parts[0] === 'shorts')) {
+        if (
+          parts.length >= 2 &&
+          (parts[0] === 'embed' || parts[0] === 'shorts')
+        ) {
           return parts[1];
         }
       }

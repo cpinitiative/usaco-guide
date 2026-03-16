@@ -109,7 +109,9 @@ export default function DynamicMarkdownRenderer({
   }
 
   if (!mdxContent) {
-    return <p className="text-sm text-gray-600 dark:text-gray-300">Compiling…</p>;
+    return (
+      <p className="text-sm text-gray-600 dark:text-gray-300">Compiling…</p>
+    );
   }
 
   return (
