@@ -23,24 +23,3 @@ So we look for longest strictly increasing subsequences of p+T \cdot s in the in
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
-int main()
-{
-	freopen("cowjog.in","r",stdin);
-	freopen("cowjog.out","w",stdout);
-	int n, t;
-	cin>>n>>t;
-	uint_fast64_t lds[100'000], *last=lds;
-	for(int i=0;i<n;++i){//finds the min # of strictly increasing subsequences
-		uint_fast64_t pos, spd;
-		cin>>pos>>spd;
-		pos+=spd*t;//1 billion*1 billion
-		auto it = upper_bound(lds,last,pos,greater{});
-		*it = pos;
-		last += (it==last);
-	}
-	cout<<last-lds<<'\n';
-}
-</CPPSection>
-</LanguageSection>
