@@ -11,16 +11,16 @@ author: David Zhao
 
 This problem wants the minimum number of lanes (longest increasing subsequences) such that no cows overlap during running.
 
-Notice that if two cows have p_{i}+T \cdot s_{i} >= p_{i+1}+T \cdot s_{i+1} they must have passed each other along the way.
-We want to ensure p_{i}+T \cdot s_{i} < p_{i+1}+T \cdot s_{i+1}
-So we look for longest strictly increasing subsequences of p+T \cdot s in the input, which is already sorted by p.
+Since the input is already sorted by $p$, notice that if two cows have $$p_{i}+T \cdot s_{i} >= p_{i+1}+T \cdot s_{i+1}$$ they must have passed each other along the way.
 
-## Implementation
+We want to ensure the opposite within each lane: $$p_{i}+T \cdot s_{i} < p_{i+1}+T \cdot s_{i+1}$$
+So we count longest strictly increasing subsequences of $p+T \cdot s$ which is the same as the length of the longest non-increasing subsequence.
 
 **Time Complexity:** $\matchcal{O}(N\logN)$
 
 <LanguageSection>
 <CPPSection>
+```
 #include <bits/stdc++.h>
 using namespace std;
 int main()
@@ -29,7 +29,8 @@ int main()
 	freopen("cowjog.out","w",stdout);
 	int n, t;
 	cin>>n>>t;
-	uint_fast64_t lds[100'000], *last=lds;
+	uint_fast64_t lds[100'000];
+	int *last=lds;
 	for(int i=0;i<n;++i){//finds the min # of strictly increasing subsequences
 		uint_fast64_t pos, spd;
 		cin>>pos>>spd;
@@ -40,5 +41,6 @@ int main()
 	}
 	cout<<last-lds<<'\n';
 }
+```
 </CPPSection>
 </LanguageSection>
