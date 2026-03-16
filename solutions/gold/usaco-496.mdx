@@ -25,26 +25,25 @@ So we count longest strictly increasing subsequences of $p+T \cdot s$ which is t
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-int main()
-{
-	freopen("cowjog.in","r",stdin);
-	freopen("cowjog.out","w",stdout);
+int main() {
+	freopen("cowjog.in", "r", stdin);
+	freopen("cowjog.out", "w", stdout);
 	int n, t;
-	cin>>n>>t;
+	cin >> n >> t;
 	vector<long long> lds;
 	lds.reserve(n);
-	for(int i=0;i<n;++i){//find the min # of strictly increasing subsequences
+	for (int i = 0; i < n; ++i) {  // find the min # of strictly increasing subsequences
 		long long pos, spd;
-		cin>>pos>>spd;
-		pos+=spd*t;//1 billion*1 billion
-		auto it = upper_bound(lds.begin(),lds.end(),pos,greater{});
+		cin >> pos >> spd;
+		pos += spd * t;  // 1 billion*1 billion
+		auto it = upper_bound(lds.begin(), lds.end(), pos, greater{});
 		if (it == lds.end()) {
 			lds.push_back(pos);
 		} else {
 			*it = pos;
 		}
 	}
-	cout<<lds.size()<<'\n';
+	cout << lds.size() << '\n';
 }
 ```
 </CPPSection>
