@@ -20,13 +20,13 @@ export const EditorOutput = (): JSX.Element => {
   const activeFile = useAtomValue(activeFileAtom);
   const saveFile = useSetAtom(saveFileAtom);
 
-  const markdown: string = activeFile?.markdown ?? '';
-  const problems: string = activeFile?.problems ?? '';
-
   const [
     markdownProblemListsProviderValue,
     setMarkdownProblemListsProviderValue,
   ] = useState<{ listId: string; problems: any }[]>([]);
+
+  const markdown: string = activeFile?.markdown ?? '';
+  const problems: string = activeFile?.problems ?? '';
   React.useEffect(() => {
     try {
       const parsedProblems = JSON.parse(problems || '{}');
@@ -46,6 +46,7 @@ export const EditorOutput = (): JSX.Element => {
     listId: string,
     problemMetadata: ProblemMetadata
   ) => {
+    if (!activeFile) return;
     const parsedOldFileData = JSON.parse(problems);
     const tableToEdit = parsedOldFileData[listId];
 
@@ -70,13 +71,23 @@ export const EditorOutput = (): JSX.Element => {
     const newContent = JSON.stringify(parsedOldFileData, null, 2) + '\n';
     const formattedNewContent = await formatMarkdown(newContent);
     saveFile({
-      path: activeFile!.path,
+      path: activeFile.path,
       update: async prev => ({
         ...prev,
         problems: formattedNewContent,
       }),
     });
   };
+
+  if (!activeFile) {
+    return (
+      <div className="markdown p-4">
+        <div className="rounded-lg border border-gray-200 bg-white p-4 text-sm text-gray-700 dark:border-gray-800 dark:bg-gray-950 dark:text-gray-200">
+          Open a file from the left sidebar to preview it here.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="markdown p-4">

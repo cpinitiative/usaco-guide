@@ -7,20 +7,49 @@ import YouTube from '../markdown/YouTube';
 import Feedback from './Feedback';
 
 const VideoComponent = ({ link }: { link: string }) => {
-  const getParameterByName = (name: string, url = window.location.href) => {
-    name = name.replace(/[\[\]]/g, '\\$&');
-    const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-      results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+  const extractYouTubeId = (raw: string): string | null => {
+    const trimmed = raw.trim();
+
+    // Try using URL parser first for full links
+    try {
+      const url = new URL(trimmed);
+      const host = url.hostname.toLowerCase();
+
+      if (host.includes('youtube.com')) {
+        // Standard watch URL: https://www.youtube.com/watch?v=VIDEOID
+        const vParam = url.searchParams.get('v');
+        if (vParam) return vParam;
+
+        // Embed/shorts formats: /embed/VIDEOID, /shorts/VIDEOID
+        const parts = url.pathname.split('/').filter(Boolean);
+        if (
+          parts.length >= 2 &&
+          (parts[0] === 'embed' || parts[0] === 'shorts')
+        ) {
+          return parts[1];
+        }
+      }
+
+      if (host === 'youtu.be') {
+        // Short link: https://youtu.be/VIDEOID or with extra segments/query
+        const parts = url.pathname.split('/').filter(Boolean);
+        if (parts.length > 0) {
+          return parts[0];
+        }
+      }
+    } catch {
+      // Not a full URL, fall through to plain ID / legacy handling
+    }
+
+    // Fallback: if it looks like a bare YouTube ID, accept it
+    if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) {
+      return trimmed;
+    }
+
+    return null;
   };
-  let id = '';
-  if (link.indexOf('youtube.com') !== -1) {
-    id = getParameterByName('v', link.trim())!;
-  } else if (link.indexOf('youtu.be') !== -1) {
-    id = link.split('/').pop()!;
-  }
+
+  const id = extractYouTubeId(link);
 
   if (!id) {
     return (
@@ -66,10 +95,10 @@ const GroupsCodeBlock = ({
   children: React.ReactNode;
   inline?: boolean;
 }) => {
-  const value = children![0];
+  const value = Array.isArray(children) ? children[0] : children;
   const isDarkMode = useDarkMode();
-  if (className === 'language-video') {
-    return <VideoComponent link={value} />;
+  if (className && className.split(' ').includes('language-video')) {
+    return <VideoComponent link={String(value)} />;
   }
   if (inline) {
     return <code>{value}</code>;

@@ -14,6 +14,7 @@ import { useRouter } from 'next/router';
 import React, { lazy } from 'react';
 import Split from 'react-split';
 import {
+  activeFileAtom,
   filesListAtom,
   monacoEditorInstanceAtom,
   openOrCreateExistingFileAtom,
@@ -46,6 +47,8 @@ export default function EditorPage(): JSX.Element {
   const router = useRouter();
   const { query } = router;
   const editor = useAtomValue(monacoEditorInstanceAtom);
+  const activeFile = useAtomValue(activeFileAtom);
+  const setActiveFile = useSetAtom(activeFileAtom);
   const openOrCreateExistingFile = useSetAtom(openOrCreateExistingFileAtom);
   const setToken = useSetAtom(
     tokenAtom as WritableAtom<string | null, [string | null], void>
@@ -76,6 +79,12 @@ export default function EditorPage(): JSX.Element {
       openOrCreateExistingFile(defaultFilePath);
     }
   }, [filesList, openOrCreateExistingFile, query.filepath]);
+
+  React.useEffect(() => {
+    if (activeFile) return;
+    if (!filesList || filesList.length === 0) return;
+    setActiveFile(filesList[0]);
+  }, [activeFile, filesList, setActiveFile]);
 
   return (
     <QuizGeneratorProvider>
