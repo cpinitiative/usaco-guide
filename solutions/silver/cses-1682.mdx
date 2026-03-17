@@ -2,17 +2,13 @@
 id: cses-1682
 source: CSES
 title: Flight Routes Check
-author: Michael Cao, Nathan Gong
+author: Michael Cao, Nathan Gong, Aarav Sethi
 contributors: George Pong
 ---
 
-In this problem, given a directed graph with $n$ nodes and $m$ edges, we need to
-return "YES" if we can travel between all pairs of vertices $u, v$ or "NO" and
-give the pair of vertices we can't travel between otherwise.
+# Explanation
 
-# Main Idea
-
-The theorem used here is that if one vertex can both reach and **be reached** by
+The theorem being used here is that if one vertex can both reach and **be reached** by
 all others, then every vertex in this graph can reach all others.
 
 Let's say $\texttt{can[u][v]}$ is true if you can go from vertex $u$ to vertex
@@ -26,7 +22,7 @@ To compute $\texttt{can[1][x]}$, we can run a dfs from from vertex $1$ and check
 if you can reach vertex $x$ for all $1 \leq x \leq n$. If we can't, then print
 $1$ $x$ if you're running the DFS on $G$ and $x$ $1$ otherwise.
 
-# Proof
+## Proof
 
 Let's do a proof by contradiction. Assume that $\texttt{can[1][x]}$ is true for
 all vertices $x$ in both $G$ and $G'$, and there exists a pair of vertices
@@ -42,133 +38,62 @@ all vertices $u, v$.
 **Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>  // see C++ Tips & Tricks
+#include <bits/stdc++.h>
 using namespace std;
 
-using ll = long long;
-
-using vi = vector<int>;
-#define pb push_back
-#define rsz resize
-#define all(x) begin(x), end(x)
-#define sz(x) (int)(x).size()
-
-using pi = pair<int, int>;
-#define f first
-#define s second
-#define mp make_pair
-
-void setIO(string name = "") {  // name is nonempty for USACO file I/O
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);  // see Fast Input & Output
-	// alternatively, cin.tie(0)->sync_with_stdio(0);
-	if (sz(name)) {
-		freopen((name + ".in").c_str(), "r", stdin);  // see Input & Output
-		freopen((name + ".out").c_str(), "w", stdout);
-	}
-}
-
-vi adj[100005][2];
-bool vis[100005];
-
-void dfs(int v, int x) {
-	vis[v] = true;
-	for (int to : adj[v][x]) {
-		if (!vis[to]) { dfs(to, x); }
+void dfs(int pos, vector<vector<int>> &flights, vector<bool> &visited) {
+	for (int c : flights[pos]) {
+		if (visited[c]) continue;
+		visited[c] = true;
+		dfs(c, flights, visited);
 	}
 }
 
 int main() {
-	setIO();
 	int n, m;
 	cin >> n >> m;
+
+	vector<vector<int>> forward_graph(n);
+	vector<vector<int>> reverse_graph(n);
 	for (int i = 0; i < m; i++) {
-		int u, v;
-		cin >> u >> v;
-		u--, v--;
-		adj[u][0].pb(v);
-		adj[v][1].pb(u);
+		int a, b;
+		cin >> a >> b;
+		a--;
+		b--;
+		forward_graph[a].push_back(b);
+		reverse_graph[b].push_back(a);
 	}
-	dfs(0, 0);
-	for (int i = 0; i < n; i++) {
-		if (!vis[i]) {
-			cout << "NO" << '\n';
-			cout << 1 << " " << i + 1 << '\n';
+
+	// Forward Pass
+	vector<bool> visited(n);
+	dfs(0, forward_graph, visited);
+	for (int i = 1; i < n; i++) {
+		if (visited[i] == false) {
+			cout << "NO\n";
+			cout << 1 << " " << i + 1 << "\n";
 			return 0;
 		}
 	}
-	memset(vis, false, sizeof(vis));  // fill vis with false
-	dfs(0, 1);
-	for (int i = 0; i < n; i++) {
-		if (!vis[i]) {
-			cout << "NO" << '\n';
-			cout << i + 1 << " " << 1 << '\n';
+
+	// Reverse Pass
+	visited = vector<bool>(n, false);
+	dfs(0, reverse_graph, visited);
+	for (int i = 1; i < n; i++) {
+		if (visited[i] == false) {
+			cout << "NO" << endl;
+			cout << i + 1 << " " << 1 << "\n";
 			return 0;
 		}
 	}
-	cout << "YES" << '\n';
+
+	cout << "YES" << endl;
 }
 ```
 
 </CPPSection>
-
-<PySection>
-
-```py
-from typing import List, Set
-
-n, m = map(int, input().split())
-
-forward_graph = [[] for _ in range(n)]
-reverse_graph = [[] for _ in range(n)]
-
-for _ in range(m):
-	a, b = map(int, input().split())
-	forward_graph[a - 1].append(b - 1)
-	reverse_graph[b - 1].append(a - 1)
-
-
-def dfs(graph: List[List[int]]) -> Set[int]:
-	"""
-	Performs a depth-first traversal of a graph starting from node 0. Removes
-	each node reached from a set of all nodes. Once complete, the set will only
-	contain unvisited nodes and is then returned.
-
-	:param graph: An adjacency list representing a graph.
-	:return: A set containing all unvisited nodes in the depth-first traversal.
-	"""
-	unvisited = set(range(1, n))
-	stack = [0]
-	while stack:
-		curr = stack.pop()
-
-		for adj in graph[curr]:
-			if adj in unvisited:
-				stack.append(adj)
-				unvisited.remove(adj)
-
-	return unvisited
-
-
-# These will be empty if there are no unvisited nodes
-unvisited_fwd = dfs(forward_graph)
-unvisited_rev = dfs(reverse_graph)
-
-if unvisited_fwd:
-	print("NO")
-	print(f"1 {unvisited_fwd.pop() + 1}")
-elif unvisited_rev:
-	print("NO")
-	print(f"{unvisited_rev.pop() + 1} 1")
-else:
-	print("YES")
-```
-</PySection>
-
 <JavaSection>
 
 ```java
@@ -246,7 +171,58 @@ public class FlightRoutesCheck {
 ```
 
 </JavaSection>
+<PySection>
 
+```py
+from typing import List, Set
+
+n, m = map(int, input().split())
+
+forward_graph = [[] for _ in range(n)]
+reverse_graph = [[] for _ in range(n)]
+
+for _ in range(m):
+	a, b = map(int, input().split())
+	forward_graph[a - 1].append(b - 1)
+	reverse_graph[b - 1].append(a - 1)
+
+
+def dfs(graph: List[List[int]]) -> Set[int]:
+	"""
+	Performs a depth-first traversal of a graph starting from node 0. Removes
+	each node reached from a set of all nodes. Once complete, the set will only
+	contain unvisited nodes and is then returned.
+
+	:param graph: An adjacency list representing a graph.
+	:return: A set containing all unvisited nodes in the depth-first traversal.
+	"""
+	unvisited = set(range(1, n))
+	stack = [0]
+	while stack:
+		curr = stack.pop()
+
+		for adj in graph[curr]:
+			if adj in unvisited:
+				stack.append(adj)
+				unvisited.remove(adj)
+
+	return unvisited
+
+
+# These will be empty if there are no unvisited nodes
+unvisited_fwd = dfs(forward_graph)
+unvisited_rev = dfs(reverse_graph)
+
+if unvisited_fwd:
+	print("NO")
+	print(f"1 {unvisited_fwd.pop() + 1}")
+elif unvisited_rev:
+	print("NO")
+	print(f"{unvisited_rev.pop() + 1} 1")
+else:
+	print("YES")
+```
+</PySection>
 </LanguageSection>
 
 The problem can also be solved using [strongly connected components (SCC)](/adv/SCC).
