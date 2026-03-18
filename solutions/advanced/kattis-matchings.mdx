@@ -110,7 +110,7 @@ $$
 
 becomes a standard convolution.
 
-After multiplication, each index in the resulting array corresponds to a specific shift.  
+After multiplication, each index in the resulting array corresponds to a specific shift.
 For a placement $(x, y)$, the corresponding index is:
 
 $$
@@ -226,8 +226,7 @@ int main() {
 
 	vector<vector<int>> mask(n, vector<int>(m));
 	for (int i = 0; i < n; ++i)
-		for (int j = 0; j < m; ++j)
-			cin >> mask[i][j];
+		for (int j = 0; j < m; ++j) cin >> mask[i][j];
 
 	int m1, n1;
 	cin >> m1 >> n1;
@@ -235,19 +234,16 @@ int main() {
 	vector<int> a((n - 1) * m1 + m, 0), b(n1 * m1);
 
 	for (int i = 0; i < n1; i++)
-		for (int j = 0; j < m1; j++)
-			cin >> b[i * m1 + j];
+		for (int j = 0; j < m1; j++) cin >> b[i * m1 + j];
 
 	for (int i = 0; i < n; i++)
-		for (int j = 0; j < m; j++)
-			a[i * m1 + j] = mask[i][j];
+		for (int j = 0; j < m; j++) a[i * m1 + j] = mask[i][j];
 
 	reverse(a.begin(), a.end());
 	auto c1 = mul(a, b);
 
 	for (int i = 0; i < n; i++)
-		for (int j = 0; j < m; j++)
-			a[i * m1 + j] = 1 - mask[i][j];
+		for (int j = 0; j < m; j++) a[i * m1 + j] = 1 - mask[i][j];
 
 	reverse(a.begin(), a.end());
 	for (int &x : b) x = 1 - x;
@@ -255,8 +251,7 @@ int main() {
 	auto c2 = mul(a, b);
 
 	vector<int> c(c1.size());
-	for (int i = 0; i < (int)c.size(); i++)
-		c[i] = c1[i] + c2[i];
+	for (int i = 0; i < (int)c.size(); i++) c[i] = c1[i] + c2[i];
 
 	int best = 0;
 
@@ -274,14 +269,12 @@ int main() {
 		for (int x = 0; x <= m1 - m; x++) {
 			int ind = y * m1 + x;
 			int i = ind + (int)a.size() - 1;
-			if (c[i] == best)
-				ans.push_back({x, y});
+			if (c[i] == best) ans.push_back({x, y});
 		}
 	}
 
 	sort(ans.begin(), ans.end());
-	for (auto &p : ans)
-		cout << p.first << " " << p.second << '\n';
+	for (auto &p : ans) cout << p.first << " " << p.second << '\n';
 }
 ```
 
