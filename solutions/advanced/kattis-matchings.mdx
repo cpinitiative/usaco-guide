@@ -47,6 +47,42 @@ $$
 
 We compute both terms separately and add them.
 
+<Spoiler title="Can we solve with just one FFT ?">
+
+Instead of computing two separate convolutions (one for matching $1$s and one for matching $0$s), we can reduce the problem to a single convolution.
+
+We transform the arrays as follows:
+
+- replace $0 \rightarrow -1$
+- keep $1 \rightarrow 1$
+
+Now consider the contribution of a single position:
+
+- if the pixels match, we get $1 \cdot 1 = 1$ or $(-1) \cdot (-1) = 1$
+- if they mismatch, we get $1 \cdot (-1) = -1$
+
+Thus the convolution directly computes:
+
+$$
+\text{sum} = \text{matches} - \text{mismatches}
+$$
+
+We also know:
+
+$$
+\text{matches} + \text{mismatches} = n \cdot m
+$$
+
+Combining both,
+
+$$
+\text{matches} = \frac{\text{sum} + n \cdot m}{2}
+$$
+
+So a single convolution is sufficient to recover the number of matching pixels.
+
+</Spoiler>
+
 ---
 
 ### Converting to Polynomial Multiplication
@@ -74,31 +110,51 @@ $$
 
 becomes a standard convolution.
 
-After multiplication, for each shift, the value at index:
+After multiplication, each index in the resulting array corresponds to a specific shift.  
+For a placement $(x, y)$, the corresponding index is:
 
 $$
-i = \text{offset} + (|a| - 1)
+i = (y \cdot m_1 + x) + (|a| - 1)
 $$
 
-gives the number of matching $1$ pixels.
+This value gives the number of matching $1$ pixels for this placement.
 
-We repeat the same process for $(1 - A)$ and $(1 - B)$ to count matching $0$ pixels.
-
-Finally:
+We repeat the same process for $(1 - A)$ and $(1 - B)$ to count matching $0$ pixels, and add the results:
 
 $$
 \text{matches} = c_1[i] + c_2[i]
 $$
 
-We iterate over all valid placements and take those achieving the maximum.
+We iterate over all valid placements $(x, y)$ and keep track of those achieving the maximum value.
 
 ---
 
+
 ### Optimising using FFT
 
-Finding this using brute force runs in $\mathcal{O}(n^2 m^2)$ time.
+Finding this using brute force runs in $\mathcal{O}(n \cdot m \cdot n_1 \cdot m_1)$ time.
 
 Using Fast Fourier Transform (FFT), convolution runs in $\mathcal{O}(N \log N)$ time, where $N = n_1 \cdot m_1$.
+
+<Spoiler title="Can we reduce the FFT size?">
+
+In standard polynomial multiplication, we choose the FFT size to be at least $|a| + |b|$ to avoid circular convolution overlap.
+
+However, in this problem, we only care about shifts where the mask lies completely inside the floor image.
+
+The maximum valid shift stays within the range of indices we query, which is bounded by $|b|$, so we do not need the full convolution range.
+
+Thus, it is sufficient to choose the FFT size to be the smallest power of $2$ such that:
+
+$$
+n \ge |b|
+$$
+
+instead of $|a| + |b|$.
+
+This reduces both memory usage and running time by roughly a factor of $2$.
+
+</Spoiler>
 
 ---
 
@@ -170,7 +226,8 @@ int main() {
 
 	vector<vector<int>> mask(n, vector<int>(m));
 	for (int i = 0; i < n; ++i)
-		for (int j = 0; j < m; ++j) cin >> mask[i][j];
+		for (int j = 0; j < m; ++j)
+			cin >> mask[i][j];
 
 	int m1, n1;
 	cin >> m1 >> n1;
@@ -178,16 +235,19 @@ int main() {
 	vector<int> a((n - 1) * m1 + m, 0), b(n1 * m1);
 
 	for (int i = 0; i < n1; i++)
-		for (int j = 0; j < m1; j++) cin >> b[i * m1 + j];
+		for (int j = 0; j < m1; j++)
+			cin >> b[i * m1 + j];
 
 	for (int i = 0; i < n; i++)
-		for (int j = 0; j < m; j++) a[i * m1 + j] = mask[i][j];
+		for (int j = 0; j < m; j++)
+			a[i * m1 + j] = mask[i][j];
 
 	reverse(a.begin(), a.end());
 	auto c1 = mul(a, b);
 
 	for (int i = 0; i < n; i++)
-		for (int j = 0; j < m; j++) a[i * m1 + j] = 1 - mask[i][j];
+		for (int j = 0; j < m; j++)
+			a[i * m1 + j] = 1 - mask[i][j];
 
 	reverse(a.begin(), a.end());
 	for (int &x : b) x = 1 - x;
@@ -195,26 +255,33 @@ int main() {
 	auto c2 = mul(a, b);
 
 	vector<int> c(c1.size());
-	for (int i = 0; i < (int)c.size(); i++) c[i] = c1[i] + c2[i];
+	for (int i = 0; i < (int)c.size(); i++)
+		c[i] = c1[i] + c2[i];
 
 	int best = 0;
-	for (int i = (int)a.size() - 1; i < (int)c.size(); i++) {
-		int ind = i - (int)a.size() + 1;
-		int x = ind % m1, y = ind / m1;
-		if (x > m1 - m || y > n1 - n) continue;
-		best = max(best, c[i]);
+
+	for (int y = 0; y <= n1 - n; y++) {
+		for (int x = 0; x <= m1 - m; x++) {
+			int ind = y * m1 + x;
+			int i = ind + (int)a.size() - 1;
+			best = max(best, c[i]);
+		}
 	}
 
 	vector<pair<int, int>> ans;
-	for (int i = (int)a.size() - 1; i < (int)c.size(); i++) {
-		int ind = i - (int)a.size() + 1;
-		int x = ind % m1, y = ind / m1;
-		if (x > m1 - m || y > n1 - n) continue;
-		if (c[i] == best) ans.push_back({x, y});
+
+	for (int y = 0; y <= n1 - n; y++) {
+		for (int x = 0; x <= m1 - m; x++) {
+			int ind = y * m1 + x;
+			int i = ind + (int)a.size() - 1;
+			if (c[i] == best)
+				ans.push_back({x, y});
+		}
 	}
 
 	sort(ans.begin(), ans.end());
-	for (auto &p : ans) cout << p.first << " " << p.second << '\n';
+	for (auto &p : ans)
+		cout << p.first << " " << p.second << '\n';
 }
 ```
 
