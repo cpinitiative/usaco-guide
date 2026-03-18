@@ -1,0 +1,230 @@
+---
+id: kattis-matchings
+source: Kattis
+title:  Matchings
+author: Ashok Narayan
+---
+
+## Explanation
+
+We want to place the smaller image (robot image) over the larger image (floor image) such that the number of matching pixels is maximized.
+
+For a fixed placement $(x, y)$, we count:
+
+$$
+\sum_{i=0}^{n-1} \sum_{j=0}^{m-1} [\text{mask}_{i,j} = \text{floor}_{i+y, j+x}]
+$$
+
+Since values are only $0$ or $1$, we split this into two independent contributions:
+
+- positions where both are $1$
+- positions where both are $0$
+
+Define indicator arrays:
+
+- $A_{i,j} = \text{mask}_{i,j}$
+- $B_{i,j} = \text{floor}_{i,j}$
+
+Then matches of $1$ are:
+
+$$
+\sum A_{i,j} \cdot B_{i+y, j+x}
+$$
+
+To count matches of $0$, observe:
+
+$$
+(1 - A_{i,j}) \cdot (1 - B_{i+y, j+x})
+$$
+
+Thus total matches become:
+
+$$
+\sum A_{i,j} \cdot B_{i+y, j+x} + \sum (1 - A_{i,j}) \cdot (1 - B_{i+y, j+x})
+$$
+
+We compute both terms separately and add them.
+
+---
+
+### Converting to Polynomial Multiplication
+
+We reduce the 2D problem into 1D using row-major flattening.
+
+Map position $(i, j)$ to index:
+
+$$
+\text{index} = i \cdot m_1 + j
+$$
+
+Construct arrays:
+
+- Flattened mask → `a`
+- Flattened floor → `b`
+
+To correctly simulate sliding, we **reverse** array `a`.
+
+Now the contribution:
+
+$$
+\sum A_{i,j} \cdot B_{i+y, j+x}
+$$
+
+becomes a standard convolution.
+
+After multiplication, for each shift, the value at index:
+
+$$
+i = \text{offset} + (|a| - 1)
+$$
+
+gives the number of matching $1$ pixels.
+
+We repeat the same process for $(1 - A)$ and $(1 - B)$ to count matching $0$ pixels.
+
+Finally:
+
+$$
+\text{matches} = c_1[i] + c_2[i]
+$$
+
+We iterate over all valid placements and take those achieving the maximum.
+
+---
+
+### Optimising using FFT
+
+Finding this using brute force runs in $\mathcal{O}(n^2 m^2)$ time.
+
+Using Fast Fourier Transform (FFT), convolution runs in $\mathcal{O}(N \log N)$ time, where $N = n_1 \cdot m_1$.
+
+---
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$ where $N = n_1 \cdot m_1$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using cd = complex<double>;
+const double PI = acos(-1);
+
+// BeginCodeSnip{FFT Template}
+void fft(vector<cd> &a, bool inv) {
+    int n = a.size();
+    if (n == 1) return;
+
+    vector<cd> a0(n / 2), a1(n / 2);
+    for (int i = 0; 2 * i < n; i++)
+        a0[i] = a[2 * i], a1[i] = a[2 * i + 1];
+
+    fft(a0, inv);
+    fft(a1, inv);
+
+    double ang = 2 * PI / n * (inv ? -1 : 1);
+    cd w(1), wn(cos(ang), sin(ang));
+
+    for (int i = 0; 2 * i < n; i++) {
+        a[i] = a0[i] + w * a1[i];
+        a[i + n / 2] = a0[i] - w * a1[i];
+        if (inv)
+            a[i] /= 2, a[i + n / 2] /= 2;
+        w *= wn;
+    }
+}
+
+vector<int> mul(vector<int> a, vector<int> b) {
+    int n = 1;
+    while (n < (int)a.size() + (int)b.size()) n <<= 1;
+
+    vector<cd> fa(a.begin(), a.end()), fb(b.begin(), b.end());
+    fa.resize(n);
+    fb.resize(n);
+
+    fft(fa, 0);
+    fft(fb, 0);
+
+    for (int i = 0; i < n; i++) fa[i] *= fb[i];
+
+    fft(fa, 1);
+
+    vector<int> r(n);
+    for (int i = 0; i < n; i++)
+        r[i] = round(fa[i].real());
+
+    return r;
+}
+// EndCodeSnip
+
+int main() {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+
+    int m, n;
+    cin >> m >> n;
+
+    vector<vector<int>> mask(n, vector<int>(m));
+    for (int i = 0; i < n; ++i)
+        for (int j = 0; j < m; ++j)
+            cin >> mask[i][j];
+
+    int m1, n1;
+    cin >> m1 >> n1;
+
+    vector<int> a((n - 1) * m1 + m, 0), b(n1 * m1);
+
+    for (int i = 0; i < n1; i++)
+        for (int j = 0; j < m1; j++)
+            cin >> b[i * m1 + j];
+
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < m; j++)
+            a[i * m1 + j] = mask[i][j];
+
+    reverse(a.begin(), a.end());
+    auto c1 = mul(a, b);
+
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < m; j++)
+            a[i * m1 + j] = 1 - mask[i][j];
+
+    reverse(a.begin(), a.end());
+    for (int &x : b) x = 1 - x;
+
+    auto c2 = mul(a, b);
+
+    vector<int> c(c1.size());
+    for (int i = 0; i < (int)c.size(); i++)
+        c[i] = c1[i] + c2[i];
+
+    int best = 0;
+    for (int i = (int)a.size() - 1; i < (int)c.size(); i++) {
+        int ind = i - (int)a.size() + 1;
+        int x = ind % m1, y = ind / m1;
+        if (x > m1 - m || y > n1 - n) continue;
+        best = max(best, c[i]);
+    }
+
+    vector<pair<int, int>> ans;
+    for (int i = (int)a.size() - 1; i < (int)c.size(); i++) {
+        int ind = i - (int)a.size() + 1;
+        int x = ind % m1, y = ind / m1;
+        if (x > m1 - m || y > n1 - n) continue;
+        if (c[i] == best) ans.push_back({x, y});
+    }
+
+    sort(ans.begin(), ans.end());
+    for (auto &p : ans)
+        cout << p.first << " " << p.second << '\n';
+}
+
+```
+
+</CPPSection>
+</LanguageSection>
