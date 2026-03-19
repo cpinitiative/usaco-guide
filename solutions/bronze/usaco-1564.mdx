@@ -26,38 +26,36 @@ This problem can then be solved with simple bitmasks in $\mathcal{O}(2^N⋅K)$ t
 
 using namespace std;
 
-int main(){
-    int n, k; cin >> n >> k;
-    
-    vector<array<int, 3>> tests(k);
-    for (auto &t : tests){
-        int x, y, z; cin >> x >> y >> z;
-        t = {--x,--y,--z};
-    }
-    
-    int maxPoints = 0;
-    int boardsThatGive = 0;
-    for (int i = 0; i < (1 << n); i++){
-        auto bit = [&](int pos){
-            return i & (1 << pos);
-        };
-        
-        int points = 0;
-        for (auto test : tests){
-            if (bit(test[0]) && !bit(test[1]) && !bit(test[2])){
-                points++;
-            }
-        }
-        
-        if (points > maxPoints){
-            boardsThatGive = 1;
-            maxPoints = points;
-        } else if (points == maxPoints){
-            boardsThatGive++;
-        }
-    }
-    
-    cout << maxPoints << " " << boardsThatGive << "\n";
+int main() {
+	int n, k;
+	cin >> n >> k;
+
+	vector<array<int, 3>> tests(k);
+	for (auto &t : tests) {
+		int x, y, z;
+		cin >> x >> y >> z;
+		t = {--x, --y, --z};
+	}
+
+	int maxPoints = 0;
+	int boardsThatGive = 0;
+	for (int i = 0; i < (1 << n); i++) {
+		auto bit = [&](int pos) { return i & (1 << pos); };
+
+		int points = 0;
+		for (auto test : tests) {
+			if (bit(test[0]) && !bit(test[1]) && !bit(test[2])) { points++; }
+		}
+
+		if (points > maxPoints) {
+			boardsThatGive = 1;
+			maxPoints = points;
+		} else if (points == maxPoints) {
+			boardsThatGive++;
+		}
+	}
+
+	cout << maxPoints << " " << boardsThatGive << "\n";
 }
 ```
 
@@ -67,7 +65,7 @@ int main(){
 ### Observation 2. Duplicate moves
 You can realize that $K$ is duplicated because $K \le 2⋅10^5$ is much more than the number of possible moves.
 
-Based on this you can optimize by counting the frequency of every move in a matrix like so: `freqMat[a][b][c]` with `a` being where the `M` is and `b`/`c` being the `O`s. 
+Based on this you can optimize by counting the frequency of every move in a matrix like so: `freqMat[a][b][c]` with `a` being where the `M` is and `b`/`c` being the `O`s.
 
 It is important to also make sure that $b < c$ because then you only need to check $\frac{N^3}{2}$ possibilities instead of $N^3$
 
@@ -77,10 +75,14 @@ It is important to also make sure that $b < c$ because then you only need to che
 <CPPSection>
 ```cpp
 vector<vector<vector<int>>> freqMat(n, vector<vector<int>>(n, vector<int>(n)));
-for (int i = 0; i < k; i++){
-  int x, y, z; cin >> x >> y >> z; x--; y--; z--;
-  if (y > z) swap(y, z);
-  freqMat[x][y][z]++;
+for (int i = 0; i < k; i++) {
+	int x, y, z;
+	cin >> x >> y >> z;
+	x--;
+	y--;
+	z--;
+	if (y > z) swap(y, z);
+	freqMat[x][y][z]++;
 }
 ```
 
@@ -94,15 +96,15 @@ for (int i = 0; i < k; i++){
 <CPPSection>
 ```cpp
 int points = 0;
-for (int j = 0; j < n; j++){ 
-    if (bit(j)) continue; // the M required
-    for (int k = 0; k < n; k++){ 
-        if (!bit(k)) continue; // the first O required
-        for (int l = k+1; l < n; l++){ 
-            if (!bit(l)) continue; // the second O required
-            points += freqMat[j][k][l];
-        }
-    }
+for (int j = 0; j < n; j++) {
+	if (bit(j)) continue;  // the M required
+	for (int k = 0; k < n; k++) {
+		if (!bit(k)) continue;  // the first O required
+		for (int l = k + 1; l < n; l++) {
+			if (!bit(l)) continue;  // the second O required
+			points += freqMat[j][k][l];
+		}
+	}
 }
 ```
 
@@ -124,44 +126,47 @@ for (int j = 0; j < n; j++){
 
 using namespace std;
 
-int main(){
-    int n, k; cin >> n >> k;
-    
-    vector<vector<vector<int>>> freqMat(n, vector<vector<int>>(n, vector<int>(n)));
-    for (int i = 0; i < k; i++){
-        int x, y, z; cin >> x >> y >> z; x--; y--; z--;
-        if (y > z) swap(y, z);
-        freqMat[x][y][z]++;
-    }
+int main() {
+	int n, k;
+	cin >> n >> k;
 
-    int maxPoints = 0;
-    int boardsThatGive = 0;
-    for (int i = 0; i < (1 << n); i++){
-        auto bit = [&](int pos){
-            return i & (1 << pos);
-        };
-                
-        int points = 0;
-        for (int j = 0; j < n; j++){ 
-            if (bit(j)) continue; // the M required
-            for (int k = 0; k < n; k++){ 
-                if (!bit(k)) continue; // the first O required
-                for (int l = k+1; l < n; l++){ 
-                    if (!bit(l)) continue; // the second O required
-                    points += freqMat[j][k][l];
-                }
-            }
-        }
-        
-        if (points > maxPoints){
-            boardsThatGive = 1;
-            maxPoints = points;
-        } else if (points == maxPoints){
-            boardsThatGive++;
-        }
-    }
-    
-    cout << maxPoints << " " << boardsThatGive << "\n";   
+	vector<vector<vector<int>>> freqMat(n, vector<vector<int>>(n, vector<int>(n)));
+	for (int i = 0; i < k; i++) {
+		int x, y, z;
+		cin >> x >> y >> z;
+		x--;
+		y--;
+		z--;
+		if (y > z) swap(y, z);
+		freqMat[x][y][z]++;
+	}
+
+	int maxPoints = 0;
+	int boardsThatGive = 0;
+	for (int i = 0; i < (1 << n); i++) {
+		auto bit = [&](int pos) { return i & (1 << pos); };
+
+		int points = 0;
+		for (int j = 0; j < n; j++) {
+			if (bit(j)) continue;  // the M required
+			for (int k = 0; k < n; k++) {
+				if (!bit(k)) continue;  // the first O required
+				for (int l = k + 1; l < n; l++) {
+					if (!bit(l)) continue;  // the second O required
+					points += freqMat[j][k][l];
+				}
+			}
+		}
+
+		if (points > maxPoints) {
+			boardsThatGive = 1;
+			maxPoints = points;
+		} else if (points == maxPoints) {
+			boardsThatGive++;
+		}
+	}
+
+	cout << maxPoints << " " << boardsThatGive << "\n";
 }
 ```
 
