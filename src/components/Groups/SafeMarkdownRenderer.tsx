@@ -116,7 +116,6 @@ const renderers = {
 };
 
 export default function SafeMarkdownRenderer({ children }) {
-  const content = String(children).replace(/\\n/g, '\n');
   return (
     <div className="prose dark:prose-light markdown max-w-none">
       <div className="react-markdown">
@@ -124,7 +123,7 @@ export default function SafeMarkdownRenderer({ children }) {
           components={renderers as any}
           remarkPlugins={[gfm as any]}
         >
-          {content}
+          {children}
         </ReactMarkdown>
       </div>
     </div>
