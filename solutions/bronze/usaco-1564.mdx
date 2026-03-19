@@ -1,0 +1,170 @@
+---
+id: usaco-1564
+source: USACO Bronze 2026 Second Contest
+title: Moo Hunt
+author: Aarav Sethi
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_prob2_bronze_season26contest2.html)
+
+## Explanation
+### Observation 1. [Bitmasks](https://usaco.guide/bronze/complete-rec#generating-subsets-with-bitmasks)
+>A couple of hints that suggest the full solution needs bitmasks are that:
+>- $N$ is small ($N \le 20$)
+>- We need to count how many solutions exist, this would require you to iterate across all cases.
+
+The board can be represented as a binary integer, with $0$ meaning `M` and $1$ meaning `O`.
+
+This problem can then be solved with simple bitmasks in $\mathcal{O}(2^N⋅K)$ time that try every possible subset and score it.
+
+#### Partial Solution:
+<LanguageSection>
+
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main(){
+    int n, k; cin >> n >> k;
+    
+    vector<array<int, 3>> tests(k);
+    for (auto &t : tests){
+        int x, y, z; cin >> x >> y >> z;
+        t = {--x,--y,--z};
+    }
+    
+    int maxPoints = 0;
+    int boardsThatGive = 0;
+    for (int i = 0; i < (1 << n); i++){
+        auto bit = [&](int pos){
+            return i & (1 << pos);
+        };
+        
+        int points = 0;
+        for (auto test : tests){
+            if (bit(test[0]) && !bit(test[1]) && !bit(test[2])){
+                points++;
+            }
+        }
+        
+        if (points > maxPoints){
+            boardsThatGive = 1;
+            maxPoints = points;
+        } else if (points == maxPoints){
+            boardsThatGive++;
+        }
+    }
+    
+    cout << maxPoints << " " << boardsThatGive << "\n";
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+### Observation 2. Duplicate moves
+You can realize that $K$ is duplicated because $K \le 2⋅10^5$ is much more than the number of possible moves.
+
+Based on this you can optimize by counting the frequency of every move in a matrix like so: `freqMat[a][b][c]` with `a` being where the `M` is and `b`/`c` being the `O`s. 
+
+It is important to also make sure that $b < c$ because then you only need to check $\frac{N^3}{2}$ possibilities instead of $N^3$
+
+#### Precomputation:
+<LanguageSection>
+
+<CPPSection>
+```cpp
+vector<vector<vector<int>>> freqMat(n, vector<vector<int>>(n, vector<int>(n)));
+for (int i = 0; i < k; i++){
+  int x, y, z; cin >> x >> y >> z; x--; y--; z--;
+  if (y > z) swap(y, z);
+  freqMat[x][y][z]++;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+#### Checking:
+<LanguageSection>
+
+<CPPSection>
+```cpp
+int points = 0;
+for (int j = 0; j < n; j++){ 
+    if (bit(j)) continue; // the M required
+    for (int k = 0; k < n; k++){ 
+        if (!bit(k)) continue; // the first O required
+        for (int l = k+1; l < n; l++){ 
+            if (!bit(l)) continue; // the second O required
+            points += freqMat[j][k][l];
+        }
+    }
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(2^N⋅N^3)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main(){
+    int n, k; cin >> n >> k;
+    
+    vector<vector<vector<int>>> freqMat(n, vector<vector<int>>(n, vector<int>(n)));
+    for (int i = 0; i < k; i++){
+        int x, y, z; cin >> x >> y >> z; x--; y--; z--;
+        if (y > z) swap(y, z);
+        freqMat[x][y][z]++;
+    }
+
+    int maxPoints = 0;
+    int boardsThatGive = 0;
+    for (int i = 0; i < (1 << n); i++){
+        auto bit = [&](int pos){
+            return i & (1 << pos);
+        };
+                
+        int points = 0;
+        for (int j = 0; j < n; j++){ 
+            if (bit(j)) continue; // the M required
+            for (int k = 0; k < n; k++){ 
+                if (!bit(k)) continue; // the first O required
+                for (int l = k+1; l < n; l++){ 
+                    if (!bit(l)) continue; // the second O required
+                    points += freqMat[j][k][l];
+                }
+            }
+        }
+        
+        if (points > maxPoints){
+            boardsThatGive = 1;
+            maxPoints = points;
+        } else if (points == maxPoints){
+            boardsThatGive++;
+        }
+    }
+    
+    cout << maxPoints << " " << boardsThatGive << "\n";   
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
