@@ -221,7 +221,11 @@ export default function EditPostPage(props) {
                         value={post.dueTimestamp?.toDate()}
                         onChange={date =>
                           editPost({
-                            dueTimestamp: Timestamp.fromDate(date[0]),
+                            // Flatpickr sends an empty/undefined value when the user clears the field
+                            // or types an invalid/unparseable value; guard to avoid runtime errors.
+                            dueTimestamp: date[0]
+                              ? Timestamp.fromDate(date[0])
+                              : undefined,
                           })
                         }
                         className="input"
