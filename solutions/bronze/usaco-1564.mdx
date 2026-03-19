@@ -63,11 +63,9 @@ int main() {
 
 </LanguageSection>
 ### Observation 2. Duplicate moves
-You can realize that $K$ is duplicated because $K \le 2⋅10^5$ is much more than the number of possible moves.
+We can observe that many given moves are duplicates, because $K \le 2 \cdot 10^5$ is much greater than the number of possible moves. Specifically, because we only select three indices, there are $\mathcal{O}(N^3}$ possible moves.
 
-Based on this you can optimize by counting the frequency of every move in a matrix like so: `freqMat[a][b][c]` with `a` being where the `M` is and `b`/`c` being the `O`s.
-
-It is important to also make sure that $b < c$ because then you only need to check $\frac{N^3}{2}$ possibilities instead of $N^3$
+Based on this, we can optimize by storing the frequency of every move in a 3D array `freqMat[x][y][z]`. It is also important to make sure that $y < z$, because it allows us to only consider $\frac{N^3}{2}$ possibilities instead of $N^3$.
 
 #### Precomputation:
 <LanguageSection>
