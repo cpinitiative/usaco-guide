@@ -52,6 +52,53 @@ export default function EditPostPage(props) {
     }
   }, [originalPost, post]);
 
+  const options = React.useMemo(
+    () => ({
+      toolbar: [
+        'bold',
+        'italic',
+        'strikethrough',
+        '|',
+        'heading-1',
+        'heading-2',
+        'heading-3',
+        '|',
+        'link',
+        'image',
+        '|',
+        'quote',
+        {
+          name: 'custom',
+          action: function customFunction(editor) {
+            const cm = editor.codemirror;
+            const doc = cm.getDoc();
+            const cursor = doc.getCursor();
+
+            // Improved replacement logic
+            cm.replaceSelection('```java\n\n```');
+
+            // Move cursor inside the code block (1 line down)
+            doc.setCursor({ line: cursor.line + 1, ch: 0 });
+            cm.focus();
+          },
+          className: 'fa fa-code',
+          title: 'Insert Java Block',
+        },
+        '|',
+        'ordered-list',
+        'unordered-list',
+        'table',
+      ],
+      shortcuts: {
+        toggleSideBySide: null,
+        toggleFullScreen: null,
+      },
+      autofocus: true,
+      spellChecker: false, // Optional: helps performance
+    }),
+    []
+  ); // Empty dependency array means this is created once
+
   if (!post) {
     if (activeGroup.isLoading) {
       return (
@@ -221,7 +268,11 @@ export default function EditPostPage(props) {
                         value={post.dueTimestamp?.toDate()}
                         onChange={date =>
                           editPost({
-                            dueTimestamp: Timestamp.fromDate(date[0]),
+                            // Flatpickr sends an empty/undefined value when the user clears the field
+                            // or types an invalid/unparseable value; guard to avoid runtime errors.
+                            dueTimestamp: date[0]
+                              ? Timestamp.fromDate(date[0])
+                              : undefined,
                           })
                         }
                         className="input"
@@ -242,6 +293,7 @@ export default function EditPostPage(props) {
                   <MarkdownEditor
                     value={post.body}
                     onChange={value => editPost({ body: value })}
+                    options={options}
                   />
                 </div>
               </div>

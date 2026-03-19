@@ -1,5 +1,6 @@
 import { GoogleAnalytics } from '@next/third-parties/google';
 import 'easymde/dist/easymde.min.css';
+import 'flatpickr/dist/flatpickr.min.css';
 import 'instantsearch.css/themes/algolia.css';
 import 'katex/dist/katex.min.css';
 import type { AppProps } from 'next/app';
@@ -18,6 +19,7 @@ import GlobalErrorBoundary from '../context/GlobalErrorBoundary';
 import { SignInProvider } from '../context/SignInContext';
 import { UserDataProvider } from '../context/UserDataContext/UserDataContext';
 import { UserGroupsProvider } from '../hooks/groups/useUserGroups';
+import '../styles/flatpickr-custom.css';
 import '../styles/main.css';
 
 const inter = Inter({

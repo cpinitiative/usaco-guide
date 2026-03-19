@@ -117,15 +117,15 @@ const renderers = {
 
 export default function SafeMarkdownRenderer({ children }) {
   return (
-    <div className="prose dark:prose-light max-w-none">
-      <a target="_blank" rel="noopener noreferrer" className="react-markdown">
+    <div className="prose dark:prose-light markdown max-w-none">
+      <div className="react-markdown">
         <ReactMarkdown
           components={renderers as any}
           remarkPlugins={[gfm as any]}
         >
           {children}
         </ReactMarkdown>
-      </a>
+      </div>
     </div>
   );
 }
