@@ -9,9 +9,13 @@ author: Junwon Kim
 
 ## Explanation
 
-Two elements can only collide if they share the same remainder modulo $|K|$, so we handle each remainder class independently.
+Two elements can only collide if they share the same remainder modulo $|K|$, so we handle each remainder class independently. We are motivated to do so, since adding $K$ to each element doesn't change its remainder when divided by $K$. In particular, we have
 
-Within each class, sort the elements in the direction of $K$ (ascending if $K > 0$, descending if $K < 0$). Then iterate in sorted order, advancing each element only as much as strictly needed to make it distinct from the previous one. This greedy approach is optimal because we never move an element more than necessary.
+$$a_i + k \equiv a_i \pmod{k}$$
+
+and so we can consider the elements by their respective remainder.
+
+Within each class, sort the elements in the direction of $K$ (ascending if $K > 0$, descending if $K < 0$). Then iterate in sorted order, advancing each element only as much as strictly needed to make it distinct from the previous one. This greedy approach is optimal since we never move an element more than necessary.
 
 ## Implementation
 
@@ -49,6 +53,7 @@ int main() {
 			} else {
 				sort(v.begin(), v.end(), greater<int>());
 			}
+
 			int prev = v[0];
 			for (int i = 1; i < (int)v.size(); i++) {
 				if (k > 0) {
