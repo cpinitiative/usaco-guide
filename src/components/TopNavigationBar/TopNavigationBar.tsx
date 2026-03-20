@@ -39,7 +39,7 @@ export default function TopNavigationBar({
   transparent = false,
   linkLogoToIndex = false,
   currentSection = null,
-  hidePromoBar = false,
+  hidePromoBar = true,
   redirectToDashboard = false,
 }) {
   const router = useRouter();
