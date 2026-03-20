@@ -11,7 +11,7 @@ author: Junwon Kim
 
 Two elements can only collide if they share the same remainder modulo $|K|$, so we handle each remainder class independently.
 
-Within each class, sort the elements in the direction of $K$ (ascending if $K > 0$, descending if $K < 0$). Then greedily ensure each element is strictly past the previous one: if it isn't, advance it by the minimum number of operations needed.
+Within each class, sort the elements in the direction of $K$ (ascending if $K > 0$, descending if $K < 0$). Then iterate in sorted order, advancing each element only as much as strictly needed to make it distinct from the previous one. This greedy approach is optimal because we never move an element more than necessary.
 
 ## Implementation
 
@@ -23,46 +23,46 @@ Within each class, sort the elements in the direction of $K$ (ascending if $K > 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-
+ 
 int main() {
 	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
-
+ 
 	int t;
 	cin >> t;
 	while (t--) {
-		long long n, k;
+		int n, k;
 		cin >> n >> k;
-
-		map<long long, vector<long long>> groups;
-		long long absk = abs(k);
+ 
+		int absk = abs(k);
+		map<int, vector<int>> groups;
 		for (int i = 0; i < n; i++) {
-			long long a;
+			int a;
 			cin >> a;
 			groups[((a % absk) + absk) % absk].push_back(a);
 		}
-
+ 
 		long long ans = 0;
-		for (auto &[r, v] : groups) {
+		for (auto& [r, v] : groups) {
 			if (k > 0) {
 				sort(v.begin(), v.end());
 			} else {
-				sort(v.begin(), v.end(), greater<long long>());
+				sort(v.begin(), v.end(), greater<int>());
 			}
-			long long prev = v[0];
+			int prev = v[0];
 			for (int i = 1; i < (int)v.size(); i++) {
 				if (k > 0) {
-					long long next = max(v[i], prev + absk);
+					int next = max(v[i], prev + absk);
 					ans += (next - v[i]) / absk;
 					prev = next;
 				} else {
-					long long next = min(v[i], prev - absk);
+					int next = min(v[i], prev - absk);
 					ans += (v[i] - next) / absk;
 					prev = next;
 				}
 			}
 		}
-
+ 
 		cout << ans << "\n";
 	}
 	return 0;
