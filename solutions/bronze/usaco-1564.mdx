@@ -1,0 +1,143 @@
+---
+id: usaco-1564
+source: USACO Bronze 2026 Second Contest
+title: Moo Hunt
+author: Aarav Sethi
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_prob2_bronze_season26contest2.html)
+
+## Explanation
+We first notice a few facts that motivate a solution involving bitmasks:
+- $N$ is small ($N \le 20$)
+- We need to count how many solutions exist, this would require us to iterate across all cases.
+
+The board can be represented as a binary integer, with $0$ denoting `M` and $1$ denoting `O`.
+
+This problem can then be solved with simple bitmasks in $\mathcal{O}(K \cdot 2^N)$ time, where we try every possible subset and score it.
+
+<Spoiler title="Partial Solution">
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int n, k;
+	cin >> n >> k;
+
+	vector<array<int, 3>> tests(k);
+	for (auto &[x, y, z] : tests) {
+		cin >> x >> y >> z;
+		x--;
+		y--;
+		z--;
+	}
+
+	int maxPoints = 0;
+	int boardsThatGive = 0;
+
+	// Iterate over every subset of N numbers,
+	// this is done by incrementing a binary number
+	// and using each bit to represent if it is a M or O.
+	// Example with N=3: 001, 010, 011, 100, 101, 110, 111
+
+	for (int i = 0; i < (1 << n); i++) {
+		// checks if pos-th bit is on in the bitmask
+		auto bit = [&](int pos) { return i & (1 << pos); };
+
+		int points = 0;
+		for (auto &[x, y, z] : tests) {
+			if (bit(x) && !bit(y) && !bit(z)) { points++; }
+		}
+
+		if (points > maxPoints) {
+			boardsThatGive = 1;
+			maxPoints = points;
+		} else if (points == maxPoints) {
+			boardsThatGive++;
+		}
+	}
+
+	cout << maxPoints << " " << boardsThatGive << "\n";
+}
+```
+
+</CPPSection>
+</LanguageSection>
+</Spoiler>
+Second, we can observe that many given moves are duplicates, because $K \le 2 \cdot 10^5$ is much greater than the number of possible moves. Specifically, because we only select three indices, there are $\mathcal{O}(N^3)$ possible moves.
+
+Based on this, we can optimize by storing the frequency of every move in a 3D array `freqMat[x][y][z]`. It is also important to make sure that $y < z$, because it allows us to only consider $\frac{N^3}{2}$ possibilities instead of $N^3$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^3 \cdot 2^{N})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int n, k;
+	cin >> n >> k;
+
+	// precompute freqMat to handle duplicate moves
+	vector<vector<vector<int>>> freqMat(n, vector<vector<int>>(n, vector<int>(n)));
+	for (int i = 0; i < k; i++) {
+		int x, y, z;
+		cin >> x >> y >> z;
+		x--;
+		y--;
+		z--;
+		if (y > z) swap(y, z);  // make sure y < z, makes the loops below faster.
+		freqMat[x][y][z]++;
+	}
+
+	int maxPoints = 0;
+	int boardsThatGive = 0;
+
+	// iterate on each possible solution bitmask
+	for (int i = 0; i < (1 << n); i++) {
+		// checks if pos-th bit is on in the bitmask
+		auto bit = [&](int pos) { return i & (1 << pos); };
+
+		int points = 0;
+		for (int j = 0; j < n; j++) {
+			// the M required
+			if (bit(j)) continue;
+			for (int k = 0; k < n; k++) {
+				// the first O required
+				if (!bit(k)) continue;
+
+				// only need to iterate after k,
+				// since l is always greater than k from
+				// swapping above
+				for (int l = k + 1; l < n; l++) {
+					// the second O required
+					if (!bit(l)) continue;
+					points += freqMat[j][k][l];
+				}
+			}
+		}
+
+		if (points > maxPoints) {
+			boardsThatGive = 1;
+			maxPoints = points;
+		} else if (points == maxPoints) {
+			boardsThatGive++;
+		}
+	}
+
+	cout << maxPoints << " " << boardsThatGive << "\n";
+}
+```
+
+</CPPSection>
+</LanguageSection>
