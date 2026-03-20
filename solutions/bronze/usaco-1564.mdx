@@ -46,11 +46,12 @@ int main() {
 	// Example with N=3: 001, 010, 011, 100, 101, 110, 111
 
 	for (int i = 0; i < (1 << n); i++) {
+		// checks if pos-th bit is on in the bitmask
 		auto bit = [&](int pos) { return i & (1 << pos); };
 
 		int points = 0;
-		for (auto test : tests) {
-			if (bit(test[0]) && !bit(test[1]) && !bit(test[2])) { points++; }
+		for (auto &[x, y, z] : tests) {
+			if (bit(x) && !bit(y) && !bit(z)) { points++; }
 		}
 
 		if (points > maxPoints) {
@@ -68,7 +69,7 @@ int main() {
 </CPPSection>
 </LanguageSection>
 </Spoiler>
-Second, we can observe that many given moves are duplicates, because $K \le 2 \cdot 10^5$ is much greater than the number of possible moves. Specifically, because we only select three indices, there are $\mathcal{O}(N^3}$ possible moves.
+Second, we can observe that many given moves are duplicates, because $K \le 2 \cdot 10^5$ is much greater than the number of possible moves. Specifically, because we only select three indices, there are $\mathcal{O}(N^3)$ possible moves.
 
 Based on this, we can optimize by storing the frequency of every move in a 3D array `freqMat[x][y][z]`. It is also important to make sure that $y < z$, because it allows us to only consider $\frac{N^3}{2}$ possibilities instead of $N^3$.
 
@@ -87,6 +88,7 @@ int main() {
 	int n, k;
 	cin >> n >> k;
 
+	// precompute freqMat to handle duplicate moves
 	vector<vector<vector<int>>> freqMat(n, vector<vector<int>>(n, vector<int>(n)));
 	for (int i = 0; i < k; i++) {
 		int x, y, z;
@@ -100,7 +102,10 @@ int main() {
 
 	int maxPoints = 0;
 	int boardsThatGive = 0;
+
+	// iterate on each possible solution bitmask
 	for (int i = 0; i < (1 << n); i++) {
+		// checks if pos-th bit is on in the bitmask
 		auto bit = [&](int pos) { return i & (1 << pos); };
 
 		int points = 0;
