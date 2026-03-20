@@ -16,7 +16,7 @@ The board can be represented as a binary integer, with $0$ denoting `M` and $1$ 
 
 This problem can then be solved with simple bitmasks in $\mathcal{O}(K \cdot 2^N)$ time, where we try every possible subset and score it.
 
-#### Partial Solution:
+<Spoiler title="Partial Solution">
 <LanguageSection>
 
 <CPPSection>
@@ -67,53 +67,10 @@ int main() {
 
 </CPPSection>
 </LanguageSection>
+</Spoiler>
 Second, we can observe that many given moves are duplicates, because $K \le 2 \cdot 10^5$ is much greater than the number of possible moves. Specifically, because we only select three indices, there are $\mathcal{O}(N^3}$ possible moves.
 
 Based on this, we can optimize by storing the frequency of every move in a 3D array `freqMat[x][y][z]`. It is also important to make sure that $y < z$, because it allows us to only consider $\frac{N^3}{2}$ possibilities instead of $N^3$.
-
-#### Precomputation:
-<LanguageSection>
-<CPPSection>
-
-```cpp
-vector<vector<vector<int>>> freqMat(n, vector<vector<int>>(n, vector<int>(n)));
-for (int i = 0; i < k; i++) {
-	int x, y, z;
-	cin >> x >> y >> z;
-	x--;
-	y--;
-	z--;
-	if (y > z)  // make sure y < z, makes loops 2x faster
-		swap(y, z);
-	freqMat[x][y][z]++;
-}
-```
-
-</CPPSection>
-</LanguageSection>
-
-#### Checking:
-<LanguageSection>
-<CPPSection>
-
-```cpp
-int points = 0;
-for (int j = 0; j < n; j++) {
-	if (bit(j)) continue;  // the M required
-	for (int k = 0; k < n; k++) {
-		if (!bit(k)) continue;  // the first O required
-		for (int l = k + 1; l < n;
-		     l++) {  // only need to iterate after k, bc l > k from swapping above.
-			if (!bit(l)) continue;  // the second O required
-			points += freqMat[j][k][l];
-		}
-	}
-}
-```
-
-</CPPSection>
-</LanguageSection>
-
 
 ## Implementation
 
@@ -148,12 +105,18 @@ int main() {
 
 		int points = 0;
 		for (int j = 0; j < n; j++) {
-			if (bit(j)) continue;  // the M required
+			// the M required
+			if (bit(j)) continue;
 			for (int k = 0; k < n; k++) {
-				if (!bit(k)) continue;             // the first O required
-				for (int l = k + 1; l < n; l++) {  // only need to iterate after k,
-					                               // since l > k from swapping above
-					if (!bit(l)) continue;         // the second O required
+				// the first O required
+				if (!bit(k)) continue;
+
+				// only need to iterate after k,
+				// since l is always greater than k from
+				// swapping above
+				for (int l = k + 1; l < n; l++) {
+					// the second O required
+					if (!bit(l)) continue;
 					points += freqMat[j][k][l];
 				}
 			}
