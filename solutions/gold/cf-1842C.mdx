@@ -8,24 +8,27 @@ author: Raagav Bala
 [Official Analysis (C++)](https://codeforces.com/blog/entry/117606)
 
 ## Explanation
-
 We can begin by noting that all ranges that are removed must be disjoint. If two
-ranges overlap, they can combined into one segment. If one
+ranges overlap, they can be combined into one segment. If one
 segment is within another, then the largest segment can replace the smaller
 segment.
 
 Using this idea, the goal can be thought of as the minimum number of balls
-remaining. We define $dp$, where $dp[i]$ is the minimum number of balls left
-after looking at the first $i$ balls. At ball $i$, we have two options: either
-don’t use it in any segment, so $dp[i]=dp[i−1]+1$, or pair it with an earlier
-ball of the same color at position $k$ and delete all balls from $k$ to $i$, so
-$dp[i]=dp[k−1]$.
+remaining. We define $dp[i]$ as the minimum number of balls left after looking at the first $i$ balls.
+
+At ball $i$, we have two options:
+* Don’t use it in any segment, so $dp[i] = dp[i-1] + 1$
+* Pair it with an earlier ball of the same color at position $k$ and delete all balls from $k$ to $i$, so $dp[i] = dp[k-1]$
 
 The formula can be further condensed into
-$dp[i] = \min(dp[i-1] + 1,\ \texttt{best}[a_i])$, where $\texttt{best}[a_i]$
-stores the minimum value of $dp[k-1]$ over all previous positions $k$ such that
-$a_k = a_i$. After finding $dp[i]$, we update
-$\texttt{best}[a_i] = \min(\texttt{best}[a_i], ~dp[i-1])$.
+
+$$
+dp[i] = \min(dp[i-1] + 1,\ \texttt{best}[a_i])
+$$
+
+where $\texttt{best}[a_i]$ stores the minimum value of $dp[k-1]$ over all previous positions $k$ such that $a_k = a_i$.
+
+After finding $dp[i]$, we update $\texttt{best}[a_i] = \min(\texttt{best}[a_i], dp[i-1])$.
 
 The final answer is $N - dp[N]$.
 
@@ -38,20 +41,21 @@ The final answer is $N - dp[N]$.
 **Time Complexity:** $\mathcal{O}(N\log{N})$
 
 ```py
-T = int(input())
+INF = 10**20
 
+T = int(input())
 for _ in range(T):
 	N = int(input())
 	balls = list(map(int, input().split()))
-	dp = [10**20] * (N + 1)
+	dp = [INF] * (N + 1)
 	dp[0] = 0
 
-	best = [10**20] * (N + 1)
+	best = [INF] * (N + 1)
 	for i in range(1, N + 1):
-		dp[i] = min(dp[i - 1] + 1, best[balls[i - 1]])  # keep or delete segment
-		best[balls[i - 1]] = min(
-			best[balls[i - 1]], dp[i - 1]
-		)  # update best for this color
+		# keep or delete segment ending at index i
+		dp[i] = min(dp[i - 1] + 1, best[balls[i - 1]])
+		# update best for this color with dp[i-1]
+		best[balls[i - 1]] = min(best[balls[i - 1]], dp[i - 1]) 
 
 	print(N - dp[N])
 ```
