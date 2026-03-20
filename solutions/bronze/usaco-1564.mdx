@@ -31,14 +31,19 @@ int main() {
 	cin >> n >> k;
 
 	vector<array<int, 3>> tests(k);
-	for (auto &t : tests) {
-		int x, y, z;
+	for (auto &[x, y, z] : tests) {  
 		cin >> x >> y >> z;
-		t = {--x, --y, --z};
+		x--; y--; z--;
 	}
 
 	int maxPoints = 0;
 	int boardsThatGive = 0;
+
+	// Iterate over every subset of N numbers,
+	// this is done by incrementing a binary number 
+	// and using each bit to represent if it is a M or O.
+	// Example with N=3: 001, 010, 011, 100, 101, 110, 111
+
 	for (int i = 0; i < (1 << n); i++) {
 		auto bit = [&](int pos) { return i & (1 << pos); };
 
@@ -79,7 +84,8 @@ for (int i = 0; i < k; i++) {
 	x--;
 	y--;
 	z--;
-	if (y > z) swap(y, z);
+	if (y > z) // make sure y < z, makes loops 2x faster
+		swap(y, z);
 	freqMat[x][y][z]++;
 }
 ```
@@ -98,7 +104,7 @@ for (int j = 0; j < n; j++) {
 	if (bit(j)) continue;  // the M required
 	for (int k = 0; k < n; k++) {
 		if (!bit(k)) continue;  // the first O required
-		for (int l = k + 1; l < n; l++) {
+		for (int l = k + 1; l < n; l++) { // only need to iterate after k, bc l > k from swapping above.
 			if (!bit(l)) continue;  // the second O required
 			points += freqMat[j][k][l];
 		}
@@ -113,7 +119,7 @@ for (int j = 0; j < n; j++) {
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(2^N⋅N^3)$
+**Time Complexity:** $\mathcal{O}(N^3 \cdot 2^{N})$ 
 
 <LanguageSection>
 
@@ -135,7 +141,8 @@ int main() {
 		x--;
 		y--;
 		z--;
-		if (y > z) swap(y, z);
+		if (y > z) // make sure y < z, makes the loops below faster.
+			swap(y, z);
 		freqMat[x][y][z]++;
 	}
 
@@ -149,7 +156,7 @@ int main() {
 			if (bit(j)) continue;  // the M required
 			for (int k = 0; k < n; k++) {
 				if (!bit(k)) continue;  // the first O required
-				for (int l = k + 1; l < n; l++) {
+				for (int l = k + 1; l < n; l++) { // only need to iterate after k, bc l > k from swapping above.
 					if (!bit(l)) continue;  // the second O required
 					points += freqMat[j][k][l];
 				}
