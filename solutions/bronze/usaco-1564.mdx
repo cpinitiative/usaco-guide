@@ -8,22 +8,21 @@ author: Aarav Sethi
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_prob2_bronze_season26contest2.html)
 
 ## Explanation
-### Observation 1. [Bitmasks](https://usaco.guide/bronze/complete-rec#generating-subsets-with-bitmasks)
->A couple of hints that suggest the full solution needs bitmasks are that:
->- $N$ is small ($N \le 20$)
->- We need to count how many solutions exist, this would require you to iterate across all cases.
+We first notice a few facts that motivate a solution involving bitmasks:
+- $N$ is small ($N \le 20$)
+- We need to count how many solutions exist, this would require us to iterate across all cases.
 
-The board can be represented as a binary integer, with $0$ meaning `M` and $1$ meaning `O`.
+The board can be represented as a binary integer, with $0$ denoting `M` and $1$ denoting `O`.
 
-This problem can then be solved with simple bitmasks in $\mathcal{O}(2^N⋅K)$ time that try every possible subset and score it.
+This problem can then be solved with simple bitmasks in $\mathcal{O}(2^N⋅K)$ time, where we try every possible subset and score it.
 
 #### Partial Solution:
 <LanguageSection>
 
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
 int main() {
@@ -67,17 +66,15 @@ int main() {
 ```
 
 </CPPSection>
-
 </LanguageSection>
-### Observation 2. Duplicate moves
-We can observe that many given moves are duplicates, because $K \le 2 \cdot 10^5$ is much greater than the number of possible moves. Specifically, because we only select three indices, there are $\mathcal{O}(N^3}$ possible moves.
+Second, we can observe that many given moves are duplicates, because $K \le 2 \cdot 10^5$ is much greater than the number of possible moves. Specifically, because we only select three indices, there are $\mathcal{O}(N^3}$ possible moves.
 
 Based on this, we can optimize by storing the frequency of every move in a 3D array `freqMat[x][y][z]`. It is also important to make sure that $y < z$, because it allows us to only consider $\frac{N^3}{2}$ possibilities instead of $N^3$.
 
 #### Precomputation:
 <LanguageSection>
-
 <CPPSection>
+
 ```cpp
 vector<vector<vector<int>>> freqMat(n, vector<vector<int>>(n, vector<int>(n)));
 for (int i = 0; i < k; i++) {
@@ -93,13 +90,12 @@ for (int i = 0; i < k; i++) {
 ```
 
 </CPPSection>
-
 </LanguageSection>
 
 #### Checking:
 <LanguageSection>
-
 <CPPSection>
+
 ```cpp
 int points = 0;
 for (int j = 0; j < n; j++) {
@@ -116,7 +112,6 @@ for (int j = 0; j < n; j++) {
 ```
 
 </CPPSection>
-
 </LanguageSection>
 
 
@@ -125,12 +120,10 @@ for (int j = 0; j < n; j++) {
 **Time Complexity:** $\mathcal{O}(N^3 \cdot 2^{N})$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
-
 using namespace std;
 
 int main() {
@@ -144,8 +137,7 @@ int main() {
 		x--;
 		y--;
 		z--;
-		if (y > z)  // make sure y < z, makes the loops below faster.
-			swap(y, z);
+		if (y > z) swap(y, z);  // make sure y < z, makes the loops below faster.
 		freqMat[x][y][z]++;
 	}
 
@@ -159,8 +151,7 @@ int main() {
 			if (bit(j)) continue;  // the M required
 			for (int k = 0; k < n; k++) {
 				if (!bit(k)) continue;             // the first O required
-				for (int l = k + 1; l < n; l++) {  // only need to iterate after k, bc l
-					                               // > k from swapping above.
+				for (int l = k + 1; l < n; l++) {  // only need to iterate after k, since l > k from swapping above
 					if (!bit(l)) continue;         // the second O required
 					points += freqMat[j][k][l];
 				}
@@ -180,5 +171,4 @@ int main() {
 ```
 
 </CPPSection>
-
 </LanguageSection>
