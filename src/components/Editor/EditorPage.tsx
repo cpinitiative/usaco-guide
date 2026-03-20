@@ -53,10 +53,17 @@ export default function EditorPage(): JSX.Element {
   const setToken = useSetAtom(
     tokenAtom as WritableAtom<string | null, [string | null], void>
   );
+  const lock = React.useRef(false);
 
   React.useEffect(() => {
     const code = query.code as string;
-    if (!code) return;
+
+    // 2. Check the lock AND the code
+    if (!code || lock.current) return;
+
+    // 3. Set the lock immediately
+    lock.current = true;
+
     fetch('/api/get-token', {
       method: 'POST',
       headers: {
@@ -66,11 +73,16 @@ export default function EditorPage(): JSX.Element {
     })
       .then(res => res.json())
       .then(json => {
-        console.log(json);
-        setToken(json.token);
+        if (json.token) {
+          setToken(json.token);
+        }
+      })
+      .catch(err => console.error('Token exchange failed', err))
+      .finally(() => {
+        // 4. Clean up the URL AFTER starting the process
+        router.replace('/editor', undefined, { shallow: true });
       });
-    router.replace('/editor', undefined, { shallow: true });
-  }, [query.code, setToken]);
+  }, [query.code, setToken, router]);
 
   const filesList = useAtomValue(filesListAtom);
   React.useEffect(() => {
@@ -85,6 +97,8 @@ export default function EditorPage(): JSX.Element {
     if (!filesList || filesList.length === 0) return;
     setActiveFile(filesList[0]);
   }, [activeFile, filesList, setActiveFile]);
+
+  const isAuthenticating = !!query.code;
 
   return (
     <QuizGeneratorProvider>
@@ -112,7 +126,10 @@ export default function EditorPage(): JSX.Element {
                   />
                 </LazyLoad>
                 <LazyLoad>
-                  <MainEditorInterface className="h-full w-0 flex-1" />
+                  <MainEditorInterface
+                    className="h-full w-0 flex-1"
+                    loading={isAuthenticating}
+                  />
                 </LazyLoad>
               </div>
               <div className="flex flex-col">

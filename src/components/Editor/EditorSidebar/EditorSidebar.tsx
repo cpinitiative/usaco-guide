@@ -208,10 +208,10 @@ function GithubSidebar({ loading }: { loading: boolean }) {
         ) : (
           <a
             href={`https://github.com/login/oauth/authorize?client_id=${
-              process.env.EDITOR_CLIENT_ID
+              process.env.NEXT_PUBLIC_EDITOR_CLIENT_ID
             }&redirect_uri=${
               process.env.NODE_ENV === 'development'
-                ? 'http://localhost:8000/editor'
+                ? 'http://localhost:3000/editor'
                 : ''
             }`}
             className="btn"

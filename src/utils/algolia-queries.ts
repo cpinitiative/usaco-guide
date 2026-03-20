@@ -169,7 +169,7 @@ export async function getEditorFileRecords() {
 }
 
 export async function getAlgoliaRecords() {
-  const indexPrefix = process.env.ALGOLIA_INDEX_NAME ?? 'dev';
+  const indexPrefix = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME ?? 'dev';
 
   const [moduleRecords, problemRecords, fileRecords] = await Promise.all([
     Promise.all(await getModuleRecords()),

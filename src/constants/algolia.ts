@@ -1,6 +1,6 @@
 export const ALGOLIA_INDEX_NAME =
-  typeof process !== 'undefined' && process.env?.ALGOLIA_INDEX_NAME
-    ? `${process.env.ALGOLIA_INDEX_NAME}_problems`
+  typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_ALGOLIA_INDEX_NAME
+    ? `${process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME}_problems`
     : 'dev_problems';
 
 export const ALGOLIA_APP_ID =
