@@ -1,0 +1,79 @@
+---
+id: usaco-1587
+source: USACO Bronze 2026 Third Contest
+title: Make All Distinct
+author: Junwon Kim
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_prob1_bronze_season26contest3.html)
+
+## Explanation
+
+Two elements can only collide if they share the same remainder modulo $|K|$, so we handle each remainder class independently. We are motivated to do so, since adding $K$ to each element doesn't change its remainder when divided by $K$. In particular, we have
+
+$$
+a_i + k \equiv a_i \pmod{k}
+$$
+
+and so we can consider the elements by their respective remainder.
+
+Within each class, sort the elements in the direction of $K$ (ascending if $K > 0$, descending if $K < 0$). Then, iterate in sorted order, advancing each element only as much as strictly needed to make it distinct from the previous one. This greedy approach is optimal, since we never move an element more than necessary.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(0);
+
+	int t;
+	cin >> t;
+	while (t--) {
+		int n, k;
+		cin >> n >> k;
+
+		int absk = abs(k);
+		map<int, vector<int>> groups;
+		for (int i = 0; i < n; i++) {
+			int a;
+			cin >> a;
+			groups[((a % absk) + absk) % absk].push_back(a);
+		}
+
+		long long ans = 0;
+		for (auto &[r, v] : groups) {
+			if (k > 0) {
+				sort(v.begin(), v.end());
+			} else {
+				sort(v.begin(), v.end(), greater<int>());
+			}
+
+			int prev = v[0];
+			for (int i = 1; i < v.size(); i++) {
+				if (k > 0) {
+					int next = max(v[i], prev + absk);
+					ans += (next - v[i]) / absk;
+					prev = next;
+				} else {
+					int next = min(v[i], prev - absk);
+					ans += (v[i] - next) / absk;
+					prev = next;
+				}
+			}
+		}
+
+		cout << ans << '\n';
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
