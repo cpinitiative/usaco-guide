@@ -1,6 +1,7 @@
 import { InformationCircleIcon } from '@heroicons/react/outline';
 import classNames from 'classnames';
 import { useAtomValue, useSetAtom } from 'jotai';
+import Link from 'next/link';
 import { activeFileAtom, saveFileAtom } from '../../atoms/editor';
 import { useDarkMode } from '../../context/DarkModeContext';
 import {
@@ -40,9 +41,11 @@ export const EditorTopNav = (): JSX.Element => {
           <div className="h-8 w-8 shrink-0">
             <LogoSquare />
           </div>
-          <span className="text-xl font-medium tracking-tight">
-            Guide Editor
-          </span>
+          <Link href="/dashboard">
+            <span className="text-xl font-medium tracking-tight">
+              Guide Editor
+            </span>
+          </Link>
         </div>
         {/*<button className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-hidden transition">*/}
         {/*  /!*<ArchiveIcon className="h-4 w-4" />*!/*/}
