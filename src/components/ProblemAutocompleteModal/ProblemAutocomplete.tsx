@@ -1,6 +1,5 @@
 import type { BaseHit, Hit } from 'instantsearch.js';
 import { useHits, useSearchBox } from 'react-instantsearch';
-import { ALGOLIA_INDEX_NAME } from '../../constants/algolia';
 import { AlgoliaProblemInfo } from '../../models/problem';
 
 type AlgoliaProblemInfoHit = Hit<BaseHit> & AlgoliaProblemInfo;
@@ -39,8 +38,6 @@ const ProblemAutocompleteHit = ({
     </li>
   );
 };
-
-export const indexName = ALGOLIA_INDEX_NAME;
 
 export type ProblemAutocompleteProps = {
   onProblemSelect: (problem: AlgoliaProblemInfoHit) => void;
