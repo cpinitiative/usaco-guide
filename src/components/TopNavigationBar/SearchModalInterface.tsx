@@ -40,7 +40,7 @@ const ModuleSearch = () => {
           <div className="max-h-[20rem] divide-y divide-gray-200 overflow-y-auto border-t border-gray-200 sm:max-h-[40rem] dark:divide-gray-700 dark:border-gray-700">
             {hits.map(hit => (
               <Link
-                href={moduleIDToURLMap[hit.id]}
+                href={moduleIDToURLMap[hit.objectID]}
                 className="block px-5 py-3 transition hover:bg-blue-100 dark:hover:bg-gray-700"
                 key={hit.id}
               >

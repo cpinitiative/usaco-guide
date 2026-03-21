@@ -84,9 +84,7 @@ const ProblemAutocompleteModal = ({
                 {/* Remount component to trigger autofocus when opening modal */}
 
                 <InstantSearch
-                  indexName={
-                    process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || 'dev'
-                  }
+                  indexName={`${process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || 'dev'}_problems`}
                   searchClient={searchClient}
                 >
                   <ProblemAutocomplete
