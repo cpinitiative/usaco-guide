@@ -7,7 +7,7 @@ import {
 import { InstantSearch } from 'react-instantsearch';
 import { AlgoliaProblemInfo } from '../../models/problem';
 import searchClient from '../../utils/algoliaLiteSearchClient';
-import { indexName, ProblemAutocomplete } from './ProblemAutocomplete';
+import { ProblemAutocomplete } from './ProblemAutocomplete';
 
 export interface ProblemAutocompleteModalProps {
   isOpen: boolean;
@@ -84,7 +84,7 @@ const ProblemAutocompleteModal = ({
                 {/* Remount component to trigger autofocus when opening modal */}
 
                 <InstantSearch
-                  indexName={indexName}
+                  indexName={`${process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || 'dev'}_problems`}
                   searchClient={searchClient}
                 >
                   <ProblemAutocomplete

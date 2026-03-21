@@ -219,7 +219,6 @@ export const UserDataProvider = ({
                 LOCAL_STORAGE_KEY,
                 JSON.stringify(newUserData)
               );
-              console.log('got new fb data', newUserData);
               debouncedSetUserData(newUserData); // Use debounced version here
             }
 

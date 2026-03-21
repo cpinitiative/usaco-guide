@@ -7,6 +7,7 @@ import {
   ChatAltIcon,
   ChevronDownIcon,
   CogIcon,
+  DocumentTextIcon,
   ExternalLinkIcon,
   LoginIcon,
   LogoutIcon,
@@ -39,7 +40,7 @@ export default function TopNavigationBar({
   transparent = false,
   linkLogoToIndex = false,
   currentSection = null,
-  hidePromoBar = false,
+  hidePromoBar = true,
   redirectToDashboard = false,
 }) {
   const router = useRouter();
@@ -220,6 +221,26 @@ export default function TopNavigationBar({
                             <p className="dark:text-dark-med-emphasis mt-1 text-sm text-gray-500">
                               A Learning Management System fully integrated with
                               the USACO Guide.
+                            </p>
+                          </div>
+                        </Link>
+                        <Link
+                          href="/editor"
+                          className="-m-3 flex items-start rounded-lg p-3 transition duration-150 ease-in-out hover:bg-gray-100 dark:hover:bg-gray-700"
+                        >
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-blue-500 text-white sm:h-12 sm:w-12">
+                            <DocumentTextIcon
+                              className="h-6 w-6"
+                              aria-hidden="true"
+                            />
+                          </div>
+                          <div className="ml-4">
+                            <p className="dark:text-dark-high-emphasis text-base font-medium text-gray-900">
+                              Editor
+                            </p>
+                            <p className="dark:text-dark-med-emphasis mt-1 text-sm text-gray-500">
+                              An online MDX editor for writing and previewing
+                              content.
                             </p>
                           </div>
                         </Link>
