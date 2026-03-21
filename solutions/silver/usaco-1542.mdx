@@ -25,34 +25,34 @@ At position zero, observe how times $2, 5, 8, ...$ have cows $1, 2, 3, ...$ This
 
 ```py
 for q in range(int(input())):
-    query, x, time = map(int, input().split())
-    
-    if query == 1:
-        cow = x
-        if time < 2 * cow:
-            print(cow)
-        else:
-            curr_time, position = 2 * cow - 1, cow
-            while True:
-                left_dist = min(position, time - curr_time)
-                curr_time += left_dist
-                position -= left_dist
-                if curr_time == time:
-                    break
-                position = (curr_time + 1) // 2 # same as ceiling
-                curr_time += 1
-            print(position)
-    else:
-        position = x
-        if time < 2 * position:
-            print(position)
-        else:
-            curr_time = time + position
-            while True:
-                if curr_time % 3 == 2:
-                    print(curr_time // 3 + 1)
-                    break
-                curr_time = curr_time - curr_time // 3 - 1
+	query, x, time = map(int, input().split())
+
+	if query == 1:
+		cow = x
+		if time < 2 * cow:
+			print(cow)
+		else:
+			curr_time, position = 2 * cow - 1, cow
+			while True:
+				left_dist = min(position, time - curr_time)
+				curr_time += left_dist
+				position -= left_dist
+				if curr_time == time:
+					break
+				position = (curr_time + 1) // 2  # same as ceiling
+				curr_time += 1
+			print(position)
+	else:
+		position = x
+		if time < 2 * position:
+			print(position)
+		else:
+			curr_time = time + position
+			while True:
+				if curr_time % 3 == 2:
+					print(curr_time // 3 + 1)
+					break
+				curr_time = curr_time - curr_time // 3 - 1
 ```
 
 </PySection>
