@@ -23,39 +23,48 @@ If we add edges in increasing order of weight, then components grow exactly in t
 
 ```py
 import sys
+
 sys.stdin = open("skilevel.in")
 sys.stdout = open("skilevel.out", "w+")
 
 MAXN = 500
 parents = [0] * (MAXN**2)
 sizes = [1] * (MAXN**2)
-counts = [0] * (MAXN**2) # the number of starting points in that component
+counts = [0] * (MAXN**2)  # the number of starting points in that component
+
 
 def init(n, waypoints):
-    for i in range(n): parents[i] = i
-    for i in waypoints: counts[i] = 1
+	for i in range(n):
+		parents[i] = i
+	for i in waypoints:
+		counts[i] = 1
+
 
 def find(u):
-    if u == parents[u]: return u
-    parents[u] = find(parents[u])
-    return parents[u]
+	if u == parents[u]:
+		return u
+	parents[u] = find(parents[u])
+	return parents[u]
+
 
 def unite(u, v):
-    u = find(u)
-    v = find(v)
-    if u == v: return u
-    if sizes[u] < sizes[v]:  u, v = v, u
-    parents[v] = u
-    sizes[u] += sizes[v]
-    counts[u] += counts[v]
-    return u
+	u = find(u)
+	v = find(v)
+	if u == v:
+		return u
+	if sizes[u] < sizes[v]:
+		u, v = v, u
+	parents[v] = u
+	sizes[u] += sizes[v]
+	counts[u] += counts[v]
+	return u
+
 
 N, M, T = map(int, input().split())
 grid = [list(map(int, input().split())) for _ in range(N)]
 waypointGraph = [list(map(int, input().split())) for _ in range(N)]
 
-waypoints = [i*M + j for i in range(N)  for j in range(M) 
-				if waypointGraph[i][j] == 1]
+waypoints = [i * M + j for i in range(N) for j in range(M) if waypointGraph[i][j] == 1]
 
 init(N * M, waypoints)
 
@@ -64,24 +73,26 @@ moves = [(0, 1), (1, 0)]
 
 # create edges with weights equivalent to elevation difference
 for i in range(N):
-    for j in range(M):
-        for x, y in moves:
-            if 0 <= i + x < N and 0 <= j + y < M:
-                edges.append((
-                    i * M + j,
-                    (i + x) * M + (j + y),
-                    abs(grid[i + x][j + y] - grid[i][j])
-                ))
+	for j in range(M):
+		for x, y in moves:
+			if 0 <= i + x < N and 0 <= j + y < M:
+				edges.append(
+					(
+						i * M + j,
+						(i + x) * M + (j + y),
+						abs(grid[i + x][j + y] - grid[i][j]),
+					)
+				)
 
 # sort edges in increasing weights for Kruskal's
 edges.sort(key=lambda x: x[2])
 
 total = 0
 for a, b, d in edges:
-    root = unite(a, b)
-    if sizes[root] >= T:
-        total += counts[root] * d
-        counts[root] = 0   # those starting points have now been answered
+	root = unite(a, b)
+	if sizes[root] >= T:
+		total += counts[root] * d
+		counts[root] = 0  # those starting points have now been answered
 
 print(total)
 ```
