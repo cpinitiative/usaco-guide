@@ -1,0 +1,60 @@
+---
+id: usaco-1542
+source: USACO Silver 2026 First Contest
+title: Lineup Queries
+author: Sachet Abeysinghe
+---
+
+[Official Solution (Python)](http://www.usaco.org/current/data/sol_prob1_silver_season26contest1.html)
+
+## Explanation
+
+**Query 1:** Notice the pattern a particular cow $c$ takes. For all times $t<2c$, the cow's position stays at $c$. After that, the cow shifts left one position each time until it gets to position zero, when it jumps to position $\lceil t/2 \rceil$. Simulating each left shift is redundant, so we can simulate this efficiently by simply moving left directly to position zero and then jumping, increasing our time much quicker to the desired time. Note that if our desired time is before we reach position zero, we move to the desired time directly and finish.
+
+**Query 2:** There isn't a clear pattern of cow numbers when we lock in a specific position $p$. However, similar to query one, if $t < 2p$, the position at time $t$ is just $p$. For $t \ge 2p$, notice how the cow at position $p$ has a diagonal path towards position zero. Thus, we can reduce the problem to finding the cow at position zero at time $t + p$.
+
+At position zero, observe how times $2, 5, 8, ...$ have cows $1, 2, 3, ...$ This means that the cows at times $t\equiv2\operatorname{mod}3$ are $\lfloor t / 3 \rfloor + 1$. If the time does not satisfy that, we can reduce it to a time with the same cow that does satisfy the condition by going through the jumps in reverse. Using some math, we can deduce that the reverse transition is $t \to t - \lfloor t / 3 \rfloor - 1$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(Q\log t)$
+
+<LanguageSection>
+
+<PySection>
+
+```py
+for q in range(int(input())):
+	query, x, time = map(int, input().split())
+
+	if query == 1:
+		cow = x
+		if time < 2 * cow:
+			print(cow)
+		else:
+			curr_time, position = 2 * cow - 1, cow
+			while True:
+				left_dist = min(position, time - curr_time)
+				curr_time += left_dist
+				position -= left_dist
+				if curr_time == time:
+					break
+				position = (curr_time + 1) // 2  # same as ceiling
+				curr_time += 1
+			print(position)
+	else:
+		position = x
+		if time < 2 * position:
+			print(position)
+		else:
+			curr_time = time + position
+			while True:
+				if curr_time % 3 == 2:
+					print(curr_time // 3 + 1)
+					break
+				curr_time = curr_time - curr_time // 3 - 1
+```
+
+</PySection>
+
+</LanguageSection>
