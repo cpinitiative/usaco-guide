@@ -9,9 +9,12 @@ author: Chongtian Ma, Raagav Bala
 
 ## Explanation
 
-Note that a cow can move along exactly those edges whose elevation difference is at most $D$. So the cells reachable from a starting point are the cells in its connected component in this graph.
+First, we note that a cow can move along exactly those edges whose elevation difference is at most $D$. So, the cells reachable from a starting point are the cells in its connected component in this graph.
 
-If we add edges in increasing order of weight, then components grow exactly in the order their required difficulty increases. So, the first time a connected component reaches size $T$, every starting point inside it has found its minimum valid difficulty.
+Then, we sort all edges by weight and iterate through them in increasing order, similar to Kruskal’s algorithm, using a DSU to maintain connected components. As we add edges, we effectively increase the allowed $D$.
+
+When a component first reaches size $T$, all starting points in it have found their minimum required difficulty, so we add their contribution (count multiplied by their minimum difficulty) to the total answer and reset their count to $0$ to avoid double counting.
+
 
 ## Implementation
 
@@ -60,27 +63,27 @@ def unite(u, v):
 	return u
 
 
-N, M, T = map(int, input().split())
-grid = [list(map(int, input().split())) for _ in range(N)]
-waypointGraph = [list(map(int, input().split())) for _ in range(N)]
+n, m, t = map(int, input().split())
+grid = [list(map(int, input().split())) for _ in range(n)]
+waypointGraph = [list(map(int, input().split())) for _ in range(n)]
 
-waypoints = [i * M + j for i in range(N) for j in range(M) if waypointGraph[i][j] == 1]
+waypoints = [i * m + j for i in range(n) for j in range(m) if waypointGraph[i][j] == 1]
 
-init(N * M, waypoints)
+init(n*m, waypoints)
 
 edges = []
 moves = [(0, 1), (1, 0)]
 
 # create edges with weights equivalent to elevation difference
-for i in range(N):
-	for j in range(M):
+for i in range(n):
+	for j in range(m):
 		for x, y in moves:
-			if 0 <= i + x < N and 0 <= j + y < M:
+			if 0 <= i + x < n and 0 <= j + y < m:
 				edges.append(
 					(
-						i * M + j,
-						(i + x) * M + (j + y),
-						abs(grid[i + x][j + y] - grid[i][j]),
+						i * m + j,
+						(i + x) * m + (j + y),
+						abs(grid[i + x][j + y] - grid[i][j]), # weight of the edge
 					)
 				)
 
@@ -90,9 +93,9 @@ edges.sort(key=lambda x: x[2])
 total = 0
 for a, b, d in edges:
 	root = unite(a, b)
-	if sizes[root] >= T:
+	if sizes[root] >= t:
 		total += counts[root] * d
-		counts[root] = 0  # those starting points have now been answered
+		counts[root] = 0  # this component has now been answered
 
 print(total)
 ```
