@@ -7,9 +7,9 @@ author: Arnav Gokhale
 
 ## Explanation
 
-To start off, we can approach this problem in reverse, initially removing all trees, and carefully adding minimum possible amount of trees to satisfy all the constraints. 
+To start off, we can approach this problem in reverse, initially removing all trees, and carefully adding minimum possible amount of trees to satisfy all the constraints.
 
-First, maintain a list containing both the trees and the intervals, sorted by the intervals' left endpoint and the 
+First, maintain a list containing both the trees and the intervals, sorted by the intervals' left endpoint and the
 trees' positions. Then, we can traverse over this list from left to right.
 
 Consider the case where we encounter a interval while procesing. Let $\text{cur}$ be the current number of trees cut down, which represents the current answer. When we add a new interval, it imposes a restriction on the amount of trees that can be cut down in that interval's range. Formally, if $\text{present}$ is the current amount of trees present in that interval, then at most $\text{cut} = \text{present} - t_i$ trees can be cut down in that interval's range. The answer at the end of this interval is therefore at max $\text{cur} + \text{cut}$.
@@ -33,50 +33,48 @@ using namespace std;
 using vi = vector<int>;
 
 void solve() {
-     int n, k; cin >> n >> k;
-     vi x(n);
-     for (auto& d : x) cin >> d;
-     sort(x.begin(), x.end());
+	int n, k;
+	cin >> n >> k;
+	vi x(n);
+	for (auto &d : x) cin >> d;
+	sort(x.begin(), x.end());
 
-     vector<array<int,4>> crt;
+	vector<array<int, 4>> crt;
 
-     for (int i = 0; i < k; i++) {
-         int l, r, t; cin >> l >> r >> t;
-         auto rg = upper_bound(x.begin(), x.end(), r);
-         auto lf = lower_bound(x.begin(), x.end(), l);
-         crt.push_back({l, 0, r, (rg - lf) - t});
-     }
+	for (int i = 0; i < k; i++) {
+		int l, r, t;
+		cin >> l >> r >> t;
+		auto rg = upper_bound(x.begin(), x.end(), r);
+		auto lf = lower_bound(x.begin(), x.end(), l);
+		crt.push_back({l, 0, r, (rg - lf) - t});
+	}
 
-     for (int i = 0; i < n; i++) {
-        crt.push_back({x[i], 1, 0, 0});
-     }
+	for (int i = 0; i < n; i++) { crt.push_back({x[i], 1, 0, 0}); }
 
-     sort(crt.begin(), crt.end());
-     priority_queue<array<int,2>, vector<array<int,2>>, greater<array<int,2>>> pq;
-     int ans = 0;
-     for (int i = 0; i < crt.size(); i++) {
-         if (crt[i][1] == 0) {
-            pq.push({ans + crt[i][3], crt[i][2]});
-         } else {
-            while (!pq.empty() and (pq.top())[1] < crt[i][0]) pq.pop();
+	sort(crt.begin(), crt.end());
+	priority_queue<array<int, 2>, vector<array<int, 2>>, greater<array<int, 2>>> pq;
+	int ans = 0;
+	for (int i = 0; i < crt.size(); i++) {
+		if (crt[i][1] == 0) {
+			pq.push({ans + crt[i][3], crt[i][2]});
+		} else {
+			while (!pq.empty() and (pq.top())[1] < crt[i][0]) pq.pop();
 
-            if (pq.empty() or (pq.top())[0] != ans) ans++;
-         }
-     }
+			if (pq.empty() or (pq.top())[0] != ans) ans++;
+		}
+	}
 
-     cout << ans << '\n';
+	cout << ans << '\n';
 }
 
 signed main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    int t; cin >> t;
-    while (t--) {
-        solve();
-    }
+	int t;
+	cin >> t;
+	while (t--) { solve(); }
 }
-
 ```
 
 </CPPSection>
