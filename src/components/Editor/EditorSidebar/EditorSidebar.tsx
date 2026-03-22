@@ -208,12 +208,8 @@ function GithubSidebar({ loading }: { loading: boolean }) {
         ) : (
           <a
             href={`https://github.com/login/oauth/authorize?client_id=${
-              process.env.EDITOR_CLIENT_ID
-            }&redirect_uri=${
-              process.env.NODE_ENV === 'development'
-                ? 'http://localhost:8000/editor'
-                : ''
-            }`}
+              process.env.NEXT_PUBLIC_EDITOR_CLIENT_ID ?? 'Iv1.6da85d62d6b62202'
+            }&redirect_uri=https://usaco.guide/editor`} // change this in dev mode to localhost:3000/editor
             className="btn"
           >
             Login with GitHub &rarr;

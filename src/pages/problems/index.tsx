@@ -23,7 +23,7 @@ import TopNavigationBar from '../../components/TopNavigationBar/TopNavigationBar
 import { useUserProgressOnProblems } from '../../context/UserDataContext/properties/userProgress';
 import searchClient from '../../utils/algoliaLiteSearchClient';
 
-const indexName = `${process.env.ALGOLIA_INDEX_NAME ?? 'dev'}_problems`;
+const indexName = `${process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME ?? 'dev'}_problems`;
 
 interface ProblemsPageProps {
   problemIds: string[];
