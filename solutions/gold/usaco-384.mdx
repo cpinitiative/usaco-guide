@@ -17,7 +17,6 @@ We also maintain, for each DSU component, the number of starting points in that 
 
 When a component first reaches size at least $T$, the current edge weight is exactly the minimum required difficulty needed to make that component have size $\ge T$. Therefore, all starting points in it have found their minimum required difficulty, so we add their contribution (number of starting points in the component multiplied by this minimum difficulty) to the total answer and reset their count to $0$ to avoid double counting.
 
-
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(NM \log (NM))$
@@ -31,9 +30,6 @@ import sys
 
 sys.stdin = open("skilevel.in")
 sys.stdout = open("skilevel.out", "w+")
-
-MAXN = 500
-counts = [0] * (MAXN**2)  # the number of starting points in that component
 
 # BeginCodeSnip{Disjoint Set Union}
 class DisjointSets:
@@ -65,16 +61,14 @@ class DisjointSets:
 	def connected(self, x: int, y: int) -> bool:
 		""":return: whether x and y are in the same connected component"""
 		return self.find(x) == self.find(y)
-
-
 # EndCodeSnip
-
 
 n, m, t = map(int, input().split())
 grid = [list(map(int, input().split())) for _ in range(n)]
 waypoint_graph = [list(map(int, input().split())) for _ in range(n)]
 
 waypoints = [i * m + j for i in range(n) for j in range(m) if waypoint_graph[i][j] == 1]
+counts = [0] * (n * m) # stores number of starting points for each DSU root
 
 dsu = DisjointSets(n * m)
 for i in waypoints:
@@ -92,7 +86,7 @@ for i in range(n):
 					(
 						i * m + j,
 						(i + x) * m + (j + y),
-						abs(grid[i + x][j + y] - grid[i][j]),  # weight of the edge
+						abs(grid[i + x][j + y] - grid[i][j])  # weight of the edge
 					)
 				)
 
