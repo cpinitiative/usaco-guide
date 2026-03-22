@@ -61,6 +61,8 @@ class DisjointSets:
 	def connected(self, x: int, y: int) -> bool:
 		""":return: whether x and y are in the same connected component"""
 		return self.find(x) == self.find(y)
+
+
 # EndCodeSnip
 
 n, m, t = map(int, input().split())
@@ -68,7 +70,7 @@ grid = [list(map(int, input().split())) for _ in range(n)]
 waypoint_graph = [list(map(int, input().split())) for _ in range(n)]
 
 waypoints = [i * m + j for i in range(n) for j in range(m) if waypoint_graph[i][j] == 1]
-counts = [0] * (n * m) # stores number of starting points for each DSU root
+counts = [0] * (n * m)  # stores number of starting points for each DSU root
 
 dsu = DisjointSets(n * m)
 for i in waypoints:
@@ -86,7 +88,7 @@ for i in range(n):
 					(
 						i * m + j,
 						(i + x) * m + (j + y),
-						abs(grid[i + x][j + y] - grid[i][j])  # weight of the edge
+						abs(grid[i + x][j + y] - grid[i][j]),  # weight of the edge
 					)
 				)
 
