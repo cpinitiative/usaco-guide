@@ -2,16 +2,118 @@
 id: usaco-384
 source: USACO Gold 2014 January
 title: Ski Course Rating
-author: Chongtian Ma
+author: Chongtian Ma, Raagav Bala
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_skilevel.html)
 
+## Explanation
+
+First, notice that a cow can move along the edges whose elevation difference is at most $D$. So, the cells reachable from a starting point are the cells in its connected component in this graph.
+
+Then, we sort all edges by elevation difference and iterate through them in increasing order, similar to Kruskal’s algorithm, using a DSU to maintain connected components. As we add edges, we effectively increase the allowed $D$.
+
+We also maintain, for each DSU component, the number of starting points in that component, similarly to how we maintain DSU component sizes.
+
+When a component first reaches size at least $T$, the current edge weight is exactly the minimum required difficulty needed to make that component have size $\ge T$. Therefore, all starting points in it have found their minimum required difficulty, so we add their contribution (number of starting points in the component multiplied by this minimum difficulty) to the total answer and reset their count to $0$ to avoid double counting.
+
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N^2 \log N^2)$
+**Time Complexity:** $\mathcal{O}(NM \log (NM))$
 
 <LanguageSection>
+
+<PySection>
+
+```py
+import sys
+
+sys.stdin = open("skilevel.in")
+sys.stdout = open("skilevel.out", "w+")
+
+# BeginCodeSnip{Disjoint Set Union}
+class DisjointSets:
+	def __init__(self, size: int) -> None:
+		self.parents = [i for i in range(size)]
+		self.sizes = [1 for _ in range(size)]
+
+	def find(self, x: int) -> int:
+		""":return: the "representative" node in x's component"""
+		if self.parents[x] == x:
+			return x
+		self.parents[x] = self.find(self.parents[x])
+		return self.parents[x]
+
+	def unite(self, x: int, y: int) -> bool:
+		""":return: whether the merge changed connectivity"""
+		x_root = self.find(x)
+		y_root = self.find(y)
+		if x_root == y_root:
+			return False
+
+		if self.sizes[x_root] < self.sizes[y_root]:
+			x_root, y_root = y_root, x_root
+
+		self.parents[y_root] = x_root
+		self.sizes[x_root] += self.sizes[y_root]
+		return True
+
+	def connected(self, x: int, y: int) -> bool:
+		""":return: whether x and y are in the same connected component"""
+		return self.find(x) == self.find(y)
+
+
+# EndCodeSnip
+
+n, m, t = map(int, input().split())
+grid = [list(map(int, input().split())) for _ in range(n)]
+waypoint_graph = [list(map(int, input().split())) for _ in range(n)]
+
+waypoints = [i * m + j for i in range(n) for j in range(m) if waypoint_graph[i][j] == 1]
+counts = [0] * (n * m)  # stores number of starting points for each DSU root
+
+dsu = DisjointSets(n * m)
+for i in waypoints:
+	counts[i] = 1
+
+edges = []
+moves = [(0, 1), (1, 0)]
+
+# create edges with weights equivalent to elevation difference
+for i in range(n):
+	for j in range(m):
+		for x, y in moves:
+			if 0 <= i + x < n and 0 <= j + y < m:
+				edges.append(
+					(
+						i * m + j,
+						(i + x) * m + (j + y),
+						abs(grid[i + x][j + y] - grid[i][j]),  # weight of the edge
+					)
+				)
+
+# sort edges in increasing weights for Kruskal's
+edges.sort(key=lambda x: x[2])
+
+total = 0
+for a, b, d in edges:
+	root_a = dsu.find(a)
+	root_b = dsu.find(b)
+
+	if root_a != root_b:
+		dsu.unite(a, b)
+		root = dsu.find(a)
+		counts[root] = counts[root_a] + counts[root_b]
+
+		if dsu.sizes[root] >= t:
+			total += counts[root] * d
+			counts[root] = 0  # this component has now been answered
+
+print(total)
+```
+
+</PySection>
+
 <CPPSection>
 
 Interestingly, the following code passes all test cases but won't pass if $T = 1$; you'd have to make a separate edge case for that.
