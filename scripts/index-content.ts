@@ -1,6 +1,6 @@
 import Database from 'better-sqlite3';
 import { readdir } from 'fs/promises';
-import path from 'path';
+import path, { join, relative } from 'path';
 import { CONTENT_DIR, SOLUTIONS_DIR } from '../src/lib/constants';
 import { getWritableDatabase } from '../src/lib/database';
 import type { ProblemMetadata } from '../src/models/problem';
@@ -175,15 +175,14 @@ async function indexMdxFiles(
   );
 
   const transaction = db.transaction(
-    (items: Array<{ file: string; content: MdxContent }>) => {
-      for (const { file, content } of items) {
-        const relativePath = path.relative(baseDir, content.fileAbsolutePath);
+    (items: Array<{ content: MdxContent }>) => {
+      for (const { content } of items) {
         const gitTime = gitTimestamps.get(content.fileAbsolutePath) || null;
 
         insertStmt.run(
           content.frontmatter.id,
           type,
-          relativePath,
+          content.fileAbsolutePath,
           JSON.stringify(content.frontmatter),
           content.body,
           JSON.stringify(content.toc),
@@ -197,16 +196,17 @@ async function indexMdxFiles(
       }
     }
   );
-
+  const rootDir = process.cwd();
   // Process files in batches with controlled concurrency
   const BATCH_SIZE = 10;
   for (let i = 0; i < files.length; i += BATCH_SIZE) {
     const batch = files.slice(i, i + BATCH_SIZE);
     const items = await Promise.all(
       batch.map(async file => {
-        const filePath = path.join(baseDir, file);
-        const content = await parseMdxFile(filePath);
-        return { file, content };
+        const filePath = join(baseDir, file);
+        const filePathFromRootDir = relative(rootDir, filePath);
+        const content = await parseMdxFile(filePathFromRootDir);
+        return { content };
       })
     );
     transaction(items);
