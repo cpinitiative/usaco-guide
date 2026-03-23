@@ -177,7 +177,8 @@ async function indexMdxFiles(
   const transaction = db.transaction(
     (items: Array<{ content: MdxContent }>) => {
       for (const { content } of items) {
-        const gitTime = gitTimestamps.get(path.resolve(content.fileAbsolutePath)) || null;
+        const gitTime =
+          gitTimestamps.get(path.resolve(content.fileAbsolutePath)) || null;
 
         insertStmt.run(
           content.frontmatter.id,

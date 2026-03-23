@@ -176,7 +176,7 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
               <i>
                 <br />
                 {timeAgoString(link.gitAuthorTime)}
-             </i>
+              </i>
             )}
           </p>
         </div>
