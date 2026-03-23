@@ -48,7 +48,16 @@ export default function PostSidebar({
         <SidebarDueDate post={post} />
         {isMobile && (
           <div>
-            <Link href="leaderboard" className="font-medium hover:underline">
+            <Link
+              href={
+                '/groups/' +
+                activeGroup.activeGroupId +
+                '/post/' +
+                post.id +
+                '/leaderboard'
+              }
+              className="font-medium hover:underline"
+            >
               View Assignment Leaderboard &rarr;
             </Link>
           </div>
