@@ -60,9 +60,6 @@ function time_ago(time: unknown): string {
     token = 'from now';
     list_choice = 2;
   }
-  if (seconds > 4838400) {
-    return '';
-  }
   let i = 0,
     format;
   while ((format = time_formats[i++])) {
