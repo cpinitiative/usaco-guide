@@ -175,10 +175,12 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
           <p className="dark:group-hover:text-dark-high-emphasis block text-sm leading-5 text-gray-400 transition group-hover:text-blue-700">
             {link.description}
 
-            <i>
-              <br />
-              {timeAgoString(link.gitAuthorTime)}
-            </i>
+            {link.gitAuthorTime != null && (
+              <i>
+                <br />
+                {timeAgoString(link.gitAuthorTime)}
+             </i>
+            )}
           </p>
         </div>
       </Link>
