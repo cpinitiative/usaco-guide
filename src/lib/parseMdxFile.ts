@@ -98,9 +98,6 @@ export async function parseMdxFile(filePath: string): Promise<MdxContent> {
     );
   }
 
-  // Get last updated timestamp from git
-  // const lastUpdated = await getLastUpdated(filePath);
-
   let division: SectionID | null = null;
   if (filePath.includes('content')) {
     division = moduleIDToSectionMap[frontmatter.id];
