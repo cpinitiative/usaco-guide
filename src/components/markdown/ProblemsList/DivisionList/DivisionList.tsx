@@ -16,10 +16,20 @@ import divToProbs from './div_to_probs.json';
 import { DivisionProblemInfo } from './DivisionProblemInfo';
 import idToSol from './id_to_sol.json';
 
-const startYear = 2016;
-const endYear = 2026; // manually increment this for a new season
-const allYears = `All (${startYear - 1} - ${endYear})`;
 const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
+const startYear = 2016;
+
+let endYear = startYear;
+
+for (const division of divisions) {
+  for (const [, contest] of divToProbs[division]) {
+    let year = Number(contest.substring(0, 4));
+    if (contest.includes('December')) year++;
+    endYear = Math.max(endYear, year);
+  }
+}
+
+const allYears = `All (${startYear - 1} - ${endYear})`;
 
 const getSeasons = () => {
   const res: string[] = [];
