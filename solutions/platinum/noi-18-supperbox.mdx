@@ -1,0 +1,176 @@
+---
+id: noi-18-supperbox
+source: NOI
+title:  Estelle's Supper Box
+author: Ashok Narayan
+---
+
+## Explanation
+
+
+Estelle is given $N$ types of supper boxes, each having a calorie value and a satisfaction value.
+
+For each of the $Q$ days, only a subarray of boxes from $[l, r]$ is available. From these, she can pick at most one of each type, such that the total calories do not exceed $x$.
+
+The goal for each query is to compute the maximum total satisfaction she can obtain under this calorie constraint.
+
+This is essentially a *0/1 knapsack problem on subarrays*, where each query asks us to solve knapsack on a different range.
+
+A naive approach would solve knapsack independently for each query in $\mathcal{O}(N \cdot X)$, which is too slow for large constraints.
+
+Thus, we need a more efficient way to handle multiple range knapsack queries.
+
+---
+
+### Algorithm
+
+We solve this problem using *Divide and Conquer on queries* combined with knapsack DP.
+
+We recursively process a segment $[l, r]$:
+- Split at $mid = \lfloor (l + r)/2 \rfloor$
+- For queries fully in left or right, recurse
+- For queries crossing $mid$, process using DP
+
+For crossing queries, we precompute two DP tables:
+
+*Left DP*:
+$dpL[i][x] =$ maximum satisfaction using items in range $[i, mid]$ with total calories $\le x$
+
+Transition:
+- Not take item $i$: $dpL[i][x] = dpL[i+1][x]$
+- Take item $i$ (if $c[i] \le x$):
+  $dpL[i][x] = \max(dpL[i][x], dpL[i+1][x - c[i]] + s[i])$
+
+*Right DP*:
+$dpR[i][x] =$ maximum satisfaction using items in range $[mid+1, i]$ with total calories $\le x$
+
+Transition:
+- Not take item $i$: $dpR[i][x] = dpR[i-1][x]$
+- Take item $i$ (if $c[i] \le x$):
+  $dpR[i][x] = \max(dpR[i][x], dpR[i-1][x - c[i]] + s[i])$
+
+For a query $[l, r]$ that crosses $mid$, we combine:
+$\max_{0 \le k \le x} (dpL[l][k] + dpR[r][x - k])$
+
+This effectively splits the knapsack into left and right halves.
+
+Each query is processed in $\mathcal{O}(X)$ per level..
+
+---
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}((N \log N + Q) \cdot X)$ 
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+
+#include <bits/stdc++.h>
+using namespace std;
+#define int long long
+
+// BeginCodeSnip{Global Variables and Structs}
+const int MAXN = 1e4 + 5;
+const int MAXQ = 5e4 + 5;
+const int MAXX = 2e3 + 5;
+
+int cost[MAXN], val[MAXN], ans[MAXQ];
+int dpL[MAXN][MAXX], dpR[MAXN][MAXX];
+
+int n, q;
+
+struct Query {
+    int l, r, x, id;
+};
+// EndCodeSnip
+
+
+// BeginCodeSnip{Divide and Conquer}
+void divide_and_conquer(int l, int r, vector<Query> queries) {
+    if (l == r) {
+        for (int i = 0; i < (int)queries.size(); i++) {
+            ans[queries[i].id] = val[l] * (cost[l] <= queries[i].x);
+        }
+        return;
+    }
+
+    int mid = (l + r) / 2;
+
+    for (int x = 0; x < MAXX; ++x) dpL[mid + 1][x] = 0;
+    for (int i = mid; i >= l; --i) {
+        for (int x = 1; x < MAXX; ++x) {
+            dpL[i][x] = dpL[i + 1][x];
+            if (cost[i] <= x) {
+                dpL[i][x] = max(dpL[i][x], dpL[i + 1][x - cost[i]] + val[i]);
+            }
+        }
+    }
+
+    for (int x = 0; x < MAXX; ++x) dpR[mid][x] = 0;
+    for (int i = mid + 1; i <= r; ++i) {
+        for (int x = 1; x < MAXX; ++x) {
+            dpR[i][x] = dpR[i - 1][x];
+            if (cost[i] <= x) {
+                dpR[i][x] = max(dpR[i][x], dpR[i - 1][x - cost[i]] + val[i]);
+            }
+        }
+    }
+
+    vector<Query> left_queries, right_queries;
+
+    for (int i = 0; i < (int)queries.size(); ++i) {
+        if (queries[i].l <= mid && mid < queries[i].r) {
+            for (int x = 0; x <= queries[i].x; ++x) {
+                ans[queries[i].id] = max(
+                    ans[queries[i].id],
+                    dpL[queries[i].l][x] + dpR[queries[i].r][queries[i].x - x]
+                );
+            }
+        } else if (queries[i].r <= mid) {
+            left_queries.push_back(queries[i]);
+        } else {
+            right_queries.push_back(queries[i]);
+        }
+    }
+
+    divide_and_conquer(l, mid, left_queries);
+    divide_and_conquer(mid + 1, r, right_queries);
+}
+// EndCodeSnip
+
+signed main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    // BeginCodeSnip{Getting Input}
+    cin >> n;
+    for (int i = 0; i < n; ++i) {
+        cin >> cost[i] >> val[i];
+    }
+
+    cin >> q;
+    vector<Query> queries(q);
+
+    for (int i = 0; i < q; ++i) {
+        cin >> queries[i].l >> queries[i].r >> queries[i].x;
+        queries[i].l--;
+        queries[i].r--;
+        queries[i].id = i;
+    }
+    // EndCodeSnip
+    
+    divide_and_conquer(0, n - 1, queries);
+
+    for (int i = 0; i < q; ++i) {
+        cout << ans[i] << '\n';
+    }
+
+    return 0;
+}
+
+```
+
+</CPPSection>
+</LanguageSection>
