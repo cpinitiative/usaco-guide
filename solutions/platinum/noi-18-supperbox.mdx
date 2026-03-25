@@ -60,7 +60,7 @@ Each query is processed in $\mathcal{O}(X)$ per level..
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}((N \log N + Q) \cdot X)$ 
+**Time Complexity:** $\mathcal{O}((N \log N + Q) \cdot X)$
 
 <LanguageSection>
 <CPPSection>
@@ -82,94 +82,87 @@ int dpL[MAXN][MAXX], dpR[MAXN][MAXX];
 int n, q;
 
 struct Query {
-    int l, r, x, id;
+	int l, r, x, id;
 };
 // EndCodeSnip
 
-
 // BeginCodeSnip{Divide and Conquer}
 void divide_and_conquer(int l, int r, vector<Query> queries) {
-    if (l == r) {
-        for (int i = 0; i < (int)queries.size(); i++) {
-            ans[queries[i].id] = val[l] * (cost[l] <= queries[i].x);
-        }
-        return;
-    }
+	if (l == r) {
+		for (int i = 0; i < (int)queries.size(); i++) {
+			ans[queries[i].id] = val[l] * (cost[l] <= queries[i].x);
+		}
+		return;
+	}
 
-    int mid = (l + r) / 2;
+	int mid = (l + r) / 2;
 
-    for (int x = 0; x < MAXX; ++x) dpL[mid + 1][x] = 0;
-    for (int i = mid; i >= l; --i) {
-        for (int x = 1; x < MAXX; ++x) {
-            dpL[i][x] = dpL[i + 1][x];
-            if (cost[i] <= x) {
-                dpL[i][x] = max(dpL[i][x], dpL[i + 1][x - cost[i]] + val[i]);
-            }
-        }
-    }
+	for (int x = 0; x < MAXX; ++x) dpL[mid + 1][x] = 0;
+	for (int i = mid; i >= l; --i) {
+		for (int x = 1; x < MAXX; ++x) {
+			dpL[i][x] = dpL[i + 1][x];
+			if (cost[i] <= x) {
+				dpL[i][x] = max(dpL[i][x], dpL[i + 1][x - cost[i]] + val[i]);
+			}
+		}
+	}
 
-    for (int x = 0; x < MAXX; ++x) dpR[mid][x] = 0;
-    for (int i = mid + 1; i <= r; ++i) {
-        for (int x = 1; x < MAXX; ++x) {
-            dpR[i][x] = dpR[i - 1][x];
-            if (cost[i] <= x) {
-                dpR[i][x] = max(dpR[i][x], dpR[i - 1][x - cost[i]] + val[i]);
-            }
-        }
-    }
+	for (int x = 0; x < MAXX; ++x) dpR[mid][x] = 0;
+	for (int i = mid + 1; i <= r; ++i) {
+		for (int x = 1; x < MAXX; ++x) {
+			dpR[i][x] = dpR[i - 1][x];
+			if (cost[i] <= x) {
+				dpR[i][x] = max(dpR[i][x], dpR[i - 1][x - cost[i]] + val[i]);
+			}
+		}
+	}
 
-    vector<Query> left_queries, right_queries;
+	vector<Query> left_queries, right_queries;
 
-    for (int i = 0; i < (int)queries.size(); ++i) {
-        if (queries[i].l <= mid && mid < queries[i].r) {
-            for (int x = 0; x <= queries[i].x; ++x) {
-                ans[queries[i].id] = max(
-                    ans[queries[i].id],
-                    dpL[queries[i].l][x] + dpR[queries[i].r][queries[i].x - x]
-                );
-            }
-        } else if (queries[i].r <= mid) {
-            left_queries.push_back(queries[i]);
-        } else {
-            right_queries.push_back(queries[i]);
-        }
-    }
+	for (int i = 0; i < (int)queries.size(); ++i) {
+		if (queries[i].l <= mid && mid < queries[i].r) {
+			for (int x = 0; x <= queries[i].x; ++x) {
+				ans[queries[i].id] =
+				    max(ans[queries[i].id],
+				        dpL[queries[i].l][x] + dpR[queries[i].r][queries[i].x - x]);
+			}
+		} else if (queries[i].r <= mid) {
+			left_queries.push_back(queries[i]);
+		} else {
+			right_queries.push_back(queries[i]);
+		}
+	}
 
-    divide_and_conquer(l, mid, left_queries);
-    divide_and_conquer(mid + 1, r, right_queries);
+	divide_and_conquer(l, mid, left_queries);
+	divide_and_conquer(mid + 1, r, right_queries);
 }
 // EndCodeSnip
 
 signed main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    // BeginCodeSnip{Getting Input}
-    cin >> n;
-    for (int i = 0; i < n; ++i) {
-        cin >> cost[i] >> val[i];
-    }
+	// BeginCodeSnip{Getting Input}
+	cin >> n;
+	for (int i = 0; i < n; ++i) { cin >> cost[i] >> val[i]; }
 
-    cin >> q;
-    vector<Query> queries(q);
+	cin >> q;
+	vector<Query> queries(q);
 
-    for (int i = 0; i < q; ++i) {
-        cin >> queries[i].l >> queries[i].r >> queries[i].x;
-        queries[i].l--;
-        queries[i].r--;
-        queries[i].id = i;
-    }
-    // EndCodeSnip
-    
-    divide_and_conquer(0, n - 1, queries);
+	for (int i = 0; i < q; ++i) {
+		cin >> queries[i].l >> queries[i].r >> queries[i].x;
+		queries[i].l--;
+		queries[i].r--;
+		queries[i].id = i;
+	}
+	// EndCodeSnip
 
-    for (int i = 0; i < q; ++i) {
-        cout << ans[i] << '\n';
-    }
+	divide_and_conquer(0, n - 1, queries);
 
-    return 0;
+	for (int i = 0; i < q; ++i) { cout << ans[i] << '\n'; }
+
+	return 0;
 }
-
 ```
 
 </CPPSection>
