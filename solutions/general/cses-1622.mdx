@@ -1,0 +1,65 @@
+---
+id: cses-1622
+source: CSES
+title: Creating Strings
+author: Junwon Kim
+---
+
+## Explanation
+
+Sort the string first so permutations are generated in alphabetical order. Then use backtracking to build each permutation character by character, using a `visited` array to track which characters have been used.
+
+To avoid duplicate permutations, skip character `s[i]` if it equals `s[i-1]` and `s[i-1]` hasn't been used yet. This ensures that among identical characters, we always pick the leftmost one first, so the same permutation is never generated twice.
+
+## Implementation
+
+**Time Complexity:** O(N! / (c1! * c2! * ... * ck!)) where ci is the count of each distinct character.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int n;
+string s, cur;
+vector<string> ans;
+bool visited[8];
+
+void backtrack() {
+	if ((int)cur.size() == n) {
+		ans.push_back(cur);
+		return;
+	}
+	for (int i = 0; i < n; i++) {
+		if (visited[i]) continue;
+		if (i > 0 && s[i] == s[i - 1] && !visited[i - 1]) continue;
+		visited[i] = true;
+		cur += s[i];
+		backtrack();
+		cur.pop_back();
+		visited[i] = false;
+	}
+}
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	cin >> s;
+	n = s.size();
+	sort(s.begin(), s.end());
+
+	backtrack();
+
+	cout << ans.size() << "\n";
+	for (const string& str : ans) {
+		cout << str << "\n";
+	}
+	return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
