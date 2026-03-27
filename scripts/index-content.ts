@@ -177,7 +177,8 @@ async function indexMdxFiles(
   const transaction = db.transaction(
     (items: Array<{ content: MdxContent }>) => {
       for (const { content } of items) {
-        const gitTime = gitTimestamps.get(content.fileAbsolutePath) || null;
+        const gitTime =
+          gitTimestamps.get(path.resolve(content.fileAbsolutePath)) || null;
 
         insertStmt.run(
           content.frontmatter.id,
@@ -220,7 +221,6 @@ async function getBatchGitTimestamps(
   const timestamps = new Map<string, string>();
 
   // Batch files to avoid Windows command line length limit (~8191 chars)
-  // Use smaller batches to be safe (50 files per batch, ~200 chars per path = ~10KB per batch)
   const BATCH_SIZE = 50;
 
   for (let i = 0; i < filePaths.length; i += BATCH_SIZE) {
@@ -232,7 +232,6 @@ async function getBatchGitTimestamps(
         { encoding: 'utf-8', maxBuffer: 10 * 1024 * 1024 }
       );
 
-      // Parse output
       const lines = result.split('\n');
       let currentTimestamp: string | null = null;
 
@@ -241,7 +240,10 @@ async function getBatchGitTimestamps(
           const [timestamp] = line.split('|');
           currentTimestamp = new Date(parseInt(timestamp) * 1000).toISOString();
         } else if (line.trim() && currentTimestamp) {
-          timestamps.set(path.resolve(line.trim()), currentTimestamp);
+          const resolvedPath = path.resolve(line.trim());
+          if (!timestamps.has(resolvedPath)) {
+            timestamps.set(resolvedPath, currentTimestamp);
+          }
         }
       }
     } catch (error) {
