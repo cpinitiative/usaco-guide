@@ -41,28 +41,42 @@ void solve() {
 	cin >> n >> k;
 	vector<int> x(n);
 	for (auto &d : x) cin >> d;
+
 	sort(x.begin(), x.end());
 
-	vector<array<int, 4>> crt;
-
+	vector<array<int, 4>> critical_points;
+	// Process intervals
 	for (int i = 0; i < k; i++) {
 		int left, right, t;
 		cin >> left >> right >> t;
 		auto right_amt = upper_bound(x.begin(), x.end(), right);
 		auto left_amt = lower_bound(x.begin(), x.end(), left);
-		crt.push_back({l, 0, r, (right_amt - left_amt) - t});
+		critical_points.push_back({l, 0, r, (right_amt - left_amt) - t});
 	}
 
-	for (int i = 0; i < n; i++) { crt.push_back({x[i], 1, 0, 0}); }
+	// Add trees and sort list	
+	for (int i = 0; i < n; i++) { critical_points.push_back({x[i], 1, 0, 0}); }
+	
+	sort(critical_points.begin(), critical_points.end());
 
-	sort(crt.begin(), crt.end());
 	priority_queue<array<int, 2>, vector<array<int, 2>>, greater<array<int, 2>>> pq;
+
 	int ans = 0;
-	for (int i = 0; i < crt.size(); i++) {
-		if (crt[i][1] == 0) {
-			pq.push({ans + crt[i][3], crt[i][2]});
+	
+	// Process all the critical points
+	for (auto point : critical_points) {
+		int type = point[1];
+		
+		if (type == 0) {
+			// Interval
+			int right = point[2];
+			int amt_trees = point[3];
+			
+			pq.push({ans + amt_trees, right});
 		} else {
-			while (!pq.empty() and (pq.top())[1] < crt[i][0]) pq.pop();
+			// Tree
+			int tree_position = point[0];
+			while (!pq.empty() and (pq.top())[1] < tree_position) pq.pop();
 
 			if (pq.empty() or (pq.top())[0] != ans) ans++;
 		}
