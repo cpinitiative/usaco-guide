@@ -98,65 +98,66 @@ signed main() {
 
 ```py
 import sys
+
 input = sys.stdin.readline
 import heapq
 import bisect
 
+
 def solve():
-    n, k = map(int, input().split())
-    x = list(map(int, input().split()))
-    x.sort()
+	n, k = map(int, input().split())
+	x = list(map(int, input().split()))
+	x.sort()
 
-    critical_points = []
+	critical_points = []
 
-    # Process intervals
-    for _ in range(k):
-        left, right, t = map(int, input().split())
-        right_amt = bisect.bisect_right(x, right)
-        left_amt = bisect.bisect_left(x, left)
-        critical_points.append([left, 0, right, (right_amt - left_amt) - t])
+	# Process intervals
+	for _ in range(k):
+		left, right, t = map(int, input().split())
+		right_amt = bisect.bisect_right(x, right)
+		left_amt = bisect.bisect_left(x, left)
+		critical_points.append([left, 0, right, (right_amt - left_amt) - t])
 
-    # Add trees
-    for i in range(n):
-        critical_points.append([x[i], 1, 0, 0])
+	# Add trees
+	for i in range(n):
+		critical_points.append([x[i], 1, 0, 0])
 
-    # Sort all critical points
-    critical_points.sort()
+	# Sort all critical points
+	critical_points.sort()
 
-    pq = []  # min-heap
-    ans = 0
+	pq = []  # min-heap
+	ans = 0
 
-    # Process points
-    for point in critical_points:
-        type_ = point[1]
+	# Process points
+	for point in critical_points:
+		type_ = point[1]
 
-        if type_ == 0:
-            # Interval
-            right = point[2]
-            amt_trees = point[3]
-            heapq.heappush(pq, (ans + amt_trees, right))
-        else:
-            # Tree
-            tree_position = point[0]
+		if type_ == 0:
+			# Interval
+			right = point[2]
+			amt_trees = point[3]
+			heapq.heappush(pq, (ans + amt_trees, right))
+		else:
+			# Tree
+			tree_position = point[0]
 
-            while pq and pq[0][1] < tree_position:
-                heapq.heappop(pq)
+			while pq and pq[0][1] < tree_position:
+				heapq.heappop(pq)
 
-            if not pq or pq[0][0] != ans:
-                ans += 1
+			if not pq or pq[0][0] != ans:
+				ans += 1
 
-    print(ans)
+	print(ans)
 
 
 def main():
-    t = int(input())
-    for _ in range(t):
-        solve()
+	t = int(input())
+	for _ in range(t):
+		solve()
 
 
 if __name__ == "__main__":
-    main()
-
+	main()
 ```
 
 </PySection>
