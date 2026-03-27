@@ -53,24 +53,24 @@ void solve() {
 		critical_points.push_back({l, 0, r, (right_amt - left_amt) - t});
 	}
 
-	// Add trees and sort list	
+	// Add trees and sort list
 	for (int i = 0; i < n; i++) { critical_points.push_back({x[i], 1, 0, 0}); }
-	
+
 	sort(critical_points.begin(), critical_points.end());
 
 	priority_queue<array<int, 2>, vector<array<int, 2>>, greater<array<int, 2>>> pq;
 
 	int ans = 0;
-	
+
 	// Process all the critical points
 	for (auto point : critical_points) {
 		int type = point[1];
-		
+
 		if (type == 0) {
 			// Interval
 			int right = point[2];
 			int amt_trees = point[3];
-			
+
 			pq.push({ans + amt_trees, right});
 		} else {
 			// Tree
