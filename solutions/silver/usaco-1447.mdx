@@ -11,19 +11,17 @@ author: Arnav Gokhale
 
 We can approach this question as cutting down the maximum possible number of trees while maintaing all the conditions.
 
-First, maintain a list containing both the trees and the intervals, sorted by the intervals' left endpoint and the
-trees' positions. Then, we can traverse over this list from left to right.
+First, maintain a list containing both the trees and the intervals, sorted by the intervals' left endpoint and the trees' positions. Then, we can traverse over this list from left to right.
 
-Consider the case where we encounter a interval while procesing. Let $\text{cur}$ be the current number of trees cut down, which represents the current answer. When we add a new interval, it imposes a restriction on the amount of trees that can be cut down in that interval's range. Formally, if $\text{present}$ is the current amount of trees present in that interval, then at most $\text{cut} = \text{present} - t_i$ trees can be cut down in that interval's range. The answer at the end of this interval is therefore at max $\text{cur} + \text{cut}$.
+Consider the case where we encounter an interval while procesing. Let $\text{cur}$ be the current number of trees cut down, which represents the current answer. When we add a new interval, it imposes a restriction on the amount of trees that can be cut down in that interval's range. Formally, if $\text{present}$ is the current amount of trees present in that interval, then at most $\text{cut} = \text{present} - t_i$ trees can be cut down in that interval's range. The value of the answer at the end of this interval is therefore at max $\text{cur} + \text{cut}$.
 
-To maintain these conditions, we can use a priority queue that keeps track of the smallest amount of trees that can be cut at the given point in time. Whilst processing a tree, as long as the maximum amount of trees has not already been cut, we can greedily cut down the current tree.
+To maintain these conditions, we can use a priority queue that keeps track of the smallest amount of trees that can be cut at the given point in time. Whilst processing a tree, as long as the maximum amount of trees of the current intervals has not already been cut, we can greedily cut down the current tree.
 
-It can be shown that this strategy is optimal, as if we had instead opted to cut down a future tree, it could potentially affect future intervals and the current intervals, slightly limiting the amount of trees we could cut down. Instead it can be shown it is always better to cut down the current tree if it possible, which only affects the current intervals.
+It can be shown that this strategy is optimal. If we instead chose to cut down a future tree, it could affect both future and current intervals, potentially reducing the total number of trees we can cut. In contrast, cutting down the current tree only affects the current intervals, making it always the optimal choice.
 
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}((N + K)\log(N + K))$
-
 
 <LanguageSection>
 
@@ -98,6 +96,68 @@ signed main() {
 
 <PySection>
 
+```py
+import sys
+input = sys.stdin.readline
+import heapq
+import bisect
+
+def solve():
+    n, k = map(int, input().split())
+    x = list(map(int, input().split()))
+    x.sort()
+
+    critical_points = []
+
+    # Process intervals
+    for _ in range(k):
+        left, right, t = map(int, input().split())
+        right_amt = bisect.bisect_right(x, right)
+        left_amt = bisect.bisect_left(x, left)
+        critical_points.append([left, 0, right, (right_amt - left_amt) - t])
+
+    # Add trees
+    for i in range(n):
+        critical_points.append([x[i], 1, 0, 0])
+
+    # Sort all critical points
+    critical_points.sort()
+
+    pq = []  # min-heap
+    ans = 0
+
+    # Process points
+    for point in critical_points:
+        type_ = point[1]
+
+        if type_ == 0:
+            # Interval
+            right = point[2]
+            amt_trees = point[3]
+            heapq.heappush(pq, (ans + amt_trees, right))
+        else:
+            # Tree
+            tree_position = point[0]
+
+            while pq and pq[0][1] < tree_position:
+                heapq.heappop(pq)
+
+            if not pq or pq[0][0] != ans:
+                ans += 1
+
+    print(ans)
+
+
+def main():
+    t = int(input())
+    for _ in range(t):
+        solve()
+
+
+if __name__ == "__main__":
+    main()
+
+```
 
 </PySection>
 
