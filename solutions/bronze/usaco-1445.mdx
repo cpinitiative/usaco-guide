@@ -1,0 +1,117 @@
+---
+id: usaco-1445
+source: USACO Bronze 2024 December
+title: It's Mooin' Time
+author: Arnav Gokhale
+---
+
+[Official Analysis (C++, Python)](https://usaco.org/current/data/sol_prob3_bronze_dec24.html)
+
+## Explanation
+
+Notice that modifying exactly one character can only affect at most $3$ substrings.
+
+For example, had the string been $\text{ABCDEF}$ and the $\text{C}$ was modified to a $\text{Z}$, the affected substrings would now be, $\text{ABZ}$, $\text{BZD}$, and $\text{ZDE}$.
+
+Using this, we can first precompute a map representing the counts of each moo that was originally present in the string. Then, we can try every single possible edit to the string, with a total of $\mathcal{O}(26N)$ possible modifictaions. While trying every single possible edit to a specific position, due to only three substrings being affected, the global answer does not change by much. So, we can adjust the frequencies of moo's based on the $3$ substrings being affected after every modification, and check whether any moo's exceeded a frequency of $f$ due to the modifications. It is important to reverst the specific position back to its original character after the modifications, since only one position can be modified at a time.
+
+If any moo substring ever reaches a frequency of $f$ before or after modifications, it can be added to the set of answers.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(26N)$
+
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+
+	int n, f;
+	cin >> n >> f;
+	string c;
+	cin >> c;
+
+	set<string> answers;
+	map<string, int> counts;
+
+	// Function to check whether a given sequence starting at position i is a MOO
+	auto is_moo = [&](int i) -> bool {
+		if (i < 0 || i + 2 >= n) return false;
+		return (c[i] != c[i + 1] && c[i + 1] == c[i + 2]) ? true : false;
+	};
+
+	// Add the original counts of the array
+	for (int i = 0; i < n - 2; i++) {
+		if (is_moo(i)) counts[c.substr(i, 3)]++;
+	}
+
+	string temp;
+
+	for (int i = 0; i < n; i++) {
+		char original = c[i];
+		bool done = false;
+
+		// Test each possible modifications plus the original character that was in the
+		// string This makes sure that the original counts of the string is restored
+		// afterwards
+		for (char mod = 'a'; mod <= 'z' + 1 && !done; mod++) {
+			if (mod == 'z' + 1) {
+				mod = original;
+				done = true;
+			}
+
+			// Remove the current character from the frequencies
+			if (is_moo(i - 2)) counts[c.substr(i - 2, 3)]--;
+			if (is_moo(i - 1)) counts[c.substr(i - 1, 3)]--;
+			if (is_moo(i)) counts[c.substr(i, 3)]--;
+
+			c[i] = mod;
+
+			// If modification yields a MOO with frequency >= f, add it to the answers
+
+			if (is_moo(i - 2)) {
+				temp = c.substr(i - 2, 3);
+				counts[temp]++;
+				if (counts[temp] >= f) answers.insert(temp);
+			}
+
+			if (is_moo(i - 1)) {
+				temp = c.substr(i - 1, 3);
+				counts[temp]++;
+				if (counts[temp] >= f) answers.insert(temp);
+			}
+
+			if (is_moo(i)) {
+				temp = c.substr(i, 3);
+				counts[temp]++;
+				if (counts[temp] >= f) answers.insert(temp);
+			}
+		}
+	}
+
+	cout << answers.size() << '\n';
+	for (auto moo : answers) cout << moo << '\n';
+}
+```
+
+</CPPSection>
+
+<PySection>
+
+
+</PySection>
+
+<JavaSection>
+
+
+</JavaSection>
+
+</LanguageSection>
