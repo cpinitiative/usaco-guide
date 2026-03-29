@@ -43,14 +43,14 @@ int main() {
 	map<string, int> counts;
 
 	// Function to check whether a given sequence starting at position i is a MOO
-	auto check = [&](int i) {
+	auto is_moo = [&](int i) {
 		if (i < 0 or i + 2 >= n) return false;
 		return (c[i] != c[i + 1] and c[i + 1] == c[i + 2]) ? true : false;
 	};
 
 	// Add the original counts of the array
 	for (int i = 0; i < n - 2; i++) {
-		if (check(i)) counts[c.substr(i, 3)]++;
+		if (is_moo(i)) counts[c.substr(i, 3)]++;
 	}
 
 	string temp;
@@ -68,25 +68,25 @@ int main() {
 				done = true;
 			}
 			// Remove the current character from the frequencies
-			if (check(i - 2)) counts[c.substr(i - 2, 3)]--;
-			if (check(i - 1)) counts[c.substr(i - 1, 3)]--;
-			if (check(i)) counts[c.substr(i, 3)]--;
+			if (is_moo(i - 2)) counts[c.substr(i - 2, 3)]--;
+			if (is_moo(i - 1)) counts[c.substr(i - 1, 3)]--;
+			if (is_moo(i)) counts[c.substr(i, 3)]--;
 
 			c[i] = mod;
 
 			// If modification yields a MOO with frequency >= f, add it to the answers
 
-			if (check(i - 2)) {
+			if (is_moo(i - 2)) {
 				temp = c.substr(i - 2, 3);
 				counts[temp]++;
 				if (counts[temp] >= f) answers.insert(temp);
 			}
-			if (check(i - 1)) {
+			if (is_moo(i - 1)) {
 				temp = c.substr(i - 1, 3);
 				counts[temp]++;
 				if (counts[temp] >= f) answers.insert(temp);
 			}
-			if (check(i)) {
+			if (is_moo(i)) {
 				temp = c.substr(i, 3);
 				counts[temp]++;
 				if (counts[temp] >= f) answers.insert(temp);
