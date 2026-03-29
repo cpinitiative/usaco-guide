@@ -13,7 +13,7 @@ Notice that modifying exactly one character can only affect at most 3 substrings
 
 For example, had the string been $\text{ABCDEF}$ and the $\text{C}$ was modified to a $\text{Z}$, the affected substrings would now be, $\text{ABZ}$, $\text{BZD}$, and $\text{ZDE}$.
 
-Using this, we can first precompute a map representing the counts of each moo that was originally present in the string. Then, we can try every single possible edit to the string, with a total of $\mathcal{O}(26N)$ possible modifictaions. For each one of these changes, subtract the counts of the affected moos, and add the new counts. 
+Using this, we can first precompute a map representing the counts of each moo that was originally present in the string. Then, we can try every single possible edit to the string, with a total of $\mathcal{O}(26N)$ possible modifictaions. For each one of these changes, subtract the counts of the affected moos, and add the new counts.
 
 If any string ever reaches a frequency of $F$ before or after modifictations, it can be added to the answers.
 
@@ -31,70 +31,72 @@ If any string ever reaches a frequency of $F$ before or after modifictations, it
 using namespace std;
 
 int main() {
-    ios_base::sync_with_stdio(0); cin.tie(0); 
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
 
-    int n, f; cin >> n >> f;
-    string c; cin >> c;
+	int n, f;
+	cin >> n >> f;
+	string c;
+	cin >> c;
 
-    set<string> answers;
-    map<string,int> counts;
-    
-    // Function to check whether a given sequence starting at position i is a MOO 
-    auto check = [&] (int i) {
-        if (i < 0 or i + 2 >= n) return false;
-        return (c[i] != c[i + 1] and c[i + 1] == c[i + 2]) ? true : false;
-    };
+	set<string> answers;
+	map<string, int> counts;
 
+	// Function to check whether a given sequence starting at position i is a MOO
+	auto check = [&](int i) {
+		if (i < 0 or i + 2 >= n) return false;
+		return (c[i] != c[i + 1] and c[i + 1] == c[i + 2]) ? true : false;
+	};
 
-    // Add the original counts of the array
-    for (int i = 0; i < n - 2; i++) {
-        if (check(i)) counts[c.substr(i, 3)]++;
-    }
-    
-    string temp;
+	// Add the original counts of the array
+	for (int i = 0; i < n - 2; i++) {
+		if (check(i)) counts[c.substr(i, 3)]++;
+	}
 
-    for (int i = 0; i < n; i++) {
-        char original = c[i];
-        bool done = false;
+	string temp;
 
-        // Test each possible modifications plus the original character that was in the string
-        // This makes sure that the original counts of the string is restored afterwards
-        for (char mod = 'a'; mod <= 'z' + 1 && !done; mod++) {
-           if (mod == 'z' + 1) {
-               mod = original;
-               done = true;
-           }
-           // Remove the current character from the frequencies
-           if (check(i - 2)) counts[c.substr(i - 2, 3)]--;
-           if (check(i - 1)) counts[c.substr(i - 1, 3)]--;
-           if (check(i)) counts[c.substr(i, 3)]--;
+	for (int i = 0; i < n; i++) {
+		char original = c[i];
+		bool done = false;
 
-           c[i] = mod;
-            
-            // If modification yields a MOO with frequency >= f, add it to the answers
+		// Test each possible modifications plus the original character that was in the
+		// string This makes sure that the original counts of the string is restored
+		// afterwards
+		for (char mod = 'a'; mod <= 'z' + 1 && !done; mod++) {
+			if (mod == 'z' + 1) {
+				mod = original;
+				done = true;
+			}
+			// Remove the current character from the frequencies
+			if (check(i - 2)) counts[c.substr(i - 2, 3)]--;
+			if (check(i - 1)) counts[c.substr(i - 1, 3)]--;
+			if (check(i)) counts[c.substr(i, 3)]--;
 
-           if (check(i - 2)) {
-               temp = c.substr(i - 2, 3);
-               counts[temp]++;
-               if (counts[temp] >= f) answers.insert(temp);
-           }
-           if (check(i - 1)) {
-               temp = c.substr(i - 1, 3);
-               counts[temp]++;
-               if (counts[temp] >= f) answers.insert(temp);
-           }
-           if (check(i)) {
-               temp = c.substr(i, 3);
-               counts[temp]++;
-               if (counts[temp] >= f) answers.insert(temp);
-           }
-        }
-    }
+			c[i] = mod;
 
-    cout << answers.size() << '\n';
-    for (auto moo : answers) cout << moo << '\n';
+			// If modification yields a MOO with frequency >= f, add it to the answers
+
+			if (check(i - 2)) {
+				temp = c.substr(i - 2, 3);
+				counts[temp]++;
+				if (counts[temp] >= f) answers.insert(temp);
+			}
+			if (check(i - 1)) {
+				temp = c.substr(i - 1, 3);
+				counts[temp]++;
+				if (counts[temp] >= f) answers.insert(temp);
+			}
+			if (check(i)) {
+				temp = c.substr(i, 3);
+				counts[temp]++;
+				if (counts[temp] >= f) answers.insert(temp);
+			}
+		}
+	}
+
+	cout << answers.size() << '\n';
+	for (auto moo : answers) cout << moo << '\n';
 }
-
 ```
 
 </CPPSection>
