@@ -149,8 +149,8 @@ public class PlayingInCasino {
 The problem requires computing the sum of absolute differences $\sum_{i < j} |a_i - a_j|$ across all $M$ cards for $N$ players. For a specific card index we can store all its values against all players in an array and sort it to find its total pot contribution. We use transposed array with M rows and N coloumns.
 
 Under this ordering, the contribution of an element $x_j$ at index $j$ for the pot is determined purely by its rank:
-* **`great`** $= j$: The number of elements $x_j$ is greater than or equal to$,i.e, will be positive in expanded absolute diff
-* **`less`** $= N - 1 - j$: The number of elements $x_j$ is lesser or equal$, i.e, will be negative in expanded absolute diff
+* **`greater`** $= j$: The number of elements $x_j$ is greater than or equal to$,i.e, will be positive in expanded absolute diff
+* **`lesser`** $= N - 1 - j$: The number of elements $x_j$ is lesser or equal$, i.e, will be negative in expanded absolute diff
 
 ### Implementation
 
@@ -179,11 +179,11 @@ void solve(void)
         // Sort the column to remove absolute value branching
         std::sort(p[i], p[i] + n);
         for (int j = 0; j < n; j++) {
-            int great = j;
-            int less = n - j - 1;
+            int greater = j;
+            int lesser = n - j - 1;
             
             // Accumulate the contribution of each element
-            wins += (long long) (great - less) * p[i][j];
+            wins += (long long) (greater - lesser) * p[i][j];
         }
     }
     printf("%lld\n", wins);
