@@ -1,0 +1,213 @@
+---
+id: spoj-coin-collecting
+source: SPOJ
+title: SPOJ - Coin Collecting
+author: Robert Chung
+---
+
+## Explanation
+
+Interpret the coins as vertices on a graph, and interpret an envelope with coins
+$a$ and $b$ as an undirected edge between $a$ and $b$.
+
+Our goal is to find the size of a maximal valid set of edges $E$, where a set
+$E$ is valid if:
+
+1. it contains at most one edge from each round,
+2. the only subset $E'$ of $E$ where every vertex has an even number of
+   endpoints in $E'$ is the empty set.
+
+The second condition ensures our friend cannot win, since a vertex $v$ having an
+even degree in $E'$ corresponds to a coin $v$ being chosen an even number of
+envelopes.
+
+We can find a maximal set $E$ using matroid intersection. Let $X$ be the set of
+the given $2r$ edges.
+
+1. Define $M_c = \lang X, \mathcal I_c\rang$ to be the **colorful matroid**,
+   where for each $i=0, 1, \dots, r-1$, the two edges from round $i$ are given
+   color $i$.
+2. Define $M_g = \lang X, \mathcal I_g \rang$ to be the **graphic matroid**.
+
+Then, we claim the desired $E$ is the largest set in
+$\mathcal I_c \cap \mathcal I_g$.
+
+It is easy to see that $E \in \mathcal I_c$ iff $E$ meets the first condition.
+For the second condition, we have $E \in \mathcal I_g$ iff $E$ is acyclic. So,
+if $E$ contains a cycle, then taking the set of edges from that cycle shows that
+the second condition fails. Conversely, if we have a subset $E'$ of $E$ failing
+the second condition, every vertex has even degree in $E'$ and so by Euler's
+theorem (for Eulerian circuits) there is a cycle contained in $E'$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(r^3 \cdot \alpha(4r))$
+
+With $r$ rounds, the maximum size of a valid set of envelopes is $r$, and we
+have up to $4r$ total coins. For KACTL's matroid intersection algorithm, the
+bottleneck is the $\mathcal O(R^2N c)$ term, where $R=r$ is the size of the
+answer, $N=4r$ is the size of the ground set, and $c=\alpha(4r)$ is the cost of
+checking if adding an edge preserves independence in $M_g$.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include "bits/stdc++.h"
+using namespace std;
+
+namespace kactl {
+// BeginCodeSnip{KACTL Matroid Intersection Template}
+	#define all(x) begin(x), end(x)
+	#define sz(x) (int)x.size()
+	#define rep(i,a,b) for (int i = (a); i < (b); ++i)
+    using vi = vector<int>;
+	/**
+	 * Author: Lukas Polacek
+	 * Date: 2009-10-26
+	 * License: CC0
+	 * Source: folklore
+	 * Description: Disjoint-set data structure.
+	 * Time: $O(\alpha(N))$
+	 */
+	struct UF {
+		vi e;
+		UF(int n) : e(n, -1) {}
+		bool sameSet(int a, int b) { return find(a) == find(b); }
+		int size(int x) { return -e[find(x)]; }
+		int find(int x) { return e[x] < 0 ? x : e[x] = find(e[x]); }
+		bool join(int a, int b) {
+			a = find(a), b = find(b);
+			if (a == b) return false;
+			if (e[a] > e[b]) swap(a, b);
+			e[a] += e[b]; e[b] = a;
+			return true;
+		}
+	};
+	/**
+	 * Author: tfg, Aeren, pajenegod, chilli
+	 * Date: 2020-04-15
+	 * License: CC0
+	 * Source: https://codeforces.com/blog/entry/69287
+	 * Description: Given two matroids, finds the largest common independent set.
+	 * For the color and graph matroids, this would be the largest forest where no
+	 * two edges are the same color. A matroid has 3 functions
+	 *  - check(int x): returns if current matroid can add x without becoming dependent
+	 *  - add(int x): adds an element to the matroid (guaranteed to never make it dependent)
+	 *  - clear(): sets the matroid to the empty matroid
+	 * The matroid is given an int representing the element, and is expected to
+	 * convert it (e.g: the color or the endpoints)
+	 * Pass the matroid with more expensive add/clear operations to M1.
+	 * Time: R^2N(M2.add + M1.check + M2.check) + R^3 M1.add + R^2 M1.clear + RN M2.clear
+	 * Status: Tested on SWERC 2011D, Pick Your Own Nim
+	 * Usage:
+	 * Details:
+	 */
+	struct ColorMat {
+		vi cnt, clr;
+		ColorMat(int n, vector<int> clr) : cnt(n), clr(clr) {}
+		bool check(int x) { return !cnt[clr[x]]; }
+		void add(int x) { cnt[clr[x]]++; }
+		void clear() { fill(all(cnt), 0); }
+	};
+	struct GraphMat {
+		UF uf;
+		vector<array<int, 2>> e;
+		GraphMat(int n, vector<array<int, 2>> e) : uf(n), e(e) {}
+		bool check(int x) { return !uf.sameSet(e[x][0], e[x][1]); }
+		void add(int x) { uf.join(e[x][0], e[x][1]); }
+		void clear() { uf = UF(sz(uf.e)); }
+	};
+	template <class M1, class M2> struct MatroidIsect {
+		int n;
+		vector<char> iset;
+		M1 m1; M2 m2;
+		MatroidIsect(M1 m1, M2 m2, int n) : n(n), iset(n + 1), m1(m1), m2(m2) {}
+		vi solve() {
+			rep(i,0,n) if (m1.check(i) && m2.check(i))
+				iset[i] = true, m1.add(i), m2.add(i);
+			while (augment());
+			vi ans;
+			rep(i,0,n) if (iset[i]) ans.push_back(i);
+			return ans;
+		}
+		bool augment() {
+			vector<int> frm(n, -1);
+			queue<int> q({n}); // starts at dummy node
+			auto fwdE = [&](int a) {
+				vi ans;
+				m1.clear();
+				rep(v, 0, n) if (iset[v] && v != a) m1.add(v);
+				rep(b, 0, n) if (!iset[b] && frm[b] == -1 && m1.check(b))
+					ans.push_back(b), frm[b] = a;
+				return ans;
+			};
+			auto backE = [&](int b) {
+				m2.clear();
+				rep(cas, 0, 2) rep(v, 0, n)
+					if ((v == b || iset[v]) && (frm[v] == -1) == cas) {
+						if (!m2.check(v))
+							return cas ? q.push(v), frm[v] = b, v : -1;
+						m2.add(v);
+					}
+				return n;
+			};
+			while (!q.empty()) {
+				int a = q.front(), c; q.pop();
+				for (int b : fwdE(a))
+					while((c = backE(b)) >= 0) if (c == n) {
+						while (b != n) iset[b] ^= 1, b = frm[b];
+						return true;
+					}
+			}
+			return false;
+		}
+	};
+}
+// EndCodeSnip
+using kactl::MatroidIsect, kactl::GraphMat, kactl::ColorMat;
+
+int main() {
+    cin.tie(0)->sync_with_stdio(0);
+    int r;
+    while (true) {
+        cin >> r;
+        if (r == 0) break;
+
+        vector<int> color(2*r);
+        vector<array<int, 2>> edges(2*r);
+
+    	vector<int> coins;
+        for (int i = 0; i < r; ++i) {
+            int a, b, c, d;
+            cin >> a >> b >> c >> d;
+        	coins.insert(end(coins), {a, b, c, d});
+            edges[2*i] = {a, b};
+            edges[2*i + 1] = {c, d};
+            color[2*i] = color[2*i + 1] = i;
+        }
+
+    	// Compress coin values so that our graph has size <= 4r instead of 10000.
+    	// The solution still fits in the TL without compressing (0.61s with, 1.45s without).
+    	sort(begin(coins), end(coins));
+    	coins.resize(unique(begin(coins), end(coins)) - begin(coins));
+    	auto compress = [&](int coin) {
+    		return lower_bound(begin(coins), end(coins), coin) - begin(coins);
+    	};
+    	for (auto &[a, b] : edges) {
+    		a = compress(a);
+    		b = compress(b);
+    	}
+
+        MatroidIsect<GraphMat, ColorMat> mat(
+        	GraphMat(coins.size(), edges),
+            ColorMat(r, color),
+            2*r);
+        cout << 2 * mat.solve().size() << '\n';
+    }
+    return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
