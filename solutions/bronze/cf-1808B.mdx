@@ -2,7 +2,7 @@
 id: cf-1808B
 source: CF
 title: Playing in a Casino
-author: 
+author:
 ---
 
 ## Explanation
@@ -21,39 +21,3 @@ Under this ordering, the contribution of an element $x_j$ at index $j$ for the p
 <CPPSection>
 
 ```cpp
-#include <stdio.h>
-#include <algorithm>
-
-void solve(void)
-{
-	int n, m;
-	long long wins = 0;
-	scanf("%d%d", &n, &m);
-	
-	// Transpose input to keep column elements contiguous
-	int p[m][n];
-	for (int i = 0; i < n; i++)
-		for (int j = 0; j < m; j++)
-			scanf("%d", &p[j][i]);
-	
-	for (int i = 0; i < m; i++) {
-		// Sort the column to remove absolute value branching
-		std::sort(p[i], p[i] + n);
-		for (int j = 0; j < n; j++) {
-			int great = j;
-			int less = n - j - 1;
-			
-			// Accumulate the contribution of each element
-			wins += (long long) (great - less) * p[i][j];
-		}
-	}
-	printf("%lld\n", wins);
-}
-
-int main()
-{
-	int t;
-	scanf("%d", &t);
-	while (t--)
-		solve();
-}
