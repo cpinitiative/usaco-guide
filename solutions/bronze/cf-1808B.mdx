@@ -2,18 +2,20 @@
 id: cf-1808B
 source: CF
 title: Playing in a Casino
-author: Amit Singh Bisht, Virat Anand
+author: Amit Singh Bisht, Virat Anand, Udbhav Dikshit
 ---
 
 [Official Editorial (C++)](https://codeforces.com/blog/entry/114523)
 
-## Explanation
+## Method 1
+
+### Explanation
 
 Essentially, the solution is to use nested loops to iterate through the columns input matrix, then calculate the sum of each column, and sort the elements of each column in non-descending order. Then calculate the absolute difference between the sum of the column and a running sum of the sorted elements. This difference is multiplied by the number of elements that come before it in the sorted order to obtain the contribution of that element to the final answer. The contributions of all elements in a column are then summed up to obtain the final answer for that column, and this process is repeated for all columns.
 
 The idea behind this approach is that the current element is being used as a representative of all the elements in the column that are smaller than it. Therefore, the difference between the sum of all elements and the sum of all elements before the current element is the sum of all the elements that are greater than the current element. This difference is then multiplied by the number of rows minus one minus the number of rows before the current element to obtain the total number of inversions.
 
-## Implementation
+### Implementation
 
 **Time Complexity:** $\mathcal{O}(MN \log N)$
 
@@ -139,3 +141,58 @@ public class PlayingInCasino {
 ```
 </JavaSection>
 </LanguageSection>
+
+## Method 2
+
+### Explanation
+
+The problem requires computing the sum of absolute differences $\sum_{i < j} |a_i - a_j|$ across all $M$ cards for $N$ players. For a specific card index we can store all its values against all players in an array and sort it to find its total pot contribution. We use transposed array with M rows and N coloumns.
+
+Under this ordering, the contribution of an element $x_j$ at index $j$ for the pot is determined purely by its rank:
+* **`great`** $= j$: The number of elements $x_j$ is greater than or equal to$,i.e, will be positive in expanded absolute diff
+* **`less`** $= N - 1 - j$: The number of elements $x_j$ is lesser or equal$, i.e, will be negative in expanded absolute diff
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(MN \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <stdio.h>
+#include <algorithm>
+
+void solve(void)
+{
+    int n, m;
+    long long wins = 0;
+    scanf("%d%d", &n, &m);
+    
+    // Transpose input to keep column elements contiguous
+    int p[m][n];
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < m; j++)
+            scanf("%d", &p[j][i]);
+    
+    for (int i = 0; i < m; i++) {
+        // Sort the column to remove absolute value branching
+        std::sort(p[i], p[i] + n);
+        for (int j = 0; j < n; j++) {
+            int great = j;
+            int less = n - j - 1;
+            
+            // Accumulate the contribution of each element
+            wins += (long long) (great - less) * p[i][j];
+        }
+    }
+    printf("%lld\n", wins);
+}
+
+int main()
+{
+    int t;
+    scanf("%d", &t);
+    while (t--)
+        solve();
+} 
