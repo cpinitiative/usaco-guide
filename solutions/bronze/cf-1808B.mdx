@@ -88,41 +88,36 @@ import java.io.*;
 import java.util.*;
 
 public class PlayingInCasino {
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		PrintWriter pw = new PrintWriter(new OutputStreamWriter(System.out));
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter pw = new PrintWriter(new OutputStreamWriter(System.out));
 
-		String firstLine = br.readLine();
-		if (firstLine == null) return;
+        int t = Integer.parseInt(br.readLine());
+        
+        while (t-- > 0) {
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            int n = Integer.parseInt(st.nextToken());
+            int m = Integer.parseInt(st.nextToken());
 
-		int t = Integer.parseInt(firstLine.trim());
-		while (t-- > 0) {
-			String line = br.readLine();
-			while (line != null && line.isEmpty()) line = br.readLine();
-			if (line == null) break;
+            int[][] p = new int[m][n];
+            for (int i = 0; i < n; i++) {
+                st = new StringTokenizer(br.readLine());
+                for (int j = 0; j < m; j++) {
+                    p[j][i] = Integer.parseInt(st.nextToken());
+                }
+            }
 
-			StringTokenizer st = new StringTokenizer(line);
-			int n = Integer.parseInt(st.nextToken());
-			int m = Integer.parseInt(st.nextToken());
-
-			int[][] p = new int[m][n];
-			for (int i = 0; i < n; i++) {
-				st = new StringTokenizer(br.readLine());
-				for (int j = 0; j < m; j++) {
-					p[j][i] = Integer.parseInt(st.nextToken());
-				}
-			}
-
-			long wins = 0;
-			for (int i = 0; i < m; i++) {
-				Arrays.sort(p[i]);
-				for (int j = 0; j < n; j++) wins += (long)(j - (n - 1 - j)) * p[i][j];
-			}
-			pw.println(wins);
-		}
-		pw.flush();
-		pw.close();
-	}
+            long wins = 0;
+            for (int i = 0; i < m; i++) {
+                Arrays.sort(p[i]);
+                for (int j = 0; j < n; j++) {
+                    wins += (long) (j - (n - 1 - j)) * p[i][j];
+                }
+            }
+            pw.println(wins);
+        }
+        pw.close();
+    }
 }
 ```
 </JavaSection>
