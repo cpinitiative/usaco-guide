@@ -20,33 +20,28 @@ Once sorted, an element $x_j$ at index $j$ acts as the larger value in $j$ pairs
 <CPPSection>
 
 ```cpp
-#include <stdio.h>
 #include <algorithm>
+#include <stdio.h>
 
-void solve(void)
-{
+void solve(void) {
 	int n, m;
 	long long wins = 0;
 	scanf("%d%d", &n, &m);
 	int p[m][n];
 	for (int i = 0; i < n; i++)
-		for (int j = 0; j < m; j++)
-			scanf("%d", &p[j][i]);
-	
+		for (int j = 0; j < m; j++) scanf("%d", &p[j][i]);
+
 	for (int i = 0; i < m; i++) {
 		std::sort(p[i], p[i] + n);
-		for (int j = 0; j < n; j++)
-			wins += (long long) (j - (n - 1 - j)) * p[i][j];
+		for (int j = 0; j < n; j++) wins += (long long)(j - (n - 1 - j)) * p[i][j];
 	}
 	printf("%lld\n", wins);
 }
 
-int main()
-{
+int main() {
 	int t;
 	scanf("%d", &t);
-	while (t--)
-		solve();
+	while (t--) solve();
 }
 ```
 
@@ -55,29 +50,32 @@ int main()
 
 ```py
 import sys
+
 input = sys.stdin.read
 
+
 def solve():
-    data = input().split()
-    it = iter(data)
-    
-    t = int(next(it))
-    for _ in range(t):
-        n = int(next(it))
-        m = int(next(it))
-        
-        p = [[0] * n for _ in range(m)]
-        
-        for i in range(n):
-            for j in range(m):
-                p[j][i] = int(next(it))
-        
-        wins = 0
-        for i in range(m):
-            p[i].sort()
-            for j in range(n):
-                wins += (j - (n - 1 - j)) * p[i][j]        
-        print(wins)
+	data = input().split()
+	it = iter(data)
+
+	t = int(next(it))
+	for _ in range(t):
+		n = int(next(it))
+		m = int(next(it))
+
+		p = [[0] * n for _ in range(m)]
+
+		for i in range(n):
+			for j in range(m):
+				p[j][i] = int(next(it))
+
+		wins = 0
+		for i in range(m):
+			p[i].sort()
+			for j in range(n):
+				wins += (j - (n - 1 - j)) * p[i][j]
+		print(wins)
+
 
 solve()
 ```
@@ -90,42 +88,41 @@ import java.io.*;
 import java.util.*;
 
 public class PlayingInCasino {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        PrintWriter pw = new PrintWriter(new OutputStreamWriter(System.out));
-        
-        String firstLine = br.readLine();
-        if (firstLine == null) return;
-        
-        int t = Integer.parseInt(firstLine.trim());
-        while (t-- > 0) {
-            String line = br.readLine();
-            while (line != null && line.isEmpty()) line = br.readLine();
-            if (line == null) break;
-            
-            StringTokenizer st = new StringTokenizer(line);
-            int n = Integer.parseInt(st.nextToken());
-            int m = Integer.parseInt(st.nextToken());
-            
-            int[][] p = new int[m][n];
-            for (int i = 0; i < n; i++) {
-                st = new StringTokenizer(br.readLine());
-                for (int j = 0; j < m; j++) {
-                    p[j][i] = Integer.parseInt(st.nextToken());
-                }
-            }
-            
-            long wins = 0;
-            for (int i = 0; i < m; i++) {
-                Arrays.sort(p[i]); 
-                for (int j = 0; j < n; j++)
-                    wins += (long) (j - (n - 1 - j)) * p[i][j];
-            }
-            pw.println(wins);
-        }
-        pw.flush();
-        pw.close();
-    }
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter pw = new PrintWriter(new OutputStreamWriter(System.out));
+
+		String firstLine = br.readLine();
+		if (firstLine == null) return;
+
+		int t = Integer.parseInt(firstLine.trim());
+		while (t-- > 0) {
+			String line = br.readLine();
+			while (line != null && line.isEmpty()) line = br.readLine();
+			if (line == null) break;
+
+			StringTokenizer st = new StringTokenizer(line);
+			int n = Integer.parseInt(st.nextToken());
+			int m = Integer.parseInt(st.nextToken());
+
+			int[][] p = new int[m][n];
+			for (int i = 0; i < n; i++) {
+				st = new StringTokenizer(br.readLine());
+				for (int j = 0; j < m; j++) {
+					p[j][i] = Integer.parseInt(st.nextToken());
+				}
+			}
+
+			long wins = 0;
+			for (int i = 0; i < m; i++) {
+				Arrays.sort(p[i]);
+				for (int j = 0; j < n; j++) wins += (long)(j - (n - 1 - j)) * p[i][j];
+			}
+			pw.println(wins);
+		}
+		pw.flush();
+		pw.close();
+	}
 }
 ```
 </JavaSection>
