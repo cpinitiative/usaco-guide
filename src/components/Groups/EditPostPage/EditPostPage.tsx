@@ -48,8 +48,12 @@ export default function EditPostPage(props) {
   React.useEffect(() => {
     // we need to check for timestamp -- ServerValue is null initially
     if (!post && originalPost) {
-      editPost(originalPost);
-    }
+    editPost({
+      ...originalPost,
+      timestamp:
+        originalPost.timestamp ?? Timestamp.fromDate(new Date()), // timestamp only set on change, so default to current time to avoid null issues
+    });
+  }
   }, [originalPost, post]);
 
   const options = React.useMemo(
