@@ -14,7 +14,7 @@ export default function PostHeader({ post }: { post: PostData }) {
           {post.name}
           {post.isPublished ? '' : ' (Unpublished)'}
         </h1>
-        { getPostTimestampString(post) && (
+        {getPostTimestampString(post) && (
           <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
             {getPostTimestampString(post)}
           </p>
