@@ -44,7 +44,7 @@ export default function FocusProblem({
                 href={problem.url}
                 target="_blank"
                 rel="noreferrer"
-                className="group block flex-1 py-4 transition no-underline"
+                className="group block flex-1 py-4 no-underline transition"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
               >
@@ -89,7 +89,7 @@ export default function FocusProblem({
           {problem.solution?.kind === 'internal' && (
             <a
               href={`${getProblemURL(problem)}/solution`}
-              className="mb-0! inline-flex px-4 py-3 text-xs font-normal! text-gray-400! italic sm:px-6 no-underline"
+              className="mb-0! inline-flex px-4 py-3 text-xs font-normal! text-gray-400! italic no-underline sm:px-6"
             >
               <span className="mr-1">View Internal Solution</span>
               <ExternalLinkIcon className="h-4 w-4" />
