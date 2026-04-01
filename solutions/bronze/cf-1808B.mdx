@@ -7,15 +7,12 @@ author: Amit Singh Bisht, Virat Anand, Udbhav Dikshit
 
 [Official Editorial (C++)](https://codeforces.com/blog/entry/114523)
 
-## Method 1
+## Explanation
 
-### Explanation
+The problem requires computing the sum of absolute differences $\sum_{i < j} |a_i - a_j|$ across all $M$ cards for $N$ players. By transposing the input into $M$ rows and $N$ columns, we can isolate and sort each card's values independently.
+Once sorted, an element $x_j$ at index $j$ acts as the larger value in $j$ pairs and the smaller value in $N - 1 - j$ pairs in the expanded absolute difference. Thus, its net contribution will be: $(j - (N - 1 - j)) \times x_j$
 
-Essentially, the solution is to use nested loops to iterate through the columns input matrix, then calculate the sum of each column, and sort the elements of each column in non-descending order. Then calculate the absolute difference between the sum of the column and a running sum of the sorted elements. This difference is multiplied by the number of elements that come before it in the sorted order to obtain the contribution of that element to the final answer. The contributions of all elements in a column are then summed up to obtain the final answer for that column, and this process is repeated for all columns.
-
-The idea behind this approach is that the current element is being used as a representative of all the elements in the column that are smaller than it. Therefore, the difference between the sum of all elements and the sum of all elements before the current element is the sum of all the elements that are greater than the current element. This difference is then multiplied by the number of rows minus one minus the number of rows before the current element to obtain the total number of inversions.
-
-### Implementation
+## Implementation
 
 **Time Complexity:** $\mathcal{O}(MN \log N)$
 
@@ -23,37 +20,33 @@ The idea behind this approach is that the current element is being used as a rep
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
-int main() {
-	int t;
-	cin >> t;
-	for (int i = 0; i < t; i++) {
-		int n, m;
-		cin >> n >> m;
-		vector<vector<int>> a(n, vector<int>(m));
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < m; j++) { cin >> a[i][j]; }
-		}
+#include <stdio.h>
+#include <algorithm>
 
-		long long ans = 0;
-		for (int i = 0; i < m; i++) {
-			vector<long long> temp;
-			long long sum = 0;
-			for (int j = 0; j < n; j++) {
-				temp.push_back(a[j][i]);
-				sum += a[j][i];
-			}
-			long long curr = 0;
-			sort(temp.begin(), temp.end());
-			for (int j = 0; j < n; j++) {
-				curr += temp[j];
-				ans += llabs((sum - curr) - (n - 1 - j) * temp[j]);
-			}
-		}
-
-		cout << ans << "\n";
+void solve(void)
+{
+	int n, m;
+	long long wins = 0;
+	scanf("%d%d", &n, &m);
+	int p[m][n];
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < m; j++)
+			scanf("%d", &p[j][i]);
+	
+	for (int i = 0; i < m; i++) {
+		std::sort(p[i], p[i] + n);
+		for (int j = 0; j < n; j++)
+			wins += (long long) (j - (n - 1 - j)) * p[i][j];
 	}
+	printf("%lld\n", wins);
+}
+
+int main()
+{
+	int t;
+	scanf("%d", &t);
+	while (t--)
+		solve();
 }
 ```
 
@@ -61,35 +54,32 @@ int main() {
 <PySection>
 
 ```py
-from collections import defaultdict
+import sys
+input = sys.stdin.read
 
-for _ in range(int(input())):
-	deck_num, card_num = map(int, input().split())
-	matrix = []
-	for _ in range(deck_num):
-		matrix.append(list(map(int, input().split())))
+def solve():
+    data = input().split()
+    it = iter(data)
+    
+    t = int(next(it))
+    for _ in range(t):
+        n = int(next(it))
+        m = int(next(it))
+        
+        p = [[0] * n for _ in range(m)]
+        
+        for i in range(n):
+            for j in range(m):
+                p[j][i] = int(next(it))
+        
+        wins = 0
+        for i in range(m):
+            p[i].sort()
+            for j in range(n):
+                wins += (j - (n - 1 - j)) * p[i][j]        
+        print(wins)
 
-	# Group columns using a dictionary
-	hashmap = defaultdict(list)
-	for i in range(deck_num):
-		for j in range(card_num):
-			hashmap[j].append(matrix[i][j])
-
-	total_res = 0
-	for i in range(card_num):
-		temp = sorted(hashmap[i], reverse=True)
-		suf = []
-		prev = 0
-		for i in reversed(temp):
-			suf.append(prev)
-			prev += i
-
-		col_res = 0
-		for i in range(deck_num):
-			col_res += temp[i] * (deck_num - i - 1) - suf[deck_num - i - 1]
-		total_res += col_res
-
-	print(total_res)
+solve()
 ```
 
 </PySection>
@@ -100,63 +90,43 @@ import java.io.*;
 import java.util.*;
 
 public class PlayingInCasino {
-	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		PrintWriter pw = new PrintWriter(new OutputStreamWriter(System.out));
-
-		int t = Integer.parseInt(br.readLine());
-		for (int i = 0; i < t; i++) {
-			String[] dimensions = br.readLine().split(" ");
-			int n = Integer.parseInt(dimensions[0]);
-			int m = Integer.parseInt(dimensions[1]);
-			int[][] a = new int[n][m];
-			for (int j = 0; j < n; j++) {
-				String[] row = br.readLine().split(" ");
-				for (int k = 0; k < m; k++) { a[j][k] = Integer.parseInt(row[k]); }
-			}
-
-			long ans = 0;
-			for (int j = 0; j < m; j++) {
-				List<Long> temp = new ArrayList<>();
-				long sum = 0;
-				for (int k = 0; k < n; k++) {
-					temp.add((long)a[k][j]);
-					sum += a[k][j];
-				}
-				long curr = 0;
-				Collections.sort(temp);
-				for (int k = 0; k < n; k++) {
-					curr += temp.get(k);
-					ans += Math.abs((sum - curr) - (n - 1 - k) * temp.get(k));
-				}
-			}
-
-			pw.println(ans);
-		}
-
-		pw.close();
-		br.close();
-	}
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        PrintWriter pw = new PrintWriter(new OutputStreamWriter(System.out));
+        
+        String firstLine = br.readLine();
+        if (firstLine == null) return;
+        
+        int t = Integer.parseInt(firstLine.trim());
+        while (t-- > 0) {
+            String line = br.readLine();
+            while (line != null && line.isEmpty()) line = br.readLine();
+            if (line == null) break;
+            
+            StringTokenizer st = new StringTokenizer(line);
+            int n = Integer.parseInt(st.nextToken());
+            int m = Integer.parseInt(st.nextToken());
+            
+            int[][] p = new int[m][n];
+            for (int i = 0; i < n; i++) {
+                st = new StringTokenizer(br.readLine());
+                for (int j = 0; j < m; j++) {
+                    p[j][i] = Integer.parseInt(st.nextToken());
+                }
+            }
+            
+            long wins = 0;
+            for (int i = 0; i < m; i++) {
+                Arrays.sort(p[i]); 
+                for (int j = 0; j < n; j++)
+                    wins += (long) (j - (n - 1 - j)) * p[i][j];
+            }
+            pw.println(wins);
+        }
+        pw.flush();
+        pw.close();
+    }
 }
 ```
 </JavaSection>
 </LanguageSection>
-
-## Method 2
-
-### Explanation
-
-The problem requires computing the sum of absolute differences $\sum_{i < j} |a_i - a_j|$ across all $M$ cards for $N$ players. For a specific card index we can store all its values against all players in an array and sort it to find its total pot contribution. We use transposed array with M rows and N coloumns.
-
-Under this ordering, the contribution of an element $x_j$ at index $j$ for the pot is determined purely by its rank:
-* **`greater`** $= j$: The number of elements $x_j$ is greater than or equal to$,i.e, will be positive in expanded absolute diff
-* **`lesser`** $= N - 1 - j$: The number of elements $x_j$ is lesser or equal$, i.e, will be negative in expanded absolute diff
-
-### Implementation
-
-**Time Complexity:** $\mathcal{O}(MN \log N)$
-
-<LanguageSection>
-<CPPSection>
-
-```cpp
