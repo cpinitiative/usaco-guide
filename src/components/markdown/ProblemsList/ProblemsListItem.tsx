@@ -112,7 +112,7 @@ export default function ProblemsListItem(
           className={
             (isDivisionTable == false && problem.isStarred
               ? 'pl-1 sm:pl-2'
-              : 'sm:pl-6') + ' problem-list-item-anchor truncate'
+              : 'sm:pl-6') + ' problem-list-item-anchor truncate no-underline'
           }
           style={{ maxWidth: '20rem' }}
           target="_blank"
