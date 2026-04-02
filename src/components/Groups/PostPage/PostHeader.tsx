@@ -14,9 +14,11 @@ export default function PostHeader({ post }: { post: PostData }) {
           {post.name}
           {post.isPublished ? '' : ' (Unpublished)'}
         </h1>
-        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-          {getPostTimestampString(post)}
-        </p>
+        {getPostTimestampString(post) && (
+          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+            {getPostTimestampString(post)}
+          </p>
+        )}
       </div>
       {activeGroup.showAdminView && (
         <div className="mt-4 flex space-x-3 md:mt-0">
