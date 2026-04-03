@@ -17,7 +17,7 @@ $$
 \text{dist} (u,v) = \text{dist}(1,u) + \text{dist}(1,v) - 2 \cdot \text{dist}(1,\text{lca}(u,v))
 $$
 
-Otherwise, the shortest path uses at least one extra edge. Since there are at most $21$ such edges, we can use Dijkstra for each of them. For each extra edge $(i, j)$, we run Dijkstra from an endpoint (e.g. $i$) and store the distances from $i$ to all nodes. 
+Otherwise, the shortest path uses at least one extra edge. Since there are at most $21$ such edges, we can use Dijkstra for each of them. For each extra edge $(i, j)$, we run Dijkstra from an endpoint (e.g. $i$) and store the distances from $i$ to all nodes.
 
 Therefore, for a query $(u,v)$, we consider all such precomputed distances to $u$ and $v$ and the answer is the minimum of the tree distance and all values of $\text{dist}(i,u) + \text{dist}(i,v)$ over all endpoints of extra edges $i$.
 
@@ -48,7 +48,7 @@ for _ in range(m):  # build graph and track all edges
 mx_l = n.bit_length()
 depth = [0] * n
 root_dist = [0] * n
-up = [[0] * mx_l for _ in range(n)] # up[v][i] = 2^i ancestor of v
+up = [[0] * mx_l for _ in range(n)]  # up[v][i] = 2^i ancestor of v
 
 # build spanning tree and remove tree edges from unused
 def dfs(start):
@@ -69,8 +69,8 @@ def dfs(start):
 				continue
 			depth[nxt] = d + 1
 
-            # this edge becomes part of the tree
-			unused.discard((min(cur, nxt), max(cur, nxt))) 
+			# this edge becomes part of the tree
+			unused.discard((min(cur, nxt), max(cur, nxt)))
 
 			up[nxt][0] = cur
 			for lvl in range(mx_l - 1):
@@ -85,7 +85,7 @@ def lca(i, j):
 	if depth[i] > depth[j]:
 		i, j = j, i
 
-    # lift j up so that both i and j are at the same depth
+		# lift j up so that both i and j are at the same depth
 	diff = depth[j] - depth[i]
 	lvl = 0
 	while diff:
@@ -94,16 +94,16 @@ def lca(i, j):
 		diff >>= 1
 		lvl += 1
 
-    # if they meet, then i is the LCA of j
+		# if they meet, then i is the LCA of j
 	if i == j:
 		return i
 
-    # lift both i and j together, until they are just below the LCA
+		# lift both i and j together, until they are just below the LCA
 	for lvl in range(mx_l - 1, -1, -1):
 		if up[i][lvl] != up[j][lvl]:
 			i, j = up[i][lvl], up[j][lvl]
 
-    # now their parents are equal, so that's the LCA
+			# now their parents are equal, so that's the LCA
 	return up[i][0]
 
 
@@ -132,12 +132,12 @@ for _ in range(int(input())):
 	i -= 1  # 0 indexing
 	j -= 1
 
-    # shortest path on tree
-	mn = root_dist[i] + root_dist[j] - 2 * root_dist[lca(i, j)] 
+	# shortest path on tree
+	mn = root_dist[i] + root_dist[j] - 2 * root_dist[lca(i, j)]
 
 	for dist in dists:
-		choice = dist[i] + dist[j] # path using extra edges
-		if choice < mn: 
+		choice = dist[i] + dist[j]  # path using extra edges
+		if choice < mn:
 			mn = choice
 	print(mn)
 ```
