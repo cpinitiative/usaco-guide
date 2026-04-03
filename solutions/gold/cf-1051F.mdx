@@ -19,7 +19,7 @@ $$
 
 Otherwise, the shortest path uses at least one extra edge. Since there are at most $21$ such edges, we can use Dijkstra for each of them. For each extra edge $(i, j)$, we run Dijkstra from an endpoint (e.g. $i$) and store the distances from $i$ to all nodes.
 
-Therefore, for a query $(u,v)$, we consider all such precomputed distances to $u$ and $v$ and the answer is the minimum of the tree distance and all values of $\text{dist}(i,u) + \text{dist}(i,v)$ over all endpoints of extra edges $i$.
+Therefore, for a query $(u,v)$, we consider all such precomputed distances to $u$ and $v$. The final answer is the minimum of the tree distance and all values of $\text{dist}(i,u) + \text{dist}(i,v)$ over all endpoints of extra edges $i$.
 
 To compute the original shortest path of $u$ and $v$ in the tree efficiently, we can run DFS from the root to find each node's depth and distance from the root, and to build a binary lifting table for LCA. Because every edge we consider in the DFS is part of the tree, we can remove it from the set of unvisited edges, which we denote as `unused`. After the DFS, the `unused` edges aren't part of the tree anymore, and so there are only at most $m - n + 1 \le 21$ of them.
 
@@ -50,42 +50,38 @@ depth = [0] * n
 root_dist = [0] * n
 up = [[0] * mx_l for _ in range(n)]  # up[v][i] = 2^i ancestor of v
 
-# build spanning tree and remove tree edges from unused
-def dfs(start):
-	s = [(start, 1, 0)]
-	depth[start] = 1
-	root_dist[start] = 0
-	up[start][0] = start
-	for lvl in range(mx_l - 1):
-		up[start][lvl + 1] = up[up[start][lvl]][lvl]
+# dfs to build spanning tree and remove tree edges from unused
+s = [(0, 1, 0)] # node, depth, distance from root
+depth[0] = 1
+root_dist[0] = 0
+up[0][0] = 0
+for lvl in range(mx_l - 1):
+	up[0][lvl + 1] = up[up[0][lvl]][lvl]
 
-	while s:
-		cur, d, dist = s.pop()
-		depth[cur] = d
-		root_dist[cur] = dist
+while s:
+	cur, d, dist = s.pop()
+	depth[cur] = d
+	root_dist[cur] = dist
 
-		for nxt, w in g[cur]:
-			if depth[nxt] != 0:
-				continue
-			depth[nxt] = d + 1
+	for nxt, w in g[cur]:
+		if depth[nxt] != 0:
+			continue
+		depth[nxt] = d + 1
 
-			# this edge becomes part of the tree
-			unused.discard((min(cur, nxt), max(cur, nxt)))
+		# this edge becomes part of the tree
+		unused.discard((min(cur, nxt), max(cur, nxt)))
 
-			up[nxt][0] = cur
-			for lvl in range(mx_l - 1):
-				up[nxt][lvl + 1] = up[up[nxt][lvl]][lvl]
-			s.append((nxt, d + 1, dist + w))
-
-
-dfs(0)
+		up[nxt][0] = cur
+		for lvl in range(mx_l - 1):
+			up[nxt][lvl + 1] = up[up[nxt][lvl]][lvl]
+		s.append((nxt, d + 1, dist + w))
 
 # lca to find distances of nodes within the tree
 def lca(i, j):
 	if depth[i] > depth[j]:
 		i, j = j, i
 
-		# lift j up so that both i and j are at the same depth
+	# lift j up so that both i and j are at the same depth
 	diff = depth[j] - depth[i]
 	lvl = 0
 	while diff:
@@ -94,16 +90,16 @@ def lca(i, j):
 		diff >>= 1
 		lvl += 1
 
-		# if they meet, then i is the LCA of j
+	# if they meet, then i is the LCA of j
 	if i == j:
 		return i
 
-		# lift both i and j together, until they are just below the LCA
+	# lift both i and j together, until they are just below the LCA
 	for lvl in range(mx_l - 1, -1, -1):
 		if up[i][lvl] != up[j][lvl]:
 			i, j = up[i][lvl], up[j][lvl]
 
-			# now their parents are equal, so that's the LCA
+		# now their parents are equal, so that's the LCA
 	return up[i][0]
 
 
