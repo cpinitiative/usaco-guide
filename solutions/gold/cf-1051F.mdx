@@ -13,7 +13,7 @@ First, notice that $m - n \le 20$ suggests that the graph is almost a tree, exce
 
 We can take advantage of this by running a DFS from the root to find each node's depth and distance from the root, and to build a binary lifting table for LCA. Because every edge we consider in the DFS is part of the tree, we can remove it from the set of unvisited edges, which we denote as `unused`. After the DFS, the `unused` edges aren't part of the tree anymore, and so there are only at most $m - n + 1 \le 21$ of them.
 
-So, the shortest distance between two nodes $u$ and $v$ using only the nodes in the tree can be calculated using LCA:
+Therefore, the shortest distance between two nodes $u$ and $v$ using only the tree's nodes can be calculated using LCA:
 
 $$
 \text{dist} (u,v) = \text{root\_dist}[u] + \text{root\_dist}[v] - 2 \cdot \text{root\_dist}[\text{lca}(u,v)]
