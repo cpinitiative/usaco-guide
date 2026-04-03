@@ -41,91 +41,99 @@ import heapq
 n, m = map(int, input().split())
 g = [[] for _ in range(n)]
 unused = set()
-for _ in range(m): #build graph and track all edges
-    i, j, w = map(int, input().split())
-    i -= 1
-    j -= 1
-    g[i].append((j, w))
-    g[j].append((i, w))
-    unused.add((min(i, j), max(i, j)))
+for _ in range(m):  # build graph and track all edges
+	i, j, w = map(int, input().split())
+	i -= 1
+	j -= 1
+	g[i].append((j, w))
+	g[j].append((i, w))
+	unused.add((min(i, j), max(i, j)))
 
 mx_l = n.bit_length()
 depth = [0] * n
 root_dist = [0] * n
 up = [[0] * mx_l for _ in range(n)]
 
-#build spanning tree and remove tree edges from unused
+# build spanning tree and remove tree edges from unused
 def dfs(start):
-    s = [(start, 1, 0)]
-    depth[start] = 1
-    root_dist[start] = 0
-    up[start][0] = start
-    for lvl in range(mx_l - 1): 
+	s = [(start, 1, 0)]
+	depth[start] = 1
+	root_dist[start] = 0
+	up[start][0] = start
+	for lvl in range(mx_l - 1):
 		up[start][lvl + 1] = up[up[start][lvl]][lvl]
 
-    while s:
-        cur, d, dist = s.pop()
-        depth[cur] = d
-        root_dist[cur] = dist
+	while s:
+		cur, d, dist = s.pop()
+		depth[cur] = d
+		root_dist[cur] = dist
 
-        for nxt, w in g[cur]:
-            if depth[nxt] != 0: continue
-            depth[nxt] = d + 1
-            unused.discard((min(cur, nxt), max(cur, nxt)))
-            up[nxt][0] = cur
-            for lvl in range(mx_l - 1):
-                up[nxt][lvl + 1] = up[up[nxt][lvl]][lvl]
-            s.append((nxt, d + 1, dist + w))
+		for nxt, w in g[cur]:
+			if depth[nxt] != 0:
+				continue
+			depth[nxt] = d + 1
+			unused.discard((min(cur, nxt), max(cur, nxt)))
+			up[nxt][0] = cur
+			for lvl in range(mx_l - 1):
+				up[nxt][lvl + 1] = up[up[nxt][lvl]][lvl]
+			s.append((nxt, d + 1, dist + w))
+
 
 dfs(0)
 
-#lca to find distances of nodes within the tree
+# lca to find distances of nodes within the tree
 def lca(i, j):
-    if depth[i] > depth[j]: i, j = j, i
+	if depth[i] > depth[j]:
+		i, j = j, i
 
-    diff = depth[j] - depth[i]
-    lvl = 0
-    while diff:
-        if diff & 1: j = up[j][lvl]
-        diff >>= 1
-        lvl += 1
+	diff = depth[j] - depth[i]
+	lvl = 0
+	while diff:
+		if diff & 1:
+			j = up[j][lvl]
+		diff >>= 1
+		lvl += 1
 
-    if i == j: return i
+	if i == j:
+		return i
 
-    for lvl in range(mx_l - 1, -1, -1):
-        if up[i][lvl] != up[j][lvl]: i, j = up[i][lvl], up[j][lvl]
+	for lvl in range(mx_l - 1, -1, -1):
+		if up[i][lvl] != up[j][lvl]:
+			i, j = up[i][lvl], up[j][lvl]
 
-    return up[i][0]
+	return up[i][0]
 
 
 dists = []
 
-#run Dijkstra from an endpoint of each extra edge
+# run Dijkstra from an endpoint of each extra edge
 for i, j in unused:
-    dist = [10**30] * n
-    dists.append(dist)
+	dist = [10**30] * n
+	dists.append(dist)
 
-    dist[i] = 0
-    pq = [(0, i)]
-    while pq:
-        dist_here, cur = heapq.heappop(pq)
-        if dist_here != dist[cur]: continue
-        for nxt, w in g[cur]:
-            nd = dist_here + w
-            if nd < dist[nxt]:
-                dist[nxt] = nd
-                heapq.heappush(pq, (nd, nxt))
+	dist[i] = 0
+	pq = [(0, i)]
+	while pq:
+		dist_here, cur = heapq.heappop(pq)
+		if dist_here != dist[cur]:
+			continue
+		for nxt, w in g[cur]:
+			nd = dist_here + w
+			if nd < dist[nxt]:
+				dist[nxt] = nd
+				heapq.heappush(pq, (nd, nxt))
 
-#answer queries
+# answer queries
 for _ in range(int(input())):
-    i, j = map(int, input().split())
-    i -= 1 #0 indexing
-    j -= 1
-    mn = root_dist[i] + root_dist[j] - 2 * root_dist[lca(i, j)]
-    for dist in dists:
-        choice = dist[i] + dist[j]
-        if choice < mn: mn = choice
-    print(mn)
+	i, j = map(int, input().split())
+	i -= 1  # 0 indexing
+	j -= 1
+	mn = root_dist[i] + root_dist[j] - 2 * root_dist[lca(i, j)]
+	for dist in dists:
+		choice = dist[i] + dist[j]
+		if choice < mn:
+			mn = choice
+	print(mn)
 ```
 
 </PySection>
