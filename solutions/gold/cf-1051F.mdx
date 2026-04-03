@@ -9,23 +9,19 @@ author: Raagav Bala
 
 ## Explanation
 
-First, notice that $m - n \le 20$ suggests that the graph is almost a tree, except a few extra edges in addition to the tree.
+First, notice the restriction $m - n \le 20$. Because a spanning tree with $n$ nodes contains exactly $n-1$ edges, this suggests that the graph is almost a tree, except at most $m-(n-1) = m-n+1 \le 21$ extra edges. Since the number of extra edges is fairly small, we can first process the main tree, and determine how to handle the extra edges later.
 
-We can take advantage of this by running a DFS from the root to find each node's depth and distance from the root, and to build a binary lifting table for LCA. Because every edge we consider in the DFS is part of the tree, we can remove it from the set of unvisited edges, which we denote as `unused`. After the DFS, the `unused` edges aren't part of the tree anymore, and so there are only at most $m - n + 1 \le 21$ of them.
-
-Therefore, the shortest distance between two nodes $u$ and $v$ using only the tree's nodes can be calculated using LCA:
+Any shortest path between two nodes $u$ and $v$ must either use only edges from the tree or use at least one of these extra edges. If the path only uses the tree's edges, we can compute the distance using LCA:
 
 $$
-\text{dist} (u,v) = \text{root\_dist}[u] + \text{root\_dist}[v] - 2 \cdot \text{root\_dist}[\text{lca}(u,v)]
+\text{dist} (u,v) = \text{dist}(1,u) + \text{dist}(1,v) - 2 \cdot \text{dist}(1,\text{lca}(u,v))
 $$
 
-Otherwise, the shortest path uses at least one extra edge.
+Otherwise, the shortest path uses at least one extra edge. Since there are at most $21$ such edges, we can use Dijkstra for each of them. For each extra edge $(i, j)$, we run Dijkstra from an endpoint (e.g. $i$) and store the distances from $i$ to all nodes. 
 
-Since there are at most $21$ extra edges, we can use Dijkstra for each of them. For each `unused` edge $(i, j)$, we run Dijkstra from one endpoint (e.g. $i$), and store the distances from $i$ to all nodes.
+Therefore, for a query $(u,v)$, we consider all such precomputed distances to $u$ and $v$ and the answer is the minimum of the tree distance and all values of $\text{dist}(i,u) + \text{dist}(i,v)$ over all endpoints of extra edges $i$.
 
-If the distance calculated from LCA isn't the shortest, then there exists some extra vertex within the shortest path. For each such vertex, the path length through that vertex is $\text{dist}[u] + \text{dist}[v]$, where $\text{dist}[x]$ is the shortest distance from that vertex to $x$. We iterate over all such vertices and take the minimum.
-
-So, the final answer is the minimum of the tree distances and all values of $\text{dist}[u] + \text{dist}[v]$.
+To compute the original shortest path of $u$ and $v$ in the tree efficiently, we can run DFS from the root to find each node's depth and distance from the root, and to build a binary lifting table for LCA. Because every edge we consider in the DFS is part of the tree, we can remove it from the set of unvisited edges, which we denote as `unused`. After the DFS, the `unused` edges aren't part of the tree anymore, and so there are only at most $m - n + 1 \le 21$ of them.
 
 
 ## Implementation
@@ -52,7 +48,7 @@ for _ in range(m):  # build graph and track all edges
 mx_l = n.bit_length()
 depth = [0] * n
 root_dist = [0] * n
-up = [[0] * mx_l for _ in range(n)]
+up = [[0] * mx_l for _ in range(n)] # up[v][i] = 2^i ancestor of v
 
 # build spanning tree and remove tree edges from unused
 def dfs(start):
@@ -72,7 +68,10 @@ def dfs(start):
 			if depth[nxt] != 0:
 				continue
 			depth[nxt] = d + 1
-			unused.discard((min(cur, nxt), max(cur, nxt)))
+
+            # this edge becomes part of the tree
+			unused.discard((min(cur, nxt), max(cur, nxt))) 
+
 			up[nxt][0] = cur
 			for lvl in range(mx_l - 1):
 				up[nxt][lvl + 1] = up[up[nxt][lvl]][lvl]
@@ -86,6 +85,7 @@ def lca(i, j):
 	if depth[i] > depth[j]:
 		i, j = j, i
 
+    # lift j up so that both i and j are at the same depth
 	diff = depth[j] - depth[i]
 	lvl = 0
 	while diff:
@@ -94,13 +94,16 @@ def lca(i, j):
 		diff >>= 1
 		lvl += 1
 
+    # if they meet, then i is the LCA of j
 	if i == j:
 		return i
 
+    # lift both i and j together, until they are just below the LCA
 	for lvl in range(mx_l - 1, -1, -1):
 		if up[i][lvl] != up[j][lvl]:
 			i, j = up[i][lvl], up[j][lvl]
 
+    # now their parents are equal, so that's the LCA
 	return up[i][0]
 
 
@@ -128,10 +131,13 @@ for _ in range(int(input())):
 	i, j = map(int, input().split())
 	i -= 1  # 0 indexing
 	j -= 1
-	mn = root_dist[i] + root_dist[j] - 2 * root_dist[lca(i, j)]
+
+    # shortest path on tree
+	mn = root_dist[i] + root_dist[j] - 2 * root_dist[lca(i, j)] 
+
 	for dist in dists:
-		choice = dist[i] + dist[j]
-		if choice < mn:
+		choice = dist[i] + dist[j] # path using extra edges
+		if choice < mn: 
 			mn = choice
 	print(mn)
 ```
