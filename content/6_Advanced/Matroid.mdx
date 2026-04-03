@@ -1,26 +1,34 @@
 ## Introduction
 
 ## Minimum Weight Independent Sets
-The beauty of matroids lies in the fact that there is a very simple algorithm to find minimumm weight independent sets of size $1 \leq k \leq r(M)$. The algorithm is as follows:
+The beauty of matroids lies in the fact that there is a very simple algorithm to find minimum weight independent sets of size $1 \leq k \leq r(M)$. The algorithm is as follows:
 
-```cpp
-vector<T> S;
-sort(E.begin(), E.end());
-for (auto e : E) {
-    if (check(S, e)) {
-        S.push_back(e);
-        if (S.size() == k) {
-            return S;
-        }
-    }
-}
-```
+$$
+\begin{align*}
+&\textbf{sort } E \text{ by weight increasing} \\
+&S \leftarrow \{\}\\
+&\textbf{for } e \in E \\
+&\qquad \textbf{if } S + e \in \mathcal{I} \\
+&\qquad\qquad S \leftarrow S + e \\
+&\qquad \textbf{if } |S| = k \\
+&\qquad\qquad \textbf{return } S
+&\end{align*}
+$$
 
-Here $\text{check}(S, e)$ returns true iff $S + e$ is independent. 
+^^ Fix this alignment somehow
 
-Observe that Kruskal's algorithm is a special case of this algorithm. The proof of correctness generalizes very nicely. We proceed by showing that the following invariant holds: there exists a minimal weight independent set $T$ of size $k$ such that $S \subseteq T$.
+Note that Kruskal's algorithm is a special case of this algorithm on the graphic matroid, where the independence checks are done by a DSU.
 
-Label the elements of $E$ by $e_1, e_2, \dots, e_n$ such that $w(e_1) \leq w(e_2) \leq \dots \leq w(e_n)$. Suppose that $S \cup \{e_i\}$ is independent, and $e_i$ is added to $S$. If $e_i \in T$, then we are immediately done. Otherwise, $e_i \notin T$. Observe that by construction $T \setminus S \subseteq \{e_{i + 1}, e_{i + 2}, \dots, e_n\}$. Now, consider two cases.
+To prove correctness, fix an ordering of the elements $e_1, e_2, \dots, e_n \in E$ so that $w(e_1) \leq w(e_2) \leq \dots \leq w(e_n)$. Let the elements picked by the greedy algorithm have indices $p_1 < p_2 < \dots < p_k$. We claim that for any other independent set of size $k$ with indices $q_1 < q_2 < \dots < q_k$, the following holds:
 
-Firstly, suppose that $T + e_i$ is independent. Then, pick any $e_j \in T \setminus S$, and let $T' = T + e_i - e_j$. Since $j > i$, it follows that $w(T') \leq w(T)$, and $S + e_i$ is a subset of a minimal weight independent set $T'$ of size $k$. The second case where $T + e_i$ is dependent is similar. By [FILL THE LEMMA IN], there exists a unique circuit $C \subseteq T + e_i$. Furthermore, $S + e_i$ is independent, so there exists $e_j \in T \setminus S$ such that $e_j \in C$. Since $C$ is the unique circuit contained in $T + e_i$, it follows that $T' = T + e_i - e_j$ is independent. From here, the same logic as the first case applies.
+$$
+\begin{gather*}
+p_1 \leq q_1 \\
+p_2 \leq q_2 \\
+\vdots \\
+p_k \leq q_k
+\end{gather*}
+$$
+
+Suppose for the sake of contradiction that $p_i > q_i$ for some $1 \leq i \leq k$. Let $A = \{e_{p_1}, e_{p_2}, \dots, e_{p_{i - 1}}\}$ and $B = \{e_{q_1}, e_{q_2}, \dots, e_{q_i}\}$. By the exchange axiom, there exists $e \in B \setminus A$ such that $A + e \in \mathcal{I}$. This is an immediate contradiction, as $e$ should have been added to $S$.
 
