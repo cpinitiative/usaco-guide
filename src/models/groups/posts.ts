@@ -39,9 +39,11 @@ export type PostData = {
  */
 export const getPostTimestampString = (post: PostData) => {
   if (post.type === 'assignment' && post.dueTimestamp) {
-    return 'Due on ' + getPostDueDateString(post);
+    const due = getPostDueDateString(post);
+    return due ? 'Due on ' + due : null;
   } else {
-    return 'Posted on ' + getPostDateString(post);
+    const date = getPostDateString(post);
+    return date ? 'Posted on ' + date : null;
   }
 };
 export const getPostDateString = (post: PostData) =>
