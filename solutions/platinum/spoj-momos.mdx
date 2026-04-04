@@ -9,15 +9,15 @@ author: Mihnea Brebenel
 
 It is very important to notice that the testcases are divided into two kind depending on the restrictions:
 - In the first case ($N \le 10^6$ and $K \le 100$) can be solved using a sieve.
-- In the second case ($N \le 10^{14}$ and $K \le 20$) a sieve would take too much 
+- In the second case ($N \le 10^{14}$ and $K \le 20$) a sieve would take too much
 memory due to the limit on $N$. On the other hand, the number of momos is quite small, so we can apply classic [PIE](/plat/PIE).
 
-## Implementation 
+## Implementation
 
 <LanguageSection>
 <CPPSection>
 
-```cpp 
+```cpp
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -31,48 +31,39 @@ bool momo[MAXN + 1];
 
 // Sieve solution
 void solve1() {
-    for (int i = 0; i < k; i++) {
-        for (int j = 0; j < n; j += v[i]) {
-            momo[j] = true;
-        }
-    }
-    long long cnt = 0;
-    for (int i = 0; i < n; i++) {
-        cnt += momo[i];
-    }
-    cout << n - cnt << '\n';
+	for (int i = 0; i < k; i++) {
+		for (int j = 0; j < n; j += v[i]) { momo[j] = true; }
+	}
+	long long cnt = 0;
+	for (int i = 0; i < n; i++) { cnt += momo[i]; }
+	cout << n - cnt << '\n';
 }
 
 // Inclusion-Exclusion solution
 void solve2() {
-    long long ans = n - 1;
-    for (int mask = 1; mask < (1 << k); mask++) {
-        long long lcm = 1;
-        int bits = __builtin_popcount(mask);
-        for (int i = 0; (1 << i) <= mask; i++) {
-            if (mask & (1 << i)) {
-                lcm = lcm * v[i] / __gcd(lcm, v[i]);
-            }
-        }
-        ans = ans + (bits % 2 == 1 ? -1 : 1) * ((n - 1) / lcm);
-    }
-    cout << ans << '\n';
+	long long ans = n - 1;
+	for (int mask = 1; mask < (1 << k); mask++) {
+		long long lcm = 1;
+		int bits = __builtin_popcount(mask);
+		for (int i = 0; (1 << i) <= mask; i++) {
+			if (mask & (1 << i)) { lcm = lcm * v[i] / __gcd(lcm, v[i]); }
+		}
+		ans = ans + (bits % 2 == 1 ? -1 : 1) * ((n - 1) / lcm);
+	}
+	cout << ans << '\n';
 }
 
 int main() {
 
-    cin >> n >> k;
+	cin >> n >> k;
 
-    for (int i = 0; i < k; i++) {
-        cin >> v[i];
-    }
+	for (int i = 0; i < k; i++) { cin >> v[i]; }
 
-    if (k > 20) {
-        solve1();
-    } else {
-        solve2();
-    }
-    
+	if (k > 20) {
+		solve1();
+	} else {
+		solve2();
+	}
 }
 ```
 
