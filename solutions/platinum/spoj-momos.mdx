@@ -51,7 +51,7 @@ void solve2() {
 		for (int i = 0; (1 << i) <= mask; i++) {
 			if (mask & (1 << i)) {
 				// Avoid overflow
-				if (lcm >= LLONG_MAX / v[i]) {
+				if (lcm / __gcd(lcm, v[i]) > LLONG_MAX / v[i]) {
 					lcm = n;
 					break;
 				}
