@@ -49,10 +49,13 @@ void solve2() {
 		long long lcm = 1;
 		int bits = __builtin_popcount(mask);
 		for (int i = 0; (1 << i) <= mask; i++) {
-			if (mask & (1 << i)) { 
+			if (mask & (1 << i)) {
 				// Avoid overflow
-                if (lcm >= LLONG_MAX / v[i]) { lcm = n; break; }
-				lcm = lcm / __gcd(lcm, v[i]) * v[i]; 
+				if (lcm >= LLONG_MAX / v[i]) {
+					lcm = n;
+					break;
+				}
+				lcm = lcm / __gcd(lcm, v[i]) * v[i];
 			}
 		}
 		ans = ans + (bits % 2 == 1 ? -1 : 1) * ((n - 1) / lcm);
