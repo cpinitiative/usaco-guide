@@ -25,31 +25,25 @@ This is optimal because in each operation, we decrease both $x$ and $y$ by one f
 
 ```cpp
 #include <iostream>
-#include <vector>
 #include <unordered_map>
+#include <vector>
 using namespace std;
 
 int main() {
-    int n;
-    cin >> n;
-    vector<int> array(n);
-    for (int i = 0; i < n; i++) {
-        cin >> array[i];
-    }
+	int n;
+	cin >> n;
+	vector<int> array(n);
+	for (int i = 0; i < n; i++) { cin >> array[i]; }
 
-    unordered_map<int, int> freq;
-    for (int x : array) {
-        freq[x]++;
-    }
+	unordered_map<int, int> freq;
+	for (int x : array) { freq[x]++; }
 
-    int missing = 0;
-    for (int i = 0; i <= n; i++) {
-        int count = freq[i];
-        cout << max(missing, count) << endl;
-        if (count == 0) {
-            missing++;
-        }
-    }
+	int missing = 0;
+	for (int i = 0; i <= n; i++) {
+		int count = freq[i];
+		cout << max(missing, count) << endl;
+		if (count == 0) { missing++; }
+	}
 }
 ```
 
@@ -59,15 +53,16 @@ int main() {
 
 ```py
 from collections import Counter
+
 n = int(input())
 array = [int(x) for x in input().split()]
 freq = Counter(array)
 missing = 0
 
 for i in range(n + 1):
-    print(max(missing, freq[i]))
-    if freq[i] == 0:
-        missing += 1
+	print(max(missing, freq[i]))
+	if freq[i] == 0:
+		missing += 1
 ```
 
 </PySection>
