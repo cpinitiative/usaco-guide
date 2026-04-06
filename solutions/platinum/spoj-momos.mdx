@@ -8,10 +8,10 @@ author: Mihnea Brebenel
 ## Explanation
 
 It is very important to notice that the testcases are divided into two kinds depending on the restrictions:
-- In the first case ($N \le 10^6$ and $K \le 100$) can be solved using a sieve.
+- The first case ($N \le 10^6$ and $K \le 100$) can be solved using a sieve.
 - In the second case ($N \le 10^{14}$ and $K \le 20$) a sieve would take too much
-memory due to the limit on $N$. On the other hand, the number of momos is quite small, so we can apply classic [PIE](/plat/PIE). We'll use bitmasking
-to iterate through all the subsets of momos. We'll take the lowest common multiple of the values contained by the mask and used it to update the answer.
+memory due to the limit on $N$. On the other hand, the number of momos is quite small, so we can apply the classic [PIE](/plat/PIE). We'll use bitmasking
+to iterate through all the subsets of momos. We'll take the lowest common multiple of the values contained by the mask and update the answer accordingly.
 
 ## Implementation
 
@@ -55,6 +55,7 @@ void solve2() {
 					lcm = n;
 					break;
 				}
+				// Use the formula: lcm(x, y) = x * y / gcd(x, y)
 				lcm = lcm / __gcd(lcm, v[i]) * v[i];
 			}
 		}
