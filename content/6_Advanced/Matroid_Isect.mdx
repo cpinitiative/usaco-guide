@@ -7,7 +7,97 @@ prerequisites:
 frequency: 0
 ---
 
-test
+TODO: make this refer to an actual problem.
+
+## Implementation
+
+### $O(r^2n)$ Oracle Calls
+
+Let $n$ be the size of the ground set and $r$ be the size of a maximum
+common independent set. Then, our algorithm does $r$ iterations of the following:
+1. Construct the exchange graph between $S$ and $E \setminus S$.
+3. Update $S$ using a shortest augmenting path from a source to a sink.
+
+Step 2 can be done in $O(rn)$ time with BFS. The hard part is step 1,
+where we need to maintain a matroid structure that allows us to efficiently
+check when a set is independent.
+
+Suppose we can perform the following operations on a matroid:
+- `clear()`: set $S := \emptyset$
+- `add(x)`: set $S := S + x$
+- `check(x)`: return true if $S + x$ is independent and false otherwise
+
+Then, we can build the graph with $O(r)$ calls to `clear()` and $O(rn)$ calls to `check(x)` and `add(x)`.
+
+Recall that we need to know for each $y \in S$ and $x \in E \setminus S$ if
+$S - y + x \in \mathcal I_1$ and $s - y + x \in \mathcal I_2$. So, for each $y$, we use `clear()` and `add(x)` to obtain $S - y$,
+then use `check(x)` to find all $x$ where $S - y + x$ is independent.
+Note that we did not have to support removals of arbitrary edges, which is hard to do efficiently in the graphic matroid.
+
+<LanguageSection>
+<CPPSection>
+```cpp
+template<class M1, class M2>
+vector<bool> MatroidIsect(M1 m1, M2 m2, int n) {
+	vector<bool> in_S(n);
+	auto augment = [&] {
+		vector<int> S, E_S;
+		for (int i = 0; i < n; i++) {
+			if (in_S[i]) S.push_back(i);
+			else E_S.push_back(i);
+		}
+		// build exchange graph
+		vector<vector<int>> adj(n);
+		for (int y : S) {
+			m1.clear(), m2.clear();
+			for (int i : S) {
+				if (i != y) m1.add(i), m2.add(i);
+			}
+			for (int x : E_S) {
+				if (m1.check(x)) adj[y].push_back(x);
+				if (m2.check(x)) adj[x].push_back(y);
+			}
+		}
+		// identify sources and sinks for BFS
+		vector<bool> is_sink(n);
+		queue<int> q; vector<bool> vis(n);
+
+		m1.clear(), m2.clear();
+		for (int y : S) m1.add(y), m2.add(y);
+		for (int x : E_S) {
+			if (m1.check(x)) vis[x] = 1, q.push(x); // x is a source
+			is_sink[x] = m2.check(x);
+		}
+		// BFS to find augmenting path from source to sink
+		vector<int> prev(n, -1);
+		while (!q.empty()) {
+			int u = q.front(); q.pop();
+			if (is_sink[u]) {
+				// augmenting path found
+				for (int v = u; v != -1; v = prev[v]) {
+					in_S[v] = !in_S[v];
+				}
+				return true;
+			}
+			for (int v : adj[u]) {
+				if (vis[v]) continue;
+				q.push(v);
+				vis[v] = 1;
+				prev[v] = u;
+			}
+		}
+		return false;
+	};
+	while (augment());
+	return in_S;
+}
+```
+</CPPSection>
+</LanguageSection>
+
+### Improving to $O(r^{1.5}n)$
+
+TODO
 
 - Tutorial
   - [Matroid & Matroid Intersection Notes (18.453)](https://web.archive.org/web/20211006084053/https://math.mit.edu/~franks/18453/18453.html)
