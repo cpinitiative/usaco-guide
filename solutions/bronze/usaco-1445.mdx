@@ -1,0 +1,105 @@
+---
+id: usaco-1445
+source: USACO Bronze 2024 December
+title: It's Mooin' Time
+author: Arnav Gokhale
+---
+
+[Official Analysis (C++, Python)](https://usaco.org/current/data/sol_prob3_bronze_dec24.html)
+
+## Explanation
+
+Notice that modifying exactly one character can only affect at most $3$ substrings.
+
+For example, had the string been $\text{ABCDEF}$ and the $\text{C}$ was modified to a $\text{Z}$, the affected substrings would now be, $\text{ABZ}$, $\text{BZD}$, and $\text{ZDE}$.
+
+Using this, we first precompute a map representing the counts of each moo that was originally present in the string. Then, we can try every single possible edit to the string, with a total of $\mathcal{O}(26N)$ possible modifications. While trying every single possible edit to a specific position, due to only three substrings being affected, the global answer does not change by much. So, we can adjust the frequencies of moo's based on the $3$ substrings being affected after every modification, and check whether any moo's exceeded a frequency of $F$ due to the modifications. It is important to reverse the specific position back to its original character after the modifications, since only one position can be modified at a time.
+
+If any moo substring ever reaches a frequency of $F$ before or after modifications, it is added to the set of answers.
+
+While technically the time complexity is $\mathcal{O}(N)$, the factor of 26 in this case is significant because it represents the number of letters we brute-force over.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(26N)$
+
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ios_base::sync_with_stdio(0);
+	cin.tie(0);
+
+	int n, f;
+	cin >> n >> f;
+	string c;
+	cin >> c;
+
+	set<string> answers;
+	map<string, int> counts;
+
+	// Function to check whether a given sequence starting at position i is a MOO
+	auto is_moo = [&](int i) -> bool {
+		if (i < 0 || i + 2 >= n) return false;
+		return (c[i] != c[i + 1] && c[i + 1] == c[i + 2]) ? true : false;
+	};
+
+	// Updates a given string's frequency in the map
+	auto update = [&](int i, int change) -> void {
+		if (!is_moo(i)) return;
+
+		string t = c.substr(i, 3);
+		counts[t] += change;
+
+		if (counts[t] >= f) answers.insert(t);
+	};
+
+	// For a certain modification, updates all the affected strings
+	auto update_range = [&](int i, int delta) {
+		update(i - 2, delta);
+		update(i - 1, delta);
+		update(i, delta);
+	};
+
+	// Add the original counts of the array
+	for (int i = 0; i < n - 2; i++) { update(i, 1); }
+
+	// Test all possible modifications
+	for (int i = 0; i < n; i++) {
+		char original = c[i];
+
+		for (char let = 'a'; let <= 'z'; let++) {
+			update_range(i, -1);
+			c[i] = let;
+			update_range(i, 1);
+		}
+
+		update_range(i, -1);
+		c[i] = original;
+		update_range(i, 1);
+	}
+
+	cout << answers.size() << '\n';
+	for (auto moo : answers) cout << moo << '\n';
+}
+```
+
+</CPPSection>
+
+<PySection>
+
+
+</PySection>
+
+<JavaSection>
+
+
+</JavaSection>
+
+</LanguageSection>
