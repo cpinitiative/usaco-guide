@@ -24,26 +24,31 @@ This is optimal because in each operation, we decrease both $x$ and $y$ by one f
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <unordered_map>
-#include <vector>
+#include <bits/stdc++.h>
 using namespace std;
 
 int main() {
-	int n;
-	cin >> n;
-	vector<int> array(n);
-	for (int i = 0; i < n; i++) { cin >> array[i]; }
+    int n;
+    cin >> n;
 
-	unordered_map<int, int> freq;
-	for (int x : array) { freq[x]++; }
+    vector<int> array(n);
+    for (int i = 0; i < n; i++) {
+        cin >> array[i];
+    }
 
-	int missing = 0;
-	for (int i = 0; i <= n; i++) {
-		int count = freq[i];
-		cout << max(missing, count) << endl;
-		if (count == 0) { missing++; }
-	}
+    vector<int> freq(n + 1, 0);
+    int missing = 0;
+
+    for (int x : array) {
+        freq[x]++;
+    }
+
+    for (int i = 0; i <= n; i++) {
+        cout << max(missing, freq[i]) << endl;
+        if (freq[i] == 0) {
+            missing++;
+        }
+    }
 }
 ```
 
@@ -52,17 +57,18 @@ int main() {
 <PySection>
 
 ```py
-from collections import Counter
-
 n = int(input())
 array = [int(x) for x in input().split()]
-freq = Counter(array)
+freq = [0] * (n + 1)
 missing = 0
 
+for x in array:
+    freq[x] += 1
+
 for i in range(n + 1):
-	print(max(missing, freq[i]))
-	if freq[i] == 0:
-		missing += 1
+    print(max(missing, freq[i]))
+    if freq[i] == 0:
+        missing += 1
 ```
 
 </PySection>
