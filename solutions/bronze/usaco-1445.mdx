@@ -42,7 +42,6 @@ int main() {
 	set<string> answers;
 	map<string, int> counts;
 
-
 	// Function to check whether a given sequence starting at position i is a MOO
 	auto is_moo = [&](int i) -> bool {
 		if (i < 0 || i + 2 >= n) return false;
@@ -50,40 +49,38 @@ int main() {
 	};
 
 	// Updates a given string's frequency in the map
-    auto update = [&](int i, int change) -> void {
-        if (!is_moo(i)) return;
-                
-        string t = c.substr(i, 3); 
-        counts[t] += change;
-        
-        if (counts[t] >= f) answers.insert(t);
-    };
+	auto update = [&](int i, int change) -> void {
+		if (!is_moo(i)) return;
+
+		string t = c.substr(i, 3);
+		counts[t] += change;
+
+		if (counts[t] >= f) answers.insert(t);
+	};
 
 	// For a certain modification, updates all the affected strings
-    auto update_range = [&](int i, int delta){
-        update(i - 2, delta);
-        update(i - 1, delta);
-        update(i, delta);
-    };
+	auto update_range = [&](int i, int delta) {
+		update(i - 2, delta);
+		update(i - 1, delta);
+		update(i, delta);
+	};
 
 	// Add the original counts of the array
-	for (int i = 0; i < n - 2; i++) {
-		update(i, 1);
-	}
+	for (int i = 0; i < n - 2; i++) { update(i, 1); }
 
 	// Test all possible modifications
 	for (int i = 0; i < n; i++) {
-        char original = c[i];
+		char original = c[i];
 
-		for (char let = 'a'; let <= 'z'; let++){
-            update_range(i, -1);
-            c[i] = let;
-            update_range(i, 1);
-        }
+		for (char let = 'a'; let <= 'z'; let++) {
+			update_range(i, -1);
+			c[i] = let;
+			update_range(i, 1);
+		}
 
-        update_range(i, -1);
-        c[i] = original;
-        update_range(i, 1);
+		update_range(i, -1);
+		c[i] = original;
+		update_range(i, 1);
 	}
 
 	cout << answers.size() << '\n';
