@@ -1,0 +1,64 @@
+---
+id: spoj-najpwg
+source: SPOJ
+title: Playing with GCD
+author: Mihnea Brebenel
+---
+
+## Explanation 
+
+The queries can be answered in $\mathcal{O}(1)$ by performing prefix sums on the sieve of the phi's value.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log\log N + N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp 
+#include <bits/stdc++.h>
+
+using namespace std;
+
+const int MAXN = 1e5;
+
+int phi[MAXN + 1];
+
+void precompute() {
+    for (int i = 1; i <= MAXN; i++) {
+        phi[i] = i;
+    }
+    for (int i = 2; i <= MAXN; i++) {
+        // If i is prime
+        if (phi[i] == i) {
+            for (int j = i; j <= MAXN; j += i) {
+                phi[j] -= phi[j] / i;
+            }
+        }
+    }
+    for (int i = 1; i <= MAXN; i++) {
+        phi[i] = phi[i - 1] + (i - phi[i]);
+    }
+}
+
+int main() {
+
+    int t;
+    cin >> t;
+
+    precompute();
+
+    for (int i = 1; i <= t; i++) {
+        int n;
+        cin >> n;
+        cout << "Case " << i << ": " << phi[n] << '\n';
+    }
+
+
+    return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
