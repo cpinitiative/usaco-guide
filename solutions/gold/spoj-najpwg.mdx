@@ -7,8 +7,8 @@ author: Mihnea Brebenel
 
 ## Explanation
 
-The queries can be answered in $\mathcal{O}(1)$ by performing prefix sums of $f(n)$, where $f(n) = n - \phi(n)$. The reason we take the difference is
-that the $\phi(n)$ counts number of values $x \le n$ with $(x, n)=1$, but we want the pairs with $(x,n) > 1$ which are the rest.
+The given bound $N$ in each case only bounds the larger value in the pair. Thus, if we can efficiently precompute the number of valid $x < n$ for each larger value $n$, we can efficiently answer the queries.
+The queries can be answered in $\mathcal{O}(1)$ by performing prefix sums of $f(n)$, where $f(n) = n - \phi(n)$. We take the complement of $\phi(n)$ because $\phi(n)$ counts number of values $x \le n$ with $\gcd(x, n)=1$, but we want the values of $x$ where $\gcd(x,n) > 1$, which are the rest of the values.
 
 ## Implementation
 
