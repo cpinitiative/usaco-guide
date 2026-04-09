@@ -1,6 +1,5 @@
 import { useContext } from 'react';
 import MarkdownLayoutContext from '../../../context/MarkdownLayoutContext';
-import { ModuleInfo } from '../../../models/module';
 
 export default function useSuffix() {
   const moduleLayoutInfo = useContext(MarkdownLayoutContext);
