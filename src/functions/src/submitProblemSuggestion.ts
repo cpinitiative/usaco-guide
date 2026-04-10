@@ -158,7 +158,7 @@ const submitProblemSuggestion = functions.https.onCall(async request => {
   });
 
   const oldFileDataReq = await githubAPI.get(
-    `/repos/cpinitiative/usaco-guide/contents/${filePath.replace(
+    `/repos/cpinitiative/usaco-guide/contents/content/${filePath.replace(
       /\.mdx$/,
       '.problems.json'
     )}?ref=${branchName}`
@@ -203,7 +203,7 @@ const submitProblemSuggestion = functions.https.onCall(async request => {
   });
 
   await githubAPI.put(
-    `/repos/cpinitiative/usaco-guide/contents/${filePath.replace(
+    `/repos/cpinitiative/usaco-guide/contents/content/${filePath.replace(
       /\.mdx$/,
       '.problems.json'
     )}`,
