@@ -119,6 +119,7 @@ export default function ProblemSuggestionModal({
       SECTION_LABELS[(markdownLayoutInfo as ModuleInfo).section]
     } - ${markdownLayoutInfo.title}`;
 
+    const removePrefix = (a, b) => a.substring(b.length);
     submitSuggestion({
       name,
       link,
@@ -128,7 +129,10 @@ export default function ProblemSuggestionModal({
       problemTableLink,
       problemListName: listName,
       moduleName,
-      filePath: (markdownLayoutInfo as ModuleInfo).fileRelativePath,
+      filePath: removePrefix(
+        (markdownLayoutInfo as ModuleInfo).fileRelativePath,
+        'content/'
+      ),
       section: (markdownLayoutInfo as ModuleInfo).section,
       source,
     })
