@@ -431,6 +431,18 @@ export default function TopNavigationBar({
                     Groups
                   </span>
                 </Link>
+                <Link
+                  href="/editor"
+                  className="group -m-3 flex items-center rounded-md p-3 hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  <DocumentTextIcon
+                    className="h-6 w-6 shrink-0 text-gray-600 dark:group-hover:text-gray-400"
+                    aria-hidden="true"
+                  />
+                  <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
+                    Editor
+                  </span>
+                </Link>
                 {resources.map(item => (
                   <a
                     key={item.name}

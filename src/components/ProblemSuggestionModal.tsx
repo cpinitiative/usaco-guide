@@ -308,33 +308,6 @@ export default function ProblemSuggestionModal({
           </div>
         </div>
       )}
-      <div className="mt-6 bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 dark:bg-gray-900">
-        <button
-          type="submit"
-          className={
-            'focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base leading-6 font-medium text-white shadow-sm transition duration-150 ease-in-out hover:bg-blue-500 focus:border-blue-700 focus:outline-hidden sm:ml-3 sm:w-auto sm:text-sm sm:leading-5 ' +
-            (loading ? 'bg-blue-400' : 'bg-blue-600')
-          }
-          disabled={loading}
-        >
-          {inEditor
-            ? 'Add Problem'
-            : loading
-              ? 'Submitting...'
-              : 'Submit Suggestion'}
-        </button>
-        <button
-          type="button"
-          className={
-            'focus:shadow-outline-blue mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 px-4 py-2 text-base leading-6 font-medium text-gray-700 shadow-sm transition duration-150 ease-in-out hover:text-gray-500 focus:border-blue-300 focus:outline-hidden sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm sm:leading-5 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 ' +
-            (loading ? 'bg-gray-100' : 'bg-white')
-          }
-          onClick={onClose}
-          disabled={loading}
-        >
-          Cancel
-        </button>
-      </div>
     </form>
   );
 
