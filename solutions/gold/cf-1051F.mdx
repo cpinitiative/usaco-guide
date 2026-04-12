@@ -142,159 +142,165 @@ for _ in range(int(input())):
 <CPPSection>
 
 ```cpp
+#include <algorithm>
+#include <functional>
 #include <iostream>
-#include <vector>
+#include <limits>
 #include <queue>
 #include <set>
 #include <tuple>
-#include <algorithm>
-#include <functional>
-#include <limits>
+#include <vector>
 using namespace std;
 
 int main() {
-    int n, m;
-    cin >> n >> m;
-    vector<vector<pair<int, int>>> g(n);
-    set<pair<int, int>> unused;
+	int n, m;
+	cin >> n >> m;
+	vector<vector<pair<int, int>>> g(n);
+	set<pair<int, int>> unused;
 
-    for (int _ = 0; _ < m; _++) {  // build graph and track all edges
-        int i, j, w;
-        cin >> i >> j >> w;
-        i--; j--;
-        g[i].push_back({j, w});
-        g[j].push_back({i, w});
-        unused.insert({min(i, j), max(i, j)});
-    }
+	for (int _ = 0; _ < m; _++) {  // build graph and track all edges
+		int i, j, w;
+		cin >> i >> j >> w;
+		i--;
+		j--;
+		g[i].push_back({j, w});
+		g[j].push_back({i, w});
+		unused.insert({min(i, j), max(i, j)});
+	}
 
-    int mx_l = 0;
-    while ((1 << mx_l) <= n) mx_l++;
+	int mx_l = 0;
+	while ((1 << mx_l) <= n) mx_l++;
 
-    vector<int> depth(n, 0);
-    vector<long long> root_dist(n, 0);
-    vector<vector<int>> up(n, vector<int>(mx_l, 0));  // up[v][i] = 2^i ancestor of v
+	vector<int> depth(n, 0);
+	vector<long long> root_dist(n, 0);
+	vector<vector<int>> up(n, vector<int>(mx_l, 0));  // up[v][i] = 2^i ancestor of v
 
-    // dfs to build spanning tree and remove tree edges from unused
-    vector<tuple<int, int, long long>> s;
-    s.push_back({0, 1, 0});  // node, depth, distance from root
+	// dfs to build spanning tree and remove tree edges from unused
+	vector<tuple<int, int, long long>> s;
+	s.push_back({0, 1, 0});  // node, depth, distance from root
 
-    depth[0] = 1;
-    root_dist[0] = 0;
-    up[0][0] = 0;
+	depth[0] = 1;
+	root_dist[0] = 0;
+	up[0][0] = 0;
 
-    for (int lvl = 0; lvl < mx_l-1; lvl++) up[0][lvl + 1] = up[up[0][lvl]][lvl];
+	for (int lvl = 0; lvl < mx_l - 1; lvl++) up[0][lvl + 1] = up[up[0][lvl]][lvl];
 
-    while (!s.empty()) {
-        tuple<int, int, long long> t = s.back();
-        s.pop_back();
+	while (!s.empty()) {
+		tuple<int, int, long long> t = s.back();
+		s.pop_back();
 
-        int cur = get<0>(t);
-        int d = get<1>(t);
-        long long dist = get<2>(t);
+		int cur = get<0>(t);
+		int d = get<1>(t);
+		long long dist = get<2>(t);
 
-        depth[cur] = d;
-        root_dist[cur] = dist;
+		depth[cur] = d;
+		root_dist[cur] = dist;
 
-        for (int k = 0; k < (int)g[cur].size(); k++) {
-            int nxt = g[cur][k].first;
-            int w = g[cur][k].second;
+		for (int k = 0; k < (int)g[cur].size(); k++) {
+			int nxt = g[cur][k].first;
+			int w = g[cur][k].second;
 
-            if (depth[nxt] != 0) continue;
+			if (depth[nxt] != 0) continue;
 
-            depth[nxt] = d+1;
+			depth[nxt] = d + 1;
 
-            // this edge becomes part of the tree
-            unused.erase({min(cur, nxt), max(cur, nxt)});
+			// this edge becomes part of the tree
+			unused.erase({min(cur, nxt), max(cur, nxt)});
 
-            up[nxt][0] = cur;
-            for (int lvl = 0; lvl < mx_l-1; lvl++) up[nxt][lvl+1] = up[up[nxt][lvl]][lvl];
+			up[nxt][0] = cur;
+			for (int lvl = 0; lvl < mx_l - 1; lvl++)
+				up[nxt][lvl + 1] = up[up[nxt][lvl]][lvl];
 
-            s.push_back({nxt, d+1, dist + w});
-        }
-    }
+			s.push_back({nxt, d + 1, dist + w});
+		}
+	}
 
-    // lca to find distances of nodes within the tree
-    auto lca = [&](int i, int j) {
-        if (depth[i] > depth[j]) swap(i, j);
+	// lca to find distances of nodes within the tree
+	auto lca = [&](int i, int j) {
+		if (depth[i] > depth[j]) swap(i, j);
 
-        // lift j up so that both i and j are at the same depth
-        int diff = depth[j] - depth[i];
-        int lvl = 0;
-        while (diff) {
-            if (diff & 1) j = up[j][lvl];
-            diff >>= 1;
-            lvl++;
-        }
+		// lift j up so that both i and j are at the same depth
+		int diff = depth[j] - depth[i];
+		int lvl = 0;
+		while (diff) {
+			if (diff & 1) j = up[j][lvl];
+			diff >>= 1;
+			lvl++;
+		}
 
-        // if they meet, then i is the LCA of j
-        if (i == j) return i;
+		// if they meet, then i is the LCA of j
+		if (i == j) return i;
 
-        // lift both i and j together, until they are just below the LCA
-        for (int lvl = mx_l - 1; lvl >= 0; lvl--) 
+		// lift both i and j together, until they are just below the LCA
+		for (int lvl = mx_l - 1; lvl >= 0; lvl--)
 			if (up[i][lvl] != up[j][lvl]) i = up[i][lvl], j = up[j][lvl];
 
-        // now their parents are equal, so that's the LCA
-        return up[i][0];
-    };
+		// now their parents are equal, so that's the LCA
+		return up[i][0];
+	};
 
-    vector<vector<long long>> dists;
+	vector<vector<long long>> dists;
 
-    // run Dijkstra from an endpoint of each extra edge
-    for (set<pair<int, int>>::iterator it = unused.begin(); it != unused.end(); it++) {
-        int i = it->first;
-        int j = it->second;
+	// run Dijkstra from an endpoint of each extra edge
+	for (set<pair<int, int>>::iterator it = unused.begin(); it != unused.end(); it++) {
+		int i = it->first;
+		int j = it->second;
 
-        vector<long long> dist(n, (long long)1e18);
-        dists.push_back(dist);
+		vector<long long> dist(n, (long long)1e18);
+		dists.push_back(dist);
 
-        vector<long long>& cur_dist = dists.back();
+		vector<long long> &cur_dist = dists.back();
 
-        cur_dist[i] = 0;
-        priority_queue<pair<long long, int>, vector<pair<long long, int>>, greater<pair<long long, int>>> pq;
-        pq.push({0, i});
+		cur_dist[i] = 0;
+		priority_queue<pair<long long, int>, vector<pair<long long, int>>,
+		               greater<pair<long long, int>>>
+		    pq;
+		pq.push({0, i});
 
-        while (!pq.empty()) {
-            pair<long long, int> p = pq.top();
-            pq.pop();
+		while (!pq.empty()) {
+			pair<long long, int> p = pq.top();
+			pq.pop();
 
-            long long dist_here = p.first;
-            int cur = p.second;
+			long long dist_here = p.first;
+			int cur = p.second;
 
-            if (dist_here != cur_dist[cur]) continue;
+			if (dist_here != cur_dist[cur]) continue;
 
-            for (int k = 0; k < (int)g[cur].size(); k++) {
-                int nxt = g[cur][k].first;
-                int w = g[cur][k].second;
+			for (int k = 0; k < (int)g[cur].size(); k++) {
+				int nxt = g[cur][k].first;
+				int w = g[cur][k].second;
 
-                long long nd = dist_here + w;
-                if (nd < cur_dist[nxt]) {
-                    cur_dist[nxt] = nd;
-                    pq.push({nd, nxt});
-                }
-            }
-        }
-    }
+				long long nd = dist_here + w;
+				if (nd < cur_dist[nxt]) {
+					cur_dist[nxt] = nd;
+					pq.push({nd, nxt});
+				}
+			}
+		}
+	}
 
-    // answer queries
-    int q; cin >> q;
-    while (q--) {
-        int i, j;
-        cin >> i >> j;
+	// answer queries
+	int q;
+	cin >> q;
+	while (q--) {
+		int i, j;
+		cin >> i >> j;
 
-        i--; j--;  // 0 indexing
+		i--;
+		j--;  // 0 indexing
 
-        // shortest path on tree
-        long long mn = root_dist[i] + root_dist[j] - 2LL * root_dist[lca(i, j)];
+		// shortest path on tree
+		long long mn = root_dist[i] + root_dist[j] - 2LL * root_dist[lca(i, j)];
 
-        for (int k = 0; k < (int)dists.size(); k++) {
-            long long choice = dists[k][i] + dists[k][j];  // path using extra edges
-            if (choice < mn) mn = choice;
-        }
+		for (int k = 0; k < (int)dists.size(); k++) {
+			long long choice = dists[k][i] + dists[k][j];  // path using extra edges
+			if (choice < mn) mn = choice;
+		}
 
-        cout << mn << '\n';
-    }
+		cout << mn << '\n';
+	}
 
-    return 0;
+	return 0;
 }
 ```
 </CPPSection>
