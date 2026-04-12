@@ -85,4 +85,60 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+n, f = [int(i) for i in input().split()]
+c = list(input())
+
+answers = set()
+counts = {}
+
+
+def is_moo(i: int) -> bool:
+	""":returns whether a given sequence starting at position i is a MOO"""
+	if i < 0 or i + 2 >= n:
+		return False
+	return c[i] != c[i + 1] and c[i + 1] == c[i + 2]
+
+
+def update(i: int, change: int):
+	"""Updates a given string's frequency in the map"""
+	if not is_moo(i):
+		return
+	t = "".join(c[i : i + 3])
+	counts[t] = counts.get(t, 0) + change
+	if counts[t] >= f:
+		answers.add(t)
+
+
+def update_range(i: int, delta: int):
+	"""For a certain modification, updates all the affected strings"""
+	update(i - 2, delta)
+	update(i - 1, delta)
+	update(i, delta)
+
+
+# Add the original counts of the array
+for i in range(n - 2):
+	update(i, 1)
+
+# Test all possible modifications
+for i in range(n):
+	original = c[i]
+
+	for let in map(chr, range(ord("a"), ord("z") + 1)):
+		update_range(i, -1)
+		c[i] = let
+		update_range(i, 1)
+
+	update_range(i, -1)
+	c[i] = original
+	update_range(i, 1)
+
+print(len(answers))
+print("\n".join(sorted(answers)))
+```
+
+</PySection>
 </LanguageSection>
