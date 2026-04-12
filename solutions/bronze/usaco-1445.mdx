@@ -21,11 +21,9 @@ While technically the time complexity is $\mathcal{O}(N)$, the factor of 26 in t
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(26N)$
-
+**Time Complexity:** $\mathcal{O}(CN)$, where $C$ is the number of letters in the alphabet ($26$ in this case).
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -33,9 +31,6 @@ While technically the time complexity is $\mathcal{O}(N)$, the factor of 26 in t
 using namespace std;
 
 int main() {
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
-
 	int n, f;
 	cin >> n >> f;
 	string c;
@@ -46,18 +41,17 @@ int main() {
 
 	// Function to check whether a given sequence starting at position i is a MOO
 	auto is_moo = [&](int i) -> bool {
-		if (i < 0 || i + 2 >= n) return false;
+		if (i < 0 || i + 2 >= n) { return false; }
 		return (c[i] != c[i + 1] && c[i + 1] == c[i + 2]) ? true : false;
 	};
 
 	// Updates a given string's frequency in the map
-	auto update = [&](int i, int change) -> void {
-		if (!is_moo(i)) return;
+	auto update = [&](int i, int change) {
+		if (!is_moo(i)) { return; }
 
 		string t = c.substr(i, 3);
 		counts[t] += change;
-
-		if (counts[t] >= f) answers.insert(t);
+		if (counts[t] >= f) { answers.insert(t); }
 	};
 
 	// For a certain modification, updates all the affected strings
@@ -86,20 +80,9 @@ int main() {
 	}
 
 	cout << answers.size() << '\n';
-	for (auto moo : answers) cout << moo << '\n';
+	for (const string& moo : answers) { cout << moo << '\n'; }
 }
 ```
 
 </CPPSection>
-
-<PySection>
-
-
-</PySection>
-
-<JavaSection>
-
-
-</JavaSection>
-
 </LanguageSection>
