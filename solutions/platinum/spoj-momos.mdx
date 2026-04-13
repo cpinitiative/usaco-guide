@@ -1,0 +1,82 @@
+---
+id: spoj-momos
+source: SPOJ
+title: MOMOS - FEASTOFPIGS
+author: Mihnea Brebenel
+---
+
+## Explanation
+
+It is very important to notice that the testcases are divided into two kinds depending on the restrictions:
+- The first case ($N \le 10^6$ and $K \le 100$) can be solved using a sieve.
+- In the second case ($N \le 10^{14}$ and $K \le 20$) a sieve would take too much
+memory due to the limit on $N$. On the other hand, the number of momos is quite small, so we can apply the classic [PIE](/plat/PIE). We'll use bitmasking
+to iterate through all the subsets of momos. We'll take the lowest common multiple of the values contained by the mask and update the answer accordingly.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(NK)$ when $N \le 10^6$ and $K \le 100$, $\mathcal{O}(K \cdot 2^k)$ when $K \le 20$ and $N \le 10^{14}$.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+const int MAXK = 100;
+const int MAXN = 1e6;
+
+long long n, k;
+long long v[MAXK + 1];
+bool momo[MAXN + 1];
+
+// Sieve solution
+void solve1() {
+	for (int i = 0; i < k; i++) {
+		for (int j = 0; j < n; j += v[i]) { momo[j] = true; }
+	}
+	long long cnt = 0;
+	for (int i = 0; i < n; i++) { cnt += momo[i]; }
+	cout << n - cnt << '\n';
+}
+
+// Inclusion-Exclusion solution
+void solve2() {
+	long long ans = n - 1;
+	for (int mask = 1; mask < (1 << k); mask++) {
+		long long lcm = 1;
+		int bits = __builtin_popcount(mask);
+		for (int i = 0; (1 << i) <= mask; i++) {
+			if (mask & (1 << i)) {
+				// Avoid overflow
+				if (lcm / __gcd(lcm, v[i]) > LLONG_MAX / v[i]) {
+					lcm = n;
+					break;
+				}
+				// Use the formula: lcm(x, y) = x * y / gcd(x, y)
+				lcm = lcm / __gcd(lcm, v[i]) * v[i];
+			}
+		}
+		ans = ans + (bits % 2 == 1 ? -1 : 1) * ((n - 1) / lcm);
+	}
+	cout << ans << '\n';
+}
+
+int main() {
+
+	cin >> n >> k;
+
+	for (int i = 0; i < k; i++) { cin >> v[i]; }
+
+	if (k > 20) {
+		solve1();
+	} else {
+		solve2();
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
