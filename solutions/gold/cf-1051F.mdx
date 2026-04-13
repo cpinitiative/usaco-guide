@@ -152,6 +152,8 @@ for _ in range(int(input())):
 #include <vector>
 using namespace std;
 
+constexpr long long INF = 1e18;
+
 int main() {
 	int n, m;
 	cin >> n >> m;
@@ -168,6 +170,7 @@ int main() {
 		unused.insert({min(u, v), max(u, v)});
 	}
 
+	// calculate the biggest power of 2 for binlifting
 	int mx_l = 0;
 	while ((1 << mx_l) <= n) mx_l++;
 
@@ -182,16 +185,14 @@ int main() {
 		root_dist[cur] = dist;
 		up[cur][0] = par;
 
-		for (int lvl = 0; lvl < mx_l - 1; lvl++)
+		for (int lvl = 0; lvl < mx_l - 1; lvl++) {
 			up[cur][lvl + 1] = up[up[cur][lvl]][lvl];
+		}
 
-		for (int k = 0; k < (int)g[cur].size(); k++) {
-			int nxt = g[cur][k].first;
-			int w = g[cur][k].second;
-
+		for (const auto &[nxt, w] : g[cur]) {
 			if (depth[nxt] != 0) continue;
 
-			// this edge becomes part of the tree
+			// this edge becomes part of the spanning tree
 			unused.erase({min(cur, nxt), max(cur, nxt)});
 
 			dfs(nxt, cur, d + 1, dist + w);
@@ -201,7 +202,7 @@ int main() {
 	dfs(0, 0, 1, 0);
 
 	// lca to find distances of nodes within the tree
-	auto lca = [&](int u, int v) {
+	auto lca = [&](int u, int v) -> int {
 		if (depth[u] > depth[v]) swap(u, v);
 
 		// lift v up so that both u and v are at the same depth
@@ -217,8 +218,9 @@ int main() {
 		if (u == v) return u;
 
 		// lift both u and v together, until they are just below the LCA
-		for (int lvl = mx_l - 1; lvl >= 0; lvl--)
+		for (int lvl = mx_l - 1; lvl >= 0; lvl--) {
 			if (up[u][lvl] != up[v][lvl]) u = up[u][lvl], v = up[v][lvl];
+		}
 
 		// now their parents are equal, so that's the LCA
 		return up[u][0];
@@ -228,7 +230,7 @@ int main() {
 
 	// run Dijkstra from an endpoint of each extra edge
 	for (const auto &[u, v] : unused) {
-		vector<long long> dist(n, (long long)1e18);
+		vector<long long> dist(n, INF);
 
 		dist[u] = 0;
 		priority_queue<pair<long long, int>, vector<pair<long long, int>>,
@@ -237,18 +239,12 @@ int main() {
 		pq.push({0, u});
 
 		while (!pq.empty()) {
-			pair<long long, int> p = pq.top();
+			const auto [dist_here, cur] = pq.top();
 			pq.pop();
-
-			long long dist_here = p.first;
-			int cur = p.second;
 
 			if (dist_here != dist[cur]) continue;
 
-			for (int k = 0; k < (int)g[cur].size(); k++) {
-				int nxt = g[cur][k].first;
-				int w = g[cur][k].second;
-
+			for (const auto &[nxt, w] : g[cur]) {
 				long long nd = dist_here + w;
 				if (nd < dist[nxt]) {
 					dist[nxt] = nd;
@@ -260,30 +256,27 @@ int main() {
 		dists.push_back(dist);
 	}
 
-	// answer queries
 	int q;
 	cin >> q;
 	while (q--) {
 		int u, v;
 		cin >> u >> v;
 
-		// 0 indexing
 		u--;
 		v--;
 
 		// shortest path on tree
 		long long mn = root_dist[u] + root_dist[v] - 2LL * root_dist[lca(u, v)];
 
-		for (int k = 0; k < (int)dists.size(); k++) {
-			long long choice = dists[k][u] + dists[k][v];  // path using extra edges
-			if (choice < mn) mn = choice;
+		for (const auto &edges_dists : dists) {
+			// consider path using this extra edge
+			mn = min(mn, edges_dists[u] + edges_dists[v]);
 		}
 
 		cout << mn << '\n';
 	}
-
-	return 0;
 }
 ```
+
 </CPPSection>
 </LanguageSection>
