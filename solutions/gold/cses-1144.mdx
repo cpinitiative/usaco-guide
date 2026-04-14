@@ -263,63 +263,68 @@ limit.
 #include <bits/stdc++.h>
 using namespace std;
 
-struct Fenwick{
-    vector<int> mn;int n;
-    Fenwick(int N){
-        mn.assign(N, 0);
-        n=N;
-    }
-    void add(int x, int val){
-        for(;x<n;x=x|(x+1))mn[x]+=val;
-    }
-    int sumt(int r){
-        int s = 0;
-        for(;r>=0;r=(r&(r+1))-1)s+=mn[r];
-        return s;
-    }
-    int sum(int a, int b){return sumt(b)-sumt(a-1);}
+struct Fenwick {
+	vector<int> mn;
+	int n;
+	Fenwick(int N) {
+		mn.assign(N, 0);
+		n = N;
+	}
+	void add(int x, int val) {
+		for (; x < n; x = x | (x + 1)) mn[x] += val;
+	}
+	int sumt(int r) {
+		int s = 0;
+		for (; r >= 0; r = (r & (r + 1)) - 1) s += mn[r];
+		return s;
+	}
+	int sum(int a, int b) { return sumt(b) - sumt(a - 1); }
 };
 
-signed main(){
-    ios_base::sync_with_stdio(false);
-    cin.tie(0);
-    int n, q;cin>>n>>q;
+signed main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(0);
+	int n, q;
+	cin >> n >> q;
 
-    vector<int> allap; //all coordinates to be compressed
-    map<int, int> compr;
-    vector<int> p(n+1);
-    for(int i = 1;i<=n;i++){
-        cin>>p[i];
-        allap.push_back(p[i]);
-    }
-    vector<pair<char, pair<int, int>>> queries;
-    for(int i = 0;i<q;i++){
-        char c;cin>>c;
-        int a, b;cin>>a>>b;
-        allap.push_back(a);allap.push_back(b);
-        queries.push_back({c, {a, b}});
-    }
+	vector<int> allap;  // all coordinates to be compressed
+	map<int, int> compr;
+	vector<int> p(n + 1);
+	for (int i = 1; i <= n; i++) {
+		cin >> p[i];
+		allap.push_back(p[i]);
+	}
+	vector<pair<char, pair<int, int>>> queries;
+	for (int i = 0; i < q; i++) {
+		char c;
+		cin >> c;
+		int a, b;
+		cin >> a >> b;
+		allap.push_back(a);
+		allap.push_back(b);
+		queries.push_back({c, {a, b}});
+	}
 
-    sort(allap.begin(), allap.end());
-    int nn=allap.size()+1;
-    Fenwick fenw(nn);
+	sort(allap.begin(), allap.end());
+	int nn = allap.size() + 1;
+	Fenwick fenw(nn);
 
-    for(int i = 0;i<nn-1;i++)compr[allap[i]]=i;
-    for(int i = 1;i<=n;i++){
-        p[i]=compr[p[i]];
-        fenw.add(p[i], 1);
-    }
-    for(auto thing:queries){
-        if(thing.first=='!'){
-            int ts=compr[thing.second.second];
-            fenw.add(p[thing.second.first], -1);
-            fenw.add(ts, 1);
-            p[thing.second.first]=ts;
-        }
-        else{
-            cout << fenw.sum(compr[thing.second.first], compr[thing.second.second]) << '\n';
-        }
-    }
+	for (int i = 0; i < nn - 1; i++) compr[allap[i]] = i;
+	for (int i = 1; i <= n; i++) {
+		p[i] = compr[p[i]];
+		fenw.add(p[i], 1);
+	}
+	for (auto thing : queries) {
+		if (thing.first == '!') {
+			int ts = compr[thing.second.second];
+			fenw.add(p[thing.second.first], -1);
+			fenw.add(ts, 1);
+			p[thing.second.first] = ts;
+		} else {
+			cout << fenw.sum(compr[thing.second.first], compr[thing.second.second])
+			     << '\n';
+		}
+	}
 }
 ```
 
@@ -340,7 +345,6 @@ Just use indexed set!
 using namespace std;
 using namespace __gnu_pbds;
 
-
 typedef pair<int, int> pii;
 template <class T>
 using Tree =
@@ -348,7 +352,6 @@ using Tree =
 
 #define FOR(i, a, b) for (int i = a; i < (b); i++)
 #define F0R(i, a) for (int i = 0; i < (a); i++)
-
 
 const int INF = 1000000007;
 
