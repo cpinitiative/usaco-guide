@@ -287,56 +287,59 @@ template <class T> class BIT {
 		return total;
 	}
 
-    T sum(int ind_left, int ind_right){
-        return pref_sum(ind_right)-pref_sum(ind_left-1);
-    }
+	T sum(int ind_left, int ind_right) {
+		return pref_sum(ind_right) - pref_sum(ind_left - 1);
+	}
 };
 
-int main(){
+int main() {
 
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    int n, q;cin>>n>>q;
-    vector<int> coords;
-    map<int, int> compr;
-    vector<int> p(n+1);
+	int n, q;
+	cin >> n >> q;
+	vector<int> coords;
+	map<int, int> compr;
+	vector<int> p(n + 1);
 
-    for(int i = 1;i<=n;i++){
-        cin>>p[i];
-        coords.push_back(p[i]);
-    }
+	for (int i = 1; i <= n; i++) {
+		cin >> p[i];
+		coords.push_back(p[i]);
+	}
 
-    vector<pair<char, pair<int, int>>> queries;
-    for(int i = 0;i<q;i++){
-        char c;cin>>c;
-        int a, b;cin>>a>>b;
-        coords.push_back(a);coords.push_back(b);
-        queries.push_back({c, {a, b}});
-    }
+	vector<pair<char, pair<int, int>>> queries;
+	for (int i = 0; i < q; i++) {
+		char c;
+		cin >> c;
+		int a, b;
+		cin >> a >> b;
+		coords.push_back(a);
+		coords.push_back(b);
+		queries.push_back({c, {a, b}});
+	}
 
-    sort(coords.begin(), coords.end());
-    int num_coords=coords.size()+1;
-    BIT<int> bit(num_coords);
+	sort(coords.begin(), coords.end());
+	int num_coords = coords.size() + 1;
+	BIT<int> bit(num_coords);
 
-    for(int i = 0;i<num_coords-1;i++)compr[coords[i]]=i;
-    for(int i = 1;i<=n;i++){
-        p[i]=compr[p[i]];
-        bit.add(p[i], 1);
-    }
+	for (int i = 0; i < num_coords - 1; i++) compr[coords[i]] = i;
+	for (int i = 1; i <= n; i++) {
+		p[i] = compr[p[i]];
+		bit.add(p[i], 1);
+	}
 
-    for (const auto &[type, vals]:queries){
-        if(type=='!'){
-            int k=vals.first;
-            int x=compr[vals.second];
-            bit.add(p[k], -1);
-            bit.add(x, 1);
-            p[k]=x;
-        }
-        else{
-            cout << bit.sum(compr[vals.first], compr[vals.second]) << '\n';
-        }
-    }
+	for (const auto &[type, vals] : queries) {
+		if (type == '!') {
+			int k = vals.first;
+			int x = compr[vals.second];
+			bit.add(p[k], -1);
+			bit.add(x, 1);
+			p[k] = x;
+		} else {
+			cout << bit.sum(compr[vals.first], compr[vals.second]) << '\n';
+		}
+	}
 }
 ```
 
