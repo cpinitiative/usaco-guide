@@ -20,14 +20,15 @@ Once sorted, an element $x_j$ at index $j$ acts as the larger value in $j$ pairs
 <CPPSection>
 
 ```cpp
-#include <algorithm>
-#include <stdio.h>
+#include <bits/stdc++.h>
+using namespace std;
 
 void solve(void) {
 	int n, m;
 	long long wins = 0;
-	scanf("%d%d", &n, &m);
-	int p[m][n];
+	cin >> n >> m;
+	vector<vector<int>> p(m, vector<int>(n));
+
 	for (int i = 0; i < n; i++)
 		for (int j = 0; j < m; j++) scanf("%d", &p[j][i]);
 
@@ -35,7 +36,7 @@ void solve(void) {
 		std::sort(p[i], p[i] + n);
 		for (int j = 0; j < n; j++) wins += (long long)(j - (n - 1 - j)) * p[i][j];
 	}
-	printf("%lld\n", wins);
+	cout << wins << "\n";
 }
 
 int main() {
@@ -52,32 +53,25 @@ int main() {
 import sys
 
 input = sys.stdin.read
+data = input().split()
+it = iter(data)
+t = int(next(it))
 
+for _ in range(t):
+	n = int(next(it))
+	m = int(next(it))
+	p = [[0] * n for _ in range(m)]
 
-def solve():
-	data = input().split()
-	it = iter(data)
+	for i in range(n):
+		for j in range(m):
+			p[j][i] = int(next(it))
 
-	t = int(next(it))
-	for _ in range(t):
-		n = int(next(it))
-		m = int(next(it))
-
-		p = [[0] * n for _ in range(m)]
-
-		for i in range(n):
-			for j in range(m):
-				p[j][i] = int(next(it))
-
-		wins = 0
-		for i in range(m):
-			p[i].sort()
-			for j in range(n):
-				wins += (j - (n - 1 - j)) * p[i][j]
-		print(wins)
-
-
-solve()
+	wins = 0
+	for i in range(m):
+		p[i].sort()
+		for j in range(n):
+			wins += (j - (n - 1 - j)) * p[i][j]
+	print(wins)
 ```
 
 </PySection>
