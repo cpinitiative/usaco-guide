@@ -10,7 +10,8 @@ author: Amit Singh Bisht, Virat Anand, Udbhav Dikshit
 ## Explanation
 
 The problem requires computing the sum of absolute differences $\sum_{i < j} |a_i - a_j|$ across all $M$ cards for $N$ players. By transposing the input into $M$ rows and $N$ columns, we can isolate and sort each card's values independently.
-Once sorted, an element $x_j$ at index $j$ acts as the larger value in $j$ pairs and the smaller value in $N - 1 - j$ pairs in the expanded absolute difference. Thus, its net contribution will be: $(j - (N - 1 - j)) \times x_j$
+
+Once sorted, an element $x_j$ at index $j$ acts as the larger value in $j$ pairs and the smaller value in $N - 1 - j$ pairs in the expanded absolute difference. Thus, its net contribution will be: $(j - (N - 1 - j)) \times x_j$.
 
 ## Implementation
 
@@ -23,25 +24,33 @@ Once sorted, an element $x_j$ at index $j$ acts as the larger value in $j$ pairs
 #include <bits/stdc++.h>
 using namespace std;
 
-void solve(void) {
+void solve() {
 	int n, m;
-	long long wins = 0;
 	cin >> n >> m;
+
 	vector<vector<int>> p(m, vector<int>(n));
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+            // transpose to m by n to make sorting easier
+            cin >> p[j][i];
+        }
+    }
 
-	for (int i = 0; i < n; i++)
-		for (int j = 0; j < m; j++) scanf("%d", &p[j][i]);
-
+    long long wins = 0;
 	for (int i = 0; i < m; i++) {
-		std::sort(p[i], p[i] + n);
-		for (int j = 0; j < n; j++) wins += (long long)(j - (n - 1 - j)) * p[i][j];
+		std::sort(p[i].begin(), p[i].end());
+		for (int j = 0; j < n; j++) {
+            // sum individual contributions per card
+            wins += 1ll * (j - (n - 1 - j)) * p[i][j];
+        }
 	}
-	cout << wins << "\n";
+
+	cout << wins << '\n';
 }
 
 int main() {
 	int t;
-	scanf("%d", &t);
+	cin >> t;
 	while (t--) solve();
 }
 ```
@@ -64,12 +73,14 @@ for _ in range(t):
 
 	for i in range(n):
 		for j in range(m):
+			# transpose to m by n to make sorting easier
 			p[j][i] = int(next(it))
 
 	wins = 0
 	for i in range(m):
 		p[i].sort()
 		for j in range(n):
+			// sum individual contributions per card
 			wins += (j - (n - 1 - j)) * p[i][j]
 	print(wins)
 ```
@@ -97,6 +108,7 @@ public class PlayingInCasino {
 			for (int i = 0; i < n; i++) {
 				st = new StringTokenizer(br.readLine());
 				for (int j = 0; j < m; j++) {
+					// sum individual contributions per card
 					p[j][i] = Integer.parseInt(st.nextToken());
 				}
 			}
@@ -105,6 +117,7 @@ public class PlayingInCasino {
 			for (int i = 0; i < m; i++) {
 				Arrays.sort(p[i]);
 				for (int j = 0; j < n; j++) {
+					// sum individual contributions per card
 					wins += (long)(j - (n - 1 - j)) * p[i][j];
 				}
 			}
