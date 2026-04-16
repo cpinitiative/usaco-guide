@@ -21,6 +21,7 @@ import {
 } from '../../models/problem';
 import DifficultyBox from '../DifficultyBox';
 import Info from '../markdown/Info';
+import divToProbs from '../markdown/ProblemsList/DivisionList/div_to_probs.json';
 import ProblemStatusCheckbox from '../markdown/ProblemsList/ProblemStatusCheckbox';
 
 type AlgoliaProblemInfoHit = Hit<BaseHit> & AlgoliaProblemInfo;
@@ -28,6 +29,42 @@ interface ProblemHitProps {
   hit: AlgoliaProblemInfoHit;
 }
 
+function getContestDateForProblem(
+  division: string,
+  problemId: string
+): string | null {
+  const divisionProblems = divToProbs[division];
+  if (!divisionProblems) return null;
+
+  for (const [id, date] of divisionProblems) {
+    if (id === problemId) {
+      return date;
+    }
+  }
+  return null;
+}
+function getContestURL(source: string) {
+  let resultsUrl = ''; // used only for division tables
+  const parts = source.split(' ');
+  parts[0] = parts[0].substring(2);
+
+  if (parseInt(parts[0]) >= 26) {
+    // season26contest1results
+    let index = 0;
+    if (parts[1] == 'First') index = 1;
+    else if (parts[1] == 'Second') index = 2;
+    else if (parts[1] == 'Third') index = 3;
+    else if (parts[1] == 'Fourth') index = 4; // unsure of how US Open will be formatted yet, for now just use fourth + 4.
+
+    resultsUrl = `http://www.usaco.org/index.php?page=season${parts[0]}contest${index}results`;
+  } else {
+    // dec24results
+    if (parts[1] === 'US') parts[1] = 'open';
+    else parts[1] = parts[1].toLowerCase().substring(0, 3);
+    resultsUrl = `http://www.usaco.org/index.php?page=${parts[1]}${parts[0]}results`;
+  }
+  return resultsUrl;
+}
 function ProblemHit({ hit }: ProblemHitProps) {
   const hideDifficulty = useHideDifficultySetting();
   const showTags = useShowTagsSetting();
@@ -42,6 +79,13 @@ function ProblemHit({ hit }: ProblemHitProps) {
   }
   const problem = hit as unknown as ProblemInfo;
   problem.uniqueId = hit.objectID;
+
+  const problemId = problem.uniqueId.substring(
+    problem.uniqueId.indexOf('-') + 1
+  );
+  const contestDate = isUsaco(problem.source)
+    ? getContestDateForProblem(hit.source, problemId)
+    : null;
   return (
     <div className="rounded-lg bg-white p-4 shadow-sm sm:p-6 dark:bg-gray-900">
       <div className="flex w-full flex-row justify-between">
@@ -138,6 +182,19 @@ function ProblemHit({ hit }: ProblemHitProps) {
               <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
             </svg>
           </a>
+
+          <br />
+          <span className="dark:text-dark-med-emphasis text-sm text-gray-500">
+            Contest:{' '}
+            <a
+              href={getContestURL(contestDate)}
+              target="_blank"
+              rel="noreferrer"
+              className="text-sm text-blue-600 dark:text-blue-400"
+            >
+              {contestDate}
+            </a>
+          </span>
         </>
       )}
       {!hideModules && !isBlindMode && (
