@@ -10,13 +10,13 @@ author: Abhinav Singh
 ## Explanation
 
 We are given:
-- `usbPorts`: USB-only ports  
-- `ps2Ports`: PS/2-only ports  
-- `universalPorts`: ports that accept either type  
+- `usbPorts`: USB-only ports
+- `ps2Ports`: PS/2-only ports
+- `universalPorts`: ports that accept either type
 
 Each mouse:
 - has a type (USB or PS/2)
-- has a cost  
+- has a cost
 
 Our goal is to **buy the maximum number of mice while minimizing total cost**.
 
@@ -36,8 +36,8 @@ We separate all mice into:
 - `ps2Costs`
 
 After sorting both arrays:
-- Take the cheapest `usbPorts` USB mice  
-- Take the cheapest `ps2Ports` PS/2 mice  
+- Take the cheapest `usbPorts` USB mice
+- Take the cheapest `ps2Ports` PS/2 mice
 
 There is no reason to skip a cheaper mouse here, since doing so would only increase total cost.
 
@@ -48,23 +48,23 @@ There is no reason to skip a cheaper mouse here, since doing so would only incre
 After filling restricted ports, some mice remain unused.
 
 Now the situation changes:
-- Universal ports have no restriction on type  
-- We are free to choose any remaining mouse  
+- Universal ports have no restriction on type
+- We are free to choose any remaining mouse
 
 At this point, the only thing that matters is **cost**.
 
 So we:
-- Combine all remaining USB and PS/2 mice  
-- Sort them  
-- Take the cheapest `universalPorts` mice  
+- Combine all remaining USB and PS/2 mice
+- Sort them
+- Take the cheapest `universalPorts` mice
 
 ---
 
 ### Why this greedy works
 
 The key is that we always make decisions under the tightest constraints first:
-- Restricted ports are handled first because they limit our choices  
-- Flexible ports are handled later, when we have full freedom  
+- Restricted ports are handled first because they limit our choices
+- Flexible ports are handled later, when we have full freedom
 
 If we reversed this order, we could end up assigning cheap mice to flexible ports and being forced to use more expensive ones later.
 
@@ -84,66 +84,66 @@ This approach maximizes the number of mice used while keeping the total cost as 
 using namespace std;
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    int usbPorts, ps2Ports, universalPorts;
-    cin >> usbPorts >> ps2Ports >> universalPorts;
+	int usbPorts, ps2Ports, universalPorts;
+	cin >> usbPorts >> ps2Ports >> universalPorts;
 
-    int m;
-    cin >> m;
+	int m;
+	cin >> m;
 
-    vector<long long> usbCosts, ps2Costs;
+	vector<long long> usbCosts, ps2Costs;
 
-    for (int i = 0; i < m; i++) {
-        long long cost;
-        string type;
-        cin >> cost >> type;
+	for (int i = 0; i < m; i++) {
+		long long cost;
+		string type;
+		cin >> cost >> type;
 
-        if (type == "USB") {
-            usbCosts.push_back(cost);
-        } else {
-            ps2Costs.push_back(cost);
-        }
-    }
+		if (type == "USB") {
+			usbCosts.push_back(cost);
+		} else {
+			ps2Costs.push_back(cost);
+		}
+	}
 
-    sort(usbCosts.begin(), usbCosts.end());
-    sort(ps2Costs.begin(), ps2Costs.end());
+	sort(usbCosts.begin(), usbCosts.end());
+	sort(ps2Costs.begin(), ps2Costs.end());
 
-    long long totalCost = 0;
-    int totalMice = 0;
+	long long totalCost = 0;
+	int totalMice = 0;
 
-    vector<long long> remaining;
+	vector<long long> remaining;
 
-    // Fill USB-only ports
-    for (int i = 0; i < min((int)usbCosts.size(), usbPorts); i++) {
-        totalCost += usbCosts[i];
-        totalMice++;
-    }
+	// Fill USB-only ports
+	for (int i = 0; i < min((int)usbCosts.size(), usbPorts); i++) {
+		totalCost += usbCosts[i];
+		totalMice++;
+	}
 
-    for (int i = usbPorts; i < (int)usbCosts.size(); i++) {
-        remaining.push_back(usbCosts[i]);
-    }
+	for (int i = usbPorts; i < (int)usbCosts.size(); i++) {
+		remaining.push_back(usbCosts[i]);
+	}
 
-    // Fill PS/2-only ports
-    for (int i = 0; i < min((int)ps2Costs.size(), ps2Ports); i++) {
-        totalCost += ps2Costs[i];
-        totalMice++;
-    }
+	// Fill PS/2-only ports
+	for (int i = 0; i < min((int)ps2Costs.size(), ps2Ports); i++) {
+		totalCost += ps2Costs[i];
+		totalMice++;
+	}
 
-    for (int i = ps2Ports; i < (int)ps2Costs.size(); i++) {
-        remaining.push_back(ps2Costs[i]);
-    }
+	for (int i = ps2Ports; i < (int)ps2Costs.size(); i++) {
+		remaining.push_back(ps2Costs[i]);
+	}
 
-    // Use universal ports
-    sort(remaining.begin(), remaining.end());
+	// Use universal ports
+	sort(remaining.begin(), remaining.end());
 
-    for (int i = 0; i < min((int)remaining.size(), universalPorts); i++) {
-        totalCost += remaining[i];
-        totalMice++;
-    }
+	for (int i = 0; i < min((int)remaining.size(), universalPorts); i++) {
+		totalCost += remaining[i];
+		totalMice++;
+	}
 
-    cout << totalMice << " " << totalCost << "\n";
+	cout << totalMice << " " << totalCost << "\n";
 }
 ```
 </CPPSection>
