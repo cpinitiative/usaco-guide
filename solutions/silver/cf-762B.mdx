@@ -20,16 +20,16 @@ Split the mice into two arrays:
 - `ps2Costs`
 
 Sort both arrays. Then:
-- take the cheapest `usbPorts` USB mice  
-- take the cheapest `ps2Ports` PS/2 mice  
+- take the cheapest `usbPorts` USB mice
+- take the cheapest `ps2Ports` PS/2 mice
 
 At this stage, we’ve used the restricted ports as efficiently as possible.
 
 Now look at the remaining mice: universal ports don’t care about type anymore, so we just want the cheapest options overall.
 
-- put all unused mice into one array  
-- sort it  
-- take the cheapest `universalPorts` mice  
+- put all unused mice into one array
+- sort it
+- take the cheapest `universalPorts` mice
 
 ### Why this works
 
@@ -60,66 +60,66 @@ We omit the full implementation here since the greedy approach is simpler and su
 using namespace std;
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    int usbPorts, ps2Ports, universalPorts;
-    cin >> usbPorts >> ps2Ports >> universalPorts;
+	int usbPorts, ps2Ports, universalPorts;
+	cin >> usbPorts >> ps2Ports >> universalPorts;
 
-    int m;
-    cin >> m;
+	int m;
+	cin >> m;
 
-    vector<long long> usbCosts, ps2Costs;
+	vector<long long> usbCosts, ps2Costs;
 
-    for (int i = 0; i < m; i++) {
-        long long cost;
-        string type;
-        cin >> cost >> type;
+	for (int i = 0; i < m; i++) {
+		long long cost;
+		string type;
+		cin >> cost >> type;
 
-        if (type == "USB") {
-            usbCosts.push_back(cost);
-        } else {
-            ps2Costs.push_back(cost);
-        }
-    }
+		if (type == "USB") {
+			usbCosts.push_back(cost);
+		} else {
+			ps2Costs.push_back(cost);
+		}
+	}
 
-    sort(usbCosts.begin(), usbCosts.end());
-    sort(ps2Costs.begin(), ps2Costs.end());
+	sort(usbCosts.begin(), usbCosts.end());
+	sort(ps2Costs.begin(), ps2Costs.end());
 
-    long long totalCost = 0;
-    int totalMice = 0;
+	long long totalCost = 0;
+	int totalMice = 0;
 
-    vector<long long> remaining;
+	vector<long long> remaining;
 
-    // Fill USB-only ports
-    for (int i = 0; i < min((int)usbCosts.size(), usbPorts); i++) {
-        totalCost += usbCosts[i];
-        totalMice++;
-    }
+	// Fill USB-only ports
+	for (int i = 0; i < min((int)usbCosts.size(), usbPorts); i++) {
+		totalCost += usbCosts[i];
+		totalMice++;
+	}
 
-    for (int i = usbPorts; i < (int)usbCosts.size(); i++) {
-        remaining.push_back(usbCosts[i]);
-    }
+	for (int i = usbPorts; i < (int)usbCosts.size(); i++) {
+		remaining.push_back(usbCosts[i]);
+	}
 
-    // Fill PS/2-only ports
-    for (int i = 0; i < min((int)ps2Costs.size(), ps2Ports); i++) {
-        totalCost += ps2Costs[i];
-        totalMice++;
-    }
+	// Fill PS/2-only ports
+	for (int i = 0; i < min((int)ps2Costs.size(), ps2Ports); i++) {
+		totalCost += ps2Costs[i];
+		totalMice++;
+	}
 
-    for (int i = ps2Ports; i < (int)ps2Costs.size(); i++) {
-        remaining.push_back(ps2Costs[i]);
-    }
+	for (int i = ps2Ports; i < (int)ps2Costs.size(); i++) {
+		remaining.push_back(ps2Costs[i]);
+	}
 
-    // Use universal ports
-    sort(remaining.begin(), remaining.end());
+	// Use universal ports
+	sort(remaining.begin(), remaining.end());
 
-    for (int i = 0; i < min((int)remaining.size(), universalPorts); i++) {
-        totalCost += remaining[i];
-        totalMice++;
-    }
+	for (int i = 0; i < min((int)remaining.size(), universalPorts); i++) {
+		totalCost += remaining[i];
+		totalMice++;
+	}
 
-    cout << totalMice << " " << totalCost << "\n";
+	cout << totalMice << " " << totalCost << "\n";
 }
 ```
 </CPPSection>
