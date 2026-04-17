@@ -1,6 +1,7 @@
 import { BaseHit, Hit } from 'instantsearch.js';
 import Link from 'next/link';
 import * as React from 'react';
+import { useEffect } from 'react';
 import { Highlight, useHits } from 'react-instantsearch';
 import { moduleIDToSectionMap } from '../../../content/ordering';
 import { useBlindMode } from '../../context/BlindModeContext';
@@ -237,13 +238,21 @@ function ProblemHit({ hit }: ProblemHitProps) {
   );
 }
 
-export default function ProblemHits({ shuffle, random }) {
+export default function ProblemHits({ shuffle, random, sort }) {
   const { hits } = useHits() as { hits: AlgoliaProblemInfoHit[] };
   const [displayHits, setDisplayHits] =
     React.useState<AlgoliaProblemInfoHit[]>(hits);
   const userProgressOnProblems = useUserProgressOnProblems();
 
-  function shuffleArr(arr) {
+  const difficultySortOrder = {
+    'Very Easy': 1,
+    Easy: 2,
+    Normal: 3,
+    Hard: 4,
+    'Very Hard': 5,
+  };
+
+  function shuffleArr(arr: AlgoliaProblemInfoHit[]) {
     const nArr = [...arr];
     let l = nArr.length;
 
@@ -254,16 +263,73 @@ export default function ProblemHits({ shuffle, random }) {
 
     return nArr;
   }
+  function sortHitsByDifficulty(
+    hitsToSort: AlgoliaProblemInfoHit[],
+    ascending: boolean
+  ) {
+    const hasNA = [];
+    const withoutNA = [];
 
-  React.useEffect(() => {
-    if (shuffle) {
-      setDisplayHits(shuffleArr(hits));
-    } else {
-      setDisplayHits(hits);
+    for (const hit of hitsToSort) {
+      if (hit.difficulty === 'N/A') {
+        hasNA.push(hit);
+      } else {
+        withoutNA.push(hit);
+      }
     }
-  }, [shuffle, hits]);
 
-  React.useEffect(() => {
+    withoutNA.sort((a, b) => {
+      const aOrder = difficultySortOrder[a.difficulty] || 999;
+      const bOrder = difficultySortOrder[b.difficulty] || 999;
+      return ascending ? aOrder - bOrder : bOrder - aOrder;
+    });
+
+    return [...withoutNA, ...hasNA];
+  }
+  function sortHitsByContest(
+    hitsToSort: AlgoliaProblemInfoHit[],
+    ascending: boolean
+  ) {
+    const withDates = [];
+    const withoutDates = [];
+
+    for (const hit of hitsToSort) {
+      const id = hit.objectID.substring(hit.objectID.indexOf('-') + 1);
+      const date = getContestDateForProblem(hit.source, id);
+      if (date) {
+        withDates.push(hit);
+      } else {
+        withoutDates.push(hit);
+      }
+    }
+
+    withDates.sort((a, b) => {
+      const aId = a.objectID.substring(a.objectID.indexOf('-') + 1);
+      const bId = b.objectID.substring(b.objectID.indexOf('-') + 1);
+      const aDate = Number(
+        getContestDateForProblem(a.source, aId).match(/\d+/)?.[0]
+      );
+      const bDate = Number(
+        getContestDateForProblem(b.source, bId).match(/\d+/)?.[0]
+      );
+      return ascending ? aDate - bDate : bDate - aDate;
+    });
+
+    return [...withDates, ...withoutDates];
+  }
+
+  useEffect(() => {
+    if (sort.indexOf('Contest') !== -1)
+      setDisplayHits(sortHitsByContest(hits, sort.indexOf('Ascending') !== -1));
+    else if (sort.indexOf('Difficulty') !== -1)
+      setDisplayHits(
+        sortHitsByDifficulty(hits, sort.indexOf('Ascending') !== -1)
+      );
+    else if (shuffle) setDisplayHits(shuffleArr(hits));
+    else setDisplayHits(hits);
+  }, [shuffle, hits, sort]);
+
+  useEffect(() => {
     if (random) {
       const unsolvedURLs: string[] = [];
       for (const h of hits) {
