@@ -18,39 +18,40 @@ author: Sofia Yang, Kevin Sheng, Raagav Bala
 
 ```py
 INF = 10**20
-n,p,k = map(int, input().split())
+n, p, k = map(int, input().split())
 audiences = [0] + list(map(int, input().split()))
 positions = [list(map(int, input().split())) for _ in range(n)]
 
-#greedy order for audience picks
-order = sorted(list(range(1, n+1)), key=lambda x: audiences[x], reverse=True)
+# greedy order for audience picks
+order = sorted(list(range(1, n + 1)), key=lambda x: audiences[x], reverse=True)
 
-TOTALMASKS = 1<<p
-dp = [-INF]*TOTALMASKS
+TOTALMASKS = 1 << p
+dp = [-INF] * TOTALMASKS
 dp[0] = 0
 for i in range(n):
-    person = order[i]
-    newdp = dp[:]
-    for mask in range(TOTALMASKS):
-        val = dp[mask]
-        if val <= -INF//2: continue
-        cnt = mask.bit_count()
+	person = order[i]
+	newdp = dp[:]
+	for mask in range(TOTALMASKS):
+		val = dp[mask]
+		if val <= -INF // 2:
+			continue
+		cnt = mask.bit_count()
 
-        #take person as audience
-        if i-cnt < k and val+audiences[person] > newdp[mask]:
-            newdp[mask] = val+audiences[person]
+		# take person as audience
+		if i - cnt < k and val + audiences[person] > newdp[mask]:
+			newdp[mask] = val + audiences[person]
 
-        #try assigning this person to any empty pos
-        free = (~mask) & (TOTALMASKS-1)
-        while free:
-            lowest_bit = free & (-free)
-            pos = lowest_bit.bit_length()-1
-            if val + positions[person][pos] > newdp[mask|lowest_bit]: 
-                newdp[mask|lowest_bit] = val + positions[person][pos]
-            free -= lowest_bit
-    dp = newdp
+		# try assigning this person to any empty pos
+		free = (~mask) & (TOTALMASKS - 1)
+		while free:
+			lowest_bit = free & (-free)
+			pos = lowest_bit.bit_length() - 1
+			if val + positions[person][pos] > newdp[mask | lowest_bit]:
+				newdp[mask | lowest_bit] = val + positions[person][pos]
+			free -= lowest_bit
+	dp = newdp
 
-print(dp[TOTALMASKS-1])
+print(dp[TOTALMASKS - 1])
 ```
 </PySection>
 
