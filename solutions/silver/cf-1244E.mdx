@@ -61,48 +61,48 @@ Thus, it is enough to check:
 using namespace std;
 using ll = long long;
 
-bool check(ll d, int n, const vector<ll>& a, const vector<ll>& pref, ll k) {
-    for (int i = 0; i < n; ++i) {
-        // Case 1: L = a[i]
-        {
-            ll L = a[i], R = L + d;
-            ll costLeft = (ll)i * L - (i > 0 ? pref[i - 1] : 0LL);
-            int r = upper_bound(a.begin(), a.end(), R) - a.begin();
-            ll costRight = r < n ? (pref[n - 1] - (r > 0 ? pref[r - 1] : 0LL)) - (ll)(n - r) * R : 0LL;
-            if (costLeft + costRight <= k) return true;
-        }
-        // Case 2: L = a[i] - d
-        {
-            ll R = a[i], L = R - d;
-            int p = lower_bound(a.begin(), a.end(), L) - a.begin();
-            ll costLeft = (ll)p * L - (p > 0 ? pref[p - 1] : 0LL);
-            ll costRight = (pref[n - 1] - pref[i]) - (ll)(n - i - 1) * R;
-            if (costLeft + costRight <= k) return true;
-        }
-    }
-    return false;
+bool check(ll d, int n, const vector<ll> &a, const vector<ll> &pref, ll k) {
+	for (int i = 0; i < n; ++i) {
+		// Case 1: L = a[i]
+		{
+			ll L = a[i], R = L + d;
+			ll costLeft = (ll)i * L - (i > 0 ? pref[i - 1] : 0LL);
+			int r = upper_bound(a.begin(), a.end(), R) - a.begin();
+			ll costRight =
+			    r < n ? (pref[n - 1] - (r > 0 ? pref[r - 1] : 0LL)) - (ll)(n - r) * R
+			          : 0LL;
+			if (costLeft + costRight <= k) return true;
+		}
+		// Case 2: L = a[i] - d
+		{
+			ll R = a[i], L = R - d;
+			int p = lower_bound(a.begin(), a.end(), L) - a.begin();
+			ll costLeft = (ll)p * L - (p > 0 ? pref[p - 1] : 0LL);
+			ll costRight = (pref[n - 1] - pref[i]) - (ll)(n - i - 1) * R;
+			if (costLeft + costRight <= k) return true;
+		}
+	}
+	return false;
 }
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    ll n, k;
-    cin >> n >> k;
-    vector<ll> a(n);
-    for (auto& x : a) cin >> x;
-    sort(a.begin(), a.end());
-    vector<ll> pref(n);
-    pref[0] = a[0];
-    for (int i = 1; i < n; i++) {
-        pref[i] = pref[i - 1] + a[i];
-    }
-    ll lo = 0, hi = a[n - 1] - a[0];
-    while (lo < hi) {
-        ll mid = (lo + hi) / 2;
-        if (check(mid, n, a, pref, k)) hi = mid;
-        else lo = mid + 1;
-    }
-    cout << lo << "\n";
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+	ll n, k;
+	cin >> n >> k;
+	vector<ll> a(n);
+	for (auto &x : a) cin >> x;
+	sort(a.begin(), a.end());
+	vector<ll> pref(n);
+	pref[0] = a[0];
+	for (int i = 1; i < n; i++) { pref[i] = pref[i - 1] + a[i]; }
+	ll lo = 0, hi = a[n - 1] - a[0];
+	while (lo < hi) {
+		ll mid = (lo + hi) / 2;
+		if (check(mid, n, a, pref, k)) hi = mid;
+		else lo = mid + 1;
+	}
+	cout << lo << "\n";
 }
 ```
 
@@ -171,61 +171,59 @@ Thus, it is enough to check:
 using namespace std;
 using ll = long long;
 
-bool check(ll d, int n, const vector<ll>& a, const vector<ll>& pref, ll k) {
-    for (int i = 0; i < n; ++i) {
-        // Case 1: L = a[i]
-        {
-            ll L = a[i], R = L + d;
-            ll costLeft = (ll)i * L - (i > 0 ? pref[i - 1] : 0LL);
-            int r = upper_bound(a.begin(), a.end(), R) - a.begin();
-            ll costRight = r < n ? (pref[n - 1] - (r > 0 ? pref[r - 1] : 0LL)) - (ll)(n - r) * R : 0LL;
-            if (costLeft + costRight <= k) return true;
-        }
-        // Case 2: L = a[i] - d
-        {
-            ll R = a[i], L = R - d;
-            int p = lower_bound(a.begin(), a.end(), L) - a.begin();
-            ll costLeft = (ll)p * L - (p > 0 ? pref[p - 1] : 0LL);
-            ll costRight = (pref[n - 1] - pref[i]) - (ll)(n - i - 1) * R;
-            if (costLeft + costRight <= k) return true;
-        }
-    }
-    return false;
+bool check(ll d, int n, const vector<ll> &a, const vector<ll> &pref, ll k) {
+	for (int i = 0; i < n; ++i) {
+		// Case 1: L = a[i]
+		{
+			ll L = a[i], R = L + d;
+			ll costLeft = (ll)i * L - (i > 0 ? pref[i - 1] : 0LL);
+			int r = upper_bound(a.begin(), a.end(), R) - a.begin();
+			ll costRight =
+			    r < n ? (pref[n - 1] - (r > 0 ? pref[r - 1] : 0LL)) - (ll)(n - r) * R
+			          : 0LL;
+			if (costLeft + costRight <= k) return true;
+		}
+		// Case 2: L = a[i] - d
+		{
+			ll R = a[i], L = R - d;
+			int p = lower_bound(a.begin(), a.end(), L) - a.begin();
+			ll costLeft = (ll)p * L - (p > 0 ? pref[p - 1] : 0LL);
+			ll costRight = (pref[n - 1] - pref[i]) - (ll)(n - i - 1) * R;
+			if (costLeft + costRight <= k) return true;
+		}
+	}
+	return false;
 }
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    ll n, k;
-    cin >> n >> k;
+	ll n, k;
+	cin >> n >> k;
 
-    vector<ll> a(n);
-    for (auto &x : a) {
-        cin >> x;
-    }
+	vector<ll> a(n);
+	for (auto &x : a) { cin >> x; }
 
-    sort(a.begin(), a.end());
+	sort(a.begin(), a.end());
 
-    vector<ll> pref(n);
-    pref[0] = a[0];
-    for (int i = 1; i < n; i++) {
-        pref[i] = pref[i - 1] + a[i];
-    }
+	vector<ll> pref(n);
+	pref[0] = a[0];
+	for (int i = 1; i < n; i++) { pref[i] = pref[i - 1] + a[i]; }
 
-    ll lo = 0, hi = a[n - 1] - a[0];
+	ll lo = 0, hi = a[n - 1] - a[0];
 
-    while (lo < hi) {
-        ll mid = (lo + hi) / 2;
+	while (lo < hi) {
+		ll mid = (lo + hi) / 2;
 
-        if (check(mid, n, a, pref, k)) {
-            hi = mid;
-        } else {
-            lo = mid + 1;
-        }
-    }
+		if (check(mid, n, a, pref, k)) {
+			hi = mid;
+		} else {
+			lo = mid + 1;
+		}
+	}
 
-    cout << lo << "\n";
+	cout << lo << "\n";
 }
 ```
 
