@@ -13,13 +13,13 @@ export const SortButton = ({
   dropdownAbove?: boolean;
 }) => {
   const [show, setShow] = React.useState(false);
-  const handleSelect = (option) => {
+  const handleSelect = option => {
     setShow(false);
     onChange(option);
   };
   const ref = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
-    const handleClick = (e) => {
+    const handleClick = e => {
       if (ref.current?.contains(e.target)) return;
       setShow(false);
     };
@@ -33,7 +33,7 @@ export const SortButton = ({
         <span className="rounded-md shadow-sm">
           <button
             type="button"
-            className="inline-flex w-full justify-center rounded-md border border-gray-300 px-4 dark:border-gray-800 dark:text-dark-high-emphasis dark:hover:text-dark-high-emphasis focus:shadow-outline-blue bg-white py-2 text-sm leading-5 font-medium text-gray-700 transition duration-150 ease-in-out hover:text-gray-500 focus:border-blue-300 focus:outline-hidden dark:bg-gray-900"
+            className="dark:text-dark-high-emphasis dark:hover:text-dark-high-emphasis focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm leading-5 font-medium text-gray-700 transition duration-150 ease-in-out hover:text-gray-500 focus:border-blue-300 focus:outline-hidden dark:border-gray-800 dark:bg-gray-900"
             id="options-menu"
             aria-haspopup="true"
             aria-expanded="true"
@@ -81,7 +81,7 @@ export const SortButton = ({
               aria-orientation="vertical"
               aria-labelledby="options-menu"
             >
-              {options.map((option) => (
+              {options.map(option => (
                 <button
                   key={option}
                   onClick={() => handleSelect(option)}
