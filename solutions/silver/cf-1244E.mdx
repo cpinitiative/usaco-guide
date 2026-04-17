@@ -1,0 +1,234 @@
+---
+id: cf-1244E
+source: Codeforces
+title: Minimizing Difference
+author: Abhinav Singh
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/70553)
+
+## Explanation
+
+We want to minimize the difference between the maximum and minimum values after at most `k` operations.
+
+### Binary search on the answer
+
+Fix a target difference `d` and check:
+
+> Can we make all elements lie inside some interval `[L, L + d]` using at most `k` operations?
+
+This works because the condition is monotonic:
+- If it is possible for some `d`, then it is also possible for any larger `d`
+- A larger window only makes it easier to fit all elements within `k` operations
+
+So we can binary search on `d`.
+
+### Checking a fixed d
+
+Sort the array.
+
+We want every element inside `[L, L + d]`:
+- If `a[i] < L`, increase it to `L`
+- If `a[i] > L + d`, decrease it to `L + d`
+- Otherwise, leave it
+
+We compute the total cost using prefix sums.
+
+### Choosing L
+
+As we slide `[L, L + d]`, the cost only changes when elements enter or leave the window:
+- when some `a[i]` enters from the left → `L = a[i]`
+- when some `a[i]` enters from the right → `L = a[i] - d`
+
+Between these points, which elements are inside the window does not change, so the cost is linear (constant slope).
+
+Thus, it is enough to check:
+- `L = a[i]`
+- `L = a[i] - d`
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n \log n \log A)$, where $A$ is the initial range of values ($a[n-1] - a[0]$ after sorting).
+
+**Note:** Use `long long`. The total cost can reach about $10^{14}$.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+bool check(ll d, int n, const vector<ll>& a, const vector<ll>& pref, ll k) {
+    for (int i = 0; i < n; ++i) {
+        // Case 1: L = a[i]
+        {
+            ll L = a[i], R = L + d;
+            ll costLeft = (ll)i * L - (i > 0 ? pref[i - 1] : 0LL);
+            int r = upper_bound(a.begin(), a.end(), R) - a.begin();
+            ll costRight = r < n ? (pref[n - 1] - (r > 0 ? pref[r - 1] : 0LL)) - (ll)(n - r) * R : 0LL;
+            if (costLeft + costRight <= k) return true;
+        }
+        // Case 2: L = a[i] - d
+        {
+            ll R = a[i], L = R - d;
+            int p = lower_bound(a.begin(), a.end(), L) - a.begin();
+            ll costLeft = (ll)p * L - (p > 0 ? pref[p - 1] : 0LL);
+            ll costRight = (pref[n - 1] - pref[i]) - (ll)(n - i - 1) * R;
+            if (costLeft + costRight <= k) return true;
+        }
+    }
+    return false;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    ll n, k;
+    cin >> n >> k;
+    vector<ll> a(n);
+    for (auto& x : a) cin >> x;
+    sort(a.begin(), a.end());
+    vector<ll> pref(n);
+    pref[0] = a[0];
+    for (int i = 1; i < n; i++) {
+        pref[i] = pref[i - 1] + a[i];
+    }
+    ll lo = 0, hi = a[n - 1] - a[0];
+    while (lo < hi) {
+        ll mid = (lo + hi) / 2;
+        if (check(mid, n, a, pref, k)) hi = mid;
+        else lo = mid + 1;
+    }
+    cout << lo << "\n";
+}
+```
+
+</CPPSection>
+
+</LanguageSection>---
+id: cf-1244e
+source: Codeforces
+title: Minimizing Difference
+author: Abhinav Singh
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/70553)
+
+## Explanation
+
+We want to minimize the difference between the maximum and minimum values after at most `k` operations.
+
+### Binary search on the answer
+
+Fix a target difference `d` and check:
+
+> Can we make all elements lie inside some interval `[L, L + d]` using at most `k` operations?
+
+This works because the condition is monotonic:
+- If it is possible for some `d`, then it is also possible for any larger `d`
+- A larger window only makes it easier to fit all elements within `k` operations
+
+So we can binary search on `d`.
+
+### Checking a fixed `d`
+
+Sort the array.
+
+We want every element inside `[L, L + d]`:
+- If `a[i] < L`, increase it to `L`
+- If `a[i] > L + d`, decrease it to `L + d`
+- Otherwise, leave it
+
+We compute the total cost using prefix sums.
+
+### Choosing `L`
+
+As we slide `[L, L + d]`, the cost only changes when elements enter or leave the window:
+- when some `a[i]` enters from the left → `L = a[i]`
+- when some `a[i]` enters from the right → `L = a[i] - d`
+
+Between these points, which elements are inside the window does not change, so the cost is linear (constant slope).
+
+Thus, it is enough to check:
+- `L = a[i]`
+- `L = a[i] - d`
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n \log n \log A)$, where $A$ is the initial range of values ($a[n-1] - a[0]$ after sorting).
+
+**Note:** Use `long long`. The total cost can reach about $10^{14}$.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+bool check(ll d, int n, const vector<ll>& a, const vector<ll>& pref, ll k) {
+    for (int i = 0; i < n; ++i) {
+        // Case 1: L = a[i]
+        {
+            ll L = a[i], R = L + d;
+            ll costLeft = (ll)i * L - (i > 0 ? pref[i - 1] : 0LL);
+            int r = upper_bound(a.begin(), a.end(), R) - a.begin();
+            ll costRight = r < n ? (pref[n - 1] - (r > 0 ? pref[r - 1] : 0LL)) - (ll)(n - r) * R : 0LL;
+            if (costLeft + costRight <= k) return true;
+        }
+        // Case 2: L = a[i] - d
+        {
+            ll R = a[i], L = R - d;
+            int p = lower_bound(a.begin(), a.end(), L) - a.begin();
+            ll costLeft = (ll)p * L - (p > 0 ? pref[p - 1] : 0LL);
+            ll costRight = (pref[n - 1] - pref[i]) - (ll)(n - i - 1) * R;
+            if (costLeft + costRight <= k) return true;
+        }
+    }
+    return false;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    ll n, k;
+    cin >> n >> k;
+
+    vector<ll> a(n);
+    for (auto &x : a) {
+        cin >> x;
+    }
+
+    sort(a.begin(), a.end());
+
+    vector<ll> pref(n);
+    pref[0] = a[0];
+    for (int i = 1; i < n; i++) {
+        pref[i] = pref[i - 1] + a[i];
+    }
+
+    ll lo = 0, hi = a[n - 1] - a[0];
+
+    while (lo < hi) {
+        ll mid = (lo + hi) / 2;
+
+        if (check(mid, n, a, pref, k)) {
+            hi = mid;
+        } else {
+            lo = mid + 1;
+        }
+    }
+
+    cout << lo << "\n";
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
