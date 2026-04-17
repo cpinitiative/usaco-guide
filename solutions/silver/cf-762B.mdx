@@ -1,75 +1,51 @@
 ---
-id: cf-762b
+id: cf-762B
 source: Codeforces Round 395 Div. 2
 title: USB vs PS/2
 author: Abhinav Singh
 ---
 
-[Problem Link](https://codeforces.com/contest/762/problem/B)
+[Official Editorial](https://codeforces.com/blog/entry/50010)
 
 ## Explanation
 
-We are given:
-- `usbPorts`: USB-only ports
-- `ps2Ports`: PS/2-only ports
-- `universalPorts`: ports that accept either type
+The main idea is to notice that **universal ports are more flexible** than USB-only or PS/2-only ports.
 
-Each mouse:
-- has a type (USB or PS/2)
-- has a cost
+Because they can take either type, we don’t want to use them too early. If we assign a cheap mouse to a universal port right away, we might later be forced to use a more expensive mouse for a restricted port, which is avoidable.
 
-Our goal is to **buy the maximum number of mice while minimizing total cost**.
+So it makes sense to deal with the **restricted ports first**.
 
----
-
-### Fill USB and PS/2 ports first
-
-A natural question is: *should we use universal ports immediately since they are more flexible?*
-
-At first glance, that might seem reasonable. However, doing so can lead to suboptimal choices. A universal port could take either type, but a USB port can only take a USB mouse. If we use a universal port too early, we might “waste” a cheap mouse that could have filled a restricted port instead.
-
-So the safer strategy is:
-- First handle the **restricted ports**, where choices are limited.
-
-We separate all mice into:
+Split the mice into two arrays:
 - `usbCosts`
 - `ps2Costs`
 
-After sorting both arrays:
-- Take the cheapest `usbPorts` USB mice
-- Take the cheapest `ps2Ports` PS/2 mice
+Sort both arrays. Then:
+- take the cheapest `usbPorts` USB mice  
+- take the cheapest `ps2Ports` PS/2 mice  
 
-There is no reason to skip a cheaper mouse here, since doing so would only increase total cost.
+At this stage, we’ve used the restricted ports as efficiently as possible.
 
----
+Now look at the remaining mice: universal ports don’t care about type anymore, so we just want the cheapest options overall.
 
-### Use universal ports for the cheapest remaining mice
+- put all unused mice into one array  
+- sort it  
+- take the cheapest `universalPorts` mice  
 
-After filling restricted ports, some mice remain unused.
+### Why this works
 
-Now the situation changes:
-- Universal ports have no restriction on type
-- We are free to choose any remaining mouse
+The key is delaying the use of flexible ports.
 
-At this point, the only thing that matters is **cost**.
+If an optimal solution ever uses a universal port for a mouse while a restricted port is filled with a more expensive mouse of the same type, we can swap them. The cheaper mouse goes to the restricted port, and the more expensive one can be moved or discarded. This never reduces the number of mice used and never increases the cost.
 
-So we:
-- Combine all remaining USB and PS/2 mice
-- Sort them
-- Take the cheapest `universalPorts` mice
+So there is always an optimal solution where we fill restricted ports first with the cheapest possible mice, and only then use universal ports.
 
----
+### Alternative approach
 
-### Why this greedy works
+The editorial also describes a two pointers approach. Instead of directly filling ports greedily, it considers how many USB and PS/2 mice to take and adjusts the counts while maintaining feasibility with the available ports.
 
-The key is that we always make decisions under the tightest constraints first:
-- Restricted ports are handled first because they limit our choices
-- Flexible ports are handled later, when we have full freedom
+This leads to a solution where we iterate over the number of USB mice taken and adjust the number of PS/2 mice accordingly, ensuring that the total number of mice fits within the available USB, PS/2, and universal ports.
 
-If we reversed this order, we could end up assigning cheap mice to flexible ports and being forced to use more expensive ones later.
-
-This approach maximizes the number of mice used while keeping the total cost as small as possible.
----
+We omit the full implementation here since the greedy approach is simpler and sufficient.
 
 ## Implementation
 
@@ -84,66 +60,66 @@ This approach maximizes the number of mice used while keeping the total cost as 
 using namespace std;
 
 int main() {
-	ios::sync_with_stdio(false);
-	cin.tie(nullptr);
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-	int usbPorts, ps2Ports, universalPorts;
-	cin >> usbPorts >> ps2Ports >> universalPorts;
+    int usbPorts, ps2Ports, universalPorts;
+    cin >> usbPorts >> ps2Ports >> universalPorts;
 
-	int m;
-	cin >> m;
+    int m;
+    cin >> m;
 
-	vector<long long> usbCosts, ps2Costs;
+    vector<long long> usbCosts, ps2Costs;
 
-	for (int i = 0; i < m; i++) {
-		long long cost;
-		string type;
-		cin >> cost >> type;
+    for (int i = 0; i < m; i++) {
+        long long cost;
+        string type;
+        cin >> cost >> type;
 
-		if (type == "USB") {
-			usbCosts.push_back(cost);
-		} else {
-			ps2Costs.push_back(cost);
-		}
-	}
+        if (type == "USB") {
+            usbCosts.push_back(cost);
+        } else {
+            ps2Costs.push_back(cost);
+        }
+    }
 
-	sort(usbCosts.begin(), usbCosts.end());
-	sort(ps2Costs.begin(), ps2Costs.end());
+    sort(usbCosts.begin(), usbCosts.end());
+    sort(ps2Costs.begin(), ps2Costs.end());
 
-	long long totalCost = 0;
-	int totalMice = 0;
+    long long totalCost = 0;
+    int totalMice = 0;
 
-	vector<long long> remaining;
+    vector<long long> remaining;
 
-	// Fill USB-only ports
-	for (int i = 0; i < min((int)usbCosts.size(), usbPorts); i++) {
-		totalCost += usbCosts[i];
-		totalMice++;
-	}
+    // Fill USB-only ports
+    for (int i = 0; i < min((int)usbCosts.size(), usbPorts); i++) {
+        totalCost += usbCosts[i];
+        totalMice++;
+    }
 
-	for (int i = usbPorts; i < (int)usbCosts.size(); i++) {
-		remaining.push_back(usbCosts[i]);
-	}
+    for (int i = usbPorts; i < (int)usbCosts.size(); i++) {
+        remaining.push_back(usbCosts[i]);
+    }
 
-	// Fill PS/2-only ports
-	for (int i = 0; i < min((int)ps2Costs.size(), ps2Ports); i++) {
-		totalCost += ps2Costs[i];
-		totalMice++;
-	}
+    // Fill PS/2-only ports
+    for (int i = 0; i < min((int)ps2Costs.size(), ps2Ports); i++) {
+        totalCost += ps2Costs[i];
+        totalMice++;
+    }
 
-	for (int i = ps2Ports; i < (int)ps2Costs.size(); i++) {
-		remaining.push_back(ps2Costs[i]);
-	}
+    for (int i = ps2Ports; i < (int)ps2Costs.size(); i++) {
+        remaining.push_back(ps2Costs[i]);
+    }
 
-	// Use universal ports
-	sort(remaining.begin(), remaining.end());
+    // Use universal ports
+    sort(remaining.begin(), remaining.end());
 
-	for (int i = 0; i < min((int)remaining.size(), universalPorts); i++) {
-		totalCost += remaining[i];
-		totalMice++;
-	}
+    for (int i = 0; i < min((int)remaining.size(), universalPorts); i++) {
+        totalCost += remaining[i];
+        totalMice++;
+    }
 
-	cout << totalMice << " " << totalCost << "\n";
+    cout << totalMice << " " << totalCost << "\n";
 }
 ```
 </CPPSection>
