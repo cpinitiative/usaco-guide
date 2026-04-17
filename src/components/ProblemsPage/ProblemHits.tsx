@@ -44,7 +44,7 @@ function getContestDateForProblem(
   return null;
 }
 function getContestURL(source: string) {
-  let resultsUrl = ''; // used only for division tables
+  let resultsUrl = '';
   const parts = source.split(' ');
   parts[0] = parts[0].substring(2);
 
@@ -183,18 +183,22 @@ function ProblemHit({ hit }: ProblemHitProps) {
             </svg>
           </a>
 
-          <br />
-          <span className="dark:text-dark-med-emphasis text-sm text-gray-500">
-            Contest:{' '}
-            <a
-              href={getContestURL(contestDate)}
-              target="_blank"
-              rel="noreferrer"
-              className="text-sm text-blue-600 dark:text-blue-400"
-            >
-              {contestDate}
-            </a>
-          </span>
+          {contestDate && (
+            <>
+              <br />
+              <span className="dark:text-dark-med-emphasis text-sm text-gray-500">
+                Contest:{' '}
+                <a
+                  href={getContestURL(contestDate)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm text-blue-600 dark:text-blue-400"
+                >
+                  {contestDate}
+                </a>
+              </span>
+            </>
+          )}
         </>
       )}
       {!hideModules && !isBlindMode && (
