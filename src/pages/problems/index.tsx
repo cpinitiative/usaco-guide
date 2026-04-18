@@ -192,8 +192,8 @@ export default function ProblemsPage({ problemIds }: ProblemsPageProps) {
                     'Relevance',
                     'Difficulty (Ascending)',
                     'Difficulty (Descending)',
-                    'Contest (Ascending)',
-                    'Contest (Descending)',
+                    'Contest (Newer)',
+                    'Contest (Older)',
                   ]}
                   state={sort}
                   onChange={newSort => setSort(newSort)}

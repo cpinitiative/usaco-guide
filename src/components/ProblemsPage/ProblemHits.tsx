@@ -38,8 +38,14 @@ function getContestDateForProblem(
   if (!divisionProblems) return null;
 
   for (const [id, date] of divisionProblems) {
-    if (id === problemId) {
-      return date;
+    if ('usaco-' + id === problemId) return date;
+  }
+  return null;
+}
+function getProblemDivision(problemId: string): string {
+  for (const [division, problems] of Object.entries(divToProbs)) {
+    for (const [id] of problems) {
+      if ('usaco-' + id === problemId) return division;
     }
   }
   return null;
@@ -251,6 +257,12 @@ export default function ProblemHits({ shuffle, random, sort }) {
     Hard: 4,
     'Very Hard': 5,
   };
+  const divisionFactor = {
+    Bronze: 0,
+    Silver: 10,
+    Gold: 20,
+    Platinum: 30,
+  };
 
   function shuffleArr(arr: AlgoliaProblemInfoHit[]) {
     const nArr = [...arr];
@@ -279,8 +291,12 @@ export default function ProblemHits({ shuffle, random, sort }) {
     }
 
     withoutNA.sort((a, b) => {
-      const aOrder = difficultySortOrder[a.difficulty] || 999;
-      const bOrder = difficultySortOrder[b.difficulty] || 999;
+      const aOrder =
+        (difficultySortOrder[a.difficulty] || 999) -
+        (divisionFactor[getProblemDivision(a.objectID)] || 999);
+      const bOrder =
+        (difficultySortOrder[b.difficulty] || 999) -
+        (divisionFactor[getProblemDivision(b.objectID)] || 999);
       return ascending ? aOrder - bOrder : bOrder - aOrder;
     });
 
@@ -294,7 +310,7 @@ export default function ProblemHits({ shuffle, random, sort }) {
     const withoutDates = [];
 
     for (const hit of hitsToSort) {
-      const id = hit.objectID.substring(hit.objectID.indexOf('-') + 1);
+      const id = hit.objectID;
       const date = getContestDateForProblem(hit.source, id);
       if (date) {
         withDates.push(hit);
@@ -304,8 +320,8 @@ export default function ProblemHits({ shuffle, random, sort }) {
     }
 
     withDates.sort((a, b) => {
-      const aId = a.objectID.substring(a.objectID.indexOf('-') + 1);
-      const bId = b.objectID.substring(b.objectID.indexOf('-') + 1);
+      const aId = a.objectID;
+      const bId = b.objectID;
       const aDate = Number(
         getContestDateForProblem(a.source, aId).match(/\d+/)?.[0]
       );
@@ -320,7 +336,7 @@ export default function ProblemHits({ shuffle, random, sort }) {
 
   useEffect(() => {
     if (sort.indexOf('Contest') !== -1)
-      setDisplayHits(sortHitsByContest(hits, sort.indexOf('Ascending') !== -1));
+      setDisplayHits(sortHitsByContest(hits, sort.indexOf('Older') !== -1));
     else if (sort.indexOf('Difficulty') !== -1)
       setDisplayHits(
         sortHitsByDifficulty(hits, sort.indexOf('Ascending') !== -1)
