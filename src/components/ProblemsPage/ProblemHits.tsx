@@ -87,11 +87,8 @@ function ProblemHit({ hit }: ProblemHitProps) {
   const problem = hit as unknown as ProblemInfo;
   problem.uniqueId = hit.objectID;
 
-  const problemId = problem.uniqueId.substring(
-    problem.uniqueId.indexOf('-') + 1
-  );
   const contestDate = isUsaco(problem.source)
-    ? getContestDateForProblem(hit.source, problemId)
+    ? getContestDateForProblem(hit.source, problem.uniqueId)
     : null;
   return (
     <div className="rounded-lg bg-white p-4 shadow-sm sm:p-6 dark:bg-gray-900">
@@ -256,6 +253,8 @@ export default function ProblemHits({ shuffle, random, sort }) {
     Normal: 3,
     Hard: 4,
     'Very Hard': 5,
+    Insane: 6,
+    'N/A': 0,
   };
   const divisionFactor = {
     Bronze: 0,
@@ -291,12 +290,14 @@ export default function ProblemHits({ shuffle, random, sort }) {
     }
 
     withoutNA.sort((a, b) => {
+      const aDivision = getProblemDivision(a.objectID);
+      const bDivision = getProblemDivision(b.objectID);
       const aOrder =
-        (difficultySortOrder[a.difficulty] || 999) -
-        (divisionFactor[getProblemDivision(a.objectID)] || 999);
+        (difficultySortOrder[a.difficulty] || 0) +
+        (aDivision ? divisionFactor[aDivision] : 0);
       const bOrder =
-        (difficultySortOrder[b.difficulty] || 999) -
-        (divisionFactor[getProblemDivision(b.objectID)] || 999);
+        (difficultySortOrder[b.difficulty] || 0) +
+        (bDivision ? divisionFactor[bDivision] : 0);
       return ascending ? aOrder - bOrder : bOrder - aOrder;
     });
 
