@@ -1,6 +1,7 @@
 import { BaseHit, Hit } from 'instantsearch.js';
 import Link from 'next/link';
 import * as React from 'react';
+import { useEffect } from 'react';
 import { Highlight, useHits } from 'react-instantsearch';
 import { moduleIDToSectionMap } from '../../../content/ordering';
 import { useBlindMode } from '../../context/BlindModeContext';
@@ -37,8 +38,14 @@ function getContestDateForProblem(
   if (!divisionProblems) return null;
 
   for (const [id, date] of divisionProblems) {
-    if (id === problemId) {
-      return date;
+    if ('usaco-' + id === problemId) return date;
+  }
+  return null;
+}
+function getProblemDivision(problemId: string): string {
+  for (const [division, problems] of Object.entries(divToProbs)) {
+    for (const [id] of problems) {
+      if ('usaco-' + id === problemId) return division;
     }
   }
   return null;
@@ -80,11 +87,8 @@ function ProblemHit({ hit }: ProblemHitProps) {
   const problem = hit as unknown as ProblemInfo;
   problem.uniqueId = hit.objectID;
 
-  const problemId = problem.uniqueId.substring(
-    problem.uniqueId.indexOf('-') + 1
-  );
   const contestDate = isUsaco(problem.source)
-    ? getContestDateForProblem(hit.source, problemId)
+    ? getContestDateForProblem(hit.source, problem.uniqueId)
     : null;
   return (
     <div className="rounded-lg bg-white p-4 shadow-sm sm:p-6 dark:bg-gray-900">
@@ -237,13 +241,29 @@ function ProblemHit({ hit }: ProblemHitProps) {
   );
 }
 
-export default function ProblemHits({ shuffle, random }) {
+export default function ProblemHits({ shuffle, random, sort }) {
   const { hits } = useHits() as { hits: AlgoliaProblemInfoHit[] };
   const [displayHits, setDisplayHits] =
     React.useState<AlgoliaProblemInfoHit[]>(hits);
   const userProgressOnProblems = useUserProgressOnProblems();
 
-  function shuffleArr(arr) {
+  const difficultySortOrder = {
+    'Very Easy': 1,
+    Easy: 2,
+    Normal: 3,
+    Hard: 4,
+    'Very Hard': 5,
+    Insane: 6,
+    'N/A': 0,
+  };
+  const divisionFactor = {
+    Bronze: 0,
+    Silver: 10,
+    Gold: 20,
+    Platinum: 30,
+  };
+
+  function shuffleArr(arr: AlgoliaProblemInfoHit[]) {
     const nArr = [...arr];
     let l = nArr.length;
 
@@ -254,16 +274,79 @@ export default function ProblemHits({ shuffle, random }) {
 
     return nArr;
   }
+  function sortHitsByDifficulty(
+    hitsToSort: AlgoliaProblemInfoHit[],
+    ascending: boolean
+  ) {
+    const hasNA = [];
+    const withoutNA = [];
 
-  React.useEffect(() => {
-    if (shuffle) {
-      setDisplayHits(shuffleArr(hits));
-    } else {
-      setDisplayHits(hits);
+    for (const hit of hitsToSort) {
+      if (hit.difficulty === 'N/A') {
+        hasNA.push(hit);
+      } else {
+        withoutNA.push(hit);
+      }
     }
-  }, [shuffle, hits]);
 
-  React.useEffect(() => {
+    withoutNA.sort((a, b) => {
+      const aDivision = getProblemDivision(a.objectID);
+      const bDivision = getProblemDivision(b.objectID);
+      const aOrder =
+        (difficultySortOrder[a.difficulty] || 0) +
+        (aDivision ? divisionFactor[aDivision] : 0);
+      const bOrder =
+        (difficultySortOrder[b.difficulty] || 0) +
+        (bDivision ? divisionFactor[bDivision] : 0);
+      return ascending ? aOrder - bOrder : bOrder - aOrder;
+    });
+
+    return [...withoutNA, ...hasNA];
+  }
+  function sortHitsByContest(
+    hitsToSort: AlgoliaProblemInfoHit[],
+    ascending: boolean
+  ) {
+    const withDates = [];
+    const withoutDates = [];
+
+    for (const hit of hitsToSort) {
+      const id = hit.objectID;
+      const date = getContestDateForProblem(hit.source, id);
+      if (date) {
+        withDates.push(hit);
+      } else {
+        withoutDates.push(hit);
+      }
+    }
+
+    withDates.sort((a, b) => {
+      const aId = a.objectID;
+      const bId = b.objectID;
+      const aDate = Number(
+        getContestDateForProblem(a.source, aId).match(/\d+/)?.[0]
+      );
+      const bDate = Number(
+        getContestDateForProblem(b.source, bId).match(/\d+/)?.[0]
+      );
+      return ascending ? aDate - bDate : bDate - aDate;
+    });
+
+    return [...withDates, ...withoutDates];
+  }
+
+  useEffect(() => {
+    if (sort.indexOf('Contest') !== -1)
+      setDisplayHits(sortHitsByContest(hits, sort.indexOf('Older') !== -1));
+    else if (sort.indexOf('Difficulty') !== -1)
+      setDisplayHits(
+        sortHitsByDifficulty(hits, sort.indexOf('Ascending') !== -1)
+      );
+    else if (shuffle) setDisplayHits(shuffleArr(hits));
+    else setDisplayHits(hits);
+  }, [shuffle, hits, sort]);
+
+  useEffect(() => {
     if (random) {
       const unsolvedURLs: string[] = [];
       for (const h of hits) {
