@@ -1,0 +1,252 @@
+---
+id: cf-1284G
+source: CF
+title: Seollal
+author: Robert Chung
+---
+
+## Explanation
+
+Create a grid graph with one vertex for each free cell $(i, j)$ and
+undirected edges between neighboring free cells.
+
+Say a cell is dangerous if it is black and not $(1, 1)$. Then, a valid maze
+is a subset of edges that forms a tree where no dangerous cell is a leaf.
+
+We now encode these constraints using matroid intersection. It is easier to consider the
+subset of edges we exclude:
+
+- The condition that no dangerous cell is a leaf is equivalent to requiring
+that every dangerous cell $c$ have at least two incident edges included, i.e., at most
+$\deg(c) - 2$ edges excluded.
+- We represent this with a **partition matroid**,
+which is possible because each edge is incident to at most one dangerous cell
+(the dangerous cells form a checkerboard pattern).
+
+- The condition that the chosen edges form a tree is relaxed to saying the
+excluded edges do not disconnect the graph.
+- We represent this with the **cographic matroid** or dual graph matroid.
+To see if we get a tree in the end, we check that the number of non-excluded
+edges is $|V| - 1$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(E^3)$ where $E = nm$.
+
+The independence check for the cographic matroid is implemented via bridge finding.
+Naively, we could recompute all bridges in $O(E)$ time after every call to `add`,
+taking $O(E^4)$ time. However, we can delay recomputation until it is needed by
+`check`, taking advantage of the fact that `check` and `add` are called in batches.
+
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+#include <ranges>
+using namespace std;
+
+struct PartitionMat {
+    vector<int> cnt, part, part_lim;
+    PartitionMat(const vector<int> &part, const vector<int> &part_lim)
+        : cnt(size(part_lim)), part(part), part_lim(part_lim) {}
+    bool check(int x) const { return cnt[part[x]] < part_lim[part[x]]; }
+    void add(int x) { cnt[part[x]]++; }
+    void clear() { ranges::fill(cnt, 0); }
+};
+struct DualGraphMat {
+    // is_removed[i] = true if the ith edge is removed,
+    // aka if it is included in the current set
+    vector<char> is_removed;
+    vector<vector<pair<int, int>>> adj;
+    vector<array<int, 2>> e;
+    vector<char> is_bridge;
+    bool lazy;
+    DualGraphMat(int n, const vector<array<int, 2>> &e)
+        : is_removed(size(e)), adj(n), e(e), is_bridge(size(e)),
+            lazy(false) {}
+
+    void recalc_bridges() {
+        lazy = false;
+        for (auto &v : adj) v.clear();
+        for (int i = 0; i < size(e); i++) {
+            if (!is_removed[i]) {
+                auto [a, b] = e[i];
+                adj[a].emplace_back(b, i);
+                adj[b].emplace_back(a, i);
+            }
+        }
+        ranges::fill(is_bridge, false);
+
+        vector lvl(size(adj), -1);
+        vector<int> back(size(adj)); // back[u] = number of back-edges
+                                     // crossing the edge from u to its parent
+        auto dfs = [&](auto dfs, int u, int p) -> void {
+            for (auto [x, eid] : adj[u]) {
+                if (x == p) continue;
+                if (lvl[x] != -1) back[u] += lvl[x] < lvl[u] ? 1 : -1;
+                else {
+                    lvl[x] = lvl[u] + 1;
+                    dfs(dfs, x, u);
+                    if (!back[x]) is_bridge[eid] = true;
+                    back[u] += back[x];
+                }
+            }
+        };
+        for (int i = 0; i < size(adj); i++) {
+            if (lvl[i] == -1) lvl[i] = 0, dfs(dfs, i, -1);
+        }
+    }
+    bool check(int x) {
+        if (lazy) recalc_bridges();
+        return !is_bridge[x];
+    }
+    void add(int x) {
+        lazy = true;
+        is_removed[x] = true;
+    }
+    void clear() {
+        lazy = true;
+        ranges::fill(is_removed, false);
+    }
+};
+namespace kactl {
+    // BeginCodeSnip{KACTL Matroid Intersection Template}
+    using vi = vector<int>;
+    #define rep(i,a,b) for (int i = (a); i < (b); ++i)
+
+    template <class M1, class M2> struct MatroidIsect {
+        int n;
+        vector<char> iset;
+        M1 m1; M2 m2;
+        MatroidIsect(M1 m1, M2 m2, int n) : n(n), iset(n + 1), m1(m1), m2(m2) {}
+        vi solve() {
+            while (augment());
+            vi ans;
+            rep(i,0,n) if (iset[i]) ans.push_back(i);
+            return ans;
+        }
+        bool augment() {
+            vector<int> frm(n, -1);
+            queue<int> q({n}); // starts at dummy node
+            auto fwdE = [&](int a) {
+                vi ans;
+                m1.clear();
+                rep(v, 0, n) if (iset[v] && v != a) m1.add(v);
+                rep(b, 0, n) if (!iset[b] && frm[b] == -1 && m1.check(b))
+                    ans.push_back(b), frm[b] = a;
+                return ans;
+            };
+            auto backE = [&](int b) {
+                m2.clear();
+                rep(cas, 0, 2) rep(v, 0, n)
+                    if ((v == b || iset[v]) && (frm[v] == -1) == cas) {
+                        if (!m2.check(v))
+                            return cas ? q.push(v), frm[v] = b, v : -1;
+                        m2.add(v);
+                    }
+                return n;
+            };
+            while (!q.empty()) {
+                int a = q.front(), c; q.pop();
+                for (int b : fwdE(a))
+                    while((c = backE(b)) >= 0) if (c == n) {
+                        while (b != n) iset[b] ^= 1, b = frm[b];
+                        return true;
+                    }
+            }
+            return false;
+        }
+    };
+    // EndCodeSnip
+}
+
+
+void solve() {
+    int n, m; cin >> n >> m;
+    vector<string> g(n);
+    for (auto &s : g) cin >> s;
+
+    auto C = [&](int i, int j) { return i*m + j; };
+    vector<array<int, 2>> edges; // for dual graph matroid
+    vector<int> part; vector part_lim(n*m, 4); // for partition matroid
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            if (g[i][j] == 'X' || (i+j)%2 != 0) continue;
+            // process edges incident to the black cell (i, j).
+            if (pair(i, j) != pair(0, 0)) part_lim[C(i, j)] = -2;
+            array dx{1, 0, -1, 0}, dy{0, 1, 0, -1};
+            for (int d = 0; d < 4; d++) {
+                int x = i+dx[d], y = j+dy[d];
+                if (x < 0 || x >= n || y < 0 || y >= m || g[x][y] == 'X') continue;
+                edges.push_back({C(i, j), C(x, y)});
+                part.push_back(C(i, j));
+                part_lim[C(i, j)]++;
+            }
+        }
+    }
+    if (*ranges::min_element(part_lim) < 0) {
+        cout << "NO\n"; // some dangerous cell lacks >= 2 neighbors
+        return;
+    }
+
+    kactl::MatroidIsect mat(DualGraphMat(n*m, edges),
+        PartitionMat(part, part_lim),
+        size(edges));
+    auto res = mat.solve();
+
+    int nodes = 0;
+    for (auto &row : g)
+        for (auto &c : row)
+            nodes += c == 'O';
+    if (ssize(edges) - ssize(res) != nodes-1) {
+        cout << "NO\n"; // not a tree
+        return;
+    }
+
+    // construct
+    cout << "YES\n";
+    vector ans(2*n - 1, vector(2*m - 1, ' '));
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < m; j++)
+            ans[2*i][2*j] = g[i][j];
+
+    // add edges
+    auto edge_location = [&](int a, int b) {
+        int i1 = a/m, j1 = a%m;
+        int i2 = b/m, j2 = b%m;
+        return pair(i1 + i2, j1 + j2);
+    };
+    for (auto [a, b] : edges) {
+        auto [i, j] = edge_location(a, b);
+        ans[i][j] = 'O';
+    }
+    // remove excluded edges
+    for (int eid : res) {
+        auto [a, b] = edges[eid];
+        auto [i, j] = edge_location(a, b);
+        ans[i][j] = ' ';
+    }
+    for (int i = 0; i < 2*n - 1; i++) {
+        for (int j = 0; j < 2*m - 1; j++)
+            cout << ans[i][j];
+        cout << '\n';
+    }
+}
+
+int main() {
+    cin.tie(0)->sync_with_stdio(0);
+    int t;
+    cin >> t;
+    while (t--)
+        solve();
+    return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
