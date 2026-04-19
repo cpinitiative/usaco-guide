@@ -13,8 +13,8 @@ undirected edges between neighboring free cells.
 Say a cell is dangerous if it is black and not $(1, 1)$. Then, a valid maze
 is a subset of edges that forms a tree where no dangerous cell is a leaf.
 
-We now encode these constraints using matroid intersection. It is easier to consider the
-subset of edges we exclude:
+We now encode these constraints using matroid intersection. Specifically, we find
+the largest subset of edges that can be **excluded** while meeting both conditions:
 
 - The condition that no dangerous cell is a leaf is equivalent to requiring
 that every dangerous cell $c$ have at least two incident edges included, i.e., at most
@@ -23,11 +23,11 @@ $\deg(c) - 2$ edges excluded.
 which is possible because each edge is incident to at most one dangerous cell
 (the dangerous cells form a checkerboard pattern).
 
-- The condition that the chosen edges form a tree is relaxed to saying the
-excluded edges do not disconnect the graph.
+- The condition that the chosen edges form a tree is relaxed to requiring that
+the excluded edges do not disconnect the graph.
 - We represent this with the **cographic matroid** or dual graph matroid.
 To see if we get a tree in the end, we check that the number of non-excluded
-edges is $|V| - 1$.
+edges in our largest set is $|V| - 1$.
 
 ## Implementation
 
@@ -35,9 +35,8 @@ edges is $|V| - 1$.
 
 The independence check for the cographic matroid is implemented via bridge finding.
 Naively, we could recompute all bridges in $O(E)$ time after every call to `add`,
-taking $O(E^4)$ time. However, we can delay recomputation until it is needed by
-`check`, taking advantage of the fact that `check` and `add` are called in batches.
-
+taking $O(E^4)$ time in total. However, it is better to delay recomputation until it is needed by
+`check`, taking advantage of the fact that `check` is called in batches of size $O(E)$.
 
 <LanguageSection>
 
@@ -57,22 +56,20 @@ struct PartitionMat {
     void clear() { ranges::fill(cnt, 0); }
 };
 struct DualGraphMat {
-    // is_removed[i] = true if the ith edge is removed,
-    // aka if it is included in the current set
-    vector<char> is_removed;
+    vector<char> is_excluded;
     vector<vector<pair<int, int>>> adj;
     vector<array<int, 2>> e;
     vector<char> is_bridge;
     bool lazy;
     DualGraphMat(int n, const vector<array<int, 2>> &e)
-        : is_removed(size(e)), adj(n), e(e), is_bridge(size(e)),
+        : is_excluded(size(e)), adj(n), e(e), is_bridge(size(e)),
             lazy(false) {}
 
     void recalc_bridges() {
         lazy = false;
         for (auto &v : adj) v.clear();
         for (int i = 0; i < size(e); i++) {
-            if (!is_removed[i]) {
+            if (!is_excluded[i]) {
                 auto [a, b] = e[i];
                 adj[a].emplace_back(b, i);
                 adj[b].emplace_back(a, i);
@@ -105,11 +102,11 @@ struct DualGraphMat {
     }
     void add(int x) {
         lazy = true;
-        is_removed[x] = true;
+        is_excluded[x] = true;
     }
     void clear() {
         lazy = true;
-        ranges::fill(is_removed, false);
+        ranges::fill(is_excluded, false);
     }
 };
 namespace kactl {
