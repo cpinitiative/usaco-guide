@@ -15,7 +15,7 @@ We want to minimize the difference between the maximum and minimum values after 
 
 Instead of directly constructing the final array, fix a target difference `d` and check if it is achievable.
 
-If we can make all elements lie inside some interval of length `d`, then any larger `d` will also work.  
+If we can make all elements lie inside some interval of length `d`, then any larger `d` will also work.
 So the check is monotonic, and we can binary search on `d`.
 
 ### Checking a fixed d
@@ -43,9 +43,9 @@ If we shift the entire interval slightly to the right(without crossing any `a[i]
 
 So the net change in cost is `A - B`.
 
-- If `A < B`, shifting right reduces cost  
-- If `A > B`, shifting left reduces cost  
-- If `A = B`, the cost does not change  
+- If `A < B`, shifting right reduces cost
+- If `A > B`, shifting left reduces cost
+- If `A = B`, the cost does not change
 
 So unless the interval is already balanced, we can move it in one direction to improve (or not worsen) the cost.
 
@@ -69,22 +69,22 @@ for all `i`.
 #include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
- 
+
 int main() {
 	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
- 
+
 	ll n, k;
 	cin >> n >> k;
- 
+
 	vector<ll> a(n);
 	for (auto &x : a) cin >> x;
 	sort(a.begin(), a.end());
- 
+
 	vector<ll> pref(n);
 	pref[0] = a[0];
 	for (int i = 1; i < n; i++) pref[i] = pref[i - 1] + a[i];
- 
+
 	auto check = [&](ll d) -> bool {
 		for (int i = 0; i < n; ++i) {
 			// Case 1: L = a[i] (left endpoint pinned to a[i])
@@ -92,10 +92,9 @@ int main() {
 				ll L = a[i], R = L + d;
 				ll costLeft = (ll)i * L - (i > 0 ? pref[i - 1] : 0LL);
 				int r = upper_bound(a.begin(), a.end(), R) - a.begin();
-				ll costRight =
-				    r < n ? (pref[n - 1] - (r > 0 ? pref[r - 1] : 0LL)) -
-				                (ll)(n - r) * R
-				          : 0LL;
+				ll costRight = r < n ? (pref[n - 1] - (r > 0 ? pref[r - 1] : 0LL)) -
+				                           (ll)(n - r) * R
+				                     : 0LL;
 				if (costLeft + costRight <= k) return true;
 			}
 			// Case 2: L = a[i] - d (right endpoint pinned to a[i])
@@ -109,14 +108,14 @@ int main() {
 		}
 		return false;
 	};
- 
+
 	ll lo = 0, hi = a[n - 1] - a[0];
 	while (lo < hi) {
-		ll mid = lo + (hi-lo) / 2;
+		ll mid = lo + (hi - lo) / 2;
 		if (check(mid)) hi = mid;
 		else lo = mid + 1;
 	}
- 
+
 	cout << lo << "\n";
 }
 ```
