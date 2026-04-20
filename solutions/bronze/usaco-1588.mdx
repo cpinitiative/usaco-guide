@@ -1,0 +1,108 @@
+---
+id: usaco-1588
+source: USACO Bronze 2026 Third Contest
+title: Strange Function
+author: Sachet Abeysinghe
+---
+
+[Official Analysis (C++, Python)](http://www.usaco.org/current/data/sol_prob2_bronze_season26contest3.html)
+
+## Explanation
+
+After writing a naive solution to find the answer for a given $x$, one can observe that the answer for $10^a$ is $3 \cdot 2^{a - 1}$ for $a > 0$ (in other words, a geometric sequence starting at three with common ratio two). Note that this doesn't apply to $a = 0$, because the answer for $x = 1$ is $1$. Furthermore, one can observe that the answer for the sum of powers of $10$ is equal to the sum of the answers of those powers of $10$. For example, $\operatorname{ans}(10110) = \operatorname{ans}(10000) + \operatorname{ans}(100) + \operatorname{ans}(10)$. Thus, if $x$ is in a binary state, the answer can be computed by the additions of powers of $10$ formed by the ones.
+
+Our algorithm is as follows: convert $x$ to binary with one $f(x)$ operation if it isn't already. Then, loop through the digits and add up the contributions for the ones. If the $i$th (zero-indexed) digit is one, the power of ten this corresponds to is $\operatorname{len}(x) - i - 1$. To handle overflow, apply the modulo at each intermediate step and precompute powers of two modulo.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const long long mod = 1e9 + 7;
+
+int main() {
+
+    int t;
+    cin >> t;
+    while (t--) {
+        string x;
+        cin >> x;
+        int n = x.size();
+        long long answer = 0;
+
+        // make digits binary if not already
+        bool binary = true;
+        for (char c : x) {
+            if (c != '0' && c != '1') {
+                binary = false;
+                break;
+            }
+        }
+
+        if (!binary) {
+            answer = 1;
+            for (int i = 0; i < n; i++) {
+                int digit = (x[i] - '0') % 2;
+                x[i] = char(digit + '0');
+            }
+        }
+
+        // precompute powers of 2 mod
+        vector<long long> pow2(n + 1, 1);
+        for (int i = 1; i <= n; i++) {
+            pow2[i] = (pow2[i - 1] * 2) % mod;
+        }
+
+        for (int i = 0; i < n; i++) {
+            if (x[i] == '1') {
+                if (i == n - 1) {
+                    answer += 1;
+                } else {
+                    answer += (3 * pow2[n - i - 2]) % mod;
+                }
+                answer %= mod;
+            }
+        }
+        cout << answer % mod << '\n';
+    }
+}
+```
+
+</CPPSection>
+
+<PySection>
+
+```py
+mod = 10**9 + 7
+for t in range(int(input())):
+    x = list(input())
+    n = len(x)
+    answer = 0
+
+    # make digits binary if not already
+    if not all(c in "01" for c in x):
+        answer = 1
+        for i in range(n):
+            x[i] = str(int(x[i]) % 2)
+    
+    # precompute powers of 2 mod
+    pow2 = [1]
+    for i in range(n):
+        pow2.append((pow2[-1] * 2) % mod)
+        
+    for i in range(n):
+        if x[i] == "1":
+            answer += 1 if i == n - 1 else 3 * pow2[n - i - 2]
+    print(answer % mod)
+```
+
+</PySection>
+
+</LanguageSection>
