@@ -29,49 +29,47 @@ const long long mod = 1e9 + 7;
 
 int main() {
 
-    int t;
-    cin >> t;
-    while (t--) {
-        string x;
-        cin >> x;
-        int n = x.size();
-        long long answer = 0;
+	int t;
+	cin >> t;
+	while (t--) {
+		string x;
+		cin >> x;
+		int n = x.size();
+		long long answer = 0;
 
-        // make digits binary if not already
-        bool binary = true;
-        for (char c : x) {
-            if (c != '0' && c != '1') {
-                binary = false;
-                break;
-            }
-        }
+		// make digits binary if not already
+		bool binary = true;
+		for (char c : x) {
+			if (c != '0' && c != '1') {
+				binary = false;
+				break;
+			}
+		}
 
-        if (!binary) {
-            answer = 1;
-            for (int i = 0; i < n; i++) {
-                int digit = (x[i] - '0') % 2;
-                x[i] = char(digit + '0');
-            }
-        }
+		if (!binary) {
+			answer = 1;
+			for (int i = 0; i < n; i++) {
+				int digit = (x[i] - '0') % 2;
+				x[i] = char(digit + '0');
+			}
+		}
 
-        // precompute powers of 2 mod
-        vector<long long> pow2(n + 1, 1);
-        for (int i = 1; i <= n; i++) {
-            pow2[i] = (pow2[i - 1] * 2) % mod;
-        }
+		// precompute powers of 2 mod
+		vector<long long> pow2(n + 1, 1);
+		for (int i = 1; i <= n; i++) { pow2[i] = (pow2[i - 1] * 2) % mod; }
 
-        for (int i = 0; i < n; i++) {
-            if (x[i] == '1') {
-                if (i == n - 1) {
-                    answer += 1;
-                } else {
-                    answer += (3 * pow2[n - i - 2]) % mod;
-                }
-                answer %= mod;
-            }
-        }
-        cout << answer % mod << '\n';
-    }
+		for (int i = 0; i < n; i++) {
+			if (x[i] == '1') {
+				if (i == n - 1) {
+					answer += 1;
+				} else {
+					answer += (3 * pow2[n - i - 2]) % mod;
+				}
+				answer %= mod;
+			}
+		}
+		cout << answer % mod << '\n';
+	}
 }
 ```
 
@@ -82,25 +80,25 @@ int main() {
 ```py
 mod = 10**9 + 7
 for t in range(int(input())):
-    x = list(input())
-    n = len(x)
-    answer = 0
+	x = list(input())
+	n = len(x)
+	answer = 0
 
-    # make digits binary if not already
-    if not all(c in "01" for c in x):
-        answer = 1
-        for i in range(n):
-            x[i] = str(int(x[i]) % 2)
-    
-    # precompute powers of 2 mod
-    pow2 = [1]
-    for i in range(n):
-        pow2.append((pow2[-1] * 2) % mod)
-        
-    for i in range(n):
-        if x[i] == "1":
-            answer += 1 if i == n - 1 else 3 * pow2[n - i - 2]
-    print(answer % mod)
+	# make digits binary if not already
+	if not all(c in "01" for c in x):
+		answer = 1
+		for i in range(n):
+			x[i] = str(int(x[i]) % 2)
+
+	# precompute powers of 2 mod
+	pow2 = [1]
+	for i in range(n):
+		pow2.append((pow2[-1] * 2) % mod)
+
+	for i in range(n):
+		if x[i] == "1":
+			answer += 1 if i == n - 1 else 3 * pow2[n - i - 2]
+	print(answer % mod)
 ```
 
 </PySection>
