@@ -135,70 +135,70 @@ We omit the full explanation here since the greedy approach is simpler and suffi
 using namespace std;
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    int A, B, C; // A = USB ports, B = PS/2 ports, C = universal ports
-    cin >> A >> B >> C;
+	int A, B, C;  // A = USB ports, B = PS/2 ports, C = universal ports
+	cin >> A >> B >> C;
 
-    int M;
-    cin >> M;
+	int M;
+	cin >> M;
 
-    vector<long long> usb, ps2;
+	vector<long long> usb, ps2;
 
-    // Separate mice by type
-    for (int i = 0; i < M; i++) {
-        long long cost;
-        string type;
-        cin >> cost >> type;
-        if (type == "USB") usb.push_back(cost);
-        else ps2.push_back(cost);
-    }
+	// Separate mice by type
+	for (int i = 0; i < M; i++) {
+		long long cost;
+		string type;
+		cin >> cost >> type;
+		if (type == "USB") usb.push_back(cost);
+		else ps2.push_back(cost);
+	}
 
-    // Sort costs so we always take cheapest first
-    sort(usb.begin(), usb.end());
-    sort(ps2.begin(), ps2.end());
+	// Sort costs so we always take cheapest first
+	sort(usb.begin(), usb.end());
+	sort(ps2.begin(), ps2.end());
 
-    int R = ps2.size(); // current number of PS/2 mice taken
-    long long sum = 0;
+	int R = ps2.size();  // current number of PS/2 mice taken
+	long long sum = 0;
 
-    // Initially take all PS/2 mice
-    for (auto x : ps2) sum += x;
+	// Initially take all PS/2 mice
+	for (auto x : ps2) sum += x;
 
-    // (number of mice, negative cost) for lexicographic max
-    pair<int, long long> ans = {0, 0};
+	// (number of mice, negative cost) for lexicographic max
+	pair<int, long long> ans = {0, 0};
 
-    // Try taking L USB mice
-    for (int L = 0; L <= (int)usb.size(); L++) {
-        // Add the next USB mouse (if L > 0)
-        if (L > 0) sum += usb[L - 1];
+	// Try taking L USB mice
+	for (int L = 0; L <= (int)usb.size(); L++) {
+		// Add the next USB mouse (if L > 0)
+		if (L > 0) sum += usb[L - 1];
 
-        // Check if current (L, R) fits in available ports
-        auto can_form = [&]() {
-            return L <= A + C &&       // USB + universal can handle USB mice
-                   R <= B + C &&       // PS/2 + universal can handle PS/2 mice
-                   L + R <= A + B + C; // total ports constraint
-        };
+		// Check if current (L, R) fits in available ports
+		auto can_form = [&]() {
+			return L <= A + C &&        // USB + universal can handle USB mice
+			       R <= B + C &&        // PS/2 + universal can handle PS/2 mice
+			       L + R <= A + B + C;  // total ports constraint
+		};
 
-        bool bad = false;
+		bool bad = false;
 
-        // If not feasible, reduce R (drop most expensive PS/2 mice)
-        while (!can_form()) {
-            if (R == 0) {
-                bad = true;
-                break;
-            }
-            R--;
-            sum -= ps2[R]; // remove largest remaining PS/2 cost
-        }
+		// If not feasible, reduce R (drop most expensive PS/2 mice)
+		while (!can_form()) {
+			if (R == 0) {
+				bad = true;
+				break;
+			}
+			R--;
+			sum -= ps2[R];  // remove largest remaining PS/2 cost
+		}
 
-        if (bad) break;
+		if (bad) break;
 
-        // Maximize number of mice, then minimize cost
-        ans = max(ans, {L + R, -sum});
-    }
+		// Maximize number of mice, then minimize cost
+		ans = max(ans, {L + R, -sum});
+	}
 
-    cout << ans.first << " " << -ans.second << "\n";
+	cout << ans.first << " " << -ans.second << "\n";
 }
 ```
 
