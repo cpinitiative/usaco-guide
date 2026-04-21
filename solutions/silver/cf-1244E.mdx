@@ -49,18 +49,16 @@ int main() {
 	cin.tie(nullptr);
 
 	int n;
-    ll k;
+	ll k;
 	cin >> n >> k;
 
 	vector<int> a(n);
 	for (int &x : a) cin >> x;
 	sort(a.begin(), a.end());
 
-    // compute prefix sums, using 1 indexing for convenience
-    vector<ll> pref(n + 1);
-    for (int i = 0; i < n; i++) {
-        pref[i + 1] = pref[i] + a[i];
-    }
+	// compute prefix sums, using 1 indexing for convenience
+	vector<ll> pref(n + 1);
+	for (int i = 0; i < n; i++) { pref[i + 1] = pref[i] + a[i]; }
 
 	auto check = [&](int d) -> bool {
 		for (int i = 0; i < n; ++i) {
@@ -68,14 +66,14 @@ int main() {
 			{
 				int l = a[i], r = l + d;
 
-                // use prefix sums to calculate l - a_i for all a_i < l
+				// use prefix sums to calculate l - a_i for all a_i < l
 				ll cost_l = 1ll * i * l - pref[i];
 
-                // use prefix sums to calculate a_i - r for all a_i > r
-                // we use upper bound to find the first index we sum from
+				// use prefix sums to calculate a_i - r for all a_i > r
+				// we use upper bound to find the first index we sum from
 				int p = upper_bound(a.begin(), a.end(), r) - a.begin();
 				ll cost_r = (pref[n] - pref[p]) - 1ll * (n - p) * r;
-                
+
 				if (cost_l + cost_r <= k) return true;
 			}
 
@@ -83,14 +81,14 @@ int main() {
 			{
 				int r = a[i], l = r - d;
 
-                // use prefix sums to calculate a_i - r for all a_i > r
-                ll cost_r = (pref[n] - pref[i + 1]) - 1ll * (n - i - 1) * r;
+				// use prefix sums to calculate a_i - r for all a_i > r
+				ll cost_r = (pref[n] - pref[i + 1]) - 1ll * (n - i - 1) * r;
 
-                // use prefix sums to calculate l - a_i for all a_i < l
-                // we use lower bound to find the last index we sum from
+				// use prefix sums to calculate l - a_i for all a_i < l
+				// we use lower bound to find the last index we sum from
 				int p = lower_bound(a.begin(), a.end(), l) - a.begin();
 				ll cost_l = 1ll * p * l - pref[p];
-                
+
 				if (cost_l + cost_r <= k) return true;
 			}
 		}
@@ -102,10 +100,10 @@ int main() {
 	while (lo < hi) {
 		int mid = lo + (hi - lo) / 2;
 		if (check(mid)) {
-            hi = mid;
-        } else {
-            lo = mid + 1;
-        }
+			hi = mid;
+		} else {
+			lo = mid + 1;
+		}
 	}
 
 	cout << lo << '\n';
