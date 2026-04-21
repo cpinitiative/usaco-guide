@@ -19,6 +19,7 @@ import Selection, {
 } from '../../components/ProblemsPage/Selection';
 import TagsRefinementList from '../../components/ProblemsPage/TagsRefinementList';
 import SEO from '../../components/seo';
+import { SortButton } from '../../components/SortButton';
 import TopNavigationBar from '../../components/TopNavigationBar/TopNavigationBar';
 import { useUserProgressOnProblems } from '../../context/UserDataContext/properties/userProgress';
 import searchClient from '../../utils/algoliaLiteSearchClient';
@@ -33,6 +34,7 @@ export default function ProblemsPage({ problemIds }: ProblemsPageProps) {
   const userProgress = useUserProgressOnProblems();
   const [shuffle, sendShuffle] = useState(0);
   const [random, sendRandom] = useState(0);
+  const [sort, setSort] = useState('Relevance');
   const selectionMetadata: SelectionProps[] = [
     {
       attribute: 'difficulty',
@@ -142,10 +144,10 @@ export default function ProblemsPage({ problemIds }: ProblemsPageProps) {
                   </div>
                 ))}
               </div>
-              <div className="mb-5 flex justify-center gap-3">
+              <div className="mb-5 flex flex-wrap justify-center gap-3">
                 <button
                   onClick={() => sendShuffle(shuffle + 1)}
-                  className="inline-flex items-center rounded-md border border-blue-500 bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none dark:border-blue-400 dark:bg-blue-600 dark:text-white dark:hover:bg-blue-700"
+                  className="dark:text-dark-high-emphasis dark:hover:text-dark-high-emphasis focus:shadow-outline-blue inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm leading-5 font-medium text-gray-700 transition duration-150 ease-in-out hover:text-gray-500 focus:border-blue-300 focus:outline-hidden dark:border-gray-800 dark:bg-gray-900"
                   title={'Shuffle problems'}
                 >
                   <svg
@@ -166,7 +168,7 @@ export default function ProblemsPage({ problemIds }: ProblemsPageProps) {
                 </button>
                 <button
                   onClick={() => sendRandom(random + 1)}
-                  className="inline-flex items-center rounded-md border border-blue-500 bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none dark:border-blue-400 dark:bg-blue-600 dark:text-white dark:hover:bg-blue-700"
+                  className="dark:text-dark-high-emphasis dark:hover:text-dark-high-emphasis focus:shadow-outline-blue inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm leading-5 font-medium text-gray-700 transition duration-150 ease-in-out hover:text-gray-500 focus:border-blue-300 focus:outline-hidden dark:border-gray-800 dark:bg-gray-900"
                   title={'Go to a random unsolved problem'}
                 >
                   <svg
@@ -185,8 +187,19 @@ export default function ProblemsPage({ problemIds }: ProblemsPageProps) {
                   </svg>
                   Random
                 </button>
+                <SortButton
+                  options={[
+                    'Relevance',
+                    'Difficulty (Ascending)',
+                    'Difficulty (Descending)',
+                    'Contest (Newer)',
+                    'Contest (Older)',
+                  ]}
+                  state={sort}
+                  onChange={newSort => setSort(newSort)}
+                />
               </div>
-              <ProblemHits shuffle={shuffle} random={random} />
+              <ProblemHits shuffle={shuffle} random={random} sort={sort} />
               <div className="mt-3 flex flex-wrap justify-center">
                 <Pagination showLast={true} className="pr-4" />
                 <HitsPerPage
