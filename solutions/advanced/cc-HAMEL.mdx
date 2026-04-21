@@ -13,7 +13,11 @@ then we are done. Observe that if we only require the first condition to be sati
 
 It is a known fact from matroid theory that $G$ has two edge disjoint spanning trees if and only if for all partitions $V_1, V_2, \dots, V_p$ of $V$, we have
 
-$$|\delta(V_1, V_2, \dots, V_p)| \geq 2(p - 1) \tag{$\star$}$$
+$$
+\begin{equation}
+|\delta(V_1, V_2, \dots, V_p)| \geq 2(p - 1) \tag{$\star$}
+\end{equation}
+$$
 
 where
 
@@ -28,3 +32,274 @@ Since it takes at least $4$ edges to disconnect the graph, we have that $deg(V_i
 $$\delta(V_1, V_2, \dots, V_p) = \frac{1}{2}\sum_{i = 1}^{p}{deg(V_i)} \geq 2p$$
 
 as desired. To actually compute the two edge disjoint spanning trees, we use matroid intersection on the graphic matroid corresponding to $G$ and its dual.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+namespace kactl {
+// BeginCodeSnip{KACTL Templates}
+    #define all(x) begin(x), end(x)
+    #define sz(x) (int)x.size()
+    #define rep(i,a,b) for (int i = (a); i < (b); ++i)
+    using vi = vector<int>;
+    using pii = pair<int, int>;
+    /**
+     * Author: Lukas Polacek
+     * Date: 2009-10-26
+     * License: CC0
+     * Source: folklore
+     * Description: Disjoint-set data structure.
+     * Time: $O(\alpha(N))$
+     */
+    struct UF {
+        vi e;
+        UF(int n) : e(n, -1) {}
+        bool sameSet(int a, int b) { return find(a) == find(b); }
+        int size(int x) { return -e[find(x)]; }
+        int find(int x) { return e[x] < 0 ? x : e[x] = find(e[x]); }
+        bool join(int a, int b) {
+            a = find(a), b = find(b);
+            if (a == b) return false;
+            if (e[a] > e[b]) swap(a, b);
+            e[a] += e[b]; e[b] = a;
+            return true;
+        }
+        void clear() {
+            fill(e.begin(), e.end(), -1);
+        }
+    };
+    /**
+     * Author: tfg, Aeren, pajenegod, chilli
+     * Date: 2020-04-15
+     * License: CC0
+     * Source: https://codeforces.com/blog/entry/69287
+     * Description: Given two matroids, finds the largest common independent set.
+     * For the color and graph matroids, this would be the largest forest where no
+     * two edges are the same color. A matroid has 3 functions
+     *  - check(int x): returns if current matroid can add x without becoming dependent
+     *  - add(int x): adds an element to the matroid (guaranteed to never make it dependent)
+     *  - clear(): sets the matroid to the empty matroid
+     * The matroid is given an int representing the element, and is expected to
+     * convert it (e.g: the color or the endpoints)
+     * Pass the matroid with more expensive add/clear operations to M1.
+     * Time: R^2N(M2.add + M1.check + M2.check) + R^3 M1.add + R^2 M1.clear + RN M2.clear
+     * Status: Tested on SWERC 2011D, Pick Your Own Nim
+     * Usage:
+     * Details:
+     */
+    template <class M1, class M2> struct MatroidIsect {
+        int n;
+        vector<char> iset;
+        M1 m1; M2 m2;
+        MatroidIsect(M1 m1, M2 m2, int n) : n(n), iset(n + 1), m1(m1), m2(m2) {}
+        vi solve() {
+            while (augment());
+            vi ans;
+            rep(i,0,n) if (iset[i]) ans.push_back(i);
+            return ans;
+        }
+        bool augment() {
+            vector<int> frm(n, -1);
+            queue<int> q({n}); // starts at dummy node
+            auto fwdE = [&](int a) {
+                vi ans;
+                m1.clear();
+                rep(v, 0, n) if (iset[v] && v != a) m1.add(v);
+                m1.precomp();
+                rep(b, 0, n) if (!iset[b] && frm[b] == -1 && m1.check(b))
+                    ans.push_back(b), frm[b] = a;
+                return ans;
+            };
+            auto backE = [&](int b) {
+                m2.clear();
+                rep(cas, 0, 2) rep(v, 0, n)
+                    if ((v == b || iset[v]) && (frm[v] == -1) == cas) {
+                        if (!m2.check(v))
+                            return cas ? q.push(v), frm[v] = b, v : -1;
+                        m2.add(v);
+                    }
+                return n;
+            };
+            while (!q.empty()) {
+                int a = q.front(), c; q.pop();
+                for (int b : fwdE(a))
+                    while((c = backE(b)) >= 0) if (c == n) {
+                        while (b != n) iset[b] ^= 1, b = frm[b];
+                        return true;
+                    }
+            }
+            return false;
+        }
+    };
+    /**
+     * Author: Lukas Polacek, Simon Lindholm
+     * Date: 2019-12-31
+     * License: CC0
+     * Source: https://codeforces.com/blog/entry/72260
+     * Description: Eulerian undirected/directed path/cycle algorithm.
+     * Input should be a vector of (dest, global edge index), where for undirected graphs, forward/backward edges have the same index.
+     * Returns a list of nodes in the Eulerian path/cycle with src at both start and end, or empty list if no cycle/path exists.
+     * To get edge indices back, add .second in loop.
+     * Status: stress-tested
+     * Time: O(V + E)
+     */
+    vector<pii> eulerWalk(vector<vector<pii>> &gr, int nedges, int src = 0) {
+        int n = sz(gr);
+        vi D(n), its(n), eu(nedges);
+        vector<pii> s = {{src, -1}}, ret;
+        D[src]++; // to allow Euler paths, not just cycles
+        while (!s.empty()) {
+            pii x = s.back();
+            int y, e, &it = its[x.first], end = sz(gr[x.first]);
+            if (it == end) { ret.push_back(x); s.pop_back(); continue; }
+            tie(y, e) = gr[x.first][it++];
+            if (!eu[e]) {
+                D[x.first]--, D[y]++;
+                eu[e] = 1; s.push_back({y, e});
+            }
+        }
+        for (int x : D) if (x < 0 || sz(ret) != nedges + 1) return {};
+        return {ret.rbegin(), ret.rend()};
+    }
+// EndCodeSnip
+}
+using kactl::UF, kactl::MatroidIsect, kactl::eulerWalk;
+
+struct GraphDual {
+    vector<int> exist;
+    vector<array<int, 2>> edges;
+    vector<vector<array<int, 2>>> adj;
+    vector<int> vis, depth, low;
+    GraphDual(int n, int m, vector<array<int, 2>> &edges) : edges(edges) {
+        exist.resize(m, 1);
+        adj.resize(n);
+        for (int i = 0; i < m; i++) {
+            auto [u, v] = edges[i];
+            adj[u].push_back({v, i});
+            adj[v].push_back({u, i});
+        }
+        vis.resize(n);
+        depth.resize(n);
+        low.resize(n);
+    }
+    void DFS(int v, int pe) {
+        vis[v] = 1;
+        low[v] = depth[v];
+        for (auto [u, e] : adj[v]) {
+            if (!exist[e]) continue;
+            if (!vis[u]) {
+                depth[u] = depth[v] + 1;
+                DFS(u, e);
+                low[v] = min(low[v], low[u]);
+            } else if (e != pe) {
+                low[v] = min(low[v], depth[u]);
+            }
+        }
+    }
+    void add(int x) {
+        exist[x] = 0;
+    }
+    void precomp() {
+        fill(vis.begin(), vis.end(), 0);
+        DFS(0, -1);
+    }
+    int check(int x) {
+        auto [u, v] = edges[x];
+        if (depth[u] > depth[v]) {
+            swap(u, v);
+        }
+        return depth[v] - depth[u] > 1 || low[v] < depth[v];
+    }
+    void clear() {
+        fill(exist.begin(), exist.end(), 1);
+    }
+};
+
+struct GraphMatroid {
+    UF uf;
+    vector<array<int, 2>> edges;
+    GraphMatroid(int n, vector<array<int, 2>> &edges) : uf(n), edges(edges) {}
+    bool check(int x) {
+        return !uf.sameSet(edges[x][0], edges[x][1]);
+    }
+    void add(int x) {
+        uf.join(edges[x][0], edges[x][1]);
+    }
+    void clear() {
+        uf.clear();
+    }
+};
+
+void solve() {
+    int n, m;
+    cin >> n >> m;
+    vector<array<int, 2>> edges;
+    for (int i = 0, u, v; i < m; i++) {
+        cin >> u >> v;
+        edges.push_back({u - 1, v - 1});
+    }
+    GraphDual mat1(n, m, edges);
+    GraphMatroid mat2(n, edges);
+    MatroidIsect isect(mat1, mat2, m);
+    auto treeEdges = isect.solve();
+    vector<vector<array<int, 2>>> tree(n);
+    for (int e : treeEdges) {
+        auto [u, v] = edges[e];
+        tree[u].push_back({v, e});
+        tree[v].push_back({u, e});
+    }
+    vector<int> deg(n), sum(n);
+    for (auto [u, v] : edges) {
+        deg[u] ^= 1;
+        deg[v] ^= 1;
+    }
+    vector<int> keep(m, 1);
+    auto DFS = [&](auto self, int v, int p = -1) -> void {
+        sum[v] = deg[v];
+        for (auto [u, e] : tree[v]) {
+            if (u != p) {
+                self(self, u, v);
+                if (sum[u]) {
+                    keep[e] = 0;
+                }
+                sum[v] ^= sum[u];
+            }
+        }
+    };
+    DFS(DFS, 0);
+    vector<int> kept;
+    vector<vector<pair<int, int>>> graph(n);
+    for (int i = 0; i < m; i++) {
+        if (keep[i]) {
+            auto [u, v] = edges[i];
+            graph[u].push_back({v, (int)kept.size()});
+            graph[v].push_back({u, (int)kept.size()});
+            kept.push_back(i);
+        }
+    }
+    auto ans = eulerWalk(graph, kept.size());
+    ans.erase(ans.begin());
+    cout << ans.size();
+    for (auto [_, e] : ans) {
+        cout << ' ' << kept[e] + 1;
+    }
+    cout << '\n';
+}
+
+int main() {
+    cin.tie(0)->sync_with_stdio(0);
+    int numTests;
+    cin >> numTests;
+    for (int i = 1; i <= numTests; i++) {
+        solve();
+    }
+    return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
