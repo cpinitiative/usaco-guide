@@ -21,14 +21,7 @@ frequency: 0
 	>
 		Special case of matroid intersection
 	</Resource>
-</Resources>
-
-TODO: make this refer to an actual problem.
-
-## Implementation
-
-<Resources>
-	<Resource
+		<Resource
 		source="KACTL"
 		title="Matroid Intersection Implementation"
 		url="https://github.com/kth-competitive-programming/kactl/pull/172/changes"
@@ -36,28 +29,55 @@ TODO: make this refer to an actual problem.
 	/>
 </Resources>
 
-### $O(r^2n)$ Oracle Calls
+## Example - SERVERS
 
-Let $n$ be the size of the ground set and $r$ be the size of a maximum
-common independent set. Then, our algorithm does $r$ iterations of the following:
+<FocusProblem problem='focus' />
+
+### Explanation
+
+Let $E$ be the set of all provided edges. The problem asks us to find the
+size of a largest subset $S \subseteq E$ where:
+
+1. $S$ is acyclic.
+2. For each frequency $f$, there are at most $c(f)$ edges in $S$ with frequency $f$.
+
+We can directly apply matroid intersection. Let $E$ be the ground set. Then, condition 1 is asking for $S$ to be independent
+in the **graphic matroid**, and condition 2 is asking for $S$ to be independent
+in the **partition matroid** where the categories are frequencies and $c(f)$ is the capacity of category $f$.
+
+### Implementing the matroid intersection algorithm
+
+We'll implement the algorithm with a general interface so that it can be used
+for any matroid we want. Then, in the next section we'll give the specific operations
+needed for our matroids.
+
+Let $N=|E|$ be the size of the ground set and $R$ be the size of a maximum
+common independent set. Then, our algorithm does $R$ iterations of the following:
 1. Construct the exchange graph between $S$ and $E \setminus S$.
 3. Update $S$ using a shortest augmenting path from a source to a sink.
 
-Step 2 can be done in $O(rn)$ time with BFS. The hard part is step 1,
+Step 2 can be done in $O(RN)$ time with BFS. The hard part is step 1,
 where we need to maintain a matroid structure that allows us to efficiently
 check when a set is independent.
 
-Suppose we can perform the following operations on a matroid:
-- `clear()`: set $S := \emptyset$
-- `add(x)`: set $S := S + x$
-- `check(x)`: return true if $S + x$ is independent and false otherwise
-
-Then, we can build the graph with $O(r)$ calls to `clear()` and $O(rn)$ calls to `check(x)` and `add(x)`.
+It turns out that supporting the following operations is enough:
+- `clear()`: set $S := \emptyset$.
+- `check(x)`: return true if $S + x$ is independent and false otherwise.
+- `add(x)`: set $S := S + x$, assuming $S + x$ is independent.
 
 Recall that we need to know for each $y \in S$ and $x \in E \setminus S$ if
-$S - y + x \in \mathcal I_1$ and $s - y + x \in \mathcal I_2$. So, for each $y$, we use `clear()` and `add(x)` to obtain $S - y$,
-then use `check(x)` to find all $x$ where $S - y + x$ is independent.
-Note that we did not have to support removals of arbitrary edges, which is hard to do efficiently in the graphic matroid.
+$S - y + x \in \mathcal I_1$ and $s - y + x \in \mathcal I_2$. 
+The trick is to batch queries by $y$. For a fixed $y$, use `clear()` and
+`add(x)` to obtain $S - y$, then use `check(x)` to find all $x$ where
+$S - y + x$ is independent.
+
+This builds the graph with $O(R)$ calls to `clear()` and $O(RN)$ calls to
+`check(x)` and `add(x)`. Observe that we sidestepped the need to efficiently
+remove arbitrary elements from $S$, which would have been a big problem for
+matroids like the graphic matroid.
+
+**Time Complexity:** $\mathcal O(R^2N)$,
+assuming `add(x)`, `check(x)` are $\mathcal O(1)$ and `clear()` is $\mathcal O(N)$.
 
 <LanguageSection>
 <CPPSection>
@@ -120,10 +140,179 @@ vector<bool> MatroidIsect(M1 m1, M2 m2, int n) {
 </CPPSection>
 </LanguageSection>
 
-### Improving to $O(r^{1.5}n)$
+<Optional title="Theoretically faster matroid intersection">
 
-TODO
+[Section 4 of this paper](https://doi.org/10.1137/0215066) achieves $\mathcal O(r^{1.5}n)$ independence
+queries by extending the ideas used in the Hopcroft-Karp algorithm for bipartite matching.
+In particular, the algorithm augments on a maximal set of shortest paths in one phase with $\mathcal O(rn)$ queries
+and bounds the number of phases by $\mathcal O(\sqrt r)$.
 
+Unfortunately, since each phase modifies $S$ and revisits vertices multiple times,
+the trick of batching queries no longer works and we need to support fast removals
+to see benefits. Since the constraints for matroid intersection problems are small,
+we believe the extra effort is not worth it (in all problems below, the original algorithm is fast enough).
+</Optional>
+
+
+### Implementing the matroid structure
+
+We implement the graphic matroid with union-find and the partition matroid
+by maintaining a count of the number of used elements of each frequency.
+
+In our case, the maximum size of a common independent set is $n-1$ and the
+size of the ground set is $m$. We get an extra $O(\alpha(n))$ factor from union-find,
+but this is still well within the time limit.
+
+**Time complexity:** $\mathcal O(n^2m \cdot \alpha(n))$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+//BeginCodeSnip{Union-find Data Structure}
+struct DSU {
+    vector<int> dsu, sz;
+    DSU(int n) : dsu(n), sz(n) {
+        iota(begin(dsu), end(dsu), 0);
+    }
+    int find(int x) {
+        if (x == dsu[x]) return x;
+        return dsu[x] = find(dsu[x]);
+    }
+    void merge(int x, int y) {
+        x = find(x), y = find(y);
+        if (x == y) return;
+        if (sz[x] < sz[y]) swap(x, y);
+        dsu[y] = x;
+        sz[x] += sz[y];
+    }
+};
+//EndCodeSnip
+
+struct GraphicMatroid {
+    int n; // nodes of the graph must be in [0..n-1]
+    DSU dsu;
+    vector<pair<int, int>> edges;
+    GraphicMatroid(int n, const vector<pair<int, int>> &edges)
+        : n(n), dsu(n), edges(edges) { clear(); }
+
+    void clear() {
+        dsu = DSU(n);
+    }
+    bool check(int x) {
+        return dsu.find(edges[x].first) != dsu.find(edges[x].second);
+    }
+    void add(int x) {
+        dsu.merge(edges[x].first, edges[x].second);
+    }
+};
+
+struct PartitionMatroid {
+    vector<int> cap, cat, used;
+    PartitionMatroid(const vector<int> &cap, const vector<int> &cat)
+        : cap(cap), cat(cat), used(size(cap)) {}
+    void clear() {
+        fill(begin(used), end(used), 0);
+    }
+    bool check(int x) {
+        return used[cat[x]] < cap[cat[x]];
+    }
+    void add(int x) {
+        used[cat[x]]++;
+    }
+};
+
+//BeginCodeSnip{Matroid Intersection Algorithm}
+template<class M1, class M2>
+vector<bool> MatroidIsect(M1 m1, M2 m2, int n) {
+    vector<bool> in_S(n);
+    auto augment = [&] {
+        vector<int> S, E_S;
+        for (int i = 0; i < n; i++) {
+            if (in_S[i]) S.push_back(i);
+            else E_S.push_back(i);
+        }
+        // build exchange graph
+        vector<vector<int>> adj(n);
+        for (int y : S) {
+            m1.clear(), m2.clear();
+            for (int i : S) {
+                if (i != y) m1.add(i), m2.add(i);
+            }
+            for (int x : E_S) {
+                if (m1.check(x)) adj[y].push_back(x);
+                if (m2.check(x)) adj[x].push_back(y);
+            }
+        }
+        // identify sources and sinks for BFS
+        vector<bool> is_sink(n);
+        queue<int> q; vector<bool> vis(n);
+
+        m1.clear(), m2.clear();
+        for (int y : S) m1.add(y), m2.add(y);
+        for (int x : E_S) {
+            if (m1.check(x)) vis[x] = 1, q.push(x); // x is a source
+            is_sink[x] = m2.check(x);
+        }
+        // BFS to find augmenting path from source to sink
+        vector<int> prev(n, -1);
+        while (!q.empty()) {
+            int u = q.front(); q.pop();
+            if (is_sink[u]) {
+                // augmenting path found
+                for (int v = u; v != -1; v = prev[v]) {
+                    in_S[v] = !in_S[v];
+                }
+                return true;
+            }
+            for (int v : adj[u]) {
+                if (vis[v]) continue;
+                q.push(v);
+                vis[v] = 1;
+                prev[v] = u;
+            }
+        }
+        return false;
+    };
+    while (augment());
+    return in_S;
+}
+// EndCodeSnip
+
+void solve() {
+    int n, m, k; cin >> n >> m >> k;
+    vector<int> cap(k);
+    for (auto &amt : cap) cin >> amt;
+
+    vector<pair<int, int>> edges(m);
+    vector<int> cat(m);
+    for (int i = 0; i < m; i++) {
+        cin >> edges[i].first >> edges[i].second >> cat[i];
+        edges[i].first--, edges[i].second--, cat[i]--;
+    }
+
+    auto result = MatroidIsect(GraphicMatroid(n, edges),
+                                PartitionMatroid(cap, cat),
+                                m);
+    cout << count(begin(result), end(result), true) << '\n';
+}
+
+int main() {
+    cin.tie(0)->sync_with_stdio(0);
+    int t; cin >> t;
+    while (t--) solve();
+    return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+
+TODO: remove this original list of problems
 
 - Problems
   - [Honesty](https://judge.beecrowd.com/en/problems/view/2128)
