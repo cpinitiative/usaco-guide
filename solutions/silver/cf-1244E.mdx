@@ -9,10 +9,6 @@ author: Abhinav Singh
 
 ## Explanation
 
-We want to minimize the difference between the maximum and minimum values after at most $k$ operations.
-
-### Binary search on the answer
-
 Instead of constructing the final array, fix a target difference $d$ and check if it is achievable.
 
 If all elements can be moved into some interval $[L, L + d]$, then any larger $d$ also works. Hence, the condition is monotonic and we can binary search on $d$.
@@ -39,8 +35,8 @@ $L = a_i \text{ or } L = a_i - d$.
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(N \log N \log A)$, where $A$ is the maximum value of $a_i$.
-<LanguageSection>
 
+<LanguageSection>
 <CPPSection>
 
 ```cpp
@@ -52,52 +48,69 @@ int main() {
 	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
 
-	ll n, k;
+	int n;
+    ll k;
 	cin >> n >> k;
 
-	vector<ll> a(n);
-	for (auto &x : a) cin >> x;
+	vector<int> a(n);
+	for (int &x : a) cin >> x;
 	sort(a.begin(), a.end());
 
-	vector<ll> pref(n);
-	pref[0] = a[0];
-	for (int i = 1; i < n; i++) pref[i] = pref[i - 1] + a[i];
+    // compute prefix sums, using 1 indexing for convenience
+    vector<ll> pref(n + 1);
+    for (int i = 0; i < n; i++) {
+        pref[i + 1] = pref[i] + a[i];
+    }
 
-	auto check = [&](ll d) -> bool {
+	auto check = [&](int d) -> bool {
 		for (int i = 0; i < n; ++i) {
-			// Case 1: L = a[i] (left endpoint pinned to a[i])
+			// Case 1: l = a[i] (left endpoint pinned to a[i])
 			{
-				ll L = a[i], R = L + d;
-				ll costLeft = (ll)i * L - (i > 0 ? pref[i - 1] : 0LL);
-				int r = upper_bound(a.begin(), a.end(), R) - a.begin();
-				ll costRight = r < n ? (pref[n - 1] - (r > 0 ? pref[r - 1] : 0LL)) -
-				                           (ll)(n - r) * R
-				                     : 0LL;
-				if (costLeft + costRight <= k) return true;
+				int l = a[i], r = l + d;
+
+                // use prefix sums to calculate l - a_i for all a_i < l
+				ll cost_l = 1ll * i * l - pref[i];
+
+                // use prefix sums to calculate a_i - r for all a_i > r
+                // we use upper bound to find the first index we sum from
+				int p = upper_bound(a.begin(), a.end(), r) - a.begin();
+				ll cost_r = (pref[n] - pref[p]) - 1ll * (n - p) * r;
+                
+				if (cost_l + cost_r <= k) return true;
 			}
-			// Case 2: L = a[i] - d (right endpoint pinned to a[i])
+
+			// Case 2: l = a[i] - d (right endpoint pinned to a[i])
 			{
-				ll R = a[i], L = R - d;
-				int p = lower_bound(a.begin(), a.end(), L) - a.begin();
-				ll costLeft = (ll)p * L - (p > 0 ? pref[p - 1] : 0LL);
-				ll costRight = (pref[n - 1] - pref[i]) - (ll)(n - i - 1) * R;
-				if (costLeft + costRight <= k) return true;
+				int r = a[i], l = r - d;
+
+                // use prefix sums to calculate a_i - r for all a_i > r
+                ll cost_r = (pref[n] - pref[i + 1]) - 1ll * (n - i - 1) * r;
+
+                // use prefix sums to calculate l - a_i for all a_i < l
+                // we use lower bound to find the last index we sum from
+				int p = lower_bound(a.begin(), a.end(), l) - a.begin();
+				ll cost_l = 1ll * p * l - pref[p];
+                
+				if (cost_l + cost_r <= k) return true;
 			}
 		}
+
 		return false;
 	};
 
-	ll lo = 0, hi = a[n - 1] - a[0];
+	int lo = 0, hi = a[n - 1] - a[0];
 	while (lo < hi) {
-		ll mid = lo + (hi - lo) / 2;
-		if (check(mid)) hi = mid;
-		else lo = mid + 1;
+		int mid = lo + (hi - lo) / 2;
+		if (check(mid)) {
+            hi = mid;
+        } else {
+            lo = mid + 1;
+        }
 	}
 
-	cout << lo << "\n";
+	cout << lo << '\n';
 }
 ```
 
 </CPPSection>
-
 </LanguageSection>
