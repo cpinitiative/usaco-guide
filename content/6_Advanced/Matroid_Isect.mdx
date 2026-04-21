@@ -45,7 +45,7 @@ We can directly apply matroid intersection. Let $E$ be the ground set. Then, con
 in the **graphic matroid**, and condition 2 is asking for $S$ to be independent
 in the **partition matroid** where the categories are frequencies and $c(f)$ is the capacity of category $f$.
 
-### Implementing the matroid intersection algorithm
+### Implementing the Matroid Intersection Algorithm
 
 We'll implement the algorithm with a general interface so that it can be used
 for any matroid we want. Then, in the next section we'll give the specific operations
@@ -56,7 +56,7 @@ common independent set. Then, our algorithm does $R$ iterations of the following
 1. Construct the exchange graph between $S$ and $E \setminus S$.
 3. Update $S$ using a shortest augmenting path from a source to a sink.
 
-Step 2 can be done in $O(RN)$ time with BFS. The hard part is step 1,
+Step 2 can be done in $\mathcal O(RN)$ time with BFS. The hard part is step 1,
 where we need to maintain a matroid structure that allows us to efficiently
 check when a set is independent.
 
@@ -71,7 +71,7 @@ The trick is to batch queries by $y$. For a fixed $y$, use `clear()` and
 `add(x)` to obtain $S - y$, then use `check(x)` to find all $x$ where
 $S - y + x$ is independent.
 
-This builds the graph with $O(R)$ calls to `clear()` and $O(RN)$ calls to
+This builds the graph with $\mathcal O(R)$ calls to `clear()` and $\mathcal O(RN)$ calls to
 `check(x)` and `add(x)`. Observe that we sidestepped the need to efficiently
 remove arbitrary elements from $S$, which would have been a big problem for
 matroids like the graphic matroid.
@@ -149,18 +149,18 @@ and bounds the number of phases by $\mathcal O(\sqrt r)$.
 
 Unfortunately, since each phase modifies $S$ and revisits vertices multiple times,
 the trick of batching queries no longer works and we need to support fast removals
-to see benefits. Since the constraints for matroid intersection problems are small,
+to see benefits. But because the constraints for matroid intersection problems are small,
 we believe the extra effort is not worth it (in all problems below, the original algorithm is fast enough).
 </Optional>
 
 
-### Implementing the matroid structure
+### Implementing the Matroid Structure
 
 We implement the graphic matroid with union-find and the partition matroid
 by maintaining a count of the number of used elements of each frequency.
 
 In our case, the maximum size of a common independent set is $n-1$ and the
-size of the ground set is $m$. We get an extra $O(\alpha(n))$ factor from union-find,
+size of the ground set is $m$. We get an extra $\mathcal O(\alpha(n))$ factor from union-find,
 but this is still well within the time limit.
 
 **Time complexity:** $\mathcal O(n^2m \cdot \alpha(n))$
