@@ -9,58 +9,38 @@ author: Abhinav Singh
 
 ## Explanation
 
-We want to minimize the difference between the maximum and minimum values after at most `k` operations.
+We want to minimize the difference between the maximum and minimum values after at most $k$ operations.
 
 ### Binary search on the answer
 
-Instead of directly constructing the final array, fix a target difference `d` and check if it is achievable.
+Instead of constructing the final array, fix a target difference $d$ and check if it is achievable.
 
-If we can make all elements lie inside some interval of length `d`, then any larger `d` will also work.
-So the check is monotonic, and we can binary search on `d`.
+If all elements can be moved into some interval $[L, L + d]$, then any larger $d$ also works. Hence, the condition is monotonic and we can binary search on $d$.
 
-### Checking a fixed d
+For a fixed $d$, after sorting, we try to fit all elements into $[L, L + d]$:
+- increase elements below $L$
+- decrease elements above $L + d$
 
-Sort the array.
+The total cost can be computed using prefix sums.
 
-We want every element inside `[L, L + d]`:
-- If `a[i] < L`, increase it to `L`
-- If `a[i] > L + d`, decrease it to `L + d`
-- Otherwise, leave it
+### Choosing $L$
+Let
+```math
+A = \#\{a_i < L\}, \quad B = \#\{a_i > L + d\}
+```
 
-We compute the total cost using prefix sums.
+Shifting $[L, L + d]$ (without crossing any $a_i$) changes the cost by $A - B$.  
+Hence, we can move the interval to improve or preserve the cost until an endpoint hits some $a_i$.
 
-### Choosing L
+If the left endpoint hits $a_i$, then $L = a_i$.  
+If the right endpoint hits $a_i$, then $L + d = a_i \Rightarrow L = a_i - d$.
 
-At first glance, `L` could be any value, which is too large to try directly.
-
-Consider an interval `[L, L + d]`. Let:
-- `A` = number of elements less than `L`
-- `B` = number of elements greater than `L + d`
-
-If we shift the entire interval slightly to the right(without crossing any `a[i]`):
-- We increase the cost for the `A` elements on the left
-- We decrease the cost for the `B` elements on the right
-
-So the net change in cost is `A - B`.
-
-- If `A < B`, shifting right reduces cost
-- If `A > B`, shifting left reduces cost
-- If `A = B`, the cost does not change
-
-So unless the interval is already balanced, we can move it in one direction to improve (or not worsen) the cost.
-
-This means we can keep shifting the interval until one of its endpoints lands on some `a[i]`.
-
-Therefore, it is enough to check:
-- `L = a[i]`
-- `L = a[i] - d`
-
-for all `i`.
+Thus, it suffices to consider
+$L = a_i \text{ or } L = a_i - d$.
 
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(N \log N \log A)$, where $A$ is the maximum value of $a_i$.
-
 <LanguageSection>
 
 <CPPSection>
