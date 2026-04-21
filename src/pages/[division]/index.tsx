@@ -64,7 +64,7 @@ const SECTION_DESCRIPTION: { [key in SectionID]: React.ReactNode } = {
       <br />
       If you prefer videos instead of text, check out CPI's free{' '}
       <a
-        href="https://joincpi.org/video-classes"
+        href="https://joincpi.org/bronze-video-classes"
         target="_blank"
         rel="noreferrer"
         className="underline"
@@ -73,7 +73,21 @@ const SECTION_DESCRIPTION: { [key in SectionID]: React.ReactNode } = {
       </a>
     </>
   ),
-  silver: topicsWarning,
+  silver: (
+    <>
+      {topicsWarning}
+      <br />
+      If you prefer videos instead of text, check out CPI's free{' '}
+      <a
+        href="https://joincpi.org/silver-video-classes"
+        target="_blank"
+        rel="noreferrer"
+        className="underline"
+      >
+        self-study Silver course.
+      </a>
+    </>
+  ),
   gold: topicsWarning,
   plat: (
     <>

@@ -25,7 +25,7 @@ const GroupSelectPage = () => {
 
   const handleCreateNewGroup = () => {
     createNewGroup().then(groupId => {
-      router.push(`/groups/${groupId}/edit`);
+      router.push(`/groups/${groupId}/edit?new=true`);
     });
   };
 
