@@ -583,6 +583,100 @@ public class monsters {
 	}
 }
 ```
-
 </JavaSection>
+<Warning>
+
+The below solution only runs in time when submitted with PyPy.
+
+</Warning>
+<PySection>
+```py
+from collections import deque
+
+n, m = map(int, input().split())
+maze = [input() for _ in range(n)]
+
+dist_monster = [[float("inf")] * m for _ in range(n)]
+dist_person = [[float("inf")] * m for _ in range(n)]
+direction = [[-1] * m for _ in range(n)]  # for path reconstruction
+
+dir_r = [1, 0, -1, 0]
+dir_c = [0, 1, 0, -1]
+convert = "DRUL"
+
+closest_dist = float("inf")
+closest_r, closest_c = -1, -1
+
+
+def bfs(q, dist):
+	while q:
+		r, c = q.popleft()
+		for i in range(4):
+			next_r, next_c = r + dir_r[i], c + dir_c[i]
+			if (
+				0 <= next_r < n
+				and 0 <= next_c < m
+				and maze[next_r][next_c] != "#"
+				and dist[next_r][next_c] > dist[r][c] + 1
+			):
+				dist[next_r][next_c] = dist[r][c] + 1
+				direction[next_r][next_c] = i
+				q.append((next_r, next_c))
+
+
+def check_valid(r, c):
+	global closest_dist, closest_r, closest_c
+	if (
+		maze[r][c] != "#"
+		and dist_person[r][c] < dist_monster[r][c]
+		and dist_person[r][c] < closest_dist
+	):
+		closest_dist = dist_person[r][c]
+		closest_r, closest_c = r, c
+
+
+q = deque()
+person_r = person_c = -1
+
+for i in range(n):
+	for j in range(m):
+		if maze[i][j] == "A":
+			dist_person[i][j] = 0
+			person_r, person_c = i, j
+		elif maze[i][j] == "M":
+			dist_monster[i][j] = 0
+			q.append((i, j))
+
+# BFS for monsters
+bfs(q, dist_monster)
+
+# BFS for person
+q = deque()
+q.append((person_r, person_c))
+bfs(q, dist_person)
+
+# Check borders for valid escape
+for i in range(n):
+	check_valid(i, 0)
+	check_valid(i, m - 1)
+for j in range(m):
+	check_valid(0, j)
+	check_valid(n - 1, j)
+
+if closest_dist == float("inf"):
+	print("NO")
+else:
+	print("YES")
+	print(closest_dist)
+	res = []
+	r, c = closest_r, closest_c
+	while (r, c) != (person_r, person_c):
+		idx = direction[r][c]
+		res.append(convert[idx])
+		r -= dir_r[idx]
+		c -= dir_c[idx]
+	print("".join(reversed(res)))
+```
+
+</PySection>
 </LanguageSection>
