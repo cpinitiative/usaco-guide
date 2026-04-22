@@ -1,0 +1,16 @@
+services:
+  web:
+    build:
+      context: .
+      target: dev
+    command: sh -c "yarn tsx scripts/load-content.ts && yarn next dev --hostname 0.0.0.0"
+    environment:
+      NEXT_TELEMETRY_DISABLED: "1"
+      WATCHPACK_POLLING: "true"
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+      - /app/data

@@ -14,6 +14,40 @@ on, leave a comment, and submit a Pull Request!
 
 Join our Discord server: https://discord.gg/VCxUzdYhzN
 
+## Running Locally with Docker
+
+Docker is the easiest way to run the site without installing Node.js or Yarn on
+your machine.
+
+1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) or
+   another Docker environment with Docker Compose.
+2. Clone the repo and enter it:
+
+   ```sh
+   git clone https://github.com/cpinitiative/usaco-guide.git
+   cd usaco-guide
+   ```
+
+3. Start the development server:
+
+   ```sh
+   docker compose up --build
+   ```
+
+4. Open http://localhost:3000.
+
+After the first run, `docker compose up` is usually enough. The container keeps
+Linux-specific dependencies inside Docker volumes, so the same command works on
+macOS, Windows, and Linux.
+
+If dependencies or generated content seem stale after changing branches, reset
+the Docker volumes and rebuild:
+
+```sh
+docker compose down -v
+docker compose up --build
+```
+
 ## Our Team
 
 The USACO Guide is run by the
