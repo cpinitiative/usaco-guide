@@ -25,6 +25,27 @@ frequency: 0
 </Resources>
 
 ## Introduction
+A matroid is a combinatorial structure that generalizes the notion of 'linear independence'. It will be useful for a couple of reasons. In this module, we will explore how its axioms allow a natural greedy algorithm to be applied to them (which generalizes Kruskal's algorithm). This allows us to find greedy strategies for problems where it would otherwise be difficult to find (or at least prove) a greedy algorithm. We will study an example of this, and then we will see how the theory of matroids can help us in finding the second-minimum spanning tree of a graph.
+
+This module is a prerequisite for the next module on matroid intersection. In some problems, we want to find some largest cardinality set of elements subject to multiple constraints. If we can capture those constraints using (at most two) matroids, then it's possible to efficiently find such a set using this theory.
+
+### Matroid Definition
+We will be following the notation from: _A First Course in Combinatorial Optimization_.
+
+A matroid $M$ consists of a finite ground set $E(M)$ along with a collection of subsets $\mathcal I(M)$ that satisfy the following axioms:
+1. **Non-emptiness**: $\emptyset\in\mathcal I(M)$
+2. **Heredity**: If $X\subseteq Y\in\mathcal I(M)$, then $X\in\mathcal I(M)$
+3. **Exchange**: If $X,Y\in\mathcal I(M)$ and $|X|>|Y|$, then there exists some $x\in X\setminus Y$ such that $Y+x\in\mathcal I(M)$
+
+We often call the subsets in $\mathcal I(M)$ **independent sets** and the remaining subsets **dependent sets**.
+
+Borrowing more terminology from linear algebra, a **basis** of a matroid is any independent set that is maximal in terms of containment (meaning it's not a proper subset of any other independent set).
+
+A consequence of the exchange axiom is that all bases have the same cardinality. If we had two bases with distinct cardinalities, then one of them must be larger and then by exchange, we can add an element to it. Hence, we may define the **rank** of a matroid to be the cardinality of any of its bases.
+
+### Examples
+Studying some examples will make these definitions feel more inspired.
+TODO: examples (colourful matroid, graphical matroid, any others used in the example problems)
 
 ## Minimum Weight Independent Sets
 The beauty of matroids lies in the fact that there is a very simple algorithm to find minimum weight independent sets of size $1 \leq k \leq r(M)$. The algorithm is as follows:
