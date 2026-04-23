@@ -2,8 +2,10 @@
 id: matroid
 title: 'Matroids'
 author: ''
-description: '?'
+description: 'A framework for understanding when greedy algorithms work.'
 prerequisites:
+- greedy-sorting
+- mst
 frequency: 0
 ---
 
@@ -20,7 +22,6 @@ frequency: 0
 		url="https://codeforces.com/blog/entry/69287"
 		starred
 	>
-		Everything up to "Matroid intersection"
 	</Resource>
 </Resources>
 
@@ -47,7 +48,7 @@ A consequence of the exchange axiom is that all bases have the same cardinality.
 Studying some examples will make these definitions feel more inspired.
 
 #### Uniform Matroid
-A uniform matroid is a matroid $M$ such that a subset $X\subseteq E(M)$ is independent iff $|X|\leq r$ for some fixed $r\geq 0$.
+A uniform matroid is a matroid $M$ such that a subset $X\subseteq E(M)$ is independent if $|X|\leq r$ for some fixed $r\geq 0$.
 
 It's pretty clear that all of the matroid axioms hold here.
 1. We have non-emptiness because $|\emptyset|=0\leq r$.
@@ -55,12 +56,31 @@ It's pretty clear that all of the matroid axioms hold here.
 3. To see exchange, we may pick any $x\in X\setminus Y$ because $|Y+x|\leq |X|\leq r$. The first inequality holds because $|X|>|Y|$ and the second because $X\in\mathcal I(M)$.
 
 #### Colourful Matroid
-A more interesting example of a matroid is the colourful matroid. In this matroid, every element is assigned one of $k$ _colours_. A subset $X\subseteq E(M)$ is considered independent iff no two elements in it share the same colour.
+A more interesting example of a matroid is the colourful matroid. In this matroid, every element is assigned one of $k$ _colours_. A subset $X\subseteq E(M)$ is considered independent if no two elements in it share the same colour.
 1. Non-emptiness is clear because it's impossible to have two elements sharing the same colour in $\emptyset$.
 2. Heredity is also clear because if no two elements share the same colour in $Y$, then no two elements will share the same colour in any subset of $Y$ as well.
 3. For exchange, notice that if $|X|>|Y|$ and they're both independent, then $X$ contains strictly more _colours_ than $Y$. Hence, by picking any element in $X$ that has a colour not present in $Y$, we can extend $Y$.
 
-Henceforth, we will omit proofs that our examples are indeed matroids. If you're interested, you can always figure it out yourself or ask your favourite LLM.
+Henceforth, we will omit proofs that our examples are indeed matroids. 
+
+#### Partition Matroid
+We can generalize the colourful matroid to get the partition matroid.
+The elements are partitioned into disjoint categories $C_1, \dots, C_k$,
+and each category has some capacity $c_i$.
+A subset $X$ is independent if for each category $C_i$,
+there are at most $c_i$ elements of that category contained in $X$.
+
+#### Graphic Matroid
+This matroid gives another perspective on Kruskal's algorithm for minimum spanning trees! The elements
+of a graphic matroid are edges in an undirected graph, and a subset of edges is independent if they don't contain a cycle.
+
+#### Linear Matroid
+The idea of linear independence naturally leads to the definition of a matroid.
+In the linear matroid, the elements are vectors in a vector space, and a subset of elements is independent
+in the matroid if they are linearly independent in the vector space.
+
+Notice that the three matroid axioms come directly from properties of linear independence.
+Most notably, the exchange property is the [Steinitz exchange lemma](https://en.wikipedia.org/wiki/Steinitz_exchange_lemma).
 
 ## Minimum Weight Independent Sets
 The beauty of matroids lies in the fact that there is a very simple algorithm to find minimum weight independent sets of size $1 \leq k \leq r(M)$. The algorithm is as follows:
@@ -77,7 +97,7 @@ $$
 &\end{align*}
 $$
 
-^^ Fix this alignment somehow
+^^ Fix this alignment somehow // TODO
 
 Note that Kruskal's algorithm is a special case of this algorithm on the graphic matroid, where the independence checks are done by a DSU.
 
@@ -285,3 +305,5 @@ int32_t main() {
 
 </CPPSection>
 </LanguageSection>
+
+<Problems problems="general" />
