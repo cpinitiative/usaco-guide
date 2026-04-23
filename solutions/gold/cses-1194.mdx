@@ -600,62 +600,62 @@ maze = [input() for _ in range(n)]
 
 # distance grids tracking minimum steps from monsters and person respectively
 dist_monster = [[float("inf")] * m for _ in range(n)]
-dist_person  = [[float("inf")] * m for _ in range(n)]
+dist_person = [[float("inf")] * m for _ in range(n)]
 
 # direction[r][c] stores which move was used to reach (r, c)
 # needed later to reconstruct the escape path by backtracking
 direction = [[-1] * m for _ in range(n)]
 
 # movement deltas and their letter labels
-dir_r   = [1, 0, -1, 0]
-dir_c   = [0, 1,  0, -1]
+dir_r = [1, 0, -1, 0]
+dir_c = [0, 1, 0, -1]
 convert = "DRUL"  # Down, Right, Up, Left
 
 # best border cell the person can reach before any monster
-closest_dist          = float("inf")
+closest_dist = float("inf")
 closest_r, closest_c = -1, -1
 
 
 def bfs(q, dist):
-    # multi-source BFS, fills dist with shortest distances from all sources in q
-    while q:
-        r, c = q.popleft()
-        for i in range(4):
-            next_r, next_c = r + dir_r[i], c + dir_c[i]
-            if (
-                0 <= next_r < n
-                and 0 <= next_c < m
-                and maze[next_r][next_c] != "#"             # skip walls
-                and dist[next_r][next_c] > dist[r][c] + 1  # only update if shorter
-            ):
-                dist[next_r][next_c] = dist[r][c] + 1
-                direction[next_r][next_c] = i  # record move for path reconstruction
-                q.append((next_r, next_c))
+	# multi-source BFS, fills dist with shortest distances from all sources in q
+	while q:
+		r, c = q.popleft()
+		for i in range(4):
+			next_r, next_c = r + dir_r[i], c + dir_c[i]
+			if (
+				0 <= next_r < n
+				and 0 <= next_c < m
+				and maze[next_r][next_c] != "#"  # skip walls
+				and dist[next_r][next_c] > dist[r][c] + 1  # only update if shorter
+			):
+				dist[next_r][next_c] = dist[r][c] + 1
+				direction[next_r][next_c] = i  # record move for path reconstruction
+				q.append((next_r, next_c))
 
 
 def check_valid(r, c):
-    # a border cell is a valid escape if the person arrives strictly before any monster
-    global closest_dist, closest_r, closest_c
-    if (
-        maze[r][c] != "#"
-        and dist_person[r][c] < dist_monster[r][c]  # person wins the race
-        and dist_person[r][c] < closest_dist         # keep track of shortest escape
-    ):
-        closest_dist          = dist_person[r][c]
-        closest_r, closest_c  = r, c
+	# a border cell is a valid escape if the person arrives strictly before any monster
+	global closest_dist, closest_r, closest_c
+	if (
+		maze[r][c] != "#"
+		and dist_person[r][c] < dist_monster[r][c]  # person wins the race
+		and dist_person[r][c] < closest_dist  # keep track of shortest escape
+	):
+		closest_dist = dist_person[r][c]
+		closest_r, closest_c = r, c
 
 
 q = deque()
 person_r = person_c = -1
 
 for i in range(n):
-    for j in range(m):
-        if maze[i][j] == "A":
-            dist_person[i][j] = 0
-            person_r, person_c = i, j
-        elif maze[i][j] == "M":
-            dist_monster[i][j] = 0  # each monster is its own BFS source
-            q.append((i, j))
+	for j in range(m):
+		if maze[i][j] == "A":
+			dist_person[i][j] = 0
+			person_r, person_c = i, j
+		elif maze[i][j] == "M":
+			dist_monster[i][j] = 0  # each monster is its own BFS source
+			q.append((i, j))
 
 # flood fill from all monsters at once
 bfs(q, dist_monster)
@@ -667,28 +667,28 @@ bfs(q, dist_person)
 
 # check every border cell for a valid escape
 for i in range(n):
-    check_valid(i, 0)
-    check_valid(i, m - 1)
+	check_valid(i, 0)
+	check_valid(i, m - 1)
 for j in range(m):
-    check_valid(0, j)
-    check_valid(n - 1, j)
+	check_valid(0, j)
+	check_valid(n - 1, j)
 
 if closest_dist == float("inf"):
-    print("NO")
+	print("NO")
 else:
-    print("YES")
-    print(closest_dist)
+	print("YES")
+	print(closest_dist)
 
-    # backtrack from escape cell to start using the direction grid, then reverse
-    res = []
-    r, c = closest_r, closest_c
-    while (r, c) != (person_r, person_c):
-        idx = direction[r][c]
-        res.append(convert[idx])
-        r -= dir_r[idx]
-        c -= dir_c[idx]
+	# backtrack from escape cell to start using the direction grid, then reverse
+	res = []
+	r, c = closest_r, closest_c
+	while (r, c) != (person_r, person_c):
+		idx = direction[r][c]
+		res.append(convert[idx])
+		r -= dir_r[idx]
+		c -= dir_c[idx]
 
-    print("".join(reversed(res)))
+	print("".join(reversed(res)))
 ```
 
 </PySection>
