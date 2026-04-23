@@ -45,7 +45,22 @@ A consequence of the exchange axiom is that all bases have the same cardinality.
 
 ### Examples
 Studying some examples will make these definitions feel more inspired.
-TODO: examples (colourful matroid, graphical matroid, any others used in the example problems)
+
+#### Uniform Matroid
+A uniform matroid is a matroid $M$ such that a subset $X\subseteq E(M)$ is independent iff $|X|\leq r$ for some fixed $r\geq 0$.
+
+It's pretty clear that all of the matroid axioms hold here.
+1. We have non-emptiness because $|\emptyset|=0\leq r$.
+2. Heredity holds because $|X|\leq |Y|\leq r\implies |X|\leq r$. The first inequality is because $X\subseteq Y$ and the second is because $Y\in\mathcal I(M)$.
+3. To see exchange, we may pick any $x\in X\setminus Y$ because $|Y+x|\leq |X|\leq r$. The first inequality holds because $|X|>|Y|$ and the second because $X\in\mathcal I(M)$.
+
+#### Colourful Matroid
+A more interesting example of a matroid is the colourful matroid. In this matroid, every element is assigned one of $k$ _colours_. A subset $X\subseteq E(M)$ is considered independent iff no two elements in it share the same colour.
+1. Non-emptiness is clear because it's impossible to have two elements sharing the same colour in $\emptyset$.
+2. Heredity is also clear because if no two elements share the same colour in $Y$, then no two elements will share the same colour in any subset of $Y$ as well.
+3. For exchange, notice that if $|X|>|Y|$ and they're both independent, then $X$ contains strictly more _colours_ than $Y$. Hence, by picking any element in $X$ that has a colour not present in $Y$, we can extend $Y$.
+
+Henceforth, we will omit proofs that our examples are indeed matroids. If you're interested, you can always figure it out yourself or ask your favourite LLM.
 
 ## Minimum Weight Independent Sets
 The beauty of matroids lies in the fact that there is a very simple algorithm to find minimum weight independent sets of size $1 \leq k \leq r(M)$. The algorithm is as follows:
