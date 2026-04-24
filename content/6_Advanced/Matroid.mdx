@@ -42,7 +42,15 @@ We often call the subsets in $\mathcal I(M)$ **independent sets** and the remain
 
 Borrowing more terminology from linear algebra, a **basis** of a matroid is any independent set that is maximal in terms of containment (meaning it's not a proper subset of any other independent set).
 
-A consequence of the exchange axiom is that all bases have the same cardinality. If we had two bases with distinct cardinalities, then one of them must be larger and then by exchange, we can add an element to it. Hence, we may define the **rank** of a matroid to be the cardinality of any of its bases.
+A consequence of the exchange axiom is that all bases have the same cardinality. If we had two bases with distinct cardinalities, then one of them must be larger and then by exchange, we can add an element to it. Hence, for a matroid $M$, we may define its **rank** $r(M)$ to be the cardinality of any of its bases. The rank function can also be extended to any set $X \subseteq E$. In particular,
+
+$$
+\begin{equation*}
+r(X) := \max\left\{|I| : I \subseteq X \text{ is independent}\right\}
+\end{equation*}
+$$
+
+Another useful concept is that of a **circuit**, which is analagous to a cycle in a graph. A dependent set $X \subseteq E$ is called a circuit if $X - e$ is independent for any $e \in X$. Observe that a set $X \subseteq E$ is independent if and only if it contains a circuit $C$. The if direction is trivial, and to show the only if direction, take $C$ to be the smallest dependent set contained in $X$.
 
 ### Examples
 Studying some examples will make these definitions feel more inspired.
@@ -93,7 +101,8 @@ $$
 &\qquad \textbf{if } S + e \in \mathcal{I} \\
 &\qquad\qquad S \leftarrow S + e \\
 &\qquad \textbf{if } |S| = k \\
-&\qquad\qquad \textbf{return } S
+&\qquad\qquad \textbf{return } S \\
+&\text{Return } \bot
 &\end{align*}
 $$
 

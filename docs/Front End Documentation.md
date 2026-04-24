@@ -3,6 +3,18 @@
 If you are familiar with Next.js development, just run `yarn` and `yarn dev` to
 get started.
 
+If you do not want to install Node.js and Yarn directly, use Docker:
+
+```sh
+docker compose up --build
+```
+
+Then open http://localhost:3000. After the first run, `docker compose up` is
+usually enough.
+
+If dependencies or generated content seem stale after changing branches, run
+`docker compose down -v` and then `docker compose up --build`.
+
 ## Quickstart
 
 The following is written for individuals without front-end development
