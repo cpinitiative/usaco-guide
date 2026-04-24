@@ -31,55 +31,6 @@ frequency: 0
 	/>
 </Resources>
 
-## Matroid Dual
-
-In many problems, it is useful to consider the dual of some well-known matroid. The dual $M^\star$ of a matroid $M$ is defined on the same ground set $E(M)$ with the independent sets defined as follows
-
-$$
-\mathcal{I}(M^\star) = \{X \subseteq E : E \setminus X \text{ contains a basis of } M\}
-$$
-
-As an example, consider the graphic matroid $M$ corresponding to a connected graph $G = (V, E)$. Then, the bases of $M$ are spanning trees, and a set of edges $X \subseteq E$ is independent in $M^\star$ if and only if $G$ remains connected after removing all of the edges in $X$.
-
-**Claim:** The dual $M^\star$ of a matroid $M$ is itself a matroid.
-
-**Proof:** Clearly, the non-emptiness and heridity axioms hold, so it remains to show that the exchange axiom also holds. Let $X, Y \in I^\star$ such that $|X| < |Y|$. For convenience, we will reframe the exchange axiom in terms of $X^c = E \setminus X$ and $Y^c = E \setminus Y$. Our goal is to show that there exists $e \in X^c$ such that $e \notin Y^c$ and $X^c - e$ contains a basis of $M$.
-
-Partition $X^c$ into $\mathcal{C}$ and $\mathcal{A}$ where
-
-$$
-\begin{equation*}
-\mathcal{C} = \{e \in X^c : e \text{ is in some circuit } C \subseteq X^c\}
-\end{equation*}
-$$
-
-and $\mathcal{A} = X^c \setminus \mathcal{C}$. If there exists $e \in \mathcal{C}$ such that $e \notin Y^c$, then we are immediately done. Suppose that $\mathcal{C} \subseteq Y^c$. It follows that
-
-$$
-\begin{equation*}
-|Y^c \setminus \mathcal{C}| = |Y^c| - |\mathcal{C}| < |X^c| - |\mathcal{C}| = |\mathcal{A}|
-\end{equation*}
-$$
-
-so we get 
-
-$$
-\begin{equation*}
-r(Y^c) \leq r(\mathcal{C}) + r(Y^c \setminus \mathcal{C}) < r(\mathcal{C}) + |\mathcal{A}|
-\end{equation*}
-$$
-
-Furthermore, it can be shown that
-
-$$
-\begin{equation*}
-r(X^c) = r(\mathcal{C}) + |\mathcal{A}|
-\end{equation*}
-$$
-
-by taking any maximimum independent set $S \subseteq \mathcal{C}$ and noting that $S \cup \mathcal{A}$ is independent by choice of $\mathcal{A}$. Therefore, $r(X^c) \neq r(Y^c)$ which is a contradiction because $X^c$ and $Y^c$ both contains bases of $M$.
-
-
 ## Example - SERVERS
 
 <FocusProblem problem='focus' />
@@ -363,6 +314,73 @@ int main() {
 
 </CPPSection>
 </LanguageSection>
+
+## Modifying Existing Matroids
+
+We now consider some ways of making new matroids from existing ones. This
+expands the kinds of conditions we can handle.
+
+### Matroid Dual
+
+In many problems, it is useful to consider the dual of some well-known matroid. The dual $M^\star$ of a matroid $M$ is defined on the same ground set $E(M)$ with the independent sets defined as follows
+
+$$
+\mathcal{I}(M^\star) = \{X \subseteq E : E \setminus X \text{ contains a basis of } M\}
+$$
+
+As an example, consider the graphic matroid $M$ corresponding to a connected graph $G = (V, E)$. Then, the bases of $M$ are spanning trees, and a set of edges $X \subseteq E$ is independent in $M^\star$ if and only if $G$ remains connected after removing all of the edges in $X$.
+
+**Claim:** The dual $M^\star$ of a matroid $M$ is itself a matroid.
+
+**Proof:** Clearly, the non-emptiness and heridity axioms hold, so it remains to show that the exchange axiom also holds. Let $X, Y \in I^\star$ such that $|X| < |Y|$. For convenience, we will reframe the exchange axiom in terms of $X^c = E \setminus X$ and $Y^c = E \setminus Y$. Our goal is to show that there exists $e \in X^c$ such that $e \notin Y^c$ and $X^c - e$ contains a basis of $M$.
+
+Partition $X^c$ into $\mathcal{C}$ and $\mathcal{A}$ where
+
+$$
+\begin{equation*}
+\mathcal{C} = \{e \in X^c : e \text{ is in some circuit } C \subseteq X^c\}
+\end{equation*}
+$$
+
+and $\mathcal{A} = X^c \setminus \mathcal{C}$. If there exists $e \in \mathcal{C}$ such that $e \notin Y^c$, then we are immediately done. Suppose that $\mathcal{C} \subseteq Y^c$. It follows that
+
+$$
+\begin{equation*}
+|Y^c \setminus \mathcal{C}| = |Y^c| - |\mathcal{C}| < |X^c| - |\mathcal{C}| = |\mathcal{A}|
+\end{equation*}
+$$
+
+so we get 
+
+$$
+\begin{equation*}
+r(Y^c) \leq r(\mathcal{C}) + r(Y^c \setminus \mathcal{C}) < r(\mathcal{C}) + |\mathcal{A}|
+\end{equation*}
+$$
+
+Furthermore, it can be shown that
+
+$$
+\begin{equation*}
+r(X^c) = r(\mathcal{C}) + |\mathcal{A}|
+\end{equation*}
+$$
+
+by taking any maximimum independent set $S \subseteq \mathcal{C}$ and noting that $S \cup \mathcal{A}$ is independent by choice of $\mathcal{A}$. Therefore, $r(X^c) \neq r(Y^c)$ which is a contradiction because $X^c$ and $Y^c$ both contains bases of $M$.
+
+### Contraction of a Matroid
+
+Suppose we have an existing matroid $M=\lang E, \mathcal I\rang$, but there are some
+elements $A \subseteq E$ we are forced to include. If $A \in \mathcal I$, we can effectively
+mod out by A with **matroid contraction**: the contraction of $M$ by $A$, written $M / A$, is
+the matroid on the ground set $E \setminus A$ where $B$ is independent in $M / A$
+if $A \cup B \in \mathcal I$. 
+
+<Warning title="Independence of the empty set">
+If $A$ is not independent in $M$, then $M / A$ fails the non-emptiness axiom.
+Some problems don't guarantee $A \in \mathcal I$, so this is always a condition
+that should be checked.
+</Warning>
 
 
 TODO: remove this original list of problems
