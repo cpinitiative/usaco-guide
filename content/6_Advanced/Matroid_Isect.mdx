@@ -50,7 +50,7 @@ in the **partition matroid** where the categories are frequencies and $c(f)$ is 
 ### Implementing the Matroid Intersection Algorithm
 
 We'll implement the algorithm with a general interface so that it can be used
-for any matroid we want. Then, in the next section we'll give the specific operations
+for any matroid we want. Then, in the next section, we'll give the specific operations
 needed for our matroids.
 
 Let $N=|E|$ be the size of the ground set and $R$ be the size of a maximum
@@ -58,7 +58,7 @@ common independent set. Then, our algorithm does $R$ iterations of the following
 1. Construct the exchange graph between $S$ and $E \setminus S$.
 3. Update $S$ using a shortest augmenting path from a source to a sink.
 
-Step 2 can be done in $\mathcal O(RN)$ time with BFS. The hard part is step 1,
+Step 2 can be done in $\mathcal O(RN)$ time using BFS. The hard part is step 1,
 where we need to maintain a matroid structure that allows us to efficiently
 check when a set is independent.
 
@@ -78,7 +78,7 @@ This builds the graph with $\mathcal O(R)$ calls to `clear()` and $\mathcal O(RN
 remove arbitrary elements from $S$, which would have been a big problem for
 matroids like the graphic matroid.
 
-Also see KACTL's implementation, which only checks edges as needed instead of building the entire graph upfront.
+Also see KACTL's implementation, which only checks edges as needed rather than building the entire graph upfront.
 
 **Time Complexity:** $\mathcal O(R^2N)$,
 assuming `add(x)`, `check(x)` are $\mathcal O(1)$ and `clear()` is $\mathcal O(N)$.
@@ -322,17 +322,17 @@ expands the kinds of conditions we can handle.
 
 ### Matroid Dual
 
-In many problems, it is useful to consider the dual of some well-known matroid. The dual $M^\star$ of a matroid $M$ is defined on the same ground set $E(M)$ with the independent sets defined as follows
+In many problems, it is useful to consider the dual of some well-known matroid. The dual $M^\star$ of a matroid $M$ is defined on the same ground set $E(M)$ with the independent sets defined as follows:
 
 $$
-\mathcal{I}(M^\star) = \{X \subseteq E : E \setminus X \text{ contains a basis of } M\}
+\mathcal{I}(M^\star) = \{X \subseteq E : E \setminus X \text{ contains a basis of } M\}.
 $$
 
 As an example, consider the graphic matroid $M$ corresponding to a connected graph $G = (V, E)$. Then, the bases of $M$ are spanning trees, and a set of edges $X \subseteq E$ is independent in $M^\star$ if and only if $G$ remains connected after removing all of the edges in $X$.
 
 **Claim:** The dual $M^\star$ of a matroid $M$ is itself a matroid.
 
-**Proof:** Clearly, the non-emptiness and heridity axioms hold, so it remains to show that the exchange axiom also holds. Let $X, Y \in I^\star$ such that $|X| < |Y|$. For convenience, we will reframe the exchange axiom in terms of $X^c = E \setminus X$ and $Y^c = E \setminus Y$. Our goal is to show that there exists $e \in X^c$ such that $e \notin Y^c$ and $X^c - e$ contains a basis of $M$.
+**Proof:** Clearly, the non-emptiness and heredity axioms hold, so it remains to show that the exchange axiom also holds. Let $X, Y \in I^\star$ such that $|X| < |Y|$. For convenience, we will reframe the exchange axiom in terms of $X^c = E \setminus X$ and $Y^c = E \setminus Y$. Our goal is to show that there exists $e \in X^c$ such that $e \notin Y^c$ and $X^c - e$ contains a basis of $M$.
 
 Partition $X^c$ into $\mathcal{C}$ and $\mathcal{A}$ where
 
@@ -366,7 +366,7 @@ r(X^c) = r(\mathcal{C}) + |\mathcal{A}|
 \end{equation*}
 $$
 
-by taking any maximimum independent set $S \subseteq \mathcal{C}$ and noting that $S \cup \mathcal{A}$ is independent by choice of $\mathcal{A}$. Therefore, $r(X^c) \neq r(Y^c)$ which is a contradiction because $X^c$ and $Y^c$ both contains bases of $M$.
+by taking any maximum independent set $S \subseteq \mathcal{C}$ and noting that $S \cup \mathcal{A}$ is independent by choice of $\mathcal{A}$. Therefore, $r(X^c) \neq r(Y^c)$, which is a contradiction because $X^c$ and $Y^c$ both contain bases of $M$.
 
 ### Contraction of a Matroid
 
