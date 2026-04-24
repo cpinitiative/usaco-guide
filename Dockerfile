@@ -30,4 +30,4 @@ COPY . .
 
 EXPOSE 3000
 
-CMD ["yarn", "dev:docker"]
+CMD ["sh", "-c", "yarn tsx scripts/load-content.ts && yarn next dev --hostname 0.0.0.0"]
