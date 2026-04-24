@@ -11,23 +11,21 @@ Interpret the heap sizes as vectors in $$\mathbb {Z_2^{60}}$$ (refer to the [XOR
 
 We are given $A$, the set of vectors that Alice has chosen. To win the game, we must choose
 a set of vectors $B$, one from each of the $m$ boxes, such that no nonempty subset of $A \cup B$
-has an XOR sum of zero.
+has an XOR-sum of zero.
 
 Let's represent this with matroid intersection. Let $H$ be the set of all possible vectors that Bob can pick (this will be
 our ground set). Then, we want a set of vectors $B$ of maximum size where:
 1. at most one vector is chosen from each box,
 2. $A \cup B$ is linearly independent.
 
-Bob can win iff we can achieve a set of size $m$.
+Bob can win iff we can achieve a set $B$ of size $m$.
 
-We can easily handle the first condition with a colorful matroid and the second
-with a contracted linear matroid.
+We can easily handle the first condition with a **colorful matroid**.
+For the second condition, we use a **contracted linear matroid** where $A$
+is the set of vectors we are forced to include.
 
-Note that to actually get a matroid in the second case, we need $A$ to be linearly independent
+Note that to actually get a matroid in the second condition, we need $A$ to be linearly independent
 (otherwise we violate independence of $B = \emptyset$).
-
-Interpret the coins as vertices on a graph, and interpret an envelope with coins
-$a$ and $b$ as an undirected edge between $a$ and $b$.
 
 ## Implementation
 
