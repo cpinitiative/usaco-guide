@@ -143,7 +143,7 @@ The algorithm we've described iterates over $y\notin B$ (the edge $(u,v)$ we add
 </Optional>
 
 ### Implementation
-Our implementation starts by computing an MST of the given graph using Kruskal's algorithm. Then, we use binary lifting: for each node $x$ and each $k\in[0,17)$, we compute the maximum weight out of all edges going up $2^k$ nodes, the _second_ maximum weight (i.e. the greatest that's strictly less), and also the node that's $2^k$ up. If the max or second max don't exist, we use $-\infty$. This is because ideally, we'd like to remove the edge with the maximum weight. However if that results in a spanning tree whose weight is the same as our MST, we have to remove an edge with lesser weight. The edge whose weight is the _second_ maximum is the best possible choice.
+Our implementation starts by computing an MST of the given graph using Kruskal's algorithm. Then, we use binary lifting: for each node $x$ and each $k\in[0,\lceil \log_2 n \rceil)$, we compute the maximum weight out of all edges going up $2^k$ nodes, the _second_ maximum weight (i.e. the greatest that's strictly less), and also the node that's $2^k$ up. If the max or second max don't exist, we use $-\infty$. This is because ideally, we'd like to remove the edge with the maximum weight. However if that results in a spanning tree whose weight is the same as our MST, we have to remove an edge with lesser weight. The edge whose weight is the _second_ maximum is the best possible choice.
 
 Lastly to simulate an edge replacement with the edge $(u,v)$, we compute $\ell=\operatorname{lca}(u,v)$ (using binary lifting), then merge both paths from $u\to\ell$ and $v\to\ell$ so that we consider all edges along the cycle we create by adding $(u,v)$, except $(u,v)$ itself.
 
