@@ -44,9 +44,10 @@ to form a new bipartite graph.
     />
 </p>
 
-Observe that $S$ satisfies the constraints
-if and only if $S$ contains no cycles and there is a perfect matching
-from guards to components in the contracted graph.
+Observe that $S$ satisfies the constraints if and only if there is a perfect matching
+from guards to components in the contracted graph with edges in $S$. We
+should also require that $S$ is acyclic, because with positive edge weights
+it is never correct to include a cycle.
 
 If we relax the perfect matching condition to only saying that every guard is matched
 (any number of villages can be unmatched), then the condition is nice enough to
@@ -56,7 +57,7 @@ and check if we achieved a perfect matching at the end.
 Some details on showing we have a matroid:
 
 1. The non-emptiness property is only guaranteed if 
-there is a matching from guards to edges before adding any edges. 
+there is a matching from guards to components before adding any edges. 
 **This condition must be checked separately.**
 2. Heredity holds because when we take any subset of edges with a valid matching,
 the same matching works.
@@ -105,8 +106,8 @@ of $X$ with both endpoints in $V$. Thus, $|Y| \le |X|$, which is impossible.
 ### Optimization
 
 Currently, our algorithm has to perform a bipartite matching check
-for every added edge. It suffices to only consider edges in an MST,
-because if we fix the matching from guards to villages, we can see that
+for every added edge. However, it suffices to only consider edges in an MST,
+because if we fix a matching from guards to villages, we can see that
 an optimal set of edges to add can be obtained via Kruskal's algorithm,
 with ties broken so that our MST's edges are preferred.
 
