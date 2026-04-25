@@ -10,24 +10,26 @@ frequency: 0
 ---
 
 <Resources>
+    <Resource
+        source="MT"
+        title="Matroid Theory"
+        url="/matroid-theory.pdf"
+        starred
+    />
 	<Resource
 		source="MIT"
 		title="Lecture notes on matroid intersection"
 		url="https://web.archive.org/web/20211005021447/http://math.mit.edu/~franks/18453/lecturenotes/6-matroid-intersect-notes.pdf"
-		starred
 	/>
 	<Resource
 		source="MIT"
 		title="Matroid Union Notes (18.438)"
 		url="https://math.mit.edu/~goemans/18438F09/lec13.pdf"
-	>
-		Special case of matroid intersection
-	</Resource>
-		<Resource
+	/>
+    <Resource
 		source="KACTL"
 		title="Matroid Intersection Implementation"
 		url="https://github.com/kth-competitive-programming/kactl/pull/172/changes"
-		starred
 	/>
 </Resources>
 
@@ -59,6 +61,11 @@ There are two facts that together explain the correctness of this algorithm:
 
 1. At every stage in the algorithm, $S \in \mathcal{I}(M_1) \cap \mathcal{I}(M_2)$.
 2. Upon termination, $S$ has maximum size among $X \subseteq E$ such that $X \in \mathcal{I}(M_1) \cap \mathcal{I}(M_2)$.
+
+<Optional title="Proof of the above facts">
+- [Proof (Section 4. Matroid Intersection)](/matroid-theory.pdf)
+</Optional>
+
 
 ## Example - SERVERS
 
@@ -98,7 +105,7 @@ It turns out that supporting the following operations (for both matroids) is eno
 
 Recall that we need to know for each $y \in S$ and $x \in E \setminus S$ if
 $S - y + x \in \mathcal I(M_1)$ and $s - y + x \in \mathcal I(M_2)$. 
-The trick is to batch queries by $y$. For a fixed $y$, use `clear()` and
+The trick is to batch queries by $y$. For a fixed $y$, we use `clear()` and
 `add(x)` to obtain $S - y$, then use `check(x)` to find all $x$ where
 $S - y + x$ is independent.
 
