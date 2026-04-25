@@ -138,48 +138,49 @@ The next step would be to take all $N^3$ tuples of and check if this solution of
 using namespace std;
 
 int main() {
-    int t; cin >> t;
+	int t;
+	cin >> t;
 
-    while (t--){
-        int n; cin >> n;
+	while (t--) {
+		int n;
+		cin >> n;
 
-        vector<int> vals(n);
-        for (int &i : vals) cin >> i;
+		vector<int> vals(n);
+		for (int &i : vals) cin >> i;
 
-        set<int> candidates(vals.begin(), vals.end());
-        for (int i : vals){
-            for (int j : vals){
-                int diff = i - j;
-                if (diff >= 0)
-                    candidates.insert(diff);
-            }
-        }
+		set<int> candidates(vals.begin(), vals.end());
+		for (int i : vals) {
+			for (int j : vals) {
+				int diff = i - j;
+				if (diff >= 0) candidates.insert(diff);
+			}
+		}
 
-        vector<int> candidatesVector(candidates.begin(), candidates.end());
+		vector<int> candidatesVector(candidates.begin(), candidates.end());
 
-        int solutions = 0;
-        for (int i = 0; i < candidatesVector.size(); i++)
-        for (int j = i; j < candidatesVector.size(); j++)
-        for (int k = j; k < candidatesVector.size(); k++){
-            int a = candidatesVector[i], b = candidatesVector[j], c = candidatesVector[k];
+		int solutions = 0;
+		for (int i = 0; i < candidatesVector.size(); i++)
+			for (int j = i; j < candidatesVector.size(); j++)
+				for (int k = j; k < candidatesVector.size(); k++) {
+					int a = candidatesVector[i], b = candidatesVector[j],
+					    c = candidatesVector[k];
 
-            bool valid = true;
+					bool valid = true;
 
-            set<int> possible = {a, b, c, a+b, b+c, a+c, a+b+c};
-            for (int x : vals){
-                if (!possible.count(x)) {
-                    valid = false;
-                    break;
-                }
-            }
+					set<int> possible = {a, b, c, a + b, b + c, a + c, a + b + c};
+					for (int x : vals) {
+						if (!possible.count(x)) {
+							valid = false;
+							break;
+						}
+					}
 
-            if (valid) solutions++;            
-        }
+					if (valid) solutions++;
+				}
 
-        cout << solutions << "\n";
-    }
+		cout << solutions << "\n";
+	}
 }
-
 ```
 </CPPSection>
 </LanguageSection>
