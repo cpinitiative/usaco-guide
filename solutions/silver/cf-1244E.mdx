@@ -13,24 +13,50 @@ Instead of trying to construct a final array, fix a target difference $d$ and ch
 
 If all elements can be moved into some interval of length $d$, then it can be shown that all larger values of $d$ work. Hence, the condition is monotonic and we can binary search on $d$.
 
-For a fixed $d$, we try to fit all elements into $[L, L + d]$:
+For a fixed $d$, we try to fit all elements into $[L, L + d]$, where $L$ is an arbitrary starting point for the interval:
 - increase elements below $L$
 - decrease elements above $L + d$
 
-The total cost can be computed using prefix sums.
+The total cost (number of unit increments/decrements needed to move all elements into [L,L+d]) can be computed using prefix sums.
 
-### Choosing $L$
+### Choosing L
 
-Let $A$ be the number of elements with $a_i < L$, and $B$ be the number of elements with $a_i > L + d$.
+We consider an interval [L, L + d] of fixed length d, where L is the left endpoint.
 
-Shifting $[L, L + d]$ (without crossing any $a_i$) changes the cost by $A - B$.
-Hence, we can move the interval to improve or preserve the cost until an endpoint hits some $a_i$.
+If we move this interval slightly to the right without crossing any a[i], then:
+- elements left of L become more expensive to increase
+- elements right of L + d become cheaper to decrease
 
-If the left endpoint hits $a_i$, then $L = a_i$.
-If the right endpoint hits $a_i$, then $L + d = a_i \Rightarrow L = a_i - d$.
+So we can always keep moving in the direction that does not increase cost until we hit some a[i].
 
-Thus, it suffices to consider
-$L = a_i \text{ or } L = a_i - d$.
+Therefore, an optimal interval must have at least one endpoint at some a[i], i.e.:
+
+L = a[i] or L + d = a[i]
+
+### Calculating the Final Answer
+
+For a fixed L, use prefix sums $pref[i]$.
+
+Let $cnt$ = number of elements with a[i] < L.
+
+Left cost:
+$(L - a[1]) + ... + (L - a[cnt])$
+= $cnt * L - \text{pref}[cnt]$
+
+Let $right$ = last index with a[right] <= L + d.
+
+Right cost:
+$(a[right+1] - (L + d)) + ... + (a[n] - (L + d))$
+= $(\text{pref}[n] - \text{pref}[right]) - (n - right) * (L + d)$
+
+Total cost:
+$(cnt * L - \text{pref}[cnt]) + (\text{pref}[n] - \text{pref}[right] - (n - right) * (L + d))$
+
+A value of $d$ is feasible if the minimum cost over all choices of L is ≤ k.
+
+$cnt$ and $right$ are found via binary search, so each L is evaluated in O(log n).
+We take the minimum over all candidate L.
+
 
 ## Implementation
 
