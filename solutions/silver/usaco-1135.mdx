@@ -7,7 +7,7 @@ author: Sachet Abeysinghe, Aarav Sethi
 
 [Official Analysis (C++, Java)](https://usaco.org/current/data/sol_prob2_silver_open21.html)
 
-# Solution 1:
+# Solution 1
 ## Explanation
 
 Due to the low bounds, we can use a brute-force approach. There are seven labels $A$, $B$, $C$, $A + B$, $B + C$, $A + C$, and $A + B + C$. We need exactly $N$ of them, so we can iterate over all combinations of $N$ labels to decide which labels appear in this test case.
@@ -115,8 +115,8 @@ for i in range(int(input())):
 
 </LanguageSection>
 
-# Solution 2:
-## Explanation:
+# Solution 2
+## Explanation
 This solution works by observing that, if you have at least $4$ of the numbers, each value in an $(A, B, C)$ candidate can be found as the difference of two of the input numbers.
 
 For example:
@@ -126,8 +126,8 @@ For example:
 
 Some of the candidate values could be invalid. Thus, we take all possible tuples of candidate values and check if this solution of $(A, B, C)$ can create a valid array of $A, B, C, A+B, ..., A+B+C$.
 
-## Implementation:
-**Time Complexity:** $\mathcal{O}(T \cdot N^5)$
+## Implementation
+**Time Complexity:** $\mathcal{O}(T \cdot N^6)$
 
 <LanguageSection>
 <CPPSection>
@@ -160,8 +160,9 @@ int main() {
 		for (int i = 0; i < candidatesVector.size(); i++)
 			for (int j = i; j < candidatesVector.size(); j++)
 				for (int k = j; k < candidatesVector.size(); k++) {
-					int a = candidatesVector[i], b = candidatesVector[j],
-					    c = candidatesVector[k];
+					int a = candidatesVector[i];
+					int b = candidatesVector[j];
+					int c = candidatesVector[k];
 
 					bool valid = true;
 
