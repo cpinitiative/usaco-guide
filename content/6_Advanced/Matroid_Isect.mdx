@@ -33,26 +33,32 @@ frequency: 0
 
 ## Matroid Intersection 
 
-Given two matroids $M_1, M_2$ over common ground set $E$, the matroid intersection algorithm finds a set $X \subseteq E$ of maximum size such that $X \in \mathcal{I}(M_1) \cap \mathcal{I}(M_2)$. The algorithm works by starting with the set $S = \emptyset$, and repeatedly augmenting $S$ using the corresponding exchange graph $\mathcal{G}_{M_1, M_2}(S)$. The vertices of $\mathcal{G}_{M_1, M_2}(S)$ are the elements of $E$, and for $e \in S$ and $f \in E \setminus S$:
+Given two matroids $M_1, M_2$ over common ground set $E$, the matroid intersection
+algorithm finds a set $X \subseteq E$ of maximum size such that
+$X \in \mathcal{I}(M_1) \cap \mathcal{I}(M_2)$.
+The algorithm works by starting with the set $S = \emptyset$, and repeatedly
+augmenting $S$ using the corresponding exchange graph $\mathcal{G}_{M_1, M_2}(S)$.
+The vertices of $\mathcal{G}_{M_1, M_2}(S)$ are the elements of $E$, and for $y \in S$ and $x \in E \setminus S$:
 
-1. There is a directed edge $(e, f)$ if $S - e + f \in \mathcal{I}(M_1)$
-2. There is a directed edge $(f, e)$ if $S - e + f \in \mathcal{I}(M_2)$
+1. There is a directed edge $(y, x)$ if $S - y + x \in \mathcal{I}(M_1)$.
+2. There is a directed edge $(x, y)$ if $S - y + x \in \mathcal{I}(M_2)$.
 
-Note that $\mathcal{G}_{M_1, M_2}(S)$ is bipartite. We also label certain vertices $f \in E \setminus S$
-1. $f$ is a source if $S + f \in \mathcal{I}(M_1)$
-2. $f$ is a sink if $S + f \in \mathcal{I}(M_2)$
+Note that $\mathcal{G}_{M_1, M_2}(S)$ is bipartite. We also label certain vertices $x \in E \setminus S$:
+1. $x$ is a source if $S + x \in \mathcal{I}(M_1)$.
+2. $x$ is a sink if $S + x \in \mathcal{I}(M_2)$.
 
-To augment $S$, the algorithm finds the shortest path $f_0, e_1, f_1, \dots, e_n, f_n$ from a source to a sink. Then, it redefines $S$ to
+To augment $S$, the algorithm finds the shortest path $x_0, y_1, x_1, \dots, y_n, x_n$ from a source to a sink. Then, it redefines $S$ to
 
 $$
 \begin{equation*}
-S = S \setminus \{e_1, e_2, \dots, e_n\} \cup \{f_0, f_2, \dots, f_n\}
+S = S \setminus \{y_1, y_2, \dots, y_n\} \cup \{x_0, x_1, \dots, x_n\}.
 \end{equation*}
 $$
 
-There are two facts that together explain the correctness of this algorithm
-1. At every stage in the algorithm, $S \in \mathcal{I}(M_1) \cap \mathcal{I}(M_2)$
-2. Upon termination, $S$ has maximum size among $X \subseteq E$ such that $X \in \mathcal{I}(M_1) \cap \mathcal{I}(M_2)$
+There are two facts that together explain the correctness of this algorithm:
+
+1. At every stage in the algorithm, $S \in \mathcal{I}(M_1) \cap \mathcal{I}(M_2)$.
+2. Upon termination, $S$ has maximum size among $X \subseteq E$ such that $X \in \mathcal{I}(M_1) \cap \mathcal{I}(M_2)$.
 
 ## Example - SERVERS
 
@@ -72,8 +78,8 @@ in the **partition matroid** where the categories are frequencies and $c(f)$ is 
 
 ### Implementing the Matroid Intersection Algorithm
 
-We'll implement the algorithm with a general interface so that it can be used
-for any matroid we want. Then, in the next section, we'll give the specific operations
+We'll implement the algorithm with a genxeral interface so that it can be used
+for any matroids $M_1, M_2$ we want. Then, in the next section, we'll give the specific operations
 needed for our matroids.
 
 Let $N=|E|$ be the size of the ground set and $R$ be the size of a maximum
@@ -85,13 +91,13 @@ Step 2 can be done in $\mathcal O(RN)$ time using BFS. The hard part is step 1,
 where we need to maintain a matroid structure that allows us to efficiently
 check when a set is independent.
 
-It turns out that supporting the following operations is enough:
+It turns out that supporting the following operations (for both matroids) is enough:
 - `clear()`: set $S := \emptyset$.
 - `check(x)`: return true if $S + x$ is independent and false otherwise.
 - `add(x)`: set $S := S + x$, assuming $S + x$ is independent.
 
 Recall that we need to know for each $y \in S$ and $x \in E \setminus S$ if
-$S - y + x \in \mathcal I_1$ and $s - y + x \in \mathcal I_2$. 
+$S - y + x \in \mathcal I(M_1)$ and $s - y + x \in \mathcal I(M_2)$. 
 The trick is to batch queries by $y$. For a fixed $y$, use `clear()` and
 `add(x)` to obtain $S - y$, then use `check(x)` to find all $x$ where
 $S - y + x$ is independent.
