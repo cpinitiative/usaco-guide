@@ -2,11 +2,12 @@
 id: usaco-1135
 source: USACO Silver 2021 US Open
 title: Do You Know Your ABCs?
-author: Sachet Abeysinghe
+author: Sachet Abeysinghe, Aarav Sethi
 ---
 
 [Official Analysis (C++, Java)](https://usaco.org/current/data/sol_prob2_silver_open21.html)
 
+# Solution 1:
 ## Explanation
 
 Due to the low bounds, we can use a brute-force approach. There are seven labels $A$, $B$, $C$, $A + B$, $B + C$, $A + C$, and $A + B + C$. We need exactly $N$ of them, so we can iterate over all combinations of $N$ labels to decide which labels appear in this test case.
@@ -17,7 +18,7 @@ We can always deduce a possible value for each of $A$, $B$, and $C$, because eac
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(T)$
+**Time Complexity:** $\mathcal{O}(T \cdot \binom{7}{x} \cdot x! \cdot x)$
 
 <LanguageSection>
 
@@ -112,4 +113,73 @@ for i in range(int(input())):
 
 </PySection>
 
+</LanguageSection>
+
+# Solution 2:
+## Explanation:
+This solution works by realizing if you take any of the $4$ to $7$ input values, every $A$ $B$ $C$ candiates can be found by subtracting every $N^2$ pairs.
+
+For example:
+- $(A+B+C) - (A+B) = C$
+- $(B+C) - (C) = B$
+- $(A+B) - (B) = A$
+
+Because we do not know the values of the input array ahead of time, some of the candidate values could be invalid.
+
+The next step would be to take all $N^3$ tuples of and check if this solution of $(A, B, C)$ by checking if all the values in the array satisfy $A, B, C, A+B, ..., A+B+C$.
+
+## Implementation:
+**Time Complexity:** $\mathcal{O}(T \cdot N^5)$
+
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int t; cin >> t;
+
+    while (t--){
+        int n; cin >> n;
+
+        vector<int> vals(n);
+        for (int &i : vals) cin >> i;
+
+        set<int> candidates(vals.begin(), vals.end());
+        for (int i : vals){
+            for (int j : vals){
+                int diff = i - j;
+                if (diff >= 0)
+                    candidates.insert(diff);
+            }
+        }
+
+        vector<int> candidatesVector(candidates.begin(), candidates.end());
+
+        int solutions = 0;
+        for (int i = 0; i < candidatesVector.size(); i++)
+        for (int j = i; j < candidatesVector.size(); j++)
+        for (int k = j; k < candidatesVector.size(); k++){
+            int a = candidatesVector[i], b = candidatesVector[j], c = candidatesVector[k];
+
+            bool valid = true;
+
+            set<int> possible = {a, b, c, a+b, b+c, a+c, a+b+c};
+            for (int x : vals){
+                if (!possible.count(x)) {
+                    valid = false;
+                    break;
+                }
+            }
+
+            if (valid) solutions++;            
+        }
+
+        cout << solutions << "\n";
+    }
+}
+
+```
+</CPPSection>
 </LanguageSection>
