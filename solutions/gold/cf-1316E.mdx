@@ -7,6 +7,33 @@ author: Sofia Yang, Kevin Sheng, Raagav Bala
 
 [Official Editorial (C++)](https://codeforces.com/blog/entry/74493)
 
+## Explanation
+
+Notice that $p \leq 7$. This means that if we use a bitmask to represent different positions, there are a maximum of $2^7 = 128$ different possibilities, which is manageable for bitmask DP.
+
+Each person can be used in one of three ways. You can either choose them as an audience member, as a player for on position, or just ignore them. 
+
+First, we can sort people in the decreasing audience strengths. It makes sense to consider people with higher audience values earlier. Any later audience weight would be lower than the earler person's audience weight, so it becomes optimal that we always choose the earlier person for the audience, and the rest we consider for the position.
+
+Now, we can do the DP. As we process each person one by one, we build a new DP from the original DP, which we define as $\texttt{newdp} = \texttt{copy(dp)}$. Initially, this represents the option of "ignore this person". For each $\texttt{mask}$ in $\texttt{newdp}$, we know the number of people chosen in the position so far ($\texttt{popcount(mask)}$), so among the first $i$ processed people, the non-players so far is $i - \texttt{popcount(mask)}$. Because people are sorted by decreasing audience strength, the first $k$ non-players are audience members, and any later non-players are ignored.
+
+For the next person, we now have two options for the DP.
+
+* The first option is to add the person as an audience member, given that the audience is not filled. So, the DP transition for this case becomes, either we already have the maximum strength for a position, or adding a new member to the audience increases the strength:
+
+$$
+\texttt{newdp[mask]} = \max(\texttt{newdp[mask]}, \texttt{dp[mask]} + \texttt{audience\_strength[person]})
+$$
+
+
+* The other option is to make this person a player. We can try all empty positions, which will be fast enough given that $p \leq 7$. For each position $\texttt{pos},$ given that $\texttt{new\_mask} = 
+\texttt{mask}~\vert~(1 \ll \texttt{pos})$, we try
+
+$$
+\texttt{newdp[new\_mask]} = \max(\texttt{newdp[new\_mask]},~\texttt{dp[mask]} + \texttt{position\_strength[person][pos]})
+$$
+
+So, after processing all people, our final answer is the maximum strength after all positions are filled, so the final answer is $\texttt{dp}[(1 \ll p)-1]$.
 
 ## Implementation
 
