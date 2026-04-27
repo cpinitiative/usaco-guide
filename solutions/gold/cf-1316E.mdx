@@ -19,14 +19,14 @@ Now, we can do the DP. As we process each person one by one, we build a new DP f
 
 For the next person, we now have two options for the DP.
 
-* The first option is to add the person as an audience member, given that the audience is not filled. So, the DP transition for this case becomes, either we already have the maximum strength for a position, or adding a new member to the audience increases the strength:
+* The first option is to add the person as an audience member, provided that the audience is not yet full. In this case, the DP transition is: we either keep the current strength, or add this person to the audience to increase it:
 
 $$
 \texttt{newdp[mask]} = \max(\texttt{newdp[mask]}, \texttt{dp[mask]} + \texttt{audience\_strength[person]})
 $$
 
 
-* The other option is to make this person a player. We can try all empty positions, which will be fast enough given that $p \leq 7$. For each position $\texttt{pos},$ given that $\texttt{new\_mask} =
+* The other option is to make this person a player. Since unset bits in $\texttt{mask}$ represent empty positions, we can try assigning this person to each of them. This will be fast enough because $p \leq 7$. For each position $\texttt{pos},$ given that $\texttt{new\_mask} =
 \texttt{mask}~\vert~(1 \ll \texttt{pos})$, we try
 
 $$
