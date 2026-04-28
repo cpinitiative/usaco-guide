@@ -21,41 +21,58 @@ The total cost (number of unit increments/decrements needed to move all elements
 
 ### Choosing L
 
-We consider an interval [L, L + d] of fixed length d, where L is the left endpoint.
+We consider an interval $[L, L + d]$ of fixed length $d$, where $L$ is the left endpoint.
 
-If we move this interval slightly to the right without crossing any a[i], then:
-- elements left of L become more expensive to increase
-- elements right of L + d become cheaper to decrease
+If we move this interval slightly to the right **without any element entering or leaving the interval**, then:
+- elements with $a_i < L$ become more expensive to increase,
+- elements with $a_i > L + d$ become cheaper to decrease.
 
-So we can always keep moving in the direction that does not increase cost until we hit some a[i].
+Let $A = |\{i : a_i < L\}|$ and $B = |\{i : a_i > L + d\}|$.
 
-Therefore, an optimal interval must have at least one endpoint at some a[i], i.e.:
+Shifting the interval by $\varepsilon > 0$ changes the cost by:
+$\[
+\Delta = (A - B)\cdot \varepsilon
+\]$
 
-L = a[i] or L + d = a[i]
+Thus, as long as no element crosses either endpoint, the cost varies linearly with $L$, and we can keep shifting the interval in the direction that does not increase cost.
+
+This process stops only when an endpoint coincides with some $a_i$, i.e.,
+$\[
+L = a_i \quad \text{or} \quad L + d = a_i
+\]$
 
 ### Calculating the Final Answer
 
-For a fixed L, use prefix sums $pref[i]$.
+Fix a value of $L$ and use prefix sums $\text{pref}[i] = \sum_{j=1}^{i} a_j$.
 
-Let $cnt$ = number of elements with a[i] < L.
+Let
+$\[
+cnt = |\{i : a_i < L\}|.
+\]$
 
-Left cost:
-$(L - a[1]) + ... + (L - a[cnt])$
-= $cnt * L - \text{pref}[cnt]$
+**Left cost** (raising all $a_i < L$ up to $L$):
+$\[
+\sum_{i=1}^{cnt} (L - a_i)
+= cnt \cdot L - \text{pref}[cnt]
+\]$
 
-Let $right$ = last index with a[right] <= L + d.
+Let
+$\[
+right = \max \{i : a_i \le L + d\}
+\]$
 
-Right cost:
-$(a[right+1] - (L + d)) + ... + (a[n] - (L + d))$
-= $(\text{pref}[n] - \text{pref}[right]) - (n - right) * (L + d)$
+**Right cost** (lowering all $a_i > L + d$ down to $L + d$):
+$\[
+\sum_{i=right+1}^{n} (a_i - (L + d))
+= (\text{pref}[n] - \text{pref}[right]) - (n - right)(L + d)
+\]$
 
-Total cost:
-$(cnt * L - \text{pref}[cnt]) + (\text{pref}[n] - \text{pref}[right] - (n - right) * (L + d))$
+**Total cost**:
+$= cnt \cdot L - \text{pref}[cnt] + (\text{pref}[n] - \text{pref}[right] - (n - right)(L + d))$
 
-A value of $d$ is feasible if the minimum cost over all choices of L is ≤ k.
+A value of $d$ is feasible if the minimum cost over all valid choices of $L$ is $\le k$.
 
-$cnt$ and $right$ are found via binary search, so each L is evaluated in O(log n).
-We take the minimum over all candidate L.
+Both $cnt$ and $right$ can be found using binary search, so each candidate $L$ is evaluated in $\mathcal{O}(\log n)$ time. We take the minimum over all candidate values of $L$.
 
 
 ## Implementation
