@@ -15,7 +15,7 @@ Each person can be used in one of three ways. You can either choose them as an a
 
 First, we sort people in the decreasing audience strengths. Any later audience weight would be lower than the earlier person's audience weight, so it's optimal to always choose the earlier person for the audience, and the rest we consider for the position. Thus, we consider people with higher audience values earlier.
 
-Now, we can do the DP. For intuition, we can think of this as a 2D DP $\texttt{dp}[i][\texttt{mask}]$, where $i$ is the number of processed people. However, every time we process a new person, it only depends on the DP of the previous person. We implement this using a 1D DP called $\texttt{newdp}$. 
+Now, we can do the DP. For intuition, we can think of this as a 2D DP $\texttt{dp}[i][\texttt{mask}]$, where $i$ is the number of processed people. However, every time we process a new person, it only depends on the DP of the previous person. We implement this using a 1D DP called $\texttt{newdp}$.
 
 As we process each person one by one, we build a new DP from the original DP, which we define as $\texttt{newdp} = \texttt{copy(dp)}$. Initially, this represents the option of "ignore this person". For each $\texttt{mask}$ in $\texttt{newdp}$, we know the number of people chosen in the position so far ($\texttt{popcount(mask)}$), so among the first $i$ processed people, the non-players so far is $i - \texttt{popcount(mask)}$. Because people are sorted by decreasing audience strength, the first $k$ non-players are audience members, and any later non-players are ignored.
 
