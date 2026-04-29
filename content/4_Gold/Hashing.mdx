@@ -435,7 +435,21 @@ Constraints for "Bull in a China Shop" are incorrect, should say $R,C\le 500$. A
 
 <Resources>
   <Resource source="CF" title="XOR Hashing" url="https://codeforces.com/blog/entry/85900"/>
+  <Resource source="CF" title="Hacking Incorrect XOR Hashing with mt19937_64" url="https://codeforces.com/blog/entry/153335"/>
 </Resources>
+
+<Warning>
+
+In contests with open hacking, seeding `mt19937` (or even `mt19937_64`) with a
+predictable value such as `chrono::steady_clock::now().time_since_epoch().count()`
+is unsafe for XOR hashing. Both generators are linear over $\mathbb{F}_2$, which
+lets an adversary construct inputs whose XOR sum is always $0$ regardless of the
+seed (see [this blog](https://codeforces.com/blog/entry/153335)). The
+implementation below works for non-adversarial inputs; for adversarial settings,
+mix the output through a non-linear function (for example `splitmix64`) before
+using it as a hash, and seed from `std::random_device`.
+
+</Warning>
 
 Hashing can also be used to check if sets of elements are equal. To do this, we first randomly generate a hash value for each unique element. Typically, the hash value is an integer in the range $[0, 2^{63}-1]$ since $2^{63}-1$ is the maximum value of a 64-bit signed integer. The hash of a set $S$ is the XOR sum of the hash values of all the elements in $S$. Since $x \oplus x = 0$ for all $x$, we can delete an element $s$ from set $S$ by applying the hash value of $s$ again on the hash. The probability of a collision of $N$ sets is approximately $\frac{N^2}{M}$, where $M$ is the maximum possible hash value.
 
