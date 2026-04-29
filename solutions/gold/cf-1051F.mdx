@@ -1,0 +1,282 @@
+---
+id: cf-1051F
+source: CF
+title: The Shortest Statement
+author: Raagav Bala
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/61969)
+
+## Explanation
+
+First, notice the restriction $m - n \le 20$. Because a spanning tree with $n$ nodes contains exactly $n-1$ edges, this suggests that the graph is almost a tree, except at most $m-(n-1) = m-n+1 \le 21$ extra edges. Since the number of extra edges is fairly small, we can first process the main tree, and determine how to handle the extra edges later.
+
+Any shortest path between two nodes $u$ and $v$ must either use only edges from the tree or use at least one of these extra edges. If the path only uses the tree's edges, we can compute the distance using LCA:
+
+$$
+\text{dist} (u,v) = \text{dist}(1,u) + \text{dist}(1,v) - 2 \cdot \text{dist}(1,\text{lca}(u,v))
+$$
+
+Otherwise, the shortest path uses at least one extra edge. Since there are at most $21$ such edges, we can use Dijkstra for each of them. For each extra edge $(i, j)$, we run Dijkstra from an endpoint (e.g. $i$) and store the distances from $i$ to all nodes.
+
+Therefore, for a query $(u,v)$, we consider all such precomputed distances to $u$ and $v$. The final answer is the minimum of the tree distance and all values of $\text{dist}(i,u) + \text{dist}(i,v)$ over all endpoints of extra edges $i$.
+
+To compute the original shortest path of $u$ and $v$ in the tree efficiently, we can run DFS from the root to find each node's depth and distance from the root, and to build a binary lifting table for LCA. Because every edge we consider in the DFS is part of the tree, we can remove it from the set of unvisited edges, which we denote as `unused`. After the DFS, the `unused` edges aren't part of the tree anymore, and so there are only at most $m - n + 1 \le 21$ of them.
+
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}((N+Q)\log N)$
+
+<LanguageSection>
+<PySection>
+
+```py
+import heapq
+
+n, m = map(int, input().split())
+g = [[] for _ in range(n)]
+unused = set()
+for _ in range(m):  # build graph and track all edges
+	i, j, w = map(int, input().split())
+	i -= 1
+	j -= 1
+	g[i].append((j, w))
+	g[j].append((i, w))
+	unused.add((min(i, j), max(i, j)))
+
+mx_l = n.bit_length()
+depth = [0] * n
+root_dist = [0] * n
+up = [[0] * mx_l for _ in range(n)]  # up[v][i] = 2^i ancestor of v
+
+# dfs to build spanning tree and remove tree edges from unused
+s = [(0, 1, 0)]  # node, depth, distance from root
+depth[0] = 1
+root_dist[0] = 0
+up[0][0] = 0
+for lvl in range(mx_l - 1):
+	up[0][lvl + 1] = up[up[0][lvl]][lvl]
+
+while s:
+	cur, d, dist = s.pop()
+	depth[cur] = d
+	root_dist[cur] = dist
+
+	for nxt, w in g[cur]:
+		if depth[nxt] != 0:
+			continue
+		depth[nxt] = d + 1
+
+		# this edge becomes part of the tree
+		unused.discard((min(cur, nxt), max(cur, nxt)))
+
+		up[nxt][0] = cur
+		for lvl in range(mx_l - 1):
+			up[nxt][lvl + 1] = up[up[nxt][lvl]][lvl]
+		s.append((nxt, d + 1, dist + w))
+
+# lca to find distances of nodes within the tree
+def lca(i, j):
+	if depth[i] > depth[j]:
+		i, j = j, i
+
+	# lift j up so that both i and j are at the same depth
+	diff = depth[j] - depth[i]
+	lvl = 0
+	while diff:
+		if diff & 1:
+			j = up[j][lvl]
+		diff >>= 1
+		lvl += 1
+
+	# if they meet, then i is the LCA of j
+	if i == j:
+		return i
+
+	# lift both i and j together, until they are just below the LCA
+	for lvl in range(mx_l - 1, -1, -1):
+		if up[i][lvl] != up[j][lvl]:
+			i, j = up[i][lvl], up[j][lvl]
+
+	# now their parents are equal, so that's the LCA
+	return up[i][0]
+
+
+dists = []
+
+# run Dijkstra from an endpoint of each extra edge
+for i, j in unused:
+	dist = [10**30] * n
+	dists.append(dist)
+
+	dist[i] = 0
+	pq = [(0, i)]
+	while pq:
+		dist_here, cur = heapq.heappop(pq)
+		if dist_here != dist[cur]:
+			continue
+		for nxt, w in g[cur]:
+			nd = dist_here + w
+			if nd < dist[nxt]:
+				dist[nxt] = nd
+				heapq.heappush(pq, (nd, nxt))
+
+# answer queries
+for _ in range(int(input())):
+	i, j = map(int, input().split())
+	i -= 1  # 0 indexing
+	j -= 1
+
+	# shortest path on tree
+	mn = root_dist[i] + root_dist[j] - 2 * root_dist[lca(i, j)]
+
+	for dist in dists:
+		choice = dist[i] + dist[j]  # path using extra edges
+		if choice < mn:
+			mn = choice
+	print(mn)
+```
+</PySection>
+
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <functional>
+#include <iostream>
+#include <limits>
+#include <queue>
+#include <set>
+#include <tuple>
+#include <vector>
+using namespace std;
+
+constexpr long long INF = 1e18;
+
+int main() {
+	int n, m;
+	cin >> n >> m;
+	vector<vector<pair<int, int>>> g(n);
+	set<pair<int, int>> unused;
+
+	for (int i = 0; i < m; i++) {  // build graph and track all edges
+		int u, v, d;
+		cin >> u >> v >> d;
+		u--;
+		v--;
+		g[u].push_back({v, d});
+		g[v].push_back({u, d});
+		unused.insert({min(u, v), max(u, v)});
+	}
+
+	// calculate the biggest power of 2 for binlifting
+	int mx_l = 0;
+	while ((1 << mx_l) <= n) mx_l++;
+
+	vector<int> depth(n);
+	vector<long long> root_dist(n);
+	vector<vector<int>> up(n, vector<int>(mx_l));  // up[v][i] = 2^i ancestor of v
+
+	// dfs to build spanning tree and remove tree edges from unused
+	function<void(int, int, int, long long)> dfs = [&](int cur, int par, int d,
+	                                                   long long dist) {
+		depth[cur] = d;
+		root_dist[cur] = dist;
+		up[cur][0] = par;
+
+		for (int lvl = 0; lvl < mx_l - 1; lvl++) {
+			up[cur][lvl + 1] = up[up[cur][lvl]][lvl];
+		}
+
+		for (const auto &[nxt, w] : g[cur]) {
+			if (depth[nxt] != 0) continue;
+
+			// this edge becomes part of the spanning tree
+			unused.erase({min(cur, nxt), max(cur, nxt)});
+
+			dfs(nxt, cur, d + 1, dist + w);
+		}
+	};
+
+	dfs(0, 0, 1, 0);
+
+	// lca to find distances of nodes within the tree
+	auto lca = [&](int u, int v) -> int {
+		if (depth[u] > depth[v]) swap(u, v);
+
+		// lift v up so that both u and v are at the same depth
+		int diff = depth[v] - depth[u];
+		int lvl = 0;
+		while (diff) {
+			if (diff & 1) v = up[v][lvl];
+			diff >>= 1;
+			lvl++;
+		}
+
+		// if they meet, then u is the LCA of v
+		if (u == v) return u;
+
+		// lift both u and v together, until they are just below the LCA
+		for (int lvl = mx_l - 1; lvl >= 0; lvl--) {
+			if (up[u][lvl] != up[v][lvl]) u = up[u][lvl], v = up[v][lvl];
+		}
+
+		// now their parents are equal, so that's the LCA
+		return up[u][0];
+	};
+
+	vector<vector<long long>> dists;
+
+	// run Dijkstra from an endpoint of each extra edge
+	for (const auto &[u, v] : unused) {
+		vector<long long> dist(n, INF);
+
+		dist[u] = 0;
+		priority_queue<pair<long long, int>, vector<pair<long long, int>>,
+		               greater<pair<long long, int>>>
+		    pq;
+		pq.push({0, u});
+
+		while (!pq.empty()) {
+			const auto [dist_here, cur] = pq.top();
+			pq.pop();
+
+			if (dist_here != dist[cur]) continue;
+
+			for (const auto &[nxt, w] : g[cur]) {
+				long long nd = dist_here + w;
+				if (nd < dist[nxt]) {
+					dist[nxt] = nd;
+					pq.push({nd, nxt});
+				}
+			}
+		}
+
+		dists.push_back(dist);
+	}
+
+	int q;
+	cin >> q;
+	while (q--) {
+		int u, v;
+		cin >> u >> v;
+
+		u--;
+		v--;
+
+		// shortest path on tree
+		long long mn = root_dist[u] + root_dist[v] - 2LL * root_dist[lca(u, v)];
+
+		for (const auto &edges_dists : dists) {
+			// consider path using this extra edge
+			mn = min(mn, edges_dists[u] + edges_dists[v]);
+		}
+
+		cout << mn << '\n';
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>

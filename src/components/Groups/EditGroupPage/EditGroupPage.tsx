@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useReducer } from 'react';
 import toast from 'react-hot-toast';
@@ -15,6 +14,8 @@ export default function EditGroupPage(props) {
     path: string;
     groupId: string;
   };
+  const router = useRouter();
+  const isNewGroup = router.query.new === 'true';
   const activeGroup = useActiveGroup();
   const originalGroup = activeGroup?.groupData;
   const [group, editGroup] = useReducer(
@@ -25,7 +26,6 @@ export default function EditGroupPage(props) {
     originalGroup
   );
   const { deleteGroup, updateGroup } = useGroupActions();
-  const router = useRouter();
 
   React.useEffect(() => {
     if (!group && originalGroup) editGroup(originalGroup);
@@ -45,6 +45,18 @@ export default function EditGroupPage(props) {
   const handleSave = () =>
     updateGroup(groupId, group).then(() => router.push(`../${groupId}`));
 
+  const handleBack = () => {
+    if (isNewGroup) {
+      if (confirm('Are you sure you want to discard this new group?')) {
+        deleteGroup(groupId)
+          .then(() => router.push('/groups'))
+          .catch(e => console.error('Failed to delete group:', e));
+      }
+    } else {
+      router.push(`../${groupId}`);
+    }
+  };
+
   return (
     <Layout>
       <SEO title={`Edit ${group?.name}`} image={undefined} />
@@ -63,9 +75,9 @@ export default function EditGroupPage(props) {
             </h1>
           </div>
           <div className="mt-4 flex space-x-3 md:mt-0">
-            <Link href={`../${groupId}`} className="btn">
+            <button onClick={handleBack} className="btn">
               <span>Back</span>
-            </Link>
+            </button>
           </div>
         </div>
         <div className="h-6" />
