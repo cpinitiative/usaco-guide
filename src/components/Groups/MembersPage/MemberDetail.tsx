@@ -225,26 +225,39 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
       return;
     }
     setLoadingProblemKey(problemKey);
-    const snap = await getDocs(
-      query(
-        collection(
-          getFirestore(firebaseApp),
-          'groups',
-          activeGroup.activeGroupId!,
-          'posts',
-          postId,
-          'problems',
-          problemId,
-          'submissions'
-        ) as CollectionReference<DocumentData>,
-        where('userID', '==', member.uid)
-      )
-    );
-    const submissions = snap.docs
-      .map(doc => ({ ...doc.data(), id: doc.id }) as FirebaseSubmission)
-      .sort((a, b) => b.timestamp - a.timestamp);
-    setSubmissionsByProblemKey(old => ({ ...old, [problemKey]: submissions }));
-    setLoadingProblemKey(null);
+    try {
+      const snap = await getDocs(
+        query(
+          collection(
+            getFirestore(firebaseApp),
+            'groups',
+            activeGroup.activeGroupId!,
+            'posts',
+            postId,
+            'problems',
+            problemId,
+            'submissions'
+          ) as CollectionReference<DocumentData>,
+          where('userID', '==', member.uid)
+        )
+      );
+      const submissions = snap.docs
+        .map(doc => ({ ...doc.data(), id: doc.id }) as FirebaseSubmission)
+        .sort((a, b) => b.timestamp - a.timestamp);
+      setSubmissionsByProblemKey(old => ({ ...old, [problemKey]: submissions }));
+    } catch (error: unknown) {
+      const message =
+        (error as { message?: string })?.message ??
+        'Unable to load submissions for this member.';
+      if (message.includes('permission-denied')) {
+        toast.error('You do not have permission to view these submissions.');
+      } else {
+        toast.error(message);
+      }
+      setExpandedProblemKey(null);
+    } finally {
+      setLoadingProblemKey(null);
+    }
   };
 
   React.useEffect(() => {
