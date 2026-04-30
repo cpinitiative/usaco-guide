@@ -1,13 +1,23 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
+import type { CollectionReference } from 'firebase/firestore';
+import {
+  collection,
+  getDocs,
+  getFirestore,
+  query,
+  where,
+} from 'firebase/firestore';
 import toast from 'react-hot-toast';
 import { useFirebaseUser } from '../../../context/UserDataContext/UserDataContext';
 import getPermissionLevel from '../../../functions/src/groups/utils/getPermissionLevel';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import { useFirebaseApp } from '../../../hooks/useFirebase';
 import { useGroupActions } from '../../../hooks/groups/useGroupActions';
 import { useUserLeaderboardData } from '../../../hooks/groups/useLeaderboardData';
 import { MemberInfo } from '../../../hooks/groups/useMemberInfoForGroup';
 import { PostData } from '../../../models/groups/posts';
+import { GroupProblemData } from '../../../models/groups/problem';
 
 type AssignmentProgress = {
   post: PostData & { type: 'assignment' };
@@ -22,6 +32,7 @@ type AssignmentProgress = {
     maxPoints: number;
     status: string | null;
     updatedAt: number | null;
+    hasSubmission: boolean;
   }[];
 };
 
@@ -48,10 +59,11 @@ const progressBarColor = (ratio: number) => {
 };
 
 const formatTimestamp = (millis: number | null) => {
-  if (!millis) return 'No submission yet';
+  if (!millis) return '-';
   return new Date(millis).toLocaleString();
 };
 export default function MemberDetail({ member }: { member: MemberInfo }) {
+  const firebaseApp = useFirebaseApp();
   const activeGroup = useActiveGroup();
   const { removeMemberFromGroup, updateMemberPermissions } = useGroupActions();
   const { uid: userId } = useFirebaseUser()!;
@@ -63,6 +75,9 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
   const [sortMode, setSortMode] = React.useState<'due' | 'completion'>('due');
   const [expandedPosts, setExpandedPosts] = React.useState<
     Record<string, boolean>
+  >({});
+  const [problemNamesByPost, setProblemNamesByPost] = React.useState<
+    Record<string, Record<string, string>>
   >({});
 
   if (!member) {
@@ -84,19 +99,30 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
     return assignmentPosts.map(post => {
       const leaderboardPostData = userLeaderboardData?.[post.id!];
       const detailEntries = userLeaderboardData?.details?.[post.id!] ?? {};
-      const problemIds = post.problemOrdering ?? [];
+      const problemIds = Array.from(
+        new Set([
+          ...(post.problemOrdering ?? []),
+          ...Object.keys(post.pointsPerProblem ?? {}),
+          ...Object.keys(detailEntries ?? {}),
+        ])
+      );
       const totalPoints = Object.values(post.pointsPerProblem ?? {}).reduce(
         (acc, cur) => acc + cur,
         0
       );
 
       const problems = problemIds.map(problemId => {
+        const detail = detailEntries?.[problemId];
+        const hasEarnedEntry =
+          typeof leaderboardPostData === 'object' &&
+          leaderboardPostData !== null &&
+          Object.prototype.hasOwnProperty.call(leaderboardPostData, problemId) &&
+          typeof leaderboardPostData[problemId] === 'number';
         const earnedPoints =
           typeof leaderboardPostData?.[problemId] === 'number'
             ? leaderboardPostData[problemId]
             : 0;
         const maxPoints = post.pointsPerProblem?.[problemId] ?? 0;
-        const detail = detailEntries?.[problemId];
         const updatedAt =
           detail?.bestScoreTimestamp &&
           typeof detail.bestScoreTimestamp.toMillis === 'function'
@@ -108,6 +134,7 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
           maxPoints,
           status: detail?.bestScoreStatus ?? null,
           updatedAt,
+          hasSubmission: !!detail || hasEarnedEntry,
         };
       });
 
@@ -116,7 +143,7 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
         0
       );
       const completedProblems = problems.filter(
-        problem => problem.earnedPoints > 0 || !!problem.status
+        problem => problem.hasSubmission
       ).length;
       const statusCounts = problems.reduce<Record<string, number>>(
         (acc, cur) => {
@@ -162,6 +189,39 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
   const toggleExpanded = (postId: string) => {
     setExpandedPosts(old => ({ ...old, [postId]: !old[postId] }));
   };
+
+  React.useEffect(() => {
+    if (!firebaseApp || !activeGroup.activeGroupId) return;
+    const expandedPostIds = Object.keys(expandedPosts).filter(
+      postId => expandedPosts[postId] && !problemNamesByPost[postId]
+    );
+    expandedPostIds.forEach(postId => {
+      getDocs(
+        query(
+          collection(
+            getFirestore(firebaseApp),
+            'groups',
+            activeGroup.activeGroupId!,
+            'posts',
+            postId,
+            'problems'
+          ) as CollectionReference<GroupProblemData>,
+          where('isDeleted', '==', false)
+        )
+      ).then(snap => {
+        const nameMap: Record<string, string> = {};
+        snap.docs.forEach(doc => {
+          nameMap[doc.id] = doc.data().name || 'Problem';
+        });
+        setProblemNamesByPost(old => ({ ...old, [postId]: nameMap }));
+      });
+    });
+  }, [
+    firebaseApp,
+    activeGroup.activeGroupId,
+    expandedPosts,
+    problemNamesByPost,
+  ]);
 
   return (
     <article>
@@ -350,7 +410,7 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <h3 className="font-medium text-gray-900 dark:text-gray-100">
-                          {assignment.post.name}
+                          {assignment.post.name} ({postId})
                         </h3>
                         <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
                           Due:{' '}
@@ -387,13 +447,9 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
                   </button>
                   {isExpanded && (
                     <div className="border-t border-gray-200 px-4 py-3 dark:border-gray-700">
-                      <div className="mb-3 flex flex-wrap gap-2">
-                        {Object.keys(assignment.statusCounts).length === 0 ? (
-                          <span className="text-xs text-gray-500 dark:text-gray-400">
-                            No submissions yet
-                          </span>
-                        ) : (
-                          Object.entries(assignment.statusCounts).map(
+                      {Object.keys(assignment.statusCounts).length > 0 && (
+                        <div className="mb-3 flex flex-wrap gap-2">
+                          {Object.entries(assignment.statusCounts).map(
                             ([status, count]) => (
                               <span
                                 key={status}
@@ -405,9 +461,9 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
                                 {status}: {count}
                               </span>
                             )
-                          )
-                        )}
-                      </div>
+                          )}
+                        </div>
+                      )}
                       <ul className="space-y-2">
                         {assignment.problems.map(problem => (
                           <li
@@ -416,7 +472,9 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
                           >
                             <div>
                               <p className="font-medium text-gray-900 dark:text-gray-100">
-                                {problem.problemId}
+                                {problemNamesByPost[postId]?.[problem.problemId] ??
+                                  'Problem'}{' '}
+                                ({problem.problemId})
                               </p>
                               <p className="text-xs text-gray-500 dark:text-gray-400">
                                 {formatTimestamp(problem.updatedAt)}
