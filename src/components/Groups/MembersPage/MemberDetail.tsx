@@ -1,22 +1,22 @@
-import { useRouter } from 'next/router';
-import * as React from 'react';
 import type { CollectionReference } from 'firebase/firestore';
 import {
   collection,
+  DocumentData,
   getDocs,
   getFirestore,
   query,
-  DocumentData,
   where,
 } from 'firebase/firestore';
+import { useRouter } from 'next/router';
+import * as React from 'react';
 import toast from 'react-hot-toast';
 import { useFirebaseUser } from '../../../context/UserDataContext/UserDataContext';
 import getPermissionLevel from '../../../functions/src/groups/utils/getPermissionLevel';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
-import { useFirebaseApp } from '../../../hooks/useFirebase';
 import { useGroupActions } from '../../../hooks/groups/useGroupActions';
 import { useUserLeaderboardData } from '../../../hooks/groups/useLeaderboardData';
 import { MemberInfo } from '../../../hooks/groups/useMemberInfoForGroup';
+import { useFirebaseApp } from '../../../hooks/useFirebase';
 import { PostData } from '../../../models/groups/posts';
 import {
   FirebaseSubmission,
@@ -90,15 +90,15 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
   const [problemNamesByPost, setProblemNamesByPost] = React.useState<
     Record<string, Record<string, string>>
   >({});
-  const [expandedProblemKey, setExpandedProblemKey] = React.useState<string | null>(
-    null
-  );
+  const [expandedProblemKey, setExpandedProblemKey] = React.useState<
+    string | null
+  >(null);
   const [submissionsByProblemKey, setSubmissionsByProblemKey] = React.useState<
     Record<string, FirebaseSubmission[]>
   >({});
-  const [loadingProblemKey, setLoadingProblemKey] = React.useState<string | null>(
-    null
-  );
+  const [loadingProblemKey, setLoadingProblemKey] = React.useState<
+    string | null
+  >(null);
   const showSubmissionAction = useProblemSubmissionPopupAction();
 
   const permissionLevel = getPermissionLevel(
@@ -130,7 +130,10 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
         const hasEarnedEntry =
           typeof leaderboardPostData === 'object' &&
           leaderboardPostData !== null &&
-          Object.prototype.hasOwnProperty.call(leaderboardPostData, problemId) &&
+          Object.prototype.hasOwnProperty.call(
+            leaderboardPostData,
+            problemId
+          ) &&
           typeof leaderboardPostData[problemId] === 'number';
         const earnedPoints =
           typeof leaderboardPostData?.[problemId] === 'number'
@@ -203,7 +206,10 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
   const toggleExpanded = (postId: string) => {
     setExpandedPosts(old => ({ ...old, [postId]: !old[postId] }));
   };
-  const toggleProblemSubmissions = async (postId: string, problemId: string) => {
+  const toggleProblemSubmissions = async (
+    postId: string,
+    problemId: string
+  ) => {
     const problemKey = `${postId}/${problemId}`;
     if (expandedProblemKey === problemKey) {
       setExpandedProblemKey(null);
@@ -237,7 +243,10 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
       const submissions = snap.docs
         .map(doc => ({ ...doc.data(), id: doc.id }) as FirebaseSubmission)
         .sort((a, b) => b.timestamp - a.timestamp);
-      setSubmissionsByProblemKey(old => ({ ...old, [problemKey]: submissions }));
+      setSubmissionsByProblemKey(old => ({
+        ...old,
+        [problemKey]: submissions,
+      }));
     } catch (error: unknown) {
       const message =
         (error as { message?: string })?.message ??
@@ -544,13 +553,17 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
                               }`}
                               disabled={!problem.status}
                               onClick={() =>
-                                toggleProblemSubmissions(postId, problem.problemId)
+                                toggleProblemSubmissions(
+                                  postId,
+                                  problem.problemId
+                                )
                               }
                             >
                               <div>
                                 <p className="font-medium text-gray-900 dark:text-gray-100">
-                                  {problemNamesByPost[postId]?.[problem.problemId] ??
-                                    'Problem'}{' '}
+                                  {problemNamesByPost[postId]?.[
+                                    problem.problemId
+                                  ] ?? 'Problem'}{' '}
                                   ({problem.problemId})
                                 </p>
                                 <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -574,15 +587,17 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
                                 </span>
                               </div>
                             </button>
-                            {expandedProblemKey === `${postId}/${problem.problemId}` && (
+                            {expandedProblemKey ===
+                              `${postId}/${problem.problemId}` && (
                               <div className="mt-2 border-t border-gray-200 pt-2 dark:border-gray-700">
-                                {loadingProblemKey === `${postId}/${problem.problemId}` ? (
+                                {loadingProblemKey ===
+                                `${postId}/${problem.problemId}` ? (
                                   <p className="text-xs text-gray-500 dark:text-gray-400">
                                     Loading submissions...
                                   </p>
-                                ) : !(submissionsByProblemKey[
+                                ) : !submissionsByProblemKey[
                                     `${postId}/${problem.problemId}`
-                                  ]?.length) ? (
+                                  ]?.length ? (
                                   <p className="text-xs text-gray-500 dark:text-gray-400">
                                     No submissions found.
                                   </p>
@@ -607,13 +622,17 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
                                               showSubmissionAction(submission)
                                             }
                                           >
-                                            {getSubmissionTimestampString(submission)}
+                                            {getSubmissionTimestampString(
+                                              submission
+                                            )}
                                           </button>
                                           <div className="flex items-center text-sm font-medium text-gray-500 dark:text-gray-300">
                                             <span
                                               className={`h-5 w-5 ${
                                                 submissionCircleBorderColor[
-                                                  getSubmissionStatus(submission)
+                                                  getSubmissionStatus(
+                                                    submission
+                                                  )
                                                 ]
                                               } flex items-center justify-center rounded-full`}
                                               aria-hidden="true"
@@ -621,7 +640,9 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
                                               <span
                                                 className={`h-2.5 w-2.5 ${
                                                   submissionCircleColor[
-                                                    getSubmissionStatus(submission)
+                                                    getSubmissionStatus(
+                                                      submission
+                                                    )
                                                   ]
                                                 } rounded-full`}
                                               />
@@ -629,25 +650,31 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
                                             <span
                                               className={`mr-4 ml-2 ${
                                                 submissionTextColor[
-                                                  getSubmissionStatus(submission)
+                                                  getSubmissionStatus(
+                                                    submission
+                                                  )
                                                 ]
                                               }`}
                                             >
-                                              {getSubmissionEarnedPoints(submission, {
-                                                id: problem.problemId,
-                                                postId,
-                                                name:
-                                                  problemNamesByPost[postId]?.[
-                                                    problem.problemId
-                                                  ] ?? 'Problem',
-                                                body: '',
-                                                source: '',
-                                                difficulty: '',
-                                                hints: [],
-                                                solution: null,
-                                                isDeleted: false,
-                                                points: problem.maxPoints,
-                                              })}{' '}
+                                              {getSubmissionEarnedPoints(
+                                                submission,
+                                                {
+                                                  id: problem.problemId,
+                                                  postId,
+                                                  name:
+                                                    problemNamesByPost[
+                                                      postId
+                                                    ]?.[problem.problemId] ??
+                                                    'Problem',
+                                                  body: '',
+                                                  source: '',
+                                                  difficulty: '',
+                                                  hints: [],
+                                                  solution: null,
+                                                  isDeleted: false,
+                                                  points: problem.maxPoints,
+                                                }
+                                              )}{' '}
                                               / {problem.maxPoints}
                                             </span>
                                           </div>
