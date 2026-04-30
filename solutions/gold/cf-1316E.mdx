@@ -13,13 +13,13 @@ Notice that $p \leq 7$. This means that if we use a bitmask to represent differe
 
 Each person can be used in one of three ways. You can either choose them as an audience member, as a player for one position, or just ignore them.
 
-First, we sort people in the decreasing audience strengths. Any later audience weight would be lower than the earlier person's audience weight, so it's optimal to always choose the earlier person for the audience, and the rest we consider for the position. Thus, we consider people with higher audience values earlier.
+First, we sort people in decreasing audience strengths. Any later audience weight would be lower than the earlier person's audience weight, so it's optimal to always choose the earlier person for the audience, and the rest we consider for the position. Thus, we consider people with higher audience values earlier.
 
 Now, we can do the DP. For intuition, we can think of this as a 2D DP $\texttt{dp}[i][\texttt{mask}]$, where $i$ is the number of processed people. However, every time we process a new person, it only depends on the DP of the previous person. We implement this using a 1D DP called $\texttt{newdp}$.
 
-As we process each person one by one, we build a new DP from the original DP, which we define as $\texttt{newdp} = \texttt{copy(dp)}$. Initially, this represents the option of "ignore this person". For each $\texttt{mask}$ in $\texttt{newdp}$, we know the number of people chosen in the position so far ($\texttt{popcount(mask)}$), so among the first $i$ processed people, the non-players so far is $i - \texttt{popcount(mask)}$. Because people are sorted by decreasing audience strength, the first $k$ non-players are audience members, and any later non-players are ignored.
+As we process each person one by one, we build a new DP from the original DP, which we define as $\texttt{newdp} = \texttt{copy(dp)}$. Initially, this represents the option of ignoring the current person. For each $\texttt{mask}$ in $\texttt{newdp}$, we know the number of people chosen for the team so far ($\texttt{popcount(mask)}$), so among the first $i$ processed people, the number of non-players is $i - \texttt{popcount(mask)}$. Because people are sorted by decreasing audience strength, the first $k$ non-players are the most optimal audience members, and any later non-players are ignored.
 
-For the next person, we now have two options for the DP.
+To consider a new person, we now have two options for the DP transition.
 
 * The first option is to add the person as an audience member, provided that the audience is not yet full. That is, we know that the audience isn't full if $i - \texttt{popcount(mask)} < k$, since the first $k$ non-players are taken as audience members due to sorting.  In this case, the DP transition is: we either keep the current strength, or add this person to the audience to increase it:
 
