@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router';
+import * as React from 'react';
 import toast from 'react-hot-toast';
 import { useFirebaseUser } from '../../../context/UserDataContext/UserDataContext';
 import getPermissionLevel from '../../../functions/src/groups/utils/getPermissionLevel';
@@ -6,6 +7,50 @@ import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useGroupActions } from '../../../hooks/groups/useGroupActions';
 import { useUserLeaderboardData } from '../../../hooks/groups/useLeaderboardData';
 import { MemberInfo } from '../../../hooks/groups/useMemberInfoForGroup';
+import { PostData } from '../../../models/groups/posts';
+
+type AssignmentProgress = {
+  post: PostData & { type: 'assignment' };
+  earnedPoints: number;
+  totalPoints: number;
+  completedProblems: number;
+  totalProblems: number;
+  statusCounts: Record<string, number>;
+  problems: {
+    problemId: string;
+    earnedPoints: number;
+    maxPoints: number;
+    status: string | null;
+    updatedAt: number | null;
+  }[];
+};
+
+const statusColorMap: Record<string, string> = {
+  AC: 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-200',
+  WA: 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-200',
+  TLE: 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-200',
+  MLE: 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-200',
+  RTE: 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-200',
+  CE: 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-200',
+  IE: 'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-200',
+  Pending:
+    'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-200',
+};
+
+const progressBarColor = (ratio: number) => {
+  if (ratio >= 0.8) {
+    return 'bg-green-500';
+  }
+  if (ratio >= 0.5) {
+    return 'bg-yellow-500';
+  }
+  return 'bg-pink-500';
+};
+
+const formatTimestamp = (millis: number | null) => {
+  if (!millis) return 'No submission yet';
+  return new Date(millis).toLocaleString();
+};
 export default function MemberDetail({ member }: { member: MemberInfo }) {
   const activeGroup = useActiveGroup();
   const { removeMemberFromGroup, updateMemberPermissions } = useGroupActions();
@@ -15,6 +60,10 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
     member.uid
   );
   const router = useRouter();
+  const [sortMode, setSortMode] = React.useState<'due' | 'completion'>('due');
+  const [expandedPosts, setExpandedPosts] = React.useState<
+    Record<string, boolean>
+  >({});
 
   if (!member) {
     return (
@@ -27,6 +76,92 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
     member.uid,
     activeGroup.groupData!
   );
+  const assignmentProgress = React.useMemo<AssignmentProgress[]>(() => {
+    const assignmentPosts = activeGroup.posts.filter(
+      (post): post is PostData & { type: 'assignment' } =>
+        post.type === 'assignment' && !!post.id
+    );
+    return assignmentPosts.map(post => {
+      const leaderboardPostData = userLeaderboardData?.[post.id!];
+      const detailEntries = userLeaderboardData?.details?.[post.id!] ?? {};
+      const problemIds = post.problemOrdering ?? [];
+      const totalPoints = Object.values(post.pointsPerProblem ?? {}).reduce(
+        (acc, cur) => acc + cur,
+        0
+      );
+
+      const problems = problemIds.map(problemId => {
+        const earnedPoints =
+          typeof leaderboardPostData?.[problemId] === 'number'
+            ? leaderboardPostData[problemId]
+            : 0;
+        const maxPoints = post.pointsPerProblem?.[problemId] ?? 0;
+        const detail = detailEntries?.[problemId];
+        const updatedAt =
+          detail?.bestScoreTimestamp &&
+          typeof detail.bestScoreTimestamp.toMillis === 'function'
+            ? detail.bestScoreTimestamp.toMillis()
+            : null;
+        return {
+          problemId,
+          earnedPoints,
+          maxPoints,
+          status: detail?.bestScoreStatus ?? null,
+          updatedAt,
+        };
+      });
+
+      const earnedPoints = problems.reduce(
+        (acc, cur) => acc + cur.earnedPoints,
+        0
+      );
+      const completedProblems = problems.filter(
+        problem => problem.earnedPoints > 0 || !!problem.status
+      ).length;
+      const statusCounts = problems.reduce<Record<string, number>>(
+        (acc, cur) => {
+          if (cur.status) acc[cur.status] = (acc[cur.status] ?? 0) + 1;
+          return acc;
+        },
+        {}
+      );
+      return {
+        post,
+        earnedPoints,
+        totalPoints,
+        completedProblems,
+        totalProblems: problemIds.length,
+        statusCounts,
+        problems,
+      };
+    });
+  }, [activeGroup.posts, userLeaderboardData]);
+
+  const sortedAssignments = React.useMemo(() => {
+    const items = [...assignmentProgress];
+    if (sortMode === 'completion') {
+      items.sort((a, b) => {
+        const ratioA = a.totalProblems
+          ? a.completedProblems / a.totalProblems
+          : 0;
+        const ratioB = b.totalProblems
+          ? b.completedProblems / b.totalProblems
+          : 0;
+        return ratioB - ratioA;
+      });
+      return items;
+    }
+    items.sort((a, b) => {
+      const aDue = a.post.dueTimestamp?.toMillis?.() ?? Number.MAX_SAFE_INTEGER;
+      const bDue = b.post.dueTimestamp?.toMillis?.() ?? Number.MAX_SAFE_INTEGER;
+      return aDue - bDue;
+    });
+    return items;
+  }, [assignmentProgress, sortMode]);
+
+  const toggleExpanded = (postId: string) => {
+    setExpandedPosts(old => ({ ...old, [postId]: !old[postId] }));
+  };
 
   return (
     <article>
@@ -55,7 +190,9 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
               {member.displayName}
             </h1>
             <p className="text-sm font-medium text-gray-500 dark:text-gray-300">
-              {userLeaderboardData?.totalPoints ?? 0} Points Earned
+              {Math.trunc((userLeaderboardData?.totalPoints ?? 0) * 1000) /
+                1000}{' '}
+              Points Earned
             </p>
           </div>
         </div>
@@ -163,7 +300,154 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
           </div>
         )}
         <hr className="my-6 dark:border-gray-700" />
-        <p>Future feature: View user progress on all problems/assignments!</p>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+              Assignment Progress
+            </h2>
+            <div className="flex items-center gap-2">
+              <label
+                htmlFor="assignment-sort"
+                className="text-sm text-gray-600 dark:text-gray-300"
+              >
+                Sort by
+              </label>
+              <select
+                id="assignment-sort"
+                className="rounded-md border border-gray-300 bg-white px-2 py-1 text-sm dark:border-gray-600 dark:bg-gray-800"
+                value={sortMode}
+                onChange={e =>
+                  setSortMode(e.target.value as 'due' | 'completion')
+                }
+              >
+                <option value="due">Due date</option>
+                <option value="completion">Completion</option>
+              </select>
+            </div>
+          </div>
+          {sortedAssignments.length === 0 ? (
+            <p className="text-sm text-gray-600 dark:text-gray-300">
+              No assignments found for this group.
+            </p>
+          ) : (
+            sortedAssignments.map(assignment => {
+              const postId = assignment.post.id!;
+              const isExpanded = expandedPosts[postId] ?? false;
+              const completionRatio =
+                assignment.totalProblems === 0
+                  ? 0
+                  : assignment.completedProblems / assignment.totalProblems;
+              return (
+                <section
+                  key={postId}
+                  className="rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-900"
+                >
+                  <button
+                    type="button"
+                    className="w-full px-4 py-3 text-left"
+                    onClick={() => toggleExpanded(postId)}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <h3 className="font-medium text-gray-900 dark:text-gray-100">
+                          {assignment.post.name}
+                        </h3>
+                        <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
+                          Due:{' '}
+                          {assignment.post.dueTimestamp
+                            ? assignment.post.dueTimestamp
+                                .toDate()
+                                .toLocaleString()
+                            : 'No due date'}{' '}
+                          • {assignment.completedProblems}/
+                          {assignment.totalProblems} problems attempted
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                          {assignment.earnedPoints.toFixed(1)} /{' '}
+                          {assignment.totalPoints.toFixed(1)} pts
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          {isExpanded ? 'Collapse' : 'Expand'}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="mt-3 h-2 w-full rounded-full bg-gray-200 dark:bg-gray-700">
+                      <div
+                        className={`h-2 rounded-full ${progressBarColor(completionRatio)}`}
+                        style={{
+                          width: `${Math.max(
+                            0,
+                            Math.min(100, completionRatio * 100)
+                          )}%`,
+                        }}
+                      />
+                    </div>
+                  </button>
+                  {isExpanded && (
+                    <div className="border-t border-gray-200 px-4 py-3 dark:border-gray-700">
+                      <div className="mb-3 flex flex-wrap gap-2">
+                        {Object.keys(assignment.statusCounts).length === 0 ? (
+                          <span className="text-xs text-gray-500 dark:text-gray-400">
+                            No submissions yet
+                          </span>
+                        ) : (
+                          Object.entries(assignment.statusCounts).map(
+                            ([status, count]) => (
+                              <span
+                                key={status}
+                                className={`rounded-full px-2 py-1 text-xs font-medium ${
+                                  statusColorMap[status] ??
+                                  'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200'
+                                }`}
+                              >
+                                {status}: {count}
+                              </span>
+                            )
+                          )
+                        )}
+                      </div>
+                      <ul className="space-y-2">
+                        {assignment.problems.map(problem => (
+                          <li
+                            key={problem.problemId}
+                            className="flex items-center justify-between rounded-md border border-gray-200 px-3 py-2 text-sm dark:border-gray-700"
+                          >
+                            <div>
+                              <p className="font-medium text-gray-900 dark:text-gray-100">
+                                {problem.problemId}
+                              </p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">
+                                {formatTimestamp(problem.updatedAt)}
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-gray-700 dark:text-gray-200">
+                                {problem.earnedPoints.toFixed(1)} /{' '}
+                                {problem.maxPoints.toFixed(1)} pts
+                              </span>
+                              <span
+                                className={`rounded-full px-2 py-1 text-xs font-medium ${
+                                  problem.status
+                                    ? (statusColorMap[problem.status] ??
+                                      'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200')
+                                    : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300'
+                                }`}
+                              >
+                                {problem.status ?? 'Not started'}
+                              </span>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </section>
+              );
+            })
+          )}
+        </div>
       </div>
     </article>
   );
