@@ -101,13 +101,6 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
   );
   const showSubmissionAction = useProblemSubmissionPopupAction();
 
-  if (!member) {
-    return (
-      <p className="mt-8 text-center text-xl">
-        This member has been removed from the group.
-      </p>
-    );
-  }
   const permissionLevel = getPermissionLevel(
     member.uid,
     activeGroup.groupData!
