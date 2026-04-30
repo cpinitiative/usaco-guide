@@ -6,6 +6,7 @@ import {
   getDocs,
   getFirestore,
   query,
+  DocumentData,
   where,
 } from 'firebase/firestore';
 import toast from 'react-hot-toast';
@@ -17,7 +18,17 @@ import { useGroupActions } from '../../../hooks/groups/useGroupActions';
 import { useUserLeaderboardData } from '../../../hooks/groups/useLeaderboardData';
 import { MemberInfo } from '../../../hooks/groups/useMemberInfoForGroup';
 import { PostData } from '../../../models/groups/posts';
-import { GroupProblemData } from '../../../models/groups/problem';
+import {
+  FirebaseSubmission,
+  getSubmissionEarnedPoints,
+  getSubmissionStatus,
+  getSubmissionTimestampString,
+  GroupProblemData,
+  submissionCircleBorderColor,
+  submissionCircleColor,
+  submissionTextColor,
+} from '../../../models/groups/problem';
+import { useProblemSubmissionPopupAction } from '../ProblemSubmissionPopup';
 
 type AssignmentProgress = {
   post: PostData & { type: 'assignment' };
@@ -79,6 +90,16 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
   const [problemNamesByPost, setProblemNamesByPost] = React.useState<
     Record<string, Record<string, string>>
   >({});
+  const [expandedProblemKey, setExpandedProblemKey] = React.useState<string | null>(
+    null
+  );
+  const [submissionsByProblemKey, setSubmissionsByProblemKey] = React.useState<
+    Record<string, FirebaseSubmission[]>
+  >({});
+  const [loadingProblemKey, setLoadingProblemKey] = React.useState<string | null>(
+    null
+  );
+  const showSubmissionAction = useProblemSubmissionPopupAction();
 
   if (!member) {
     return (
@@ -188,6 +209,42 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
 
   const toggleExpanded = (postId: string) => {
     setExpandedPosts(old => ({ ...old, [postId]: !old[postId] }));
+  };
+  const toggleProblemSubmissions = async (postId: string, problemId: string) => {
+    const problemKey = `${postId}/${problemId}`;
+    if (expandedProblemKey === problemKey) {
+      setExpandedProblemKey(null);
+      return;
+    }
+
+    setExpandedProblemKey(problemKey);
+    if (submissionsByProblemKey[problemKey]) {
+      return;
+    }
+    if (!firebaseApp || !activeGroup.activeGroupId) {
+      return;
+    }
+    setLoadingProblemKey(problemKey);
+    const snap = await getDocs(
+      query(
+        collection(
+          getFirestore(firebaseApp),
+          'groups',
+          activeGroup.activeGroupId!,
+          'posts',
+          postId,
+          'problems',
+          problemId,
+          'submissions'
+        ) as CollectionReference<DocumentData>,
+        where('userID', '==', member.uid)
+      )
+    );
+    const submissions = snap.docs
+      .map(doc => ({ ...doc.data(), id: doc.id }) as FirebaseSubmission)
+      .sort((a, b) => b.timestamp - a.timestamp);
+    setSubmissionsByProblemKey(old => ({ ...old, [problemKey]: submissions }));
+    setLoadingProblemKey(null);
   };
 
   React.useEffect(() => {
@@ -466,36 +523,135 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
                       )}
                       <ul className="space-y-2">
                         {assignment.problems.map(problem => (
+                          // Clickable only when this user has started the problem.
+                          // This mirrors the submission-popup workflow used on Problem pages.
                           <li
                             key={problem.problemId}
-                            className="flex items-center justify-between rounded-md border border-gray-200 px-3 py-2 text-sm dark:border-gray-700"
+                            className="rounded-md border border-gray-200 px-3 py-2 text-sm dark:border-gray-700"
                           >
-                            <div>
-                              <p className="font-medium text-gray-900 dark:text-gray-100">
-                                {problemNamesByPost[postId]?.[problem.problemId] ??
-                                  'Problem'}{' '}
-                                ({problem.problemId})
-                              </p>
-                              <p className="text-xs text-gray-500 dark:text-gray-400">
-                                {formatTimestamp(problem.updatedAt)}
-                              </p>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <span className="text-gray-700 dark:text-gray-200">
-                                {problem.earnedPoints.toFixed(1)} /{' '}
-                                {problem.maxPoints.toFixed(1)} pts
-                              </span>
-                              <span
-                                className={`rounded-full px-2 py-1 text-xs font-medium ${
-                                  problem.status
-                                    ? (statusColorMap[problem.status] ??
-                                      'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200')
-                                    : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300'
-                                }`}
-                              >
-                                {problem.status ?? 'Not started'}
-                              </span>
-                            </div>
+                            <button
+                              type="button"
+                              className={`flex w-full items-center justify-between text-left ${
+                                problem.status
+                                  ? 'cursor-pointer'
+                                  : 'cursor-not-allowed opacity-70'
+                              }`}
+                              disabled={!problem.status}
+                              onClick={() =>
+                                toggleProblemSubmissions(postId, problem.problemId)
+                              }
+                            >
+                              <div>
+                                <p className="font-medium text-gray-900 dark:text-gray-100">
+                                  {problemNamesByPost[postId]?.[problem.problemId] ??
+                                    'Problem'}{' '}
+                                  ({problem.problemId})
+                                </p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400">
+                                  {formatTimestamp(problem.updatedAt)}
+                                </p>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-gray-700 dark:text-gray-200">
+                                  {problem.earnedPoints.toFixed(1)} /{' '}
+                                  {problem.maxPoints.toFixed(1)} pts
+                                </span>
+                                <span
+                                  className={`rounded-full px-2 py-1 text-xs font-medium ${
+                                    problem.status
+                                      ? (statusColorMap[problem.status] ??
+                                        'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200')
+                                      : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300'
+                                  }`}
+                                >
+                                  {problem.status ?? 'Not started'}
+                                </span>
+                              </div>
+                            </button>
+                            {expandedProblemKey === `${postId}/${problem.problemId}` && (
+                              <div className="mt-2 border-t border-gray-200 pt-2 dark:border-gray-700">
+                                {loadingProblemKey === `${postId}/${problem.problemId}` ? (
+                                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                                    Loading submissions...
+                                  </p>
+                                ) : !(submissionsByProblemKey[
+                                    `${postId}/${problem.problemId}`
+                                  ]?.length) ? (
+                                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                                    No submissions found.
+                                  </p>
+                                ) : (
+                                  <ul>
+                                    {submissionsByProblemKey[
+                                      `${postId}/${problem.problemId}`
+                                    ].map(submission => (
+                                      <li
+                                        key={
+                                          'submissionID' in submission
+                                            ? submission.submissionID
+                                            : `${submission.timestamp}`
+                                        }
+                                        className="group relative py-2"
+                                      >
+                                        <div className="flex items-center justify-between space-x-4">
+                                          <button
+                                            type="button"
+                                            className="text-sm leading-3 font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                                            onClick={() =>
+                                              showSubmissionAction(submission)
+                                            }
+                                          >
+                                            {getSubmissionTimestampString(submission)}
+                                          </button>
+                                          <div className="flex items-center text-sm font-medium text-gray-500 dark:text-gray-300">
+                                            <span
+                                              className={`h-5 w-5 ${
+                                                submissionCircleBorderColor[
+                                                  getSubmissionStatus(submission)
+                                                ]
+                                              } flex items-center justify-center rounded-full`}
+                                              aria-hidden="true"
+                                            >
+                                              <span
+                                                className={`h-2.5 w-2.5 ${
+                                                  submissionCircleColor[
+                                                    getSubmissionStatus(submission)
+                                                  ]
+                                                } rounded-full`}
+                                              />
+                                            </span>
+                                            <span
+                                              className={`mr-4 ml-2 ${
+                                                submissionTextColor[
+                                                  getSubmissionStatus(submission)
+                                                ]
+                                              }`}
+                                            >
+                                              {getSubmissionEarnedPoints(submission, {
+                                                id: problem.problemId,
+                                                postId,
+                                                name:
+                                                  problemNamesByPost[postId]?.[
+                                                    problem.problemId
+                                                  ] ?? 'Problem',
+                                                body: '',
+                                                source: '',
+                                                difficulty: '',
+                                                hints: [],
+                                                solution: null,
+                                                isDeleted: false,
+                                                points: problem.maxPoints,
+                                              })}{' '}
+                                              / {problem.maxPoints}
+                                            </span>
+                                          </div>
+                                        </div>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                )}
+                              </div>
+                            )}
                           </li>
                         ))}
                       </ul>
