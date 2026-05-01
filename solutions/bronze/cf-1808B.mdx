@@ -2,16 +2,16 @@
 id: cf-1808B
 source: CF
 title: Playing in a Casino
-author: Amit Singh Bisht, Virat Anand
+author: Amit Singh Bisht, Virat Anand, Udbhav Dikshit
 ---
 
-[Official Editorial (C++)](https://codeforces.com/blog/entry/114523)
+[Official Analysis (C++)](https://codeforces.com/blog/entry/114523)
 
 ## Explanation
 
-Essentially, the solution is to use nested loops to iterate through the columns input matrix, then calculate the sum of each column, and sort the elements of each column in non-descending order. Then calculate the absolute difference between the sum of the column and a running sum of the sorted elements. This difference is multiplied by the number of elements that come before it in the sorted order to obtain the contribution of that element to the final answer. The contributions of all elements in a column are then summed up to obtain the final answer for that column, and this process is repeated for all columns.
+The problem requires computing the sum of absolute differences $\sum_{i < j} |a_i - a_j|$ across all $M$ cards for $N$ players. By transposing the input into $M$ rows and $N$ columns, we can isolate and sort each card's values independently.
 
-The idea behind this approach is that the current element is being used as a representative of all the elements in the column that are smaller than it. Therefore, the difference between the sum of all elements and the sum of all elements before the current element is the sum of all the elements that are greater than the current element. This difference is then multiplied by the number of rows minus one minus the number of rows before the current element to obtain the total number of inversions.
+Once sorted, an element $x_j$ at index $j$ acts as the larger value in $j$ pairs and the smaller value in $N - 1 - j$ pairs in the expanded absolute difference. Thus, its net contribution will be: $(j - (N - 1 - j)) \times x_j$.
 
 ## Implementation
 
@@ -23,35 +23,35 @@ The idea behind this approach is that the current element is being used as a rep
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
+
+void solve() {
+	int n, m;
+	cin >> n >> m;
+
+	vector<vector<int>> p(m, vector<int>(n));
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < m; j++) {
+			// transpose to m by n to make sorting easier
+			cin >> p[j][i];
+		}
+	}
+
+	long long wins = 0;
+	for (int i = 0; i < m; i++) {
+		std::sort(p[i].begin(), p[i].end());
+		for (int j = 0; j < n; j++) {
+			// sum individual contributions per card
+			wins += 1ll * (j - (n - 1 - j)) * p[i][j];
+		}
+	}
+
+	cout << wins << '\n';
+}
+
 int main() {
 	int t;
 	cin >> t;
-	for (int i = 0; i < t; i++) {
-		int n, m;
-		cin >> n >> m;
-		vector<vector<int>> a(n, vector<int>(m));
-		for (int i = 0; i < n; i++) {
-			for (int j = 0; j < m; j++) { cin >> a[i][j]; }
-		}
-
-		long long ans = 0;
-		for (int i = 0; i < m; i++) {
-			vector<long long> temp;
-			long long sum = 0;
-			for (int j = 0; j < n; j++) {
-				temp.push_back(a[j][i]);
-				sum += a[j][i];
-			}
-			long long curr = 0;
-			sort(temp.begin(), temp.end());
-			for (int j = 0; j < n; j++) {
-				curr += temp[j];
-				ans += llabs((sum - curr) - (n - 1 - j) * temp[j]);
-			}
-		}
-
-		cout << ans << "\n";
-	}
+	while (t--) solve();
 }
 ```
 
@@ -59,35 +59,30 @@ int main() {
 <PySection>
 
 ```py
-from collections import defaultdict
+import sys
 
-for _ in range(int(input())):
-	deck_num, card_num = map(int, input().split())
-	matrix = []
-	for _ in range(deck_num):
-		matrix.append(list(map(int, input().split())))
+input = sys.stdin.read
+data = input().split()
+it = iter(data)
+t = int(next(it))
 
-	# Group columns using a dictionary
-	hashmap = defaultdict(list)
-	for i in range(deck_num):
-		for j in range(card_num):
-			hashmap[j].append(matrix[i][j])
+for _ in range(t):
+	n = int(next(it))
+	m = int(next(it))
+	p = [[0] * n for _ in range(m)]
 
-	total_res = 0
-	for i in range(card_num):
-		temp = sorted(hashmap[i], reverse=True)
-		suf = []
-		prev = 0
-		for i in reversed(temp):
-			suf.append(prev)
-			prev += i
+	for i in range(n):
+		for j in range(m):
+			# transpose to m by n to make sorting easier
+			p[j][i] = int(next(it))
 
-		col_res = 0
-		for i in range(deck_num):
-			col_res += temp[i] * (deck_num - i - 1) - suf[deck_num - i - 1]
-		total_res += col_res
-
-	print(total_res)
+	wins = 0
+	for i in range(m):
+		p[i].sort()
+		for j in range(n):
+			# sum individual contributions per card
+			wins += (j - (n - 1 - j)) * p[i][j]
+	print(wins)
 ```
 
 </PySection>
@@ -103,39 +98,35 @@ public class PlayingInCasino {
 		PrintWriter pw = new PrintWriter(new OutputStreamWriter(System.out));
 
 		int t = Integer.parseInt(br.readLine());
-		for (int i = 0; i < t; i++) {
-			String[] dimensions = br.readLine().split(" ");
-			int n = Integer.parseInt(dimensions[0]);
-			int m = Integer.parseInt(dimensions[1]);
-			int[][] a = new int[n][m];
-			for (int j = 0; j < n; j++) {
-				String[] row = br.readLine().split(" ");
-				for (int k = 0; k < m; k++) { a[j][k] = Integer.parseInt(row[k]); }
-			}
 
-			long ans = 0;
-			for (int j = 0; j < m; j++) {
-				List<Long> temp = new ArrayList<>();
-				long sum = 0;
-				for (int k = 0; k < n; k++) {
-					temp.add((long)a[k][j]);
-					sum += a[k][j];
-				}
-				long curr = 0;
-				Collections.sort(temp);
-				for (int k = 0; k < n; k++) {
-					curr += temp.get(k);
-					ans += Math.abs((sum - curr) - (n - 1 - k) * temp.get(k));
+		while (t-- > 0) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			int n = Integer.parseInt(st.nextToken());
+			int m = Integer.parseInt(st.nextToken());
+
+			int[][] p = new int[m][n];
+			for (int i = 0; i < n; i++) {
+				st = new StringTokenizer(br.readLine());
+				for (int j = 0; j < m; j++) {
+					// transpose to m by n to make sorting easier
+					p[j][i] = Integer.parseInt(st.nextToken());
 				}
 			}
 
-			pw.println(ans);
+			long wins = 0;
+			for (int i = 0; i < m; i++) {
+				Arrays.sort(p[i]);
+				for (int j = 0; j < n; j++) {
+					// sum individual contributions per card
+					wins += (long)(j - (n - 1 - j)) * p[i][j];
+				}
+			}
+			pw.println(wins);
 		}
-
 		pw.close();
-		br.close();
 	}
 }
 ```
+
 </JavaSection>
 </LanguageSection>
