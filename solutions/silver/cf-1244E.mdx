@@ -1,0 +1,157 @@
+---
+id: cf-1244E
+source: CF
+title: Minimizing Difference
+author: Abhinav Singh
+---
+
+[Official Analysis](https://codeforces.com/blog/entry/70553)
+
+## Explanation
+
+Instead of trying to construct a final array, fix a target difference $d$ and check if it is achievable in under $k$ operations.
+
+If all elements can be moved into some interval of length $d$, then it can be shown that all larger values of $d$ work. Hence, the condition is monotonic and we can binary search on $d$.
+
+For a fixed $d$, we try to fit all elements into $[L, L + d]$, where $L$ is an arbitrary starting point for the interval:
+- increase elements below $L$
+- decrease elements above $L + d$
+
+The total cost (number of unit increments/decrements needed to move all elements into [L,L+d]) can be computed using prefix sums.
+
+### Choosing L
+
+We consider an interval $[L, L + d]$ of fixed length $d$, where $L$ is the left endpoint.
+
+If we move this interval slightly to the right **without any element entering or leaving the interval**, then:
+- elements with $a_i < L$ become more expensive to increase,
+- elements with $a_i > L + d$ become cheaper to decrease.
+
+Let $A = |\{i : a_i < L\}|$ and $B = |\{i : a_i > L + d\}|$.
+
+Shifting the interval by $\varepsilon > 0$ changes the cost by:
+$\[
+\Delta = (A - B)\cdot \varepsilon
+\]$
+
+Thus, as long as no element crosses either endpoint, the cost varies linearly with $L$, and we can keep shifting the interval in the direction that does not increase cost.
+
+This process stops only when an endpoint coincides with some $a_i$, i.e.,
+$\[
+L = a_i \quad \text{or} \quad L + d = a_i
+\]$
+
+### Calculating the Final Answer
+
+Fix a value of $L$ and use prefix sums $\text{pref}[i] = \sum_{j=1}^{i} a_j$.
+
+Let
+$\[
+cnt = |\{i : a_i < L\}|.
+\]$
+
+**Left cost** (raising all $a_i < L$ up to $L$):
+$\[
+\sum_{i=1}^{cnt} (L - a_i)
+= cnt \cdot L - \text{pref}[cnt]
+\]$
+
+Let
+$\[
+right = \max \{i : a_i \le L + d\}
+\]$
+
+**Right cost** (lowering all $a_i > L + d$ down to $L + d$):
+$\[
+\sum_{i=right+1}^{n} (a_i - (L + d))
+= (\text{pref}[n] - \text{pref}[right]) - (n - right)(L + d)
+\]$
+
+**Total cost**:
+$= cnt \cdot L - \text{pref}[cnt] + (\text{pref}[n] - \text{pref}[right] - (n - right)(L + d))$
+
+A value of $d$ is feasible if the minimum cost over all valid choices of $L$ is $\le k$.
+
+Both $cnt$ and $right$ can be found using binary search, so each candidate $L$ is evaluated in $\mathcal{O}(\log n)$ time. We take the minimum over all candidate values of $L$.
+
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N \log A)$, where $A$ is the maximum value of $a_i$.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int n;
+	ll k;
+	cin >> n >> k;
+
+	vector<int> a(n);
+	for (int &x : a) cin >> x;
+	sort(a.begin(), a.end());
+
+	// compute prefix sums, using 1 indexing for convenience
+	vector<ll> pref(n + 1);
+	for (int i = 0; i < n; i++) { pref[i + 1] = pref[i] + a[i]; }
+
+	auto check = [&](int d) -> bool {
+		for (int i = 0; i < n; ++i) {
+			// Case 1: l = a[i] (left endpoint pinned to a[i])
+			{
+				int l = a[i], r = l + d;
+
+				// use prefix sums to calculate l - a_i for all a_i < l
+				ll cost_l = 1ll * i * l - pref[i];
+
+				// use prefix sums to calculate a_i - r for all a_i > r
+				// we use upper bound to find the first index we sum from
+				int p = upper_bound(a.begin(), a.end(), r) - a.begin();
+				ll cost_r = (pref[n] - pref[p]) - 1ll * (n - p) * r;
+
+				if (cost_l + cost_r <= k) return true;
+			}
+
+			// Case 2: l = a[i] - d (right endpoint pinned to a[i])
+			{
+				int r = a[i], l = r - d;
+
+				// use prefix sums to calculate a_i - r for all a_i > r
+				ll cost_r = (pref[n] - pref[i + 1]) - 1ll * (n - i - 1) * r;
+
+				// use prefix sums to calculate l - a_i for all a_i < l
+				// we use lower bound to find the last index we sum from
+				int p = lower_bound(a.begin(), a.end(), l) - a.begin();
+				ll cost_l = 1ll * p * l - pref[p];
+
+				if (cost_l + cost_r <= k) return true;
+			}
+		}
+
+		return false;
+	};
+
+	int lo = 0, hi = a[n - 1] - a[0];
+	while (lo < hi) {
+		int mid = lo + (hi - lo) / 2;
+		if (check(mid)) {
+			hi = mid;
+		} else {
+			lo = mid + 1;
+		}
+	}
+
+	cout << lo << '\n';
+}
+```
+
+</CPPSection>
+</LanguageSection>
