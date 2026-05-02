@@ -2,10 +2,12 @@
 id: usaco-1135
 source: USACO Silver 2021 US Open
 title: Do You Know Your ABCs?
-author: Sachet Abeysinghe
+author: Sachet Abeysinghe, Aarav Sethi
 ---
 
 [Official Analysis (C++, Java)](https://usaco.org/current/data/sol_prob2_silver_open21.html)
+
+# Solution 1
 
 ## Explanation
 
@@ -17,7 +19,7 @@ We can always deduce a possible value for each of $A$, $B$, and $C$, because eac
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(T)$
+**Time Complexity:** $\mathcal{O}(T \cdot \binom{7}{N} \cdot N! \cdot N)$
 
 <LanguageSection>
 
@@ -112,4 +114,80 @@ for i in range(int(input())):
 
 </PySection>
 
+</LanguageSection>
+
+# Solution 2
+
+## Explanation
+
+This solution works by observing that, if you have at least $4$ of the numbers, each value in an $(A, B, C)$ candidate can be found as the difference of two of the input numbers.
+
+For example:
+- $(A+B+C) - (A+B) = C$
+- $(B+C) - (C) = B$
+- $(A+B) - (B) = A$
+
+Some of the candidate values could be invalid. Thus, we take all possible tuples of candidate values and check if this solution of $(A, B, C)$ can create a valid array of $A, B, C, A+B, ..., A+B+C$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(T \cdot N^6)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int t;
+	cin >> t;
+
+	while (t--) {
+		int n;
+		cin >> n;
+
+		vector<int> vals(n);
+		for (int &i : vals) cin >> i;
+
+		set<int> candidates(vals.begin(), vals.end());
+		for (int i : vals) {
+			for (int j : vals) {
+				int diff = i - j;
+				if (diff >= 0) { candidates.insert(diff); }
+			}
+		}
+
+		vector<int> candidatesVector(candidates.begin(), candidates.end());
+
+		int solutions = 0;
+		for (int i = 0; i < candidatesVector.size(); i++) {
+			for (int j = i; j < candidatesVector.size(); j++) {
+				for (int k = j; k < candidatesVector.size(); k++) {
+					int a = candidatesVector[i];
+					int b = candidatesVector[j];
+					int c = candidatesVector[k];
+
+					bool valid = true;
+
+					set<int> possible = {a, b, c, a + b, b + c, a + c, a + b + c};
+					for (int x : vals) {
+						if (!possible.count(x)) {
+							valid = false;
+							break;
+						}
+					}
+
+					solutions += valid;
+				}
+			}
+		}
+
+		cout << solutions << '\n';
+	}
+}
+```
+
+</CPPSection>
 </LanguageSection>
