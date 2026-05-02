@@ -144,7 +144,10 @@ export default function MembersPage(): JSX.Element {
                               {member.displayName}
                             </p>
                             <p className="truncate text-sm text-gray-500 dark:text-gray-300">
-                              {getTotalPointsForMember(member.uid)} Points
+                              {Math.trunc(
+                                getTotalPointsForMember(member.uid) * 1000
+                              ) / 1000}{' '}
+                              Points
                             </p>
                           </a>
                         </div>
