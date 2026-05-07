@@ -24,34 +24,33 @@ Once sorted, an element $x_j$ at index $j$ acts as the larger value in $j$ pairs
 #include <bits/stdc++.h>
 using namespace std;
 
-void solve() {
-	int n, m;
-	cin >> n >> m;
-
-	vector<vector<int>> p(m, vector<int>(n));
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < m; j++) {
-			// transpose to m by n to make sorting easier
-			cin >> p[j][i];
-		}
-	}
-
-	long long wins = 0;
-	for (int i = 0; i < m; i++) {
-		std::sort(p[i].begin(), p[i].end());
-		for (int j = 0; j < n; j++) {
-			// sum individual contributions per card
-			wins += 1ll * (j - (n - 1 - j)) * p[i][j];
-		}
-	}
-
-	cout << wins << '\n';
-}
-
 int main() {
 	int t;
 	cin >> t;
-	while (t--) solve();
+
+	for (int test_num = 0; test_num < t; test_num++) {
+		int n, m;
+		cin >> n >> m;
+	
+		vector<vector<int>> p(m, vector<int>(n));
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < m; j++) {
+				// transpose to m by n to make sorting easier
+				cin >> p[j][i];
+			}
+		}
+	
+		long long wins = 0;
+		for (int i = 0; i < m; i++) {
+			sort(p[i].begin(), p[i].end());
+			for (int j = 0; j < n; j++) {
+				// sum individual contributions per card
+				wins += 1ll * (j - (n - 1 - j)) * p[i][j];
+			}
+		}
+	
+		cout << wins << '\n';
+	}
 }
 ```
 
@@ -59,30 +58,26 @@ int main() {
 <PySection>
 
 ```py
-import sys
-
-input = sys.stdin.read
-data = input().split()
-it = iter(data)
-t = int(next(it))
+t = int(input())
 
 for _ in range(t):
-	n = int(next(it))
-	m = int(next(it))
-	p = [[0] * n for _ in range(m)]
+    n, m = map(int, input().split())
+    p = [[0] * n for _ in range(m)]
 
-	for i in range(n):
-		for j in range(m):
-			# transpose to m by n to make sorting easier
-			p[j][i] = int(next(it))
+    for i in range(n):
+        row = list(map(int, input().split()))
+        for j in range(m):
+            # transpose to m by n to make sorting easier
+            p[j][i] = row[j]
 
-	wins = 0
-	for i in range(m):
-		p[i].sort()
-		for j in range(n):
-			# sum individual contributions per card
-			wins += (j - (n - 1 - j)) * p[i][j]
-	print(wins)
+    wins = 0
+    for i in range(m):
+        p[i].sort()
+        for j in range(n):
+            # sum individual contributions per card
+            wins += (j - (n - 1 - j)) * p[i][j]
+
+    print(wins)
 ```
 
 </PySection>
@@ -99,7 +94,7 @@ public class PlayingInCasino {
 
 		int t = Integer.parseInt(br.readLine());
 
-		while (t-- > 0) {
+		for (int test_num = 0; test_num < t; test_num++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 			int n = Integer.parseInt(st.nextToken());
 			int m = Integer.parseInt(st.nextToken());
@@ -123,6 +118,7 @@ public class PlayingInCasino {
 			}
 			pw.println(wins);
 		}
+
 		pw.close();
 	}
 }
