@@ -9,70 +9,56 @@ author: Abhinav Singh
 
 ## Explanation
 
-Instead of trying to construct a final array, fix a target difference $d$ and check if it is achievable in under $k$ operations.
+Instead of trying to directly construct a final array, we fix the maximum difference $d$ and check if it is achievable in under $k$ operations. If all elements can be moved into some interval of length $d$, then it can be shown that all larger values of $d$ work. Hence, the condition is monotonic and we can binary search on $d$.
 
-If all elements can be moved into some interval of length $d$, then it can be shown that all larger values of $d$ work. Hence, the condition is monotonic and we can binary search on $d$.
+For an array to have a maximum difference of $d$, all elements must be in the range $[L, L + d]$, where 
+$L$ is an arbitrary starting point. This means that our operations must move values of 
+$a_i < L$ into range by increasing it to $L$, and handling values where $a_i > L + d$ similarly.
 
-For a fixed $d$, we try to fit all elements into $[L, L + d]$, where $L$ is an arbitrary starting point for the interval:
-- increase elements below $L$
-- decrease elements above $L + d$
-
-The total cost (number of unit increments/decrements needed to move all elements into [L,L+d]) can be computed using prefix sums.
+If we know what $L$ is, we can quickly calculate the number 
+of operations needed to fit all elements in the range $[L, L + d]$ using prefix sums and binary 
+search, which we will elaborate more on later.
 
 ### Choosing L
 
-We consider an interval $[L, L + d]$ of fixed length $d$, where $L$ is the left endpoint.
+Intuition tells us that setting $L$ or $L+d$ to some value of $a_i$ is optimal. This 
+is true, and we can informally justify this by drawing parallels to the minimizing sums 
+problem, which is explored in [CPH 6.4](https://usaco.guide/CPH.pdf#page=271). A more 
+thorough explanation is in the spoiler below.
 
-If we move this interval slightly to the right **without any element entering or leaving the interval**, then:
-- elements with $a_i < L$ become more expensive to increase,
-- elements with $a_i > L + d$ become cheaper to decrease.
+<Spoiler title="Proof">
 
-Let $A = |\{i : a_i < L\}|$ and $B = |\{i : a_i > L + d\}|$.
+The easiest way to show this is by using an exchange argument. Essentially,
+we show that any optimal solution can be transformed into the greedy construction 
+without impacting the quality of the final solution. 
 
-Shifting the interval by $\varepsilon > 0$ changes the cost by:
-$\[
-\Delta = (A - B)\cdot \varepsilon
-\]$
+Suppose neither $L$ nor $R$ (which is equal to $L+d$) equals any value in $a$. Let $p$ be the number of elements below $L$ and $q$ the number above $R$. Shifting the window right by 1 changes the total cost by $p - q$ (elements below $L$ each need one more step, and elements above $R$ each need one fewer). Shifting left changes the cost by $q - p$ through similar reasoning.
 
-Thus, as long as no element crosses either endpoint, the cost varies linearly with $L$, and we can keep shifting the interval in the direction that does not increase cost.
+- If $p \neq q$: shifting in the cheaper direction strictly reduces total cost by $|p - q|$ per step, so the current placement is not optimal.
+- If $p = q$: shifting in either direction leaves total cost unchanged, so we can shift freely.
 
-This process stops only when an endpoint coincides with some $a_i$, i.e.,
-$\[
-L = a_i \quad \text{or} \quad L + d = a_i
-\]$
+In both cases, we can continue shifting until $L$ or $R$ equals some $a_i$, without ever increasing cost. Therefore, any optimal solution can be transformed into one where a boundary equals some array value.
+
+</Spoiler>
 
 ### Calculating the Final Answer
 
-Fix a value of $L$ and use prefix sums $\text{pref}[i] = \sum_{j=1}^{i} a_j$.
+With the knowledge that $L$ or $L+d$ must equal some value of $a_i$, we can 
+iterate on each $a_i$ and try calculating the cost associated with setting it to 
+a value of $L$ or $L+d$. 
 
-Let
-$\[
-cnt = |\{i : a_i < L\}|.
-\]$
+For a range $[L, R]$, where $R=L+d$, the cost of fitting all the elements into range is: 
 
-**Left cost** (raising all $a_i < L$ up to $L$):
-$\[
-\sum_{i=1}^{cnt} (L - a_i)
-= cnt \cdot L - \text{pref}[cnt]
-\]$
+$$
+\sum_{a_i < L} (L - a_i) + \sum_{a_i > R} (a_i - R)
+$$
 
-Let
-$\[
-right = \max \{i : a_i \le L + d\}
-\]$
+In other words, we sum the costs of moving values of $a_i < L$ to equal $L$, 
+and the costs for moving values of $a_i > R$ to equal $R$.
 
-**Right cost** (lowering all $a_i > L + d$ down to $L + d$):
-$\[
-\sum_{i=right+1}^{n} (a_i - (L + d))
-= (\text{pref}[n] - \text{pref}[right]) - (n - right)(L + d)
-\]$
-
-**Total cost**:
-$= cnt \cdot L - \text{pref}[cnt] + (\text{pref}[n] - \text{pref}[right] - (n - right)(L + d))$
-
-A value of $d$ is feasible if the minimum cost over all valid choices of $L$ is $\le k$.
-
-Both $cnt$ and $right$ can be found using binary search, so each candidate $L$ is evaluated in $\mathcal{O}(\log n)$ time. We take the minimum over all candidate values of $L$.
+If we sort our array $a_i$, then a prefix and suffix of values will need to be 
+moved within range. We use binary search to find the prefix and suffix of values 
+that need to be adjusted, and prefix sums to sum up the relevant values of $a_i$.
 
 
 ## Implementation
