@@ -458,6 +458,17 @@ Now, to answer a query, we check if the XOR hashes at the given indices are the 
 
 **Time Complexity:** $\mathcal{O}(N\log N + Q)$
 
+<Warning>
+
+XOR hashing is susceptible to hacking on platforms like Codeforces. For more information, check out [this blog](https://codeforces.com/blog/entry/153335).
+
+In summary, avoid using `std::rand()` in general (check out [this blog](https://codeforces.com/blog/entry/61587) for more info), and avoid directly using values from `mt19937`. 
+The following options should be safe:
+- Using `mt19937` with `uniform_int_distribution`, where the range provided is **not** in the form of $[0, 2^n)$.
+- Using [splitmix64](https://rosettacode.org/wiki/Pseudo-random_numbers/Splitmix64) or a similar random number generator.
+
+</Warning>
+
 <LanguageSection>
 <CPPSection>
 
@@ -473,11 +484,13 @@ using std::cout;
 using std::endl;
 using std::vector;
 
-/** @return a random integer between 0 and INT64_MAX */
+constexpr long long MAX_VAL = 1e18;
+
+/** @return a random integer between 0 and MAX_VAL */
 long long rng() {
-	static std::mt19937 gen(
-	    std::chrono::steady_clock::now().time_since_epoch().count());
-	return std::uniform_int_distribution<long long>(0, INT64_MAX)(gen);
+	static std::mt19937_64 gen(
+    	std::chrono::steady_clock::now().time_since_epoch().count());
+	return std::uniform_int_distribution<long long>(0, MAX_VAL)(gen);
 }
 
 int main() {
