@@ -9,15 +9,15 @@ author: Abhinav Singh
 
 ## Explanation
 
-Instead of trying to directly construct a final array, we fix the maximum difference $d$ and check if it is achievable in under $k$ operations. If all elements can be moved into some interval of length $d$, then it can be shown that all larger values of $d$ work. Hence, the condition is monotonic and we can binary search on $d$.
+Instead of trying to directly construct a final array, we fix the maximum difference $d$ and check if it is achievable in under $k$ operations. If all elements can be moved into some interval of length $d$, then it is clear that all larger values of $d$ will work. Hence, the condition is monotonic, and we can binary search on $d$.
 
 For an array to have a maximum difference of $d$, all elements must be in the range $[L, L + d]$, where
-$L$ is an arbitrary starting point. This means that our operations must move values of
-$a_i < L$ into range by increasing it to $L$, and handling values where $a_i > L + d$ similarly.
+$L$ is any integer. This means that our operations must move values of
+$a_i < L$ into the range by increasing them to $L$, and handling values where $a_i > L + d$ similarly.
 
 If we know what $L$ is, we can quickly calculate the number
 of operations needed to fit all elements in the range $[L, L + d]$ using prefix sums and binary
-search, which we will elaborate more on later.
+search, which we will elaborate on more later.
 
 ### Choosing L
 
@@ -47,7 +47,7 @@ With the knowledge that $L$ or $L+d$ must equal some value of $a_i$, we can
 iterate on each $a_i$ and try calculating the cost associated with setting it to
 a value of $L$ or $L+d$.
 
-For a range $[L, R]$, where $R=L+d$, the cost of fitting all the elements into range is:
+For a range $[L, R]$, where $R=L+d$, the cost of fitting all the elements into the range is:
 
 $$
 \sum_{a_i < L} (L - a_i) + \sum_{a_i > R} (a_i - R)
@@ -56,7 +56,7 @@ $$
 In other words, we sum the costs of moving values of $a_i < L$ to equal $L$,
 and the costs for moving values of $a_i > R$ to equal $R$.
 
-If we sort our array $a_i$, then a prefix and suffix of values will need to be
+If we sort our array $a_i$, then a prefix and a suffix of values will need to be
 moved within range. We use binary search to find the prefix and suffix of values
 that need to be adjusted, and prefix sums to sum up the relevant values of $a_i$.
 
