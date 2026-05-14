@@ -5,7 +5,7 @@ title: Maximum Manhattan Distances
 author: Mihnea Brebenel
 ---
 
-## Solution 
+## Solution
 
 Let $A(x_A,y_A)$ and $B(x_B,y_B)$ be two points, then the manhattan distance between the two of them is $d = |x_B-x_a|+|y_B - y_A|$. Usually, it's a good idea to group the variables that depend of one element, so we use the definition
 of the absolute value:
@@ -58,51 +58,50 @@ When a new point comes up, we updates the values. The maximum of the values: $\t
 <LanguageSection>
 <CPPSection>
 
-```cpp 
+```cpp
 #include <bits/stdc++.h>
 
 using namespace std;
 
 int main() {
 
-    int n;
-    cin >> n;
+	int n;
+	cin >> n;
 
-    int x, y;
-    cin >> x >> y;
+	int x, y;
+	cin >> x >> y;
 
-    long long minsum, maxsum;
-    long long mindiff, maxdiff;
+	long long minsum, maxsum;
+	long long mindiff, maxdiff;
 
-    minsum = maxsum = x + y;
-    mindiff = maxdiff = x - y;
+	minsum = maxsum = x + y;
+	mindiff = maxdiff = x - y;
 
-    cout << max(maxsum - minsum, maxdiff - mindiff) << '\n';
+	cout << max(maxsum - minsum, maxdiff - mindiff) << '\n';
 
-    for (int i = 2; i <= n; i++) {
-        int x, y;
-        cin >> x >> y;
+	for (int i = 2; i <= n; i++) {
+		int x, y;
+		cin >> x >> y;
 
-        long long sum = x + y;
-        long long diff = x - y;
+		long long sum = x + y;
+		long long diff = x - y;
 
-        if (sum < minsum) {
-            minsum = sum;
-        } else if (sum > maxsum) {
-            maxsum = sum;
-        }
+		if (sum < minsum) {
+			minsum = sum;
+		} else if (sum > maxsum) {
+			maxsum = sum;
+		}
 
-        if (diff < mindiff) {
-            mindiff = diff;
-        } else if (diff > maxdiff) {
-            maxdiff = diff;
-        }
+		if (diff < mindiff) {
+			mindiff = diff;
+		} else if (diff > maxdiff) {
+			maxdiff = diff;
+		}
 
-        cout << max(maxsum - minsum, maxdiff - mindiff) << '\n';
+		cout << max(maxsum - minsum, maxdiff - mindiff) << '\n';
+	}
 
-    }
-
-    return 0;
+	return 0;
 }
 ```
 
