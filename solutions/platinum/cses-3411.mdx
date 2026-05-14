@@ -12,64 +12,62 @@ $$
 \sum_{1\le i<j\le n} (|x_j-x_i|+|y_j-y_i|) = \sum_{1\le i<j\le n} |x_j-x_i|+\sum_{1\le i<j\le n}|y_j-y_i|
 $$
 
-The sums of $x$ coordinate and $y$ coordinate can be treated separately. We'll keep two sorted arrays, one with the $x$'s and one with the $y$'s. 
+The sums of $x$ coordinate and $y$ coordinate can be treated separately. We'll keep two sorted arrays, one with the $x$'s and one with the $y$'s.
 The absolute value function explicit form is helpfull here. By traversing the array in ascending order, we know exactly that value $c$ contributes with $+c$ to the
  answer with respect to the values before $c$, and contributes with $-c$ with respect to the values after it.
 
-## Implementation 
+## Implementation
 
 **Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
 <CPPSection>
 
-```cpp 
+```cpp
 #include <bits/stdc++.h>
 
 using namespace std;
 
 void print_int128(__int128 x) {
-    if (x == 0) {
-        cout << 0;
-        return;
-    }
-    if (x < 0) {
-        cout << '-';
-        x = -x;
-    }
-    string res;
-    while (x > 0) {
-        res += (x % 10) + '0';
-        x /= 10;
-    }
-    reverse(res.begin(), res.end());
-    cout << res;
+	if (x == 0) {
+		cout << 0;
+		return;
+	}
+	if (x < 0) {
+		cout << '-';
+		x = -x;
+	}
+	string res;
+	while (x > 0) {
+		res += (x % 10) + '0';
+		x /= 10;
+	}
+	reverse(res.begin(), res.end());
+	cout << res;
 }
 
 int main() {
 
-    int n;
-    cin >> n;
+	int n;
+	cin >> n;
 
-    vector<long long> x(n + 1), y(n + 1);
-    for (int i = 1; i <= n; i++) {
-        cin >> x[i] >> y[i];
-    }
+	vector<long long> x(n + 1), y(n + 1);
+	for (int i = 1; i <= n; i++) { cin >> x[i] >> y[i]; }
 
-    sort(x.begin() + 1, x.end());
-    sort(y.begin() + 1, y.end());
+	sort(x.begin() + 1, x.end());
+	sort(y.begin() + 1, y.end());
 
-    // BigInt in c++
-    __int128 sum(0);
-    for (int i = 1; i <= n; i++) {
-        // (i - 1) of + sign and (n - i) of - sign
-        long long contrib = i - 1 - (n - i);
-        sum = sum + contrib * (x[i] + y[i]);
-    }
+	// BigInt in c++
+	__int128 sum(0);
+	for (int i = 1; i <= n; i++) {
+		// (i - 1) of + sign and (n - i) of - sign
+		long long contrib = i - 1 - (n - i);
+		sum = sum + contrib * (x[i] + y[i]);
+	}
 
-    print_int128(sum);
+	print_int128(sum);
 
-    return 0;
+	return 0;
 }
 ```
 
