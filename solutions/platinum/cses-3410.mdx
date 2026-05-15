@@ -7,8 +7,8 @@ author: Mihnea Brebenel
 
 ## Solution
 
-Let $A(x_A,y_A)$ and $B(x_B,y_B)$ be two points, then the manhattan distance between the two of them is $d = |x_B-x_a|+|y_B - y_A|$. Usually, it's a good idea to group the variables that depend of one element, so we use the definition
-of the absolute value:
+Let $A(x_A,y_A)$ and $B(x_B,y_B)$ be two points, then the manhattan distance between the two of them is $d = |x_B-x_a|+|y_B - y_A|$.
+Usually, it's a good idea to define the cases of the absolute value:
 $$
 |x_B-x_A| = \left\{
 \begin{array}{ll}
@@ -27,7 +27,7 @@ y_B-y_A & y_B - y_A \ge 0\\
 \right.
 $$
 
-Now, we distinguish four cases($2 *2$ from the absolute value explicitations) for the distance equation:
+Now, we distinguish four cases for the distance value, based on the cases for $x$ and $y$:
 $$
 d = \max \left\{
 \begin{array}{ll}
@@ -71,13 +71,13 @@ int main() {
 	int x, y;
 	cin >> x >> y;
 
-	long long minsum, maxsum;
-	long long mindiff, maxdiff;
+	long long min_sum, max_sum;
+	long long min_diff, max_diff;
 
-	minsum = maxsum = x + y;
-	mindiff = maxdiff = x - y;
+	min_sum = max_sum = x + y;
+	min_diff = max_diff = x - y;
 
-	cout << max(maxsum - minsum, maxdiff - mindiff) << '\n';
+	cout << max(max_sum - min_sum, max_diff - min_diff) << '\n';
 
 	for (int i = 2; i <= n; i++) {
 		int x, y;
@@ -86,19 +86,19 @@ int main() {
 		long long sum = x + y;
 		long long diff = x - y;
 
-		if (sum < minsum) {
-			minsum = sum;
-		} else if (sum > maxsum) {
-			maxsum = sum;
+		if (sum < min_sum) {
+			min_sum = sum;
+		} else if (sum > max_sum) {
+			max_sum = sum;
 		}
 
-		if (diff < mindiff) {
-			mindiff = diff;
-		} else if (diff > maxdiff) {
-			maxdiff = diff;
+		if (diff < min_diff) {
+			min_diff = diff;
+		} else if (diff > max_diff) {
+			max_diff = diff;
 		}
 
-		cout << max(maxsum - minsum, maxdiff - mindiff) << '\n';
+		cout << max(max_sum - min_sum, max_diff - min_diff) << '\n';
 	}
 
 	return 0;
