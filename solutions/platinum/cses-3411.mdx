@@ -7,14 +7,26 @@ author: Mihnea Brebenel
 
 ## Explanation
 
-The required value is:
+Our answer can be written as:
 $$
 \sum_{1\le i<j\le n} (|x_j-x_i|+|y_j-y_i|) = \sum_{1\le i<j\le n} |x_j-x_i|+\sum_{1\le i<j\le n}|y_j-y_i|
 $$
+The contributions from $x$ coordinates and $y$ coordinates can be treated separately. We'll keep two sorted arrays, one with the $x$ values and one with the $y$ values.
+Recall the explicit definition of absolute value:
+$$
+|A - B| = \left\{
+\begin{array}{ll}
+A - B & ,A \ge B\\
+B-A & ,A<B
+\end{array}
+\right.
+$$
+By traversing the array in ascending order, we know exactly that value $c$ contributes with $+c$ to the
+answer with respect to the values before $c$, and contributes with $-c$ with respect to the values after it. 
+Because our arrays are sorted, we know the number of values before and after each value $c$, allowing us to directly sum these contributions 
+for both the $x$ and $y$ values.
 
-The sums of $x$ coordinate and $y$ coordinate can be treated separately. We'll keep two sorted arrays, one with the $x$'s and one with the $y$'s.
-The absolute value function explicit form is helpfull here. By traversing the array in ascending order, we know exactly that value $c$ contributes with $+c$ to the
- answer with respect to the values before $c$, and contributes with $-c$ with respect to the values after it.
+Another important concern is the size of the answer which can get pretty large. A big integer class must be used. 
 
 ## Implementation
 
@@ -28,6 +40,7 @@ The absolute value function explicit form is helpfull here. By traversing the ar
 
 using namespace std;
 
+// Data type for 128 bit integer
 void print_int128(__int128 x) {
 	if (x == 0) {
 		cout << 0;
@@ -51,17 +64,17 @@ int main() {
 	int n;
 	cin >> n;
 
-	vector<long long> x(n + 1), y(n + 1);
-	for (int i = 1; i <= n; i++) { cin >> x[i] >> y[i]; }
+	vector<long long> x(n), y(n);
+	for (int i = 0; i < n; i++) { cin >> x[i] >> y[i]; }
 
-	sort(x.begin() + 1, x.end());
-	sort(y.begin() + 1, y.end());
+	sort(x.begin(), x.end());
+	sort(y.begin(), y.end());
 
 	// BigInt in c++
 	__int128 sum(0);
-	for (int i = 1; i <= n; i++) {
+	for (int i = 0; i < n; i++) {
 		// (i - 1) of + sign and (n - i) of - sign
-		long long contrib = i - 1 - (n - i);
+		long long contrib = 2 * i - (n - 1);
 		sum = sum + contrib * (x[i] + y[i]);
 	}
 
