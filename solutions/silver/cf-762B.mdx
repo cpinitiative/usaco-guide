@@ -5,16 +5,15 @@ title: USB vs PS/2
 author: Abhinav Singh, Benjamin Qi
 ---
 
-[Official Editorial](https://codeforces.com/blog/entry/50010)
+[Official Analysis](https://codeforces.com/blog/entry/50010)
 
 ## Explanation
 
-Universal ports are more flexible than restricted ones, since they can accept either type. Therefore we should avoid using them, unless necessary.
+Universal ports are more flexible than restricted ones, since they can accept either type. Thus, we should prioritize restricted ports over universal ports.
 
 If we assign a mouse that could've gone to a restricted port to a universal port, we might later on be forced to use a more expensive mouse for that restricted port.
 
-
-### Greedy Strategy
+### Greedy Algorithm
 
 - Sort all mice by cost
 - For each mouse:
@@ -22,7 +21,7 @@ If we assign a mouse that could've gone to a restricted port to a universal port
   - Otherwise, use a universal port (if available)
 - After all restricted ports are filled, assign the cheapest remaining mice to universal ports
 
-This prioritizes filling restricted ports first and delays using flexible (universal) ports. If we ever assigned a cheap mouse to a universal port while a more expensive mouse of the same type occupies a restricted port, we could swap them without increasing cost, so an optimal solution always has restricted ports filled first with the cheapest valid mice, and universal ports used only afterward.
+This prioritizes filling restricted ports first and delays using universal ports. If we ever assigned a cheap mouse to a universal port while a more expensive mouse of the same type occupies a restricted port, we could swap them without increasing cost, so an optimal solution always has restricted ports filled first with the cheapest valid mice, and universal ports used only afterward.
 
 ## Implementation
 
@@ -107,13 +106,9 @@ int main() {
 
 ## Explanation
 
-The editorial also describes a two pointers approach. Instead of directly filling ports greedily, it considers how many USB and PS/2 mice to take and adjusts the counts while maintaining feasibility with the available ports.
-
-This leads to a solution where we iterate over the number of USB mice taken and adjust the number of PS/2 mice accordingly, ensuring that the total number of mice fits within the available USB, PS/2, and universal ports.
-
-We omit the full explanation here since the greedy approach is simpler and sufficient.
-
----
+An alternate approach uses two pointers instead of a greedy algorithm. The idea is that any optimal construction will use the $L$ cheapest USB mice and $R$ cheapest PS2 mice. Since having more USB mice gives less 
+flexibility for PS2 mice, we iterate on each value of $L$, and find the maximum value of $R$ and the cost using two pointers. Given that it's two pointers, we know that the value of $R$ monotonically decreases
+as $L$ increases, meaning that our pointers move at most $\mathcal{O}(M)$ times.
 
 ## Implementation
 
