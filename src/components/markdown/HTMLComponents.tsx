@@ -58,7 +58,6 @@ const inlineCode = (props): JSX.Element => (
 );
 const a = ({ children, ...props }) => (
   <a
-    className="no-underline"
     target={!props.href || props.href.startsWith('#') ? undefined : '_blank'}
     {...props}
   >
