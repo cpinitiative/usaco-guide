@@ -377,67 +377,70 @@ export const UserDataProvider = ({
 
     importUserData: (data: Partial<UserData>): boolean => {
       if (
-        confirm(
+        !confirm(
           'Import user data (beta)? All existing data will be lost. Make sure to back up your data before proceeding.'
         )
       ) {
-        const updatedData = assignDefaultsToUserData(data);
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedData));
-        debouncedSetUserData(updatedData); // Use debounced version here
-        if (firebaseUser) {
-          // Stupid hack: if firebase user is set, userData will actually have
-          // the CREATING_ACCOUNT_FOR_FIRST_TIME property, since userData will
-          // be set from the Firebase doc.
-          const CREATING_ACCOUNT_FOR_FIRST_TIME = (userData as any)
-            .CREATING_ACCOUNT_FOR_FIRST_TIME;
-          setDoc(doc(getFirestore(firebaseApp), 'users', firebaseUser.uid), {
-            ...data,
-            CREATING_ACCOUNT_FOR_FIRST_TIME,
-          }).catch(err => {
-            console.error(err);
-            alert(
-              `importUserData: Error setting firebase doc. Check console for details.`
-            );
-          });
-        }
-        return true;
+        return false;
       }
-      return false;
+
+      const updatedData = assignDefaultsToUserData(data);
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedData));
+      debouncedSetUserData(updatedData); // Use debounced version here
+      if (firebaseUser) {
+        // Stupid hack: if firebase user is set, userData will actually have
+        // the CREATING_ACCOUNT_FOR_FIRST_TIME property, since userData will
+        // be set from the Firebase doc.
+        const CREATING_ACCOUNT_FOR_FIRST_TIME = (userData as any)
+          .CREATING_ACCOUNT_FOR_FIRST_TIME;
+        setDoc(doc(getFirestore(firebaseApp), 'users', firebaseUser.uid), {
+          ...data,
+          CREATING_ACCOUNT_FOR_FIRST_TIME,
+        }).catch(err => {
+          console.error(err);
+          alert(
+            `importUserData: Error setting firebase doc. Check console for details.`
+          );
+        });
+      }
+      return true;
     },
-    deleteAllUserData: async (): Promise<boolean> => {
+
+    deleteAllUserData: async (): Promise<boolean> => { // NOTE: This does not delete the firebase user, it just removes all data from the account.
       if (
-        confirm(
+        !confirm(
           'Delete all user data? This will permanently remove your progress and settings. This cannot be undone.'
         )
       ) {
-        const emptyUserData = assignDefaultsToUserData({});
-
-        try {
-          localStorage.removeItem(LOCAL_STORAGE_KEY);
-          localStorage.removeItem(themeKey);
-
-          if (firebaseUser) {
-            const userDoc = doc(
-              getFirestore(firebaseApp),
-              'users',
-              firebaseUser.uid
-            );
-
-            await deleteDoc(userDoc);
-          }
-
-          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(emptyUserData));
-          debouncedSetUserData(emptyUserData);
-
-          toast.success('Deleted all user data.');
-          return true;
-        } catch (err) {
-          console.error(err);
-          toast.error('Failed to delete user data.');
-          return false;
-        }
-      }
         return false;
+      }
+
+      const emptyUserData = assignDefaultsToUserData({});
+
+      try {
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
+        localStorage.removeItem(themeKey);
+
+        if (firebaseUser) {
+          const userDoc = doc(
+            getFirestore(firebaseApp),
+            'users',
+            firebaseUser.uid
+          );
+
+          await deleteDoc(userDoc);
+        }
+
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(emptyUserData));
+        debouncedSetUserData(emptyUserData);
+
+        toast.success('Deleted all user data.');
+        return true;
+      } catch (err) {
+        console.error(err);
+        toast.error('Failed to delete user data.');
+        return false;
+      }
     },
   };
 
