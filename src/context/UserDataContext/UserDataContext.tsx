@@ -1,5 +1,6 @@
 import { getAuth, onAuthStateChanged, signOut, User } from 'firebase/auth';
 import {
+  deleteDoc,
   doc,
   getFirestore,
   onSnapshot,
@@ -75,6 +76,7 @@ type UserDataContextAPI = {
     }
   ) => void;
   importUserData: (data: Partial<UserData>) => boolean;
+  deleteAllUserData: () => Promise<boolean>;
   signOut: () => Promise<void>;
 };
 
@@ -117,6 +119,7 @@ const UserDataContext = createContext<UserDataContextAPI>({
   firebaseUser: null,
   forceFirebaseUserRerender: () => {},
   importUserData: _ => false,
+  deleteAllUserData: () => Promise.resolve(false),
   isLoaded: true,
 });
 
@@ -401,6 +404,41 @@ export const UserDataProvider = ({
       }
       return false;
     },
+    deleteAllUserData: async (): Promise<boolean> => {
+      if (
+        confirm(
+          'Delete all user data? This will permanently remove your progress and settings. This cannot be undone.'
+        )
+      ) {
+        const emptyUserData = assignDefaultsToUserData({});
+
+        try {
+          localStorage.removeItem(LOCAL_STORAGE_KEY);
+          localStorage.removeItem(themeKey);
+
+          if (firebaseUser) {
+            const userDoc = doc(
+              getFirestore(firebaseApp),
+              'users',
+              firebaseUser.uid
+            );
+
+            await deleteDoc(userDoc);
+          }
+
+          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(emptyUserData));
+          debouncedSetUserData(emptyUserData);
+
+          toast.success('Deleted all user data.');
+          return true;
+        } catch (err) {
+          console.error(err);
+          toast.error('Failed to delete user data.');
+          return false;
+        }
+      }
+        return false;
+    },
   };
 
   return (
@@ -442,4 +480,8 @@ export const useSignOutAction = () => {
 
 export const useImportUserDataAction = () => {
   return React.useContext(UserDataContext).importUserData;
+};
+
+export const useDeleteAllUserDataAction = () => {
+  return React.useContext(UserDataContext).deleteAllUserData;
 };
