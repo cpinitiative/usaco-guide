@@ -406,7 +406,8 @@ export const UserDataProvider = ({
       return true;
     },
 
-    deleteAllUserData: async (): Promise<boolean> => { // NOTE: This does not delete the firebase user, it just removes all data from the account.
+    deleteAllUserData: async (): Promise<boolean> => {
+      // NOTE: This does not delete the firebase user, it just removes all data from the account.
       if (
         !confirm(
           'Delete all user data? This will permanently remove your progress and settings. This cannot be undone.'

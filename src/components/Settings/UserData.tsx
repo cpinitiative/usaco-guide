@@ -114,7 +114,8 @@ export default function UserData() {
             Delete User Data
           </h3>
           <p className="max-w-2xl text-sm text-gray-500">
-            Note that this will permanently delete all settings and progress. Use at your own risk!
+            Note that this will permanently delete all settings and progress.
+            Use at your own risk!
           </p>
         </div>
 
