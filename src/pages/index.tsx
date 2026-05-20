@@ -1,4 +1,3 @@
-import { useLocation } from '@gatsbyjs/reach-router';
 import {
   AcademicCapIcon,
   ChartBarIcon,
@@ -11,8 +10,10 @@ import {
   UserGroupIcon,
 } from '@heroicons/react/outline';
 import classNames from 'classnames';
-import { Link, navigate } from 'gatsby';
-import { StaticImage } from 'gatsby-plugin-image';
+import { GetStaticProps } from 'next';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import { GlowingRing } from '../components/elements/landing/GlowingRing';
 import { GlowingText } from '../components/elements/landing/GlowingText';
@@ -24,15 +25,12 @@ import { Feature } from '../components/Index/Feature';
 import { ProblemsetsFeature } from '../components/Index/features/ProblemsetsFeature';
 import { ProgressTrackingFeature } from '../components/Index/features/ProgressTrackingFeature';
 import { ResourcesFeature } from '../components/Index/features/ResourcesFeature';
-import {
-  EasyFunCoding,
-  NonTrivial,
-  XCamp,
-} from '../components/Index/sponsor-logos';
+import { EasyFunCoding, NonTrivial } from '../components/Index/sponsor-logos';
 import TrustedBy from '../components/Index/TrustedBy';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
+import { TeamImagesProvider } from '../context/TeamImagesContext';
 import {
   useFirebaseUser,
   useIsUserDataLoaded,
@@ -54,28 +52,34 @@ const usacoTitleClasses =
 const linkTextStyles =
   'text-blue-600 dark:text-blue-300 transition hover:text-purple-600 dark:hover:text-purple-300';
 
-export default function IndexPage({ path }): JSX.Element {
+interface IndexPageProps {
+  teamImages: {
+    name: string;
+    src: string;
+  }[];
+}
+export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
   const firebaseUser = useFirebaseUser();
   const loading = useIsUserDataLoaded();
-  const location = useLocation();
+  const router = useRouter();
   React.useEffect(() => {
     // User will normally be redirected to the dashboard if the user is logged in, but if user clicks the icon in the top left corner while on the dashboard, they will not be redirected.
     try {
-      if (firebaseUser && location.state.redirect) {
+      if (firebaseUser && router.query.redirect) {
         /* Whether or not the user should be redirected to the dashboard is stored in location.state.redirect, but if the user opens a link straight
         to the landing page, location.state.redirect will be undefined, causing a typeerror, this try catch statements accounts for that */
-        navigate('/dashboard');
+        router.push('/dashboard');
       }
     } catch (e) {
       if (firebaseUser) {
-        navigate('/dashboard');
+        router.push('/dashboard');
       }
     }
-  }, [firebaseUser, loading, location]);
+  }, [firebaseUser, loading, router]);
 
   return (
     <Layout>
-      <SEO title={null} image={null} pathname={path} />
+      <SEO title={null} image={null} />
 
       {/*<a*/}
       {/*  href="http://usaco.org/"*/}
@@ -122,7 +126,7 @@ export default function IndexPage({ path }): JSX.Element {
             <div className="flex md:justify-center">
               <GlowingRing>
                 <Link
-                  to="/dashboard"
+                  href="/dashboard"
                   className={classNames(whiteButtonClassesBig, 'inline-block')}
                 >
                   Get Started
@@ -276,12 +280,16 @@ export default function IndexPage({ path }): JSX.Element {
             blobClasses="bg-green-200 dark:bg-green-800"
             feature={
               <div className="rounded-lg shadow-lg">
-                <StaticImage
-                  src="../assets/forum-screenshot.png"
+                <Image
+                  src="/assets/forum-screenshot.png"
                   alt="USACO Forum Screenshot"
-                  placeholder="blurred"
+                  placeholder="blur"
+                  blurDataURL={`data:image/svg+xml;base64,${Buffer.from(
+                    `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'/>`
+                  ).toString('base64')}`}
                   layout="constrained"
                   width={560}
+                  height={315}
                 />
               </div>
             }
@@ -337,7 +345,7 @@ export default function IndexPage({ path }): JSX.Element {
           <div className="group relative inline-block">
             <GlowingRing>
               <Link
-                to="/dashboard"
+                href="/dashboard"
                 className={classNames(whiteButtonClasses, 'inline-block')}
               >
                 View Guide
@@ -541,7 +549,7 @@ export default function IndexPage({ path }): JSX.Element {
           <p className="pt-6 font-semibold text-gray-600 uppercase md:text-lg dark:text-gray-400">
             Platinum Sponsors
           </p>
-          <div className="my-8 grid grid-cols-1 items-center gap-4 space-y-5 text-gray-600 sm:grid-cols-2 sm:space-y-0 md:grid-cols-3 lg:my-6 lg:grid-cols-4 dark:text-gray-400">
+          <div className="my-8 grid grid-cols-2 items-center gap-0.5 text-gray-600 md:grid-cols-3 lg:my-6 lg:grid-cols-4 dark:text-gray-400">
             <div className="col-span-1">
               <a
                 href="http://non-trivial.org/"
@@ -549,11 +557,6 @@ export default function IndexPage({ path }): JSX.Element {
                 rel="noreferrer"
               >
                 <NonTrivial />
-              </a>
-            </div>
-            <div className="col-span-1 pt-5 sm:pt-0">
-              <a href="http://x-camp.academy/" target="_blank" rel="noreferrer">
-                <XCamp />
               </a>
             </div>
           </div>
@@ -592,17 +595,17 @@ export default function IndexPage({ path }): JSX.Element {
                   <dd className="mt-2">
                     <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
                       USACO stands for the{' '}
-                      <a
+                      <Link
                         href="http://www.usaco.org/"
                         target="_blank"
                         rel="noreferrer"
                         className="text-blue-600 underline dark:text-blue-400"
                       >
                         USA Computing Olympiad
-                      </a>
+                      </Link>
                       . Check out the{' '}
                       <Link
-                        to="/general/usaco-faq"
+                        href="/general/usaco-faq"
                         className="text-blue-600 underline dark:text-blue-400"
                       >
                         USACO FAQ Page
@@ -703,7 +706,7 @@ export default function IndexPage({ path }): JSX.Element {
                     <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
                       To learn more about contributing, please visit{' '}
                       <Link
-                        to="/general/contributing"
+                        href="/general/contributing"
                         className="text-blue-600 underline dark:text-blue-400"
                       >
                         this page
@@ -737,8 +740,9 @@ export default function IndexPage({ path }): JSX.Element {
         </div>
       </div>
       {/*End FAQ*/}
-
-      <ContributorsSection />
+      <TeamImagesProvider value={teamImages}>
+        <ContributorsSection />
+      </TeamImagesProvider>
 
       <div className="bg-gray-100 dark:bg-gray-900">
         <div className="mx-auto max-w-(--breakpoint-xl) px-4 py-12">
@@ -748,7 +752,7 @@ export default function IndexPage({ path }): JSX.Element {
             <br />
             No part of this website may be reproduced or commercialized in any
             manner without prior written permission.{' '}
-            <Link to="/license" className="underline">
+            <Link href="/license" className="underline">
               Learn More.
             </Link>
           </p>
@@ -757,3 +761,22 @@ export default function IndexPage({ path }): JSX.Element {
     </Layout>
   );
 }
+
+export const getStaticProps: GetStaticProps = async () => {
+  try {
+    const { loadTeamImages } = await import('../lib/loadContent');
+    const teamImages = await loadTeamImages();
+    return {
+      props: {
+        teamImages,
+      },
+    };
+  } catch (error) {
+    console.error('Error loading team images:', error);
+    return {
+      props: {
+        teamImages: null,
+      },
+    };
+  }
+};

@@ -1,5 +1,5 @@
-import { StoryFn } from '@storybook/react-webpack5';
-import React, { ComponentProps } from 'react';
+import { StoryFn } from '@storybook/react';
+import { ComponentProps } from 'react';
 import { ListTable } from '../../components/markdown/ListTable/ListTable';
 import markdownDecorator from '../../components/markdown/markdownDecoratorForStorybook';
 import ProblemsListHeader from '../../components/markdown/ProblemsList/ProblemsListHeader';

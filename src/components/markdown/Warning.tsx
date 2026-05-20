@@ -13,7 +13,7 @@ export interface WarningProps {
 
 const Warning: React.FC<WarningProps> = ({ children, title }) => (
   <div className="mb-4 rounded-md bg-yellow-50 p-4 dark:bg-yellow-700/25">
-    <div className="flex">
+    <div className="flex items-start">
       <div className="shrink-0">
         <svg
           className="h-5 w-5 text-yellow-400 dark:text-yellow-500"
@@ -28,9 +28,9 @@ const Warning: React.FC<WarningProps> = ({ children, title }) => (
         </svg>
       </div>
       <div className="ml-3">
-        <h3 className="text-sm leading-5 font-medium text-yellow-800 dark:text-yellow-200">
+        <div className="text-sm leading-5 font-medium text-yellow-800 dark:text-yellow-200">
           Warning{title ? ': ' + title : '!'}
-        </h3>
+        </div>
         <div className="no-y-margin tailwind-alert tailwind-alert--warning mt-2 text-sm leading-5 text-yellow-700 dark:text-yellow-300">
           {children}
         </div>

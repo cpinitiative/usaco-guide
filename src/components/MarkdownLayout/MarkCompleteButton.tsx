@@ -7,7 +7,7 @@ import {
 } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/solid';
 import classNames from 'classnames';
-import React, { Fragment, useId } from 'react';
+import { Fragment, useId } from 'react';
 import { ModuleProgress, ModuleProgressOptions } from '../../models/module';
 
 const moduleProgressToIcon = (status: ModuleProgress): JSX.Element => {

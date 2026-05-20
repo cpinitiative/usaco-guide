@@ -36,14 +36,14 @@ Why would we need to sort the segments in the first place?
 Imagine we had three segments $f$, $g$, and $h$ in that order in the unsorted
 list. Watch what happens when these segments are arranged as shown below:
 
-![Hack](<baltic-12-mobile/hack.png>)
+![Hack](/solutions/silver/baltic-12-mobile/hack.png)
 
 Without sorting, $g$ wouldn't be part of the union since $f \cap g = \emptyset$.
 However, the actual union contains all three segments.
 
 But what if $h$ completely covers $g$?
 
-![Antihack](<baltic-12-mobile/antihack.png>)
+![Antihack](/solutions/silver/baltic-12-mobile/antihack.png)
 
 In this case, it doesn't matter that $g$ isn't a part of the union, since
 $f \cup g \cup h = f \cup h$ anyway.
@@ -56,7 +56,7 @@ Why is this true? The only time we will have segment $s_i$ coming after segment
 $s_j$ in the list but $s_i$'s left endpoint is to the left of $s_j$'s left
 endpoint is when $x_i > x_j$ and $y_i < y_j$.
 
-![Circles](<baltic-12-mobile/circles.png>)
+![Circles](/solutions/silver/baltic-12-mobile/circles.png)
 
 Clearly, $s_i$ completely covers $s_j$. We can therefore apply our algorithm for
 a sorted list and still get the correct answer!
@@ -123,7 +123,7 @@ Then, we can imagine a line perpendicular to the line segment formed by these tw
 
 Thus, the maximum point is at the point where the perpendicular line intersects the highway! We only have to get the answer from these critical points, and since there are only two stations that could be closest to it, we can compute them in $\mathcal{O}(1)$.
 
-![Maximum Point](<baltic-12-mobile/perpendicular.png>)
+![Maximum Point](/solutions/silver/baltic-12-mobile/perpendicular.png)
 
 This intersection can be represented by $\frac{b_x^2 + b_y^2 - a_x^2 - a_y^2}{2(b_x - a_x)}$.
 
@@ -139,13 +139,13 @@ Without loss of generality, let's assume all points are above the y-axis, and $a
 
 In this arrangement, all stations are the closest to some points on the highway, so we should keep them.
 
-![Case 1](<baltic-12-mobile/case1.png>)
+![Case 1](/solutions/silver/baltic-12-mobile/case1.png)
 
 ### Case 2: $p(a, b) > p(b, c)$
 
 Note how this creates a cross, which makes $b$ useless. All points on the highway are now closer to $a$ or $c$. To find the maximum point here, we can just remove $b$, and recalculate for $p(a, c)$.
 
-![Case 2](<baltic-12-mobile/case2.png>)
+![Case 2](/solutions/silver/baltic-12-mobile/case2.png)
 
 Since we only remove the most recent stations, this motivates the use of a [stack](/gold/stacks) to perform these removals/additions in $\mathcal{O}(1)$.
 

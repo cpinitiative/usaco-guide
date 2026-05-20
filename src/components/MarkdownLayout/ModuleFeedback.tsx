@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { ModuleInfo } from '../../models/module';
 import { SolutionInfo } from '../../models/solution';
 

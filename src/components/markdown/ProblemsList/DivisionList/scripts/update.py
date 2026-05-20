@@ -111,7 +111,7 @@ def gen_contest_to_points(
 	return score_data
 
 
-def add_div_to_probs(div_to_probs: dict, url: str):
+def add_div_to_probs(div_to_probs: dict, url: str, newFormat: bool):
 	logger.debug(url)
 	soup = parse(url).find("div", class_="panel")
 	contest = ""
@@ -138,13 +138,22 @@ def add_div_to_probs(div_to_probs: dict, url: str):
 			ID = res[0][res[0].rfind("=") + 1 :]
 
 			def strip_contest(word: str):
-				"""Input: USACO 2022 December Contest, Platinum
-				Output: 2022 December"""
-				word = word[len("USACO ") :]
-				ind = word.rfind(" Contest")
-				if ind == -1:
-					return word[:4] + " US Open"
-				return word[:ind]
+				if newFormat:
+					# Input: USACO 2026 First Contest, Platinum
+					# Output: 2026 First Contest
+
+					word = word[len("USACO ") :]
+					word = word.split(",")[0]  # remove ", Platinum"
+					return word
+				else:
+					# Input: USACO 2022 December Contest, Platinum
+					# Output: 2022 December
+
+					word = word[len("USACO ") :]
+					ind = word.rfind(" Contest")
+					if ind == -1:
+						return word[:4] + " US Open"
+					return word[:ind]
 
 			div_to_probs[get_division(contest)].append(
 				[ID, strip_contest(contest), title]
@@ -163,18 +172,169 @@ def gen_div_to_probs(
 	if div_to_probs is None:
 		div_to_probs = {division: [] for division in DIVISIONS}
 	for season in seasons:
-		for contest, offset in zip(CONTESTS_SHORT, YEAR_OFFSETS):
-			try:
-				add_div_to_probs(
-					div_to_probs, f"{INDEX_PREFIX}{contest}{season+offset}results"
-				)
-			except ValueError:
-				break
+		if season >= 26:
+			for index in range(4):
+				url = f"{INDEX_PREFIX}season{season}contest{index+1}results"
+
+				try:
+					add_div_to_probs(div_to_probs, url, True)
+				except ValueError:
+					break
+		else:
+			for contest, offset in zip(CONTESTS_SHORT, YEAR_OFFSETS):
+				url = f"{INDEX_PREFIX}{contest}{season+offset}results"
+
+				try:
+					add_div_to_probs(div_to_probs, url, False)
+				except ValueError:
+					break
 	for division in DIVISIONS:
 		div_to_probs[division] = sorted(
 			[*set([tuple(x) for x in div_to_probs[division]])], key=lambda x: int(x[0])
 		)
 	return div_to_probs
+
+
+def add_extra_problems(extra_problems: dict, url: str, newFormat: bool):
+	logger.debug(url)
+	soup = parse(url).find("div", class_="panel")
+	contest = ""
+
+	def get_division(x: str) -> str:
+		for division in DIVISIONS:
+			if x.endswith(division):
+				return division
+		raise ValueError("No division found")
+
+	found_problem = False
+
+	def process_child(child):
+		nonlocal contest, found_problem
+		if child.name == "h2":
+			contest = child.text.strip()
+		if (
+			child.name == "div"
+			and child.has_attr("class")
+			and child["class"] == ["panel", "historypanel"]
+		):
+			title = child.find("b").text
+			res = [y["href"] for y in child.find_all("a")]
+			ID = res[0][res[0].rfind("=") + 1 :]
+
+			def strip_contest(word: str):
+				if newFormat:
+					# Input: USACO 2026 First Contest, Platinum
+					# Output: 2026 First Contest
+
+					word = word[len("USACO ") :]
+					word = word.split(",")[0]  # remove ", Platinum"
+					return word
+				else:
+					# Input: USACO 2022 December Contest, Platinum
+					# Output: 2022 December
+
+					word = word[len("USACO ") :]
+					ind = word.rfind(" Contest")
+					if ind == -1:
+						return word[:4] + " US Open"
+					return word[:ind]
+
+			extra_problems["EXTRA_PROBLEMS"].append(
+				{
+					"uniqueId": "usaco-" + ID,
+					"name": title,
+					"url": "https://usaco.org/index.php?page=viewproblem2&cpid=" + ID,
+					"source": get_division(contest),
+					"difficulty": "N/A",
+					"isStarred": False,
+					"tags": [],
+					"solutionMetadata": {"kind": "USACO", "usacoId": ID},
+				},
+			)
+			found_problem = True
+
+	for child in soup.children:
+		process_child(child)
+	if not found_problem:
+		raise ValueError("found no problems")
+
+
+def collect_existing_unique_ids(root_folder: str) -> set[str]:
+	existing_ids = set()
+
+	for root, _, files in os.walk(root_folder):
+		for filename in files:
+			if not filename.endswith(".problems.json"):
+				continue
+
+			full_path = os.path.join(root, filename)
+
+			with open(full_path, "r", encoding="utf-8") as f:
+				try:
+					data = json.load(f)
+				except json.JSONDecodeError:
+					continue  # skip malformed files
+
+			if not isinstance(data, dict):
+				continue
+
+			for value in data.values():
+				if isinstance(value, list):
+					for problem in value:
+						if isinstance(problem, dict) and "uniqueId" in problem:
+							existing_ids.add(problem["uniqueId"])
+
+	return existing_ids
+
+
+def gen_extra_problems(
+	seasons: Iterable[int],
+	extra_problems: Optional[dict] = None,
+	main_problems_root: Optional[str] = None,
+) -> dict:
+
+	if extra_problems is None:
+		extra_problems = {"MODULE_ID": "EXTRA_PROBLEMS", "EXTRA_PROBLEMS": []}
+
+	existing_ids = collect_existing_unique_ids("../../../../../../content")
+
+	for season in seasons:
+		if season >= 26:
+			for index in range(4):
+				url = f"{INDEX_PREFIX}season{season}contest{index+1}results"
+				try:
+					add_extra_problems(extra_problems, url, True)
+				except ValueError:
+					break
+		else:
+			for contest, offset in zip(CONTESTS_SHORT, YEAR_OFFSETS):
+				url = f"{INDEX_PREFIX}{contest}{season+offset}results"
+				try:
+					add_extra_problems(extra_problems, url, False)
+				except ValueError:
+					break
+
+	# Remove duplicates
+	filtered = []
+	seen_ids = set()
+
+	for item in extra_problems["EXTRA_PROBLEMS"]:
+		uid = item.get("uniqueId")
+
+		if not uid:
+			continue  # skip malformed entries
+
+		if uid in existing_ids:
+			continue  # already present in main modules
+
+		if uid in seen_ids:
+			continue  # duplicate within extras
+
+		seen_ids.add(uid)
+		filtered.append(item)
+
+	extra_problems["EXTRA_PROBLEMS"] = filtered
+	return extra_problems
 
 
 def add_id_to_sol(id_to_sol: dict, url: str):
@@ -189,34 +349,46 @@ def gen_id_to_sol(seasons: Iterable[int], id_to_sol: Optional[dict] = None) -> d
 	if id_to_sol is None:
 		id_to_sol = {}
 	for season in seasons:
-		for contest, offset in zip(CONTESTS_SHORT, YEAR_OFFSETS):
-			add_id_to_sol(id_to_sol, f"{INDEX_PREFIX}{contest}{season + offset}results")
+		if season < 26:
+			for contest, offset in zip(CONTESTS_SHORT, YEAR_OFFSETS):
+				add_id_to_sol(
+					id_to_sol, f"{INDEX_PREFIX}{contest}{season + offset}results"
+				)
+		else:
+			for i in range(1, 5):
+				add_id_to_sol(
+					id_to_sol, f"{INDEX_PREFIX}season{season}contest{i}results"
+				)
 	return id_to_sol
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--start_season", "-s", type=int, default=22)
-parser.add_argument("--end_season", "-e", type=int, default=22)
+parser.add_argument("--start_season", "-s", type=int, default=26)
+parser.add_argument("--end_season", "-e", type=int, default=26)
 parser.add_argument("--inplace", "-i", type=int, default=1)
+
 args = parser.parse_args()
 seasons = list(range(args.start_season, args.end_season + 1))
 logger.info(f"seasons = {seasons}")
 
-# Get the directory path of the currently executing script
+# Get the directory path of the currently executing script, and set it at cwd
 current_dir = os.path.dirname(os.path.abspath(__file__))
-# Change the current working directory to the directory of the script
 os.chdir(current_dir)
 
-for f in [gen_contest_to_points]:
-	print(f.__name__)
+for filename, func in {
+	"../div_to_probs.json": gen_div_to_probs,
+	"../../../../../../content/extraProblems.json": gen_extra_problems,  # crazy path lol
+	"../id_to_sol.json": gen_id_to_sol,
+}.items():
 	init = None
+
 	if args.inplace:
-		filename = f"../{f.__name__[len('gen_'):]}.json"
 		with open(filename, "r") as file:
 			init = json.load(file)
-	d = f(seasons, init)
+
+	d = func(seasons, init)
+
 	if args.inplace:
-		filename = f"../{f.__name__[len('gen_'):]}.json"
 		with open(filename, "w") as file:
 			json.dump(d, file, indent=2)
 	else:

@@ -4,7 +4,7 @@ import {
   getDocs,
   getFirestore,
 } from '@firebase/firestore';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useFirebaseUser } from '../../../context/UserDataContext/UserDataContext';
 import { useFirebaseApp } from '../../../hooks/useFirebase';
 import { GroupData } from '../../../models/groups/groups';

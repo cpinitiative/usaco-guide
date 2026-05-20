@@ -2,7 +2,7 @@
 id: usaco-642
 source: USACO Silver 2016 US Open
 title: Field Reduction
-author: Sachet Abeysinghe
+author: Sachet Abeysinghe, Aarav Sethi
 ---
 
 [Official Analysis (C++)](https://usaco.org/current/data/sol_reduce_silver_open16.html)
@@ -20,7 +20,76 @@ Note that removing less than three cows is not beneficial, as removing one more 
 **Time Complexity:** $\mathcal{O}(N\log N)$
 
 <LanguageSection>
+<CPPSection>
 
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+	int n;
+	cin >> n;
+
+	vector<pair<int, int>> cows(n);
+
+	vector<int> sort_by_x(n);
+	vector<int> sort_by_y(n);
+
+	for (int i = 0; i < n; i++) {
+		int x, y;
+		cin >> x >> y;
+		cows[i] = {x, y};
+
+		sort_by_x[i] = x;
+		sort_by_y[i] = y;
+	}
+
+	sort(sort_by_x.begin(), sort_by_x.end());
+	sort(sort_by_y.begin(), sort_by_y.end());
+
+	vector<int> candidates;
+	for (int i = 0; i < n; i++) {
+		auto [x, y] = cows[i];
+
+		// the 3 most extreme in any of the 4 directions.
+		if (x <= sort_by_x[3] || x >= sort_by_x[n - 3] || y <= sort_by_y[2] ||
+		    y >= sort_by_y[n - 3]) {
+			candidates.push_back(i);
+		}
+	}
+
+	// Generating subsets with bitmasks
+	int min_area = INT_MAX;
+	for (int i = 0; i < (1 << candidates.size()); i++) {
+		set<int> removing;
+		for (int b = 0; b < candidates.size(); b++) {
+			if (i & (1 << b)) removing.insert(candidates[b]);
+		}
+		if (removing.size() != 3) continue;
+
+		// Compute area
+		int min_x = INT_MAX;
+		int max_x = INT_MAX;
+		int min_y = INT_MAX;
+		int max_y = INT_MAX;
+		for (int i = 0; i < cows.size(); i++) {
+			if (removing.count(i)) continue;
+
+			min_x = min(min_x, cows[i].first);
+			max_x = max(max_x, cows[i].first);
+			min_y = min(min_y, cows[i].second);
+			max_y = max(max_y, cows[i].second);
+		}
+
+		min_area = min(min_area, (max_x - min_x) * (max_y - min_y));
+	}
+
+	cout << min_area;
+}
+```
+
+</CPPSection>
 <PySection>
 
 ```py
@@ -46,5 +115,4 @@ print(min_area, file=open("reduce.out", "w"))
 ```
 
 </PySection>
-
 </LanguageSection>

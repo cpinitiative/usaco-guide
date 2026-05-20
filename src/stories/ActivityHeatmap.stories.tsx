@@ -1,5 +1,4 @@
-import { Meta, StoryFn } from '@storybook/react-webpack5';
-import React from 'react';
+import { Meta, StoryFn } from '@storybook/react';
 import seedrandom from 'seedrandom';
 import {
   ActivityHeatmap,

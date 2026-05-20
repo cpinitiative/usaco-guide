@@ -1,4 +1,3 @@
-import * as React from 'react';
 import useUserProblemSubmissions from '../../../hooks/groups/useUserProblemSubmissions';
 import { PostData } from '../../../models/groups/posts';
 import {

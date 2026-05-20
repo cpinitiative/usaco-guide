@@ -1,4 +1,3 @@
-import React from 'react';
 import { olympiads, ProblemInfo, probSources } from '../../../models/problem';
 import { UsacoTableProgress } from '../../Dashboard/DashboardProgress';
 import DifficultyBox from '../../DifficultyBox';
@@ -55,9 +54,22 @@ export default function ProblemsListItem(
   if (isDivisionTable) {
     const parts = problem.source.split(' ');
     parts[0] = parts[0].substring(2);
-    if (parts[1] === 'US') parts[1] = 'open';
-    else parts[1] = parts[1].toLowerCase().substring(0, 3);
-    resultsUrl = `http://www.usaco.org/index.php?page=${parts[1]}${parts[0]}results`;
+
+    if (parseInt(parts[0]) >= 26) {
+      // season26contest1results
+      let index = 0;
+      if (parts[1] == 'First') index = 1;
+      else if (parts[1] == 'Second') index = 2;
+      else if (parts[1] == 'Third') index = 3;
+      else if (parts[1] == 'Fourth') index = 4; // unsure of how US Open will be formatted yet, for now just use fourth + 4.
+
+      resultsUrl = `http://www.usaco.org/index.php?page=season${parts[0]}contest${index}results`;
+    } else {
+      // dec24results
+      if (parts[1] === 'US') parts[1] = 'open';
+      else parts[1] = parts[1].toLowerCase().substring(0, 3);
+      resultsUrl = `http://www.usaco.org/index.php?page=${parts[1]}${parts[0]}results`;
+    }
   }
   const sourceCol = isDivisionTable ? (
     <ListTableCell className="font-medium whitespace-nowrap">
@@ -100,7 +112,7 @@ export default function ProblemsListItem(
           className={
             (isDivisionTable == false && problem.isStarred
               ? 'pl-1 sm:pl-2'
-              : 'sm:pl-6') + ' problem-list-item-anchor truncate'
+              : 'sm:pl-6') + ' problem-list-item-anchor truncate no-underline'
           }
           style={{ maxWidth: '20rem' }}
           target="_blank"
@@ -145,7 +157,6 @@ export default function ProblemsListItem(
       {isDivisionTable && props.modules && (
         <ListTableCell className="font-medium whitespace-nowrap">
           {problem.moduleLink ? (
-            // eslint-disable-next-line react/jsx-no-target-blank
             <a href={problem.moduleLink} target="_blank">
               Link
             </a>

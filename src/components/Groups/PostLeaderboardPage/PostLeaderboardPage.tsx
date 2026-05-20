@@ -1,6 +1,5 @@
 import type { DocumentReference } from 'firebase/firestore';
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
-import React from 'react';
 import toast from 'react-hot-toast';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useActivePostProblems } from '../../../hooks/groups/useActivePostProblems';
@@ -15,12 +14,12 @@ import Breadcrumbs from '../Breadcrumbs';
 import { LeaderboardTable } from '../LeaderboardTable/LeaderboardTable';
 import { useProblemSubmissionPopupAction } from '../ProblemSubmissionPopup';
 
-export default function PostLeaderboardPage(props) {
-  const { postId, path } = props as {
-    path: string;
-    groupId: string;
-    postId: string;
-  };
+interface PostLeaderboardPageProps {
+  groupId: string;
+  postId: string;
+}
+export default function PostLeaderboardPage(props: PostLeaderboardPageProps) {
+  const { groupId, postId } = props;
   const activeGroup = useActiveGroup();
   const post = usePost(postId);
   if (!post) throw new Error('Post not found');
@@ -61,11 +60,7 @@ export default function PostLeaderboardPage(props) {
 
   return (
     <Layout>
-      <SEO
-        title={`Leaderboard: ${post.name}`}
-        image={null}
-        pathname={props.path}
-      />
+      <SEO title={`Leaderboard: ${post.name}`} image={null} />
 
       <TopNavigationBar />
 
@@ -119,8 +114,20 @@ export default function PostLeaderboardPage(props) {
                   },
               })),
             }))}
-            onCellClick={(_, { problemId, submissionId }) => {
-              handleOpenSubmissionsDetail(problemId, submissionId);
+            onCellClick={(_, payload) => {
+              if (
+                payload &&
+                typeof payload === 'object' &&
+                'problemId' in payload &&
+                'submissionId' in payload
+              ) {
+                handleOpenSubmissionsDetail(
+                  (payload as { problemId: string; submissionId: string })
+                    .problemId,
+                  (payload as { problemId: string; submissionId: string })
+                    .submissionId
+                );
+              }
             }}
           />
         </div>

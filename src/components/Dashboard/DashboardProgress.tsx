@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Tooltip from '../Tooltip/Tooltip';
 
 const ProgressBar = ({ text, green, yellow, blue }) => {

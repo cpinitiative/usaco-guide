@@ -1,5 +1,4 @@
 import Tippy from '@tippyjs/react';
-import * as React from 'react';
 import { useContext, useRef, useState } from 'react';
 import ConfettiContext from '../../../context/ConfettiContext';
 import { useDarkMode } from '../../../context/DarkModeContext';

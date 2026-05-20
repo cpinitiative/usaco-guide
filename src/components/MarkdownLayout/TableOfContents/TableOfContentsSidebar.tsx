@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useMemo } from 'react';
 import { useActiveHash } from '../../../hooks/useActiveHash';
 import { TOCHeading } from '../../../models/module';

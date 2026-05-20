@@ -1,4 +1,3 @@
-import React from 'react';
 import { useBlindMode } from '../context/BlindModeContext';
 
 export default function BlindModeToggle() {
@@ -11,7 +10,9 @@ export default function BlindModeToggle() {
       title={isBlindMode ? "Show 'Appears in' tags" : "Hide 'Appears in' tags"}
     >
       <svg
-        className={`mr-2 h-5 w-5 ${isBlindMode ? 'text-blue-500' : 'text-gray-400'}`}
+        className={`mr-2 h-5 w-5 ${
+          isBlindMode ? 'text-blue-500' : 'text-gray-400'
+        }`}
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"

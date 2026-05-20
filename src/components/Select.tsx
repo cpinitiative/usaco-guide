@@ -1,4 +1,3 @@
-import React from 'react';
 import Select from 'react-select';
 import { useDarkMode } from '../context/DarkModeContext';
 export default function StyledSelect(props) {

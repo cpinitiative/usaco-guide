@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const ProgressTrackingFeature = (): JSX.Element => {
   return (
     <div className="-m-4">

@@ -12,56 +12,55 @@ if (admin.apps.length === 0) {
   admin.initializeApp();
 }
 
-export default functions.https.onCall(
-  async ({ groupId }: LeaveGroupArgs, context) => {
-    const callerUid = context.auth?.uid;
-    const groupDataSnapshot = await admin
+export default functions.https.onCall(async request => {
+  const { groupId } = request.data as LeaveGroupArgs;
+  const callerUid = request.auth?.uid;
+  const groupDataSnapshot = await admin
+    .firestore()
+    .collection('groups')
+    .doc(groupId)
+    .get();
+  if (!groupDataSnapshot.exists) {
+    return {
+      success: false,
+      errorCode: 'GROUP_NOT_FOUND',
+    };
+  }
+  const groupData = groupDataSnapshot.data() as GroupData;
+  const permissionLevel = getPermissionLevel(callerUid, groupData);
+
+  if (permissionLevel === 'NOT_MEMBER') {
+    return {
+      success: false,
+      errorCode: 'GROUP_NOT_FOUND',
+    };
+  }
+
+  if (
+    permissionLevel === 'OWNER' &&
+    groupData.ownerIds.filter(id => id !== callerUid).length == 0
+  ) {
+    return {
+      success: false,
+      errorCode: 'SOLE_OWNER',
+    };
+  }
+
+  const batch = admin.firestore().batch();
+  batch.update(admin.firestore().collection('groups').doc(groupId), {
+    [getMembershipKey(permissionLevel)]:
+      admin.firestore.FieldValue.arrayRemove(callerUid),
+  });
+  batch.delete(
+    admin
       .firestore()
       .collection('groups')
       .doc(groupId)
-      .get();
-    if (!groupDataSnapshot.exists) {
-      return {
-        success: false,
-        errorCode: 'GROUP_NOT_FOUND',
-      };
-    }
-    const groupData = groupDataSnapshot.data() as GroupData;
-    const permissionLevel = getPermissionLevel(callerUid, groupData);
+      .collection('leaderboard')
+      .doc(callerUid)
+  );
 
-    if (permissionLevel === 'NOT_MEMBER') {
-      return {
-        success: false,
-        errorCode: 'GROUP_NOT_FOUND',
-      };
-    }
+  await batch.commit();
 
-    if (
-      permissionLevel === 'OWNER' &&
-      groupData.ownerIds.filter(id => id !== callerUid).length == 0
-    ) {
-      return {
-        success: false,
-        errorCode: 'SOLE_OWNER',
-      };
-    }
-
-    const batch = admin.firestore().batch();
-    batch.update(admin.firestore().collection('groups').doc(groupId), {
-      [getMembershipKey(permissionLevel)]:
-        admin.firestore.FieldValue.arrayRemove(callerUid),
-    });
-    batch.delete(
-      admin
-        .firestore()
-        .collection('groups')
-        .doc(groupId)
-        .collection('leaderboard')
-        .doc(callerUid)
-    );
-
-    await batch.commit();
-
-    return { success: true };
-  }
-);
+  return { success: true };
+});

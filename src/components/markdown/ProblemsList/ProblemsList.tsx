@@ -1,5 +1,5 @@
 import { Transition } from '@headlessui/react';
-import { globalHistory } from '@reach/router';
+import { usePathname } from 'next/navigation';
 import * as React from 'react';
 import { Fragment } from 'react';
 import { useMarkdownProblemLists } from '../../../context/MarkdownProblemListsContext';
@@ -13,8 +13,6 @@ import { DivisionProblemInfo } from './DivisionList/DivisionProblemInfo';
 import ProblemsListHeader from './ProblemsListHeader';
 import ProblemsListItem from './ProblemsListItem';
 import SuggestProblemRow from './SuggestProblemRow';
-
-/* eslint-disable react/prop-types */
 
 type ProblemsListProps =
   | {
@@ -80,7 +78,7 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
     props.isDivisionTable &&
     props.problems!.some(problem => !!problem.percentageSolved);
 
-  const path = globalHistory.location.pathname || '';
+  const path = usePathname();
 
   return (
     <>

@@ -1,8 +1,7 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/solid';
 import clsx from 'clsx';
-import { Link } from 'gatsby';
-import * as React from 'react';
+import Link from 'next/link';
 import { SECTIONS, SECTION_LABELS } from '../../content/ordering';
 import { ClientOnly } from './ClientOnly';
 
@@ -37,7 +36,7 @@ export default function SectionsDropdown({
             <MenuItems
               transition
               anchor="top start"
-              className={`absolute left-0 z-[100] -ml-4 w-56 rounded-lg bg-white shadow-lg ring-1 ring-black/5 focus:outline-none dark:bg-gray-800 ${
+              className={`absolute left-0 z-[100] -ml-4 w-56 rounded-lg bg-white shadow-lg ring-1 ring-black/5 focus:outline-hidden dark:bg-gray-800 ${
                 sidebarNav ? 'mt-2' : '-mt-2'
               } transition data-[closed]:translate-y-1 data-[closed]:opacity-0 data-[enter]:duration-200 data-[enter]:ease-out data-[leave]:duration-150 data-[leave]:ease-in`}
               style={{ zIndex: 9999 }}
@@ -81,7 +80,7 @@ export default function SectionsDropdown({
                           {children}
                         </button>
                       ) : (
-                        <Link className={className} to={`/${section}/`}>
+                        <Link className={className} href={`/${section}/`}>
                           {children}
                         </Link>
                       )}

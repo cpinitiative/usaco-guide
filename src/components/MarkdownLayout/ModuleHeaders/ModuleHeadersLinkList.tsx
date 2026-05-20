@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Info from '../../markdown/Info';
 
 export default function ModuleHeadersLinkList(props: {

@@ -1,0 +1,112 @@
+---
+id: cf-1833E
+source: CF
+title: Round Dance
+author: Ruben Jing
+---
+
+[Official Analysis](https://codeforces.com/blog/entry/116636)
+
+## Explanation
+
+The conditions can be represented as a graph. If the person at $1$ remembers $2$,
+then $1$ must be next to $2$. If $2$ remembers $3$, then $2$ must be next to $3$.
+This creates a connected component $1-2-3$.
+
+The first observation is that the maximum number of round dances is the number
+of connected components. If two nodes must be next to each other, then they
+will be in one connected component. Separating these two nodes would not
+follow the provided conditions.
+
+The second observation is that you can merge any two round dances if and only
+if a node only has one neighbor, meaning the round dances do not form a cycle.
+
+A cyclic round dance cannot merge with another round dance because each node can have at most two neighbors. As an already-cyclic round dance gives each node its two neighbors, connecting the two dances would create a contradiction.
+
+Finally, all the noncyclic connected components can be merged
+into one connected component. Merging two noncyclic connected components
+creates another noncyclic connected component. Thus, we can merge all noncyclic
+connected components with each other into one noncyclic connected component.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+void solve() {
+	int n;
+	cin >> n;
+
+	vector<set<int>> adj(n);
+
+	for (int i = 0; i < n; i++) {
+		int a;
+		cin >> a;
+
+		a--;
+
+		// avoid duplicates
+		adj[i].insert(a);
+		adj[a].insert(i);
+	}
+
+	int min_num = 0, max_num = 0;
+	int mergeable = 0;
+
+	vector<bool> visited(n);
+
+	for (int i = 0; i < n; i++) {
+		if (!visited[i]) {
+			max_num++;
+
+			queue<int> q;
+			q.push(i);
+			visited[i] = true;
+
+			vector<int> component = {i};
+
+			while (!q.empty()) {
+				int curr = q.front();
+				q.pop();
+
+				for (int e : adj[curr]) {
+					if (!visited[e]) {
+						visited[e] = true;
+						q.push(e);
+						component.push_back(e);
+					}
+				}
+			}
+
+			for (int e : component) {
+				if (adj[e].size() == 1) {  // only one neighbor
+					mergeable++;
+					break;
+				}
+			}
+		}
+	}
+
+	min_num = max_num - max(0, mergeable - 1);
+
+	cout << min_num << " " << max_num << "\n";
+}
+
+int main() {
+	int t;
+	cin >> t;
+
+	while (t--) { solve(); }
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

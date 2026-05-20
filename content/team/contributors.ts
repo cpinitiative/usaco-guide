@@ -108,8 +108,8 @@ export const OrderedFirstMembers: Member[] = [
 export const RestOfMembers: Member[] = [
   {
     photo: 'elliotth',
-    name: 'Elliot Harper',
-    titles: [roles.webdev],
+    name: 'Elliott Harper',
+    titles: ['Director of Web Development', roles.webdev],
     github: 'emhgit',
     email: 'eharper0815@gmail.com',
   },
@@ -146,7 +146,7 @@ export const RestOfMembers: Member[] = [
   {
     photo: 'srijith',
     name: 'Srijith Chinthalapudi',
-    titles: ['Director of Self-Study Classes', roles.liveInstructor],
+    titles: ['Director of Video/Self-Study Classes', roles.liveInstructor],
   },
   {
     photo: 'i_chen_chou',

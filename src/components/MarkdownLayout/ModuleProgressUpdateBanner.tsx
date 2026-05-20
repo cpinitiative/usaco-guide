@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useMarkdownLayout } from '../../context/MarkdownLayoutContext';
 import { ModuleInfo } from '../../models/module';
 import { ClientOnly } from '../ClientOnly';

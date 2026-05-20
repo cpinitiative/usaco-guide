@@ -2,7 +2,7 @@
 id: lis
 title: 'Longest Increasing Subsequence'
 author: Michael Cao, Benjamin Qi, Andi Qu, Andrew Wang
-contributors: Dong Liu, Siyong Huang, Aryansh Shrivastava, Kevin Sheng
+contributors: Dong Liu, Siyong Huang, Aryansh Shrivastava, Kevin Sheng, Katja Frantzen
 prerequisites:
   - intro-dp
 description: Finding and using the longest increasing subsequence of an array.
@@ -589,19 +589,40 @@ class PCB {
 ```
 
 </JavaSection>
+<PySection>
+```py
+from bisect import bisect_left
+
+n = int(input())
+board = []
+endpoints = []
+for _ in range(n):
+	l, r = map(int, input().split())
+	board.append((l, r))
+board.sort()
+
+endpoints.append(board[0][1])
+for x in range(1, n):
+	v = board[x][1]
+	if v < endpoints[-1]:
+		endpoints.append(v)
+	else:
+		index = bisect_left(
+			[-x for x in endpoints], -v
+		)  # invert list in order to use bisect_left
+		endpoints[index] = v
+print(len(endpoints))
+```
+
+</PySection>
 </LanguageSection>
 
 ## Problems
-
 <Problems problems="lis" />
-
 <Info>
-
 The original problem statement for "Matryoshka" is in Japanese. You can find a user-translated
 version of the problem [here](https://gist.github.com/SansPapyrus683/ffa4906fc1351e48d453aa838cd255a2).
-
 </Info>
-
 <!-- <Resource source="CF" title="DP List" url="325">
  	misc probs, a lot of which you don't need to know at this level
 </Resource> -->

@@ -1,4 +1,4 @@
-import { StoryFn } from '@storybook/react-webpack5';
+import { StoryFn } from '@storybook/react';
 import React, { ComponentProps } from 'react';
 import AsteriskComponent from '../components/Tooltip/Asterisk';
 import TextTooltipComponent from '../components/Tooltip/TextTooltip';

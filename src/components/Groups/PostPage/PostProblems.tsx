@@ -15,7 +15,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { MenuIcon } from '@heroicons/react/solid';
-import { navigate } from 'gatsby';
+import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useActivePostProblems } from '../../../hooks/groups/useActivePostProblems';
@@ -66,6 +66,7 @@ export default function PostProblems({
 }: {
   post: PostData;
 }): JSX.Element {
+  const router = useRouter();
   const activeGroup = useActiveGroup();
   const { createNewProblem, updateProblemOrdering } = usePostActions(
     activeGroup.activeGroupId!
@@ -133,7 +134,9 @@ export default function PostProblems({
                   type="button"
                   onClick={() =>
                     createNewProblem(post).then(id =>
-                      navigate(`problems/${id}/edit`)
+                      router.push(
+                        `/groups/${router.query.id}/post/${router.query.postId}/problems/${id}/edit`
+                      )
                     )
                   }
                   className="btn"

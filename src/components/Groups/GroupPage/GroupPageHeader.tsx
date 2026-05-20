@@ -1,5 +1,6 @@
 import { Transition } from '@headlessui/react';
-import { Link, navigate } from 'gatsby';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import { useRef, useState } from 'react';
 import { useFirebaseUser } from '../../../context/UserDataContext/UserDataContext';
@@ -14,10 +15,11 @@ export default function GroupPageHeader(props: { group: GroupData }) {
   const [isActionsOpen, setIsActionsOpen] = useState(false);
   const { showAdminView, setInStudentView } = useActiveGroup();
   const firebaseUser = useFirebaseUser();
+  const router = useRouter();
   const ref = useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
-    const handleClick = e => {
+    const handleClick = (e: any) => {
       if (ref.current?.contains(e.target)) return;
       setIsActionsOpen(false);
     };
@@ -87,7 +89,9 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                         const groupId = props.group?.id;
                         if (groupId) {
                           createNewPost('assignment').then(postId =>
-                            navigate(`post/${postId}/edit`)
+                            router.push(
+                              `/groups/${groupId}/post/${postId}/edit`
+                            )
                           );
                         }
                       }}
@@ -101,7 +105,9 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                         const groupId = props.group?.id;
                         if (groupId) {
                           createNewPost('announcement').then(postId =>
-                            navigate(`post/${postId}/edit`)
+                            router.push(
+                              `/groups/${groupId}/post/${postId}/edit`
+                            )
                           );
                         }
                       }}
@@ -109,19 +115,19 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                       Create New Announcement
                     </button>
                     <Link
-                      to="edit"
+                      href={'/groups/' + props.group?.id + '/edit'}
                       className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-hidden"
                     >
                       Edit Group
                     </Link>
                     <Link
-                      to="join-links"
+                      href={'/groups/' + props.group?.id + '/join-links'}
                       className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-hidden"
                     >
                       View Join Links
                     </Link>
                     <Link
-                      to="members"
+                      href={'/groups/' + props.group?.id + '/members'}
                       className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-hidden"
                     >
                       View Members
@@ -159,7 +165,7 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                         .indexOf('yes i am sure i want to leave') > -1
                     ) {
                       leaveGroup(groupId, firebaseUser!.uid)
-                        .then(() => navigate(`/groups/`))
+                        .then(() => router.push(`/groups/`))
                         .catch(e => {
                           console.log(e);
                           alert('Error: ' + e.message);

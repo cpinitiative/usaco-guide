@@ -2,10 +2,12 @@
 id: cf-1775D
 source: CF
 title: Friendly Spiders
-author: Kevin Sheng
+author: Kevin Sheng, John Zhou
 ---
 
 [Official Analysis (C++)](https://codeforces.com/blog/entry/111286)
+
+# Solution 1
 
 ## Explanation
 
@@ -217,4 +219,145 @@ public class FriendlySpiders {
 ```
 
 </JavaSection>
+</LanguageSection>
+
+# Solution 2
+
+## Explanation
+
+Maintaining all the possible edges between any two spiders is too inefficient.
+
+Since the complete graphs for the spiders are grouped by prime factors, we
+build a graph that groups spiders by prime factors. We do this
+by creating nodes representing prime factors, and connecting them
+to the spiders divisible by that prime factor.
+
+We can now notice that the length of the path in the original
+problem is the length of the shortest path over our newly reformulated graph,
+divided by 2 plus 1, accounting for the starting node.
+
+The number of vertices is the amount of prime factors plus the amount of nodes,
+which is at most double $N$.
+As for the number of edges, consider that any integer $n$ has at most $\log{n}$ prime factors, since factorizing out each prime factor at least halves $n$. Thus, the number of edges is bounded by $\mathcal{O}(N \log{N})$.
+
+With these parameters for our altered graph, BFS now becomes feasible.
+
+## Implementation
+
+**Time Complexity:** $\mathcal O\left(N\frac{\log N}{\log\log N}+\frac A{\log A}+N\log\log A\right)$
+where $A=\max(a_i)$.  For practical purposes, this is bounded by $\mathcal O(N\log N+A\log A)$.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <map>
+#include <queue>
+#include <vector>
+
+using namespace std;
+
+constexpr int MAX_N = 300000;
+constexpr int MAX_LEGS = 300000;
+// There's less than 1e5 primes under 3e5
+constexpr int MAX_PRIMES = 100000;
+constexpr int MAX_NODES = MAX_N + MAX_PRIMES;
+vector<int> adj[MAX_NODES + 1];
+bool visited[MAX_NODES + 1];
+int primes[MAX_LEGS + 1];          // primes[p] = node in graph associated w the prime p
+int smallest_prime[MAX_LEGS + 1];  // smallest_prime[i] = smallest prime factor of i
+int parent[MAX_NODES + 1];
+
+int node_at;  // Largest node added so far
+
+/** Calculates the smallest prime for each number. */
+void sieve() {
+	for (int i = 2; i <= MAX_LEGS; i++) { smallest_prime[i] = i; }
+	for (int i = 2; i * i <= MAX_LEGS; i++) {
+		if (smallest_prime[i] == i) {
+			for (int j = i * i; j <= MAX_LEGS; j += i) {
+				if (smallest_prime[j] == j) smallest_prime[j] = i;
+			}
+		}
+	}
+}
+
+/**
+ * Factorize a number and add relevant edges in the graph
+ * @param a The value of the node
+ * @param i The id of the node in the graph
+ */
+void factorize(int a, int i) {
+	while (a > 1) {
+		int p = smallest_prime[a];
+		if (a > 1 && a % p == 0) {
+			// New prime factor found- let's add it to the graph
+			if (!primes[p]) { primes[p] = ++node_at; }
+			adj[primes[p]].push_back(i);
+			adj[i].push_back(primes[p]);
+		}
+		while (a > 1 && a % p == 0) { a /= p; }
+	}
+}
+
+int main() {
+	sieve();
+	int n;
+	cin >> n;
+	node_at = n;
+
+	for (int i = 1; i <= n; i++) {
+		int a;
+		cin >> a;
+		factorize(a, i);
+	}
+	int start, end;
+	cin >> start >> end;
+
+	// Find path using BFS
+	queue<pair<int, int>> q;
+	visited[start] = true;
+	q.push({start, 0});
+	while (!q.empty()) {
+		auto front = q.front();
+		q.pop();
+		int loc = front.first;
+		int len = front.second;
+
+		if (loc == end) {
+			cout << len / 2 + 1 << endl;
+			vector<int> points(1, loc);
+
+			// Backtrack to find OG path
+			int current = loc;
+			while (current != start) {
+				current = parent[current];
+				points.push_back(current);
+			}
+			reverse(points.begin(), points.end());
+
+			for (int i = 0; i < points.size(); i++) {
+				if (i % 2 == 0) { cout << points[i] << ' '; }
+			}
+			cout << endl;
+			return 0;
+		}
+
+		for (int next : adj[loc]) {
+			if (!visited[next]) {
+				visited[next] = true;
+				parent[next] = loc;
+				q.push(make_pair(next, len + 1));
+			}
+		}
+	}
+
+	// If no path is found, print -1.
+	cout << -1 << endl;
+}
+```
+
+</CPPSection>
 </LanguageSection>
