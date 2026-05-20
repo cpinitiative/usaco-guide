@@ -10,162 +10,140 @@
 // ||                                                                        || //
 // ||                                                                        || //
 // ============================================================================ //
- 
+
 //------------------------------------------------------------------------------//
- 
+
 #include <bits/stdc++.h>
-using namespace std; 
+using namespace std;
 
 #define ll long long
-#define endl '\n' 
-vector<array<ll,3>>v;
-vector<array<ll,3>>vn;
-vector<array<ll,3>>ve;
- 
+#define endl '\n'
+vector<array<ll, 3>> v;
+vector<array<ll, 3>> vn;
+vector<array<ll, 3>> ve;
+
 //------------------------------------------------------------------------------//
- 
+
 void solve() {
-  
-    char s;
-    ll x,y;
-    cin>>s>>x>>y;
-   array<ll,3> a;
-    a[0]=(ll)s;
-    a[1]=(ll)x;
-    a[2]=(ll)y;
-    v.push_back(a);
-    if(s=='N'){
-        vn.push_back(a);
-    }
-    else{
-         ve.push_back(a);
-    }
 
-
-
-
-
-
+	char s;
+	ll x, y;
+	cin >> s >> x >> y;
+	array<ll, 3> a;
+	a[0] = (ll)s;
+	a[1] = (ll)x;
+	a[2] = (ll)y;
+	v.push_back(a);
+	if (s == 'N') {
+		vn.push_back(a);
+	} else {
+		ve.push_back(a);
+	}
 }
- 
+
 //------------------------------------------------------------------------------//
-    
+
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
- 
-    #ifndef ONLINE_JUDGE
-        // freopen("inputf.in", "r", stdin);
-        // freopen("outputf.in", "w", stdout);
-        auto start = chrono::high_resolution_clock::now();  
-    #endif
- 
-//------------------------------------------------------------------------------//
- 
-    ll t;
-    cin >> t;
-    ll f=t;
-    while (f--){
-        solve();
-    }
-    ll n=t;
-    for(ll i=0;i<n;i++){
-        ll x=v[i][1];
-        ll y=v[i][2];
-        if((char)v[i][0]=='E'){
-            // cout<<x<<" ";
-            if(vn.empty()){
-                cout<<"Infinity"<<endl;
-            }
-            else{
-                ll ans=1e10+7;
-                for(auto [s,x1,y1] : vn){
-                    // cout<<x1;
-                    x1=(ll)x1;
-                    y1=(ll)y1;
-                    bool flag=false;
-                    if((y-y1>=0 && x1-x>0 && y-y1<x1-x) ){
-                        for(auto [s,x2,y2] : ve){
-                            if(y2<=y){
-                                if((y2-y1>=0 && x1-x2>0 && y2-y1>x1-x2)){
-                                    flag=true;
-                                    break;
-                                }
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-                            }
-                        }
-                        if(!flag){
-                        ans=min(ans,x1-x);}
-                    }
+#ifndef ONLINE_JUDGE
+	// freopen("inputf.in", "r", stdin);
+	// freopen("outputf.in", "w", stdout);
+	auto start = chrono::high_resolution_clock::now();
+#endif
 
-                }
-                
-                if(ans==1e10+7){
-                    cout<<"Infinity"<<endl;
+	//------------------------------------------------------------------------------//
 
-                }
-                else{
-                    cout<<ans<<endl;
-                }
-            }
-        }
-        else{
+	ll t;
+	cin >> t;
+	ll f = t;
+	while (f--) { solve(); }
+	ll n = t;
+	for (ll i = 0; i < n; i++) {
+		ll x = v[i][1];
+		ll y = v[i][2];
+		if ((char)v[i][0] == 'E') {
+			// cout<<x<<" ";
+			if (vn.empty()) {
+				cout << "Infinity" << endl;
+			} else {
+				ll ans = 1e10 + 7;
+				for (auto [s, x1, y1] : vn) {
+					// cout<<x1;
+					x1 = (ll)x1;
+					y1 = (ll)y1;
+					bool flag = false;
+					if ((y - y1 >= 0 && x1 - x > 0 && y - y1 < x1 - x)) {
+						for (auto [s, x2, y2] : ve) {
+							if (y2 <= y) {
+								if ((y2 - y1 >= 0 && x1 - x2 > 0 &&
+								     y2 - y1 > x1 - x2)) {
+									flag = true;
+									break;
+								}
+							}
+						}
+						if (!flag) { ans = min(ans, x1 - x); }
+					}
+				}
 
-            // cout<<x<<" ";
-            if(ve.empty()){
-                cout<<"Infinity"<<endl;
-            }
-            else{
-                ll ans=1e10+7;
-                for(auto [s,x1,y1] : ve){
-                    // cout<<x1;
-                    x1=(ll)x1;
-                    y1=(ll)y1;
-                    bool flag=false;
-                    
-                    if( (y1-y>=0 && x-x1>0 && y1-y>x-x1)){
-                        for(auto [s,x2,y2] : vn){
-                            if(x2<=x){
-                                if((y1-y2>=0 && x2-x1>0 && y1-y2<x2-x1)){
-                                    flag=true;
-                                    break;
-                                }
+				if (ans == 1e10 + 7) {
+					cout << "Infinity" << endl;
 
-                            }
-                        }
-                        if(!flag){
-                        ans=min(ans,y1-y);}
-                    }
+				} else {
+					cout << ans << endl;
+				}
+			}
+		} else {
 
-                }
-                
-                if(ans==1e10+7){
-                    cout<<"Infinity"<<endl;
+			// cout<<x<<" ";
+			if (ve.empty()) {
+				cout << "Infinity" << endl;
+			} else {
+				ll ans = 1e10 + 7;
+				for (auto [s, x1, y1] : ve) {
+					// cout<<x1;
+					x1 = (ll)x1;
+					y1 = (ll)y1;
+					bool flag = false;
 
-                }
-                else{
-                    cout<<ans<<endl;
-                }
+					if ((y1 - y >= 0 && x - x1 > 0 && y1 - y > x - x1)) {
+						for (auto [s, x2, y2] : vn) {
+							if (x2 <= x) {
+								if ((y1 - y2 >= 0 && x2 - x1 > 0 &&
+								     y1 - y2 < x2 - x1)) {
+									flag = true;
+									break;
+								}
+							}
+						}
+						if (!flag) { ans = min(ans, y1 - y); }
+					}
+				}
 
-        }
-    }
+				if (ans == 1e10 + 7) {
+					cout << "Infinity" << endl;
 
-    }
-    
-    
-//------------------------------------------------------------------------------//
- 
-    #ifndef ONLINE_JUDGE
-        auto end = chrono::high_resolution_clock::now(); 
-        chrono::duration<double, milli> duration = end - start;
-        cerr << "Time: " << duration.count() << " ms" << endl;
-    #endif
+				} else {
+					cout << ans << endl;
+				}
+			}
+		}
+	}
 
-    return 0;
+	//------------------------------------------------------------------------------//
+
+#ifndef ONLINE_JUDGE
+	auto end = chrono::high_resolution_clock::now();
+	chrono::duration<double, milli> duration = end - start;
+	cerr << "Time: " << duration.count() << " ms" << endl;
+#endif
+
+	return 0;
 }
 
 //------------------------------------------------------------------------------//
-
 ```
 
 
