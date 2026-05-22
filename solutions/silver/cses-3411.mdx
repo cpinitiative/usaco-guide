@@ -26,14 +26,20 @@ to the distances of values before $c$, and contributes $-c$ to the distances of 
 Because our arrays are sorted, we know the number of values before and after each value $c$, allowing us to directly sum these contributions
 for both the $x$ and $y$ values.
 
-### Note
+<Info title="Alternate Summation">
 
-A similar process can be achieved by keeping a running sum while looping through the $x$ and $y$ value arrays. At each step, we can calculate the distances to all the values less than the current value. This will be equivalent to
+A similar process can be achieved by keeping a running sum while looping through the $x$ and $y$ value arrays. At each step, we calculate the distances to all the values less than the current value. This is equivalent to
 
-$x_i \cdot i - \sum_{j=0}^{i} x_j$
-$y_i \cdot i - \sum_{j=0}^{i} y_j$
+$$
+\begin{aligned}
+i x_i - \sum_{j=0}^{i} x_j \\
+i y_i - \sum_{j=0}^{i} y_j
+\end{aligned}
+$$
 
 This will calculate the sums of all Manhattan distances.
+
+</Info>
 
 ## Implementation
 
@@ -59,21 +65,23 @@ void print_int128(__int128 x) {
 		cout << 0;
 		return;
 	}
+
 	if (x < 0) {
 		cout << '-';
 		x = -x;
 	}
+
 	string res;
 	while (x > 0) {
 		res += (x % 10) + '0';
 		x /= 10;
 	}
+
 	reverse(res.begin(), res.end());
 	cout << res;
 }
 
 int main() {
-
 	int n;
 	cin >> n;
 
@@ -92,8 +100,6 @@ int main() {
 	}
 
 	print_int128(sum);
-
-	return 0;
 }
 ```
 
