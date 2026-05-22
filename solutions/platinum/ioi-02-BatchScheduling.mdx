@@ -16,51 +16,53 @@ author: Raagav Bala
 **Time Complexity:** $\mathcal{O}(N)$
 
 ```cpp
-#include <vector>
 #include <deque>
 #include <iostream>
+#include <vector>
 
 int main() {
-    int n; long long s;
-    std::cin >> n >> s;
-    std::vector<long long> t(n+1), f(n+1);
-    for (int i=1; i<=n; i++) std::cin >> t[i] >> f[i];
+	int n;
+	long long s;
+	std::cin >> n >> s;
+	std::vector<long long> t(n + 1), f(n + 1);
+	for (int i = 1; i <= n; i++) std::cin >> t[i] >> f[i];
 
-	//prefix sum of times, suffix sum of cost factors, dp[i] = min cost for jobs i to n
-    std::vector<long long> prefTime(n+3), sufCost(n+4), dp(n+3);
-    for(int i=1; i<=n; i++) prefTime[i] = prefTime[i-1] + t[i];
-    for(int i=n; i; i--) sufCost[i] = sufCost[i+1] + f[i];
+	// prefix sum of times, suffix sum of cost factors, dp[i] = min cost for jobs i to n
+	std::vector<long long> prefTime(n + 3), sufCost(n + 4), dp(n + 3);
+	for (int i = 1; i <= n; i++) prefTime[i] = prefTime[i - 1] + t[i];
+	for (int i = n; i; i--) sufCost[i] = sufCost[i + 1] + f[i];
 
-    std::deque<int> q; //convex hull
-    q.push_back(n+1); //no jobs left
-    for (int i=n; i; i--) {
-		//find the best transition k for current i
-        while(q.size() > 1) {
-            int first = q.back(), second = q[q.size()-2];
+	std::deque<int> q;   // convex hull
+	q.push_back(n + 1);  // no jobs left
+	for (int i = n; i; i--) {
+		// find the best transition k for current i
+		while (q.size() > 1) {
+			int first = q.back(), second = q[q.size() - 2];
 
-			//check if newer line is better earlier
-            if (sufCost[i]*(prefTime[first-1]-prefTime[second-1]) >= dp[second]-dp[first]) 
+			// check if newer line is better earlier
+			if (sufCost[i] * (prefTime[first - 1] - prefTime[second - 1]) >=
+			    dp[second] - dp[first])
 				q.pop_back();
-            else break;
-        }
-        int k = q.back();
-        dp[i] = dp[k] + (s+prefTime[k-1]-prefTime[i-1])*sufCost[i];
+			else break;
+		}
+		int k = q.back();
+		dp[i] = dp[k] + (s + prefTime[k - 1] - prefTime[i - 1]) * sufCost[i];
 
-		//maintain convex hull
-        while (q.size() > 1) {
-            int first = q.front(), second = q[1];
-			
-			//pop middle line if never optimal
-            if ((dp[i]-dp[first])*(prefTime[second-1]-prefTime[first-1]) 
-				<= (dp[first]-dp[second])*(prefTime[first-1]-prefTime[i-1])) 
+		// maintain convex hull
+		while (q.size() > 1) {
+			int first = q.front(), second = q[1];
+
+			// pop middle line if never optimal
+			if ((dp[i] - dp[first]) * (prefTime[second - 1] - prefTime[first - 1]) <=
+			    (dp[first] - dp[second]) * (prefTime[first - 1] - prefTime[i - 1]))
 				q.pop_front();
-            else break;
-        }
-        q.push_front(i); //add line
-    }
+			else break;
+		}
+		q.push_front(i);  // add line
+	}
 
-    std::cout << dp[1];
-    return 0;
+	std::cout << dp[1];
+	return 0;
 }
 ```
 </CPPSection>
