@@ -31,29 +31,32 @@ int main() {
     for(int i=1; i<=n; i++) prefTime[i] = prefTime[i-1] + t[i];
     for(int i=n; i; i--) sufCost[i] = sufCost[i+1] + f[i];
 
-    std::deque<int> q; //convex hull of transitions
-    q.push_back(n+1);
+    std::deque<int> q; //convex hull
+    q.push_back(n+1); //no jobs left
     for (int i=n; i; i--) {
-		//pop worse transitions from the back
+		//find the best transition k for current i
         while(q.size() > 1) {
             int first = q.back(), second = q[q.size()-2];
+
+			//check if newer line is better earlier
             if (sufCost[i]*(prefTime[first-1]-prefTime[second-1]) >= dp[second]-dp[first]) 
 				q.pop_back();
             else break;
         }
-
-        int k = q.back(); //best next start
+        int k = q.back();
         dp[i] = dp[k] + (s+prefTime[k-1]-prefTime[i-1])*sufCost[i];
 
-		//preserve convex hull
+		//maintain convex hull
         while (q.size() > 1) {
             int first = q.front(), second = q[1];
+			
+			//pop middle line if never optimal
             if ((dp[i]-dp[first])*(prefTime[second-1]-prefTime[first-1]) 
-              <= (dp[first]-dp[second])*(prefTime[first-1]-prefTime[i-1])) 
+				<= (dp[first]-dp[second])*(prefTime[first-1]-prefTime[i-1])) 
 				q.pop_front();
             else break;
         }
-        q.push_front(i);
+        q.push_front(i); //add line
     }
 
     std::cout << dp[1];
