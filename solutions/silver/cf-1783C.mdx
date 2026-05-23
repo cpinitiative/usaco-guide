@@ -55,60 +55,60 @@ We iterate over all valid $k$ from $0$ to $n$ and take the minimum place.
 
 <LanguageSection>
 <CPPSection>
-  
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    int t;
-    cin >> t;
-    while (t--) {
-        int n;
-        long long m;
-        cin >> n >> m;
+	int t;
+	cin >> t;
+	while (t--) {
+		int n;
+		long long m;
+		cin >> n >> m;
 
-        vector<long long> a(n + 1);
-        for (int i = 1; i <= n; i++) cin >> a[i];
+		vector<long long> a(n + 1);
+		for (int i = 1; i <= n; i++) cin >> a[i];
 
-        vector<long long> sorted_a(a.begin() + 1, a.end());
-        sort(sorted_a.begin(), sorted_a.end());
+		vector<long long> sorted_a(a.begin() + 1, a.end());
+		sort(sorted_a.begin(), sorted_a.end());
 
-        // prefix[i] = sum of i cheapest opponents
-        vector<long long> prefix(n + 1, 0);
-        for (int i = 0; i < n; i++) prefix[i + 1] = prefix[i] + sorted_a[i];
+		// prefix[i] = sum of i cheapest opponents
+		vector<long long> prefix(n + 1, 0);
+		for (int i = 0; i < n; i++) prefix[i + 1] = prefix[i] + sorted_a[i];
 
-        int ans = n + 1;
+		int ans = n + 1;
 
-        for (int k = 0; k <= n; k++) {
-            if (prefix[k] > m) break;
+		for (int k = 0; k <= n; k++) {
+			if (prefix[k] > m) break;
 
-            // case 1: beat any k opponents
-            ans = min(ans, n - k + 1);
+			// case 1: beat any k opponents
+			ans = min(ans, n - k + 1);
 
-            // case 2: beat k opponents including opponent k+1
-            if (k + 1 > n) continue;
-            long long cost_with;
-            if (k == 0) {
-                cost_with = a[k + 1];
-            } else {
-                // cheapest k-1 excluding opponent k+1, plus a[k+1]
-                long long excl;
-                if (a[k + 1] <= sorted_a[k - 1]) {
-                    excl = prefix[k] - a[k + 1];
-                } else {
-                    excl = prefix[k - 1];
-                }
-                cost_with = excl + a[k + 1];
-            }
-            if (cost_with <= m) ans = min(ans, n - k);
-        }
+			// case 2: beat k opponents including opponent k+1
+			if (k + 1 > n) continue;
+			long long cost_with;
+			if (k == 0) {
+				cost_with = a[k + 1];
+			} else {
+				// cheapest k-1 excluding opponent k+1, plus a[k+1]
+				long long excl;
+				if (a[k + 1] <= sorted_a[k - 1]) {
+					excl = prefix[k] - a[k + 1];
+				} else {
+					excl = prefix[k - 1];
+				}
+				cost_with = excl + a[k + 1];
+			}
+			if (cost_with <= m) ans = min(ans, n - k);
+		}
 
-        cout << ans << "\n";
-    }
+		cout << ans << "\n";
+	}
 }
 ```
 </CPPSection>
