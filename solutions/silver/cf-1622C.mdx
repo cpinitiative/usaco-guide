@@ -85,4 +85,65 @@ int main() {
 }
 ```
 </CPPSection>
+<JavaSection>
+
+```java 
+import java.io.*;
+import java.util.*;
+
+public class SetOrDecrease {
+    public static void main(String[] args) throws Exception {
+        Kattio io = new Kattio();
+
+        int testCases = io.nextInt();
+        while (testCases-- > 0) {
+            int n = io.nextInt();
+            long k = io.nextLong();
+            long total = 0;
+            int[] arr = new int[n];
+            long[] suffixArr = new long[n + 1];
+            for (int i = 0; i < n; i++) {
+                arr[i] = io.nextInt();
+                total += arr[i];
+            }
+            if (total <= k) {
+                io.println(0);
+                continue;
+            }
+            Arrays.sort(arr);
+            for (int i = n - 1; i >= 0; i--) {
+                suffixArr[i] = suffixArr[i + 1] + arr[i];
+            }
+            long lo = 0, hi = 1_000_000_000_000_000_000L;
+            long res = 0;
+            while (lo <= hi) {
+                long mid = (lo + hi + 1) / 2;
+                if (can(mid, n, total, k, arr, suffixArr)) {
+                    hi = mid - 1;
+                    res = mid;
+                } else {
+                    lo = mid + 1;
+                }
+            }
+            io.println(res);
+        }
+        io.close();
+    }
+
+    static boolean can(long mid, int n, long total, long k, int[] arr, long[] suffixArr) {
+        for (long i = 0; i <= Math.min(mid, (long)(n - 1)); i++) {
+            long mn = arr[0] - (mid - i);
+            // decrement arr[0] by (mid - i) and replace i elements with it
+            if (suffixArr[(int)(n - i)] - (mn * i) + (mid - i) >= total - k) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // BeginCodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 </LanguageSection>
