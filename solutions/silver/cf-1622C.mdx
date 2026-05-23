@@ -5,21 +5,86 @@ title: Set or Decrease
 author: Rameez Parwez
 ---
 
-[Official Analysis (C++)] (https://codeforces.com/blog/entry/98453)
+[Official Analysis (C++)](https://codeforces.com/blog/entry/98453)
 
 # Solution
 
 ## Explanation
 
+We will use binary search to find the minimum steps required to make:
+
+$$
+\sum_{i=1}^{n} a_i \leq k
+$$
+
+To do this, we set a mid point `mid` and check if we can reduce the sum by 
+at least $\sum_{i=1}^{n} a_i - K$ using at most `mid` operations. 
+
 ## Implementation
 
-**Time Complexity:** $$
+**Time Complexity:** $\mathcal{O}(N \log N)$
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp 
+#include <iostream>
+#include <vector>
+#include <algorithm>
 
+int main() {
+    int test_cases;
+    std::cin >> test_cases;
+    while (test_cases--) {
+        
+        int n;
+        long long k;
+        std::cin >> n >> k;
+        std::vector<int> arr(n);
+        std::vector<long long> suffix_arr(n + 1);
+        long long total = 0, res = 0;
+
+        for (int &x : arr) {
+            std::cin >> x;
+            total += x;
+        }
+
+        if (total <= k) {
+            std::cout << 0 << '\n';
+            continue;
+        }
+
+        std::sort(begin(arr), end(arr));
+
+        for (int i = n - 1; i >= 0; i--) {
+            suffix_arr[i] = suffix_arr[i + 1] + arr[i];
+        }
+
+        auto can = [&] (long long mid) -> bool {
+            for (long long i = 0; i <= std::min(mid, (long long)n - 1); i++) {
+                long long mn = arr[0] - (mid - i);
+                // decrement arr[0] by (mid - i) and repalace i elements with it
+                if (suffix_arr[n - i] - (mn * i) + (mid - i) >= total - k) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        long long lo = 0, hi = 1e18;
+        while (lo <= hi) {
+            long long mid = (lo + hi + 1) >> 1;
+            if (can(mid)) {
+                hi = mid - 1;
+                res = mid;
+            } else {
+                lo = mid + 1;
+            }
+        }
+
+        std::cout << res << '\n';
+    }
+}
 ```
 </CPPSection>
 </LanguageSection>
