@@ -237,8 +237,8 @@ public class RPasture {
 # Solution 2
 
 ## Explanation
-Instead of keeping two prefix sums for the amount of cows above and below a y-coordinate, we can 
-simply keep one prefix sum. The amount of cows above and below a y-coordinate can then be calculated 
+Instead of keeping two prefix sums for the amount of cows above and below a y-coordinate, we can
+simply keep one prefix sum. The amount of cows above and below a y-coordinate can then be calculated
 as a rectangle with the current y-coordinate and either extrema being the endpoints.
 
 ## Implementation
@@ -290,7 +290,7 @@ int main () {
     }
 
     long long res = 0;
-    // choose two points, count rectangles 
+    // choose two points, count rectangles
     sort(nums.begin(), nums.end(), sortByX);
     for (int i = 0; i < n; i++) {
         for (int j = i + 1; j < n; j++) {
@@ -300,10 +300,10 @@ int main () {
 
             int above = rectSum(grid, 1, r - 1, c, C);
             int below = rectSum(grid, R + 1, n, c, C);
-            
+
             res += (above + 1) * (below + 1);
         }
-    }    
+    }
 
     cout << res + (long long)n + 1 << "\n";
 }
