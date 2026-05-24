@@ -186,19 +186,19 @@ print(ans)
 We can use binary search to find an apartment that is in the range of
 an applicant's desired size.
 
-- Using lower bound, we can find the smallest apartment that has at least the 
-  smallest size the applicant could tolerate 
-- Make sure that this apartment is smaller than or equal to the 
-  largest size the applicant could tolerate 
-- Do nothing if smallest apartment with at least the smallest size is 
+- Using lower bound, we can find the smallest apartment that has at least the
+  smallest size the applicant could tolerate
+- Make sure that this apartment is smaller than or equal to the
+  largest size the applicant could tolerate
+- Do nothing if smallest apartment with at least the smallest size is
   out of the range
-- If the apartment is in the tolerable range, we remove it from the multiset 
+- If the apartment is in the tolerable range, we remove it from the multiset
   and add one to our count. Removing it makes sure another applicant cannot take it.
 
-This is possible with a multiset: removal is efficient and elements 
-may be duplicated. 
+This is possible with a multiset: removal is efficient and elements
+may be duplicated.
 
-Note that we have to sort the apartments so applicants could be 
+Note that we have to sort the apartments so applicants could be
 matched with the apartment closed to their desired size.
 
 ## Implementation
@@ -212,19 +212,19 @@ matched with the apartment closed to their desired size.
 
 using namespace std;
 
-int main () {
-	int n, m, k; cin >> n >> m >> k;
+int main() {
+	int n, m, k;
+	cin >> n >> m >> k;
 
 	multiset<int> desired;
 	vector<int> apartments(m);
 	for (int i = 0; i < n; i++) {
-		int temp; cin >> temp;
+		int temp;
+		cin >> temp;
 		desired.insert(temp);
 	}
 
-	for (int i = 0; i < m; i++) {
-		cin >> apartments[i];
-	}
+	for (int i = 0; i < m; i++) { cin >> apartments[i]; }
 
 	long long res = 0;
 
