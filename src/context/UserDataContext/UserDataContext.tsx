@@ -8,6 +8,7 @@ import {
   setDoc,
   updateDoc,
 } from 'firebase/firestore';
+import { getFunctions, httpsCallable } from 'firebase/functions';
 import debounce from 'lodash/debounce';
 import * as React from 'react';
 import { createContext, ReactNode, useMemo, useRef, useState } from 'react';
@@ -20,7 +21,6 @@ import runMigration from './migration';
 import { Language, Theme } from './properties/simpleProperties';
 import { getLangFromUrl, updateLangURL } from './userLangQueryVariableUtils';
 import { UserPermissionsContextProvider } from './UserPermissionsContext';
-import { getFunctions, httpsCallable } from 'firebase/functions';
 
 // What's actually stored in local storage / firebase
 export type UserData = {
@@ -77,9 +77,7 @@ type UserDataContextAPI = {
     }
   ) => void;
   importUserData: (data: Partial<UserData>) => boolean;
-  deleteAllUserData: (
-    groups: {id: string}[]
-  ) => Promise<boolean>;
+  deleteAllUserData: (groups: { id: string }[]) => Promise<boolean>;
   signOut: () => Promise<void>;
 };
 
@@ -429,7 +427,7 @@ export const UserDataProvider = ({
           );
 
           await Promise.allSettled(
-            (groups).map(group =>
+            groups.map(group =>
               leaveGroup({
                 groupId: group.id,
               })
