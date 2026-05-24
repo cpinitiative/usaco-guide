@@ -20,6 +20,7 @@ import runMigration from './migration';
 import { Language, Theme } from './properties/simpleProperties';
 import { getLangFromUrl, updateLangURL } from './userLangQueryVariableUtils';
 import { UserPermissionsContextProvider } from './UserPermissionsContext';
+import { getFunctions, httpsCallable } from 'firebase/functions';
 
 // What's actually stored in local storage / firebase
 export type UserData = {
@@ -76,7 +77,9 @@ type UserDataContextAPI = {
     }
   ) => void;
   importUserData: (data: Partial<UserData>) => boolean;
-  deleteAllUserData: () => Promise<boolean>;
+  deleteAllUserData: (
+    groups: {id: string}[]
+  ) => Promise<boolean>;
   signOut: () => Promise<void>;
 };
 
@@ -406,7 +409,7 @@ export const UserDataProvider = ({
       return true;
     },
 
-    deleteAllUserData: async (): Promise<boolean> => {
+    deleteAllUserData: async (groups: { id: string }[]): Promise<boolean> => {
       // NOTE: This does not delete the firebase user, it just removes all data from the account.
       if (
         !confirm(
@@ -419,10 +422,20 @@ export const UserDataProvider = ({
       const emptyUserData = assignDefaultsToUserData({});
 
       try {
-        localStorage.removeItem(LOCAL_STORAGE_KEY);
-        localStorage.removeItem(themeKey);
-
         if (firebaseUser) {
+          const leaveGroup = httpsCallable(
+            getFunctions(firebaseApp),
+            'groups-leave'
+          );
+
+          await Promise.allSettled(
+            (groups).map(group =>
+              leaveGroup({
+                groupId: group.id,
+              })
+            )
+          );
+
           const userDoc = doc(
             getFirestore(firebaseApp),
             'users',
@@ -431,6 +444,9 @@ export const UserDataProvider = ({
 
           await deleteDoc(userDoc);
         }
+
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
+        localStorage.removeItem(themeKey);
 
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(emptyUserData));
         debouncedSetUserData(emptyUserData);
