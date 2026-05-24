@@ -2,7 +2,7 @@
 id: usaco-1063
 source: USACO Silver 2020 December
 title: Rectangular Pasture
-author: Kevin Sheng
+author: Kevin Sheng, Ruben Jing
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_prob2_silver_dec20.html)
@@ -19,7 +19,7 @@ Note: The video solution might not be the same as other solutions. Code in C++ a
 
 <YouTube id="AH1wyxq8nPM" />
 
-# Solution
+# Solution 1
 
 ## Explanation
 
@@ -232,4 +232,80 @@ public class RPasture {
 ```
 
 </JavaSection>
+</LanguageSection>
+
+# Solution 2
+
+## Explanation
+Instead of keeping two prefix sums for the amount of cows above and below a y-coordinate, we can 
+simply keep one prefix sum. The amount of cows above and below a y-coordinate can then be calculated 
+as a rectangle with the current y-coordinate and either extrema being the endpoints.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+<CPPSection>
+#include <bits/stdc++.h>
+
+using namespace std;
+
+bool sortByX (pair<int, int> a, pair<int, int> b) {
+    return a.first < b.first;
+}
+
+bool sortByY (pair<int, int> a, pair<int, int> b) {
+    return a.second < b.second;
+}
+
+long long rectSum(vector<vector<long long>>& grid, int r, int R, int c, int C) {
+    return (grid[R][C] - grid[R][c - 1] - grid[r - 1][C] + grid[r - 1][c - 1]);
+}
+
+int main () {
+    int n; cin >> n;
+
+    vector<vector<long long>> grid (n + 1, vector<long long>(n + 1));
+    vector<pair<int, int>> nums(n);
+    for (auto& e : nums) { cin >> e.first >> e.second; }
+
+    // compress X
+    sort(nums.begin(), nums.end(), sortByX);
+    for (int i = 0; i < nums.size(); i++) { nums[i].first = i + 1; }
+
+    // compress Y
+    sort(nums.begin(), nums.end(), sortByY);
+    for (int i = 0; i < nums.size(); i++) { nums[i].second = i + 1; }
+
+    // add points to grid and compute prefix
+    for (auto [x, y]: nums) {
+        grid[x][y] = 1;
+    }
+
+    for (int i = 1; i < grid.size(); i++) {
+        for (int j = 1; j < grid[i].size(); j++) {
+            grid[i][j] += grid[i - 1][j] + grid[i][j - 1] - grid[i - 1][j - 1];
+        }
+    }
+
+    long long res = 0;
+    // choose two points, count rectangles 
+    sort(nums.begin(), nums.end(), sortByX);
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            int r = nums[i].first, R = nums[j].first;
+            int c = min(nums[i].second, nums[j].second);
+            int C = max(nums[i].second, nums[j].second);
+
+            int above = rectSum(grid, 1, r - 1, c, C);
+            int below = rectSum(grid, R + 1, n, c, C);
+            
+            res += (above + 1) * (below + 1);
+        }
+    }    
+
+    cout << res + (long long)n + 1 << "\n";
+}
+</CPPSection>
 </LanguageSection>
