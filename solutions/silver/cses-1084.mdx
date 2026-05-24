@@ -2,11 +2,14 @@
 id: cses-1084
 source: CSES
 title: Apartments
-author: Nathan Gong, Danh Ta Chi Thanh
+author: Nathan Gong, Danh Ta Chi Thanh, Ruben Jing
 ---
 
 [Unofficial Editorial (C++)](https://codeforces.com/blog/entry/83295)
 
+# Solution 1
+
+## Explanation
 We can use a greedy approach to solve this problem. First, sort the applicants
 and apartments. We can keep two pointers $i$ and $j$ (initialized to 0), which
 keep track of the current index of the applicant and apartment we are looking at
@@ -175,4 +178,71 @@ print(ans)
 
 </PySection>
 
+</LanguageSection>
+
+# Solution 2
+
+## Explanation
+We can use binary search to find an apartment that is in the range of
+an applicant's desired size.
+
+- Using lower bound, we can find the smallest apartment that has at least the 
+  smallest size the applicant could tolerate 
+- Make sure that this apartment is smaller than or equal to the 
+  largest size the applicant could tolerate 
+- Do nothing if smallest apartment with at least the smallest size is 
+  out of the range
+- If the apartment is in the tolerable range, we remove it from the multiset 
+  and add one to our count. Removing it makes sure another applicant cannot take it.
+
+This is possible with a multiset: removal is efficient and elements 
+may be duplicated. 
+
+Note that we have to sort the apartments so applicants could be 
+matched with the apartment closed to their desired size.
+
+## Implementation
+
+**Time Complexity**: $\mathcal{O}((n + m)\log(n)+m\log(m))$
+
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main () {
+	int n, m, k; cin >> n >> m >> k;
+
+	multiset<int> desired;
+	vector<int> apartments(m);
+	for (int i = 0; i < n; i++) {
+		int temp; cin >> temp;
+		desired.insert(temp);
+	}
+
+	for (int i = 0; i < m; i++) {
+		cin >> apartments[i];
+	}
+
+	long long res = 0;
+
+	sort(apartments.begin(), apartments.end());
+
+	for (int e : apartments) {
+		// find an apartment in the range
+		auto lower = desired.lower_bound(e - k);
+
+		if (lower != desired.end() && *lower <= e + k) {
+			res++;
+
+			desired.erase(lower);
+		}
+	}
+
+	cout << res << "\n";
+}
+```
+</CPPSection>
 </LanguageSection>
