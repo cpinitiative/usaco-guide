@@ -252,61 +252,56 @@ as a rectangle with the current y-coordinate and either extrema being the endpoi
 
 using namespace std;
 
-bool sortByX (pair<int, int> a, pair<int, int> b) {
-    return a.first < b.first;
+bool sortByX(pair<int, int> a, pair<int, int> b) { return a.first < b.first; }
+
+bool sortByY(pair<int, int> a, pair<int, int> b) { return a.second < b.second; }
+
+long long rectSum(vector<vector<long long>> &grid, int r, int R, int c, int C) {
+	return (grid[R][C] - grid[R][c - 1] - grid[r - 1][C] + grid[r - 1][c - 1]);
 }
 
-bool sortByY (pair<int, int> a, pair<int, int> b) {
-    return a.second < b.second;
-}
+int main() {
+	int n;
+	cin >> n;
 
-long long rectSum(vector<vector<long long>>& grid, int r, int R, int c, int C) {
-    return (grid[R][C] - grid[R][c - 1] - grid[r - 1][C] + grid[r - 1][c - 1]);
-}
+	vector<vector<long long>> grid(n + 1, vector<long long>(n + 1));
+	vector<pair<int, int>> nums(n);
+	for (auto &e : nums) { cin >> e.first >> e.second; }
 
-int main () {
-    int n; cin >> n;
+	// compress X
+	sort(nums.begin(), nums.end(), sortByX);
+	for (int i = 0; i < nums.size(); i++) { nums[i].first = i + 1; }
 
-    vector<vector<long long>> grid (n + 1, vector<long long>(n + 1));
-    vector<pair<int, int>> nums(n);
-    for (auto& e : nums) { cin >> e.first >> e.second; }
+	// compress Y
+	sort(nums.begin(), nums.end(), sortByY);
+	for (int i = 0; i < nums.size(); i++) { nums[i].second = i + 1; }
 
-    // compress X
-    sort(nums.begin(), nums.end(), sortByX);
-    for (int i = 0; i < nums.size(); i++) { nums[i].first = i + 1; }
+	// add points to grid and compute prefix
+	for (auto [x, y] : nums) { grid[x][y] = 1; }
 
-    // compress Y
-    sort(nums.begin(), nums.end(), sortByY);
-    for (int i = 0; i < nums.size(); i++) { nums[i].second = i + 1; }
+	for (int i = 1; i < grid.size(); i++) {
+		for (int j = 1; j < grid[i].size(); j++) {
+			grid[i][j] += grid[i - 1][j] + grid[i][j - 1] - grid[i - 1][j - 1];
+		}
+	}
 
-    // add points to grid and compute prefix
-    for (auto [x, y]: nums) {
-        grid[x][y] = 1;
-    }
+	long long res = 0;
+	// choose two points, count rectangles
+	sort(nums.begin(), nums.end(), sortByX);
+	for (int i = 0; i < n; i++) {
+		for (int j = i + 1; j < n; j++) {
+			int r = nums[i].first, R = nums[j].first;
+			int c = min(nums[i].second, nums[j].second);
+			int C = max(nums[i].second, nums[j].second);
 
-    for (int i = 1; i < grid.size(); i++) {
-        for (int j = 1; j < grid[i].size(); j++) {
-            grid[i][j] += grid[i - 1][j] + grid[i][j - 1] - grid[i - 1][j - 1];
-        }
-    }
+			int above = rectSum(grid, 1, r - 1, c, C);
+			int below = rectSum(grid, R + 1, n, c, C);
 
-    long long res = 0;
-    // choose two points, count rectangles
-    sort(nums.begin(), nums.end(), sortByX);
-    for (int i = 0; i < n; i++) {
-        for (int j = i + 1; j < n; j++) {
-            int r = nums[i].first, R = nums[j].first;
-            int c = min(nums[i].second, nums[j].second);
-            int C = max(nums[i].second, nums[j].second);
+			res += (above + 1) * (below + 1);
+		}
+	}
 
-            int above = rectSum(grid, 1, r - 1, c, C);
-            int below = rectSum(grid, R + 1, n, c, C);
-
-            res += (above + 1) * (below + 1);
-        }
-    }
-
-    cout << res + (long long)n + 1 << "\n";
+	cout << res + (long long)n + 1 << "\n";
 }
 ```
 </CPPSection>
