@@ -121,7 +121,7 @@ const UserDataContext = createContext<UserDataContextAPI>({
   firebaseUser: null,
   forceFirebaseUserRerender: () => {},
   importUserData: _ => false,
-  deleteAllUserData: () => Promise.resolve(false),
+  deleteAllUserData: _ => Promise.resolve(false),
   isLoaded: true,
 });
 
@@ -447,7 +447,7 @@ export const UserDataProvider = ({
 
           const ownedGroupIds = new Set(ownedGroups.map(group => group.id));
 
-          await Promise.allSettled([
+          await Promise.all([
             ...groups
               .filter(group => !ownedGroupIds.has(group.id))
               .map(group =>
@@ -459,8 +459,7 @@ export const UserDataProvider = ({
             ...ownedGroups.map(group => deleteDoc(doc(db, 'groups', group.id))),
           ]);
 
-          const userDoc = doc(db, 'users', firebaseUser.uid);
-          await deleteDoc(userDoc);
+          await setDoc(doc(db, 'users', firebaseUser.uid), emptyUserData);
         }
 
         localStorage.removeItem(LOCAL_STORAGE_KEY);
