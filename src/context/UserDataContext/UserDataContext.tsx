@@ -21,6 +21,7 @@ import { Language, Theme } from './properties/simpleProperties';
 import { getLangFromUrl, updateLangURL } from './userLangQueryVariableUtils';
 import { UserPermissionsContextProvider } from './UserPermissionsContext';
 import { getFunctions, httpsCallable } from 'firebase/functions';
+import { GroupData } from '../../models/groups/groups';
 
 // What's actually stored in local storage / firebase
 export type UserData = {
@@ -78,7 +79,7 @@ type UserDataContextAPI = {
   ) => void;
   importUserData: (data: Partial<UserData>) => boolean;
   deleteAllUserData: (
-    groups: {id: string}[]
+    groups: GroupData[]
   ) => Promise<boolean>;
   signOut: () => Promise<void>;
 };
@@ -409,8 +410,7 @@ export const UserDataProvider = ({
       return true;
     },
 
-    deleteAllUserData: async (groups: { id: string }[]): Promise<boolean> => {
-      // NOTE: This does not delete the firebase user, it just removes all data from the account.
+    deleteAllUserData: async (groups: GroupData[]): Promise<boolean> => {
       if (
         !confirm(
           'Delete all user data? This will permanently remove your progress and settings. This cannot be undone.'
@@ -423,25 +423,45 @@ export const UserDataProvider = ({
 
       try {
         if (firebaseUser) {
+          const db = getFirestore(firebaseApp);
           const leaveGroup = httpsCallable(
             getFunctions(firebaseApp),
             'groups-leave'
           );
 
-          await Promise.allSettled(
-            (groups).map(group =>
-              leaveGroup({
-                groupId: group.id,
-              })
-            )
+          const ownedGroups = groups.filter(group =>
+            group.ownerIds.includes(firebaseUser.uid)
           );
 
-          const userDoc = doc(
-            getFirestore(firebaseApp),
-            'users',
-            firebaseUser.uid
-          );
+          if (ownedGroups.length > 0) {
+            const ownedGroupNames = ownedGroups
+              .map(group => group.name)
+              .join('\n');
 
+            if (
+              !confirm(
+                `You are the owner of the following group(s):\n${ownedGroupNames}\nTransfer these groups to another person or they will be deleted.\nClick OK to delete these groups anyway, or Cancel to stop.`
+              )
+            ) {
+              return false;
+            }
+          }
+
+          const ownedGroupIds = new Set(ownedGroups.map(group => group.id));
+
+          await Promise.allSettled([
+            ...groups
+              .filter(group => !ownedGroupIds.has(group.id))
+              .map(group =>
+                leaveGroup({
+                  groupId: group.id,
+                })
+              ),
+
+            ...ownedGroups.map(group => deleteDoc(doc(db, 'groups', group.id))),
+          ]);
+
+          const userDoc = doc(db, 'users', firebaseUser.uid);
           await deleteDoc(userDoc);
         }
 
