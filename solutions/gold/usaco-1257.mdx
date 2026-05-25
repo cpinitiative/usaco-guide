@@ -11,9 +11,7 @@ author: David Xiao
 
 The difficulty in this problem comes from the fact that we can use both moonies and ice cream cones to bribe friends. If we only had one method of bribery, this would turn into a simple 0/1 knapsack problem.
 
-To simplify, let's consider an optimal solution for a subset of friends using moonies and ice cream cones that maximizes popularity. For every ice cream we spend on cow $i$, we are saving $1$ moonie every $X_i$ ice cream cones. 
-
-An optimal solution distributes the ice cream cones across the friends with the lowest $X_i$, because this maximizes the amount of moonies we can save.
+To simplify, let's consider an optimal expenditure of ice cream cones and moonies. For every ice cream cone we spend on a given cow $i$, we are saving $1$ moonie every $X_i$ ice cream cones. Intuitively, we should distribute the ice cream cones across the friends with the lowest $X_i$, because this maximizes the amount of moonies we can save.
 
 This can be proven via [exchange argument](https://www.cs.cornell.edu/courses/cs482/2007su/exchange.pdf). Consider two cows $i$ and $j$, where $X_i > X_j$. If we spent ice cream cones on cow $i$ instead of cow $j$, then each moonie we saved would need $X_i - X_j$ more ice cream cones.
 
@@ -35,7 +33,7 @@ If the $R$ is enough to fully bribe the current friend, we can choose to bribe t
 
 If the $R$ isn't enough to fully bribe the current friend, we spend $C_i - \lfloor\frac{R}{X_i}\rfloor$ moonies to bribe that friend, pushing our index to $B + C_i - \lfloor\frac{R}{X_i}\rfloor$ since all ice cream cones are considered exhausted. 
 
-After we sort by increasing $X_i$, for each iteration, we spend as many ice cream cones as we possible can before we use moonies, to maximize the number of moonies that our ice cream cones can save.
+Now for each friend we loop through, we spend as many ice cream cones as we can before we use moonies, to maximize the number of moonies that our ice cream cones can save.
 
 At the end, we take the maximum of our dp array as our answer.
 
@@ -52,12 +50,12 @@ At the end, we take the maximum of our dp array as our answer.
 using namespace std;
 
 struct Friend {
-        int popularity, cost, bribe;
-        Friend() : popularity(0), cost(0), bribe(0) {}
+        int popularity, cost, discount;
+        Friend() : popularity(0), cost(0), discount(0) {}
 };
 
 bool x_sort(Friend f1, Friend f2) {
-        return f1.bribe < f2.bribe;
+        return f1.discount < f2.discount;
 }
 
 int main() {
@@ -65,14 +63,14 @@ int main() {
         int N, moonies, ice_cream; 
         cin >> N >> moonies >> ice_cream;
         vector<Friend> friends(N);
-        for(int i = 0; i < N; i++) cin >> friends[i].popularity >> friends[i].cost >> friends[i].bribe;
+        for(int i = 0; i < N; i++) cin >> friends[i].popularity >> friends[i].cost >> friends[i].discount;
         sort(friends.begin(), friends.end(), x_sort); // sort by lowest cost to bribe
 
         vector<long long> dp(moonies + ice_cream + 1, -1); // -1 represents unvisited
         dp[0] = 0;
 
         for (Friend f : friends) {
-                for (int i = moonies + ice_cream - f.cost; i >= 0; i--) { // prevent out-of-bounds indexing
+                for (int i = moonies + ice_cream - f.cost; i >= 0; i--) {
                         // skip if unvisited
                         if (dp[i] == -1) continue;
 
@@ -80,10 +78,10 @@ int main() {
                         if (i >= ice_cream) dp[i + f.cost] = max(dp[i + f.cost], dp[i] + f.popularity);
 
                         // spending only ice cream cones
-                        else if (ice_cream - i >= f.cost * f.bribe) dp[i + f.cost * f.bribe] = max(dp[i + f.cost * f.bribe], dp[i] + f.popularity); 
+                        else if (ice_cream - i >= f.cost * f.discount) dp[i + f.cost * f.discount] = max(dp[i + f.cost * f.discount], dp[i] + f.popularity); 
                         
                         // spending a mixed amount of moonies and ice cream cones
-                        else if (ice_cream + (f.cost - ((ice_cream - i) / f.bribe)) <= moonies + ice_cream) dp[ice_cream + (f.cost - ((ice_cream - i) / f.bribe))] = max(dp[ice_cream + (f.cost - ((ice_cream - i) / f.bribe))], dp[i] + f.popularity);
+                        else if (ice_cream + (f.cost - ((ice_cream - i) / f.discount)) <= moonies + ice_cream) dp[ice_cream + (f.cost - ((ice_cream - i) / f.discount))] = max(dp[ice_cream + (f.cost - ((ice_cream - i) / f.discount))], dp[i] + f.popularity);
                 }
         }
 
