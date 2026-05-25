@@ -8,11 +8,13 @@ import {
   setDoc,
   updateDoc,
 } from 'firebase/firestore';
+import { getFunctions, httpsCallable } from 'firebase/functions';
 import debounce from 'lodash/debounce';
 import * as React from 'react';
 import { createContext, ReactNode, useMemo, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useFirebaseApp } from '../../hooks/useFirebase';
+import { GroupData } from '../../models/groups/groups';
 import { ModuleProgress } from '../../models/module';
 import { ProblemProgress } from '../../models/problem';
 import { ResourceProgress } from '../../models/resource';
@@ -20,8 +22,6 @@ import runMigration from './migration';
 import { Language, Theme } from './properties/simpleProperties';
 import { getLangFromUrl, updateLangURL } from './userLangQueryVariableUtils';
 import { UserPermissionsContextProvider } from './UserPermissionsContext';
-import { getFunctions, httpsCallable } from 'firebase/functions';
-import { GroupData } from '../../models/groups/groups';
 
 // What's actually stored in local storage / firebase
 export type UserData = {
@@ -78,9 +78,7 @@ type UserDataContextAPI = {
     }
   ) => void;
   importUserData: (data: Partial<UserData>) => boolean;
-  deleteAllUserData: (
-    groups: GroupData[]
-  ) => Promise<boolean>;
+  deleteAllUserData: (groups: GroupData[]) => Promise<boolean>;
   signOut: () => Promise<void>;
 };
 
