@@ -20,20 +20,18 @@ When you play opponent $i$:
 ### Counting Opponents Who Beat You
 
 For a given subset $S$ of opponents you beat (with $|S| = k$), you have $k$ wins.
-Opponent $i$ beats you iff they have strictly more than $k$ wins:
-- $i \in S$: they have $i - 1$ wins, so they beat you iff $i \geq k + 2$.
-- $i \notin S$: they have $i$ wins, so they beat you iff $i \geq k + 1$.
+Opponent $i$ has $i - 1$ wins from inter-opponent matches, plus 1 if they beat you.
 
-The number of opponents beating you equals $n - k$, minus 1 if opponent $k+1$ is in $S$.
+Opponents with index $\geq k + 2$ always have more wins than you regardless.
+The only opponent who might have exactly $k$ wins and beat you is opponent $k + 1$
+(they have $k$ wins from others, plus 1 if you lost to them).
 
-Expanding: the count of opponents with index $\geq k+1$ who beat you is all $n - k$ of them,
-minus any beaten opponent with index exactly $k+1$:
+So the number of opponents who beat you is $n - k - 1$, plus 1 if opponent $k+1$
+beat you (i.e. $k+1 \notin S$). Equivalently, your place is:
 
 $$
-f(k, S) = (n - k) - |\{i \in S : i = k+1\}| = (n - k) - [k+1 \in S]
+(n - k) - [k+1 \in S] + 1
 $$
-
-So your place for a given $k$ and $S$ is $(n - k) - [k+1 \in S] + 1$.
 
 ### Optimal Strategy
 
