@@ -459,7 +459,10 @@ export const UserDataProvider = ({
             ...ownedGroups.map(group => deleteDoc(doc(db, 'groups', group.id))),
           ]);
 
-          await setDoc(doc(db, 'users', firebaseUser.uid), emptyUserData);
+          await setDoc(doc(db, 'users', firebaseUser.uid), {
+            ...emptyUserData,
+            CREATING_ACCOUNT_FOR_FIRST_TIME: (userData as any).CREATING_ACCOUNT_FOR_FIRST_TIME, // hack because this field shouldn't be changed no matter what
+          });
         }
 
         localStorage.removeItem(LOCAL_STORAGE_KEY);
