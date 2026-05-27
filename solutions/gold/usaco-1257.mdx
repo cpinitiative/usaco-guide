@@ -31,7 +31,7 @@ Our state transition depends on the amount of moonies and ice cream cones we hav
 
 	- If the $R$ isn't enough to fully bribe the current friend, we spend $C_i - \lfloor\frac{R}{X_i}\rfloor$ moonies to bribe that friend, pushing our index to $B + C_i - \lfloor\frac{R}{X_i}\rfloor$ since all ice cream cones are considered exhausted.
 
-We sort the friends by increasing $X_i$. This gurantees that when we loop through our friends, we are using our ice creams on the friends with lower $X_i$ first, before using any moonies. At the end, we take the maximum of our dp array as our answer.
+We sort the friends by increasing $X_i$. This gurantees that when we loop through our friends, we are using our ice creams on the friends with lower $X_i$ first, before using any moonies. At the end, we take the maximum of our DP array as our answer.
 
 ## Implementation
 
@@ -40,7 +40,6 @@ We sort the friends by increasing $X_i$. This gurantees that when we loop throug
 <LanguageSection>
 <CPPSection>
 
-##
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -50,45 +49,54 @@ struct Friend {
 	Friend() : popularity(0), cost(0), discount(0) {}
 };
 
-bool x_sort(Friend f1, Friend f2) { return f1.discount < f2.discount; }
+bool x_sort(const Friend &f1, const Friend &f2) { 
+	return f1.discount < f2.discount; 
+}
 
 int main() {
-	ios::sync_with_stdio(0);
-	cin.tie(0);
-	int N, moonies, ice_cream;
-	cin >> N >> moonies >> ice_cream;
-	vector<Friend> friends(N);
-	for (int i = 0; i < N; i++)
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+	
+	int n, moonies, ice_cream;
+	cin >> n >> moonies >> ice_cream;
+	vector<Friend> friends(n);
+	for (int i = 0; i < n; i++) {
 		cin >> friends[i].popularity >> friends[i].cost >> friends[i].discount;
-	sort(friends.begin(), friends.end(), x_sort);  // sort by lowest cost to bribe
+	}
 
-	vector<long long> dp(moonies + ice_cream + 1, -1);  // -1 represents unvisited
+	sort(friends.begin(), friends.end(), x_sort);  // sort by best discount
+
+	vector<int> dp(moonies + ice_cream + 1, -1);  // -1 represents unvisited
 	dp[0] = 0;
 
-	for (Friend f : friends) {
-		for (int i = moonies + ice_cream - f.cost; i >= 0; i--) {
+	for (const Friend &f : friends) {
+		auto [popularity, cost, discount] = f;
+		for (int i = moonies + ice_cream - cost; i >= 0; i--) {
 			// skip if unvisited
 			if (dp[i] == -1) continue;
 
 			// spending only moonies
-			if (i >= ice_cream)
-				dp[i + f.cost] = max(dp[i + f.cost], dp[i] + f.popularity);
+			if (i >= ice_cream) {
+				dp[i + cost] = max(dp[i + cost], dp[i] + popularity);
+			}
 
 			// spending only ice cream cones
-			else if (ice_cream - i >= f.cost * f.discount)
-				dp[i + f.cost * f.discount] =
-				    max(dp[i + f.cost * f.discount], dp[i] + f.popularity);
+			else if (ice_cream - i >= cost * discount) {
+				dp[i + cost * discount] =
+				    max(dp[i + cost * discount], dp[i] + popularity);
+			}
 
 			// spending a mixed amount of moonies and ice cream cones
-			else if (ice_cream + (f.cost - ((ice_cream - i) / f.discount)) <=
-			         moonies + ice_cream)
-				dp[ice_cream + (f.cost - ((ice_cream - i) / f.discount))] =
-				    max(dp[ice_cream + (f.cost - ((ice_cream - i) / f.discount))],
-				        dp[i] + f.popularity);
+			else if (ice_cream + (cost - ((ice_cream - i) / discount)) <=
+			         moonies + ice_cream) {
+				int moonies_spent = cost - ((ice_cream - i) / discount);
+				dp[ice_cream + moonies_spent] =
+				    max(dp[ice_cream + moonies_spent], dp[i] + popularity);
+			}
 		}
 	}
 
-	cout << *max_element(dp.begin(), dp.end());
+	cout << *max_element(dp.begin(), dp.end()) << '\n';
 }
 ```
 
