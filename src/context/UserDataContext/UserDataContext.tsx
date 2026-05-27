@@ -461,7 +461,8 @@ export const UserDataProvider = ({
 
           await setDoc(doc(db, 'users', firebaseUser.uid), {
             ...emptyUserData,
-            CREATING_ACCOUNT_FOR_FIRST_TIME: (userData as any).CREATING_ACCOUNT_FOR_FIRST_TIME, // hack because this field shouldn't be changed no matter what
+            CREATING_ACCOUNT_FOR_FIRST_TIME: (userData as any)
+              .CREATING_ACCOUNT_FOR_FIRST_TIME, // hack because this field shouldn't be changed no matter what
           });
         }
 
