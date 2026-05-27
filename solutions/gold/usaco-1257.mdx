@@ -17,25 +17,21 @@ This can be proven via [exchange argument](https://www.cs.cornell.edu/courses/cs
 
 To transition this to a 0/1 knapsack problem, let $dp[i]$ represent the maximum possible popularity achievable at state $i$.
 
-For $0 \leq i \leq B$, $i$ represents the amount of ice cream cones used, while $0$ moonies have been used.
+- For $0 \leq i \leq B$, $i$ represents the amount of ice cream cones used, while $0$ moonies have been used.
 
-For $B < i \leq B + A$, $i - B$ represents the amount of moonies used after using all usable ice cream cones.
+- For $B < i \leq B + A$, $i - B$ represents the amount of moonies used after using all usable ice cream cones.
 
-To ensure we are using our ice cream cones optimally, we first sort our friends by increasing order of $X_i$.
+Our state transition depends on the amount of moonies and ice cream cones we have left.
 
-Our state transition depends on the current position $i$.
+- If $i > B$, we have already exhausted all ice cream cones, and can only use moonies to bribe friends.
 
-If $i > B$, we have already exhausted all ice cream cones, and can only use moonies to bribe friends.
+- Let $R = B - i$ represent the remaining amount of ice cream cones left at position $i$
 
-Let $R = B - i$, represent the remaining amount of ice cream cones left at position $i$
+	- If the $R$ is enough to fully bribe the current friend, we can choose to bribe that friend and use $X_i \cdot C_i$ ice cream cones in the process.
 
-If the $R$ is enough to fully bribe the current friend, we can choose to bribe that friend and use $X_i \cdot C_i$ ice cream cones in the process.
+	- If the $R$ isn't enough to fully bribe the current friend, we spend $C_i - \lfloor\frac{R}{X_i}\rfloor$ moonies to bribe that friend, pushing our index to $B + C_i - \lfloor\frac{R}{X_i}\rfloor$ since all ice cream cones are considered exhausted.
 
-If the $R$ isn't enough to fully bribe the current friend, we spend $C_i - \lfloor\frac{R}{X_i}\rfloor$ moonies to bribe that friend, pushing our index to $B + C_i - \lfloor\frac{R}{X_i}\rfloor$ since all ice cream cones are considered exhausted.
-
-Now for each friend we loop through, we spend as many ice cream cones as we can before we use moonies, to maximize the number of moonies that our ice cream cones can save.
-
-At the end, we take the maximum of our dp array as our answer.
+We sort the friends by increasing $X_i$. This gurantees that when we loop through our friends, we are using our ice creams on the friends with lower $X_i$ first, before using any moonies. At the end, we take the maximum of our dp array as our answer.
 
 ## Implementation
 
