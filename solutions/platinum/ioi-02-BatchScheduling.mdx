@@ -1,0 +1,81 @@
+---
+id: ioi-02-BatchScheduling
+source: IOI 2002
+title: Batch Scheduling
+author: Raagav Bala
+---
+
+[Official Analysis](https://dmoj.ca/problem/ioi02p4/editorial)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <deque>
+#include <iostream>
+#include <vector>
+
+int main() {
+	int n, s;
+	std::cin >> n >> s;
+	std::vector<int> t(n + 1), f(n + 1);
+	for (int i = 1; i <= n; i++) std::cin >> t[i] >> f[i];
+
+	// calculate prefix sum of times
+	std::vector<int> prefTime(n + 2);
+	for (int i = 1; i <= n; i++) { prefTime[i] = prefTime[i - 1] + t[i]; }
+
+	// calculate suffix sum of cost factors
+	std::vector<int> sufCost(n + 2);
+	for (int i = n; i >= 1; i--) { sufCost[i] = sufCost[i + 1] + f[i]; }
+
+	// dp[i] = min cost for jobs i to n
+	std::vector<int> dp(n + 2);
+
+	std::deque<int> q;   // convex hull
+	q.push_back(n + 1);  // no jobs left
+
+	for (int i = n; i >= 1; i--) {
+		// find the best transition point for current i
+		while (q.size() > 1) {
+			int first = q.back(), second = q[q.size() - 2];
+
+			// check if newer line is better earlier
+			if (sufCost[i] * (prefTime[first - 1] - prefTime[second - 1]) >=
+			    dp[second] - dp[first]) {
+				q.pop_back();
+			} else {
+				break;
+			}
+		}
+
+		// k is the best transition point, as found using CHT
+		int k = q.back();
+		dp[i] = dp[k] + (s + prefTime[k - 1] - prefTime[i - 1]) * sufCost[i];
+
+		// maintain convex hull
+		while (q.size() > 1) {
+			int first = q.front(), second = q[1];
+
+			// pop middle line if never optimal
+			if ((dp[i] - dp[first]) * (prefTime[second - 1] - prefTime[first - 1]) <=
+			    (dp[first] - dp[second]) * (prefTime[first - 1] - prefTime[i - 1])) {
+				q.pop_front();
+			} else {
+				break;
+			}
+		}
+
+		q.push_front(i);  // add the current line
+	}
+
+	std::cout << dp[1] << '\n';
+}
+```
+
+</CPPSection>
+</LanguageSection>
