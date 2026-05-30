@@ -63,11 +63,14 @@ $$
 n_{r+1} \leq (k-r-1)^2 = (k-r)^2 - 2r + 2k - 1
 $$
 
-If we show this, we'll know that $n_r \leq (k-r)^2$ for *all* $r$.
-Setting $r=k$, we get $n_k \leq (k-k)^2=0$, which effectively means that it's possible
-for us to make all nodes invalid after $k$ moves.
+If we show this, we'll know that $n_r \leq (k-r)^2$ for $r\lt k$.
+Substituting $r = k - 1$, we get
+$$
+n_{k-1} \leq (k - (k - 1))^2 = 1
+$$
+This would guarantee that after $k-1$ moves, there is at most one valid node remaining for Stjepan to move to. Since Daniel would be the first to move on turn $k$, he would simply place his final mark on this single remaining node. Stjepan would then be left with zero valid adjacent nodes to step on, preventing his $k$-th move and securing Daniel's win.
 
-To prove this, let's first define a more concrete strategy:
+To prove the inductive step, let's first define a more concrete strategy:
 
 > At each level, cut off the node with the largest subtree size that hasn't been already
 > cut off. If there's multiple nodes with this quality, cut off any of them.
