@@ -479,7 +479,7 @@ export const UserDataProvider = ({
           };
 
           const ownedGroups = uniqueGroups.filter(group =>
-            group.ownerIds.includes(firebaseUser.uid)
+            group.ownerIds.length === 1 && group.ownerIds.includes(firebaseUser.uid)
           );
 
           if (ownedGroups.length > 0) {
