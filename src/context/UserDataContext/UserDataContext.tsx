@@ -1,12 +1,14 @@
 import { getAuth, onAuthStateChanged, signOut, User } from 'firebase/auth';
 import {
-  deleteDoc,
+  collection,
   doc,
+  getDocs,
   getFirestore,
   onSnapshot,
   serverTimestamp,
   setDoc,
   updateDoc,
+  writeBatch,
 } from 'firebase/firestore';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import debounce from 'lodash/debounce';
@@ -426,8 +428,57 @@ export const UserDataProvider = ({
             getFunctions(firebaseApp),
             'groups-leave'
           );
+          const uniqueGroups = Array.from(
+            new Map(groups.map(g => [g.id, g])).values()
+          );
 
-          const ownedGroups = groups.filter(group =>
+          const deleteGroup = async (groupId: string) => {
+            const firestore = getFirestore(firebaseApp);
+            // oops this batch should really be a transaction todo
+            const batch = writeBatch(firestore);
+
+            const posts = await getDocs(
+              collection(firestore, 'groups', groupId, 'posts')
+            );
+            posts.docs.forEach(doc => batch.delete(doc.ref));
+            await Promise.all(
+              posts.docs.map(async doc => {
+                const problems = await getDocs(
+                  collection(
+                    firestore,
+                    'groups',
+                    groupId,
+                    'posts',
+                    doc.id,
+                    'problems'
+                  )
+                );
+                problems.docs.forEach(doc => batch.delete(doc.ref));
+                await Promise.all(
+                  problems.docs.map(async problemDoc => {
+                    const submissions = await getDocs(
+                      collection(
+                        firestore,
+                        'groups',
+                        groupId,
+                        'posts',
+                        doc.id,
+                        'problems',
+                        problemDoc.id,
+                        'submissions'
+                      )
+                    );
+                    submissions.docs.forEach(doc => batch.delete(doc.ref));
+                  })
+                );
+              })
+            );
+            batch.delete(doc(firestore, 'groups', groupId));
+
+            await batch.commit();
+          };
+
+          const ownedGroups = uniqueGroups.filter(group =>
             group.ownerIds.includes(firebaseUser.uid)
           );
 
@@ -448,7 +499,7 @@ export const UserDataProvider = ({
           const ownedGroupIds = new Set(ownedGroups.map(group => group.id));
 
           await Promise.all([
-            ...groups
+            ...uniqueGroups
               .filter(group => !ownedGroupIds.has(group.id))
               .map(group =>
                 leaveGroup({
@@ -456,7 +507,7 @@ export const UserDataProvider = ({
                 })
               ),
 
-            ...ownedGroups.map(group => deleteDoc(doc(db, 'groups', group.id))),
+            ...ownedGroups.map(group => deleteGroup(group.id)),
           ]);
 
           await setDoc(doc(db, 'users', firebaseUser.uid), {
