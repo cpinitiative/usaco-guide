@@ -31,11 +31,11 @@ $$
 \texttt{dp}[k] + (S + P_{k-1} - P_{i-1})C_i = (\texttt{dp}[k]+P_{k-1}C_i) + (S - P_{i-1})C_i.
 $$
 
-Notice that the second term does not depend on $k$. Thus, we only need to minimize $\texttt{dp}[k]+P_{k-1}C_i.$ 
+Notice that the second term does not depend on $k$. Thus, we only need to minimize $\texttt{dp}[k]+P_{k-1}C_i.$
 
 Now this seems like CHT transition: every state $k$ is line $y = mx+b$ with $m = P_{k-1}$ and $b = \texttt{dp}[k].$ For the current state $i$, we can query the hull at $x=C_i.$ Then $mx+b = P_{k-1}C_i+\texttt{dp}[k],$ which is exactly the value we want.
 
-Because the slopes are prefix sums, they are inserted in monotonic order, and we get a monotonic hull. Since the query value is $C_i$, processing states from $N$ down to $1$ also gives monotonic queries. Each $C_i$ is a suffix sum, so it increases as we move left. 
+Because the slopes are prefix sums, they are inserted in monotonic order, and we get a monotonic hull. Since the query value is $C_i$, processing states from $N$ down to $1$ also gives monotonic queries. Each $C_i$ is a suffix sum, so it increases as we move left.
 
 This means the best line only goes in one direction through the hull. Once a line is worse than the next line for the current query, it will never be optimal, so we can remove it from the deque. So, a deque convex hull is sufficient to solve the problem in linear time.
 
