@@ -18,7 +18,9 @@ export default function AddFileModal(props) {
   const [fileStatus, setFileStatus] = useState<
     'Create File' | 'Creating File...'
   >('Create File');
+  const [inputMode, setInputMode] = useState<'url' | 'id'>('url');
   const [fileURL, setFileURL] = useState('');
+  const [fileId, setFileId] = useState('');
   const createSol = useSetAtom(createNewInternalSolutionFileAtom);
   return (
     <Dialog
@@ -42,13 +44,55 @@ export default function AddFileModal(props) {
             transition
             className="flex w-full max-w-xl transform flex-col items-start rounded-lg bg-white p-5 shadow-lg transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[enter]:ease-out data-[leave]:duration-200 data-[leave]:ease-in data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95 dark:bg-black dark:text-white"
           >
-            <h3 className="text-lg font-bold">Enter Problem URL</h3>
+            <h3 className="text-lg font-bold">Add Internal Solution</h3>
+            <div className="mt-4 flex gap-2">
+              <button
+                type="button"
+                className={`btn ${
+                  inputMode === 'url'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 text-black dark:bg-gray-800 dark:text-white'
+                }`}
+                onClick={() => setInputMode('url')}
+              >
+                URL
+              </button>
+              <button
+                type="button"
+                className={`btn ${
+                  inputMode === 'id'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 text-black dark:bg-gray-800 dark:text-white'
+                }`}
+                onClick={() => setInputMode('id')}
+              >
+                Unique ID
+              </button>
+            </div>
+            <label className="mt-4 block text-sm font-medium">
+              {inputMode === 'url' ? 'Problem URL' : 'Unique ID'}
+            </label>
             <input
-              type="url"
+              type={inputMode === 'url' ? 'url' : 'text'}
               className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:border-gray-700 dark:bg-gray-900"
-              placeholder="e.g. https://codeforces.com/contest/1920/problem/C"
-              onChange={e => setFileURL(e.target.value)}
+              placeholder={
+                inputMode === 'url'
+                  ? 'e.g. https://codeforces.com/contest/1920/problem/C'
+                  : 'e.g. usaco-bronze-1234'
+              }
+              value={inputMode === 'url' ? fileURL : fileId}
+              onChange={e =>
+                inputMode === 'url'
+                  ? setFileURL(e.target.value)
+                  : setFileId(e.target.value)
+              }
             />
+            {inputMode === 'id' && (
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                The file will be created using the provided unique ID. You can
+                edit the title and source after creation.
+              </p>
+            )}
             <p className="mt-2">Problem Division</p>
             <div className="relative mt-2 w-full rounded-md shadow-sm dark:bg-black">
               <Select
@@ -71,22 +115,33 @@ export default function AddFileModal(props) {
               disabled={fileStatus === 'Creating File...'}
               onClick={async () => {
                 try {
+                  if (inputMode === 'url' && !fileURL.trim()) {
+                    alert('Please enter a problem URL.');
+                    return;
+                  }
+                  if (inputMode === 'id' && !fileId.trim()) {
+                    alert('Please enter a unique ID.');
+                    return;
+                  }
                   setFileStatus('Creating File...');
-                  const info = (
-                    await fetch('/api/fetch-metadata', {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json',
-                      },
-                      body: JSON.stringify({ url: fileURL }),
-                    })
-                      .then(res => res.json())
-                      .catch(e => {
-                        setFileStatus('Create File');
-                        props.onClose();
-                        console.error(e);
-                      })
-                  ).data;
+                  let info;
+                  if (inputMode === 'url') {
+                    info = (
+                      await fetch('/api/fetch-metadata', {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ url: fileURL }),
+                      }).then(res => res.json())
+                    ).data;
+                  } else {
+                    info = {
+                      uniqueId: fileId.trim(),
+                      name: fileId.trim(),
+                      source: 'unknown',
+                    };
+                  }
                   props.onClose();
                   createSol({
                     id: info.uniqueId,
