@@ -238,8 +238,11 @@ public class RPasture {
 
 ## Explanation
 Instead of keeping two prefix sums for the amount of cows above and below a y-coordinate, we can
-simply keep one prefix sum. The amount of cows above and below a y-coordinate can then be calculated
-as a rectangle with the current y-coordinate and either extrema being the endpoints.
+simply keep one prefix sum: a 2D prefix sum directly summing the coordinate compressed grid.
+
+The main difference between this and the solution above is that this solution uses rectangular 
+sums to find the points above and below a y-coordinate, while the solution above keeps track 
+of the number of points above and below a y-coordinate.
 
 ## Implementation
 
@@ -256,8 +259,8 @@ bool sortByX(pair<int, int> a, pair<int, int> b) { return a.first < b.first; }
 
 bool sortByY(pair<int, int> a, pair<int, int> b) { return a.second < b.second; }
 
-long long rectSum(vector<vector<long long>> &grid, int r, int R, int c, int C) {
-	return (grid[R][C] - grid[R][c - 1] - grid[r - 1][C] + grid[r - 1][c - 1]);
+int rectSum(vector<vector<long long>> &grid, int r1, int r2, int c1, int c2) {
+	return (grid[r2][c2] - grid[r2][c1 - 1] - grid[r1 - 1][c2] + grid[r1 - 1][c1 - 1]);
 }
 
 int main() {
@@ -266,7 +269,7 @@ int main() {
 
 	vector<vector<long long>> grid(n + 1, vector<long long>(n + 1));
 	vector<pair<int, int>> nums(n);
-	for (auto &e : nums) { cin >> e.first >> e.second; }
+	for (auto &[x, y] : nums) { cin >> x >> y; }
 
 	// compress X
 	sort(nums.begin(), nums.end(), sortByX);
@@ -301,7 +304,8 @@ int main() {
 		}
 	}
 
-	cout << res + (long long)n + 1 << "\n";
+	// add empty rectangle
+	cout << res + n + 1 << "\n";
 }
 ```
 </CPPSection>
