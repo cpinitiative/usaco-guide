@@ -10,11 +10,11 @@ author: Nathan Gong, Danh Ta Chi Thanh, Ruben Jing
 # Solution 1
 
 ## Explanation
-We can use a greedy approach to solve this problem. First, sort the applicants
-and apartments. We can keep two pointers $i$ and $j$ (initialized to 0), which
+We can use a greedy approach to solve this problem. First, we sort the applicants
+and apartments. We keep two pointers $i$ and $j$ (initialized to 0), which
 keep track of the current index of the applicant and apartment we are looking at
 respectively. Then, while there are more applicants and apartments to look
-through, we repeatedly run the following check:
+through, we repeatedly check the following:
 
 - If $|\texttt{applicants}[i] - \texttt{apartments}[j]| \leq k$, we have found a
   suitable apartment for the current applicant. Thus, we increment $i$, $j$, and
@@ -48,10 +48,13 @@ int n, m, k, a[MAX_N], b[MAX_N], ans;
 
 void solve() {
 	cin >> n >> m >> k;
+
 	for (int i = 0; i < n; ++i) cin >> a[i];
 	for (int i = 0; i < m; ++i) cin >> b[i];
+
 	sort(a, a + n);
 	sort(b, b + m);
+
 	int i = 0, j = 0;
 	while (i < n && j < m) {
 		// Found a suitable apartment for the applicant
@@ -209,6 +212,7 @@ To pair applicants with apartments best, we sort apartments in increasing size a
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 
