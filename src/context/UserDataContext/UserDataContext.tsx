@@ -476,6 +476,12 @@ export const UserDataProvider = ({
                 );
               })
             );
+
+            const leaderboard = await getDocs(
+              collection(firestore, 'groups', groupId, 'leaderboard')
+            );
+            leaderboard.docs.forEach(doc => batch.delete(doc.ref));
+
             batch.delete(doc(firestore, 'groups', groupId));
 
             await batch.commit();
