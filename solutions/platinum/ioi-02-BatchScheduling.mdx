@@ -7,6 +7,38 @@ author: Raagav Bala
 
 [Official Analysis](https://dmoj.ca/problem/ioi02p4/editorial)
 
+## Explanation
+
+Notice how, when a batch finishes, every job that hasn't finished increments the same amount for its finishing time. Say that the first batch of some suffix starts at job $i$ and ends at job $k-1$. The time spent processing this batch would be $S + (P_{k-1} - P_{i-1}),$ where $P$ is the prefix sum of processing times.
+
+Every job starting from $i$ must wait for this batch to finish, so this amount contributes to the cost of all remaining jobs. So, if $C_i$ denotes the suffix sum of cost factors, then choosing this batch will add $\bigl(S+P_{k-1}-P_{i-1}\bigr)C_i$ to the answer. So, we can construct the DP transition as
+
+$$
+\texttt{dp}[i] =  \texttt{dp}[k] + (S+P_{k-1} - P_{i-1}) C_i.
+$$
+
+Because we want to minimize our cost, taking the best choice of $k$,
+
+$$
+\texttt{dp}[i]= \min_k (\texttt{dp}[k] + (S+P_{k-1}-P_{i-1}) C_i ).
+$$
+
+However, if we were to implement the DP directly, it would be $O(N^2)$, which is too slow for the given constraints.
+
+To optimize the DP, we can expand the expression.
+
+$$
+\texttt{dp}[k] + (S + P_{k-1} - P_{i-1})C_i = (\texttt{dp}[k]+P_{k-1}C_i) + (S - P_{i-1})C_i.
+$$
+
+Notice that the second term does not depend on $k$. Thus, we only need to minimize $\texttt{dp}[k]+P_{k-1}C_i.$
+
+Now this seems like CHT transition: every state $k$ is line $y = mx+b$ with $m = P_{k-1}$ and $b = \texttt{dp}[k].$ For the current state $i$, we can query the hull at $x=C_i.$ Then $mx+b = P_{k-1}C_i+\texttt{dp}[k],$ which is exactly the value we want.
+
+Because the slopes are prefix sums, they are inserted in monotonic order, and we get a monotonic hull. Since the query value is $C_i$, processing states from $N$ down to $1$ also gives monotonic queries. Each $C_i$ is a suffix sum, so it increases as we move left.
+
+This means the best line only goes in one direction through the hull. Once a line is worse than the next line for the current query, it will never be optimal, so we can remove it from the deque. So, a deque convex hull is sufficient to solve the problem in linear time.
+
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(N)$
