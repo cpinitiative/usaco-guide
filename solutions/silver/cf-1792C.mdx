@@ -11,6 +11,34 @@ author: Rameez Parwez
 
 ## Explanation
 
+If our array is sorted, then we don't need to perform any 
+operations. Hence our answer will be $0$. Otherwise, we have to 
+think about what our last operation would look like to make the
+array perfectly sorted as: $1, 2, 3, ..., n$. If we observe 
+carefully, we can deduce one important hint from the operations
+mentioned in the problem statement: our last operation must be
+to move 1 to the front of the array and n to the back of the 
+array to make it sorted.
+
+So now we know what our last operation will be. Let's focus on the
+remaining elements: $2, 3, 4, ..., n - 1$. We can apply the same
+analysis from above. Either the numbers are already sorted 
+(answer: $1$), or we need to perform some more operations (moving
+$2$ and $n - 1$ to the front and back respectively). Similarly, we 
+keep repeating this until our remaining segment is sorted.
+
+At each step, we need to check if the numbers in the segment 
+$[k, n - k + 1]$ are sorted or not. A key observation here is that
+if a segment $[k, n - k + 1]$ is sorted for some value $k$, then it
+will be sorted for larger values as well. So we can start with 
+the maximum value of $k$ (i.e. $\lfloor \frac{n + 1}{2} \rfloor
+$) and shrink inwards until the segment remains sorted.
+
+For each $k$, we need to verify two boundary pairs:
+
+- Is the number $k$ located to the left of $k + 1$ in the array?
+- Is the number $n - k$ located to the left of $n - k + 1$ in the array?
+
 ## Implementation
 
 **Time Complexity:** $$
