@@ -513,7 +513,7 @@ export const UserDataProvider = ({
                   | { success: false; errorCode: string };
 
                 if (result.success !== true) {
-                  throw new Error(result.errorCode);
+                  throw new Error('Error: ' + result.errorCode);
                 }
               }),
 
