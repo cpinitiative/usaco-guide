@@ -1,0 +1,170 @@
+---
+id: cf-1622C
+source: CF
+title: Set or Decrease
+author: Rameez Parwez
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/98453)
+
+# Solution
+
+## Explanation
+
+We will use binary search to find the minimum number of steps required, such that:
+
+$$
+\sum_{i=1}^{n} a_i \leq k
+$$
+
+To do this, we set a midpoint `m` and check if we can reduce the sum by
+at least $\sum_{i=1}^{n} a_i - k$ using at most `m` operations.
+
+The key insight is that if we spend some operations to decrement
+the minimum value of the array and then copy its value to other
+elements, we bring down the total sum value much faster
+than just decrementing elements one by one.
+
+Hence, for a given `m`, we split the
+operations into 2 parts:
+- decrement minimum element by `(m - i)`
+- use `i` operations to copy the minimum value $(i.e., mn = arr[0] - (m - i))$ to $i$ other elements
+
+After the above operations, our array will look something like this:
+
+$$
+[\underbrace{mn,\ mn,\ \dots,\ mn}_{i \text{ elements}} \mid \underbrace{arr[n-i],\ \dots,\ arr[n-1]}_{n-i \text{ elements}}]
+$$
+
+Now, for every valid split $i$ from $0$ to $\min(m, n-1)$, we return true if we can reduce the sum
+by at least $\sum_{i=1}^{n} a_i - k$.
+
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+int main() {
+	int test_cases;
+	std::cin >> test_cases;
+	while (test_cases--) {
+
+		int n;
+		long long k;
+		std::cin >> n >> k;
+		std::vector<int> arr(n);
+		std::vector<long long> suffix_arr(n + 1);
+		long long total = 0, res = 0;
+
+		for (int &x : arr) {
+			std::cin >> x;
+			total += x;
+		}
+
+		if (total <= k) {
+			std::cout << 0 << '\n';
+			continue;
+		}
+
+		std::sort(begin(arr), end(arr));
+
+		for (int i = n - 1; i >= 0; i--) { suffix_arr[i] = suffix_arr[i + 1] + arr[i]; }
+
+		auto can = [&](long long mid) -> bool {
+			for (int i = 0; i <= std::min(mid, (long long)n - 1); i++) {
+				long long mn = arr[0] - (mid - i);
+				// decrement arr[0] by (mid - i) and repalace i elements with it
+				if (suffix_arr[n - i] - (mn * i) + (mid - i) >= total - k) {
+					return true;
+				}
+			}
+			return false;
+		};
+
+		long long lo = 0, hi = total - k;
+		while (lo <= hi) {
+			long long mid = (lo + hi + 1) >> 1;
+			if (can(mid)) {
+				hi = mid - 1;
+				res = mid;
+			} else {
+				lo = mid + 1;
+			}
+		}
+
+		std::cout << res << '\n';
+	}
+}
+```
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class SetOrDecrease {
+	public static void main(String[] args) throws Exception {
+		Kattio io = new Kattio();
+
+		int testCases = io.nextInt();
+		while (testCases-- > 0) {
+			int n = io.nextInt();
+			long k = io.nextLong();
+			long total = 0;
+			int[] arr = new int[n];
+			long[] suffixArr = new long[n + 1];
+			for (int i = 0; i < n; i++) {
+				arr[i] = io.nextInt();
+				total += arr[i];
+			}
+			if (total <= k) {
+				io.println(0);
+				continue;
+			}
+			Arrays.sort(arr);
+			for (int i = n - 1; i >= 0; i--) {
+				suffixArr[i] = suffixArr[i + 1] + arr[i];
+			}
+			long lo = 0, hi = total - k;
+			long res = 0;
+			while (lo <= hi) {
+				long mid = (lo + hi + 1) / 2;
+				if (can(mid, n, total, k, arr, suffixArr)) {
+					hi = mid - 1;
+					res = mid;
+				} else {
+					lo = mid + 1;
+				}
+			}
+			io.println(res);
+		}
+		io.close();
+	}
+
+	static boolean can(long mid, int n, long total, long k, int[] arr,
+	                   long[] suffixArr) {
+		for (int i = 0; i <= Math.min(mid, (long)(n - 1)); i++) {
+			long mn = arr[0] - (mid - i);
+			// decrement arr[0] by (mid - i) and replace i elements with it
+			if (suffixArr[(int)(n - i)] - (mn * i) + (mid - i) >= total - k) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	// BeginCodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+</LanguageSection>
