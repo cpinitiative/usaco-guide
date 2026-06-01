@@ -78,7 +78,33 @@ int main() {
 <JavaSection>
 
 ```java
+import java.io.*;
+import java.util.*;
 
+public class MinMaxSort {
+    public static void main(String[] args) throws Exception {
+        Kattio io = new Kattio();
+
+        int testCases = io.nextInt();
+        while (testCases-- > 0) {
+            int n = io.nextInt();
+            int[] index = new int[n];
+            for (int i = 0; i < n; i++) {
+                int x = io.nextInt() - 1;
+                index[x] = i;
+            }
+            int lo = n / 2, hi = n - lo;
+            while (lo > 0 && index[lo - 1] < index[lo] && index[hi] > index[hi - 1]) {
+                lo--;
+                hi++;
+            }
+            io.println(lo);
+        }
+        io.close();
+    }
+
+    // BeginCodeSnip{Kattio}
+}
 ```
 
 </JavaSection>
