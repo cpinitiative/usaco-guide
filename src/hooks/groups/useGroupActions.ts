@@ -56,12 +56,12 @@ export function useGroupActions() {
     deleteGroup: async (groupId: string) => {
       const firestore = getFirestore(firebaseApp);
       // oops this batch should really be a transaction todo
-      const batch = writeBatch(firestore);
+      const refs = [];
 
       const posts = await getDocs(
         collection(firestore, 'groups', groupId, 'posts')
       );
-      posts.docs.forEach(doc => batch.delete(doc.ref));
+      posts.docs.forEach(doc => refs.push(doc.ref));
       await Promise.all(
         posts.docs.map(async doc => {
           const problems = await getDocs(
@@ -74,7 +74,7 @@ export function useGroupActions() {
               'problems'
             )
           );
-          problems.docs.forEach(doc => batch.delete(doc.ref));
+          problems.docs.forEach(doc => refs.push(doc.ref));
           await Promise.all(
             problems.docs.map(async problemDoc => {
               const submissions = await getDocs(
@@ -89,7 +89,7 @@ export function useGroupActions() {
                   'submissions'
                 )
               );
-              submissions.docs.forEach(doc => batch.delete(doc.ref));
+              submissions.docs.forEach(doc => refs.push(doc.ref));
             })
           );
         })
@@ -98,11 +98,19 @@ export function useGroupActions() {
       const leaderboard = await getDocs(
         collection(firestore, 'groups', groupId, 'leaderboard')
       );
-      leaderboard.docs.forEach(doc => batch.delete(doc.ref));
+      leaderboard.docs.forEach(doc => refs.push(doc.ref));
 
-      batch.delete(doc(firestore, 'groups', groupId));
+      refs.push(doc(firestore, 'groups', groupId));
 
-      await batch.commit();
+      for (let i = 0; i < refs.length; i += 500) {
+        const batch = writeBatch(firestore);
+
+        refs.slice(i, i + 500).forEach(ref => {
+          batch.delete(ref);
+        });
+
+        await batch.commit();
+      }
       invalidateData();
     },
     updateGroup,
