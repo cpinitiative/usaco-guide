@@ -501,11 +501,16 @@ export const UserDataProvider = ({
           await Promise.all([
             ...uniqueGroups
               .filter(group => !ownedGroupIds.has(group.id))
-              .map(group =>
-                leaveGroup({
-                  groupId: group.id,
-                })
-              ),
+              .map(async group => {
+                const result = (await leaveGroup({ groupId: group.id }))
+                  .data as never as
+                  | { success: true }
+                  | { success: false; errorCode: string };
+
+                if (result.success !== true) {
+                  throw new Error(result.errorCode);
+                }
+              }),
 
             ...ownedGroups.map(group => deleteGroup(group.id)),
           ]);
