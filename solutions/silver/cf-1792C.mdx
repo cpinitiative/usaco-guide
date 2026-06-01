@@ -111,7 +111,22 @@ public class MinMaxSort {
 <PySection>
 
 ```py
+for test_case in range(int(input())):
+    n = int(input())
+    arr = list(map(int, input().split()))
 
+    index = [0] * n
+    for i in range(n):
+        index[arr[i] - 1] = i 
+
+    lo = n // 2
+    hi = n - lo
+
+    while lo > 0 and index[lo - 1] < index[lo] and index[hi] > index[hi - 1]:
+        lo -= 1
+        hi += 1
+
+    print(lo)
 ```
 
 </PySection>
