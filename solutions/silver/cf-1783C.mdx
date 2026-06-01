@@ -5,11 +5,11 @@ title: Yet Another Tournament
 author: Abhinav Singh
 ---
 
-[Official Analysis (C++)](https://codeforces.com/blog/entry/111194)
+[Official Analysis](https://codeforces.com/blog/entry/111194)
 
 ## Explanation
 
-First, note that outcomes between opponents are fully determined: opponent $i$
+First, note that outcomes between opponents are known beforehand: opponent $i$
 always beats opponent $j$ if $i > j$, so opponent $i$ has exactly $i - 1$ wins
 from inter-opponent matches regardless of what you do.
 
@@ -19,100 +19,92 @@ When you play opponent $i$:
 
 ### Counting Opponents Who Beat You
 
-For a given subset $S$ of opponents you beat (with $|S| = k$), you have $k$ wins.
-Opponent $i$ has $i - 1$ wins from inter-opponent matches, plus 1 if they beat you.
-
-Opponents with index $\geq k + 2$ always have more wins than you regardless.
-The only opponent who might have exactly $k$ wins and beat you is opponent $k + 1$
-(they have $k$ wins from others, plus 1 if you lost to them).
-
-So the number of opponents who place higher than you is $n - k - 1$, plus 1 if opponent $k+1$
-beat you (i.e. $k+1 \notin S$). Equivalently, your place is:
-
-$$
-(n - k) - [k+1 \in S] + 1
-$$
+If you beat a subset $S$ of opponents (with $|S| = k$), you have $k$ wins.
+Opponents with index $\geq k + 2$ always end up with more wins than you.
+The only opponent on the boundary is opponent $k + 1$: they have exactly $k$
+wins from other matches, and beat you if you lost to them, pushing them above
+you. So beating opponent $k + 1$ saves you exactly one place.
 
 ### Optimal Strategy
 
-For each $k$, we want to check two things:
-1. Can we beat **any** $k$ opponents within budget $m$? If so, place $\leq n - k + 1$.
-2. Can we beat $k$ opponents **including opponent $k+1$** within budget $m$? If so, place $\leq n - k$.
+We iterate over each valid $k$ (number of opponents you beat) and compute the
+best achievable place:
 
-For (1), greedily take the $k$ cheapest opponents and check if their total cost $\leq m$ using prefix sums on the sorted costs.
+- **Case 1:** Beat any $k$ opponents within budget $m$. Greedily take the $k$
+  cheapest opponents and check feasibility with prefix sums on sorted costs.
+  This gives place $n - k + 1$.
 
-For (2), we need the cheapest $k - 1$ opponents excluding opponent $k+1$, plus $a_{k+1}$. Given the sorted costs, the cheapest $k - 1$ excluding opponent $k+1$ is:
-- $\text{prefix}[k] - a_{k+1}$ if $a_{k+1}$ is among the cheapest $k$ (i.e. $a_{k+1} \leq \text{sortedA}[k-1]$)
-- $\text{prefix}[k-1]$ otherwise
+- **Case 2:** Beat $k$ opponents, specifically including opponent $k + 1$, within
+  budget $m$. Remove opponent $k + 1$ from consideration, take the $k - 1$
+  cheapest remaining opponents, and add $a_{k+1}$ to the cost. If this fits in
+  $m$, place improves to $n - k$.
 
-We iterate over all valid $k$ from $0$ to $n$ and take the minimum place.
+We take the minimum place over all valid $k$.
 
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(N \log N)$
 
 <LanguageSection>
+
 <CPPSection>
 
 ```cpp
+
 #include <bits/stdc++.h>
 using namespace std;
 
 int main() {
-	ios::sync_with_stdio(false);
-	cin.tie(nullptr);
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-	int t;
-	cin >> t;
-	while (t--) {
-		int n, m;
-		cin >> n >> m;
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        long long m;
+        cin >> n >> m;
 
-		vector<int> a(n + 1);
-		for (int i = 1; i <= n; i++) { cin >> a[i]; }
+        vector<long long> a(n + 1);
+        for (int i = 1; i <= n; i++) cin >> a[i];
 
-		// create list of sorted values to use for prefix sums
-		vector<int> sorted_a(a.begin() + 1, a.end());
-		sort(sorted_a.begin(), sorted_a.end());
+        vector<long long> sorted_a(a.begin() + 1, a.end());
+        sort(sorted_a.begin(), sorted_a.end());
 
-		// prefix[i] = sum of i cheapest opponents
-		vector<int> prefix(n + 1);
-		for (int i = 0; i < n; i++) { prefix[i + 1] = prefix[i] + sorted_a[i]; }
+        // prefix[i] = sum of i cheapest opponents
+        vector<long long> prefix(n + 1, 0);
+        for (int i = 0; i < n; i++) prefix[i + 1] = prefix[i] + sorted_a[i];
 
-		int ans = n + 1;
+        int ans = n + 1;
 
-		for (int k = 0; k <= n; k++) {
-			if (prefix[k] > m) { break; }
+        for (int k = 0; k <= n; k++) {
+            if (prefix[k] > m) break;
 
-			// case 1: beat any k opponents
-			ans = min(ans, n - k + 1);
+            // case 1: beat any k opponents
+            ans = min(ans, n - k + 1);
 
-			// case 2: beat k opponents, including opponent k+1
-			if (k + 1 > n) { continue; }
+            // case 2: beat k opponents including opponent k+1
+            if (k + 1 > n) continue;
+            long long cost_with;
+            if (k == 0) {
+                cost_with = a[k + 1];
+            } else {
+                // cheapest k-1 after removing opponent k+1, plus a[k+1]
+                long long excl;
+                if (a[k + 1] <= sorted_a[k - 1]) {
+                    excl = prefix[k] - a[k + 1];
+                } else {
+                    excl = prefix[k - 1];
+                }
+                cost_with = excl + a[k + 1];
+            }
+            if (cost_with <= m) ans = min(ans, n - k);
+        }
 
-			// we use casework to calculate the best cost, including k + 1
-			int cost_with;
-			if (k == 0) {
-				cost_with = a[k + 1];
-			} else {
-				// excl = cheapest k-1 excluding opponent k+1
-				int excl;
-				if (a[k + 1] <= sorted_a[k - 1]) {
-					excl = prefix[k] - a[k + 1];
-				} else {
-					excl = prefix[k - 1];
-				}
-
-				cost_with = excl + a[k + 1];
-			}
-
-			if (cost_with <= m) { ans = min(ans, n - k); }
-		}
-
-		cout << ans << '\n';
-	}
+        cout << ans << "\n";
+    }
 }
 ```
-
 </CPPSection>
+
 </LanguageSection>
