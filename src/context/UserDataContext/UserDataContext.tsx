@@ -414,7 +414,10 @@ export const UserDataProvider = ({
       if (
         !confirm(
           'Delete all user data? This will permanently remove your progress and settings. This cannot be undone.'
-        )
+        ) ||
+        prompt(
+          'Are you REALLY sure? Please type "Yes I am sure"'
+        )?.trim().toLowerCase() !== 'yes i am sure'
       ) {
         return false;
       }
