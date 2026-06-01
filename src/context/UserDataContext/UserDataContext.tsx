@@ -478,8 +478,10 @@ export const UserDataProvider = ({
             await batch.commit();
           };
 
-          const ownedGroups = uniqueGroups.filter(group =>
-            group.ownerIds.length === 1 && group.ownerIds.includes(firebaseUser.uid)
+          const ownedGroups = uniqueGroups.filter(
+            group =>
+              group.ownerIds.length === 1 &&
+              group.ownerIds.includes(firebaseUser.uid)
           );
 
           if (ownedGroups.length > 0) {
