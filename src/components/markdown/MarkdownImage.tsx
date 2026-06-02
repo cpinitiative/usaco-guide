@@ -24,7 +24,11 @@ export default function MarkdownImage({
         width: customWidth,
         height: 'auto',
         maxWidth: '100%',
-        ...(centered && { display: 'block', marginLeft: 'auto', marginRight: 'auto' }),
+        ...(centered && {
+          display: 'block',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+        }),
       }
     : { width: '100%', height: '100%' };
 
