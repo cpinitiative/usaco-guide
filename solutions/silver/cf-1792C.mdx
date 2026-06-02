@@ -42,7 +42,7 @@ For each $k$, we need to verify two boundary pairs:
 
 ## Implementation
 
-**Time Complexity:** $$
+**Time Complexity:** $\mathcal{O}(n)$
 
 <LanguageSection>
 <CPPSection>
@@ -52,9 +52,9 @@ For each $k$, we need to verify two boundary pairs:
 #include <vector>
 
 int main() {
-	int test_cases;
-	std::cin >> test_cases;
-	while (test_cases--) {
+	int test_num;
+	std::cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
 		int n;
 		std::cin >> n;
 		std::vector<int> index(n);
@@ -65,11 +65,13 @@ int main() {
 			index[x] = i;
 		}
 
-		int lo = n / 2, hi = n - lo;
+		int lo = n / 2;
+		int hi = n - lo;
 		while (lo > 0 && index[lo - 1] < index[lo] && index[hi] > index[hi - 1]) {
 			lo--;
 			hi++;
 		}
+
 		std::cout << lo << '\n';
 	}
 }
@@ -85,20 +87,22 @@ import java.util.*;
 public class MinMaxSort {
 	public static void main(String[] args) throws Exception {
 		Kattio io = new Kattio();
-
-		int testCases = io.nextInt();
-		while (testCases-- > 0) {
+		int testNum = io.nextInt();
+		for (int t = 0; t < testNum; t++) {
 			int n = io.nextInt();
 			int[] index = new int[n];
 			for (int i = 0; i < n; i++) {
 				int x = io.nextInt() - 1;
 				index[x] = i;
 			}
-			int lo = n / 2, hi = n - lo;
+
+			int lo = n / 2;
+			int hi = n - lo;
 			while (lo > 0 && index[lo - 1] < index[lo] && index[hi] > index[hi - 1]) {
 				lo--;
 				hi++;
 			}
+
 			io.println(lo);
 		}
 		io.close();
@@ -112,7 +116,7 @@ public class MinMaxSort {
 <PySection>
 
 ```py
-for test_case in range(int(input())):
+for _ in range(int(input())):
 	n = int(input())
 	arr = list(map(int, input().split()))
 
@@ -122,7 +126,6 @@ for test_case in range(int(input())):
 
 	lo = n // 2
 	hi = n - lo
-
 	while lo > 0 and index[lo - 1] < index[lo] and index[hi] > index[hi - 1]:
 		lo -= 1
 		hi += 1
