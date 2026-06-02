@@ -1,7 +1,7 @@
 ---
 id: joi-mergers
 source: JOI
-title: JOI Mergers
+title: Mergers
 author: Daniel Zhu
 ---
 
@@ -9,9 +9,40 @@ author: Daniel Zhu
 
 First, note that if there exists a city of state $B$ that lies between two cities of state $A$, then states $A$ and $B$ must necessarily belong to the same group. Thus, we can merge states $A$ and $B$ into a single state.
 
+![](/solutions/gold/joi-mergers/merge.png)
+
+If we repeat this merge until we can't, we will end up with a tree in which each node represents a disjoint set of states. Therefore, we need only to solve the problem under the assumption that each state contains exactly one city.
+
+Note that the only case in which no merges are required is when the resultant tree consists of a single node. Otherwise, we can pick any leaf of the tree and place it alone into Group X, and all other nodes into Group Y.
+
+![400|center](/solutions/gold/joi-mergers/leaf.png)
+
+Now, consider a star graph with $n$ leaves. What's the minimum number of merges to reduce this star to a single node? Note that in a single merge, we can delete at most two leaves by merging two leaves: therefore, the number of total merges required is $\lceil \frac{n}{2} \rceil$.
+
+To finish, note that this formula actually generalizes: in particular, for any tree in which all cities belong to distinct states, the number of total merges required is $\lceil \frac{\text{\# of leaves}}{2} \rceil$. To show this, consider rooting the tree at the _leaf centroid_, such that no subtree contains strictly more than half the leaves. We claim that in each merge, we can pick two leaves that belong to different subtrees—therefore, all leaves will unite to the root.
+
+![](/solutions/gold/joi-mergers/centroid.png)
+
+_The left diagram shows the tree correctly rooted at the leaf centroid. The right diagram shows that if we do not pair according to this centroid, all leaves may not be united after $\lceil \frac{\text{\# of leaves}}{2} \rceil$ merges._
+
+<Spoiler title="Proof that leaf centroid exists">
+The proof is essentially the same as the proof that a normal tree centroid exists. Namely, for the case of a normal tree centroid, we just need to write the centroid-finding algorithm and prove that it terminates. Then, notice the same proof holds when each node can be assigned a weight—therefore, we can find our desired leaf centroid by assigning leaves a weight 1 and all other nodes a weight 0.
+</Spoiler>
+
+<Spoiler title="Proof that a pairing exists">
+We now wish to prove that when the tree is rooted at the leaf centroid, we can split the leaves into pairs such that no pair contains two leaves from the same subtree. This reduces to showing the following:
+> I have leaves of $n$ different types. If I have $c_i$ leaves of the $i$th type, and I want to split these leaves into pairs such that no pair contains two leaves of the same type, this is possible iff $2 \cdot \max c_i \leq \sum c_i$. 
+
+This can be proved by induction. WLOG, let $c_1 = \max c_i$. 
+- If the inequality holds with equality, i.e. $c_1 = c_2 + c_3 + ... + c_n$, we can form pairs such that each pair contains exactly one leaf of type 1.
+- Otherwise, we can pair a leaf of type 1 with a leaf of any other type, and the inequality will still hold.
+</Spoiler>
+
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N\log^2N)$
+It remains to quickly perform the first steps of merging intersecting states $A$ and $B$.
+
+**Time Complexity:** $\mathcal{O}(N)$
 
 ^ Format time complexity like this. Should appear outside of `<LanguageSection>` if it's the same for all implementations.
 
