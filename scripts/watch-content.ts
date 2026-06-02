@@ -1,9 +1,9 @@
+import { spawn } from 'child_process';
+import chokidar from 'chokidar';
 import { existsSync } from 'fs';
 import http from 'http';
 import path from 'path';
-import { spawn } from 'child_process';
-import chokidar from 'chokidar';
-import { DB_FILE, CONTENT_DIR, SOLUTIONS_DIR } from '../src/lib/constants';
+import { CONTENT_DIR, DB_FILE, SOLUTIONS_DIR } from '../src/lib/constants';
 
 const SSE_PORT = 3001;
 const sseClients = new Set<http.ServerResponse>();
@@ -13,7 +13,7 @@ function startSseServer() {
     res.writeHead(200, {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive',
+      Connection: 'keep-alive',
       'Access-Control-Allow-Origin': '*',
     });
     res.flushHeaders();
@@ -21,7 +21,10 @@ function startSseServer() {
     req.on('close', () => sseClients.delete(res));
   });
   server.on('error', err => {
-    console.warn(`[watch] SSE server could not start on port ${SSE_PORT}:`, err.message);
+    console.warn(
+      `[watch] SSE server could not start on port ${SSE_PORT}:`,
+      err.message
+    );
   });
   server.listen(SSE_PORT, () => {
     console.log(`[watch] SSE reload server on port ${SSE_PORT}`);
@@ -110,9 +113,15 @@ async function watchContent() {
     awaitWriteFinish: { stabilityThreshold: 300, pollInterval: 100 },
   });
 
-  watcher.on('change', f => { if (isRelevant(f)) scheduleRebuild('change', f); });
-  watcher.on('add', f => { if (isRelevant(f)) scheduleRebuild('add', f); });
-  watcher.on('unlink', f => { if (isRelevant(f)) scheduleRebuild('unlink', f); });
+  watcher.on('change', f => {
+    if (isRelevant(f)) scheduleRebuild('change', f);
+  });
+  watcher.on('add', f => {
+    if (isRelevant(f)) scheduleRebuild('add', f);
+  });
+  watcher.on('unlink', f => {
+    if (isRelevant(f)) scheduleRebuild('unlink', f);
+  });
 
   console.log('[watch] Watching content/ and solutions/ for changes...');
 }

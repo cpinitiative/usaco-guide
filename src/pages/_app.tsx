@@ -4,9 +4,9 @@ import 'flatpickr/dist/flatpickr.min.css';
 import 'instantsearch.css/themes/algolia.css';
 import 'katex/dist/katex.min.css';
 import type { AppProps } from 'next/app';
+import { Inter } from 'next/font/google';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import { Inter } from 'next/font/google';
 import 'react-calendar-heatmap/dist/styles.css';
 import { Toaster } from 'react-hot-toast';
 import 'tippy.js/animations/scale-subtle.css';
@@ -36,10 +36,11 @@ export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     if (process.env.NODE_ENV !== 'development') return;
     const es = new EventSource('http://localhost:3001');
-    es.onmessage = () => router.replace(router.asPath, undefined, { scroll: false });
+    es.onmessage = () =>
+      router.replace(router.asPath, undefined, { scroll: false });
     es.onerror = () => {};
     return () => es.close();
-  }, []);  // eslint-disable-line react-hooks/exhaustive-deps
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className={inter.className}>
