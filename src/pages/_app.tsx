@@ -36,7 +36,7 @@ export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     if (process.env.NODE_ENV !== 'development') return;
     const es = new EventSource('http://localhost:3001');
-    es.onmessage = () => router.replace(router.asPath);
+    es.onmessage = () => router.replace(router.asPath, undefined, { scroll: false });
     es.onerror = () => {};
     return () => es.close();
   }, []);  // eslint-disable-line react-hooks/exhaustive-deps
