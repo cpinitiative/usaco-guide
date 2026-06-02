@@ -40,30 +40,69 @@ This can be proved by induction. WLOG, let $c_1 = \max c_i$.
 
 ## Implementation
 
-It remains to quickly perform the first steps of merging intersecting states $A$ and $B$.
+It remains to quickly perform the first steps of merging intersecting states $A$ and $B$. To do this, we can define a procedure `merge(tree, root)` which finds all completed components that lie strictly within `tree`, then returns the (potentially incomplete) component attached to the root.
+
+![](/solutions/gold/joi-mergers/merge_fn.png)
+
+_Note that the returned component (marked in red) is incomplete because there still exists a city in state 2 that lies outside of this tree._
+
+Now, `merge(tree, root)` may be implemented recursively as follows:
+- Call `merge(subtree, child)` for each child of `root` and add every node in the returned component into a set $C$.
+- Add `root` into $C$, then check whether $C$ forms a complete component.
+- If $C$ is complete, return $\emptyset$; otherwise, return $C$.
+
+![500|center](/solutions/gold/joi-mergers/recursive.png)
+
+_Here, $C$ is incomplete because it contains some but not all cities in state 1._ 
+
+To finish, note that "checking whether $C$ forms a complete component" is easily done by XOR hashing. For more details, check my code + comments below.
 
 **Time Complexity:** $\mathcal{O}(N)$
-
-^ Format time complexity like this. Should appear outside of `<LanguageSection>` if it's the same for all implementations.
 
 <LanguageSection>
 
 <CPPSection>
 
-(add cpp code)
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+
+int main() {
+    int n, k; cin >> n >> k;
+    auto g = vector(n + 1, vector<int>());
+    for (int i = 1; i < n; i++) {
+        int u, v; cin >> u >> v;
+        g[u].push_back(v);
+        g[v].push_back(u);
+    }
+    // sums[i]: the XOR of all hashes of cities in state i
+    // lst[i]: stores one city belonging to state i (if any)
+    vector<int> sums(k + 1), val(n + 1), s(n + 1), lst(k + 1);
+    for (int i = 1; i <= n; i++) {
+        cin >> s[i];
+        sums[s[i]] ^= (val[i] = rng());
+        lst[s[i]] = i;
+    }
+    // we do this so that the hashes of all cities in a given state XOR to 0
+    for (int i = 1; i <= k; i++) if (lst[i]) val[lst[i]] ^= sums[i];
+    int leaves = 0;
+    // implementation of merge(tree, root)
+    // returns [degree of C, XOR of C] where C is potentially incomplete root component
+    [&](this auto dfs, int x, int p) -> array<int, 2> { 
+        int deg = 0, cur = val[x];
+        for (int y : g[x]) if (y != p) {
+            auto [d, sm] = dfs(y, x);
+            deg += d, cur ^= sm;
+        }
+        if (!cur && deg + (p > 0) == 1) ++leaves;
+        return {cur ? deg : 1, cur};
+    }(1, 0);
+    cout << (leaves + 1) / 2 << "\n";
+}
+```
 
 </CPPSection>
-
-<PySection>
-
-(if you have Python code)
-
-</PySection>
-
-<JavaSection>
-
-(if you have Java code)
-
-</JavaSection>
 
 </LanguageSection>
