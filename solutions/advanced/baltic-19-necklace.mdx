@@ -134,56 +134,82 @@ such that:
 - $B$ is a **prefix** of $S[i + 1 : N - 1]$ and a **suffix** of $T[0 : j]$.
 - $|A| + |B|$ is maximal.
 
-We can thus test each $i$ to find the best $j$ for that $i$, and then take the
-best overall result.
+We iterate over each cut point $j$ of $T$ (i.e., all $M$ rotations of $T$). For
+a fixed rotation, we find the best split point $i$ of $S$ that maximizes
+$|A| + |B|$ using the KMP prefix function:
 
-To find the best $j$, we first reverse $T$ and split $S$ at index $i$. This
-turns the subproblem into finding the longest common prefix/suffix between two
-pairs of strings. This is a classical application of KMP, so we can solve this
-subproblem in $\mathcal O(N)$ time and $\mathcal O(N)$ memory.
+- $\text{left}[i]$ = length of the longest suffix of $S[0 : i]$ that equals a
+  prefix of the current rotation of $T$ (computed via KMP on the concatenation
+  $T + \texttt{\#} + S$).
+- $\text{right}[i]$ = same idea but applied in reverse to find the longest
+  prefix of $S[i :]$ matching a suffix of $T$ before the cut.
+
+Each KMP run takes $\mathcal O(N + M)$ time, and we repeat it for each of the
+$M$ rotations, giving $\mathcal O(NM) = \mathcal O(N^2)$ overall.
 
 ### Code
 
 ```cpp
 #include <bits/stdc++.h>
-typedef long long ll;
 using namespace std;
 
-int p1[6002], p2[6002];
-
-void fill_p(string s, int *p) {
-	for (int i = 1; i < s.size(); i++) {
-		int j = p[i - 1];
-		while (j && s[i] != s[j]) j = p[j - 1];
+vector<int> pi(const string &s) {
+	int n = (int)s.size();
+	vector<int> pi_s(n);
+	for (int i = 1, j = 0; i < n; i++) {
+		while (j > 0 && s[j] != s[i]) j = pi_s[j - 1];
 		if (s[i] == s[j]) j++;
-		p[i] = j;
+		pi_s[i] = j;
 	}
+	return pi_s;
 }
 
-tuple<int, int, int> solve(string s, string t, bool rev) {
-	int n = s.size(), m = t.size();
-	tuple<int, int, int> ans = {0, 0, 0};
-	for (int i = 0; i < n; i++) {
-		string s1 = s.substr(0, i), s2 = s.substr(i, n - i);
-		reverse(s1.begin(), s1.end());
-		string t1 = t, t2 = t;
-		reverse(t2.begin(), t2.end());
-		fill_p(s1 + "#" + t1, p1), fill_p(s2 + "#" + t2, p2);
-		for (int j = 1; j <= m; j++)
-			ans = max(ans, {p1[i + j] + p2[n + m - i - j], i - p1[i + j],
-			                rev ? m - j - p2[n + m - i - j] : j - p1[i + j]});
+// For each position i in s, compute the length of the longest prefix of t
+// that equals a suffix of s[0..i].
+vector<int> calc(const string &s, const string &t) {
+	vector<int> ret(s.size());
+	string cur = t + "#" + s;
+	vector<int> p = pi(cur);
+	for (int i = 0; i < (int)s.size(); i++) ret[i] = p[i + t.size() + 1];
+	return ret;
+}
+
+pair<int, pair<int, int>> solve(string s, string t) {
+	t += ".";  // sentinel to prevent full-cycle wrap-around
+	pair<int, pair<int, int>> ans = {0, {0, 0}};
+	for (int i = 0; i < (int)t.size() - 1; i++) {
+		vector<int> left = calc(s, t);
+		reverse(s.begin(), s.end());
+		reverse(t.begin(), t.end());
+		vector<int> right = calc(s, t);
+		reverse(s.begin(), s.end());
+		reverse(t.begin(), t.end());
+		reverse(right.begin(), right.end());
+		for (int j = 0; j <= (int)s.size(); j++) {
+			int l = j == 0 ? 0 : left[j - 1];
+			int r = j == (int)s.size() ? 0 : right[j];
+			ans = max(ans, {l + r,
+			                {j - l,
+			                 (int)(2 * (t.size() - 1) - r + i) %
+			                     (int)(t.size() - 1)}});
+		}
+		rotate(t.begin(), t.begin() + 1, t.end());
 	}
 	return ans;
 }
 
 int main() {
-	cin.tie(0)->sync_with_stdio(0);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 	string s, t;
 	cin >> s >> t;
-	tuple<int, int, int> ans = solve(s, t, false);
+	pair<int, pair<int, int>> ans = solve(s, t);
 	reverse(t.begin(), t.end());
-	ans = max(ans, solve(s, t, true));
-	cout << get<0>(ans) << '\n' << get<1>(ans) << ' ' << get<2>(ans);
+	pair<int, pair<int, int>> cur = solve(s, t);
+	cur.second.second = (int)t.size() - cur.second.second - cur.first;
+	ans = max(ans, cur);
+	cout << ans.first << "\n";
+	if (ans.first) cout << ans.second.first << " " << ans.second.second << "\n";
 	return 0;
 }
 ```
