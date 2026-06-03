@@ -276,7 +276,7 @@ one less than the distance.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N)$
+**Time Complexity:** $\mathcal{O}(N \log N)$
 
 <LanguageSection>
 <CPPSection>
@@ -285,6 +285,7 @@ one less than the distance.
 #include <cstdio>
 #include <iostream>
 #include <queue>
+#include <set>
 #include <unordered_map>
 #include <vector>
 using namespace std;
@@ -310,6 +311,8 @@ int main() {
 	// dist[i] is number of edges to reach point i from the laser
 	vector<int> dist(n + 2, 1e9);
 	dist[0] = 0;
+	// tracks which (dir, coord) pairs have already been fully processed
+	set<pair<int, int>> processed;
 	// BFS to find minimum number of fence posts to direct laser to barn
 	while (!q.empty()) {
 		int curr = q.front().first;
@@ -317,6 +320,8 @@ int main() {
 		q.pop();
 		int dir = (beamdir ? 0 : 1);
 		int coord = (beamdir ? points[curr].first : points[curr].second);
+		if (processed.count({dir, coord})) { continue; }
+		processed.insert({dir, coord});
 		for (int point : lines[dir][coord]) {
 			if (dist[point] == 1e9) {
 				q.push({point, !beamdir});
@@ -363,6 +368,8 @@ min_dist = -1
 # queue stores (idx of fencepost, beam direction) where True is a horizontal
 # beam and False is a vertical beam
 queue = deque([(0, True), (0, False)])
+# tracks which (direction, coord) pairs have already been fully processed
+processed: set = set()
 
 while queue:
 
@@ -375,15 +382,19 @@ while queue:
 
 	# Change direction
 	if curr_direction:  # is horizontal
-		for fp_i in y_lines[curr_fp.y]:
-			if dist[fp_i] == -1:
-				queue.appendleft((fp_i, not curr_direction))
-				dist[fp_i] = dist[curr_idx] + 1
+		if (True, curr_fp.y) not in processed:
+			processed.add((True, curr_fp.y))
+			for fp_i in y_lines[curr_fp.y]:
+				if dist[fp_i] == -1:
+					queue.appendleft((fp_i, not curr_direction))
+					dist[fp_i] = dist[curr_idx] + 1
 	else:  # is vertical
-		for fp_i in x_lines[curr_fp.x]:
-			if dist[fp_i] == -1:
-				queue.appendleft((fp_i, not curr_direction))
-				dist[fp_i] = dist[curr_idx] + 1
+		if (False, curr_fp.x) not in processed:
+			processed.add((False, curr_fp.x))
+			for fp_i in x_lines[curr_fp.x]:
+				if dist[fp_i] == -1:
+					queue.appendleft((fp_i, not curr_direction))
+					dist[fp_i] = dist[curr_idx] + 1
 
 print(min_dist, file=open("lasers.out", "w"))
 ```
