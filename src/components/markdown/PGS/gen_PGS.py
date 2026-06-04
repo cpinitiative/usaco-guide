@@ -11,7 +11,7 @@ def go(source):
 		line = line.strip()
 		if not re.match("([0-9]+\.[0-9]+)|([0-9]+)", line):
 			continue
-		if source != "PAPS":
+		if source != "PAPS" and source != "PAPS1":
 			sec = line[: line.find(" ")]
 			ind = -1
 			while line[ind].isdigit():
@@ -98,6 +98,8 @@ def go(source):
 	elif source == "CPP" or source == "JAVA":
 		offset += 5
 	elif source == "PAPS":
+		offset += 12
+	elif source == "PAPS1":
 		offset += 10
 	elif source == "CP2":
 		offset += 16
@@ -111,5 +113,6 @@ go("CPP")
 go("JAVA")
 go("CPH")
 go("PAPS")
+go("PAPS1")
 go("CP2")
 print(json.dumps(res, indent=4))
