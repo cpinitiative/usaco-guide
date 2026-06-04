@@ -70,34 +70,30 @@ for _ in range(T):
 using namespace std;
 
 void solve() {
-    int n;
-    cin >> n;
-    vector<int> v(n);
-    for(int i = 0; i < n; i++) {
-        cin >> v[i];
-    }
-    
-    vector<int> dp(n + 1, 1e9);
-    vector<int> best(n + 1, 1e9);
-    dp[0] = 0;
-    
-    for(int i = 1; i <= n; i++) {
-        dp[i] = min(dp[i - 1] + 1, best[v[i - 1]]);
-        best[v[i - 1]] = min(best[v[i - 1]], dp[i - 1]);
-    }
-    
-    cout << (n - dp[n]) << "\n";
+	int n;
+	cin >> n;
+	vector<int> v(n);
+	for (int i = 0; i < n; i++) { cin >> v[i]; }
+
+	vector<int> dp(n + 1, 1e9);
+	vector<int> best(n + 1, 1e9);
+	dp[0] = 0;
+
+	for (int i = 1; i <= n; i++) {
+		dp[i] = min(dp[i - 1] + 1, best[v[i - 1]]);
+		best[v[i - 1]] = min(best[v[i - 1]], dp[i - 1]);
+	}
+
+	cout << (n - dp[n]) << "\n";
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    int t;
-    cin >> t;
-    while(t--) {
-        solve();
-    }
-    return 0;
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	int t;
+	cin >> t;
+	while (t--) { solve(); }
+	return 0;
 }
 ```
 </CPPSection>
