@@ -123,9 +123,21 @@ const HTMLComponents = {
   pre,
   a,
   HeaderLink,
-  img: ({ src, alt, title }) => (
-    <MarkdownImage src={src} alt={alt} title={title} />
-  ),
+  img: ({ src, alt, title }) => {
+    const parts = (alt ?? '').split('|').map(s => s.trim());
+    const numericWidth = parts.find(p => /^\d+$/.test(p));
+    const centered = parts.includes('center');
+    const altText = parts.find(p => !/^\d+$/.test(p) && p !== 'center');
+    return (
+      <MarkdownImage
+        src={src}
+        alt={altText}
+        title={title}
+        width={numericWidth ? parseInt(numericWidth, 10) : undefined}
+        centered={centered}
+      />
+    );
+  },
 };
 
 export default HTMLComponents;
