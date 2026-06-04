@@ -74,7 +74,7 @@ export const ResourcesFeature = (): JSX.Element => {
                     >
                       both optimizations, diagrams
                     </TableRow>
-                    <TableRow source="PAPS" title="11.1 - Disjoint Sets">
+                    <TableRow source="PAPS" title="13.1 - Union-Find">
                       both optimizations, no diagrams
                     </TableRow>
                     <TableRow
