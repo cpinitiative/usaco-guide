@@ -98,7 +98,7 @@ def go(source):
 	elif source == "CPP" or source == "JAVA":
 		offset += 5
 	elif source == "PAPS":
-		offset += 12
+		offset += 10
 	elif source == "CP2":
 		offset += 16
 	else:
