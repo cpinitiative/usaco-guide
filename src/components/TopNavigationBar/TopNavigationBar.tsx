@@ -246,7 +246,7 @@ export default function TopNavigationBar({
                           </div>
                         </Link>
                         <Link
-                          href="/editor"
+                          href="https://graph-viz.usaco.guide"
                           className="-m-3 flex items-start rounded-lg p-3 transition duration-150 ease-in-out hover:bg-gray-100 dark:hover:bg-gray-700"
                         >
                           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-blue-500 text-white sm:h-12 sm:w-12">
