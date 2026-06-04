@@ -32,38 +32,12 @@ After finding $dp[i]$, we update $\texttt{best}[a_i] = \min(\texttt{best}[a_i], 
 
 The final answer is $N - dp[N]$.
 
-## Solution
-
-<LanguageSection>
-
-<PySection>
-
-**Time Complexity:** $\mathcal{O}(N\log{N})$
-
-```py
-INF = 10**20
-
-T = int(input())
-for _ in range(T):
-	N = int(input())
-	balls = list(map(int, input().split()))
-	dp = [INF] * (N + 1)
-	dp[0] = 0
-
-	best = [INF] * (N + 1)
-	for i in range(1, N + 1):
-		# keep or delete segment ending at index i
-		dp[i] = min(dp[i - 1] + 1, best[balls[i - 1]])
-		# update best for this color with dp[i-1]
-		best[balls[i - 1]] = min(best[balls[i - 1]], dp[i - 1])
-
-	print(N - dp[N])
-```
-
-</PySection>
-<CPPSection>
+## Implementation
 
 **Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -96,5 +70,29 @@ int main() {
 	return 0;
 }
 ```
+
 </CPPSection>
+<PySection>
+
+```py
+INF = 10**20
+
+T = int(input())
+for _ in range(T):
+	N = int(input())
+	balls = list(map(int, input().split()))
+	dp = [INF] * (N + 1)
+	dp[0] = 0
+
+	best = [INF] * (N + 1)
+	for i in range(1, N + 1):
+		# keep or delete segment ending at index i
+		dp[i] = min(dp[i - 1] + 1, best[balls[i - 1]])
+		# update best for this color with dp[i-1]
+		best[balls[i - 1]] = min(best[balls[i - 1]], dp[i - 1])
+
+	print(N - dp[N])
+```
+
+</PySection>
 </LanguageSection>
