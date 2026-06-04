@@ -136,52 +136,54 @@ This can be done with BFS, note that if you use a `vector<bool>` or `bitset` ins
 using namespace std;
 
 int main() {
-    // Input reading into graph
-    int n; cin >> n;
-    vector<vector<int>> edges(n);
-    for (int i = 0; i < n; i++){
-        bool found = false;
-        for (int j = 0; j < n; j++){
-            int x; cin >> x; x--;
-            if (x == i) found = true;
+	// Input reading into graph
+	int n;
+	cin >> n;
+	vector<vector<int>> edges(n);
+	for (int i = 0; i < n; i++) {
+		bool found = false;
+		for (int j = 0; j < n; j++) {
+			int x;
+			cin >> x;
+			x--;
+			if (x == i) found = true;
 
-			if (!found){
-                edges[i].push_back(x);
-            }
-        }
-    }
+			if (!found) { edges[i].push_back(x); }
+		}
+	}
 
-    // Lambda to check if a cycle exists from -> to
-    auto cyclesTo = [&](int from, int to){
-        queue<int> queue; queue.push(from);
-        vector<char> visited(n); visited[from] = true;
-        
-        while (!queue.empty()){
-            int node = queue.front(); queue.pop();
-            for (int c : edges[node]){
-                if (c == to)
-                    return true;
-                if (visited[c])
-                    continue;
-                visited[c] = true;
-                queue.push(c);
-            }
-        }
-        
-        return false;
-    };
+	// Lambda to check if a cycle exists from -> to
+	auto cyclesTo = [&](int from, int to) {
+		queue<int> queue;
+		queue.push(from);
+		vector<char> visited(n);
+		visited[from] = true;
 
-    // Solve for every node
-    for (int i = 0; i < n; i++){
-        int ans = i;
-        for (int j : edges[i]){
-            if (cyclesTo(j, i)){
-                ans = j;
-                break;
-            }
-        }
-        cout << ans + 1 << "\n";
-    }
+		while (!queue.empty()) {
+			int node = queue.front();
+			queue.pop();
+			for (int c : edges[node]) {
+				if (c == to) return true;
+				if (visited[c]) continue;
+				visited[c] = true;
+				queue.push(c);
+			}
+		}
+
+		return false;
+	};
+
+	// Solve for every node
+	for (int i = 0; i < n; i++) {
+		int ans = i;
+		for (int j : edges[i]) {
+			if (cyclesTo(j, i)) {
+				ans = j;
+				break;
+			}
+		}
+		cout << ans + 1 << "\n";
+	}
 }
 ```
 </CPPSection>
