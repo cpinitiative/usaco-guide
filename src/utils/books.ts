@@ -1,6 +1,6 @@
 export const books = {
   PAPS: [
-    '/PAPS.pdf',
+    '/PAPS1.pdf',
     'Principles of Algorithmic Problem Solving (Johan Sannemo)',
   ],
   CP2: ['/CP2.pdf', 'Competitive Programming 2 (Steven Halim)'],
