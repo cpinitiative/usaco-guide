@@ -721,38 +721,37 @@ int MAX_CUP_CAPACITY = 100;
 int MAX_OPERATIONS = 100;
 // f[i][j][l] represents if we can get to (i,j)
 // in at most l steps
-bool f[MAX_CUP_CAPACITY+1][MAX_CUP_CAPACITY+1][MAX_CUP_CAPACITY+1];
+bool f[MAX_CUP_CAPACITY + 1][MAX_CUP_CAPACITY + 1][MAX_CUP_CAPACITY + 1];
 signed main() {
-    int x, y, k, m;
-    fin >> x >> y >> k >> m;
-    f[0][0][0] = 1;
-    int ans = 2e9;
-    for (int l = 0; l < k; l++)
-        for (int i = 0; i <= x; i++)
-            for (int j = 0; j <= y; j++)
-                if (f[i][j][l])
-                {
-                    f[i][0][l+1] = 1;
-                    f[0][j][l+1] = 1;
-                    f[i][y][l+1] = 1;
-                    f[x][j][l+1] = 1;
-                    // Pour from i into j
-                    {
-                        int amountPoured = min(y-j, i);
-                        f[i - amountPoured][j + amountPoured][l+1] = 1;
-                    }
-                    // Pour from j into i
-                    {
-                        int amountPoured = min(x-i, j);
-                        f[i + amountPoured][j - amountPoured][l+1] = 1;
-                    }
-                }
-    for (int l = 0; l <= k; l++)
-        for (int i = 0; i <= x; i++)
-            for (int j = 0; j <= y; j++)
-                    if (f[i][j][l]) ans = min(ans, abs(i+j-m));
-    fout << ans << endl;
-    return 0;
+	int x, y, k, m;
+	fin >> x >> y >> k >> m;
+	f[0][0][0] = 1;
+	int ans = 2e9;
+	for (int l = 0; l < k; l++)
+		for (int i = 0; i <= x; i++)
+			for (int j = 0; j <= y; j++)
+				if (f[i][j][l]) {
+					f[i][0][l + 1] = 1;
+					f[0][j][l + 1] = 1;
+					f[i][y][l + 1] = 1;
+					f[x][j][l + 1] = 1;
+					// Pour from i into j
+					{
+						int amountPoured = min(y - j, i);
+						f[i - amountPoured][j + amountPoured][l + 1] = 1;
+					}
+					// Pour from j into i
+					{
+						int amountPoured = min(x - i, j);
+						f[i + amountPoured][j - amountPoured][l + 1] = 1;
+					}
+				}
+	for (int l = 0; l <= k; l++)
+		for (int i = 0; i <= x; i++)
+			for (int j = 0; j <= y; j++)
+				if (f[i][j][l]) ans = min(ans, abs(i + j - m));
+	fout << ans << endl;
+	return 0;
 }
 ```
 
