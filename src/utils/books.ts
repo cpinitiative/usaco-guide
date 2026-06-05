@@ -3,6 +3,10 @@ export const books = {
     '/PAPS.pdf',
     'Principles of Algorithmic Problem Solving (Johan Sannemo)',
   ],
+  PAPS1: [
+    '/PAPS1.pdf',
+    'Principles of Algorithmic Problem Solving (Johan Sannemo) - 2025 Edition',
+  ],
   CP2: ['/CP2.pdf', 'Competitive Programming 2 (Steven Halim)'],
   CPH: ['/CPH.pdf', "Competitive Programmer's Handbook (Antti Laaksonen)"],
   IUSACO: ['https://darrenyao.com/', 'An Introduction to USACO (Darren Yao)'],
