@@ -321,11 +321,10 @@ using namespace std;
 
 constexpr int MAX_N = 100;
 
-// dx[d] and dy[d] are increments to (x, y) when travelling
-// along one of the 4 standard directions; we refer to the direction
-// with increment dx[d] and dy[d] as the d-th direction.
 constexpr int dx[] = {1, 0, -1, 0};
 constexpr int dy[] = {0, 1, 0, -1};
+
+// From here, the d-th direction will refer to the direction formed by dx[d] and dy[d].
 
 // can_visit[x][y][d] tracks if one can travel in the d-th direction from (x, y).
 bool can_visit[MAX_N + 1][MAX_N + 1][4];
@@ -348,9 +347,8 @@ void bfs(int sx, int sy) {
 	}
 
 	while (!q.empty()) {
-		auto front = q.front();
+		auto [front_x, front_y] = q.front();
 		q.pop();
-		int front_x = front.first, front_y = front.second;
 
 		// Enumerate the possible directions for next step
 		for (int d = 0; d < 4; d++) {
