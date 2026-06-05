@@ -20,18 +20,14 @@ export async function main() {
 
     // Index modules
     console.log('Indexing modules...');
-    const moduleFiles = (
-      await readdir(CONTENT_DIR, { recursive: true })
-    )
+    const moduleFiles = (await readdir(CONTENT_DIR, { recursive: true }))
       .filter((f: string) => f.endsWith('.mdx'))
       .sort();
     await indexMdxFiles(db, moduleFiles, 'module', CONTENT_DIR);
 
     // Index solutions
     console.log('Indexing solutions...');
-    const solutionFiles = (
-      await readdir(SOLUTIONS_DIR, { recursive: true })
-    )
+    const solutionFiles = (await readdir(SOLUTIONS_DIR, { recursive: true }))
       .filter((f: string) => f.endsWith('.mdx'))
       .sort();
     await indexMdxFiles(db, solutionFiles, 'solution', SOLUTIONS_DIR);
@@ -422,7 +418,12 @@ async function indexProblems(db: Database.Database): Promise<void> {
       // Prefer regular module over EXTRA_PROBLEMS
       if (problem.inModule && !existing.inModule) {
         problemsMap.set(problem.uniqueId, problem);
-      } else if (problem.inModule && existing.inModule && !currentIsExtra && existingIsExtra) {
+      } else if (
+        problem.inModule &&
+        existing.inModule &&
+        !currentIsExtra &&
+        existingIsExtra
+      ) {
         // Both have modules, but current is not EXTRA_PROBLEMS and existing is
         problemsMap.set(problem.uniqueId, problem);
       }
