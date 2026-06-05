@@ -22,14 +22,18 @@ export async function main() {
     console.log('Indexing modules...');
     const moduleFiles = (
       await readdir(CONTENT_DIR, { recursive: true })
-    ).filter((f: string) => f.endsWith('.mdx'));
+    )
+      .filter((f: string) => f.endsWith('.mdx'))
+      .sort();
     await indexMdxFiles(db, moduleFiles, 'module', CONTENT_DIR);
 
     // Index solutions
     console.log('Indexing solutions...');
     const solutionFiles = (
       await readdir(SOLUTIONS_DIR, { recursive: true })
-    ).filter((f: string) => f.endsWith('.mdx'));
+    )
+      .filter((f: string) => f.endsWith('.mdx'))
+      .sort();
     await indexMdxFiles(db, solutionFiles, 'solution', SOLUTIONS_DIR);
 
     // Index problems
@@ -266,11 +270,13 @@ async function indexProblems(db: Database.Database): Promise<void> {
   const freshOrdering = await import('../content/ordering');
 
   const allFiles = await readdir(CONTENT_DIR, { recursive: true });
-  const problemFiles = allFiles.filter(
-    (file): file is string =>
-      typeof file === 'string' &&
-      (file.endsWith('.problems.json') || file.endsWith('extraProblems.json'))
-  );
+  const problemFiles = allFiles
+    .filter(
+      (file): file is string =>
+        typeof file === 'string' &&
+        (file.endsWith('.problems.json') || file.endsWith('extraProblems.json'))
+    )
+    .sort();
 
   const insertProblemStmt = db.prepare(`
     INSERT OR REPLACE INTO problems (
@@ -403,15 +409,21 @@ async function indexProblems(db: Database.Database): Promise<void> {
   }
 
   // Deduplicate problems by unique_id (same problem can appear in multiple modules)
-  // Keep the first occurrence, or one with a module if available
+  // Priority: regular module > EXTRA_PROBLEMS > no module
   const problemsMap = new Map<string, ProblemInfo>();
   for (const problem of allProblems) {
     if (!problemsMap.has(problem.uniqueId)) {
       problemsMap.set(problem.uniqueId, problem);
     } else {
-      // If current problem has a module and existing one doesn't, prefer the one with module
       const existing = problemsMap.get(problem.uniqueId)!;
+      const currentIsExtra = problem.moduleId === 'EXTRA_PROBLEMS';
+      const existingIsExtra = existing.moduleId === 'EXTRA_PROBLEMS';
+
+      // Prefer regular module over EXTRA_PROBLEMS
       if (problem.inModule && !existing.inModule) {
+        problemsMap.set(problem.uniqueId, problem);
+      } else if (problem.inModule && existing.inModule && !currentIsExtra && existingIsExtra) {
+        // Both have modules, but current is not EXTRA_PROBLEMS and existing is
         problemsMap.set(problem.uniqueId, problem);
       }
     }
