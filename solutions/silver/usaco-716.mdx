@@ -1,6 +1,6 @@
 ---
 id: usaco-716
-source: USACO Silver 2017 December
+source: USACO Silver 2017 February
 title: Why Did the Cow Cross the Road III
 author: Óscar Garries, Kevin Sheng, David Guo
 ---
@@ -15,9 +15,9 @@ Let's consider an arbitrary cow. By performing either BFS or DFS, we can determi
 
 Finally, to determine all such pairs of cows, we can perform BFS or DFS for each cow and compute the number of unreachable cows, making sure to avoid double-counting pairs.
 
-## Implementation
+## DFS Implementation
 
-**Time Complexity:** $\mathcal{O}(N^2)$
+**Time Complexity:** $\mathcal{O}(N^2)$ for DFS, and up to $\mathcal{O}(N^4)$ for computing the final answer, since there can be up to $n^2$ connected components if the roads are aggressive enough.
 
 <LanguageSection>
 <CPPSection>
@@ -298,4 +298,170 @@ print(distant_pairs, file=open("countcross.out", "w"))
 ```
 
 </PySection>
+</LanguageSection>
+
+## BFS Implementation
+
+**Time Complexity:** Same as DFS implementation (up to $\mathcal{O}(n^4)$), see that section for details.
+
+<LanguageSection>
+
+<CPPSection>
+
+```
+#include <fstream>
+#include <cassert>
+#include <cstring>
+#include <queue>
+#include <utility>
+using namespace std;
+
+// Maximum grid size
+constexpr int MAX_N = 100;
+// dx[d] and dy[d] are increments to (x, y) when travelling
+// along one of the 4 standard directions; we refer to the direction
+// with increment dx[d] and dy[d] as the d-th direction.
+constexpr int dx[] = {1, 0, -1, 0};
+constexpr int dy[] = {0, 1, 0, -1};
+// can_visit[x][y][d] tracks if one can travel in the d-th direction from (x, y).
+bool can_visit[MAX_N + 1][MAX_N + 1][4];
+// vis[i][j] represents whether (i, j) is already visited by BFS.
+bool vis[MAX_N+1][MAX_N+1];
+// sz[i][j] is the number of cows in the connected component including (i, j)
+// if (i, j) is where we started to BFS the connected component, and 0 otherwise.
+int sz[MAX_N+1][MAX_N+1];
+// cows[i][j] is number of cows at the location (i, j).
+int cows[MAX_N+1][MAX_N+1];
+
+// This bfs routine computes the amount of cows in each continous
+// block as sz[sx][sy]; (sx, sy) is the start location of the BFS.
+void bfs(int sx, int sy) {
+    queue<pair<int, int>> q;
+    // If this is visited, nothing will push and the while loop
+    // below simply does not run, and sz[sx][sy] remains 0.
+    if (!vis[sx][sy]) {
+        vis[sx][sy] = true;
+        // Accumulate the amount of cows on the starting point
+        sz[sx][sy] += cows[sx][sy];
+        q.push({sx, sy});
+    }
+
+    // Standard BFS boilerplate.
+    while (!q.empty()) {
+        auto front = q.front();
+        q.pop();
+        int front_x = front.first, front_y = front.second;
+
+        // Go over the possible directions for our next location.
+        for (int d = 0; d < 4; d++) {
+            int next_x = front_x + dx[d], next_y = front_y + dy[d];
+
+            // Only continue if we have not BFS'd the point and there's no
+            // crossing-road blocking us.
+            if (can_visit[front_x][front_y][d] && !vis[next_x][next_y])
+            {
+                vis[next_x][next_y] = true;
+                q.push({next_x, next_y});
+                // Accumulate the amount of cows at the location we're
+                // going to process
+                sz[sx][sy] += cows[next_x][next_y];
+            }
+        }
+    }
+}
+
+int main() {
+    ifstream fin("countcross.in");
+    ofstream fout("countcross.out");
+    int n;
+    fin >> n;
+
+    // Initialize all dircetions as true first, except boundary conditions handled later.
+    memset(can_visit, 1, sizeof can_visit);
+    // Boundary conditions: Can't go up (d=2) on first row, or go down (d=0) on last row.
+    for (int j = 1; j <= n; j++)
+    {
+        can_visit[1][j][2] = false;
+        can_visit[n][j][0] = false;
+    }
+    // Can't go left (d=3) on the first column, or go right (d=1) on the last column.
+    for (int i = 1; i <= n; i++)
+    {
+        can_visit[i][1][3] = false;
+        can_visit[i][n][1] = false;
+    }
+
+    int k;
+    fin >> k;
+
+    int r;
+    fin >> r;
+    for (int l = 1; l <= r; l++) {
+        int x, y, x1, y1;
+        fin >> x >> y >> x1 >> y1;
+
+        // Figure out what d value our direction actually is.
+        // Compute dx and dy values, and search those values in
+        // the canoical dx[] and dy[] tables.
+
+        // Block (x, y) to (x1, y1)
+        int current_dx = x1 - x, current_dy = y1 - y;
+        int d = 0;
+        for (; d < 4; d++)
+            if (current_dx == dx[d] && current_dy == dy[d])
+                break;
+        // If the search is exhausted, then something's wrong as the
+        // roads are not as specified in the problem.
+        assert(d<4);
+        can_visit[x][y][d] = false;
+
+        // Block (x1, y1) to (x, y); reverse the dx and dy values
+        // for the oppostie direction.
+        current_dx = -current_dx;
+        current_dy = -current_dy;
+        d = 0;
+        for (; d < 4; d++)
+            if (current_dx == dx[d] && current_dy == dy[d])
+                break;
+        assert(d<4);
+        can_visit[x1][y1][d] = false;
+    }
+
+    // Convert the cow locations into the amount of cows in each
+    // grid for easy accumulation in the bfs routine.
+    for (int i = 1; i <= k; i++) {
+        int x, y;
+        fin >> x >> y;
+        cows[x][y]++;
+    }
+
+    // BFS'ing from every point gets us the amount of cows in
+    // each connected component, or 0 if the point belongs to another
+    // connected component that is already accounted for
+    // (i.e. the point does not *represent* the connected component.)
+    for (int i = 1; i <= n; i++)
+        for (int j = 1; j <= n; j++)
+            bfs(i, j);
+    
+    // For all pairs of connected components A, B with sizes x, y,
+    // respectively, there are x * y ways to pick out a cow from A
+    // and a cow from B; none of these pairs can visit each other
+    // without crossing a road.
+    // Effectively, we simply enumerate all pairs of points, as points
+    // that do not represent a connected component will have its sz[][]
+    // be 0, and simply make the addition to ans ineffectual.
+    int ans = 0;
+    for (int i = 1; i <= n; i++)
+        for (int j = 1; j <= n; j++)
+            for (int i1 = 1; i1 <= n; i1++)
+                for (int j1 = 1; j1 <= n; j1++)
+                    if (i != i1 || j != j1)
+                        ans += sz[i][j] * sz[i1][j1];
+    fout << ans / 2 << endl;
+    return 0;
+}
+```
+
+</CPPSection>
+
 </LanguageSection>
