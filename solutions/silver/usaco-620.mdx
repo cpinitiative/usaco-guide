@@ -717,16 +717,21 @@ The answer is simply the minimum of $|i+j-m|$ for all true $\texttt{f}[i][j][l]$
 using namespace std;
 ifstream fin("pails.in");
 ofstream fout("pails.out");
-int MAX_CUP_CAPACITY = 100;
-int MAX_OPERATIONS = 100;
+constexpr int MAX_CUP_CAPACITY = 100;
+constexpr int MAX_OPERATIONS = 100;
+constexpr int INF = 2e9;
+
 // f[i][j][l] represents if we can get to (i,j)
-// in at most l steps
+// in exactly l steps
 bool f[MAX_CUP_CAPACITY + 1][MAX_CUP_CAPACITY + 1][MAX_CUP_CAPACITY + 1];
 signed main() {
 	int x, y, k, m;
 	fin >> x >> y >> k >> m;
+
+	// No milk is done in 0 steps.
 	f[0][0][0] = 1;
-	int ans = 2e9;
+
+	// Start from l = 0 and use the current layer to compute the next
 	for (int l = 0; l < k; l++)
 		for (int i = 0; i <= x; i++)
 			for (int j = 0; j <= y; j++)
@@ -746,6 +751,9 @@ signed main() {
 						f[i + amountPoured][j - amountPoured][l + 1] = 1;
 					}
 				}
+
+	// Go over all true states and compute answer.
+	int ans = INF;
 	for (int l = 0; l <= k; l++)
 		for (int i = 0; i <= x; i++)
 			for (int j = 0; j <= y; j++)
