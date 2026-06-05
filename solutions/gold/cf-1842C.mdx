@@ -46,29 +46,29 @@ using namespace std;
 
 const int INF = 1e9;
 
-void solve() {
-	int n;
-	cin >> n;
-	vector<int> v(n);
-	for (int i = 0; i < n; i++) { cin >> v[i]; }
-
-	vector<int> dp(n + 1, INF);
-	vector<int> best(n + 1, INF);
-	dp[0] = 0;
-
-	for (int i = 1; i <= n; i++) {
-		dp[i] = min(dp[i - 1] + 1, best[v[i - 1]]);
-		best[v[i - 1]] = min(best[v[i - 1]], dp[i - 1]);
-	}
-
-	cout << (n - dp[n]) << "\n";
-}
-
 int main() {
 	int test_num;
 	cin >> test_num;
-	for (int t = 0; t < test_num; t++) { solve(); }
-	return 0;
+	for (int t = 0; t < test_num; t++) {
+        int n;
+        cin >> n;
+        vector<int> balls(n);
+        for (int i = 0; i < n; i++) { cin >> balls[i]; }
+
+        vector<int> dp(n + 1, INF);
+        dp[0] = 0;
+
+        vector<int> best(n + 1, INF);
+        for (int i = 1; i <= n; i++) {
+            // keep or delete segment ending at index i
+            dp[i] = min(dp[i - 1] + 1, best[balls[i - 1]]);
+
+            // update best for this color with dp[i-1]
+            best[balls[i - 1]] = min(best[balls[i - 1]], dp[i - 1]);
+        }
+
+        cout << n - dp[n] << '\n';
+    }
 }
 ```
 
