@@ -136,49 +136,53 @@ With this a cycle can by going through every node and checking for every edge if
 using namespace std;
 
 int main() {
-    // Input reading into graph
-    int n; cin >> n;
-    vector<vector<int>> edges(n);
-    for (int i = 0; i < n; i++){
-        bool found = false;
-        for (int j = 0; j < n; j++){
-            int x; cin >> x; x--;
-            if (x == i){
-                found = true;
-            } else if (!found){
-                edges[i].push_back(x);
-            }
-        }
-    }
+	// Input reading into graph
+	int n;
+	cin >> n;
+	vector<vector<int>> edges(n);
+	for (int i = 0; i < n; i++) {
+		bool found = false;
+		for (int j = 0; j < n; j++) {
+			int x;
+			cin >> x;
+			x--;
+			if (x == i) {
+				found = true;
+			} else if (!found) {
+				edges[i].push_back(x);
+			}
+		}
+	}
 
-    // Reachability check
-    vector<vector<bool>> reachable(n, vector<bool>(n));
-    for (int i = 0; i < n; i++){
-        queue<int> queue; queue.push(i);
-        reachable[i][i] = true;
-        
-        while (!queue.empty()){
-            int node = queue.front(); queue.pop();
-            for (int c : edges[node]){
-                if (reachable[i][c])
-                    continue;
-                reachable[i][c] = true;
-                queue.push(c);
-            }
-        }
-    }
+	// Reachability check
+	vector<vector<bool>> reachable(n, vector<bool>(n));
+	for (int i = 0; i < n; i++) {
+		queue<int> queue;
+		queue.push(i);
+		reachable[i][i] = true;
 
-    // Solve for every node
-    for (int i = 0; i < n; i++){
-        int ans = i;
-        for (int j : edges[i]){
-            if (reachable[j][i]){
-                ans = j;
-                break;
-            }
-        }
-        cout << ans + 1 << "\n";
-    }
+		while (!queue.empty()) {
+			int node = queue.front();
+			queue.pop();
+			for (int c : edges[node]) {
+				if (reachable[i][c]) continue;
+				reachable[i][c] = true;
+				queue.push(c);
+			}
+		}
+	}
+
+	// Solve for every node
+	for (int i = 0; i < n; i++) {
+		int ans = i;
+		for (int j : edges[i]) {
+			if (reachable[j][i]) {
+				ans = j;
+				break;
+			}
+		}
+		cout << ans + 1 << "\n";
+	}
 }
 ```
 
