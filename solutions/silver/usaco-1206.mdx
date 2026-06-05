@@ -119,69 +119,66 @@ int main() {
 The problem can be represented as a directed graph, where each cow is the node of what they currently hold and have directed edges to cows that have something better.
 
 A beneficial redistribution would be when a cycle appears, using this the solution can be found for every node
-by performing a traversal looking for a cycle that involved this node and results it in getting the highest value item.
+by precomputing with BFS all reachable nodes from one node of the graph.
 
-This can be done with BFS, note that if you use a `vector<bool>` or `bitset` instead of a `vector<char>` the last testcase will TLE.
+With this a cycle can by going through every node and checking for every edge if the connected node could lead back to this.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N^4)$
+**Time Complexity:** $\mathcal{O}(N^3)$
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
+
 using namespace std;
 
 int main() {
-	int n;
-	cin >> n;
-	vector<vector<int>> edges(n);
-	for (int i = 0; i < n; i++) {
-		bool found = false;
-		for (int j = 0; j < n; j++) {
-			int x;
-			cin >> x;
-			x--;
-			if (x == i) found = true;
+    // Input reading into graph
+    int n; cin >> n;
+    vector<vector<int>> edges(n);
+    for (int i = 0; i < n; i++){
+        bool found = false;
+        for (int j = 0; j < n; j++){
+            int x; cin >> x; x--;
+            if (x == i){
+                found = true;
+            } else if (!found){
+                edges[i].push_back(x);
+            }
+        }
+    }
 
-			if (!found) { edges[i].push_back(x); }
-		}
-	}
+    // Reachability check
+    vector<vector<bool>> reachable(n, vector<bool>(n));
+    for (int i = 0; i < n; i++){
+        queue<int> queue; queue.push(i);
+        reachable[i][i] = true;
+        
+        while (!queue.empty()){
+            int node = queue.front(); queue.pop();
+            for (int c : edges[node]){
+                if (reachable[i][c])
+                    continue;
+                reachable[i][c] = true;
+                queue.push(c);
+            }
+        }
+    }
 
-	// Lambda to check if a cycle exists from -> to
-	auto cycles_to = [&](int from, int to) {
-		queue<int> queue;
-		queue.push(from);
-		vector<char> visited(n);
-		visited[from] = true;
-
-		while (!queue.empty()) {
-			int node = queue.front();
-			queue.pop();
-			for (int c : edges[node]) {
-				if (c == to) return true;
-				if (visited[c]) continue;
-				visited[c] = true;
-				queue.push(c);
-			}
-		}
-
-		return false;
-	};
-
-	// Solve for every node
-	for (int i = 0; i < n; i++) {
-		int ans = i;
-		for (int j : edges[i]) {
-			if (cycles_to(j, i)) {
-				ans = j;
-				break;
-			}
-		}
-		cout << ans + 1 << "\n";
-	}
+    // Solve for every node
+    for (int i = 0; i < n; i++){
+        int ans = i;
+        for (int j : edges[i]){
+            if (reachable[j][i]){
+                ans = j;
+                break;
+            }
+        }
+        cout << ans + 1 << "\n";
+    }
 }
 ```
 
