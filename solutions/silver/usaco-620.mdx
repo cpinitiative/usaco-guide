@@ -696,7 +696,7 @@ print(min_diff)
 
 </LanguageSection>
 
-## Solution 3:  DP-Style Approach
+## Solution 3 (DP)
 
 ### Explanation
 
@@ -721,55 +721,60 @@ The answer is simply the minimum of $|i+j-m|$ for all true $\texttt{f}[i][j][l]$
 
 ```cpp
 #include <fstream>
+#include <vector>
+#include <climits>
 using namespace std;
-
-constexpr int MAX_CUP_CAPACITY = 100;
-constexpr int MAX_OPERATIONS = 100;
-constexpr int INF = 2e9;
-
-// f[i][j][l] represents if we can get to (i,j)
-// in exactly l steps
-bool f[MAX_CUP_CAPACITY + 1][MAX_CUP_CAPACITY + 1][MAX_CUP_CAPACITY + 1];
 
 int main() {
 	ifstream fin("pails.in");
-	ofstream fout("pails.out");
 
 	int x, y, k, m;
 	fin >> x >> y >> k >> m;
 
-	// No milk is done in 0 steps.
+    // f[i][j][l] = if (i, j) cup amounts in l steps is possible
+    vector f(x + 1, vector(y + 1, vector<int>(k + 1)));
+    
+	// base state: no milk in 0 steps
 	f[0][0][0] = 1;
 
-	// Start from l = 0 and use the current layer to compute the next
-	for (int l = 0; l < k; l++)
-		for (int i = 0; i <= x; i++)
-			for (int j = 0; j <= y; j++)
+	// use each DP layer to calculate the next
+	for (int l = 0; l < k; l++) {
+		for (int i = 0; i <= x; i++) {
+			for (int j = 0; j <= y; j++) {
 				if (f[i][j][l]) {
 					f[i][0][l + 1] = 1;
 					f[0][j][l + 1] = 1;
 					f[i][y][l + 1] = 1;
 					f[x][j][l + 1] = 1;
+
 					// Pour from i into j
 					{
 						int amount_poured = min(y - j, i);
 						f[i - amount_poured][j + amount_poured][l + 1] = 1;
 					}
+
 					// Pour from j into i
 					{
 						int amount_poured = min(x - i, j);
 						f[i + amount_poured][j - amount_poured][l + 1] = 1;
 					}
 				}
+            }
+        }
+    }
 
 	// Go over all true states and compute answer.
-	int ans = INF;
-	for (int l = 0; l <= k; l++)
-		for (int i = 0; i <= x; i++)
-			for (int j = 0; j <= y; j++)
-				if (f[i][j][l]) ans = min(ans, abs(i + j - m));
+	int ans = INT_MAX;
+	for (int l = 0; l <= k; l++) {
+		for (int i = 0; i <= x; i++) {
+			for (int j = 0; j <= y; j++) {
+				if (f[i][j][l]) { ans = min(ans, abs(i + j - m)); }
+            }
+        }
+    }
+
+    ofstream fout("pails.out");
 	fout << ans << endl;
-	return 0;
 }
 ```
 
