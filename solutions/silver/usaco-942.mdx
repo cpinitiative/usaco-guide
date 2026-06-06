@@ -1,0 +1,146 @@
+---
+id: usaco-942
+source: USACO Silver 2019 Open
+title: Left Out
+author: John Zhou
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_leftout_silver_open19.html)
+
+## Explanation
+
+Below, we will turn most of the cows to L, and the cow that is "left out" will be R;
+neither L nor R have a benefit over the other direction, as the final direction can be switched by turning all rows.
+
+Note that turning the same row or column twice has no effect.
+Therefore, initially, we can simply consider whether to turn each row and column; first, we consider each row.
+If the first cow in a row is an R, then we turn the entire row;
+this will result in the entire first column of cows is L.
+Next, we consider each column: If the first cow in a column is an R, then we turn the entire column;
+this will ensure that the entire first row of cows is L.
+
+Now, we must consider the region that is not in the first row or column, herein referred to as the "interior region".
+If the grid does not contain a cow that is "left out", then the interior reigon should be L at this point:
+if there's an R in that region, then we must flip its row or column to get rid of it, but that'll mean that we'd end up with another R in the first row or column, ultimately rendering the puzzle unsolvable.
+In that case, there may be a cow that is left out:
+- If there is only one R in the interior region, then that R is the left-out cow, as we may turn it to match the others.
+- If there is only a single row or column of R's in the interior region, then first, we flip that row or column in the overall grid, and the first cow of the overall row or column will be left out.
+- If the entire interior region is filled with R's, then actually, we may flip the first row and first column of the grid; now, the entire grid will be R's, except for $(1, 1)$, which is our left-out cow.
+- The above covers cases where there's a single left-out cow at any location;
+  therefore, for anything else, there is no way to make the grid uniform by just flipping one cow.
+
+We can check all the above cases one by one, and output the coordinate of the left-out cow appropriately
+(or $-1$ if either no individual turns are needed, or if it is impossible with $1$ individual turn.).
+
+## Implementation
+
+**Time Complexity:  $\mathcal O(N^2)$** 
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <fstream>
+using namespace std;
+
+constexpr int MAX_N = 1000;
+char a[MAX_N+1][MAX_N+1];
+
+int main() {
+    ifstream fin("leftout.in");
+    ofstream fout("leftout.out");
+    int n;
+    fin >> n;
+    for (int i = 1; i <= n; i++)
+        for (int j = 1; j <= n; j++)
+            fin >> a[i][j];
+
+    // Turn first column into L
+    for (int i = 1; i <= n; i++)
+        if (a[i][1] == 'R')
+            for (int j = 1; j <= n; j++)
+                a[i][j] = 'L' + 'R' - a[i][j];
+    // Turn first row into L
+    for (int j = 1; j <= n; j++)
+        if (a[1][j] == 'R')
+            for (int i = 1; i <= n; i++)
+                a[i][j] = 'L' + 'R' - a[i][j];
+
+    // Checks:
+    // Interior region is all L
+    bool flag = true;
+    for (int i = 2; i <= n; i++)
+        for (int j = 2; j <= n; j++)
+            if (a[i][j] != 'L') flag = false;
+    if (flag) {
+        fout << -1 << endl;
+        return 0;
+    }
+
+    // Interior region is all R
+    flag = true;
+    for (int i = 2; i <= n; i++)
+        for (int j = 2; j <= n; j++)
+            if (a[i][j] != 'R') flag = false;
+    if (flag) {
+        fout << "1 1" << endl;
+        return 0;
+    }
+
+    // Singular row R in interior region
+    for (int i = 2; i <= n; i++)
+    {
+        flag = true;
+        for (int j = 2; j <= n; j++)
+            if (a[i][j] != 'R') flag = false;
+        if (flag) {
+            // Verify that nothing else is R
+            // If there is, put -1 as there'd be multiple that need flip
+            for (int ii = i + 1; ii <= n; ii++)
+                for (int j = 2; j <= n; j++)
+                    if (a[ii][j] == 'R') {
+                        fout << -1 << endl;
+                        return 0;
+                    }
+            fout << i << ' ' << 1 << endl;
+            return 0;
+        }
+    }
+
+    // Singular column R in interior region
+    for (int j = 2; j <= n; j++)
+    {
+        flag = true;
+        for (int i = 2; i <= n; i++)
+            if (a[i][j] != 'R') flag = false;
+        if (flag) {
+            // Verify that nothing else is R
+            // If there is, put -1 as there'd be multiple that need flip
+            for (int jj = j + 1; jj <= n; jj++)
+                for (int i = 2; i <= n; i++)
+                    if (a[i][jj] == 'R') {
+                        fout << -1 << endl;
+                        return 0;
+                    }
+            fout << 1 << ' ' << j << endl;
+            return 0;
+        }
+    }
+
+    // Single position in interior region
+    int cnt = 0, saved_i, saved_j;
+    for (int i = 2; i <= n; i++)
+        for (int j = 2; j <= n; j++)
+            if (a[i][j] == 'R') {
+                cnt++;
+                saved_i = i;
+                saved_j = j;
+            }
+    if (cnt > 1) fout << "-1" << endl;
+    else fout << saved_i << ' ' << saved_j << endl;
+    return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
