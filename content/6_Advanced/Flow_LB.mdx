@@ -1,10 +1,10 @@
 ---
 id: flow-lb
 title: 'Flow with Lower Bounds'
-author: Benjamin Qi
+author: Benjamin Qi, Daniel Zhu
 prerequisites:
   - max-flow
-description: '?'
+description: 'Adding lower bounds to flow edge constraints.'
 frequency: 0
 ---
 
@@ -18,7 +18,77 @@ frequency: 0
 		title="Flow Extensions"
 		url="https://www.cs.cmu.edu/~ckingsf/bioinfo-lectures/flowext.pdf"
 	 />
+	<Resource
+		source="cp-algorithms"
+		title="Flows with Lower Bounds"
+		url="https://cp-algorithms.com/graph/flow_with_demands.html"
+	 />
 </Resources>
+
+So far, every edge in our flow network has had a capacity that serves as an
+**upper bound** on the flow through it: $0 \le f(e) \le c(e)$. We now consider
+networks where each edge $e$ additionally has a **lower bound** $\ell(e)$, so
+that any valid flow must satisfy
+
+$$
+\ell(e) \le f(e) \le c(e).
+$$
+
+In other words, we're now *required* to push at least $\ell(e)$ units of flow
+along $e$. This single extension is surprisingly powerful: many problems that
+look nothing like flow ("each task must be performed at least $x$ times", "each
+person sings between $a$ and $b$ songs") reduce to it.
+
+#### Feasible Circulation
+
+Let's start with the simplest version, where there is **no source or sink**.
+A *circulation* is an assignment of flow to every edge such that
+
+- every edge respects its bounds: $\ell(e) \le f(e) \le c(e)$, and
+- **conservation** holds at *every* vertex: the flow in equals the flow out.
+
+The question is whether a valid circulation exists at all.
+
+I will first illustrate the flow graph we can set up to solve this problem, then explain why it works. First, we create two new nodes $S$ and $T$ and connect $T \rightarrow S$ with capacity $\infty$. Then, we apply the following transformation to every edge $e = u \rightarrow v$:
+- Connect $u \rightarrow T$ and $S \rightarrow v$ with capacity $l(e)$.
+- Reduce the capacity of $u \rightarrow v$ to $c(e) - l(e)$.
+
+![800|center](/content/6_Advanced/Flow_LB/transformation.png)
+
+The idea is that in this transformed network, flow through $e$ will first be routed through the blue cycle ($u \rightarrow t \rightarrow s \rightarrow v$) until all $l(e)$ units are saturated, and only the excess will pass through $e$ itself. This then means that all lower bounds will be satisfied iff all blue edges are saturated. To determine whether this is possible, we just need to run a maximum flow from $S$ to $T$ and check whether the resultant flow is exactly $\sum l(e)$.
+
+To recover the actual circulation, just take the flow $g(e)$ found in the auxiliary
+network and add back the lower bound: $f(e) = g(e) + \ell(e)$.
+
+#### Feasible Flow With a Source and Sink
+
+Now suppose we *do* have a source $s$ and sink $t$, and we want any flow from $s$
+to $t$ respecting the lower bounds. The conservation constraint should hold
+everywhere *except* $s$ and $t$.
+
+We reduce this to the circulation case with one extra edge: add an edge from
+$t$ back to $s$ with lower bound $0$ and capacity $\infty$. This "return edge"
+carries the net flow value back from the sink to the source, so conservation now
+holds at $s$ and $t$ as well, and the whole network becomes a circulation
+problem. Apply the construction above, and the flow value of the original network is
+exactly the flow sent along the $t \to s$ edge.
+
+#### Maximum / Minimum Flow With Lower Bounds
+
+Often we don't just want *a* feasible flow — we want the **maximum** (or
+minimum) flow from $s$ to $t$ subject to the lower bounds. Do it in two phases:
+
+1. **Find a feasible flow** using the construction above.
+   If the blue edges can't be saturated, no valid flow exists and we stop.
+2. **Augment in the residual network.** Remove the auxiliary $S$, $T$, and the
+   $t \to s$ edge, then run an ordinary max flow from $s$ to $t$ on the leftover
+   residual graph. Adding these augmenting paths to the feasible flow keeps it
+   feasible (we only ever increase flow on edges that have spare capacity) while
+   pushing the $s \to t$ value as high as possible.
+
+   For **minimum** flow, instead run a max flow from $t$ to $s$ in the residual
+   graph and *subtract* it: we cancel as much circulating flow as possible while
+   keeping every edge above its lower bound.
 
 ### Problems
 
