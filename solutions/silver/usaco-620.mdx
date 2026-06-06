@@ -720,9 +720,9 @@ The answer is simply the minimum of $|i+j-m|$ for all true $\texttt{f}[i][j][l]$
 <CPPSection>
 
 ```cpp
+#include <climits>
 #include <fstream>
 #include <vector>
-#include <climits>
 using namespace std;
 
 int main() {
@@ -731,9 +731,9 @@ int main() {
 	int x, y, k, m;
 	fin >> x >> y >> k >> m;
 
-    // f[i][j][l] = if (i, j) cup amounts in l steps is possible
-    vector f(x + 1, vector(y + 1, vector<int>(k + 1)));
-    
+	// f[i][j][l] = if (i, j) cup amounts in l steps is possible
+	vector f(x + 1, vector(y + 1, vector<int>(k + 1)));
+
 	// base state: no milk in 0 steps
 	f[0][0][0] = 1;
 
@@ -759,9 +759,9 @@ int main() {
 						f[i + amount_poured][j - amount_poured][l + 1] = 1;
 					}
 				}
-            }
-        }
-    }
+			}
+		}
+	}
 
 	// Go over all true states and compute answer.
 	int ans = INT_MAX;
@@ -769,11 +769,11 @@ int main() {
 		for (int i = 0; i <= x; i++) {
 			for (int j = 0; j <= y; j++) {
 				if (f[i][j][l]) { ans = min(ans, abs(i + j - m)); }
-            }
-        }
-    }
+			}
+		}
+	}
 
-    ofstream fout("pails.out");
+	ofstream fout("pails.out");
 	fout << ans << endl;
 }
 ```
