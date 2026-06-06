@@ -700,12 +700,10 @@ print(min_diff)
 
 ### Explanation
 
-The possible "states" in this problem are a combination of the number of moves taken, and the amount of milk in both cups after this number of moves.
+The states in this problem are a combination of the milk amounts in each pail and the number of operations to reach such amounts.
 
-Let $\texttt{f}[i][j][l]$, a boolean, represent if it is possible to get to the amounts in the cups being $(i,j)$ in $l$ steps.
-Note that state with $l$ being a specific value (herein referred to as $l_0$) can only transition to a state where $l$ is $l_0+1$, so we compute $\texttt{f}$ in order of $l$.
-
-First, initialize $\texttt{f}[0][0][0]$ as true, as there is no milk initially with no operations.
+Let $\text{f}[i][j][l]$ represent if it is possible to reach $i$ and $j$ pail amounts in $l$ operations.
+Our base case is $\text{f}[0][0][0]$ as true, since there is no milk initially.
 Now, run through $l$'s such that $0\leq l<K$, and all possible $i$'s and $j$'s with that $l$; for any true state $\texttt{f}[i][j][l]$, mark $\texttt{f}[i'][j'][l+1]$ as true for all $(i', j')$'s that can result from a single operation based on $(i, j)$.
 The possible operations and their mathematical representations can be found in the BFS section, and will not be repeated here.
 
