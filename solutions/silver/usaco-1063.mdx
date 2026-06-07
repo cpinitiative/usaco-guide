@@ -255,10 +255,10 @@ of the number of points above and below a y-coordinate.
 #include <bits/stdc++.h>
 using namespace std;
 
-bool sortByX(pair<int, int> a, pair<int, int> b) { return a.first < b.first; }
-bool sortByY(pair<int, int> a, pair<int, int> b) { return a.second < b.second; }
+bool sort_by_x(const pair<int, int> &a, const pair<int, int> &b) { return a.first < b.first; }
+bool sort_by_y(const pair<int, int> &a, const pair<int, int> &b) { return a.second < b.second; }
 
-int rectSum(vector<vector<long long>> &grid, int r1, int r2, int c1, int c2) {
+int rectSum(const vector<vector<long long>> &grid, int r1, int r2, int c1, int c2) {
 	return (grid[r2][c2] - grid[r2][c1 - 1] - grid[r1 - 1][c2] + grid[r1 - 1][c1 - 1]);
 }
 
@@ -271,11 +271,11 @@ int main() {
 	for (auto &[x, y] : nums) { cin >> x >> y; }
 
 	// compress X
-	sort(nums.begin(), nums.end(), sortByX);
+	sort(nums.begin(), nums.end(), sort_by_x);
 	for (int i = 0; i < nums.size(); i++) { nums[i].first = i + 1; }
 
 	// compress Y
-	sort(nums.begin(), nums.end(), sortByY);
+	sort(nums.begin(), nums.end(), sort_by_y);
 	for (int i = 0; i < nums.size(); i++) { nums[i].second = i + 1; }
 
 	// add points to grid and compute prefix
@@ -289,15 +289,16 @@ int main() {
 
 	long long res = 0;
 	// choose two points, count rectangles
-	sort(nums.begin(), nums.end(), sortByX);
+	sort(nums.begin(), nums.end(), sort_by_x);
 	for (int i = 0; i < n; i++) {
 		for (int j = i + 1; j < n; j++) {
-			int r = nums[i].first, R = nums[j].first;
-			int c = min(nums[i].second, nums[j].second);
-			int C = max(nums[i].second, nums[j].second);
+			int r1 = nums[i].first;
+			int r2 = nums[j].first;
+			int c1 = min(nums[i].second, nums[j].second);
+			int c2 = max(nums[i].second, nums[j].second);
 
-			int above = rectSum(grid, 1, r - 1, c, C);
-			int below = rectSum(grid, R + 1, n, c, C);
+			int above = rectSum(grid, 1, r1 - 1, c1, c2);
+			int below = rectSum(grid, r2 + 1, n, c1, c2);
 
 			res += (above + 1) * (below + 1);
 		}
