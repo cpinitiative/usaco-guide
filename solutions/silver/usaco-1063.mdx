@@ -240,9 +240,9 @@ public class RPasture {
 The central idea behind this solution is identical to the previous solution, but differs
 in how we count the cows above and below a bounding box.
 
-Instead of keeping two prefix sums for the number of cows above and below a y-coordinate, we 
+Instead of keeping two prefix sums for the number of cows above and below a y-coordinate, we
 directly use 2D prefix sums on coordinate compressed locations. To count the number of cows
-above and below a bounding box, we use rectangular sums to directly sum the frequency of 
+above and below a bounding box, we use rectangular sums to directly sum the frequency of
 cows in the column above a box.
 
 ## Implementation
@@ -256,8 +256,12 @@ cows in the column above a box.
 #include <bits/stdc++.h>
 using namespace std;
 
-bool sort_by_x(const pair<int, int> &a, const pair<int, int> &b) { return a.first < b.first; }
-bool sort_by_y(const pair<int, int> &a, const pair<int, int> &b) { return a.second < b.second; }
+bool sort_by_x(const pair<int, int> &a, const pair<int, int> &b) {
+	return a.first < b.first;
+}
+bool sort_by_y(const pair<int, int> &a, const pair<int, int> &b) {
+	return a.second < b.second;
+}
 
 int rectSum(const vector<vector<long long>> &grid, int r1, int r2, int c1, int c2) {
 	return (grid[r2][c2] - grid[r2][c1 - 1] - grid[r1 - 1][c2] + grid[r1 - 1][c1 - 1]);
