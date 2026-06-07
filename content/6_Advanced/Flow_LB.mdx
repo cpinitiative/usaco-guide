@@ -55,7 +55,7 @@ I will first illustrate the flow graph we can set up to solve this problem, then
 
 ![800|center](/content/6_Advanced/Flow_LB/transformation.png)
 
-The idea is that in this transformed network, flow through $e$ will first be routed through the blue cycle ($u \rightarrow t \rightarrow s \rightarrow v$) until all $l(e)$ units are saturated, and only the excess will pass through $e$ itself. This then means that all lower bounds will be satisfied iff all blue edges are saturated. To determine whether this is possible, we just need to run a maximum flow from $S$ to $T$ and check whether the resultant flow is exactly $\sum l(e)$.
+The idea is that in this transformed network, flow through $e$ will first be routed through the blue cycle ($u \rightarrow T \rightarrow S \rightarrow v$) until all $l(e)$ units are saturated, and only the excess will pass through $e$ itself. This then means that all lower bounds will be satisfied iff all blue edges are saturated. To determine whether this is possible, we just need to run a maximum flow from $S$ to $T$ and check whether the resultant flow is exactly $\sum l(e)$.
 
 To recover the actual circulation, just take the flow $g(e)$ found in the auxiliary
 network and add back the lower bound: $f(e) = g(e) + \ell(e)$.
