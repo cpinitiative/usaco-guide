@@ -64,18 +64,14 @@ int main() {
 		cin >> n >> m;
 
 		vector<int> a(n + 1);
-		for (int i = 1; i <= n; i++) {
-            cin >> a[i];
-        }
+		for (int i = 1; i <= n; i++) { cin >> a[i]; }
 
 		vector<int> sorted_a(a.begin() + 1, a.end());
 		sort(sorted_a.begin(), sorted_a.end());
 
 		// prefix[i] = sum of i cheapest opponents
 		vector<int> prefix(n + 1);
-		for (int i = 0; i < n; i++) {
-            prefix[i + 1] = prefix[i] + sorted_a[i];
-        }
+		for (int i = 0; i < n; i++) { prefix[i + 1] = prefix[i] + sorted_a[i]; }
 
 		int ans = n + 1;
 
@@ -103,9 +99,7 @@ int main() {
 				cost_with = excl + a[k + 1];
 			}
 
-			if (cost_with <= m) {
-                ans = min(ans, n - k);
-            }
+			if (cost_with <= m) { ans = min(ans, n - k); }
 		}
 
 		cout << ans << '\n';
