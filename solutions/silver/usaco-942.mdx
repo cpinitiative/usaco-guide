@@ -50,35 +50,31 @@ int main() {
 
 	int n;
 	fin >> n;
-    vector a(n, std::vector<char>(n));
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            fin >> a[i][j];
-        }
-    }
+	vector a(n, std::vector<char>(n));
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) { fin >> a[i][j]; }
+	}
 
 	// Turn first column into L
 	for (int i = 0; i < n; i++) {
 		if (a[i][0] == 'R') {
 			for (int j = 0; j < n; j++) { a[i][j] = 'L' + 'R' - a[i][j]; }
-        }
-    }
+		}
+	}
 
 	// Turn first row into L
 	for (int j = 0; j < n; j++) {
 		if (a[0][j] == 'R') {
 			for (int i = 0; i < n; i++) { a[i][j] = 'L' + 'R' - a[i][j]; }
-        }
-    }
+		}
+	}
 
 	// Perform each of the checks
 	// Interior region is all L
 	bool flag = true;
 	for (int i = 1; i < n; i++) {
-		for (int j = 1; j < n; j++) {
-            flag &= a[i][j] == 'L';
-        }
-    }
+		for (int j = 1; j < n; j++) { flag &= a[i][j] == 'L'; }
+	}
 
 	if (flag) {
 		fout << -1 << endl;
@@ -88,10 +84,8 @@ int main() {
 	// Interior region is all R
 	flag = true;
 	for (int i = 1; i < n; i++) {
-		for (int j = 1; j < n; j++) {
-            flag &= a[i][j] == 'R';
-        }
-    }
+		for (int j = 1; j < n; j++) { flag &= a[i][j] == 'R'; }
+	}
 
 	if (flag) {
 		fout << "1 1" << endl;
@@ -101,9 +95,7 @@ int main() {
 	// Singular row R in interior region
 	for (int i = 1; i < n; i++) {
 		flag = true;
-		for (int j = 1; j < n; j++) {
-            flag &= a[i][j] == 'R';
-        }
+		for (int j = 1; j < n; j++) { flag &= a[i][j] == 'R'; }
 
 		if (flag) {
 			// Verify that nothing else is R
@@ -114,8 +106,8 @@ int main() {
 						fout << -1 << endl;
 						return 0;
 					}
-                }
-            }
+				}
+			}
 
 			fout << i + 1 << ' ' << 1 << endl;
 			return 0;
@@ -125,9 +117,7 @@ int main() {
 	// Singular column R in interior region
 	for (int j = 1; j < n; j++) {
 		flag = true;
-		for (int i = 1; i < n; i++) {
-            flag &= a[i][j] == 'R';
-        }
+		for (int i = 1; i < n; i++) { flag &= a[i][j] == 'R'; }
 
 		if (flag) {
 			// Verify that nothing else is R
@@ -138,8 +128,8 @@ int main() {
 						fout << -1 << endl;
 						return 0;
 					}
-                }
-            }
+				}
+			}
 
 			fout << 1 << ' ' << j + 1 << endl;
 			return 0;
@@ -155,14 +145,14 @@ int main() {
 				saved_i = i;
 				saved_j = j;
 			}
-        }
-    }
+		}
+	}
 
 	if (cnt > 1) {
-        fout << "-1" << endl;
-    } else {
-        fout << saved_i + 1 << ' ' << saved_j + 1 << endl;
-    }
+		fout << "-1" << endl;
+	} else {
+		fout << saved_i + 1 << ' ' << saved_j + 1 << endl;
+	}
 }
 ```
 
