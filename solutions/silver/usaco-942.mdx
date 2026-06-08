@@ -23,12 +23,12 @@ Now, we must consider the region that is neither in the first row nor the first 
 First, if there's an R in the interior region, then it is impossible to turn the entire grid to L;
 attempts to get rid of that R by flipping the row or column it is contained in will result in another R in the first row or column, which means that it is impossible to get rid of all R's in this state.
 
-In that case:
-- If there's only one R in the interior region, then that R is the nonconforming cow requested by the problem.
-- If there's only a single row or column of R's in that region, then first, we flip that row or column in the overall grid, and the first cow of the overall row or column will be the only R, which makes it the wanted cow.
-- If the entire interior region is filled with R's, then we flip every row besides the first row, and then flip the first column in the entire grid; now, only $(1,1)$ will be an R, which makes that our answer.
-- The above covers cases where there's a single left-out cow at any location;
-  therefore, for anything else, there is no way to make the grid uniform by just flipping one cow.
+In that case, there are several cases for the locations of R's in the region:
+- **If there's only one R:** That R is the nonconforming cow requested by the problem.
+- **If there's only a single row or column of R's:** Flip that row or column in the entire grid, and then the first cow in that row or column will be the only R, which gives us the answer.
+- **If the entire region is filled with R's:**  First, flip every row besides the first row in the entire grid, and then flip the first column in the entire grid; only $(1,1)$ will be an R, which makes that our answer.
+- **Any other pattern of R's:** The above cases covers single left-out cows at any location;
+  therefore, in this case, there is no way to make the grid uniform by just flipping one cow.
 
 
 ## Implementation
