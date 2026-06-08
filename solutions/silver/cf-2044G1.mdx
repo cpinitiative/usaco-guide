@@ -29,64 +29,63 @@ Therefore, the question can be reduced into finding the maximum distance from an
 #include <bits/stdc++.h>
 using namespace std;
 void solve() {
-    int n; cin >> n;
-    vector<int> a(n);
-    vector<vector<int>> c(n);
-    for (int i = 0; i < n; i++) {
-        cin >> a[i]; a[i]--;
-        c[a[i]].push_back(i);
-    }
+	int n;
+	cin >> n;
+	vector<int> a(n);
+	vector<vector<int>> c(n);
+	for (int i = 0; i < n; i++) {
+		cin >> a[i];
+		a[i]--;
+		c[a[i]].push_back(i);
+	}
 
-    vector<int> b(n);
-    vector<bool> v(n);
-    int ans = 2;
-    
-    // Runs a DFS to go out of the node finding max path length
-    auto dfs = [&] (auto&& self, int nd) -> int {
-        int mx = 0;
-        v[nd] = true;
-        for (int i = 0; i < c[nd].size(); i++) {
-            if (b[c[nd][i]] != 2) {
-                mx = max(mx, self(self, c[nd][i]));
-            }
-        }
-        return mx + 1;
-    };
+	vector<int> b(n);
+	vector<bool> v(n);
+	int ans = 2;
 
-    for (int i = 0; i < n; i++) {
-        if (!v[i]) {
-            int nd = i;
-            vector<int> tm;
+	// Runs a DFS to go out of the node finding max path length
+	auto dfs = [&](auto &&self, int nd) -> int {
+		int mx = 0;
+		v[nd] = true;
+		for (int i = 0; i < c[nd].size(); i++) {
+			if (b[c[nd][i]] != 2) { mx = max(mx, self(self, c[nd][i])); }
+		}
+		return mx + 1;
+	};
 
-            // Get all the nodes in a cycle
-            while (b[nd] != 2) {
-                v[nd] = true;
-                b[nd]++;
-                if (b[nd] == 2) tm.push_back(nd);
-                nd = a[nd];
-            }
+	for (int i = 0; i < n; i++) {
+		if (!v[i]) {
+			int nd = i;
+			vector<int> tm;
 
-            // Run a DFS on the nodes in the cycle getting the max path length into node tm[i]
-            for (int i = 0; i < tm.size(); i++) {
-                int d = dfs(dfs, tm[i]);
-                ans = max(d + 1, ans);   
-            }
-        }
-    }
+			// Get all the nodes in a cycle
+			while (b[nd] != 2) {
+				v[nd] = true;
+				b[nd]++;
+				if (b[nd] == 2) tm.push_back(nd);
+				nd = a[nd];
+			}
 
-    cout << ans << '\n';
+			// Run a DFS on the nodes in the cycle getting the max path length into node
+			// tm[i]
+			for (int i = 0; i < tm.size(); i++) {
+				int d = dfs(dfs, tm[i]);
+				ans = max(d + 1, ans);
+			}
+		}
+	}
+
+	cout << ans << '\n';
 }
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(NULL);
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
 
-	  int t; cin >> t;
-    while (t--) {
-        solve();
-    }
+	int t;
+	cin >> t;
+	while (t--) { solve(); }
 }
-
 ```
 
 </CPPSection>
