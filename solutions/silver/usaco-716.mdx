@@ -17,7 +17,7 @@ Now, for each pair of connected components $A$ and $B$, any cow from $A$ must cr
 therefore, the answer is the sum of the pairwise products of the number of cows in each connected component, taking special care to not count double for each pair.
 
 
-<Spoiler title="Optimizing the time complexity">
+<Spoiler title="Implementation Details for the Pairwise Product Sum">
 
 The BFS algorithm takes $\mathcal{O}(N^2)$ for a floodfill; however, the time complexity will still be $\mathcal O(N^4)$ because of a bottleneck:
 Since there will be at most $N^2$ connected components, the time complexity of computing the pairwise product of the counts can be $\mathcal{O}(N^4)$.
@@ -27,8 +27,6 @@ Let $k$ be the total number of connected components, and $\mathrm{C}[i]$ ($1\leq
 Naïvely, we would compute $\sum_{i=1}^{k}\sum_{j=i+1}^{k}\mathrm{C}[i]\mathrm{C}[j]$ for our answer;
 however, we can precompute $\mathrm{C_{sum}}[i] = \sum_{j=i}^{k}\mathrm{C}[j]$ in $\mathcal{O}(k)$ using postfix sums, and then compute
 $\sum_{i=1}^{k}\sum_{j=i+1}^{k}\mathrm{C}[i]\mathrm{C}[j]=\sum_{i=1}^{k}\mathrm{C}[i]\sum_{j=i+1}^{k}\mathrm{C}[j]=\sum_{i=1}^{k}\mathrm{C}[i]\mathrm{C_{sum}}[i+1]$ in $\mathcal{O}(k)$ time as well.
-
-This is technically not needed to pass the problem as-is, so for simplicity, it is not implemented in the code below.
 
 </Spoiler>
 
