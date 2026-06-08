@@ -21,10 +21,69 @@ Naively implementing this solution takes $\mathcal{O}(N^4)$ time, as we are comp
 
 <Spoiler title="Optimizing Pairwise Product Sums">
 
-Let $k$ be the total number of connected components, and $\mathrm{C}[i]$ ($1\leq i\leq k$) be the number of cows in the $i$-th connected component.
-Naïvely, we would compute $\sum_{i=1}^{k}\sum_{j=1}^{i-1}\mathrm{C}[i]\mathrm{C}[j]$ for our answer;
-however, we can precompute $\mathrm{C_{sum}}[i] = \sum_{j=1}^{i}\mathrm{C}[j]$ in $\mathcal{O}(k)$ using prefix sums, and then compute
-$\sum_{i=1}^{k}\sum_{j=1}^{i-1}\mathrm{C}[i]\mathrm{C}[j]=\sum_{i=1}^{k}\mathrm{C}[i]\sum_{j=1}^{i-1}\mathrm{C}[j]=\sum_{i=1}^{k}\mathrm{C}[i]\mathrm{C_{sum}}[i-1]$ in $\mathcal{O}(k)$ time as well.  To simplify the implementation, we could also use a single loop, and keep track of $\mathrm{C_{sum}}[i-1]$ by accumulating $\mathrm{C}[i]$ to it cumulatively after we use the sum for our main computation.
+Let the 0-indexed array containing the number of cows in each connected component be $\mathrm{C}$.
+Naïvely, we would implement the pairwise product sum as follows:
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+int distant_pairs = 0;
+for (int i = 0; i < C.size(); i++) {
+	for (int j = 0; j < i; j++) {
+		distant_pairs += C[i] * C[j];
+	}
+}
+```
+
+</CPPSection>
+
+<PythonSection>
+
+```py
+distant_pairs = 0
+for i in range(len(C)):
+	for j in range(i):
+		distant_pairs += C[i] * C[j]
+```
+
+</PythonSection>
+
+</LanguageSection>
+
+Using the distributive property, we may factor out $\mathrm C[i]$ from the inner loop, and do the rest using a temporary variable representing the prefix sum, like this:
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+int distant_pairs = 0;
+int prefix_sum = 0;
+for (int i = 0; i < C.size(); i++) {
+	distant_pairs += C[i] * prefix_sum;
+	prefix_sum += C[i];
+}
+```
+
+</CPPSection>
+
+<PythonSection>
+
+```py
+distant_pairs = 0
+prefix_sum = 0
+for i in range(len(C)):
+	distant_pairs += C[i] * prefix_sum
+	prefix_sum += C[i]
+```
+
+</PythonSection>
+
+</LanguageSection>
+
+This will make the time complexity linear to the number of connected components, making our final time complexity $\mathcal O(n^2)$.
 
 </Spoiler>
 
