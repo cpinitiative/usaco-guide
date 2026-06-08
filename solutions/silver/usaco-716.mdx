@@ -12,9 +12,9 @@ author: Óscar Garries, Kevin Sheng, David Guo, John Zhou
 Let's view the grid as a graph, where each cell is a vertex, and each border between two grids that does not contain a road is an edge.
 For two cows to need to cross a road to reach each other, they must belong to two different connected components in the graph.
 
-We first perform BFS or DFS from an arbitrary point in each connected component to count the number of cows in it.
-Now, for each pair of connected components $A$ and $B$, any cow from $A$ must cross a road to reach any cow from $B$;
-therefore, the answer is the sum of the pairwise products of the number of cows in each connected component, taking special care to not count double for each pair.
+We perform floodfill to find each connected component and the number of cows within it.
+For a pair of connected components, each possible pair of cows between these connected components must cross a road to reach the other.
+Thus, the answer is the sum of pairwise products between the number of cows in each component.
 
 
 <Spoiler title="Implementation Details for the Pairwise Product Sum">
