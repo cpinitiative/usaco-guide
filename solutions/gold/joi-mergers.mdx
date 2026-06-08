@@ -38,7 +38,7 @@ This can be proved by induction. WLOG, let $c_1 = \max c_i$.
 - Otherwise, we can pair a leaf of type 1 with a leaf of any other type, and the inequality will still hold.
 </Spoiler>
 
-## Implementation
+### Merging Intersecting Components
 
 It remains to quickly perform the first steps of merging intersecting states $A$ and $B$. To do this, we can define a procedure `merge(tree, root)` which finds all completed components that lie strictly within `tree`, then returns the (potentially incomplete) component attached to the root.
 
@@ -56,6 +56,8 @@ Now, `merge(tree, root)` may be implemented recursively as follows:
 _Here, $C$ is incomplete because it contains some but not all cities in state 1._
 
 To finish, note that "checking whether $C$ forms a complete component" is easily done by XOR hashing. For more details, check my code + comments below.
+
+## Implementation
 
 **Time Complexity:** $\mathcal{O}(N)$
 
