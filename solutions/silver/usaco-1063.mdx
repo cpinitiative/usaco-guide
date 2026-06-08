@@ -237,6 +237,7 @@ public class RPasture {
 # Solution 2
 
 ## Explanation
+
 The central idea behind this solution is identical to the previous solution, but differs
 in how we count the cows above and below a bounding box.
 
@@ -263,27 +264,28 @@ bool sort_by_y(const pair<int, int> &a, const pair<int, int> &b) {
 	return a.second < b.second;
 }
 
-int rectSum(const vector<vector<long long>> &grid, int r1, int r2, int c1, int c2) {
+int rect_sum(const vector<vector<int>> &grid, int r1, int r2, int c1, int c2) {
 	return (grid[r2][c2] - grid[r2][c1 - 1] - grid[r1 - 1][c2] + grid[r1 - 1][c1 - 1]);
 }
 
 int main() {
 	int n;
 	cin >> n;
-
-	vector<vector<long long>> grid(n + 1, vector<long long>(n + 1));
 	vector<pair<int, int>> nums(n);
 	for (auto &[x, y] : nums) { cin >> x >> y; }
 
-	// compress X
+	// coordinate compress X
 	sort(nums.begin(), nums.end(), sort_by_x);
 	for (int i = 0; i < nums.size(); i++) { nums[i].first = i + 1; }
 
-	// compress Y
+	// coordinate compress Y
 	sort(nums.begin(), nums.end(), sort_by_y);
 	for (int i = 0; i < nums.size(); i++) { nums[i].second = i + 1; }
 
-	// add points to grid and compute prefix
+    // grid is n+1 by n+1 because locations are 1 indexed
+    vector<vector<int>> grid(n + 1, vector<int>(n + 1));
+
+	// add points to grid and compute 2D prefix sums
 	for (auto [x, y] : nums) { grid[x][y] = 1; }
 
 	for (int i = 1; i < grid.size(); i++) {
@@ -292,9 +294,10 @@ int main() {
 		}
 	}
 
-	long long res = 0;
 	// choose two points, count rectangles
 	sort(nums.begin(), nums.end(), sort_by_x);
+    long long res = 0;
+
 	for (int i = 0; i < n; i++) {
 		for (int j = i + 1; j < n; j++) {
 			int r1 = nums[i].first;
@@ -302,15 +305,17 @@ int main() {
 			int c1 = min(nums[i].second, nums[j].second);
 			int c2 = max(nums[i].second, nums[j].second);
 
-			int above = rectSum(grid, 1, r1 - 1, c1, c2);
-			int below = rectSum(grid, r2 + 1, n, c1, c2);
+			int above = rect_sum(grid, 1, r1 - 1, c1, c2);
+			int below = rect_sum(grid, r2 + 1, n, c1, c2);
 
-			res += (above + 1) * (below + 1);
+			res += 1ll * (above + 1) * (below + 1);
 		}
 	}
 
 	// add results for single or no cow
-	cout << res + n + 1 << "\n";
+    res += n + 1;
+
+	cout << res << '\n';
 }
 ```
 
