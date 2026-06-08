@@ -11,11 +11,11 @@ author: Arnav Gokhale
 
 First, note the structure of the graph. Every node has a singular outgoing edge, making it a functional graph. As a result, the graph consists of several connected components, each containing exactly one cycle, with all the nodes either in the cycle or feeding into it.
 
-Notice that if a node is not in the cycle, the process will not become stable until that plushie reaches into the cycle. Consider the nodes along a path leading into a cycle. On each day, the spiders will pass one of their plushies (if they have one) to $r_i$. However, some of the spiders that send a plushie will not recieve one in return, causing the system to have changed numbers. Thus, like the easy version, once every plushie reaches a cycle, each spider will both recieve and give a plushie, keeping the system stable.
+Notice that if a node is not in the cycle, the process will not become stable until that node's plushie reaches the cycle. Consider the nodes along a path leading into a cycle. On each day, the spiders will pass one of their plushies (if they have one) to $r_i$. However, some of the spiders that send a plushie will not receive one in return, causing the system to have changed numbers. Thus, like the easy version, once every plushie reaches a cycle, each spider will both receive and give a plushie, keeping the system stable.
 
-Unlike the easy version, spiders can now hold multiple plushies. Model each connected component as a cycle with rooted trees attached to its nodes, where each tree is rooted at a node on the cycle. So, how long will it take for some spider $i$ in a tree to give away all of it's plushies? This is equal to the subtree size of $i$, since spider $i$ will give away exactly one plushie every year, and all the plushies in the subtree of $i$ will must pass through $i$.
+Unlike the easy version, spiders can now hold multiple plushies. Model each connected component as a cycle with rooted trees attached to its nodes, where each tree is rooted at a node on the cycle. So, how long will it take for some spider $i$ in a tree to give away all of its plushies? This is equal to the subtree size of $i$, since spider $i$ will give away exactly one plushie every year, and all the plushies in the subtree of $i$ must pass through $i$.
 
-By constructing a seperate adjacency list, we can run a DFS on each of these trees, allowing us to compute all the subtree sizes, ignoring the root (which is part of the cycle). The final answer will be the maximum subtree size among all such nodes.
+By constructing a separate adjacency list, we can run a DFS on each of these trees, allowing us to compute all the subtree sizes, ignoring the root (which is part of the cycle). The final answer will be the maximum subtree size among all such nodes.
 
 
 ## Implementation
