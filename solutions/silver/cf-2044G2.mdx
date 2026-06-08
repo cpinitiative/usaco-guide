@@ -31,68 +31,66 @@ By constructing a seperate adjacency list, we can run a DFS on each of these tre
 #include <bits/stdc++.h>
 using namespace std;
 void solve() {
-    int n; cin >> n;
-    vector<int> a(n);
-    vector<vector<int>> c(n);
-    for (int i = 0; i < n; i++) {
-        cin >> a[i]; a[i]--;
-        c[a[i]].push_back(i);
-    }
+	int n;
+	cin >> n;
+	vector<int> a(n);
+	vector<vector<int>> c(n);
+	for (int i = 0; i < n; i++) {
+		cin >> a[i];
+		a[i]--;
+		c[a[i]].push_back(i);
+	}
 
-    vector<int> b(n);
-    vector<bool> v(n);
-    int ans = 2;
-    
-    // DFS that traverses through the trees and returns subtree sizes
-    auto dfs = [&] (auto&& self, int nd) -> int {
-        int mx = 0;
-        v[nd] = true;
-        for (int i = 0; i < c[nd].size(); i++) {
-            if (b[c[nd][i]] != 2) {
-                mx += self(self, c[nd][i]);
-            }
-        }
-        return mx + 1;
-    };
+	vector<int> b(n);
+	vector<bool> v(n);
+	int ans = 2;
 
-    for (int i = 0; i < n; i++) {
-        if (!v[i]) {
-            int nd = i;
-            vector<int> tm;
+	// DFS that traverses through the trees and returns subtree sizes
+	auto dfs = [&](auto &&self, int nd) -> int {
+		int mx = 0;
+		v[nd] = true;
+		for (int i = 0; i < c[nd].size(); i++) {
+			if (b[c[nd][i]] != 2) { mx += self(self, c[nd][i]); }
+		}
+		return mx + 1;
+	};
 
-            // Get all the nodes in the cycle
-            while (b[nd] != 2) {
-                v[nd] = true;
-                b[nd]++;
-                if (b[nd] == 2) tm.push_back(nd);
-                nd = a[nd];
-            }
+	for (int i = 0; i < n; i++) {
+		if (!v[i]) {
+			int nd = i;
+			vector<int> tm;
 
-            // Run the DFS on each tree rooted in the cycle
-            int cur = 0;
-            for (int j = 0; j < tm.size(); j++) {
-                for (int z = 0; z < c[tm[j]].size(); z++) {
-                    if (b[c[tm[j]][z]] != 2) {
-                        int d = dfs(dfs, c[tm[j]][z]);
-                        cur = max(d + 2, cur);
-                    }
-                }  
-            }
-            ans = max(ans, cur);
-        }
-    }
-    cout << ans << '\n';
+			// Get all the nodes in the cycle
+			while (b[nd] != 2) {
+				v[nd] = true;
+				b[nd]++;
+				if (b[nd] == 2) tm.push_back(nd);
+				nd = a[nd];
+			}
+
+			// Run the DFS on each tree rooted in the cycle
+			int cur = 0;
+			for (int j = 0; j < tm.size(); j++) {
+				for (int z = 0; z < c[tm[j]].size(); z++) {
+					if (b[c[tm[j]][z]] != 2) {
+						int d = dfs(dfs, c[tm[j]][z]);
+						cur = max(d + 2, cur);
+					}
+				}
+			}
+			ans = max(ans, cur);
+		}
+	}
+	cout << ans << '\n';
 }
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(NULL);
-	int t; cin >> t;
-    while (t--) {
-        solve();
-    }
+	ios::sync_with_stdio(false);
+	cin.tie(NULL);
+	int t;
+	cin >> t;
+	while (t--) { solve(); }
 }
-
 ```
 
 </CPPSection>
