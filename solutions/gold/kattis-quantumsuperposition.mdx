@@ -70,7 +70,7 @@ void gen(int x) {
 		}
 
 		// `node` can be visited in `i + 1` steps if `before` can in `i` steps.
-		if (back[x][node].empty()) { dp[x][node][0] = 1; }
+		if (node == 1) { dp[x][node][0] = 1; }
 		for (int before : back[x][node]) { dp[x][node] |= dp[x][before] << 1; }
 	}
 }
@@ -147,7 +147,7 @@ public class QuantumSuperposition {
 
 			// `node` can be visited in `i + 1` steps if `before` can in `i`
 			// steps.
-			if (back[x][node].isEmpty()) { dp[x][node][0] = true; }
+			if (node == 1) { dp[x][node][0] = true; }
 			for (int before : back[x][node]) {
 				for (int i = 0; i < MAX_Q + 1; i++) {
 					if (dp[x][before][i]) { dp[x][node][i + 1] = true; }
@@ -231,7 +231,7 @@ def gen(x):
 				q.append(nxt)
 
 		# `node` can be visited in `i + 1` steps if `before` can in `i` steps.
-		if not back[x][node]:
+		if node == 1:
 			dp[x][node][0] = True
 		for before in back[x][node]:
 			for i in range(MAX_Q + 1):
