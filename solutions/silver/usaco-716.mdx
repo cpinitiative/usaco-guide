@@ -256,71 +256,71 @@ public class CountCross {
 <PySection>
 
 ```py
-	from typing import List, Tuple
-	
-	
-	def neighbors(r: int, c: int) -> List[Tuple[int, int]]:
-		""":return: the 4 cardinal neighbors of a position"""
-		return [(r - 1, c), (r + 1, c), (r, c - 1), (r, c + 1)]
-	
-	
-	with open("countcross.in") as read:
-		side_len, cow_num, road_num = [int(i) for i in read.readline().split()]
-	
-		roads = set()
-		for _ in range(road_num):
-			sr, sc, er, ec = [int(i) - 1 for i in read.readline().split()]
-			roads.add((sr, sc, er, ec))
-			roads.add((er, ec, sr, sc))
-	
-		has_cow = [[False for _ in range(side_len)] for _ in range(side_len)]
-		for _ in range(cow_num):
-			r, c = [int(i) - 1 for i in read.readline().split()]
-			has_cow[r][c] = True
-	
-	visited = [[False for _ in range(side_len)] for _ in range(side_len)]
-	
-	
-	def connected_cow_num(r: int, c: int, prev_r: int, prev_c: int) -> int:
-		""":return: the # of cows that a position can reach & marks them as visited"""
-		# check if we're out of bounds,
-		if (
-			r < 0
-			or c < 0
-			or r >= side_len
-			or c >= side_len
-			# someplace we've gone before,
-			or visited[r][c]
-			# or if we've just crossed a road
-			or (r, c, prev_r, prev_c) in roads
-		):
-			return 0
-	
-		visited[r][c] = True
-		cow_num = has_cow[r][c]
-		for nr, nc in neighbors(r, c):
-			cow_num += connected_cow_num(nr, nc, r, c)
-		return cow_num
-	
-	
-	cow_components = []
-	for r in range(side_len):
-		for c in range(side_len):
-			if not visited[r][c]:
-				comp_sz = connected_cow_num(r, c, r, c)
-				if comp_sz != 0:
-					cow_components.append(comp_sz)
-	
-	# The +1 ensures that there's an initial 0 at the end to sum off of.
-	cow_components_post = [0] * (len(cow_components) + 1)
-	for i in range(len(cow_components)-1, 0, -1):
-		cow_components_post[i] = cow_components_post[i+1] + cow_components[i]
-	
-	distant_pairs = 0
-	for i in range(len(cow_components)):
-		distant_pairs += cow_components[i] * cow_components_post[i+1]
-	
-	print(distant_pairs, file=open("countcross.out", "w"))
+from typing import List, Tuple
+
+
+def neighbors(r: int, c: int) -> List[Tuple[int, int]]:
+	""":return: the 4 cardinal neighbors of a position"""
+	return [(r - 1, c), (r + 1, c), (r, c - 1), (r, c + 1)]
+
+
+with open("countcross.in") as read:
+	side_len, cow_num, road_num = [int(i) for i in read.readline().split()]
+
+	roads = set()
+	for _ in range(road_num):
+		sr, sc, er, ec = [int(i) - 1 for i in read.readline().split()]
+		roads.add((sr, sc, er, ec))
+		roads.add((er, ec, sr, sc))
+
+	has_cow = [[False for _ in range(side_len)] for _ in range(side_len)]
+	for _ in range(cow_num):
+		r, c = [int(i) - 1 for i in read.readline().split()]
+		has_cow[r][c] = True
+
+visited = [[False for _ in range(side_len)] for _ in range(side_len)]
+
+
+def connected_cow_num(r: int, c: int, prev_r: int, prev_c: int) -> int:
+	""":return: the # of cows that a position can reach & marks them as visited"""
+	# check if we're out of bounds,
+	if (
+		r < 0
+		or c < 0
+		or r >= side_len
+		or c >= side_len
+		# someplace we've gone before,
+		or visited[r][c]
+		# or if we've just crossed a road
+		or (r, c, prev_r, prev_c) in roads
+	):
+		return 0
+
+	visited[r][c] = True
+	cow_num = has_cow[r][c]
+	for nr, nc in neighbors(r, c):
+		cow_num += connected_cow_num(nr, nc, r, c)
+	return cow_num
+
+
+cow_components = []
+for r in range(side_len):
+	for c in range(side_len):
+		if not visited[r][c]:
+			comp_sz = connected_cow_num(r, c, r, c)
+			if comp_sz != 0:
+				cow_components.append(comp_sz)
+
+# The +1 ensures that there's an initial 0 at the end to sum off of.
+cow_components_post = [0] * (len(cow_components) + 1)
+for i in range(len(cow_components)-1, 0, -1):
+	cow_components_post[i] = cow_components_post[i+1] + cow_components[i]
+
+distant_pairs = 0
+for i in range(len(cow_components)):
+	distant_pairs += cow_components[i] * cow_components_post[i+1]
+
+print(distant_pairs, file=open("countcross.out", "w"))
 ```
 
 </PySection>
