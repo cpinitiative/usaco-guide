@@ -50,7 +50,6 @@ We take the minimum place over all valid $k$.
 <CPPSection>
 
 ```cpp
-
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -61,19 +60,22 @@ int main() {
 	int t;
 	cin >> t;
 	while (t--) {
-		int n;
-		long long m;
+		int n, m;
 		cin >> n >> m;
 
-		vector<long long> a(n + 1);
-		for (int i = 1; i <= n; i++) cin >> a[i];
+		vector<int> a(n + 1);
+		for (int i = 1; i <= n; i++) {
+            cin >> a[i];
+        }
 
-		vector<long long> sorted_a(a.begin() + 1, a.end());
+		vector<int> sorted_a(a.begin() + 1, a.end());
 		sort(sorted_a.begin(), sorted_a.end());
 
 		// prefix[i] = sum of i cheapest opponents
-		vector<long long> prefix(n + 1, 0);
-		for (int i = 0; i < n; i++) prefix[i + 1] = prefix[i] + sorted_a[i];
+		vector<int> prefix(n + 1);
+		for (int i = 0; i < n; i++) {
+            prefix[i + 1] = prefix[i] + sorted_a[i];
+        }
 
 		int ans = n + 1;
 
@@ -85,23 +87,28 @@ int main() {
 
 			// case 2: if we can also beat opponent k+1, our place improves to n - k.
 			if (k + 1 > n) continue;
-			long long cost_with;
+			int cost_with;
+
 			if (k == 0) {
 				cost_with = a[k + 1];
 			} else {
 				// cheapest k-1 after removing opponent k+1, plus a[k+1]
-				long long excl;
+				int excl;
 				if (a[k + 1] <= sorted_a[k - 1]) {
 					excl = prefix[k] - a[k + 1];
 				} else {
 					excl = prefix[k - 1];
 				}
+
 				cost_with = excl + a[k + 1];
 			}
-			if (cost_with <= m) ans = min(ans, n - k);
+
+			if (cost_with <= m) {
+                ans = min(ans, n - k);
+            }
 		}
 
-		cout << ans << "\n";
+		cout << ans << '\n';
 	}
 }
 ```
