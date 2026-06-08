@@ -1,23 +1,39 @@
 ---
 id: usaco-716
-source: USACO Silver 2017 December
+source: USACO Silver 2017 February
 title: Why Did the Cow Cross the Road III
-author: Óscar Garries, Kevin Sheng, David Guo
+author: Óscar Garries, Kevin Sheng, David Guo, John Zhou
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_countcross_silver_feb17.html)
 
 ## Explanation
 
-We want to find the number of pairs of cows for which crossing at least one road is necessary for one cow to visit the other.
+Let's view the grid as a graph, where each grid is a vertex, and each border between two grids that does not contain a road be an edge.
+For two cows to need to cross a road to reach each other, they must belong to two different connected components in the graph.
 
-Let's consider an arbitrary cow. By performing either BFS or DFS, we can determine which squares that cow can reach without crossing any roads. Then, we can determine which cows cannot be visited without crossing any roads by checking if that cow's square is reachable.
+We first perform BFS or DFS from an arbitrary point in each connected component to count the number of cows in it.
+Now, for each pair of connected components $A$ and $B$, any cow from $A$ must cross a road to reach any cow from $B$;
+therefore, the answer is the sum of the pairwise products of the number of cows in each connected component, taking special care to not count double for each pair.
 
-Finally, to determine all such pairs of cows, we can perform BFS or DFS for each cow and compute the number of unreachable cows, making sure to avoid double-counting pairs.
+
+<Spoiler title="Optimizing the time complexity">
+
+Since there will be at most $\mathcal{O}(N^2)$ connected components, the time complexity of computing the pairwise product of the counts can be $\mathcal{O}(N^4)$.
+This is fast enough to pass; however, since our BFS is only $\mathcal O(n^2)$, we might as well squeeze the pairwise to product to $\mathcal{O}(n^2)$:
+
+Let $k$ be the total number of connected components, and $\mathrm{C}[i]$ ($1\leq i\leq k$) be the number of cows in the $i$-th connected component.
+Naïvely, we would compute $\sum_{i=1}^{k}\sum_{j=i+1}^{k}\mathrm{C}[i]*\mathrm{C}[j]$ for our answer;
+however, we can preprocess $\mathrm{C_{sum}}[i] = \sum_{j=i}^{k}\text{C}[i]*\text{C}[j]$ in $\mathcal{O}(k)$ using postfix sums, and then compute
+$\sum_{i=1}^{k}\mathrm{C_{sum}}[i+1]$ in $\mathcal{O}(k)$ time as well.
+
+This is technically not needed to pass the problem as-is, so for simplicity, it is not implemented in the code below.
+
+</Spoiler>
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N^2)$
+**Time Complexity:** $\mathcal{O}(N^4)$
 
 <LanguageSection>
 <CPPSection>
