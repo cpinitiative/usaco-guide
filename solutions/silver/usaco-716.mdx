@@ -21,10 +21,6 @@ Naively implementing this solution takes $\mathcal{O}(N^4)$ time, as we are comp
 
 <Spoiler title="Optimizing Pairwise Product Sums">
 
-The BFS algorithm takes $\mathcal{O}(N^2)$ for a floodfill; however, the time complexity will still be $\mathcal O(N^4)$ because of a bottleneck:
-Since there will be at most $N^2$ connected components, the time complexity of computing the pairwise product of the counts can be $\mathcal{O}(N^4)$.
-This is fast enough to pass; however, there is a way to get rid of this bottleneck:
-
 Let $k$ be the total number of connected components, and $\mathrm{C}[i]$ ($1\leq i\leq k$) be the number of cows in the $i$-th connected component.
 Naïvely, we would compute $\sum_{i=1}^{k}\sum_{j=1}^{i-1}\mathrm{C}[i]\mathrm{C}[j]$ for our answer;
 however, we can precompute $\mathrm{C_{sum}}[i] = \sum_{j=1}^{i}\mathrm{C}[j]$ in $\mathcal{O}(k)$ using prefix sums, and then compute
