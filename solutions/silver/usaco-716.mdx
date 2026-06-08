@@ -24,9 +24,9 @@ Since there will be at most $N^2$ connected components, the time complexity of c
 This is fast enough to pass; however, there is a way to get rid of this bottleneck:
 
 Let $k$ be the total number of connected components, and $\mathrm{C}[i]$ ($1\leq i\leq k$) be the number of cows in the $i$-th connected component.
-Naïvely, we would compute $\sum_{i=1}^{k}\sum_{j=i+1}^{k}\mathrm{C}[i]\mathrm{C}[j]$ for our answer;
-however, we can precompute $\mathrm{C_{sum}}[i] = \sum_{j=i}^{k}\mathrm{C}[j]$ in $\mathcal{O}(k)$ using postfix sums, and then compute
-$\sum_{i=1}^{k}\sum_{j=i+1}^{k}\mathrm{C}[i]\mathrm{C}[j]=\sum_{i=1}^{k}\mathrm{C}[i]\sum_{j=i+1}^{k}\mathrm{C}[j]=\sum_{i=1}^{k}\mathrm{C}[i]\mathrm{C_{sum}}[i+1]$ in $\mathcal{O}(k)$ time as well.
+Naïvely, we would compute $\sum_{i=1}^{k}\sum_{j=1}^{i-1}\mathrm{C}[i]\mathrm{C}[j]$ for our answer;
+however, we can precompute $\mathrm{C_{sum}}[i] = \sum_{j=1}^{i}\mathrm{C}[j]$ in $\mathcal{O}(k)$ using prefix sums, and then compute
+$\sum_{i=1}^{k}\sum_{j=1}^{i-1}\mathrm{C}[i]\mathrm{C}[j]=\sum_{i=1}^{k}\mathrm{C}[i]\sum_{j=1}^{i-1}\mathrm{C}[j]=\sum_{i=1}^{k}\mathrm{C}[i]\mathrm{C_{sum}}[i-1]$ in $\mathcal{O}(k)$ time as well.  To simplify the implementation, we could also use a single loop, and keep track of $\mathrm{C_{sum}}[i-1]$ by accumulating $\mathrm{C}[i]$ to it cumulatively after we use the sum for our main computation.
 
 </Spoiler>
 
@@ -117,16 +117,10 @@ int main() {
 		}
 	}
 
-	// +1 here so that an element after the last one can be 0, which simplifies the
-	// implementation as we can start adding onto that 0.
-	vector<int> cow_components_postfix(cow_components.size() + 1);
-	for (int i = cow_components.size() - 1; i >= 0; i--) {
-		cow_components_postfix[i] = cow_components_postfix[i + 1] + cow_components[i];
-	}
-
-	int distant_pairs = 0;
+	int distant_pairs = 0, prefix_sum = 0;
 	for (int i = 0; i < cow_components.size(); i++) {
-		distant_pairs += cow_components[i] * cow_components_postfix[i + 1];
+		distant_pairs += cow_components[i] * prefix_sum;
+		prefix_sum += cow_components[i];
 	}
 
 	freopen("countcross.out", "w", stdout);
@@ -206,15 +200,10 @@ public class CountCross {
 			}
 		}
 
-		// +1 as an initial sentinel at the end to add onto.
-		int[] cowComponentsPost = new int[cowComponents.size() + 1];
-		for (int i = cowComponents.size() - 1; i >= 0; i--) {
-			cowComponentsPost[i] = cowComponentsPost[i + 1] + cowComponents.get(i);
-		}
-
-		int distantPairs = 0;
+		int distantPairs = 0, prefixSum = 0;
 		for (int i = 0; i < cowComponents.size(); i++) {
-			distantPairs += cowComponents.get(i) * cowComponentsPost[i + 1];
+			distantPairs += cowComponents.get(i) * prefixSum;
+			prefixSum += cowComponents.get(i);
 		}
 
 		io.println(distantPairs);
@@ -309,14 +298,11 @@ for r in range(side_len):
 			if comp_sz != 0:
 				cow_components.append(comp_sz)
 
-# The +1 ensures that there's an initial 0 at the end to sum off of.
-cow_components_post = [0] * (len(cow_components) + 1)
-for i in range(len(cow_components) - 1, 0, -1):
-	cow_components_post[i] = cow_components_post[i + 1] + cow_components[i]
-
 distant_pairs = 0
+prefix_sum = 0
 for i in range(len(cow_components)):
-	distant_pairs += cow_components[i] * cow_components_post[i + 1]
+	distant_pairs += cow_components[i] * prefix_sum
+	prefix_sum += cow_components[i]
 
 print(distant_pairs, file=open("countcross.out", "w"))
 ```
