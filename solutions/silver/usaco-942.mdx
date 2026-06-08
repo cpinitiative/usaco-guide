@@ -41,34 +41,45 @@ We can check all the above cases one by one, and output the coordinate of the le
 
 ```cpp
 #include <fstream>
+#include <vector>
 using namespace std;
-
-constexpr int MAX_N = 1000;
-char a[MAX_N + 1][MAX_N + 1];
 
 int main() {
 	ifstream fin("leftout.in");
 	ofstream fout("leftout.out");
+
 	int n;
 	fin >> n;
-	for (int i = 1; i <= n; i++)
-		for (int j = 1; j <= n; j++) fin >> a[i][j];
+    vector a(n, std::vector<char>(n));
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            fin >> a[i][j];
+        }
+    }
 
 	// Turn first column into L
-	for (int i = 1; i <= n; i++)
-		if (a[i][1] == 'R')
-			for (int j = 1; j <= n; j++) a[i][j] = 'L' + 'R' - a[i][j];
-	// Turn first row into L
-	for (int j = 1; j <= n; j++)
-		if (a[1][j] == 'R')
-			for (int i = 1; i <= n; i++) a[i][j] = 'L' + 'R' - a[i][j];
+	for (int i = 0; i < n; i++) {
+		if (a[i][0] == 'R') {
+			for (int j = 0; j < n; j++) { a[i][j] = 'L' + 'R' - a[i][j]; }
+        }
+    }
 
-	// Checks:
+	// Turn first row into L
+	for (int j = 0; j < n; j++) {
+		if (a[0][j] == 'R') {
+			for (int i = 0; i < n; i++) { a[i][j] = 'L' + 'R' - a[i][j]; }
+        }
+    }
+
+	// Perform each of the checks
 	// Interior region is all L
 	bool flag = true;
-	for (int i = 2; i <= n; i++)
-		for (int j = 2; j <= n; j++)
-			if (a[i][j] != 'L') flag = false;
+	for (int i = 1; i < n; i++) {
+		for (int j = 1; j < n; j++) {
+            flag &= a[i][j] == 'L';
+        }
+    }
+
 	if (flag) {
 		fout << -1 << endl;
 		return 0;
@@ -76,64 +87,82 @@ int main() {
 
 	// Interior region is all R
 	flag = true;
-	for (int i = 2; i <= n; i++)
-		for (int j = 2; j <= n; j++)
-			if (a[i][j] != 'R') flag = false;
+	for (int i = 1; i < n; i++) {
+		for (int j = 1; j < n; j++) {
+            flag &= a[i][j] == 'R';
+        }
+    }
+
 	if (flag) {
 		fout << "1 1" << endl;
 		return 0;
 	}
 
 	// Singular row R in interior region
-	for (int i = 2; i <= n; i++) {
+	for (int i = 1; i < n; i++) {
 		flag = true;
-		for (int j = 2; j <= n; j++)
-			if (a[i][j] != 'R') flag = false;
+		for (int j = 1; j < n; j++) {
+            flag &= a[i][j] == 'R';
+        }
+
 		if (flag) {
 			// Verify that nothing else is R
 			// If there is, put -1 as there'd be multiple that need flip
-			for (int ii = i + 1; ii <= n; ii++)
-				for (int j = 2; j <= n; j++)
-					if (a[ii][j] == 'R') {
+			for (int r = i + 1; r < n; r++) {
+				for (int c = 1; c < n; c++) {
+					if (a[r][c] == 'R') {
 						fout << -1 << endl;
 						return 0;
 					}
-			fout << i << ' ' << 1 << endl;
+                }
+            }
+
+			fout << i + 1 << ' ' << 1 << endl;
 			return 0;
 		}
 	}
 
 	// Singular column R in interior region
-	for (int j = 2; j <= n; j++) {
+	for (int j = 1; j < n; j++) {
 		flag = true;
-		for (int i = 2; i <= n; i++)
-			if (a[i][j] != 'R') flag = false;
+		for (int i = 1; i < n; i++) {
+            flag &= a[i][j] == 'R';
+        }
+
 		if (flag) {
 			// Verify that nothing else is R
 			// If there is, put -1 as there'd be multiple that need flip
-			for (int jj = j + 1; jj <= n; jj++)
-				for (int i = 2; i <= n; i++)
-					if (a[i][jj] == 'R') {
+			for (int c = j + 1; c < n; c++) {
+				for (int r = 1; r < n; r++) {
+					if (a[r][c] == 'R') {
 						fout << -1 << endl;
 						return 0;
 					}
-			fout << 1 << ' ' << j << endl;
+                }
+            }
+
+			fout << 1 << ' ' << j + 1 << endl;
 			return 0;
 		}
 	}
 
 	// Single position in interior region
 	int cnt = 0, saved_i, saved_j;
-	for (int i = 2; i <= n; i++)
-		for (int j = 2; j <= n; j++)
+	for (int i = 1; i < n; i++) {
+		for (int j = 1; j < n; j++) {
 			if (a[i][j] == 'R') {
 				cnt++;
 				saved_i = i;
 				saved_j = j;
 			}
-	if (cnt > 1) fout << "-1" << endl;
-	else fout << saved_i << ' ' << saved_j << endl;
-	return 0;
+        }
+    }
+
+	if (cnt > 1) {
+        fout << "-1" << endl;
+    } else {
+        fout << saved_i + 1 << ' ' << saved_j + 1 << endl;
+    }
 }
 ```
 
