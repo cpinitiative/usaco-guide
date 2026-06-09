@@ -8,6 +8,7 @@ author: Raagav Bala
 [Official Analysis (C++)](https://codeforces.com/blog/entry/117606)
 
 ## Explanation
+
 We can begin by noting that all ranges that are removed must be disjoint. If two
 ranges overlap, they can be combined into one segment. If one
 segment is within another, then the largest segment can replace the smaller
@@ -32,13 +33,47 @@ After finding $dp[i]$, we update $\texttt{best}[a_i] = \min(\texttt{best}[a_i], 
 
 The final answer is $N - dp[N]$.
 
-## Solution
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
+<CPPSection>
 
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int INF = 1e9;
+
+int main() {
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int n;
+		cin >> n;
+		vector<int> balls(n);
+		for (int i = 0; i < n; i++) { cin >> balls[i]; }
+
+		vector<int> dp(n + 1, INF);
+		dp[0] = 0;
+
+		vector<int> best(n + 1, INF);
+		for (int i = 1; i <= n; i++) {
+			// keep or delete segment ending at index i
+			dp[i] = min(dp[i - 1] + 1, best[balls[i - 1]]);
+
+			// update best for this color with dp[i-1]
+			best[balls[i - 1]] = min(best[balls[i - 1]], dp[i - 1]);
+		}
+
+		cout << n - dp[n] << '\n';
+	}
+}
+```
+
+</CPPSection>
 <PySection>
-
-**Time Complexity:** $\mathcal{O}(N\log{N})$
 
 ```py
 INF = 10**20
