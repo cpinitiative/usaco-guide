@@ -12,10 +12,6 @@ The first observation is that you may query two adjacent indices $i$ and $j=i+1$
 If you pick an arbitrary $a_0$ and use the above query format for every $0\leq i\leq n-2$ in order, you would have two candidates ($x-a_i$ and $a_i-x$) each time you query.
 
 For this subtask it suffices to simply brute force all combinations of candidates at each step..
-
-
-> **Note:** $a_0$ can become any arbitrary integer, but it is important to make sure that none of the values of the array go negative. This can be ensured while printing by adding $min(0, -minVal)$ to every element.
-
 #### Example snippet:
 <LanguageSection>
 
@@ -49,14 +45,14 @@ for (ll i = 0; i < (1 << (n - 1)); i++) {
 }
 ```
 
+</CPPSection>
+
+</LanguageSection>
+
 ### Subtask 2: $\mathcal{O}(N^2)$
 One more observation that can be made, is that a greedy algorithm is guarenteed to be correct. This is because backtracking would never need to be used since at each point you could check each of the candidates and if they would pass all previous checks.
 
 The optimized algorithm would involve again going left to right and generating two candidates, but instead of basing which candidates to use on bruteforce it would pick whichever is currently valid.
-
-</CPPSection>
-
-</LanguageSection>
 
 ## Implementation
 
@@ -111,11 +107,7 @@ int main() {
 	}
 
 	// Output solution
-	int offset = 0;
-	int minVal = *min_element(solution.begin(), solution.end());
-	if (minVal < 0) offset = -minVal;
-
-	for (int i = 0; i < n; i++) { cout << solution[i] + offset << " "; }
+	for (int x : solution) { cout << x << " "; }
 }
 ```
 
