@@ -9,26 +9,46 @@ author: John Zhou
 
 ## Explanation
 
-Without loss of generality, we have the left-out cow face right, and the rest facing left. Since we can flip the direction of all the cows, this covers the equivalent case of the left-out cow facing left.
+Without loss of generality, we have the left-out cow face right, and the rest facing left.
+Since we can flip the direction of all the cows, this covers the equivalent case of the left-out cow facing left.
 
-Note that turning the same row or column twice has no effect.
-Therefore, we can simply consider whether to turn each row and column.
-We use the following procedure initially:
-1. If the first cow in any row is an R, then we turn the entire row.
-2. Now, the entire first column should be L.
-3. If the first cow in any column is an R, then we turn the entire column.
-4. Now, the entire first row should be L.
+By experimenting with an arbitrary example for this problem, we note the following:
+- **The order of the operations does not matter.**
+
+  This is trivial considering that all flips on a single cell are created equal.
+
+- **Flipping the same row or column twice at any point in the problem has no effect.**
+
+  By the first lemma, we can exchange the order of the operations such that the two congruent flips are adjacent, where they simply cancel out.
+
+- **The problem can be solved without ever touching the first row,** and below, we will forbid that operation as it does not impact solvability.
+
+  Flipping the first column, then every row besides the first row, then every column besides the first column will result in every grid in the first row being flipped, which means one can recreate flipping the first row using other operations.
+
+We now consider how to solve the problem when there is no left-out cow.  We note two things:
+
+- **To get rid of an R in the first row, then we turn the entire column it belongs to.**
+  To get rid of the R, we either turn the first row, which we prohibited, or turn the relevant column;
+  we do the latter.
+- **To get rid of an R in the first column, then we turn the entire row it belongs to.**
+  To get rid of the R, we either turn the first column, or turn the relevant row;
+  turning the first column will make $(1, 1)$ an R, and to get rid of that R, one must either turn the first row (prohibited) or column (redundant);
+  thus, we must turn the relevant row.
+
+We use the above two procedures repeatedly until all R's are gone from the first row and column.
+The end result of this should be deterministic, as if any different operations are done, they can be "exchanged" to the end, where they will create R's in the first row and/or column; by the 2 things above, it is impossible to do anything to get rid of those R's except flipping the row back, which we prohibit.
 
 Now, we must consider the "interior region" that is neither in the first row nor the first column.
-First, if there's an R in the interior region, then it is impossible to turn the entire grid to L;
-attempts to get rid of that R by flipping the row or column it is contained in will result in another R in the first row or column, which means that it is impossible to get rid of all R's in this state.
+In a solvable puzzle, this region must be all L;
+this is because any R in that region can only be touched by turning the row or column it belongs to, which inevitably creates an R in the first row or column at that location
+(any other operations must be done to different rows and/or columns, and will not magically change that R to an L);
+however, to get rid of that R, as shown above, one must turn that row or column again, which we prohibit.  That renders the puzzle unsolvable.
 
-In that case, there are several cases for the locations of R's in the region:
+If there is a left-out cow, then there are several cases for the locations of R's in the region:
 - **If there's only one R:** That R is the nonconforming cow requested by the problem.
 - **If there's only a single row or column of R's:** Flip that row or column in the entire grid, and then the first cow in that row or column will be the only R, which gives us the answer.
 - **If the entire region is filled with R's:**  First, flip every row besides the first row in the entire grid, and then flip the first column in the entire grid; only $(1,1)$ will be an R, which makes that our answer.
-- **Any other pattern of R's:** The above cases covers single left-out cows at any location;
-  therefore, in this case, there is no way to make the grid uniform by just flipping one cow.
+- **Any other pattern of R's:** Note that for all puzzles, the end result of the flipping is deterministic; the above 3 cases are the results of every single position getting left out, so any different results will be unsolvable.
 
 
 ## Implementation
