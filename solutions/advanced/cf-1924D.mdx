@@ -1,0 +1,78 @@
+---
+id: cf-1924D
+source: CF
+title: Balanced Subsequences
+author: Daniel Zhu
+---
+
+## Explanation
+
+First, let's find an easy way to find the longest balanced subsequence (LBS) of a given string $s$. To do this, we can employ a simple greedy algorithm: scan $s$ from left to right, and when we encounter a `)`, pair it with any unpaired `(` seen so far. Here's a visual for this algorithm, where black lines show the pairs formed and the blue downstrokes represent the unpaired `)`:
+
+![400|center](/solutions/advanced/cf-1924D/greedy.png)
+
+Note that a blue downstroke is unpaired iff it is the first downstroke to go from $y = i$ to $y = i - 1$ for some $i \le 0$. Therefore, the total number of unpaired downstrokes is precisely the minimum $y$ ever hit by our path. If we want an LBS of length $2k$ we must have $k$ paired downstrokes and $m - k$ unpaired downstrokes, so the question then becomes: 
+> How many paths with $n$ upstrokes and $m$ downstrokes touch, but do not cross, the line $y = k - m$?
+
+For convenience, we can get rid of the "do not cross" condition by counting the number of paths that go below $y = k - m$ (inclusive), then subtracting the number of paths that go below $y = k - m - 1$. This is equivalent to counting the number of strings with LBS length at most $k$, then subtracting those with LBS length at most $k - 1$.
+
+To count the number of paths that touch $y = k - m$, we consider three cases:
+- $m \le k$. In this case, every path goes below the line $y = k - m$, so all $\binom{n + m}{m}$ paths are valid. 
+- $m \gt k, n \le k$. In this case, we start above the line at $0 > k - m$ and end below the line at $n - m \le k - m$, so we always touch the line somewhere in between. Therefore, all $\binom{n + m}{m}$ paths are valid.
+- $m \gt k, n \gt k$. In this case, we may apply the reflection bijection noted in [the main module](/adv/catalan#reflection) to realize that we can instead count the number of paths that end at $y = 2(k - m) - (n - m)$ = $2k - m - n$. We can verify that after this reflection, our new path will have $k$ upstrokes and $n + m - k$ downstrokes, which generates a total of $\binom{n + m}{k}$ paths.
+
+To finish, we just need to compute this expression for $k$ and $k - 1$, then subtract the two values.
+
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(\max(n, m, k)^2)$
+
+Computing binomial coefficients can easily be done faster by preprocessing factorials, but that's not required for this problem.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+#define int int64_t
+
+const int MX = 5000;
+const int M = 1e9 + 7;
+void ad(int &a, int b) { if ((a += b) >= M) a -= M; };
+int sb(int a, int b) { return ((a -= b) < 0 ? a + M : a); };
+int binom[MX][MX];
+
+// number of strings with LBS <= k
+// i.e. that touch the line y = k - m
+int f(int n, int m, int k) {
+    if (n > m) swap(n, m);
+    if (n <= k) return binom[n][m];
+    else return binom[k][n + m - k];
+}
+
+void ac() {
+    int n, m, k; cin >> n >> m >> k;
+    cout << sb(f(n, m, k), f(n, m, k - 1)) << "\n";
+}
+
+int32_t main() {
+    // compute binomial coefficients: binom[x][y] = C(x + y, y)
+    binom[0][0] = 1;
+    for (int i = 0; i + 1 < MX; i++) {
+        for (int j = 0; j + 1 < MX; j++) {
+            ad(binom[i + 1][j], binom[i][j]);
+            ad(binom[i][j + 1], binom[i][j]);
+        }
+    } 
+    int t; cin >> t;
+    while (t--) ac();
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
