@@ -34,7 +34,7 @@ const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? '';
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   useEffect(() => {
-    if (process.env.NODE_ENV !== 'development') return;
+    if (process.env.NEXT_PUBLIC_WATCH_RELOAD !== '1') return;
     const es = new EventSource('http://localhost:3001');
     es.onmessage = () =>
       router.replace(router.asPath, undefined, { scroll: false });

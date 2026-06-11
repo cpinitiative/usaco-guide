@@ -638,6 +638,25 @@ async function generateUsacoDivisionsJson(
   console.log(`USACO divisions JSON written to: ${outputPath}`);
 }
 
+// async: do all parsing/IO up front
+async function prepareMdxInsert(relPath: string, absPath: string) {
+  const { parseMdxFile } = await import('../src/lib/parseMdxFile');
+  const { moduleIDToSectionMap } = await import('../content/ordering');
+
+  const content = await parseMdxFile(relPath);
+  const relToSolutions = path.relative(SOLUTIONS_DIR, absPath);
+  const type: 'module' | 'solution' =
+    relToSolutions.startsWith('..') ? 'module' : 'solution';
+
+  const gitTimestamps = await getBatchGitTimestamps([absPath]);
+  const gitTime = gitTimestamps.get(path.resolve(absPath)) || null;
+
+  const division =
+    type === 'module' ? moduleIDToSectionMap[content.frontmatter.id] : null;
+
+  return { content, type, gitTime, division };
+}
+
 /**
  * Incrementally update content.db for a set of changed files.
  * Uses DELETE + INSERT (not DROP TABLE) so the existing Next.js readonly
@@ -662,21 +681,76 @@ export async function updateFiles(
       }
 
       if (absPath.endsWith('.mdx')) {
-        db.prepare('DELETE FROM mdx_content WHERE file_path = ?').run(relPath);
-        db.prepare('DELETE FROM module_frontmatter WHERE file_path = ?').run(
-          relPath
-        );
-        db.prepare('DELETE FROM solution_frontmatter WHERE file_path = ?').run(
-          relPath
-        );
-
+        let prepared = null;
         if (event !== 'unlink') {
           try {
-            await insertMdxFile(db, relPath, absPath);
+            prepared = await prepareMdxInsert(relPath, absPath);
           } catch (err) {
-            console.error(`[watch] Failed to parse ${relPath}:`, err);
+            console.error(
+              `[watch] Failed to parse ${relPath}, keeping old row:`,
+              err
+            );
+            continue; // skip DELETE entirely — preserve old content
           }
         }
+
+        const tx = db.transaction(() => {
+          db.prepare('DELETE FROM mdx_content WHERE file_path = ?').run(relPath);
+          db
+            .prepare('DELETE FROM module_frontmatter WHERE file_path = ?')
+            .run(relPath);
+          db
+            .prepare('DELETE FROM solution_frontmatter WHERE file_path = ?')
+            .run(relPath);
+
+          if (prepared) {
+            const { content, type, gitTime, division } = prepared;
+
+            db.prepare(
+              `INSERT OR REPLACE INTO mdx_content
+                 (id, type, file_path, frontmatter_json, body, toc_json, mdast_json,
+                  cpp_oc, java_oc, py_oc, division, git_author_time)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+            ).run(
+              content.frontmatter.id,
+              type,
+              content.fileAbsolutePath,
+              JSON.stringify(content.frontmatter),
+              content.body,
+              JSON.stringify(content.toc),
+              content.mdast ? JSON.stringify(content.mdast) : null,
+              content.cppOc,
+              content.javaOc,
+              content.pyOc,
+              content.fields?.division || null,
+              gitTime
+            );
+
+            if (type === 'module') {
+              db.prepare(
+                `INSERT OR REPLACE INTO module_frontmatter
+                   (file_path, module_id, frontmatter_json, division)
+                 VALUES (?, ?, ?, ?)`
+              ).run(
+                content.fileAbsolutePath,
+                content.frontmatter.id,
+                JSON.stringify(content.frontmatter),
+                division
+              );
+            } else {
+              db.prepare(
+                `INSERT OR REPLACE INTO solution_frontmatter
+                   (file_path, solution_id, frontmatter_json)
+                 VALUES (?, ?, ?)`
+              ).run(
+                content.fileAbsolutePath,
+                content.frontmatter.id,
+                JSON.stringify(content.frontmatter)
+              );
+            }
+          }
+        });
+        tx();
       }
     }
 
@@ -694,64 +768,3 @@ export async function updateFiles(
   }
 }
 
-async function insertMdxFile(
-  db: Database.Database,
-  relPath: string,
-  absPath: string
-): Promise<void> {
-  const { parseMdxFile } = await import('../src/lib/parseMdxFile');
-  const { moduleIDToSectionMap } = await import('../content/ordering');
-
-  const content = await parseMdxFile(relPath);
-  const relToSolutions = path.relative(SOLUTIONS_DIR, absPath);
-  const type: 'module' | 'solution' = relToSolutions.startsWith('..')
-    ? 'module'
-    : 'solution';
-
-  const gitTimestamps = await getBatchGitTimestamps([absPath]);
-  const gitTime = gitTimestamps.get(path.resolve(absPath)) || null;
-
-  db.prepare(
-    `INSERT OR REPLACE INTO mdx_content
-       (id, type, file_path, frontmatter_json, body, toc_json, mdast_json,
-        cpp_oc, java_oc, py_oc, division, git_author_time)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-  ).run(
-    content.frontmatter.id,
-    type,
-    content.fileAbsolutePath,
-    JSON.stringify(content.frontmatter),
-    content.body,
-    JSON.stringify(content.toc),
-    content.mdast ? JSON.stringify(content.mdast) : null,
-    content.cppOc,
-    content.javaOc,
-    content.pyOc,
-    content.fields?.division || null,
-    gitTime
-  );
-
-  if (type === 'module') {
-    const division = moduleIDToSectionMap[content.frontmatter.id];
-    db.prepare(
-      `INSERT OR REPLACE INTO module_frontmatter
-         (file_path, module_id, frontmatter_json, division)
-       VALUES (?, ?, ?, ?)`
-    ).run(
-      content.fileAbsolutePath,
-      content.frontmatter.id,
-      JSON.stringify(content.frontmatter),
-      division
-    );
-  } else {
-    db.prepare(
-      `INSERT OR REPLACE INTO solution_frontmatter
-         (file_path, solution_id, frontmatter_json)
-       VALUES (?, ?, ?)`
-    ).run(
-      content.fileAbsolutePath,
-      content.frontmatter.id,
-      JSON.stringify(content.frontmatter)
-    );
-  }
-}
