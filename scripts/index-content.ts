@@ -645,8 +645,9 @@ async function prepareMdxInsert(relPath: string, absPath: string) {
 
   const content = await parseMdxFile(relPath);
   const relToSolutions = path.relative(SOLUTIONS_DIR, absPath);
-  const type: 'module' | 'solution' =
-    relToSolutions.startsWith('..') ? 'module' : 'solution';
+  const type: 'module' | 'solution' = relToSolutions.startsWith('..')
+    ? 'module'
+    : 'solution';
 
   const gitTimestamps = await getBatchGitTimestamps([absPath]);
   const gitTime = gitTimestamps.get(path.resolve(absPath)) || null;
@@ -695,13 +696,15 @@ export async function updateFiles(
         }
 
         const tx = db.transaction(() => {
-          db.prepare('DELETE FROM mdx_content WHERE file_path = ?').run(relPath);
-          db
-            .prepare('DELETE FROM module_frontmatter WHERE file_path = ?')
-            .run(relPath);
-          db
-            .prepare('DELETE FROM solution_frontmatter WHERE file_path = ?')
-            .run(relPath);
+          db.prepare('DELETE FROM mdx_content WHERE file_path = ?').run(
+            relPath
+          );
+          db.prepare('DELETE FROM module_frontmatter WHERE file_path = ?').run(
+            relPath
+          );
+          db.prepare(
+            'DELETE FROM solution_frontmatter WHERE file_path = ?'
+          ).run(relPath);
 
           if (prepared) {
             const { content, type, gitTime, division } = prepared;
@@ -767,4 +770,3 @@ export async function updateFiles(
     db.close();
   }
 }
-
