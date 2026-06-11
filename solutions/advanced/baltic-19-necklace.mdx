@@ -147,41 +147,44 @@ subproblem in $\mathcal O(N)$ time and $\mathcal O(N)$ memory.
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-#define a first
-#define b second
 vector<int> pi(const string &s) {
 	int n = (int)s.size();
 	vector<int> pi_s(n);
 	for (int i = 1, j = 0; i < n; i++) {
-		while (j > 0 && s[j] != s[i]) { j = pi_s[j - 1]; }
-		if (s[i] == s[j]) { j++; }
+		while (j > 0 && s[j] != s[i]) {
+			j = pi_s[j - 1];
+		}
+		if (s[i] == s[j]) {
+			j++;
+		}
 		pi_s[i] = j;
 	}
 	return pi_s;
 }
-vector<int> calc(string s, string t) {
+vector<int> calc(const string &s, const string &t) {
 	vector<int> ret(s.size());
 	string cur = t + "#" + s;
 	vector<int> p = pi(cur);
-	for (int i = 0; i < s.size(); i++) ret[i] = p[i + t.size() + 1];
+	for (int i = 0; i < (int)s.size(); i++) ret[i] = p[i + t.size() + 1];
 	return ret;
 }
 pair<int, pair<int, int>> solve(string s, string t) {
 	t += ".";
+	string s_rev = s;
+	reverse(s_rev.begin(), s_rev.end());
 	pair<int, pair<int, int>> ans = {0, {0, 0}};
-	for (int i = 0; i < t.size() - 1; i++) {
+	for (int i = 0; i < (int)t.size() - 1; i++) {
+		string t_rev = t;
+		reverse(t_rev.begin(), t_rev.end());
 		vector<int> left = calc(s, t);
-		reverse(s.begin(), s.end());
-		reverse(t.begin(), t.end());
-		vector<int> right = calc(s, t);
-		reverse(s.begin(), s.end());
-		reverse(t.begin(), t.end());
+		vector<int> right = calc(s_rev, t_rev);
 		reverse(right.begin(), right.end());
-		for (int j = 0; j <= s.size(); j++) {
+		for (int j = 0; j <= (int)s.size(); j++) {
 			int l = j == 0 ? 0 : left[j - 1];
-			int r = j == s.size() ? 0 : right[j];
+			int r = j == (int)s.size() ? 0 : right[j];
 			ans = max(ans,
-			          {l + r, {j - l, (2 * (t.size() - 1) - r + i) % (t.size() - 1)}});
+					  {l + r,
+					   {j - l, (int)(2 * (t.size() - 1) - r + i) % (int)(t.size() - 1)}});
 		}
 		rotate(t.begin(), t.begin() + 1, t.end());
 	}
@@ -195,9 +198,9 @@ int main() {
 	pair<int, pair<int, int>> ans = solve(s, t);
 	reverse(t.begin(), t.end());
 	pair<int, pair<int, int>> cur = solve(s, t);
-	cur.b.b = t.size() - cur.b.b - cur.a;
+	cur.second.second = (int)t.size() - cur.second.second - cur.first;
 	ans = max(ans, cur);
-	cout << ans.a << "\n";
-	if (ans.a) cout << ans.b.a << " " << ans.b.b << "\n";
+	cout << ans.first << "\n";
+	if (ans.first) cout << ans.second.first << " " << ans.second.second << "\n";
 }
 ```
