@@ -16,10 +16,10 @@ Note that a blue downstroke is unpaired iff it is the first downstroke to go fro
 
 For convenience, we can get rid of the "do not cross" condition by counting the number of paths that go below $y = k - m$ (inclusive), then subtracting the number of paths that go below $y = k - m - 1$. This is equivalent to counting the number of strings with LBS length at most $k$, then subtracting those with LBS length at most $k - 1$.
 
-To count the number of paths that touch $y = k - m$, we consider three cases:
-- $m \le k$. In this case, every path goes below the line $y = k - m$, so all $\binom{n + m}{m}$ paths are valid.
-- $m \gt k, n \le k$. In this case, we start above the line at $0 > k - m$ and end below the line at $n - m \le k - m$, so we always touch the line somewhere in between. Therefore, all $\binom{n + m}{m}$ paths are valid.
-- $m \gt k, n \gt k$. In this case, we may apply the reflection bijection noted in [the main module](/adv/catalan#reflection) to realize that we can instead count the number of paths that end at $y = 2(k - m) - (n - m)$ = $2k - m - n$. We can verify that after this reflection, our new path will have $k$ upstrokes and $n + m - k$ downstrokes, which generates a total of $\binom{n + m}{k}$ paths.
+To count the number of paths that go below $y = k - m$, we consider three cases:
+- $m \le k$. In this case, we always start below the line at $y = 0 \le k - m$, so all $\binom{n + m}{m}$ paths are valid.
+- $n \le k$. In this case, we always end below the line at $y = n - m \le k - m$, so all $\binom{n + m}{m}$ paths are valid.
+- $m \gt k, n \gt k$. In this case, since we start above the line and end above the line, we may apply the reflection bijection noted in [the main module](/adv/catalan#reflection) to realize that we can instead count the number of paths that end at $y = 2(k - m) - (n - m)$ = $2k - m - n$. We can verify that after this reflection, our new path will have $k$ upstrokes and $n + m - k$ downstrokes, which generates a total of $\binom{n + m}{k}$ paths.
 
 To finish, we just need to compute this expression for $k$ and $k - 1$, then subtract the two values.
 
