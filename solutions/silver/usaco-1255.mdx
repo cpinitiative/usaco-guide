@@ -35,7 +35,7 @@ the defender would want to sabotage the attacker from doing so, and therefore ne
 When two players play with the above strategies, let the number of total operations on room $i$ if it is played to the end be $T_i$;
 the game's winner will be the winner of the room with the minimum $\left\lceil\frac{T_i}2\right\rceil$ (if tied, the minimum room number), as it's the room that will be reached after the least amount of times went around the circle.
 
-To minimize the number of rounds, the attacker can use a slightly modified version of his strategy when $N=1$: 
+To minimize the number of rounds, the attacker can use a slightly modified version of his strategy when $N=1$:
 Instead of giving $a_i\bmod4=0$'s to the other victim by taking away $a_i\bmod 4$ cows, he can take away any $p\equiv a_i\mod 4$ cows, where $p \in \mathbb P$;
 the larger the $p$ for the operation, the more speedup it offers to ending the game.
 Given an $x$, to compute the largest $p$ for which $p\equiv x\mod 4$, one preprocesses;
@@ -63,52 +63,48 @@ In practice, however, it becomes unneccessary to track the room, as the parity o
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <cstring>
+#include <iostream>
 using namespace std;
 constexpr int MAX_NUMBER = 5000000;
-int isprime[MAX_NUMBER+1];
-int m[MAX_NUMBER+1];
+int isprime[MAX_NUMBER + 1];
+int m[MAX_NUMBER + 1];
 
-int main()
-{
-    int T;
-    cin >> T;
-    memset(isprime, true, sizeof isprime);
-    isprime[1] = false;
+int main() {
+	int T;
+	cin >> T;
+	memset(isprime, true, sizeof isprime);
+	isprime[1] = false;
 	// 1 is considered a prime under this problem, even though
 	// we don't sieve it; so assign 1 initially.
-    int t[] = {-1, 1, -1, -1};
+	int t[] = {-1, 1, -1, -1};
 	m[1] = 1;
 	// Sieve algorithm
-    for (int i = 2; i <= MAX_NUMBER; i++) {
-        if (isprime[i]) {
-            t[i%4] = i;
-            for (int j = i; j < MAX_NUMBER; j += i)
-                isprime[j] = false;
-        }
+	for (int i = 2; i <= MAX_NUMBER; i++) {
+		if (isprime[i]) {
+			t[i % 4] = i;
+			for (int j = i; j < MAX_NUMBER; j += i) isprime[j] = false;
+		}
 		m[i] = t[i % 4];
-    }
-    while (T--) {
-        int n;
-        cin >> n;
-        int minn = 2e9;
-        for (int i = 1; i <= n; i++) {
-            int a;
-            cin >> a;
+	}
+	while (T--) {
+		int n;
+		cin >> n;
+		int minn = 2e9;
+		for (int i = 1; i <= n; i++) {
+			int a;
+			cin >> a;
 			int min_turns;
 			if (a % 2 == 0) {
 				min_turns = a / 2;
 			} else {
 				min_turns = 1 + (a - m[a]) / 2;
 			}
-            if (min_turns / 2 < minn / 2) {
-                minn = min_turns;
-            }
-        }
-        cout << ((minn & 1) ? "Farmer John" : "Farmer Nhoj") << endl;
-    }
-    return 0;
+			if (min_turns / 2 < minn / 2) { minn = min_turns; }
+		}
+		cout << ((minn & 1) ? "Farmer John" : "Farmer Nhoj") << endl;
+	}
+	return 0;
 }
 ```
 
