@@ -52,7 +52,7 @@ async function watchContent() {
   // Start Next.js dev server as a child process
   const nextProc = spawn('npx', ['next', 'dev'], {
     stdio: 'inherit',
-    env: { ...process.env },
+    env: { ...process.env, NEXT_PUBLIC_WATCH_RELOAD: '1' },
     shell: process.platform === 'win32',
   });
 
