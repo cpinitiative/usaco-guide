@@ -42,4 +42,26 @@ int main() {
 
 </CPPSection>
 
+<PySection>
+
+```py
+from heapq import heappush, heappop
+
+n = int(input())
+arr = list(map(int, input().split()))
+heap = []
+
+ans = 0
+
+for i in range(n):
+	heappush(heap, -arr[i])
+	if arr[i] < -heap[0]:
+		ans += -heappop(heap) - arr[i]
+		heappush(heap, -arr[i])
+
+print(ans)
+```
+
+</PySection>
+
 </LanguageSection>
