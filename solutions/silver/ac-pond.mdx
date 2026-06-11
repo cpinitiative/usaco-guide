@@ -1,0 +1,117 @@
+---
+id: ac-pond
+source: AC
+title: Pond
+author: Arnav Gokhale
+---
+
+[Official Analysis](https://atcoder.jp/contests/abc203/editorial)
+
+
+## Explanation
+
+To solve this question, we can employ binary search on the answer. For a given value $M$, we ask whether there exists a $K \times K$ region whose median is less than or equal to $M$. Based on the answers to these questions, we can update our binary search range and calculate the lowest median among all parks.
+
+We now know focus on how to efficiently test whether such a $K \times K$ square exists. Assign each block $A_{i, j}$ a value of $1$ if $A_{i, j} \le M$ and $0$ otherwise. As shown in the [2D Prefix Sums Module](https://usaco.guide/silver/more-prefix-sums), we can calculate the 2D prefix sums of the constructed array, and use it to efficiently compute the number of squares $A_{i, j} \le M$ within any $K \times K$ region.
+
+Let $P_{i , j}$ denote the number of tiles $(i', j')$ from $(1, 1)$ to $(i, j)$ such that $A_{i', j'} \le M$. Then, for a $K \times K$ region with it's bottom right corner at $(i, j)$, the number of squares whose value is less than or equal to $M$ would be $P_{i, j} - P_{i - k, j} - P_{i, j - k} + P_{i - k, j - k}.$ 
+
+If any $K \times K$ region satisfies the value $\lfloor{\frac{k^2 + 1}{2}}\rfloor$, the median $M$ exists, and the test was succesful. Otherwise, we may need to update our binary search to consider larger values of $M$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2\log[\text{max}(A_{i})])$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+
+#include <bits/stdc++.h>
+using namespace std;
+#define int long long
+using vi = vector<int>;
+using ll = long long;
+using str = string;
+using pi = array<int,2>;
+using vb = vector<bool>;
+
+#define sz(x) int(x.size())
+#define lb lower_bound
+#define ub upper_bound
+#define FOR(i, a, b) for (int i = (a); i < (b); i++)
+const int MOD = 1000000000;
+const int INF = 1e18;
+
+
+void solve() {
+    int n, k; cin >> n >> k;
+
+    vector<vector<int>> a(n, vector<int> (n));
+    vector<vector<int>> p(n + 1, vector<int> (n + 1));
+    
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cin >> a[i][j];
+        }
+    }
+
+    int l = 0, h = 1e9;
+    int ans = INF;
+    while (l <= h) {
+        int m = (l + h) / 2;
+
+        // Constructing the 2D Prefix Array
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= n; j++) {
+                p[i][j] = p[i - 1][j] + p[i][j - 1] - p[i - 1][j - 1] + (a[i - 1][j - 1] <= m);
+            }
+        }
+
+        // Calculating K x K regions
+        bool f = false;
+        for (int i = k; i <= n; i++) {
+            for (int j = k; j <= n; j++) {
+                int vl = p[i][j] - p[i - k][j] - p[i][j - k] + p[i - k][j - k];
+                if (vl >= (k * k + 1) / 2) {
+                    f = true;
+                    break;
+                }
+            }
+            if (f) break;
+        }
+
+        if (f) {
+            ans = min(ans, m);
+            h = m - 1;
+        } else l = m + 1;
+
+    }
+
+    cout << ans << '\n';
+}
+
+signed main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    solve();
+}
+
+
+```
+
+</CPPSection>
+
+<PySection>
+
+
+</PySection>
+
+<JavaSection>
+
+
+</JavaSection>
+
+</LanguageSection>
