@@ -6,7 +6,7 @@ author: Arnav Gokhale
 ---
 
 
-[Official Analysis](https://codeforces.com/blog/entry/137306)
+[Official Analysis (C++)](https://codeforces.com/blog/entry/137306)
 
 ## Explanation
 
@@ -39,37 +39,37 @@ void solve() {
 		c[a[i]].push_back(i);
 	}
 
-	vector<int> b(n);
-	vector<bool> v(n);
+	vector<int> count(n);
+	vector<bool> vis(n);
 	int ans = 2;
 
 	// Runs a DFS to go out of the node finding max path length
 	auto dfs = [&](auto &&self, int nd) -> int {
 		int mx = 0;
-		v[nd] = true;
+		vis[nd] = true;
 		for (int i = 0; i < c[nd].size(); i++) {
-			if (b[c[nd][i]] != 2) { mx = max(mx, self(self, c[nd][i])); }
+			if (count[c[nd][i]] != 2) { mx = max(mx, self(self, c[nd][i])); }
 		}
 		return mx + 1;
 	};
 
 	for (int i = 0; i < n; i++) {
-		if (!v[i]) {
+		if (!vis[i]) {
 			int nd = i;
-			vector<int> tm;
+			vector<int> nodes;
 
 			// Get all the nodes in a cycle
-			while (b[nd] != 2) {
-				v[nd] = true;
-				b[nd]++;
-				if (b[nd] == 2) tm.push_back(nd);
+			while (count[nd] != 2) {
+				vis[nd] = true;
+				count[nd]++;
+				if (count[nd] == 2) nodes.push_back(nd);
 				nd = a[nd];
 			}
 
 			// Run a DFS on the nodes in the cycle getting the max path length into node
-			// tm[i]
+			// nodes[i]
 			for (int i = 0; i < tm.size(); i++) {
-				int d = dfs(dfs, tm[i]);
+				int d = dfs(dfs, nodes[i]);
 				ans = max(d + 1, ans);
 			}
 		}
@@ -86,6 +86,7 @@ int main() {
 	cin >> t;
 	while (t--) { solve(); }
 }
+
 ```
 
 </CPPSection>
