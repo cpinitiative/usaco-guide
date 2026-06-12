@@ -1,0 +1,54 @@
+---
+id: cf-427E
+source: CF
+title: Police Patrol
+author: Raagav Bala
+---
+
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<PySection>
+
+```py
+
+def side_cost(a, n, m):
+    cnt, left = [0]*n, [0]*n
+    cnt[0] = 1
+
+    for i in range(1, n):
+        cnt[i] = cnt[i-1]
+
+		#extend the current cost using prev block boundary
+        pre = i - i%m
+        if i == pre: pre -= m
+
+        left[i] = left[pre] + cnt[i]*abs(a[i]-a[pre])
+        if i % m == 0: cnt[i] += 1 #new block starts here
+
+    return left
+
+
+n, m = map(int, input().split())
+positions = list(map(int, input().split()))
+
+m = min(n, m)
+left_cost = side_cost(positions, n, m)
+positions.reverse()
+right_cost = side_cost(positions, n, m)
+
+ans = float('inf')
+for i in range(n): 
+	#try every criminal position as station
+	ans = min(ans, left_cost[i] + right_cost[n-i-1]) 
+print(2*ans)
+
+```
+
+</PySection>
+
+</LanguageSection>
