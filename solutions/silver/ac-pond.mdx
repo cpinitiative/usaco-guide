@@ -12,11 +12,11 @@ author: Arnav Gokhale
 
 To solve this question, we can employ binary search on the answer. For a given value $M$, we ask whether there exists a $K \times K$ region whose median is less than or equal to $M$. Based on the answers to these questions, we can update our binary search range and calculate the lowest median among all parks.
 
-We now know focus on how to efficiently test whether such a $K \times K$ square exists. Assign each block $A_{i, j}$ a value of $1$ if $A_{i, j} \le M$ and $0$ otherwise. As shown in the [2D Prefix Sums Module](https://usaco.guide/silver/more-prefix-sums), we can calculate the 2D prefix sums of the constructed array, and use it to efficiently compute the number of squares $A_{i, j} \le M$ within any $K \times K$ region.
+We now focus on how to efficiently test whether such a $K \times K$ square exists. Assign each block $A_{i, j}$ a value of $1$ if $A_{i, j} \le M$ and $0$ otherwise. As shown in the [2D Prefix Sums Module](https://usaco.guide/silver/more-prefix-sums), we can calculate the 2D prefix sums of the constructed grid, and use it to efficiently compute the number of squares $A_{i, j} \le M$ within any $K \times K$ region.
 
 Let $P_{i , j}$ denote the number of tiles $(i', j')$ from $(1, 1)$ to $(i, j)$ such that $A_{i', j'} \le M$. Then, for a $K \times K$ region with it's bottom right corner at $(i, j)$, the number of squares whose value is less than or equal to $M$ would be $P_{i, j} - P_{i - k, j} - P_{i, j - k} + P_{i - k, j - k}.$
 
-If any $K \times K$ region satisfies the value $\lfloor{\frac{k^2 + 1}{2}}\rfloor$, the median $M$ exists, and the test was succesful. Otherwise, we may need to update our binary search to consider larger values of $M$.
+If any $K \times K$ region satisfies the value $\lfloor{\frac{k^2 + 1}{2}}\rfloor$, the median $M$ exists, and the test was successful. Otherwise, we may need to update our binary search to consider larger values of $M$.
 
 ## Implementation
 
