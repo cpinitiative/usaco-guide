@@ -141,43 +141,43 @@ We check if the sum of the entire array minus the sum of the maximum subarray ra
 #include <iomanip>
 using namespace std;
 constexpr int MAX_N = 1e5;
-double M[MAX_N+1];
-double diff[MAX_N+1];
-double K[MAX_N+1];
+double M[MAX_N + 1];
+double diff[MAX_N + 1];
+double K[MAX_N + 1];
 int n;
 
 // Check whether an average is possible
 bool check(double x) {
-    double total = 0;
-    // Compute the temporary difference array
-    // and compute its total sum
-    for (int i = 1; i <= n; i++) {
-        diff[i] = M[i] - x;
-        total += diff[i];
-    }
+	double total = 0;
+	// Compute the temporary difference array
+	// and compute its total sum
+	for (int i = 1; i <= n; i++) {
+		diff[i] = M[i] - x;
+		total += diff[i];
+	}
 
-    // Compute each K[i] and find the maximum of the elements
-    K[2] = diff[2];
-    double max_sum = K[2];
-    for (int i = 3; i < n; i++) {
-        K[i] = max(K[i-1] + diff[i], diff[i]);
-        max_sum = max(max_sum, K[i]);
-    }
-    return total - max_sum < 1e-6;
+	// Compute each K[i] and find the maximum of the elements
+	K[2] = diff[2];
+	double max_sum = K[2];
+	for (int i = 3; i < n; i++) {
+		K[i] = max(K[i - 1] + diff[i], diff[i]);
+		max_sum = max(max_sum, K[i]);
+	}
+	return total - max_sum < 1e-6;
 }
 int main() {
-    ifstream fin("sabotage.in");
-    fin >> n;
-    for (int i = 1; i <= n; i++) fin >> M[i];
-    double l = 0, r = 10000;
-    while (l + 1e-4 < r) {
-        double mid = (l + r) / 2;
-        if (check(mid)) r = mid;
-        else l = mid;
-    }
-    ofstream fout("sabotage.out");
-    fout << fixed << setprecision(3) << l << endl;
-    return 0;
+	ifstream fin("sabotage.in");
+	fin >> n;
+	for (int i = 1; i <= n; i++) fin >> M[i];
+	double l = 0, r = 10000;
+	while (l + 1e-4 < r) {
+		double mid = (l + r) / 2;
+		if (check(mid)) r = mid;
+		else l = mid;
+	}
+	ofstream fout("sabotage.out");
+	fout << fixed << setprecision(3) << l << endl;
+	return 0;
 }
 ```
 
