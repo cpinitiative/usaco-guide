@@ -5,10 +5,16 @@ title: Pond
 author: Arnav Gokhale
 ---
 
-[Official Analysis (C++)](https://atcoder.jp/contests/abc203/editorial/2008)
+[Official Analysis (C++)](https://atcoder.jp/contests/abc203/editorial)
 
+<Spoiler title = "Hint">
+
+What can be said about the condition that there exists a $K \times K$ region whose median is less than or equal to $M$?
+</Spoiler>
 
 ## Explanation
+
+<Spoiler title = "Solution">
 
 To solve this question, we can employ binary search on the answer. For a given value $M$, we ask whether there exists a $K \times K$ region whose median is less than or equal to $M$. Based on the answers to these questions, we can update our binary search range and calculate the lowest median among all parks.
 
@@ -23,6 +29,9 @@ $$
 Since each entry with value at most $M$ would contribute $1$ and $-1$ otherwise, the sum would represent the number of squares with value less than or equal to $M$ minus the number of squares whose value is greater than $M$ within the region.
 
 If any $K \times K$ region has a net sum greater than or equal to $0$, the median $M$ exists, and the test was successful. Otherwise, we need to update our binary search to consider larger values of $M$.
+
+</Spoiler>
+
 
 ## Implementation
 
@@ -59,7 +68,7 @@ void solve() {
 		for (int i = 1; i <= n; i++) {
 			for (int j = 1; j <= n; j++) {
 				p[i][j] = p[i - 1][j] + p[i][j - 1] - p[i - 1][j - 1];
-				p[i][j] += (a[i - 1][j - 1] <= m) ? 1 : -1;
+                p[i][j] += (a[i - 1][j - 1] <= m) ? 1 : -1;
 			}
 		}
 
@@ -93,8 +102,10 @@ signed main() {
 
 	solve();
 }
+
 ```
 
 </CPPSection>
+
 
 </LanguageSection>
