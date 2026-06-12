@@ -58,19 +58,19 @@ void solve() {
 		}
 
 		// Calculating K x K regions
-		bool f = false;
+		bool found = false;
 		for (int i = k; i <= n; i++) {
 			for (int j = k; j <= n; j++) {
 				int vl = p[i][j] - p[i - k][j] - p[i][j - k] + p[i - k][j - k];
 				if (vl >= (k * k + 1) / 2) {
-					f = true;
+					found = true;
 					break;
 				}
 			}
-			if (f) break;
+			if (found) break;
 		}
 
-		if (f) {
+		if (found) {
 			ans = min(ans, m);
 			h = m - 1;
 		} else {
