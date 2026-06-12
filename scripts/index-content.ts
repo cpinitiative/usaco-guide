@@ -224,15 +224,19 @@ async function getBatchGitTimestamps(
   const { execSync } = await import('child_process');
   const timestamps = new Map<string, string>();
 
-  // Batch files to avoid Windows command line length limit (~8191 chars)
+  // Batch files to avoid Windows/Linux command line length limits
   const BATCH_SIZE = 50;
+  const rootDir = process.cwd();
 
   for (let i = 0; i < filePaths.length; i += BATCH_SIZE) {
     const batch = filePaths.slice(i, i + BATCH_SIZE);
 
+    // convert absolute paths to repo-relative paths for Git CLI
+    const relativeBatch = batch.map(f => path.relative(rootDir, f));
+
     try {
       const result = execSync(
-        `git log --format="%ct|%H" --name-only -- ${batch.map(f => `"${f}"`).join(' ')}`,
+        `git log --format="%ct|%H" --name-only -- ${relativeBatch.map(f => `"${f}"`).join(' ')}`,
         { encoding: 'utf-8', maxBuffer: 10 * 1024 * 1024 }
       );
 
@@ -240,11 +244,13 @@ async function getBatchGitTimestamps(
       let currentTimestamp: string | null = null;
 
       for (const line of lines) {
-        if (line.includes('|')) {
-          const [timestamp] = line.split('|');
+        const trimmed = line.trim();
+        if (trimmed.includes('|')) {
+          const [timestamp] = trimmed.split('|');
           currentTimestamp = new Date(parseInt(timestamp) * 1000).toISOString();
-        } else if (line.trim() && currentTimestamp) {
-          const resolvedPath = path.resolve(line.trim());
+        } else if (trimmed && currentTimestamp) {
+          // Resolve the tracked relative path back to an absolute path for matching
+          const resolvedPath = path.resolve(rootDir, trimmed);
           if (!timestamps.has(resolvedPath)) {
             timestamps.set(resolvedPath, currentTimestamp);
           }

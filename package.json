@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "yarn tsx scripts/load-content.ts && next dev",
     "dev:watch": "WATCH_RELOAD=1 yarn tsx scripts/watch-content.ts",
-    "prebuild": "yarn clean && yarn tsx scripts/index-content.ts",
+    "prebuild": "yarn clean && yarn git:unshallow && yarn tsx scripts/index-content.ts",
     "build": "next build && yarn tsx scripts/algolia-index.ts",
+    "git:unshallow": "git rev-parse --is-shallow | grep -q true && git fetch --unshallow || true",
     "start": "next start",
     "lint": "next lint",
     "clean": "rimraf dist .next data public/usaco-divisions.json",
@@ -18,13 +19,7 @@
     "eslint": "eslint --fix --ext .jsx --ext .js --ext .ts --ext .tsx --cache src",
     "format": "prettier --write .",
     "check-links": "blc http://localhost:3000 -qorf --exclude train.usaco.org --exclude quora.com --exclude tablesgenerator.com --exclude judge.yosupo.jp --exclude kenkoooo.com --requests 10",
-    "functions:deploy": "firebase deploy --only functions",
-    "benchmark": "yarn tsx benchmarks/scripts/index.ts",
-    "benchmark code-quality": "tsx benchmarks/scripts/index.ts code-quality",
-    "benchmark queries": "tsx benchmarks/scripts/index.ts queries",
-    "benchmark vitals": "tsx benchmarks/scripts/index.ts vitals",
-    "benchmark build": "tsx benchmarks/scripts/index.ts build",
-    "benchmark resources": "tsx benchmarks/scripts/index.ts resources"
+    "functions:deploy": "firebase deploy --only functions"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
