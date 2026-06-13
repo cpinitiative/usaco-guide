@@ -5,31 +5,25 @@ title: QED's Favorite Permutation
 author: Abhinav Singh
 ---
 
-[Official Editorial(C++)](https://codeforces.com/blog/entry/135218)
+[Official Analysis(C++)](https://codeforces.com/blog/entry/135218)
 
 ## Explanation
 > Throughout, $s$ is 1-indexed, so $s_k$ refers to the $k$-th character of the string.
 
 Whether a value can get from one position to another depends only on $s$. The order of swaps doesn't matter at all.
-So the real question becomes: which gaps in $s$ are "blocked", and do any of those blocked gaps fall where the permutation needs them to be open?
-**Gap $k$ depends only on $s_k$ and $s_{k+1}$, so flipping $s_i$ can only affect gap $i-1$ and gap $i$. We never need to recheck everything from scratch.**
+So the real question becomes: which gaps in $s$ are "blocked", and whether any of those blocked gaps fall under positions where the permutation needs them to be open?
+**Gap $k$ depends only on $s_k$ and $s_{k+1}$, so flipping $s_i$ can only affect gap $i-1$ and gap $i$. Hence, we never need to recheck everything from scratch.**
 
-### Marking Blocked Gaps
-
-Look at the gap between position $k$ and position $k+1$. A value can cross this gap to the right if $s_k = R$, and to the left if $s_{k+1} = L$.
-The gap cannot be crossed only when $s_k = L$ and $s_{k+1} = R$ at the same time. Call this a **bad gap**.
-A value can move between two positions only if no bad gap sits between them.
-
-### Finding Each Value's Required Range
+Now, look at the gap between position $k$ and position $k+1$. A value can cross this gap to the right if $s_k = R$, and to the left if $s_{k+1} = L$.
+The only time a gap can **NOT** be crossed is when $s_k = L$ and $s_{k+1} = R$ at the same time. Call this a **bad gap**.
 
 For each value $v$, let $pos$ be its current position in $p$. For the array to end up sorted, $v$ must travel between $pos$ and $v$.
-Set $lo$ to the smaller of $pos$ and $v$, and $hi$ to the larger. Every gap between $lo$ and $hi$ must not be a bad gap, for every value $v$.
+WLOG, let $pos$ be the smaller of the 2 values, and $v$ be the larger. We can see that there can be no **bad** gaps between $pos$ and $v$ for all values of $v$.
 
-### Marking the Gaps That Matter
+So naturally, we ask: How do we track these ranges?
 
-These required ranges come only from $p$, so they never change across queries. Use a difference array: for each value's range $[lo, hi]$, add $1$ at $lo$
-and subtract $1$ at $hi$. After taking prefix sums, any gap with a positive value is needed by at least one value. Call these the **important gaps**.
-The rest can be ignored completely.
+The trick is to use a difference array: for each value's range $[lo, hi]$, add $1$ at $lo$ and subtract $1$ at $hi$. After taking prefix sums, any gap with a positive value is needed by at least one value. Call these the **important gaps**.
+We can effectively ignore all other gaps.
 
 ### Optimal Strategy
 
@@ -37,7 +31,7 @@ Only important gaps matter, and a query at index $i$ can only change whether gap
 Keep one counter, `bad`, for how many important gaps are currently bad.
 
 Before flipping $s_i$, check gap $i-1$ and gap $i$. If either is important and currently bad, subtract one from `bad` per bad gap, as their "bad-ness" may change. Then, flip $s_i$.
-Check the same two gaps again. If either is now important and bad, add one back to `bad`, per bad gap. **The answer is YES when `bad` equals zero.**
+Now, once again check the same two gaps. If either is now important and bad, add one back to `bad`, per bad gap. **The answer is YES when `bad` equals zero.**
 
 ## Implementation
 
@@ -75,22 +69,22 @@ int main() {
 		for (int k = 1; k <= n - 1; k++)
 			d[k] += d[k - 1];  // d[k] > 0 means gap k is important
 
-		auto isBad = [&](int k) { return s[k] == 'L' && s[k + 1] == 'R'; };
+		auto isbad = [&](int k) { return s[k] == 'L' && s[k + 1] == 'R'; };
 
 		// bad = number of important gaps that are currently bad
 		int bad = 0;
 		for (int k = 1; k <= n - 1; k++)
-			if (d[k] > 0 && isBad(k)) bad++;
+			if (d[k] > 0 && isbad(k)) bad++;
 
 		while (q--) {
 			int i;
 			cin >> i;
-			// only gaps i-1 and i can change status when s[i] flips
+			// only gaps i-1 and i can change "bad-ness" when s[i] flips
 			for (int k : {i - 1, i})
-				if (k >= 1 && k <= n - 1 && d[k] > 0 && isBad(k)) bad--;
+				if (k >= 1 && k <= n - 1 && d[k] > 0 && isbad(k)) bad--;
 			s[i] = (s[i] == 'L') ? 'R' : 'L';
 			for (int k : {i - 1, i})
-				if (k >= 1 && k <= n - 1 && d[k] > 0 && isBad(k)) bad++;
+				if (k >= 1 && k <= n - 1 && d[k] > 0 && isbad(k)) bad++;
 			cout << (bad == 0 ? "YES" : "NO") << "\n";
 		}
 	}
