@@ -110,7 +110,7 @@ print(f"{l:.3f}", file=open("sabotage.out", "w"))
 </PySection>
 </LanguageSection>
 
-## Solution 2 (Binary Search, Maximum Sum Subsequence)
+## Solution 2 (Binary Search, Maximum Sum Subarray with DP)
 
 As before, we can binary search on real values to find the minimum average $X$ we can achieve.
 
@@ -123,7 +123,7 @@ To have the best chance at achieving the average, the sum of the remaining eleme
 this means the sum of the sabotaged elements, a continuous range in $[2, n-1]$ should be at a maximum.
 
 The maximum continuous range in an list could be found using a standard DP algorithm:
-Let $K_{2,3,\dots,N-1}$ be the maximum sum of a range ending at index $i$.
+Let $K_i$ be the maximum sum of a range ending at index $2\leq i \leq N-1$.
 The transitions are $K_i=\max(K_{i-1}+M_i,M_i)$, as either a new range can be began at $i$, or a previous range may be continued.
 In this problem, we initialize $K_2=M_2$, as there can only be a 1-element array ending with index 2, and transition until $K_{N-1}$.
 The maximum subarray sum will be the maximum of all elements from $K_2$ to $K_{N-1}$.
