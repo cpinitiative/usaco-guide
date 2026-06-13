@@ -10,12 +10,12 @@ author: Rameez Parwez
 ## Explanation
 
 The actual question here is "Is there a block of $K \times K$
-square in the matrix, which contains fewer than 
+square in the matrix, which contains fewer than
 $\left\lfloor \frac{K^2}{2} \right\rfloor + 1$ squares greater
-than [median](https://en.wikipedia.org/wiki/Median) $M$?". 
+than [median](https://en.wikipedia.org/wiki/Median) $M$?".
 
 Based on this, we can use standard binary search on $M$. First, we will
-transform our matrix into a [0/1 matrix](https://en.wikipedia.org/wiki/Logical_matrix), where 
+transform our matrix into a [0/1 matrix](https://en.wikipedia.org/wiki/Logical_matrix), where
 
 - $0$ means `grid[i][j] <= M`
 - $1$ means `grid[i][j] > M`
@@ -37,51 +37,44 @@ achievable, and we can look for a smaller $M$.
 #include <vector>
 
 int main() {
-    int n, k;
-    std::cin >> n >> k;
-    std::vector<std::vector<int>> grid(n, std::vector<int> (n));
-    std::vector<std::vector<int>> pref(n + 1, std::vector<int> (n + 1, 0));
+	int n, k;
+	std::cin >> n >> k;
+	std::vector<std::vector<int>> grid(n, std::vector<int>(n));
+	std::vector<std::vector<int>> pref(n + 1, std::vector<int>(n + 1, 0));
 
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            std::cin >> grid[i][j];
-        }
-    }
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) { std::cin >> grid[i][j]; }
+	}
 
+	auto can = [&](int mid) -> bool {
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				pref[i + 1][j + 1] = pref[i + 1][j] + pref[i][j + 1] - pref[i][j];
+				if (grid[i][j] > mid) { pref[i + 1][j + 1] += 1; }
+			}
+		}
 
-    auto can = [&] (int mid) -> bool {
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                pref[i + 1][j + 1] = pref[i + 1][j] + pref[i][j + 1] - pref[i][j];
-                if (grid[i][j] > mid) {
-                    pref[i + 1][j + 1] += 1;
-                }
-            }
-        }
+		for (int i = 0; i < n - k + 1; i++) {
+			for (int j = 0; j < n - k + 1; j++) {
+				int cnt =
+				    pref[i + k][j + k] + pref[i][j] - pref[i][j + k] - pref[i + k][j];
+				if (cnt < ((k * k) / 2) + 1) { return true; }
+			}
+		}
+		return false;
+	};
 
-        for (int i = 0; i < n - k + 1; i++) {
-            for (int j = 0; j < n - k + 1; j++) {
-                int cnt = pref[i + k][j + k] + pref[i][j] - pref[i][j + k] - pref[i + k][j];
-                if (cnt < ((k * k) / 2) + 1) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    };
+	int lo = -1, hi = 1e9;
 
-
-    int lo = -1, hi = 1e9;
-
-    while (lo < hi) {
-        int mid = (lo + hi + 1) >> 1;
-        if (can(mid)) {
-            hi = mid - 1;
-        } else {
-            lo = mid;
-        }
-    }
-    std::cout << lo + 1 << '\n';
+	while (lo < hi) {
+		int mid = (lo + hi + 1) >> 1;
+		if (can(mid)) {
+			hi = mid - 1;
+		} else {
+			lo = mid;
+		}
+	}
+	std::cout << lo + 1 << '\n';
 }
 ```
 
