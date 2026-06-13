@@ -1,17 +1,22 @@
 import { getAuth, onAuthStateChanged, signOut, User } from 'firebase/auth';
 import {
+  collection,
   doc,
+  getDocs,
   getFirestore,
   onSnapshot,
   serverTimestamp,
   setDoc,
   updateDoc,
+  writeBatch,
 } from 'firebase/firestore';
+import { getFunctions, httpsCallable } from 'firebase/functions';
 import debounce from 'lodash/debounce';
 import * as React from 'react';
 import { createContext, ReactNode, useMemo, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useFirebaseApp } from '../../hooks/useFirebase';
+import { GroupData } from '../../models/groups/groups';
 import { ModuleProgress } from '../../models/module';
 import { ProblemProgress } from '../../models/problem';
 import { ResourceProgress } from '../../models/resource';
@@ -75,6 +80,7 @@ type UserDataContextAPI = {
     }
   ) => void;
   importUserData: (data: Partial<UserData>) => boolean;
+  deleteAllUserData: (groups: GroupData[]) => Promise<boolean>;
   signOut: () => Promise<void>;
 };
 
@@ -117,6 +123,7 @@ const UserDataContext = createContext<UserDataContextAPI>({
   firebaseUser: null,
   forceFirebaseUserRerender: () => {},
   importUserData: _ => false,
+  deleteAllUserData: _ => Promise.resolve(false),
   isLoaded: true,
 });
 
@@ -374,32 +381,179 @@ export const UserDataProvider = ({
 
     importUserData: (data: Partial<UserData>): boolean => {
       if (
-        confirm(
+        !confirm(
           'Import user data (beta)? All existing data will be lost. Make sure to back up your data before proceeding.'
         )
       ) {
-        const updatedData = assignDefaultsToUserData(data);
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedData));
-        debouncedSetUserData(updatedData); // Use debounced version here
+        return false;
+      }
+
+      const updatedData = assignDefaultsToUserData(data);
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedData));
+      debouncedSetUserData(updatedData); // Use debounced version here
+      if (firebaseUser) {
+        // Stupid hack: if firebase user is set, userData will actually have
+        // the CREATING_ACCOUNT_FOR_FIRST_TIME property, since userData will
+        // be set from the Firebase doc.
+        const CREATING_ACCOUNT_FOR_FIRST_TIME = (userData as any)
+          .CREATING_ACCOUNT_FOR_FIRST_TIME;
+        setDoc(doc(getFirestore(firebaseApp), 'users', firebaseUser.uid), {
+          ...data,
+          CREATING_ACCOUNT_FOR_FIRST_TIME,
+        }).catch(err => {
+          console.error(err);
+          alert(
+            `importUserData: Error setting firebase doc. Check console for details.`
+          );
+        });
+      }
+      return true;
+    },
+
+    deleteAllUserData: async (groups: GroupData[]): Promise<boolean> => {
+      if (
+        !confirm(
+          'Delete all user data? This will permanently remove your progress and settings. This cannot be undone.'
+        ) ||
+        prompt('Are you REALLY sure? Please type "Yes I am sure"')
+          ?.trim()
+          .toLowerCase() !== 'yes i am sure'
+      ) {
+        return false;
+      }
+
+      const emptyUserData = assignDefaultsToUserData({});
+
+      try {
         if (firebaseUser) {
-          // Stupid hack: if firebase user is set, userData will actually have
-          // the CREATING_ACCOUNT_FOR_FIRST_TIME property, since userData will
-          // be set from the Firebase doc.
-          const CREATING_ACCOUNT_FOR_FIRST_TIME = (userData as any)
-            .CREATING_ACCOUNT_FOR_FIRST_TIME;
-          setDoc(doc(getFirestore(firebaseApp), 'users', firebaseUser.uid), {
-            ...data,
-            CREATING_ACCOUNT_FOR_FIRST_TIME,
-          }).catch(err => {
-            console.error(err);
-            alert(
-              `importUserData: Error setting firebase doc. Check console for details.`
+          const db = getFirestore(firebaseApp);
+          const leaveGroup = httpsCallable(
+            getFunctions(firebaseApp),
+            'groups-leave'
+          );
+          const uniqueGroups = Array.from(
+            new Map(groups.map(g => [g.id, g])).values()
+          );
+
+          const deleteGroup = async (groupId: string) => {
+            const firestore = getFirestore(firebaseApp);
+            // oops this batch should really be a transaction todo
+            const refs = [];
+
+            const posts = await getDocs(
+              collection(firestore, 'groups', groupId, 'posts')
             );
+            posts.docs.forEach(doc => refs.push(doc.ref));
+            await Promise.all(
+              posts.docs.map(async doc => {
+                const problems = await getDocs(
+                  collection(
+                    firestore,
+                    'groups',
+                    groupId,
+                    'posts',
+                    doc.id,
+                    'problems'
+                  )
+                );
+                problems.docs.forEach(doc => refs.push(doc.ref));
+                await Promise.all(
+                  problems.docs.map(async problemDoc => {
+                    const submissions = await getDocs(
+                      collection(
+                        firestore,
+                        'groups',
+                        groupId,
+                        'posts',
+                        doc.id,
+                        'problems',
+                        problemDoc.id,
+                        'submissions'
+                      )
+                    );
+                    submissions.docs.forEach(doc => refs.push(doc.ref));
+                  })
+                );
+              })
+            );
+
+            const leaderboard = await getDocs(
+              collection(firestore, 'groups', groupId, 'leaderboard')
+            );
+            leaderboard.docs.forEach(doc => refs.push(doc.ref));
+
+            refs.push(doc(firestore, 'groups', groupId));
+
+            for (let i = 0; i < refs.length; i += 500) {
+              const batch = writeBatch(firestore);
+
+              refs.slice(i, i + 500).forEach(ref => {
+                batch.delete(ref);
+              });
+
+              await batch.commit();
+            }
+          };
+
+          const ownedGroups = uniqueGroups.filter(
+            group =>
+              group.ownerIds.length === 1 &&
+              group.ownerIds.includes(firebaseUser.uid)
+          );
+
+          if (ownedGroups.length > 0) {
+            const ownedGroupNames = ownedGroups
+              .map(group => group.name)
+              .join('\n');
+
+            if (
+              !confirm(
+                `You are the owner of the following group(s):\n${ownedGroupNames}\nTransfer these groups to another person or they will be deleted.\nClick OK to delete these groups anyway, or Cancel to stop.`
+              )
+            ) {
+              return false;
+            }
+          }
+
+          const ownedGroupIds = new Set(ownedGroups.map(group => group.id));
+
+          await Promise.all([
+            ...uniqueGroups
+              .filter(group => !ownedGroupIds.has(group.id))
+              .map(async group => {
+                const result = (await leaveGroup({ groupId: group.id }))
+                  .data as never as
+                  | { success: true }
+                  | { success: false; errorCode: string };
+
+                if (result.success !== true) {
+                  throw new Error('Error: ' + result.errorCode);
+                }
+              }),
+
+            ...ownedGroups.map(group => deleteGroup(group.id)),
+          ]);
+
+          await setDoc(doc(db, 'users', firebaseUser.uid), {
+            ...emptyUserData,
+            CREATING_ACCOUNT_FOR_FIRST_TIME: (userData as any)
+              .CREATING_ACCOUNT_FOR_FIRST_TIME, // hack because this field shouldn't be changed no matter what
           });
         }
+
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
+        localStorage.removeItem(themeKey);
+
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(emptyUserData));
+        debouncedSetUserData(emptyUserData);
+
+        toast.success('Deleted all user data.');
         return true;
+      } catch (err) {
+        console.error(err);
+        toast.error('Failed to delete user data.');
+        return false;
       }
-      return false;
     },
   };
 
@@ -442,4 +596,8 @@ export const useSignOutAction = () => {
 
 export const useImportUserDataAction = () => {
   return React.useContext(UserDataContext).importUserData;
+};
+
+export const useDeleteAllUserDataAction = () => {
+  return React.useContext(UserDataContext).deleteAllUserData;
 };
