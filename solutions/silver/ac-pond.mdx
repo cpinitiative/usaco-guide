@@ -9,6 +9,24 @@ author: Rameez Parwez
 
 ## Explanation
 
+The actual question here is "Is there a block of $K \times K$
+square in the matrix, which contains fewer than 
+$\left\lfloor \frac{K^2}{2} \right\rfloor + 1$ squares greater
+than [median](https://en.wikipedia.org/wiki/Median) $M$?". 
+
+Based on this, we can use standard binary search on $M$. First, we will
+transform our matrix into a [0/1 matrix](https://en.wikipedia.org/wiki/Logical_matrix), where 
+
+- $0$ means `grid[i][j] <= M`
+- $1$ means `grid[i][j] > M`
+
+and precompute the [2-D prefix sum](https://usaco.guide/silver/more-prefix-sums#2d-prefix-sums) of this
+matrix, which will eventually help us to find the number of squares `(i, j) > M` in any $K \times K$ block.
+
+If any of the $K \times K$ blocks has sum less than $\left\lfloor
+\frac{K^2}{2} \right\rfloor$ $+ 1$ then the median $M$ is
+achievable, and we can look for a smaller $M$.
+
 ## Implementation
 
 <LanguageSection>
