@@ -317,12 +317,15 @@ int main() {
 		q.pop();
 		int dir = (beamdir ? 0 : 1);
 		int coord = (beamdir ? points[curr].first : points[curr].second);
-		for (int point : lines[dir][coord]) {
+		auto it = lines[dir].find(coord);
+		if (it == lines[dir].end()) { continue; }
+		for (int point : it->second) {
 			if (dist[point] == 1e9) {
 				q.push({point, !beamdir});
 				dist[point] = dist[curr] + 1;
 			}
 		}
+		lines[dir].erase(it);
 	}
 	cout << (dist[1] == 1e9 ? -1 : dist[1] - 1) << endl;
 	return 0;
@@ -375,12 +378,12 @@ while queue:
 
 	# Change direction
 	if curr_direction:  # is horizontal
-		for fp_i in y_lines[curr_fp.y]:
+		for fp_i in y_lines.pop(curr_fp.y, []):
 			if dist[fp_i] == -1:
 				queue.appendleft((fp_i, not curr_direction))
 				dist[fp_i] = dist[curr_idx] + 1
 	else:  # is vertical
-		for fp_i in x_lines[curr_fp.x]:
+		for fp_i in x_lines.pop(curr_fp.x, []):
 			if dist[fp_i] == -1:
 				queue.appendleft((fp_i, not curr_direction))
 				dist[fp_i] = dist[curr_idx] + 1
