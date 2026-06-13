@@ -14,23 +14,24 @@ First, let's take note of the structure of the graph. Every node has a singular 
 
 Notice that if a node is not in the cycle, the process will not become stable until that node's plushie reaches the cycle. Consider the nodes along a path leading into a cycle. On some day, the spiders will pass their plushie (if they have one) to $r_i$. However, some of the spiders that send a plushie will not receive one in return, causing the system to have changed numbers. Once every plushie reaches a cycle, each spider will both receive and give a plushie, keeping the system stable.
 
-Therefore, the question can be reduced to finding the maximum distance from any node to its respective cycle.
+Therefore, the problem can be reduced to finding the maximum distance from any node to its respective cycle.
 
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
 
 #include <bits/stdc++.h>
 using namespace std;
+
 void solve() {
 	int n;
 	cin >> n;
+
 	vector<int> a(n);
 	vector<vector<int>> c(n);
 	for (int i = 0; i < n; i++) {
@@ -50,6 +51,7 @@ void solve() {
 		for (int i = 0; i < c[nd].size(); i++) {
 			if (count[c[nd][i]] != 2) { mx = max(mx, self(self, c[nd][i])); }
 		}
+
 		return mx + 1;
 	};
 
@@ -80,12 +82,15 @@ void solve() {
 
 int main() {
 	ios::sync_with_stdio(false);
-	cin.tie(NULL);
+	cin.tie(false);
 
 	int t;
 	cin >> t;
-	while (t--) { solve(); }
+	while (t--) {
+		solve();
+	}
 }
+
 ```
 
 </CPPSection>
