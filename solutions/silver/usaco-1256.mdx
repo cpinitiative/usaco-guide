@@ -1,0 +1,116 @@
+---
+id: usaco-1256
+source: USACO Silver 2022 December
+title: Range Reconstruction
+author: Aarav Sethi
+---
+
+## Explanation
+### Subtask 1: $\mathcal{O}(N^2 \cdot 2^N)$
+The first observation is that you may query two adjacent indices $i$ and $j=i+1$ and be given the absolute difference $|a_i-a_j|$.
+
+If you pick an arbitrary $a_0$ and use the above query format for every $0\leq i\leq n-2$ in order, you would have two candidates ($x-a_i$ and $a_i-x$) each time you query.
+
+For this subtask it suffices to simply brute force all combinations of candidates at each step..
+#### Example snippet:
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+for (ll i = 0; i < (1 << (n - 1)); i++) {
+	// Generate solution based on bitmask on whether to add or subtract at each pos
+	solution[0] = 1;
+	for (int j = 1; j < n; j++) {
+		if (i & (1 << (j - 1))) solution[j] = solution[j - 1] + r[j - 1][j];
+		else solution[j] = solution[j - 1] - r[j - 1][j];
+	}
+
+	// Test all rules
+	bool valid = true;
+	for (int x = 0; x < n; x++) {
+		int maxVal = solution[x], minVal = solution[x];
+		for (int y = x + 1; y < n; y++) {
+			maxVal = max(maxVal, solution[y]);
+			minVal = min(minVal, solution[y]);
+
+			if (r[x][y] != maxVal - minVal) {
+				valid = false;
+				break;
+			}
+		}
+
+		if (!valid) break;
+	}
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
+
+### Subtask 2: $\mathcal{O}(N^2)$
+One more observation that can be made, is that a greedy algorithm is guarenteed to be correct. This is because backtracking would never need to be used since at each point you could check each of the candidates and if they would pass all previous checks.
+
+The optimized algorithm would involve again going left to right and generating two candidates, but instead of basing which candidates to use on bruteforce it would pick whichever is currently valid.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using ll = long long;
+using namespace std;
+
+int main() {
+	// Read input
+	int n;
+	cin >> n;
+	vector<vector<int>> r(n, vector<int>(n));
+	for (int i = 0; i < n; i++)
+		for (int j = i; j < n; j++) cin >> r[i][j];
+
+	// Test all possible add/subtract combinations
+	vector<int> solution(n);
+	solution[0] = 1;
+
+	auto isValid = [&](int candidate, int pos) {
+		bool valid = true;
+		solution[pos] = candidate;
+		for (int x = 0; x <= pos; x++) {
+			int maxVal = solution[x], minVal = solution[x];
+			for (int y = x + 1; y <= pos; y++) {
+				maxVal = max(maxVal, solution[y]);
+				minVal = min(minVal, solution[y]);
+
+				if (r[x][y] != maxVal - minVal) { valid = false; }
+			}
+		}
+		return valid;
+	};
+
+	for (int j = 1; j < n; j++) {
+		int cand1 = solution[j - 1] + r[j - 1][j],
+		    cand2 = solution[j - 1] - r[j - 1][j];
+
+		if (isValid(cand1, j)) {
+			solution[j] = cand1;
+		} else {
+			solution[j] = cand2;
+		}
+	}
+
+	// Output solution
+	for (int x : solution) { cout << x << " "; }
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
