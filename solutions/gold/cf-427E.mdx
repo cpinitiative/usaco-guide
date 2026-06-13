@@ -5,6 +5,27 @@ title: Police Patrol
 author: Raagav Bala
 ---
 
+## Explanation
+
+Notice that we only need to try placing the police station at positions where criminals already stand. Between two neighboring criminal positions, the groups of criminals do not change. So, the distance changes linearly, with the minimum distance at an endpoint.
+
+Now, consider only one side of the station. The optimal strategy is to take criminals in groups of at most $m$, starting from the farthest ones. For each group, only the farthest criminal matters because all closer criminals can just be picked up on the way without increasing the distance.
+
+So, if the station is at $\texttt{a}[i]$, the one-way distance on the left side is determined by the criminals at indices:
+
+$$
+0, m, 2m, 3m, \dots
+$$
+
+because each of these is the farthest criminal of one group.
+
+We can compute these distances by looping through the list of positions once. When the station position moves to the right, every existing group becomes farther by the same amount. So, if there are currently $\texttt{cnt}$ groups, moving by distance $d$ increases the distance by $\texttt{cnt} \cdot d$. Every time we pass another block of size $m$, a new group is added. In other words, moving the station from $\texttt{a}[j]$ to $\texttt{a}[i]$ adds $\texttt{cnt} \cdot (\texttt{a}[i] - \texttt{a}[j])$ to the one-way distance. 
+
+This gives the distance for the left side of every possible station. To get the right side, we simply reverse the array and run the same process again.
+
+To choose $\texttt{a}[i]$ as the station, the total distance will be the sum the left distance and right distance. The final answer is double the minimum distance over all indices $i$ because every trip must return to the station.
+
+
 
 ## Implementation
 
@@ -15,23 +36,22 @@ author: Raagav Bala
 <PySection>
 
 ```py
+
 def side_cost(a, n, m):
-	cnt, left = [0] * n, [0] * n
-	cnt[0] = 1
+    cnt, left = [0]*n, [0]*n
+    cnt[0] = 1
 
-	for i in range(1, n):
-		cnt[i] = cnt[i - 1]
+    for i in range(1, n):
+        cnt[i] = cnt[i-1]
 
-		# extend the current cost using prev block boundary
-		pre = i - i % m
-		if i == pre:
-			pre -= m
+		#extend the current cost using prev block boundary
+        pre = i - i%m
+        if i == pre: pre -= m
 
-		left[i] = left[pre] + cnt[i] * abs(a[i] - a[pre])
-		if i % m == 0:
-			cnt[i] += 1  # new block starts here
+        left[i] = left[pre] + cnt[i]*abs(a[i]-a[pre])
+        if i % m == 0: cnt[i] += 1 #new block starts here
 
-	return left
+    return left
 
 
 n, m = map(int, input().split())
@@ -42,11 +62,12 @@ left_cost = side_cost(positions, n, m)
 positions.reverse()
 right_cost = side_cost(positions, n, m)
 
-ans = float("inf")
-for i in range(n):
-	# try every criminal position as station
-	ans = min(ans, left_cost[i] + right_cost[n - i - 1])
-print(2 * ans)
+ans = float('inf')
+for i in range(n): 
+	#try every criminal position as station
+	ans = min(ans, left_cost[i] + right_cost[n-i-1]) 
+print(2*ans)
+
 ```
 
 </PySection>
