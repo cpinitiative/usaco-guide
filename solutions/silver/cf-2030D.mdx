@@ -69,22 +69,22 @@ int main() {
 		for (int k = 1; k <= n - 1; k++)
 			d[k] += d[k - 1];  // d[k] > 0 means gap k is important
 
-		auto isbad = [&](int k) { return s[k] == 'L' && s[k + 1] == 'R'; };
+		auto is_bad = [&](int k) { return s[k] == 'L' && s[k + 1] == 'R'; };
 
 		// bad = number of important gaps that are currently bad
 		int bad = 0;
 		for (int k = 1; k <= n - 1; k++)
-			if (d[k] > 0 && isbad(k)) bad++;
+			if (d[k] > 0 && is_bad(k)) bad++;
 
 		while (q--) {
 			int i;
 			cin >> i;
 			// only gaps i-1 and i can change "bad-ness" when s[i] flips
 			for (int k : {i - 1, i})
-				if (k >= 1 && k <= n - 1 && d[k] > 0 && isbad(k)) bad--;
+				if (k >= 1 && k <= n - 1 && d[k] > 0 && is_bad(k)) bad--;
 			s[i] = (s[i] == 'L') ? 'R' : 'L';
 			for (int k : {i - 1, i})
-				if (k >= 1 && k <= n - 1 && d[k] > 0 && isbad(k)) bad++;
+				if (k >= 1 && k <= n - 1 && d[k] > 0 && is_bad(k)) bad++;
 			cout << (bad == 0 ? "YES" : "NO") << "\n";
 		}
 	}
