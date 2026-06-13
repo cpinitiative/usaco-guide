@@ -26,32 +26,30 @@ However, naively doing this is $\mathcal{O}(\frac{\max\left(c,\ d\right)}{\min\l
 using namespace std;
 
 int main() {
-    int t;
-    cin >> t;
-    while (t--) {
-        long long a, b, c, d;
-        cin >> a >> b >> c >> d;
-        long long opers = 0;
+	int t;
+	cin >> t;
+	while (t--) {
+		long long a, b, c, d;
+		cin >> a >> b >> c >> d;
+		long long opers = 0;
 
-        for (int i = 0; i < 100; i++) {
-            if ((a == c && b == d) || c < a || d < b) break;
+		for (int i = 0; i < 100; i++) {
+			if ((a == c && b == d) || c < a || d < b) break;
 
-            long long ops;
-            if (c < d) {
-                ops = min((d - b) / c, d / c);
-                d -= ops * c;
-            } else {
-                ops = min((c - a) / d, c / d);
-                c -= ops * d;
-            }
-            opers += ops;
-        }
+			long long ops;
+			if (c < d) {
+				ops = min((d - b) / c, d / c);
+				d -= ops * c;
+			} else {
+				ops = min((c - a) / d, c / d);
+				c -= ops * d;
+			}
+			opers += ops;
+		}
 
-        if (a == c && b == d)
-            cout << opers << "\n";
-        else
-            cout << -1 << "\n";
-    }
+		if (a == c && b == d) cout << opers << "\n";
+		else cout << -1 << "\n";
+	}
 }
 ```
 
@@ -61,19 +59,19 @@ int main() {
 
 ```py
 for t in range(int(input())):
-    a, b, c, d = map(int, input().split())
-    opers = 0
-    for i in range(100):
-        if (a == c and b == d) or c < a or d < b:
-            break
-        if c < d:
-            ops = min((d - b) // c, d // c)
-            d -= ops * c
-        else:
-            ops = min((c - a) // d, c // d)
-            c -= ops * d
-        opers += ops
-    print(opers if a == c and b == d else -1)
+	a, b, c, d = map(int, input().split())
+	opers = 0
+	for i in range(100):
+		if (a == c and b == d) or c < a or d < b:
+			break
+		if c < d:
+			ops = min((d - b) // c, d // c)
+			d -= ops * c
+		else:
+			ops = min((c - a) // d, c // d)
+			c -= ops * d
+		opers += ops
+	print(opers if a == c and b == d else -1)
 ```
 
 </PySection>
