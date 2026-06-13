@@ -33,7 +33,56 @@ achievable, and we can look for a smaller $M$.
 <CPPSection>
 
 ```cpp
+#include <iostream>
+#include <vector>
 
+int main() {
+    int n, k;
+    std::cin >> n >> k;
+    std::vector<std::vector<int>> grid(n, std::vector<int> (n));
+    std::vector<std::vector<int>> pref(n + 1, std::vector<int> (n + 1, 0));
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            std::cin >> grid[i][j];
+        }
+    }
+
+
+    auto can = [&] (int mid) -> bool {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                pref[i + 1][j + 1] = pref[i + 1][j] + pref[i][j + 1] - pref[i][j];
+                if (grid[i][j] > mid) {
+                    pref[i + 1][j + 1] += 1;
+                }
+            }
+        }
+
+        for (int i = 0; i < n - k + 1; i++) {
+            for (int j = 0; j < n - k + 1; j++) {
+                int cnt = pref[i + k][j + k] + pref[i][j] - pref[i][j + k] - pref[i + k][j];
+                if (cnt < ((k * k) / 2) + 1) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+
+
+    int lo = -1, hi = 1e9;
+
+    while (lo < hi) {
+        int mid = (lo + hi + 1) >> 1;
+        if (can(mid)) {
+            hi = mid - 1;
+        } else {
+            lo = mid;
+        }
+    }
+    std::cout << lo + 1 << '\n';
+}
 ```
 
 </CPPSection>
