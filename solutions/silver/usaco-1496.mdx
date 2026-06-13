@@ -1,0 +1,81 @@
+---
+id: usaco-1496
+source: USACO Silver 2025 February
+title: Transforming Pairs
+author: Sachet Abeysinghe
+---
+
+[Official Analysis (C++, Python)](https://usaco.org/current/data/sol_prob3_silver_feb25.html)
+
+## Explanation
+
+Instead of thinking forwards, consider thinking in reverse. A state $(c, d)$ could have originated from either $(c, d - c)$ or $(c - d, d)$. However, if $c < d$, then $c - d$ is negative, and so we can rule out $(c - d, d)$. Similarly, if $d < c$, then $d - c$ is negative, and we rule out $(c, d - c)$. In this way, we can trace $(c, d)$ back to $(a, b)$ by choosing the only possible origination each time. To demonstrate this for the second test case in the sample, we can trace as follows: $(8, 19)$ -> $(8, 11)$ -> $(8, 3)$ -> $(5, 3)$, taking three operations.
+
+However, naively doing this is $\mathcal{O}(\frac{\max\left(c,\ d\right)}{\min\left(a,\ b\right)})$. To speed it up, we do multiple operations at once. Specfically, we may choose the origination $(c, d - c)$ $⌊\frac{d}{c}⌋$ times as long as $c < d$, and the origination $(c - d, d)$ $⌊\frac{c}{d}⌋$ times as long as $d < c$. This optimization makes $c$ and $d$ reduce extremely quickly to $a$ and $b$. When doing this, we have to be careful not to undershoot below $a$ or $b$. For instance, if $(c, d)$ is $(8, 27)$ and $(a, b)$ is $(8, 11)$, instead of undershooting to $(8, 3)$, we go to $(8, 11)$ in two operations. This takes $⌊\frac{d-b}{c}⌋$ operations for $c < d$ and $⌊\frac{c-a}{d}⌋$ operations for $d < c$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(\log\frac{\max\left(c,d\right)}{\min\left(a,b\right)})$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        long long a, b, c, d;
+        cin >> a >> b >> c >> d;
+        long long opers = 0;
+
+        for (int i = 0; i < 100; i++) {
+            if ((a == c && b == d) || c < a || d < b) break;
+
+            long long ops;
+            if (c < d) {
+                ops = min((d - b) / c, d / c);
+                d -= ops * c;
+            } else {
+                ops = min((c - a) / d, c / d);
+                c -= ops * d;
+            }
+            opers += ops;
+        }
+
+        if (a == c && b == d)
+            cout << opers << "\n";
+        else
+            cout << -1 << "\n";
+    }
+}
+```
+
+</CPPSection>
+
+<PySection>
+
+```py
+for t in range(int(input())):
+    a, b, c, d = map(int, input().split())
+    opers = 0
+    for i in range(100):
+        if (a == c and b == d) or c < a or d < b:
+            break
+        if c < d:
+            ops = min((d - b) // c, d // c)
+            d -= ops * c
+        else:
+            ops = min((c - a) // d, c // d)
+            c -= ops * d
+        opers += ops
+    print(opers if a == c and b == d else -1)
+```
+
+</PySection>
+
+</LanguageSection>
