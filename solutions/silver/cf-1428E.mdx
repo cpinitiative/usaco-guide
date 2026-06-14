@@ -147,48 +147,47 @@ using namespace std;
 // Returns the total time for consumption when a
 // carrot of size l is split into t parts.
 long long calculate_time(int l, int t) {
-    // First, give each segment l / t; then, there's l % t
-    // total left, so there's l % t of (l / t + 1) segments, and
-    // the rest are l / t.
-    return 1ll * (l % t) * (l/t+1) * (l/t+1) + 1ll * (t-l%t) * (l/t) * (l/t);
+	// First, give each segment l / t; then, there's l % t
+	// total left, so there's l % t of (l / t + 1) segments, and
+	// the rest are l / t.
+	return 1ll * (l % t) * (l / t + 1) * (l / t + 1) +
+	       1ll * (t - l % t) * (l / t) * (l / t);
 }
 struct Carrot {
-    int length;            // Original length of carrot
-    int cut;               // Current consideration for amount of cuts
-    long long cost;        // Total time to eat all cut segments
-    long long diff;        // If cut is increased by 1, the change to cost
-    // Update cost and diff based on length and cut.
-    void update_cache() {
-        this->cost = calculate_time(length, cut);
-        this->diff = this->cost - calculate_time(length, cut+1);
-    }
+	int length;      // Original length of carrot
+	int cut;         // Current consideration for amount of cuts
+	long long cost;  // Total time to eat all cut segments
+	long long diff;  // If cut is increased by 1, the change to cost
+	// Update cost and diff based on length and cut.
+	void update_cache() {
+		this->cost = calculate_time(length, cut);
+		this->diff = this->cost - calculate_time(length, cut + 1);
+	}
 };
-bool operator< (const Carrot&a, const Carrot&b) {
-    return a.diff < b.diff;
-}
+bool operator<(const Carrot &a, const Carrot &b) { return a.diff < b.diff; }
 
 int main() {
-    int n, k;
-    cin >> n >> k;
-    long long ans = 0;
-    priority_queue<Carrot> carrots;
-    for (int i = 1; i <= n; i++) {
-        Carrot carrot;
-        cin >> carrot.length;
-        carrot.cut = 1;
-        carrot.update_cache();
-        carrots.push(carrot);
-        ans += carrot.cost;
-    }
-    for (int i = 1; i <= k - n; i++) {
-        auto front = carrots.top();
-        carrots.pop();
-        ans -= front.diff;
-        front.cut++;
-        front.update_cache();
-        carrots.push(front);
-    }
-    cout << ans << endl;
+	int n, k;
+	cin >> n >> k;
+	long long ans = 0;
+	priority_queue<Carrot> carrots;
+	for (int i = 1; i <= n; i++) {
+		Carrot carrot;
+		cin >> carrot.length;
+		carrot.cut = 1;
+		carrot.update_cache();
+		carrots.push(carrot);
+		ans += carrot.cost;
+	}
+	for (int i = 1; i <= k - n; i++) {
+		auto front = carrots.top();
+		carrots.pop();
+		ans -= front.diff;
+		front.cut++;
+		front.update_cache();
+		carrots.push(front);
+	}
+	cout << ans << endl;
 }
 ```
 
