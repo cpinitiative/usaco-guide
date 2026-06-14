@@ -52,15 +52,11 @@ std::vector<long long> side_cost(std::vector<int> positions) {
 		cnt[i] = cnt[i - 1];
 
 		int pre = i - i % m;
-		if (i == pre) {
-			pre -= m;
-		}
+		if (i == pre) { pre -= m; }
 
 		left[i] = left[pre] + 1LL * cnt[i] * std::abs(positions[i] - positions[pre]);
 
-		if (i % m == 0) {
-			cnt[i] += 1;
-		}
+		if (i % m == 0) { cnt[i] += 1; }
 	}
 
 	return left;
@@ -69,31 +65,28 @@ std::vector<long long> side_cost(std::vector<int> positions) {
 int main() {
 
 	std::ios_base::sync_with_stdio(false);
-    std::cin.tie(0);
-    std::cout.tie(0);
-    std::cin.exceptions(std::ios::badbit|std::ios::failbit);
+	std::cin.tie(0);
+	std::cout.tie(0);
+	std::cin.exceptions(std::ios::badbit | std::ios::failbit);
 
 	std::cin >> n >> m;
 
 	std::vector<int> positions(n);
 
-	for (int &x : positions) {
-		std::cin >> x;
-	}
+	for (int &x : positions) { std::cin >> x; }
 
 	m = std::min(n, m);
 
 	std::vector<long long> left_cost = side_cost(positions);
 	std::reverse(begin(positions), end(positions));
 	std::vector<long long> right_cost = side_cost(positions);
-	
+
 	long long res = LLONG_MAX;
 	for (int i = 0; i < n; i++) {
 		res = std::min(res, left_cost[i] + right_cost[n - i - 1]);
 	}
 
 	std::cout << 2LL * res << '\n';
-
 }
 ```
 
