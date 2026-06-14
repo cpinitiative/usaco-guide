@@ -9,7 +9,7 @@ author: Sachet Abeysinghe
 
 ## Explanation
 
-First, we preprocess the array of costs so that $a_i$ is the minimum cost to buy $2^i$ buckets. This is achieved by setting $a_i$ to $\min(a_i, 2 \cdot a_{i-1})$ in increasing $i$, because we can either use the original deal or use two of the previous deal. We only need to keep the first $30$ powers because $x \le 10^9$ and $2^{30} \gt 10^9$. We fill in any of the remaining thirty elements if needed.
+First, we preprocess the array of costs so that $a_i$ is the minimum cost to buy $2^i$ buckets. This is achieved by setting $a_i$ to $\min(a_i, 2 \cdot a_{i-1})$ in increasing $i$, because we can either use the original deal or use two of the previous deals. We only need to keep the first $30$ powers because $x \le 10^9$ and $2^{30} \gt 10^9$. We fill in any of the remaining thirty elements if needed.
 
 Then, we proceed greedily. Suppose we currently need $x$ remaining buckets of milk. We can buy the largest power of two deal that does not exceed $x$, which corresponds to the cost at index $\lfloor\log_{2}\left(x\right)\rfloor$. It is not optimal to buy a smaller power of two amount. The second option is to overshoot $x$, which corresponds to the cost at index $\lceil\log_{2}\left(x\right)\rceil$. It is not optimal to overshoot with a higher power of two because the costs are higher at higher indexes. An example of when it is optimal to overshoot is $x = 7$ and $a=[10,20,40,60]$. You can get a cost of $70$ moonies by getting exactly $7$ buckets of milk, but you can achieve a lower cost of $60$ moonies by buying $8$ buckets of milk immediately.
 
@@ -18,7 +18,56 @@ Then, we proceed greedily. Suppose we currently need $x$ remaining buckets of mi
 **Time Complexity:** $\mathcal{O}(N + Q)$
 
 <LanguageSection>
+<CPPSection>
 
+```cpp
+#include <iostream>
+#include <climits>
+#include <cmath>
+#include <vector>
+
+int main() {
+    int n, q;
+    std::cin >> n >> q;
+    std::vector<long long> costs(n);
+
+    for (long long &x : costs) {
+        std::cin >> x;
+    }
+
+	// precompute minimum costs for power of 2 bucket amounts
+    for (int i = 1; i < 30; i++) {
+        if (i >= n) {
+            costs.push_back(2LL * costs[i - 1]);
+        } else {
+            costs[i] = std::min(costs[i], 2LL * costs[i - 1]);
+        }
+    }
+
+    while (q--) {
+        long x;
+        std::cin >> x;
+        long long curr_cost = 0;
+        long long answer = LLONG_MAX;
+
+        while (x > 0) {
+            long largest_idx = floor(std::log2(x));
+            long overshoot_idx = ceil(std::log2(x));
+			// overshoot
+            answer = std::min(answer, curr_cost + costs[overshoot_idx]);
+			// buy largest power of 2 that doesn't overshoot
+            curr_cost += costs[largest_idx];
+            x -= std::pow(2, largest_idx);
+        }
+		// never overshoot
+        answer = std::min(answer, curr_cost);
+        std::cout << answer << '\n';
+
+    }
+}
+```
+
+</CPPSection>
 <PySection>
 
 ```py
@@ -53,5 +102,4 @@ for i in range(q):
 ```
 
 </PySection>
-
 </LanguageSection>
