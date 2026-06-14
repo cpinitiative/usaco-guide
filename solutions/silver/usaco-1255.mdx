@@ -52,7 +52,7 @@ when there is a speedup, there are $T_i=1+\frac{a_i-m_{a_i}}2$, as one operation
 
 We first compute the amount of operations ($T_i$) for each room and determine the number of cows in it $\bmod 4$ to determine the winner for that room;
 we then find the argmin of $\left\lceil\frac{T_i}2\right\rceil$ (if tied, with smallest $i$), and output the winner of that room.
-In practice, however, it becomes unneccessary to track the room, as the parity of the number of operations already encodes the winner.
+In practice, however, it becomes neccessary to only track the number of operations itself, as the parity of the number of operations already encodes the winner.
 
 
 ## Implementation
@@ -64,45 +64,55 @@ In practice, however, it becomes unneccessary to track the room, as the parity o
 
 ```cpp
 #include <cstring>
+#include <vector>
 #include <iostream>
 using namespace std;
-constexpr int MAX_NUMBER = 5000000;
-int isprime[MAX_NUMBER + 1];
-int m[MAX_NUMBER + 1];
+constexpr int MAX_NUMBER = 5e6;
+constexpr int MAX_INT = 2e9;
 
 int main() {
-	int T;
-	cin >> T;
-	memset(isprime, true, sizeof isprime);
-	isprime[1] = false;
+	vector<bool> is_prime(MAX_NUMBER+1, true);
+	// This is m[] in the explanation.
+	vector<int> largest_prime_equiv(MAX_NUMBER+1);
+	is_prime[1] = false;
 	// 1 is considered a prime under this problem, even though
 	// we don't sieve it; so assign 1 initially.
-	int t[] = {-1, 1, -1, -1};
-	m[1] = 1;
+	// This is t[] in the explanation.
+	int largest_prime_mod[] = {-1, 1, -1, -1};
+	largest_prime_equiv[1] = 1;
 	// Sieve algorithm
 	for (int i = 2; i <= MAX_NUMBER; i++) {
-		if (isprime[i]) {
-			t[i % 4] = i;
-			for (int j = i; j < MAX_NUMBER; j += i) isprime[j] = false;
+		if (is_prime[i]) {
+			largest_prime_mod[i % 4] = i;
+			for (int j = i; j < MAX_NUMBER; j += i) is_prime[j] = false;
 		}
-		m[i] = t[i % 4];
+		largest_prime_equiv[i] = largest_prime_mod[i % 4];
 	}
-	while (T--) {
+
+	int test_cases;
+	cin >> test_cases;
+	for (int t = 0; t < test_cases; t++) {
 		int n;
 		cin >> n;
-		int minn = 2e9;
+		// Minimum of turns, i.e. operations / 2
+		int min_turn = MAX_INT;
+		// Number of operations on the minimum-turns room.
+		int min_turn_operations = MAX_INT;
 		for (int i = 1; i <= n; i++) {
-			int a;
-			cin >> a;
-			int min_turns;
-			if (a % 2 == 0) {
-				min_turns = a / 2;
+			int cows;
+			cin >> cows;
+			int operations;
+			if (cows % 2 == 0) {
+				operations = cows / 2;
 			} else {
-				min_turns = 1 + (a - m[a]) / 2;
+				operations = 1 + (cows - largest_prime_equiv[cows]) / 2;
 			}
-			if (min_turns / 2 < minn / 2) { minn = min_turns; }
+			if (operations / 2 < min_turn) {
+				min_turn = operations / 2;
+				min_turn_operations = operations;
+			}
 		}
-		cout << ((minn % 2 != 0) ? "Farmer John" : "Farmer Nhoj") << endl;
+		cout << ((min_turn_operations % 2 != 0) ? "Farmer John" : "Farmer Nhoj") << endl;
 	}
 	return 0;
 }
