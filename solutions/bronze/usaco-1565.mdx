@@ -23,32 +23,33 @@ Then, we proceed greedily. Suppose we currently need $x$ remaining buckets of mi
 
 ```py
 import math
+
 n, q = map(int, input().split())
 costs = [int(x) for x in input().split()][:30]
 
 # precompute minimum costs for power of 2 bucket amounts
 for i in range(1, 30):
-    if i >= n:
-        costs.append(2 * costs[i - 1])
-    else:
-        costs[i] = min(costs[i], 2 * costs[i - 1])
+	if i >= n:
+		costs.append(2 * costs[i - 1])
+	else:
+		costs[i] = min(costs[i], 2 * costs[i - 1])
 
 for i in range(q):
-    x = int(input())
-    curr_cost = 0
-    answer = float("inf")
+	x = int(input())
+	curr_cost = 0
+	answer = float("inf")
 
-    while x > 0:
-        largest_idx = math.floor(math.log2(x))
-        overshoot_idx = math.ceil(math.log2(x))
-        # overshoot
-        answer = min(answer, curr_cost + costs[overshoot_idx])
-        # buy largest power of 2 that doesn't overshoot
-        curr_cost += costs[largest_idx]
-        x -= 2 ** largest_idx
-    # never overshoot
-    answer = min(answer, curr_cost)
-    print(answer)
+	while x > 0:
+		largest_idx = math.floor(math.log2(x))
+		overshoot_idx = math.ceil(math.log2(x))
+		# overshoot
+		answer = min(answer, curr_cost + costs[overshoot_idx])
+		# buy largest power of 2 that doesn't overshoot
+		curr_cost += costs[largest_idx]
+		x -= 2**largest_idx
+	# never overshoot
+	answer = min(answer, curr_cost)
+	print(answer)
 ```
 
 </PySection>
