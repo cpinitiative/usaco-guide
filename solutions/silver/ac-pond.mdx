@@ -18,12 +18,12 @@ What can be said about the condition that there exists a $K \times K$ region who
 <Spoiler title = "Solution">
 
 To solve this question, we can employ binary search on the answer. For a given value $M$, we ask whether there exists a $K \times K$ region whose [median]
-(https://en.wikipedia.org/wiki/Median) is less than or equal to $M$. Based on the answers to these questions, we can update our binary search range and 
+(https://en.wikipedia.org/wiki/Median) is less than or equal to $M$. Based on the answers to these questions, we can update our binary search range and
 calculate the lowest median among all parks.
 
 We now focus on how to efficiently test whether such a $K \times K$ square exists. Construct an array $Q$ in which each square $(i, j)$ has
-$Q_{i, j}=1$ if $A_{i, j} \le M$ and $Q_{i, j}=-1$ otherwise. As shown in the [2D Prefix Sums Module](/silver/more-prefix-sums), we can 
-calculate the 2D prefix sums of $Q$, and use it to efficiently determine whether the squares $(i, j)$ satisfying $A_{i, j} \le M$ 
+$Q_{i, j}=1$ if $A_{i, j} \le M$ and $Q_{i, j}=-1$ otherwise. As shown in the [2D Prefix Sums Module](/silver/more-prefix-sums), we can
+calculate the 2D prefix sums of $Q$, and use it to efficiently determine whether the squares $(i, j)$ satisfying $A_{i, j} \le M$
 form a majority within any $K \times K$ region.
 
 Let $P_{i , j}$ denote the sum of entries in the region from $(1, 1)$ to $(i, j)$. Then, the sum for a $K \times K$ region with it's bottom right corner at $(i, j)$ would be
@@ -32,10 +32,10 @@ $$
 P_{i, j} - P_{i - k, j} - P_{i, j - k} + P_{i - k, j - k}.
 $$
 
-Since each entry with value at most $M$ would contribute $1$ and $-1$ otherwise, the sum would represent the number of squares with value less than 
+Since each entry with value at most $M$ would contribute $1$ and $-1$ otherwise, the sum would represent the number of squares with value less than
 or equal to $M$ minus the number of squares whose value is greater than $M$ within the region.
 
-If any $K \times K$ region has a net sum greater than or equal to $0$, then a median of at most $M$ is possible, and the test was successful. 
+If any $K \times K$ region has a net sum greater than or equal to $0$, then a median of at most $M$ is possible, and the test was successful.
 Otherwise, we need to consider larger values of $M$ in our binary search.
 
 </Spoiler>
@@ -54,7 +54,7 @@ Otherwise, we need to consider larger values of $M$ in our binary search.
 using namespace std;
 
 int main() {
-	
+
 	int n, k;
 	cin >> n >> k;
 
