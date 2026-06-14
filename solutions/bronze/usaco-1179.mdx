@@ -1,0 +1,73 @@
+---
+id: usaco-1179
+source: USACO Bronze 2022 January
+title: Herdle
+author: Rameez Parwez
+---
+
+## Explanation
+
+**Green Squares**: Number of breeds that shares the same position
+in answer and guess grid.
+
+**Yellow Squares**: The total number of highlighted squares 
+$\text{(i.e., either green or yellow)}$, excluding the green
+squares. Highlighted squares can be calculated by accumulating
+the minimum count of each breed appearing in the answer and guess
+grids.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O} (1)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <functional>
+#include <vector>
+
+int main() {
+	char answer[3][3];
+	char guess[3][3];
+
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			std::cin >> answer[i][j];
+		}
+	}
+	
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			std::cin >> guess[i][j];
+		}
+	}
+
+	int green_squares {0};
+	int yellow_squares {0};
+	std::array<int, 26> freq_answer {0};
+	std::array<int, 26> freq_guess {0};
+
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			green_squares += (answer[i][j] == guess[i][j]);
+
+			freq_answer[answer[i][j] - 'A']++;
+			freq_guess[guess[i][j] - 'A']++;
+		}
+	}
+
+	for (int i = 0; i < 26; i++) {
+		yellow_squares += std::min(freq_answer[i], freq_guess[i]);
+	}
+
+	yellow_squares -= green_squares;
+
+	std::cout << green_squares << '\n' << yellow_squares << '\n';
+
+}
+```
+
+</CPPSection>
+</LanguageSection>
