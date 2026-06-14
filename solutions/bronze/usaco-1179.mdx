@@ -10,7 +10,7 @@ author: Rameez Parwez
 **Green Squares**: Number of breeds that shares the same position
 in answer and guess grid.
 
-**Yellow Squares**: The total number of highlighted squares 
+**Yellow Squares**: The total number of highlighted squares
 $\text{(i.e., either green or yellow)}$, excluding the green
 squares. Highlighted squares can be calculated by accumulating
 the minimum count of each breed appearing in the answer and guess
@@ -24,8 +24,8 @@ grids.
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <functional>
+#include <iostream>
 #include <vector>
 
 int main() {
@@ -33,21 +33,17 @@ int main() {
 	char guess[3][3];
 
 	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++) {
-			std::cin >> answer[i][j];
-		}
-	}
-	
-	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++) {
-			std::cin >> guess[i][j];
-		}
+		for (int j = 0; j < 3; j++) { std::cin >> answer[i][j]; }
 	}
 
-	int green_squares {0};
-	int yellow_squares {0};
-	std::array<int, 26> freq_answer {0};
-	std::array<int, 26> freq_guess {0};
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) { std::cin >> guess[i][j]; }
+	}
+
+	int green_squares{0};
+	int yellow_squares{0};
+	std::array<int, 26> freq_answer{0};
+	std::array<int, 26> freq_guess{0};
 
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
@@ -65,7 +61,6 @@ int main() {
 	yellow_squares -= green_squares;
 
 	std::cout << green_squares << '\n' << yellow_squares << '\n';
-
 }
 ```
 
