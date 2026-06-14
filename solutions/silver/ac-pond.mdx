@@ -1,0 +1,105 @@
+---
+id: ac-pond
+source: AC
+title: Pond
+author: Arnav Gokhale
+---
+
+[Official Analysis (C++)](https://atcoder.jp/contests/abc203/editorial)
+
+<Spoiler title = "Hint">
+
+What can be said about the condition that there exists a $K \times K$ region whose [median](https://en.wikipedia.org/wiki/Median) is less than or equal to $M$?
+
+</Spoiler>
+
+## Explanation
+
+<Spoiler title = "Solution">
+
+To solve this question, we can employ binary search on the answer. For a given value $M$, we ask whether there exists a $K \times K$ region whose [median]
+(https://en.wikipedia.org/wiki/Median) is less than or equal to $M$. Based on the answers to these questions, we can update our binary search range and
+calculate the lowest median among all parks.
+
+We now focus on how to efficiently test whether such a $K \times K$ square exists. Construct an array $Q$ in which each square $(i, j)$ has
+$Q_{i, j}=1$ if $A_{i, j} \le M$ and $Q_{i, j}=-1$ otherwise. As shown in the [2D Prefix Sums Module](/silver/more-prefix-sums), we can
+calculate the 2D prefix sums of $Q$, and use it to efficiently determine whether the squares $(i, j)$ satisfying $A_{i, j} \le M$
+form a majority within any $K \times K$ region.
+
+Let $P_{i , j}$ denote the sum of entries in the region from $(1, 1)$ to $(i, j)$. Then, the sum for a $K \times K$ region with it's bottom right corner at $(i, j)$ would be
+
+$$
+P_{i, j} - P_{i - k, j} - P_{i, j - k} + P_{i - k, j - k}.
+$$
+
+Since each entry with value at most $M$ would contribute $1$ and $-1$ otherwise, the sum would represent the number of squares with value less than
+or equal to $M$ minus the number of squares whose value is greater than $M$ within the region.
+
+If any $K \times K$ region has a net sum greater than or equal to $0$, then a median of at most $M$ is possible, and the test was successful.
+Otherwise, we need to consider larger values of $M$ in our binary search.
+
+</Spoiler>
+
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2\log(\max A_{i}))$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+
+	int n, k;
+	cin >> n >> k;
+
+	vector<vector<int>> a(n, vector<int>(n));
+	vector<vector<int>> p(n + 1, vector<int>(n + 1));
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) { cin >> a[i][j]; }
+	}
+
+	int lo = 0, hi = 1e9;
+	while (lo <= hi) {
+		int mid = (lo + hi) / 2;
+
+		// Constructing the 2D Prefix Array
+		for (int i = 1; i <= n; i++) {
+			for (int j = 1; j <= n; j++) {
+				p[i][j] = p[i - 1][j] + p[i][j - 1] - p[i - 1][j - 1];
+				p[i][j] += (a[i - 1][j - 1] <= mid) ? 1 : -1;
+			}
+		}
+
+		// Calculating K x K regions
+		bool found = false;
+		for (int i = k; i <= n; i++) {
+			for (int j = k; j <= n; j++) {
+				int vl = p[i][j] - p[i - k][j] - p[i][j - k] + p[i - k][j - k];
+				if (vl >= 0) {
+					found = true;
+					break;
+				}
+			}
+			if (found) break;
+		}
+
+		if (found) {
+			hi = mid - 1;
+		} else {
+			lo = mid + 1;
+		}
+	}
+
+	cout << lo << '\n';
+}
+```
+
+</CPPSection>
+</LanguageSection>
