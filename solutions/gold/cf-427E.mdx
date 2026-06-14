@@ -27,13 +27,77 @@ This gives the distance for the left side of every possible station. To get the 
 
 To choose $\texttt{a}[i]$ as the station, the total distance will be the sum of the left distance and the right distance. The final answer is double the minimum distance over all indices $i$ because every trip must return to the station.
 
-
-
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
+<CPPSection>
+
+<Warning>
+Use fast I/O Optimizations to pass all test cases.
+</Warning>
+
+```cpp
+#include <bits/stdc++.h>
+
+int n, m;
+
+std::vector<long long> side_cost(std::vector<int> positions) {
+	std::vector<int> cnt(n);
+	std::vector<long long> left(n);
+
+	cnt[0] = 1;
+	for (int i = 1; i < n; i++) {
+		cnt[i] = cnt[i - 1];
+
+		int pre = i - i % m;
+		if (i == pre) {
+			pre -= m;
+		}
+
+		left[i] = left[pre] + 1LL * cnt[i] * std::abs(positions[i] - positions[pre]);
+
+		if (i % m == 0) {
+			cnt[i] += 1;
+		}
+	}
+
+	return left;
+}
+
+int main() {
+
+	std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
+    std::cout.tie(0);
+    std::cin.exceptions(std::ios::badbit|std::ios::failbit);
+
+	std::cin >> n >> m;
+
+	std::vector<int> positions(n);
+
+	for (int &x : positions) {
+		std::cin >> x;
+	}
+
+	m = std::min(n, m);
+
+	std::vector<long long> left_cost = side_cost(positions);
+	std::reverse(begin(positions), end(positions));
+	std::vector<long long> right_cost = side_cost(positions);
+	
+	long long res = LLONG_MAX;
+	for (int i = 0; i < n; i++) {
+		res = std::min(res, left_cost[i] + right_cost[n - i - 1]);
+	}
+
+	std::cout << 2LL * res << '\n';
+
+}
+```
+
+</CPPSection>
 <PySection>
 
 ```py
@@ -75,5 +139,7 @@ print(2 * ans)
 </LanguageSection>
 
 <Info>
-We can also solve this problem using ternary search over the cost function because `left_cost[i] + right_cost[n-i-1]` is unimodal over $i$, the criminal index chosen as a station.
+We can also solve this problem using ternary search over the cost
+function because `left_cost[i] + right_cost[n-i-1]` is unimodal
+over $i$, the criminal index chosen as a station.
 </Info>
