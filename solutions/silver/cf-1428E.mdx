@@ -29,11 +29,9 @@ In hint $2$, what do you observe about the *change* in the total time to eat tha
 
 ## Explanation
 
-To minimize time, each carrot should be cut into pieces of lengths that are as close together as possible.
-Specifically, no two pieces should differ by more than $1$ in length.
-Thus, if a carrot of length $l$ is cut into $t$ parts, there will be $t-l\bmod t$ of pieces with length $\lfloor\frac lt\rfloor$, and $l\bmod t$ pieces with length $\lfloor\frac lt\rfloor+1$.
-This allows us to calculate the optimal eating time for a carrot with a specific number of cuts in $\mathcal O(1)$ time;
-let the result of this calculation be $f(l,p)$.
+To minimize time, each carrot should be cut into pieces of lengths that are as close together as possible, without any pair of lengths differing by more than $1$.
+Specifically, if a carrot of length $l$ is cut into $t$ parts, there will be $t-l\bmod t$ of pieces with length $\lfloor\frac lt\rfloor$, and $l\bmod t$ pieces with length $\lfloor\frac lt\rfloor+1$.
+Let the time taken to eat these pieces be $f(l,p)$, which can be calculated in $\mathcal O(1)$ time.
 
 <Spoiler title = "Proof: Optimal lengths differ by at most 1">
 
@@ -73,15 +71,16 @@ directly implies the aforementioned construction.
 
 </Spoiler>
 
-Now, the problem reduces to deciding how many cuts to make on each carrot.
+Now, the problem reduces to deciding the number of cuts on each carrot.
 One may think that the overall set of piece lengths across all original carrots should be as close together as possible, just like we did for the piece lengths in a single carrot.
 However, this is not generally doable, as one may have small segments that are below the ideal segment length that will ensure all cuts are equal.
 
-We note, however, that the more pieces we cut a carrot into, the more the total time gets smaller.
-For the purpose of intuition, assume that the cuts are perfect and we get to make fractional cuts;
+We note that the more pieces we cut a carrot into, the more the total time gets smaller;
+however, the returns of changing to cut one extra segment is diminishing as the number of already cut segments increase.
+To see why, assume that the cuts are perfectly even, allowing fractional lengths;
 in that case, $f(l, t)\approx t(\frac lt)^2=\frac{l^2}t$.
-Now, note that the shape of any function $g(t)=\frac{c}{t}$ with constant $c$ implies that the larger $t$ gets, the slower the function decreases;
-this means that if we can think of incrementing the number of cuts on a carrot, each incrementation will give a saving in the time, but the saving will decrease over time.
+Note that since the function is in the form of $g(t)=\frac ct$ when $l$ is held constant, the function decreases slower as $l$ increases;
+this means that when incrementing the number of cuts on a carrot, each incrementation will save time, but the saving will decrease as we go further.
 
 <Spoiler title = "Proof: More pieces equals less total time">
 
@@ -129,13 +128,13 @@ This means that it'll be larger than or equal to the optimum, $f(2l, 2p)$, provi
 </Spoiler>
 
 This inspires a greedy solution;
-we have all carrots cut into $1$ segment initially (i.e., uncut), and precompute the change to total time to eat if the number of cuts is increased by $1$.
+we have set carrots to be cut into $1$ segment initially (uncut), and precompute the decrease in time of that carrot if the number of cuts on it is increased by $1$.
 We maintain a priority queue of carrots sorted by the change described above;
-for $n-k$ times, we take the carrot that will make the largest change if cuts are increased by $1$, and increase its cut by $1$.
-Subsequently, we recompute the cost of eating that carrot after it's cut, and the change to the total time if the number of cuts is *further* increased by $1$, and re-enqueue the carrot.
+for $k-n$ times, we take the carrot with the largest change value and increase its number of cuts by $1$.
+We then recompute the time of eating that carrot, and the change to that time if the number of cuts is *further* increased by $1$ before reenqueing the carrot.
 
 This is guaranteed to be optimal;
-as the returns are diminishing for each increase in the number of cuts, there cannot be a situation where picking a suboptimal optimization first will result in better optimizations later.
+as the returns are diminishing for each increase in the cuts, there cannot be a situation where picking a suboptimal cut first will result in better cuts later for a carrot.
 
 ## Implementation
 
