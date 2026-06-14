@@ -2,16 +2,97 @@
 id: usaco-1206
 source: USACO Silver 2022 February
 title: Redistributing Gifts
-author: Chongtian Ma
+author: Chongtian Ma, Aarav Sethi
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_prob1_silver_feb22.html)
 
-## Solution 1
+# Solution 1
 
-See the official analysis.
+## Explanation
 
-## Solution 2 - Strongly Connected Components
+A beneficial redistribution of gifts are when all cows benefit or keep the same item.
+
+A simple case is cow $i$ wants gift $j$, then cow $j$ should benefit from getting gift $i$.
+But that is not the only case, consider that:
+  * cow $i$ wants gift $j$
+  * cow $j$ wants gift $k$
+  * cow $k$ wants gift $i$
+
+Both of the above cases resemble cycles showing that the problem can be represented as a directed graph, where each cow is the node of what they currently hold and have directed edges to cows that have something better.
+
+A beneficial redistribution would be when a cycle appears, using this the solution can be found for every node
+by precomputing with BFS all reachable nodes from one node of the graph.
+
+With this a cycle can by going through every node and checking for every edge if the connected node could lead back to this.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^3)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int main() {
+	// Input reading into graph
+	int n;
+	cin >> n;
+	vector<vector<int>> edges(n);
+	for (int i = 0; i < n; i++) {
+		bool found = false;
+		for (int j = 0; j < n; j++) {
+			int x;
+			cin >> x;
+			x--;
+			if (x == i) {
+				found = true;
+			} else if (!found) {
+				edges[i].push_back(x);
+			}
+		}
+	}
+
+	// Reachability check
+	vector<vector<bool>> reachable(n, vector<bool>(n));
+	for (int i = 0; i < n; i++) {
+		queue<int> queue;
+		queue.push(i);
+		reachable[i][i] = true;
+
+		while (!queue.empty()) {
+			int node = queue.front();
+			queue.pop();
+			for (int c : edges[node]) {
+				if (reachable[i][c]) continue;
+				reachable[i][c] = true;
+				queue.push(c);
+			}
+		}
+	}
+
+	// Solve for every node
+	for (int i = 0; i < n; i++) {
+		int ans = i;
+		for (int j : edges[i]) {
+			if (reachable[j][i]) {
+				ans = j;
+				break;
+			}
+		}
+		cout << ans + 1 << "\n";
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+# Solution 2
 
 ## Explanation
 
@@ -25,7 +106,8 @@ because it must contain at least one outgoing edge from $i$. If a cow does not b
 
 ## Implementation
 
-[Kosaraju's algorithm](https://en.wikipedia.org/wiki/Kosaraju's_algorithm) can be used to find all SCCs in the graph. At the end, it is optimal to just go down cow $i$'s preference list and assign the first gift belonging in the SCC.
+[Kosaraju's algorithm](https://en.wikipedia.org/wiki/Kosaraju's_algorithm) can be used to find all SCCs in the graph.
+At the end, it is optimal to go down cow $i$'s preference list and assign the first gift belonging in the SCC.
 
 **Time Complexity:** $\mathcal{O}(N^2)$
 
@@ -111,5 +193,6 @@ int main() {
 	for (int i = 1; i <= n; i++) { cout << ans[i] << endl; }
 }
 ```
+
 </CPPSection>
 </LanguageSection>
