@@ -51,15 +51,15 @@ std::vector<long long> side_cost(std::vector<int> positions) {
 	for (int i = 1; i < n; i++) {
 		cnt[i] = cnt[i - 1];
 
-        // extend the current cost using prev block boundary
+		// extend the current cost using prev block boundary
 		int pre = i - i % m;
 		if (i == pre) { pre -= m; }
 
 		left[i] = left[pre] + 1LL * cnt[i] * std::abs(positions[i] - positions[pre]);
 
-		if (i % m == 0) { 
-            cnt[i] += 1; // new block starts here
-        }
+		if (i % m == 0) {
+			cnt[i] += 1;  // new block starts here
+		}
 	}
 
 	return left;
@@ -86,7 +86,7 @@ int main() {
 
 	long long res = LLONG_MAX;
 	for (int i = 0; i < n; i++) {
-        // try every criminal position as station
+		// try every criminal position as station
 		res = std::min(res, left_cost[i] + right_cost[n - i - 1]);
 	}
 
