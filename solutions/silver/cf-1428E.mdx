@@ -1,0 +1,196 @@
+---
+id: cf-1428E
+source: CF
+title: Carrots for Rabbits
+author: John Zhou
+---
+
+[Official Editorial (C++, Python)](https://codeforces.com/blog/entry/83771)
+
+<Spoiler title="Hint 1">
+
+If you have a carrot and know the number of pieces you want to cut it into, how would you cut it to minimize the time to eat for all the segments of that carrot?
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Try cutting a carrot into a number of different numbers of segments.  What do you observe about the total time to eat for that carrot?
+
+</Spoiler>
+
+<Spoiler title="Hint 3">
+
+In hint $2$, what do you observe about the *change* in the total time to eat for that carrot?
+
+</Spoiler>
+
+## Explanation
+
+To minimize time, each carrot should be cut into pieces of lengths that are as close together as possible.
+Specifically, no two pieces should differ by more than $1$ in length.
+Thus, if a carrot of length $l$ is cut into $t$ parts, there will be $t-l\bmod t$ of pieces with length $\lfloor\frac lt\rfloor$, and $l\bmod t$ pieces with length $\lfloor\frac lt\rfloor+1$.
+This allows us to calculate the optimal eating time for a carrot with a specific number of cuts in $\mathcal O(1)$ time;
+let the result of this calculation be $f(l,p)$.
+
+<Spoiler title = "Proof: Optimal lengths differ by at most $1$">
+
+Suppose two pieces differ by at least $2$.  One can use another cut with $1$ more length to the smaller piece, and $1$ less length to the larger piece;
+this preserves the sum of the lengths, which also ensures that the other pieces' arrangements are not affected;
+in addition, this reduces the difference between the lengths.
+
+Let the old lengths of the carrots be $X$ and $Y$, and the new lengths of the carrots be $X'$ and $Y'$.
+Since $X+Y=X'+Y'$ and $\lvert X-Y\rvert > \lvert X'-Y'\rvert$, we have
+
+$$
+X^2 + Y^2 = \frac{(X+Y)^2+(X-Y)^2}2 = \frac{(X'+Y')^2+(\lvert X-Y\rvert)^2}2 > \frac{(X'+Y')^2+(\lvert X'-Y'\rvert)^2}2 = (X')^2+(Y')^2.
+$$
+
+The eating time for the $2$ segments is thus reduced; since other segments are unaffected, the overall time is reduced as well.
+
+</Spoiler>
+
+<Spoiler title = "Proof: Construction for $f(l, p)$">
+
+For cutting a specific $l$ into $t$ pieces, let the only possible lengths be $q$ and $q+1$, and let there be $c<t$ (if all are $q+1$, we may use $q+1$ as $q$ instead) segments of length $q+1$ and $t-c$ segments of length $q$;
+the total sum is $l$, so
+
+$$
+l=c(q+1)+(t-c)q
+$$
+
+which implies
+
+$$
+l = tq + c.
+$$
+
+Since $0\leq c<t$ and $c$, $t$, $q$ are integers, the Euclidean Division Theorem directly implies the aforementioned construction.
+
+</Spoiler>
+
+Now, the problem reduces to deciding how many cuts to make on each carrot.
+One may think that the overall set of piece lengths across all original carrots should be as close together as possible, just like we did for the piece lengths in a single carrot.
+However, this is not generally doable, as one may have small segments that are below the ideal segment length that will ensure all cuts are equal.
+
+We note, however, that the more pieces we cut a carrot into, the more the total time gets smaller.
+For the purpose of intution, assume that the cuts are perfect and we get to make fractional cuts;
+in that case, $f(l, t)\approx t(\frac lt)^2=\frac{l^2}t$.
+Now, note that the shape of any function $g(t)=\frac{c}{t}$ with constant $c$ implies that the larger $t$ gets, the slower the function decreases;
+this means that if we can think of incrementing the number of cuts on a carrot, each incrementation will give a saving in the time, but the saving will decrease over time.
+
+<Spoiler title = "Proof: More pieces equals less total time">
+
+Consider the arrangement produced during the calculation $f(l, t)$.
+Unless $t=l$, in which it is impossible to do cut into $t+1$ pieces, there will be (at least) a piece in the cuts using $t$ with length $v>2$.
+Split a $1$ out from that piece; now, the cost to eat these two split pieces are
+
+$$
+(v-1)^2+1^2=v^2-2v+1+1=v^2-2v+2=v^2-2(v-1)\leq v^2.
+$$
+
+which is a reduction in time to eat.
+
+Let the sum of the time for the rest of the pieces be $S$.
+Now, the above may or may not be the best way to split $l$ into $t+1$, which is $f(l, t+1)$;
+thus we have
+
+$$
+f(l, t) = S + v^2 \geq S + (v-1)^2 + 1^2 \geq f(l, t+1)
+$$
+
+which proves our proposition.
+
+</Spoiler>
+
+<Spoiler title = "Proof: Reduction in time is smaller when increasing higher cuts">
+
+Formally, we must prove
+
+$$
+f(l, p-1) - f(l, p) \geq f(l, p) - f(l, p+1).
+$$
+
+Rearranging we get
+
+$$
+f(l, p-1) + f(l, p+1) \geq 2f(l, p) = f(2l, 2p).
+$$
+
+Here, $2f(l, p)=f(2l, 2p)$; this is because as $2l$ and $2p$ are both even, there will be a cut in the middle of the carrot, and it is equivalent to cutting the already-cut pieces on the left and right side into half the number of cut fragments.
+
+Now, we use a similar logic on the left side; $f(l, p-1) + f(l, p+1)$ is a way to cut $2l$ into $2p$ as well, shown trivially if one simply glues the two carrots together.
+This means that it'll be larger than or equal to the optimum, $f(2l, 2p)$, proving our proposition.
+
+</Spoiler>
+
+This inspires a greedy solution;
+we have all carrots cut into $1$ segment initially (i.e. uncut), and precompute the change to total time to eat if the number of cuts is increased by $1$.
+We maintain a priority queue of carrots sorted by the change described above;
+for $n-k$ times, we take the carrot that will make the largest change if cuts are increased by $1$, and increase its cut by $1$.
+Subsequently, we recompute cost of eating that carrot after it's cut, and the change to the total time if the number of cuts is *further* increased by $1$, and re-enqueue the carrot.
+
+This is guaranteed to be optimal;
+as the returns are diminishing for each increase in the number of cuts, there cannot be a situation where picking a suboptimal optimization first will result in better optimizations later.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(k\log n)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <queue>
+using namespace std;
+// Returns the total time for consumption when a
+// carrot of size l is split into t parts.
+long long calculate_time(int l, int t) {
+    // First, give each segment l / t; then, there's l % t
+    // total left, so there's l % t of (l / t + 1) segments, and
+    // the rest are l / t.
+    return 1ll * (l % t) * (l/t+1) * (l/t+1) + 1ll * (t-l%t) * (l/t) * (l/t);
+}
+struct Carrot {
+    int length;            // Original length of carrot
+    int cut;               // Current consideration for amount of cuts
+    long long cost;        // Total time to eat all cut segments
+    long long diff;        // If cut is increased by 1, the change to cost
+    // Update cost and diff based on length and cut.
+    void update_cache() {
+        this->cost = calculate_time(length, cut);
+        this->diff = this->cost - calculate_time(length, cut+1);
+    }
+};
+bool operator< (const Carrot&a, const Carrot&b) {
+    return a.diff < b.diff;
+}
+
+int main() {
+    int n, k;
+    cin >> n >> k;
+    long long ans = 0;
+    priority_queue<Carrot> carrots;
+    for (int i = 1; i <= n; i++) {
+        Carrot carrot;
+        cin >> carrot.length;
+        carrot.cut = 1;
+        carrot.update_cache();
+        carrots.push(carrot);
+        ans += carrot.cost;
+    }
+    for (int i = 1; i <= k - n; i++) {
+        auto front = carrots.top();
+        carrots.pop();
+        ans -= front.diff;
+        front.cut++;
+        front.update_cache();
+        carrots.push(front);
+    }
+    cout << ans << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>
