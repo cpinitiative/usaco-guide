@@ -10,20 +10,13 @@ author: Abhinav Singh
 ## Explanation
 > Throughout, $s$ is 1-indexed, so $s_k$ refers to the $k$-th character of the string.
 
-Whether a value can get from one position to another depends only on $s$. The order of swaps doesn't matter at all.
-So the real question becomes: which gaps in $s$ are "blocked", and whether any of those blocked gaps fall under positions where the permutation needs them to be open?
-**Gap $k$ depends only on $s_k$ and $s_{k+1}$, so flipping $s_i$ can only affect gap $i-1$ and gap $i$. Hence, we never need to recheck everything from scratch.**
+We note that the order of swaps doesn't matter at all. Whether a value can move from one position to another depends only on $s$ , so the problem reduces to a static question: for each value, is its required path through $s$ unobstructed?
 
-Now, look at the gap between position $k$ and position $k+1$. A value can cross this gap to the right if $s_k = R$, and to the left if $s_{k+1} = L$.
-The only time a gap can **NOT** be crossed is when $s_k = L$ and $s_{k+1} = R$ at the same time. Call this a **bad gap**.
+A value can cross the gap between position $k$ and position $k+1$ to the right if $s_k = R$, and to the left if $s_{k+1} = L$. The gap is impassable only when $s_k = L$ and $s_{k+1} = R$ hold simultaneously: call this a **bad gap**.
 
-For each value $v$, let $pos$ be its current position in $p$. For the array to end up sorted, $v$ must travel between $pos$ and $v$.
-WLOG, let $pos$ be the smaller of the 2 values, and $v$ be the larger. We can see that there can be no **bad** gaps between $pos$ and $v$ for all values of $v$.
+For each value $v$, let $pos$ be its current position in $p$. For $p$ to become sorted, $v$ must end up at position $v$, so it must travel from $pos$ to $v$, crossing every gap strictly between $\min(pos, v)$ and $\max(pos, v)$. We can see that there can be no bad gaps between $pos$ and $v$ for all values of $v$.
 
-So naturally, we ask: How do we track these ranges?
-
-The trick is to use a difference array: for each value's range $[lo, hi]$, add $1$ at $lo$ and subtract $1$ at $hi$. After taking prefix sums, any gap with a positive value is needed by at least one value. Call these the **important gaps**.
-We can effectively ignore all other gaps.
+Each value's range $[\min(pos,v), \max(pos,v)]$ marks the gaps it depends on. Build a difference array: add $1$ at $\min(pos,v)$ and subtract $1$ at $\max(pos,v)$ for each value $v$. After taking prefix sums, any gap with a positive value is required by at least one value: call this an **important** gap. Gaps that are never important can be ignored regardless of whether they're bad.
 
 ### Optimal Strategy
 
@@ -31,7 +24,7 @@ Only important gaps matter, and a query at index $i$ can only change whether gap
 Keep one counter, `bad`, for how many important gaps are currently bad.
 
 Before flipping $s_i$, check gap $i-1$ and gap $i$. If either is important and currently bad, subtract one from `bad` per bad gap, as their "bad-ness" may change. Then, flip $s_i$.
-Now, once again check the same two gaps. If either is now important and bad, add one back to `bad`, per bad gap. **The answer is YES when `bad` equals zero.**
+Now, once again check the same two gaps. If either is now important and bad, add one back to `bad`, per bad gap. The answer is YES only when `bad` equals zero.
 
 ## Implementation
 
