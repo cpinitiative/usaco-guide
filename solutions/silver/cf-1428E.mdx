@@ -74,7 +74,7 @@ One may think that the overall set of piece lengths across all original carrots 
 However, this is not generally doable, as one may have small segments that are below the ideal segment length that will ensure all cuts are equal.
 
 We note, however, that the more pieces we cut a carrot into, the more the total time gets smaller.
-For the purpose of intution, assume that the cuts are perfect and we get to make fractional cuts;
+For the purpose of intuition, assume that the cuts are perfect and we get to make fractional cuts;
 in that case, $f(l, t)\approx t(\frac lt)^2=\frac{l^2}t$.
 Now, note that the shape of any function $g(t)=\frac{c}{t}$ with constant $c$ implies that the larger $t$ gets, the slower the function decreases;
 this means that if we can think of incrementing the number of cuts on a carrot, each incrementation will give a saving in the time, but the saving will decrease over time.
@@ -82,8 +82,8 @@ this means that if we can think of incrementing the number of cuts on a carrot, 
 <Spoiler title = "Proof: More pieces equals less total time">
 
 Consider the arrangement produced during the calculation $f(l, t)$.
-Unless $t=l$, in which it is impossible to do cut into $t+1$ pieces, there will be (at least) a piece in the cuts using $t$ with length $v>2$.
-Split a $1$ out from that piece; now, the cost to eat these two split pieces are
+Unless $t=l$, in which it is impossible to cut into $t+1$ pieces, there will be (at least) a piece in the cuts using $t$ with length $v>2$.
+Split a $1$ out from that piece; now, the cost to eat these two split pieces is
 
 $$
 (v-1)^2+1^2=v^2-2v+1+1=v^2-2v+2=v^2-2(v-1)\leq v^2.
@@ -117,7 +117,7 @@ $$
 f(l, p-1) + f(l, p+1) \geq 2f(l, p) = f(2l, 2p).
 $$
 
-Here, $2f(l, p)=f(2l, 2p)$; this is because as $2l$ and $2p$ are both even, there will be a cut in the middle of the carrot, and it is equivalent to cutting the already-cut pieces on the left and right side into half the number of cut fragments.
+Here, $2f(l, p)=f(2l, 2p)$; this is because, as $2l$ and $2p$ are both even, there will be a cut in the middle of the carrot, and it is equivalent to cutting the already-cut pieces on the left and right side into half the number of cut fragments.
 
 Now, we use a similar logic on the left side; $f(l, p-1) + f(l, p+1)$ is a way to cut $2l$ into $2p$ as well, shown trivially if one simply glues the two carrots together.
 This means that it'll be larger than or equal to the optimum, $f(2l, 2p)$, proving our proposition.
@@ -125,10 +125,10 @@ This means that it'll be larger than or equal to the optimum, $f(2l, 2p)$, provi
 </Spoiler>
 
 This inspires a greedy solution;
-we have all carrots cut into $1$ segment initially (i.e. uncut), and precompute the change to total time to eat if the number of cuts is increased by $1$.
+we have all carrots cut into $1$ segment initially (i.e., uncut), and precompute the change to total time to eat if the number of cuts is increased by $1$.
 We maintain a priority queue of carrots sorted by the change described above;
 for $n-k$ times, we take the carrot that will make the largest change if cuts are increased by $1$, and increase its cut by $1$.
-Subsequently, we recompute cost of eating that carrot after it's cut, and the change to the total time if the number of cuts is *further* increased by $1$, and re-enqueue the carrot.
+Subsequently, we recompute the cost of eating that carrot after it's cut, and the change to the total time if the number of cuts is *further* increased by $1$, and re-enqueue the carrot.
 
 This is guaranteed to be optimal;
 as the returns are diminishing for each increase in the number of cuts, there cannot be a situation where picking a suboptimal optimization first will result in better optimizations later.
