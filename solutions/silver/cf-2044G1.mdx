@@ -1,0 +1,95 @@
+---
+id: cf-2044G1
+source: CF
+title: Medium Demon Problem (easy version)
+author: Arnav Gokhale
+---
+
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/137306)
+
+## Explanation
+
+First, let's take note of the graph's structure. Every node has exactly one outgoing edge, making this a functional graph. Thus, the graph consists of several connected components, each containing exactly one cycle, with all the nodes either in the cycle or eventually feeding into it.
+
+Notice that if a node is not in the cycle, the process will not become stable until that node's plushie reaches the cycle. Consider the nodes along a path leading into a cycle. On some day, the spiders will pass their plushie (if they have one) to $r_i$. However, some of the spiders that send a plushie will not receive one in return, causing the system to have changed numbers. Once every plushie reaches a cycle, each spider will both receive and give a plushie, keeping the system stable.
+
+Therefore, the problem can be reduced to finding the maximum distance from any node to its respective cycle.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+
+#include <bits/stdc++.h>
+using namespace std;
+
+void solve() {
+	int n;
+	cin >> n;
+
+	vector<int> a(n);
+	vector<vector<int>> c(n);
+	for (int i = 0; i < n; i++) {
+		cin >> a[i];
+		a[i]--;
+		c[a[i]].push_back(i);
+	}
+
+	vector<int> count(n);
+	vector<bool> vis(n);
+	int ans = 2;
+
+	// Runs a DFS to go out of the node finding max path length
+	auto dfs = [&](auto &&self, int nd) -> int {
+		int mx = 0;
+		vis[nd] = true;
+		for (int i = 0; i < c[nd].size(); i++) {
+			if (count[c[nd][i]] != 2) { mx = max(mx, self(self, c[nd][i])); }
+		}
+
+		return mx + 1;
+	};
+
+	for (int i = 0; i < n; i++) {
+		if (!vis[i]) {
+			int nd = i;
+			vector<int> nodes;
+
+			// Get all the nodes in a cycle
+			while (count[nd] != 2) {
+				vis[nd] = true;
+				count[nd]++;
+				if (count[nd] == 2) nodes.push_back(nd);
+				nd = a[nd];
+			}
+
+			// Run a DFS on the nodes in the cycle getting the max path length into node
+			// nodes[i]
+			for (int i = 0; i < tm.size(); i++) {
+				int d = dfs(dfs, nodes[i]);
+				ans = max(d + 1, ans);
+			}
+		}
+	}
+
+	cout << ans << '\n';
+}
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(false);
+
+	int t;
+	cin >> t;
+	while (t--) { solve(); }
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
