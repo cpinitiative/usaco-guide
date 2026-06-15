@@ -31,8 +31,8 @@ export function AdditionalProblemsDescription(): JSX.Element {
       </h2>
       {progressionMode ? (
         <p>
-          Below are a mix of problems from that require one more or techniques
-          from the previous modules in this section. Try to avoid looking at the
+          Below are a mix of problems that require one more or techniques from
+          the previous modules in this section. Try to avoid looking at the
           tags, as determining how to approach a problem is one of the most
           important skills for success in contests.
         </p>
