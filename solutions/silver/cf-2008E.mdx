@@ -9,35 +9,35 @@ author: Ruben Jing
 
 ## Explanation
 First, note that an alternating string must have an even length. Because operation 1
-(deleting the $i$-th character) can only be used once at most, we only use operation 
+(deleting the $i$-th character) can only be used once at most, we only use operation
 1 iff the string has odd length to ensure the resulting length is even.
 
 In the case that the original string has odd length, we must choose which character to delete.
-Notice that when we delete a character, the parity of each following letter 
+Notice that when we delete a character, the parity of each following letter
 changes. A letter originally at an odd index now is at an even index.
 
 <img src = "/solutions/silver/cf-2008E-anim/parity.gif"/>
 
 Let an index $i$ of string $s1$ be deleted. The resulting string is $s2$.
-Together, the prefix of even indices before $i$ and the suffix of odd indices 
+Together, the prefix of even indices before $i$ and the suffix of odd indices
 after $i$ create the even indices of $s2$. Similarly, the the prefix of odd indices
 before $i$ and the suffix of even indices after $i$ create the odd indices in $s2$.
 
 <img src = "/solutions/silver/cf-2008E-anim/prefix_and_suffix.gif"/>
 
-In order to save some memory, the prefix and suffix can be represented on-the-fly. 
+In order to save some memory, the prefix and suffix can be represented on-the-fly.
 We start with an empty prefix and a full suffix.
 
-As we check $i$s to delete from $0$ to $n - 1$, we add $i$ to the prefix and subtract 
-$i$ from the suffix. 
+As we check $i$s to delete from $0$ to $n - 1$, we add $i$ to the prefix and subtract
+$i$ from the suffix.
 
 Now we have an even string. Operation 1 cannot be applied anymore, only operation 2.
 We need to figure out how many times we must apply operation 2. We can figure this
 out by changing every even character to the most prevalent even character and every
 odd character to the most prevalent odd character.
 
-For example, given the string `abcbab`, it is optimal to make the `c` into an `a` 
-rather than make all the `a`s into `c`s. Additionally, it is best not to change the `b`s because 
+For example, given the string `abcbab`, it is optimal to make the `c` into an `a`
+rather than make all the `a`s into `c`s. Additionally, it is best not to change the `b`s because
 they are already all the same.
 
 ## Implementation
@@ -45,7 +45,7 @@ they are already all the same.
 **Time Complexity:** $\mathcal{O}(N)$
 
 <Info title="Implementation Tip">
-We can make a list of two lists and use $i%2$ to have 
+We can make a list of two lists and use $i%2$ to have
 separate lists for even and odd indices.
 </Info>
 
@@ -56,62 +56,59 @@ separate lists for even and odd indices.
 
 using namespace std;
 
-void solve () {
-    int n; cin >> n;
-    string s; cin >> s;
+void solve() {
+	int n;
+	cin >> n;
+	string s;
+	cin >> s;
 
-    int res = s.length();
+	int res = s.length();
 
-    if (n % 2 == 0) {
-        vector<int> letters[2] = {vector<int>(26), vector<int>(26)};
+	if (n % 2 == 0) {
+		vector<int> letters[2] = {vector<int>(26), vector<int>(26)};
 
-        for (int i = 0; i < s.length(); i++) {
-            letters[i % 2][s[i] - 'a']++;
-        }
+		for (int i = 0; i < s.length(); i++) { letters[i % 2][s[i] - 'a']++; }
 
-        int best[2] = {0, 0};
+		int best[2] = {0, 0};
 
-        // find the letter that occurs the most for both odd and even indices
-        for (int i = 0; i < 26; i++) {
-            best[0] = max(best[0], letters[0][i]);
-            best[1] = max(best[1], letters[1][i]);
-        }
+		// find the letter that occurs the most for both odd and even indices
+		for (int i = 0; i < 26; i++) {
+			best[0] = max(best[0], letters[0][i]);
+			best[1] = max(best[1], letters[1][i]);
+		}
 
-        res -= (best[0] + best[1]);
-    } else {
-        vector<int> pref[2] = {vector<int>(26), vector<int>(26)};
-        vector<int> suff[2] = {vector<int>(26), vector<int>(26)};
+		res -= (best[0] + best[1]);
+	} else {
+		vector<int> pref[2] = {vector<int>(26), vector<int>(26)};
+		vector<int> suff[2] = {vector<int>(26), vector<int>(26)};
 
-        // fill the suffix sum
-        for (int i = n - 1; i > -1; i--) {
-            suff[i % 2][s[i] - 'a']++;
-        }
+		// fill the suffix sum
+		for (int i = n - 1; i > -1; i--) { suff[i % 2][s[i] - 'a']++; }
 
-        for (int i = 0; i < n; i++) {
-            suff[i % 2][s[i] - 'a']--;
+		for (int i = 0; i < n; i++) {
+			suff[i % 2][s[i] - 'a']--;
 
-            int best[2] = {0, 0};
+			int best[2] = {0, 0};
 
-            for (int j = 0; j < 26; j++) {
-                best[0] = max(best[0], suff[1][j] + pref[0][j]);
-                best[1] = max(best[1], suff[0][j] + pref[1][j]);
-            }
+			for (int j = 0; j < 26; j++) {
+				best[0] = max(best[0], suff[1][j] + pref[0][j]);
+				best[1] = max(best[1], suff[0][j] + pref[1][j]);
+			}
 
-            res = min(res, (int)s.length() - best[0] - best[1]);
+			res = min(res, (int)s.length() - best[0] - best[1]);
 
-            pref[i % 2][s[i] - 'a']++;
-        }
-    }
+			pref[i % 2][s[i] - 'a']++;
+		}
+	}
 
-    cout << res << "\n";
+	cout << res << "\n";
 }
 
-int main () {
-    int t; cin >> t;
+int main() {
+	int t;
+	cin >> t;
 
-    while (t--) {
-        solve();
-    }
+	while (t--) { solve(); }
 }
 ```
 </CPPSection>
@@ -120,115 +117,112 @@ int main () {
 import java.io.*;
 
 public class AlternatingString {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        PrintWriter out = new PrintWriter(new BufferedOutputStream(System.out));
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter out = new PrintWriter(new BufferedOutputStream(System.out));
 
-        int t = Integer.parseInt(br.readLine());
+		int t = Integer.parseInt(br.readLine());
 
-        while (t-- > 0) {
-            int n = Integer.parseInt(br.readLine());
-            String s = br.readLine();
+		while (t-- > 0) {
+			int n = Integer.parseInt(br.readLine());
+			String s = br.readLine();
 
-            out.println(solve(n, s));
-        }
+			out.println(solve(n, s));
+		}
 
-        out.flush();
-    }
-    
-    public static int solve(int n, String s) {
-        int res = s.length();
+		out.flush();
+	}
 
-        if (n % 2 == 0) {
-            int[][] letters = new int[2][26];
+	public static int solve(int n, String s) {
+		int res = s.length();
 
-            for (int i = 0; i < n; i++) {
-                letters[i % 2][s.charAt(i) - 'a']++;
-            }
+		if (n % 2 == 0) {
+			int[][] letters = new int[2][26];
 
-            int even = 0, odd = 0;
+			for (int i = 0; i < n; i++) { letters[i % 2][s.charAt(i) - 'a']++; }
 
-            for (int i = 0; i < 26; i++) {
-                even = Math.max(even, letters[0][i]);
-                odd = Math.max(odd, letters[1][i]);
-            }
+			int even = 0, odd = 0;
 
-            res -= (even + odd);
-        } else {
-            int[][] pref = new int[2][26];
-            int[][] suff = new int[2][26];
+			for (int i = 0; i < 26; i++) {
+				even = Math.max(even, letters[0][i]);
+				odd = Math.max(odd, letters[1][i]);
+			}
 
-            for (int i = 0; i < n; i++) {
-                suff[i % 2][s.charAt(i) - 'a']++;
-            }
+			res -= (even + odd);
+		} else {
+			int[][] pref = new int[2][26];
+			int[][] suff = new int[2][26];
 
-            for (int i = 0; i < s.length(); i++) {
-                suff[i % 2][s.charAt(i) - 'a']--;
+			for (int i = 0; i < n; i++) { suff[i % 2][s.charAt(i) - 'a']++; }
 
-                int even = 0, odd = 0;
+			for (int i = 0; i < s.length(); i++) {
+				suff[i % 2][s.charAt(i) - 'a']--;
 
-                for (int j = 0; j < 26; j++) {
-                    even = Math.max(even, suff[1][j] + pref[0][j]);
-                    odd = Math.max(odd, suff[0][j] + pref[1][j]);
-                }
+				int even = 0, odd = 0;
 
-                res = Math.min(res, s.length() - even - odd);
+				for (int j = 0; j < 26; j++) {
+					even = Math.max(even, suff[1][j] + pref[0][j]);
+					odd = Math.max(odd, suff[0][j] + pref[1][j]);
+				}
 
-                pref[i % 2][s.charAt(i) - 'a']++;
-            }
-        }
+				res = Math.min(res, s.length() - even - odd);
 
-        return res;
-    }
+				pref[i % 2][s.charAt(i) - 'a']++;
+			}
+		}
+
+		return res;
+	}
 }
 ```
 </JavaSection>
 <PySection>
 ```py
 def solve():
-    n = int(input())
-    s = input()
+	n = int(input())
+	s = input()
 
-    res = len(s)
+	res = len(s)
 
-    if n % 2 == 0:
-        letters = [[0] * 26, [0] * 26]
+	if n % 2 == 0:
+		letters = [[0] * 26, [0] * 26]
 
-        for i in range(len(s)):
-            letters[i % 2][ord(s[i]) - ord('a')] += 1
-        
-        best = [0, 0]
+		for i in range(len(s)):
+			letters[i % 2][ord(s[i]) - ord("a")] += 1
 
-        for i in range(2):
-            best[i] = max(letters[i])
+		best = [0, 0]
 
-        res -= (best[0] + best[1])
-    else:
-        pref = [[0] * 26, [0] * 26]
-        suff = [[0] * 26, [0] * 26]
+		for i in range(2):
+			best[i] = max(letters[i])
 
-        for i in range(len(s) - 1, -1, -1):
-            suff[i % 2][ord(s[i]) - ord('a')] += 1
+		res -= best[0] + best[1]
+	else:
+		pref = [[0] * 26, [0] * 26]
+		suff = [[0] * 26, [0] * 26]
 
-        for i in range(n):
-            suff[i % 2][ord(s[i]) - ord('a')] -= 1
-            
-            best = [0, 0]
+		for i in range(len(s) - 1, -1, -1):
+			suff[i % 2][ord(s[i]) - ord("a")] += 1
 
-            for j in range(26):
-                best[0] = max(best[0], suff[1][j] + pref[0][j])
-                best[1] = max(best[1], suff[0][j] + pref[1][j])
-            
-            res = min(res, len(s) - best[0] - best[1])
-            
-            pref[i % 2][ord(s[i]) - ord('a')] += 1
+		for i in range(n):
+			suff[i % 2][ord(s[i]) - ord("a")] -= 1
 
-    print(res)
+			best = [0, 0]
+
+			for j in range(26):
+				best[0] = max(best[0], suff[1][j] + pref[0][j])
+				best[1] = max(best[1], suff[0][j] + pref[1][j])
+
+			res = min(res, len(s) - best[0] - best[1])
+
+			pref[i % 2][ord(s[i]) - ord("a")] += 1
+
+	print(res)
+
 
 t = int(input())
 
 for _ in range(t):
-    solve()
+	solve()
 ```
 </PySection>
 </LanguageSection>
