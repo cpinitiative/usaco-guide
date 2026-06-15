@@ -40,7 +40,7 @@ export default function TopNavigationBar({
   transparent = false,
   linkLogoToIndex = false,
   currentSection = null,
-  hidePromoBar = true,
+  hidePromoBar = false,
   redirectToDashboard = false,
 }) {
   const router = useRouter();
@@ -142,9 +142,9 @@ export default function TopNavigationBar({
       {!hidePromoBar && (
         <>
           <Banner
-            text="The USACO.Guide Informatics Tournament takes place on 3/14!"
+            text="Our next semester of Bronze/Silver live classes starts this month. Register here!"
             action="Register here"
-            link="https://contest.joincpi.org"
+            link="https://joincpi.org/classes"
           />
         </>
       )}
