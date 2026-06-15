@@ -1,0 +1,58 @@
+---
+id: usaco-1205
+source: USACO Bronze 2022 February
+title: Blocks
+author: Rameez Parwez
+---
+
+## Explanation
+
+## Implementation
+
+**Time Complexity:** $$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <functional>
+
+int main() {
+	int n;
+	std::cin >> n;
+	std::array<std::array<int, 26>, 4> cnt {0};
+	std::string block;
+	for (int i = 0; i < 4; i++) {
+		std::cin >> block;
+		for (char c : block) {
+			cnt[i][c - 'A']++;
+		}
+	}
+
+	auto is_possible = [&] (std::string word) {
+		std::array<int, 4> perm = {0, 1, 2, 3};
+		do {
+			for (int i = 0, j = 0; i < 4; i++) {
+				bool ok = false;
+				if (cnt[perm[i]][word[j] - 'A']) {
+					j++;
+				}
+				if (j == (int)word.size()) {
+					return true;
+				}
+			}
+		} while (std::next_permutation(begin(perm), end(perm)));
+		return false;
+	};
+
+	for (int i = 1; i <= n; i++) {
+		std::string word;
+		std::cin >> word;
+		std::cout << (is_possible(word) ? "YES" : "NO") << '\n';
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
