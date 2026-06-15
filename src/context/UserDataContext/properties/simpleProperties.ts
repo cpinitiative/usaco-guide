@@ -1,5 +1,16 @@
 import { createSimpleUserDataMutation, createUserDataGetter } from './hooks';
 
+export const useProgressionMode = createUserDataGetter(userData => {
+  return userData.progressionMode;
+});
+export const useSetProgressionMode = createSimpleUserDataMutation(
+  (userData, progressionMode: boolean) => {
+    return {
+      progressionMode,
+    };
+  }
+);
+
 export const useShowTagsSetting = createUserDataGetter(userData => {
   return userData.showTags;
 });

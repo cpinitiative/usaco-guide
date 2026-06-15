@@ -1,5 +1,6 @@
 import Asterisk from '../Tooltip/Asterisk';
 import TextTooltip from '../Tooltip/TextTooltip';
+import { AdditionalProblemsDescription } from './AdditionalProblemsDescription';
 import FocusProblem from './FocusProblem';
 import HTMLComponents from './HTMLComponents';
 import { IncompleteSection } from './IncompleteSection';
@@ -18,6 +19,7 @@ import Optional from './Optional';
 import PrefixSumInteractive from './PrefixSumInteractive';
 import DivisionList from './ProblemsList/DivisionList/DivisionList';
 import { ProblemsList } from './ProblemsList/ProblemsList';
+import { ReviewProblems } from './ProblemsList/ReviewProblems';
 import Quiz from './Quiz';
 import { Resource, ResourcesList } from './ResourcesList';
 import Spoiler from './Spoiler';
@@ -49,6 +51,8 @@ export const components = {
   Quiz,
   MATHDIV,
   MATHSPAN,
+  ReviewProblems,
+  AdditionalProblemsDescription,
 
   ...HTMLComponents,
 };

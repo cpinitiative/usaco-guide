@@ -2,8 +2,10 @@ import * as React from 'react';
 import {
   useHideDifficultySetting,
   useHideModulesSetting,
+  useProgressionMode,
   useSetHideDifficultySetting,
   useSetHideModulesSetting,
+  useSetProgressionMode,
   useSetShowIgnoredSetting,
   useSetShowTagsSetting,
   useShowIgnoredSetting,
@@ -21,6 +23,8 @@ export default function General(): JSX.Element {
   const setHideDifficulty = useSetHideDifficultySetting();
   const hideModules = useHideModulesSetting();
   const setHideModules = useSetHideModulesSetting();
+  const progressionMode = useProgressionMode();
+  const setProgressionMode = useSetProgressionMode();
   const [isLongPolling, setIsLongPolling] = React.useState<boolean>(false);
   /**
    * For people behind proxies or with terrible internet - behold the power of long polling!
@@ -57,6 +61,20 @@ export default function General(): JSX.Element {
                 className="text-sm font-medium text-gray-500 dark:text-gray-300"
                 id="privacy-option-1-label"
               >
+                Progression Mode
+              </p>
+            </div>
+            <Switch
+              checked={progressionMode}
+              onChange={b => setProgressionMode(b)}
+            />
+          </li>
+          <li className="flex items-center justify-between py-4">
+            <div className="flex flex-col">
+              <p
+                className="text-sm font-medium text-gray-500 dark:text-gray-300"
+                id="privacy-option-2-label"
+              >
                 Problem Lists and Search: Show Tags
               </p>
             </div>
@@ -66,7 +84,7 @@ export default function General(): JSX.Element {
             <div className="flex flex-col">
               <p
                 className="text-sm font-medium text-gray-500 dark:text-gray-300"
-                id="privacy-option-1-label"
+                id="privacy-option-3-label"
               >
                 Problem Lists and Search: Hide Difficulty
               </p>
@@ -80,7 +98,7 @@ export default function General(): JSX.Element {
             <div className="flex flex-col">
               <p
                 className="text-sm font-medium text-gray-500 dark:text-gray-300"
-                id="privacy-option-1-label"
+                id="privacy-option-4-label"
               >
                 Problem Search: Hide Modules
               </p>
@@ -91,7 +109,7 @@ export default function General(): JSX.Element {
             <div className="flex flex-col">
               <p
                 className="text-sm font-medium text-gray-500 dark:text-gray-300"
-                id="privacy-option-2-label"
+                id="privacy-option-5-label"
               >
                 Dashboard: Show Ignored Problems & Modules
               </p>
@@ -102,7 +120,7 @@ export default function General(): JSX.Element {
             <div className="flex flex-col">
               <p
                 className="text-sm font-medium text-gray-500 dark:text-gray-300"
-                id="privacy-option-2-label"
+                id="privacy-option-6-label"
               >
                 Use Long Polling (Close and reopen tab after toggling) -{' '}
                 <span className="font-bold">

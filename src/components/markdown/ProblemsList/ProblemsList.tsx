@@ -5,6 +5,7 @@ import { Fragment } from 'react';
 import { useMarkdownProblemLists } from '../../../context/MarkdownProblemListsContext';
 import {
   useHideDifficultySetting,
+  useProgressionMode,
   useShowTagsSetting,
 } from '../../../context/UserDataContext/properties/simpleProperties';
 import { ProblemInfo } from '../../../models/problem';
@@ -20,6 +21,9 @@ type ProblemsListProps =
       children?: React.ReactNode;
       problems?: string;
       hideSuggestProblemButton?: boolean;
+      progressionSet?: boolean; // only if problems should be filtered in progression mode
+      progression?: string; // only if there is a separate pset for progression mode
+      review?: boolean; // for review sets
     }
   | {
       title?: string;
@@ -27,6 +31,9 @@ type ProblemsListProps =
       problems?: DivisionProblemInfo[]; // normally string; only DivisionProblemInfo[] when it's a division table
       division?: string; // only if is division table
       modules?: boolean; // only if is division table
+      progressionSet?: boolean; // only if problems should be filtered in progression mode
+      progression?: string; // only if there is a separate pset for progression mode
+      review?: boolean; // for review sets
     };
 type AnnotatedProblemsListProps =
   | {
@@ -47,15 +54,21 @@ type AnnotatedProblemsListProps =
     };
 export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
   const markdownProblems = useMarkdownProblemLists()!;
+  const progressionMode = useProgressionMode();
   let problems: ProblemInfo[] | DivisionProblemInfo[];
+  const listId =
+    progressionMode && typeof unannotatedProps.progression === 'string'
+      ? unannotatedProps.progression
+      : unannotatedProps.problems;
   if (typeof unannotatedProps.problems === 'string') {
-    problems = markdownProblems.find(
-      list => list.listId === unannotatedProps.problems
-    )!.problems;
+    problems = markdownProblems.find(list => list.listId === listId)!.problems;
     if (!problems) {
       throw new Error(
         "Couldn't find the problem list with name " + unannotatedProps.problems
       );
+    }
+    if (progressionMode && unannotatedProps.progressionSet) {
+      problems = problems.filter(problem => problem.isStarred);
     }
   } else {
     problems = unannotatedProps.problems as DivisionProblemInfo[];
@@ -69,7 +82,10 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
     problems,
   } as AnnotatedProblemsListProps;
   const showTags = useShowTagsSetting();
-  const showDifficulty = !useHideDifficultySetting();
+  const showDifficulty =
+    !useHideDifficultySetting() &&
+    !unannotatedProps.review &&
+    (!unannotatedProps.progression || !progressionMode);
 
   const [problem, setProblem] = React.useState<ProblemInfo | null>(null);
   const [showModal, setShowModal] = React.useState(false);
@@ -80,7 +96,7 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
 
   const path = usePathname();
 
-  return (
+  return problems.length ? (
     <>
       <ListTable
         id={`problemlist-${
@@ -221,5 +237,7 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
         </div>
       </Transition>
     </>
+  ) : (
+    <p>There will be more practice on this topic in later modules!</p>
   );
 }

@@ -25,6 +25,7 @@ export default function runMigration() {
     // The user has a legacy version of user data. need to migrate it
     const storedUserData: UserData = {
       consecutiveVisits: getLegacy('consecutiveVisits')!,
+      progressionMode: getLegacy('progressionMode')!,
       showTags: getLegacy('showTags')!,
       hideDifficulty: getLegacy('hideDifficulty')!,
       hideModules: getLegacy('hideModules')!,

@@ -23,6 +23,8 @@ import { UserPermissionsContextProvider } from './UserPermissionsContext';
 // What's actually stored in local storage / firebase
 export type UserData = {
   consecutiveVisits: number;
+  /** Enable spaced repetition with mixed problem sets */
+  progressionMode: boolean;
   /** show tags on problems table */
   showTags: boolean;
   /** hide difficulty on problems table */
@@ -81,6 +83,7 @@ type UserDataContextAPI = {
 export const assignDefaultsToUserData = (data: object): UserData => {
   return {
     consecutiveVisits: 1,
+    progressionMode: false,
     showTags: false,
     hideDifficulty: false,
     hideModules: false,
