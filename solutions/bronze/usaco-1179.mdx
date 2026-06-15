@@ -72,52 +72,48 @@ import java.io.*;
 import java.util.*;
 
 public class Herdle {
-    public static void main(String[] args) throws Exception {
-        Kattio io = new Kattio();
+	public static void main(String[] args) throws Exception {
+		Kattio io = new Kattio();
 
-        char[][] answer = new char[3][3];
-        char[][] guess = new char[3][3];
+		char[][] answer = new char[3][3];
+		char[][] guess = new char[3][3];
 
-        for (int i = 0; i < 3; i++) {
-            String row = io.next();
-            for (int j = 0; j < 3; j++) {
-                answer[i][j] = row.charAt(j);
-            }
-        }
+		for (int i = 0; i < 3; i++) {
+			String row = io.next();
+			for (int j = 0; j < 3; j++) { answer[i][j] = row.charAt(j); }
+		}
 
-        for (int i = 0; i < 3; i++) {
-            String row = io.next();
-            for (int j = 0; j < 3; j++) {
-                guess[i][j] = row.charAt(j);
-            }
-        }
+		for (int i = 0; i < 3; i++) {
+			String row = io.next();
+			for (int j = 0; j < 3; j++) { guess[i][j] = row.charAt(j); }
+		}
 
-        int greenSquares = 0;
-        int yellowSquares = 0;
-        int[] freqAnswer = new int[26];
-        int[] freqGuess = new int[26];
+		int greenSquares = 0;
+		int yellowSquares = 0;
+		int[] freqAnswer = new int[26];
+		int[] freqGuess = new int[26];
 
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                greenSquares += (answer[i][j] == guess[i][j]) ? 1 : 0;
-                freqAnswer[answer[i][j] - 'A']++;
-                freqGuess[guess[i][j] - 'A']++;
-            }
-        }
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				greenSquares += (answer[i][j] == guess[i][j]) ? 1 : 0;
+				freqAnswer[answer[i][j] - 'A']++;
+				freqGuess[guess[i][j] - 'A']++;
+			}
+		}
 
-        for (int i = 0; i < 26; i++) {
-            yellowSquares += Math.min(freqAnswer[i], freqGuess[i]);
-        }
+		for (int i = 0; i < 26; i++) {
+			yellowSquares += Math.min(freqAnswer[i], freqGuess[i]);
+		}
 
-        yellowSquares -= greenSquares;
+		yellowSquares -= greenSquares;
 
-        io.println(greenSquares);
-        io.println(yellowSquares);
-        
-        io.close();
-    }
+		io.println(greenSquares);
+		io.println(yellowSquares);
 
-    // BeginCodeSnip{Kattio}
+		io.close();
+	}
+
+	// BeginCodeSnip{Kattio}
 }
 ```
 
@@ -134,13 +130,13 @@ freq_answer = [0] * 26
 freq_guess = [0] * 26
 
 for i in range(3):
-    for j in range(3):
-        green_squares += (answer[i][j] == guess[i][j])
-        freq_answer[ord(answer[i][j]) - ord('A')] += 1
-        freq_guess[ord(guess[i][j]) - ord('A')] += 1
+	for j in range(3):
+		green_squares += answer[i][j] == guess[i][j]
+		freq_answer[ord(answer[i][j]) - ord("A")] += 1
+		freq_guess[ord(guess[i][j]) - ord("A")] += 1
 
 for i in range(26):
-    yellow_squares += min(freq_answer[i], freq_guess[i])
+	yellow_squares += min(freq_answer[i], freq_guess[i])
 
 yellow_squares -= green_squares
 
