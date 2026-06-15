@@ -276,7 +276,7 @@ one less than the distance.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N)$
+**Time Complexity:** $\mathcal{O}(N \log N)$
 
 <LanguageSection>
 <CPPSection>
@@ -284,8 +284,8 @@ one less than the distance.
 ```cpp
 #include <cstdio>
 #include <iostream>
+#include <map>
 #include <queue>
-#include <unordered_map>
 #include <vector>
 using namespace std;
 
@@ -296,7 +296,7 @@ int main() {
 	cin >> n;
 	vector<pair<int, int>> points(n + 2);
 	// lines[0] are vertical, lines[1] are horizontal
-	unordered_map<int, vector<int>> lines[2];
+	map<int, vector<int>> lines[2];
 	for (int i = 0; i < n + 2; i++) {
 		cin >> points[i].first >> points[i].second;
 		lines[0][points[i].first].push_back(i);
@@ -378,12 +378,14 @@ while queue:
 
 	# Change direction
 	if curr_direction:  # is horizontal
-		for fp_i in y_lines.pop(curr_fp.y, []):
+		neighbors = y_lines.pop(curr_fp.y, [])
+		for fp_i in neighbors:
 			if dist[fp_i] == -1:
 				queue.appendleft((fp_i, not curr_direction))
 				dist[fp_i] = dist[curr_idx] + 1
 	else:  # is vertical
-		for fp_i in x_lines.pop(curr_fp.x, []):
+		neighbors = x_lines.pop(curr_fp.x, [])
+		for fp_i in neighbors:
 			if dist[fp_i] == -1:
 				queue.appendleft((fp_i, not curr_direction))
 				dist[fp_i] = dist[curr_idx] + 1
