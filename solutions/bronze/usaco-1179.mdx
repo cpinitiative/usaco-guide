@@ -122,4 +122,31 @@ public class Herdle {
 ```
 
 </JavaSection>
+<PySection>
+
+```py
+answer = [input() for _ in range(3)]
+guess = [input() for _ in range(3)]
+
+green_squares = 0
+yellow_squares = 0
+freq_answer = [0] * 26
+freq_guess = [0] * 26
+
+for i in range(3):
+    for j in range(3):
+        green_squares += (answer[i][j] == guess[i][j])
+        freq_answer[ord(answer[i][j]) - ord('A')] += 1
+        freq_guess[ord(guess[i][j]) - ord('A')] += 1
+
+for i in range(26):
+    yellow_squares += min(freq_answer[i], freq_guess[i])
+
+yellow_squares -= green_squares
+
+print(green_squares)
+print(yellow_squares)
+```
+
+</PySection>
 </LanguageSection>
