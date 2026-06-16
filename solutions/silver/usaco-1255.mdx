@@ -22,22 +22,19 @@ The first player can now repeat the process to force the other player into a sma
 Therefore, when the initial state is $a_1\bmod 4\neq 0$, Farmer John, being the first player, will win;
 but if $a_1\bmod 4=0$ initially, then Farmer John must produce a state of $a_1\bmod 4\neq 0$ for Farmer Nhoj, forcing Farmer Nhoj to win instead.
 
-Now, we consider the case when $N>1$.  The farmers will go in circles, each playing each room only once; however, the operations on each room are all independent.
-This means that we can consider the result of playing each room as if $N=1$, and term guaranteed loser of that room the "defender" and the guaranteed winner of that room the "attacker".
+Now, we consider the case when $N>1$.  Note that operations on each room are all independent, so we can consider the result of playing each room as if $N=1$, and term guaranteed loser of that room the "defender" and the guaranteed winner of that room the "attacker".
 
-The farmers will play in a circle, so the next round of operations on a room will only be done when all the other rooms are visited.
-Therefore, the attacker in a room would like to get to 0 as fast as possible in that grid, and the defender would like the room to be played slower instead.
-This is because the attacker wants to minimize the chances that he gets beaten at another room, and therefore needs to minimize the number of times he goes around the circle before coming back, so he can hopefully win right here early;
-the defender would want to sabotage the attacker from doing so, and therefore needs to maximize the potential duration of playing at this room.
-When two players play with the above strategies, let the number of total operations on room $i$ if it is played to the end be $T_i$;
-the game's winner will be the winner of the room with the minimum $\left\lceil\frac{T_i}2\right\rceil$ (if tied, the minimum room number), as it's the room that will be reached after the least amount of times went around the circle.
+The next pair of operations on a room will only be done when all the other rooms have been visited.
+Thus, the attacker in a room would like to get the room's number of cows to 0 as fast as possible to minimize their chances at getting beaten at another room, and the defender would like this to happen as slow as possible instead to maximize the chances of winning early at another room.
+When two players play with this way, let the number of total operations on room $i$ if it is played to the end be $T_i$;
+the game's winner will be the winner of the room with the minimum $\left\lceil\frac{T_i}2\right\rceil$ (if tied, the one with the minimum room number), as it's the room that will be reached after the least amount of times 
+around the circle.
 
-To minimize the number of rounds, the attacker can use a slightly modified version of his strategy when $N=1$:
-Instead of giving $a_i\bmod4=0$'s to the other victim by taking away $a_i\bmod 4$ cows, he can take away any $p\equiv a_i\mod 4$ cows, where $p \in \mathbb P$;
-the larger the $p$ for the operation, the more speedup it offers to ending the game.
-Given an $x$, to compute the largest $p$ for which $p\equiv x\mod 4$, one preprocesses;
-first, use a sieve to find all primes, and in the process, keep an array $t_i$ with $0\leq i<4$ for the most recent prime $t_i=p$ we found where where $p\bmod 4=i$;
-then, we assign $m_x=t_{x\bmod 4}$ to keep track of the largest prime such that $m_x\equiv x\mod 4$.
+To minimize the number of rounds, the attacker can use a modified version of his strategy when $N=1$:
+Instead of giving $a_i\bmod4=0$'s to the the defender by taking away $a_i\bmod 4$ cows, he can take away any $p\equiv a_i\mod 4$ cows, where $p \in \mathbb P$;
+the maximum $p<a_i$ is desired to provide the largest speedup to ending the game.
+To compute the largest $p<x$ such that $p\equiv x\mod 4$, first use a sieve to find all primes, and keep an array $t_i$ with $0\leq i<4$ for the most recent prime $t_i=p$ we found where where $p\bmod 4=i$ as we go;
+then, we assign $m_x=t_{x\bmod 4}$ to represent the requested result.
 
 On the other hand, the defender can block this attack as soon as they receive an $a_i\bmod 4=0$.
 This relies on the fact that there are no primes $p>4$ that satisfies $p\bmod 4=2$, and there are no speedups when $a_i\bmod 4=2$;
