@@ -16,14 +16,14 @@ In the case that the original string has odd length, we must choose which charac
 Notice that when we delete a character, the parity of each following letter
 changes. A letter originally at an odd index now is at an even index.
 
-<img src = "/solutions/silver/cf-2008E-anim/parity.gif"/>
+![](/solutions/silver/cf-2008E-anim/parity.gif)
 
 Let an index $i$ of string $s_1$ be deleted. The resulting string is $s_2$.
 Together, the prefix of even indices before $i$ and the suffix of odd indices
 after $i$ create the even indices of $s2$. Similarly, the prefix of odd indices
 before $i$ and the suffix of even indices after $i$ create the odd indices in $s2$.
 
-<img src = "/solutions/silver/cf-2008E-anim/prefix_and_suffix.gif"/>
+![](/solutions/silver/cf-2008E-anim/prefix_and_suffix.gif)
 
 To save memory, the prefix and suffix can be represented on-the-fly.
 We start with an empty prefix and a full suffix.
@@ -65,7 +65,7 @@ void solve() {
 	int res = s.length();
 
 	if (n % 2 == 0) {
-		vector<int> letters[2] = {vector<int>(26), vector<int>(26)};
+		array<array<int, 26>, 2> letters{};
 
 		for (int i = 0; i < s.length(); i++) { letters[i % 2][s[i] - 'a']++; }
 
@@ -79,8 +79,8 @@ void solve() {
 
 		res -= (best[0] + best[1]);
 	} else {
-		vector<int> pref[2] = {vector<int>(26), vector<int>(26)};
-		vector<int> suff[2] = {vector<int>(26), vector<int>(26)};
+		array<array<int, 26>, 2> pref{};
+		array<array<int, 26>, 2> suff{};
 
 		// fill the suffix sum
 		for (int i = n - 1; i > -1; i--) { suff[i % 2][s[i] - 'a']++; }
