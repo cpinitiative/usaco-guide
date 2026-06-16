@@ -9,20 +9,17 @@ author: John Zhou
 
 ## Explanation
 
-Below, $a_i$ broadly refers to the current number of cows in the $i$-th room, rather than simply the initial number;
-$\mathbb P$ is used to refer to the set of primes; for this problem, it includes $1$.
+Below, $a_i$ can also refer to the current number of cows in the $i$-th room;
+$\mathbb P$ is the set of primes, including $1$.
 
-First, let's approach this problem when $N=1$, which is when when both farmers remove cows from one room until it is empty.
+First, consider the case $N=1$, when both farmers remove cows from one room.
 
-Notice that it is possible to remove $1$, $2$, or $3$ but not any multipes of $4$ cows.
-This implies that we should try to center our strategy around manipulating $a_1\bmod 4$.
-First, if a player arrives in a state where $a_1\bmod 4=0$, then they cannot get out of it, as there are no multiples of $4$.
-On the other hand, if a player arrives in a state where $a_1\bmod 4\neq 0$, they could always take away $a_1\bmod 4\in\{1,2,3\}$ to force the other player into a state where $a_1\bmod 4=0$, which they cannot get out of.
+Note that it is possible to remove $1$, $2$, or $3$ but not any multipes of $4$ cows.
+We should therefore pay close attention fo $a_1\bmod 4$:
+A "first" player starting with $a_1\bmod 4\neq 0$ should take $a_1\bmod 4$ cows to force the "second" player into $a_1\bmod 4=0$, who will always give the first player an $a_1\bmod 4\neq 0$, since they cannot take any multiple of $4$ to maintain the $0$ remainder.
+The first player can now repeat the process to force the other player into a smaller $a_1\bmod 4=0$, which will eventually be $0$, causing the first player to win.
 
-Our strategy for $N=1$ thus falls out immediately:
-A player with a state of $a_1\bmod 4\neq 0$ should always take away $a_1\bmod 4$ cows to force the other player into a state where $a_1\bmod 4=0$;
-that player will always return with a state of $a_1\bmod 4\neq 0$, and you can repeat this and give them a smaller $a_1\bmod 4=0$, which will eventually choke them down into $0$, which is when you win.
-Therefore, when the initial state is $a_1\bmod 4\neq 0$, Farmer John will win;
+Therefore, when the initial state is $a_1\bmod 4\neq 0$, Farmer John, being the first player, will win;
 but if $a_1\bmod 4=0$ initially, then Farmer John must produce a state of $a_1\bmod 4\neq 0$ for Farmer Nhoj, forcing Farmer Nhoj to win instead.
 
 Now, we consider the case when $N>1$.  The farmers will go in circles, each playing each room only once; however, the operations on each room are all independent.
