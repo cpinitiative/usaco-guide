@@ -42,25 +42,25 @@ As mentioned in the statement, fast I/O is recommended due to the large input si
 #include <bits/stdc++.h>
 
 std::vector<long long> side_cost(const std::vector<int> &positions, int n, int m) {
-    std::vector<int> cnt(n);
-    std::vector<long long> left(n);
+	std::vector<int> cnt(n);
+	std::vector<long long> left(n);
 
 	// extend the current cost using prev block boundary
-    cnt[0] = 1;
-    for (int i = 1; i < n; i++) {
-        cnt[i] = cnt[i - 1];
+	cnt[0] = 1;
+	for (int i = 1; i < n; i++) {
+		cnt[i] = cnt[i - 1];
 
-        int pre = i - i % m;
-        if (i == pre) { pre -= m; }
+		int pre = i - i % m;
+		if (i == pre) { pre -= m; }
 
-        left[i] = left[pre] + 1LL * cnt[i] * std::abs(positions[i] - positions[pre]);
+		left[i] = left[pre] + 1LL * cnt[i] * std::abs(positions[i] - positions[pre]);
 
-        if (i % m == 0) {
-            cnt[i] += 1; // new block starts here
-        }
-    }
+		if (i % m == 0) {
+			cnt[i] += 1;  // new block starts here
+		}
+	}
 
-    return left;
+	return left;
 }
 
 int main() {
