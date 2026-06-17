@@ -18,18 +18,21 @@ changes. A letter originally at an odd index now is at an even index.
 
 ![](/solutions/silver/cf-2008E-anim/parity.gif)
 
-Let an index $i$ of string $s_1$ be deleted. The resulting string is $s_2$.
+Let an index $i$ of string $s$ be deleted. The resulting string is $s'$.
 Together, the prefix of even indices before $i$ and the suffix of odd indices
-after $i$ create the even indices of $s2$. Similarly, the prefix of odd indices
+after $i$ create the even indices of $s'$. Similarly, the prefix of odd indices
 before $i$ and the suffix of even indices after $i$ create the odd indices in $s2$.
 
 ![](/solutions/silver/cf-2008E-anim/prefix_and_suffix.gif)
 
 To save memory, the prefix and suffix can be represented on-the-fly.
-We start with an empty prefix and a full suffix.
+The "prefix" and "suffix" are lists of 26 integers (one per letter) that store the frequencies of a 
+character, with the prefix being the frequencies of a character to the left 
+of $i$ and the suffix being the frequencies of a character to the right of $i$.
 
-As we check values of $i$ to delete from $0$ to $n - 1$, we add $i$ to the prefix and subtract
-$i$ from the suffix.
+As we move through values of $i$ from $0$ to $n - 1$, we add one to
+the frequency of the character at $i$ in the prefix and subtract one from the 
+frequency of the character at $i$ in the suffix.
 
 Now we have an even string. Operation 1 cannot be applied anymore, only operation 2.
 We need to figure out how many times we must apply operation 2. We can figure this
@@ -64,9 +67,11 @@ void solve() {
 
 	int res = s.length();
 
-	if (n % 2 == 0) {
+	// either even or odd string length
+	if (n % 2 == 0) { 
 		array<array<int, 26>, 2> letters{};
 
+		// fill the suffix sum
 		for (int i = 0; i < s.length(); i++) { letters[i % 2][s[i] - 'a']++; }
 
 		int best[2] = {0, 0};
@@ -85,11 +90,14 @@ void solve() {
 		// fill the suffix sum
 		for (int i = n - 1; i > -1; i--) { suff[i % 2][s[i] - 'a']++; }
 
+		// test indices to delete
 		for (int i = 0; i < n; i++) {
+			// character is no longer in the suffix
 			suff[i % 2][s[i] - 'a']--;
 
 			int best[2] = {0, 0};
 
+			// find the letter that occurs the most for both odd and even indices
 			for (int j = 0; j < 26; j++) {
 				best[0] = max(best[0], suff[1][j] + pref[0][j]);
 				best[1] = max(best[1], suff[0][j] + pref[1][j]);
@@ -97,6 +105,9 @@ void solve() {
 
 			res = min(res, (int)s.length() - best[0] - best[1]);
 
+			// character is now in the prefix
+			// must be added at the end of the loop because 
+			// otherwise it will be counted when "deleted"
 			pref[i % 2][s[i] - 'a']++;
 		}
 	}
@@ -138,13 +149,16 @@ public class AlternatingString {
 	public static int solve(int n, String s) {
 		int res = s.length();
 
+		// either even or odd string length
 		if (n % 2 == 0) {
 			int[][] letters = new int[2][26];
 
-			for (int i = 0; i < n; i++) { letters[i % 2][s.charAt(i) - 'a']++; }
+			// fill the suffix sum
+			for (int i = n - 1; i > -1; i--) { letters[i % 2][s.charAt(i) - 'a']++; }
 
 			int even = 0, odd = 0;
 
+			// find the letter that occurs the most for both odd and even indices
 			for (int i = 0; i < 26; i++) {
 				even = Math.max(even, letters[0][i]);
 				odd = Math.max(odd, letters[1][i]);
@@ -155,13 +169,17 @@ public class AlternatingString {
 			int[][] pref = new int[2][26];
 			int[][] suff = new int[2][26];
 
-			for (int i = 0; i < n; i++) { suff[i % 2][s.charAt(i) - 'a']++; }
+			// fill the suffix sum
+			for (int i = n - 1; i > -1; i--) { suff[i % 2][s.charAt(i) - 'a']++; }
 
+			// test indices to delete
 			for (int i = 0; i < s.length(); i++) {
+				// character is no longer in the suffix
 				suff[i % 2][s.charAt(i) - 'a']--;
 
 				int even = 0, odd = 0;
-
+	
+				// find the letter that occurs the most for both odd and even indices
 				for (int j = 0; j < 26; j++) {
 					even = Math.max(even, suff[1][j] + pref[0][j]);
 					odd = Math.max(odd, suff[0][j] + pref[1][j]);
@@ -169,6 +187,9 @@ public class AlternatingString {
 
 				res = Math.min(res, s.length() - even - odd);
 
+				// character is now in the prefix
+				// must be added at the end of the loop because 
+				// otherwise it will be counted when "deleted"
 				pref[i % 2][s.charAt(i) - 'a']++;
 			}
 		}
@@ -188,14 +209,17 @@ def solve():
 
 	res = len(s)
 
+	# either even or odd string length
 	if n % 2 == 0:
 		letters = [[0] * 26, [0] * 26]
 
+		# fill the suffix sum
 		for i in range(len(s)):
 			letters[i % 2][ord(s[i]) - ord("a")] += 1
 
 		best = [0, 0]
 
+		# find the letter that occurs the most for both odd and even indices
 		for i in range(2):
 			best[i] = max(letters[i])
 
@@ -204,20 +228,27 @@ def solve():
 		pref = [[0] * 26, [0] * 26]
 		suff = [[0] * 26, [0] * 26]
 
+		# fill the suffix sum
 		for i in range(len(s) - 1, -1, -1):
 			suff[i % 2][ord(s[i]) - ord("a")] += 1
 
+		# test indices to delete
 		for i in range(n):
+			# character is no longer in the suffix
 			suff[i % 2][ord(s[i]) - ord("a")] -= 1
 
 			best = [0, 0]
 
+			# find the letter that occurs the most for both odd and even indices
 			for j in range(26):
 				best[0] = max(best[0], suff[1][j] + pref[0][j])
 				best[1] = max(best[1], suff[0][j] + pref[1][j])
 
 			res = min(res, len(s) - best[0] - best[1])
 
+			# character is now in the prefix
+			# must be added at the end of the loop because 
+			# otherwise it will be counted when "deleted"
 			pref[i % 2][ord(s[i]) - ord("a")] += 1
 
 	print(res)
