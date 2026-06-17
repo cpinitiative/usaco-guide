@@ -9,16 +9,16 @@ author: Ruben Jing
 
 ## Explanation
 First, note that an alternating string must have an even length. Because operation 1
-(deleting the $i$-th character) can only be used once at most, we only use operation
+(deleting the $i$-th character) can only be used once at most, we only use the operation
 1 iff the string has odd length to ensure the resulting length is even.
 
-In the case that the original string has odd length, we must choose which character to delete.
+In the case that the original string has an odd length, we must choose which character to delete.
 Notice that when we delete a character, the parity of each following letter
-changes. A letter originally at an odd index now is at an even index.
+changes. A letter originally at an odd index is now at an even index.
 
 ![](/solutions/silver/cf-2008E-anim/parity.gif)
 
-Let an index $i$ of string $s$ be deleted. The resulting string is $s'$.
+Let an index $i$ of the string $s$ be deleted. The resulting string is $s'$.
 Together, the prefix of even indices before $i$ and the suffix of odd indices
 after $i$ create the even indices of $s'$. Similarly, the prefix of odd indices
 before $i$ and the suffix of even indices after $i$ create the odd indices in $s2$.
@@ -31,7 +31,7 @@ character, with the prefix being the frequencies of a character to the left
 of $i$ and the suffix being the frequencies of a character to the right of $i$.
 
 As we move through values of $i$ from $0$ to $n - 1$, we add one to
-the frequency of the character at $i$ in the prefix and subtract one from the
+the frequency of the character at $i$ in the prefix, and subtract one from the
 frequency of the character at $i$ in the suffix.
 
 Now we have an even string. Operation 1 cannot be applied anymore, only operation 2.
@@ -54,6 +54,7 @@ separate lists for even and odd indices.
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 
@@ -259,5 +260,6 @@ t = int(input())
 for _ in range(t):
 	solve()
 ```
+
 </PySection>
 </LanguageSection>
