@@ -10,11 +10,11 @@ author: Arnav Gokhale
 
 ## Explanation
 
-First, let's take note of the graph's structure. Every node has exactly one outgoing edge, making this a functional graph. Thus, the graph consists of several connected components, each containing exactly one cycle, with all the nodes either in the cycle or eventually feeding into it.
+First, let's take note of the graph's structure. Every node has exactly one outgoing edge, making this a functional graph. Thus, the graph consists of several connected components, each containing exactly one cycle, with all the nodes either in the cycle or eventually feeding into it. The final resulting distribution will consist of each cycle node having $1$ plushie and every other having $0$. 
 
-Notice that if a node is not in the cycle, the process will not become stable until that node's plushie reaches the cycle. Consider the nodes along a path leading into a cycle. On some day, the spiders will pass their plushie (if they have one) to $r_i$. However, some of the spiders that send a plushie will not receive one in return, causing the system to have changed numbers. Once every plushie reaches a cycle, each spider will both receive and give a plushie, keeping the system stable.
+Notice that if a node is not in the cycle, the process will not become stable until that node's plushie reaches the cycle. Consider the nodes along a path leading into a cycle. On some year, the spiders will pass their plushie (if they have one) to $r_i$. However, each year some of the spiders that send a plushie will no longer receive one in return, causing the system to have changed numbers. Once every plushie reaches a cycle, each spider will both receive and give a plushie, keeping the system stable.
 
-Therefore, the problem can be reduced to finding the maximum distance from any node to its respective cycle.
+Therefore, the problem can be reduced to finding the maximum distance from any node to its respective cycle, which gives the maximum time it takes for all plushies to reach cycles.
 
 ## Implementation
 
@@ -33,44 +33,44 @@ void solve() {
 	cin >> n;
 
 	vector<int> a(n);
-	vector<vector<int>> c(n);
+	vector<vector<int>> adj(n);
 	for (int i = 0; i < n; i++) {
 		cin >> a[i];
 		a[i]--;
-		c[a[i]].push_back(i);
+		adj[a[i]].push_back(i);
 	}
 
 	vector<int> count(n);
-	vector<bool> vis(n);
+	vector<bool> visited(n);
 	int ans = 2;
 
 	// Runs a DFS to go out of the node finding max path length
-	auto dfs = [&](auto &&self, int nd) -> int {
+	auto dfs = [&](auto &&self, int node) -> int {
 		int mx = 0;
-		vis[nd] = true;
-		for (int i = 0; i < c[nd].size(); i++) {
-			if (count[c[nd][i]] != 2) { mx = max(mx, self(self, c[nd][i])); }
+		visited[nd] = true;
+		for (int next_node : adj[node]) {
+			if (count[next_node] != 2) { mx = max(mx, self(self, next_node)); }
 		}
 
 		return mx + 1;
 	};
 
 	for (int i = 0; i < n; i++) {
-		if (!vis[i]) {
-			int nd = i;
+		if (!visited[i]) {
+			int node = i;
 			vector<int> nodes;
 
 			// Get all the nodes in a cycle
-			while (count[nd] != 2) {
-				vis[nd] = true;
-				count[nd]++;
-				if (count[nd] == 2) nodes.push_back(nd);
-				nd = a[nd];
+			while (count[node] != 2) {
+				visited[node] = true;
+				count[node]++;
+				if (count[node] == 2) nodes.push_back(node);
+				node = a[node];
 			}
 
-			// Run a DFS on the nodes in the cycle getting the max path length into node
-			// nodes[i]
-			for (int i = 0; i < tm.size(); i++) {
+			// Run a DFS on the nodes in the cycle getting the max 
+			// path length into nodes[i]
+			for (int i = 0; i < nodes.size(); i++) {
 				int d = dfs(dfs, nodes[i]);
 				ans = max(d + 1, ans);
 			}
