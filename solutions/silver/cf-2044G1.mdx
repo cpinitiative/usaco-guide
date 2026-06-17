@@ -25,6 +25,7 @@ Therefore, the problem can be reduced to finding the maximum distance from any n
 
 ```cpp
 
+
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -47,7 +48,7 @@ void solve() {
 	// Runs a DFS to go out of the node finding max path length
 	auto dfs = [&](auto &&self, int node) -> int {
 		int mx = 0;
-		visited[nd] = true;
+		visited[node] = true;
 		for (int next_node : adj[node]) {
 			if (count[next_node] != 2) { mx = max(mx, self(self, next_node)); }
 		}
@@ -70,8 +71,8 @@ void solve() {
 
 			// Run a DFS on the nodes in the cycle getting the max
 			// path length into nodes[i]
-			for (int i = 0; i < nodes.size(); i++) {
-				int d = dfs(dfs, nodes[i]);
+			for (int j = 0; j < nodes.size(); j++) {
+				int d = dfs(dfs, nodes[j]);
 				ans = max(d + 1, ans);
 			}
 		}
@@ -82,7 +83,7 @@ void solve() {
 
 int main() {
 	ios::sync_with_stdio(false);
-	cin.tie(false);
+	cin.tie(nullptr);
 
 	int t;
 	cin >> t;
