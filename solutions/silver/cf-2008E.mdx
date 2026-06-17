@@ -26,12 +26,12 @@ before $i$ and the suffix of even indices after $i$ create the odd indices in $s
 ![](/solutions/silver/cf-2008E-anim/prefix_and_suffix.gif)
 
 To save memory, the prefix and suffix can be represented on-the-fly.
-The "prefix" and "suffix" are lists of 26 integers (one per letter) that store the frequencies of a 
-character, with the prefix being the frequencies of a character to the left 
+The "prefix" and "suffix" are lists of 26 integers (one per letter) that store the frequencies of a
+character, with the prefix being the frequencies of a character to the left
 of $i$ and the suffix being the frequencies of a character to the right of $i$.
 
 As we move through values of $i$ from $0$ to $n - 1$, we add one to
-the frequency of the character at $i$ in the prefix and subtract one from the 
+the frequency of the character at $i$ in the prefix and subtract one from the
 frequency of the character at $i$ in the suffix.
 
 Now we have an even string. Operation 1 cannot be applied anymore, only operation 2.
@@ -68,7 +68,7 @@ void solve() {
 	int res = s.length();
 
 	// either even or odd string length
-	if (n % 2 == 0) { 
+	if (n % 2 == 0) {
 		array<array<int, 26>, 2> letters{};
 
 		// fill the suffix sum
@@ -106,7 +106,7 @@ void solve() {
 			res = min(res, (int)s.length() - best[0] - best[1]);
 
 			// character is now in the prefix
-			// must be added at the end of the loop because 
+			// must be added at the end of the loop because
 			// otherwise it will be counted when "deleted"
 			pref[i % 2][s[i] - 'a']++;
 		}
@@ -178,7 +178,7 @@ public class AlternatingString {
 				suff[i % 2][s.charAt(i) - 'a']--;
 
 				int even = 0, odd = 0;
-	
+
 				// find the letter that occurs the most for both odd and even indices
 				for (int j = 0; j < 26; j++) {
 					even = Math.max(even, suff[1][j] + pref[0][j]);
@@ -188,7 +188,7 @@ public class AlternatingString {
 				res = Math.min(res, s.length() - even - odd);
 
 				// character is now in the prefix
-				// must be added at the end of the loop because 
+				// must be added at the end of the loop because
 				// otherwise it will be counted when "deleted"
 				pref[i % 2][s.charAt(i) - 'a']++;
 			}
@@ -247,7 +247,7 @@ def solve():
 			res = min(res, len(s) - best[0] - best[1])
 
 			# character is now in the prefix
-			# must be added at the end of the loop because 
+			# must be added at the end of the loop because
 			# otherwise it will be counted when "deleted"
 			pref[i % 2][ord(s[i]) - ord("a")] += 1
 
