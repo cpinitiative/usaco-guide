@@ -5,26 +5,18 @@ title: QED's Favorite Permutation
 author: Abhinav Singh
 ---
 
-[Official Analysis(C++)](https://codeforces.com/blog/entry/135218)
+[Official Analysis (C++)](https://codeforces.com/blog/entry/135218)
 
 ## Explanation
-> Throughout, $s$ is 1-indexed, so $s_k$ refers to the $k$-th character of the string.
-
 We note that the order of swaps doesn't matter at all. Whether a value can move from one position to another depends only on $s$ , so the problem reduces to a static question: for each value, is its required path through $s$ unobstructed?
 
-A value can cross the gap between position $k$ and position $k+1$ to the right if $s_k = R$, and to the left if $s_{k+1} = L$. The gap is impassable only when $s_k = L$ and $s_{k+1} = R$ hold simultaneously: call this a **bad gap**.
+A value can cross the gap between position $k$ and position $k+1$ to the right if $s_k = R$, and to the left if $s_{k+1} = L$. The gap is impassable only when $s_k = L$ and $s_{k+1} = R$ hold simultaneously: call this a **bad gap**. The bad gaps are what split the array into maximal intervals where every two adjacent positions are freely swappable, so within one such interval, the values can be rearranged into any order.
 
-For each value $v$, let $pos$ be its current position in $p$. For $p$ to become sorted, $v$ must end up at position $v$, so it must travel from $pos$ to $v$, crossing every gap strictly between $\min(pos, v)$ and $\max(pos, v)$. We can see that there can be no bad gaps between $pos$ and $v$ for all values of $v$.
+For each value $v$, let $pos$ be its current position in $p$. For $p$ to become sorted, $v$ must end up at position $v$, so it must travel from $pos$ to $v$, crossing every gap strictly between $\min(pos, v)$ and $\max(pos, v)$. Another way of saying this is that $pos$ and $v$ must lie in the same interval - there can be no bad gaps between $pos$ and $v$ for all values of $v$.
 
-Each value's range $[\min(pos,v), \max(pos,v)]$ marks the gaps it depends on. Build a difference array: add $1$ at $\min(pos,v)$ and subtract $1$ at $\max(pos,v)$ for each value $v$. After taking prefix sums, any gap with a positive value is required by at least one value: call this an **important** gap. Gaps that are never important can be ignored regardless of whether they're bad.
+Each value's range $[\min(pos,v), \max(pos,v)]$ marks the gaps it depends on. Build a difference array: add $1$ at $\min(pos,v)$ and subtract $1$ at $\max(pos,v)$ for each value $v$. After taking prefix sums, any gap with a positive value is required by at least one value: call this an **important** gap. An **important** gap can't be ignored since some value $v$ needs to cross it to reach its desired position. All other gaps can be ignored, regardless of whether they are bad.
 
-### Optimal Strategy
-
-Only important gaps matter, and a query at index $i$ can only change whether gap $i-1$ or gap $i$ is bad, since those are the only two gaps that involve $s_i$.
-Keep one counter, `bad`, for how many important gaps are currently bad.
-
-Before flipping $s_i$, check gap $i-1$ and gap $i$. If either is important and currently bad, subtract one from `bad` per bad gap, as their "bad-ness" may change. Then, flip $s_i$.
-Now, once again check the same two gaps. If either is now important and bad, add one back to `bad`, per bad gap. The answer is YES only when `bad` equals zero.
+Only important gaps matter, since those are the only gaps that can block sorting. Maintain a counter, `bad`, for how many important gaps are currently bad - the answer is YES exactly when `bad` equals zero. A query at index $i$ only affects gap $i-1$ and gap $i$, since those are the only two gaps involving $s_i$, so we can update `bad` directly.
 
 ## Implementation
 
@@ -53,7 +45,7 @@ int main() {
 		s = " " + s;  // 1-index s
 
 		// d[k] counts how many values require gap k to stay good
-		vector<int> d(n + 2, 0);
+		vector<int> d(n + 1);
 		for (int v = 1; v <= n; v++) {
 			int lo = min(v, pos[v]), hi = max(v, pos[v]);
 			d[lo]++;
