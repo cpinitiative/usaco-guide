@@ -9,17 +9,12 @@ author: John Zhou
 
 ## Explanation
 
-Below, $a_i$ can also refer to the current number of cows in the $i$-th room, and $\mathbb P$ is the set of primes including $1$.
-
 First, consider the case $N=1$, when both farmers remove cows from one room.
 
-Note that it is possible to remove $1$, $2$, or $3$ but not any multipes of $4$ cows.
-We should therefore pay close attention fo $a_1\bmod 4$:
-A "first" player starting with $a_1\bmod 4\neq 0$ should take $a_1\bmod 4$ cows to force the "second" player into $a_1\bmod 4=0$, who will always give the first player an $a_1\bmod 4\neq 0$, since they cannot take any multiple of $4$ to maintain the $0$ remainder.
-The first player can now repeat the process to force the other player into a smaller $a_1\bmod 4=0$, which will eventually be $0$, causing the first player to win.
+Each farmer can remove either $1$, $2$, $3$, but not $4$ or any multiples of it. This motivates us to consider $a_1 \bmod 4$ in our game. The player starting with $a_1\bmod 4\neq 0$ should take $a_1\bmod 4$ cows to force the other player into $a_1\bmod 4=0$, who will always give the first player an $a_1\bmod 4\neq 0$, since they cannot take any multiple of $4$ to maintain the $0$ remainder.
+The first player can now repeat the process until $a_1 = 0$, resulting in a win.
 
-Therefore, when the initial state is $a_1\bmod 4\neq 0$, Farmer John, being the first player, will win,
-but if $a_1\bmod 4=0$ initially, then Farmer John must produce a state of $a_1\bmod 4\neq 0$ for Farmer Nhoj, forcing Farmer Nhoj to win instead.
+Therefore, when $a_1 \bmod 4 \neq 0$, Farmer John will win. Otherwise, Farmer Nhoj will win.
 
 Now, we consider the case when $N>1$.  Note that operations on each room are all independent, so we can consider the result of playing each room as if $N=1$, and term guaranteed loser of that room the "defender" and the guaranteed winner of that room the "attacker".
 
