@@ -18,20 +18,23 @@ Therefore, when $a_1 \bmod 4 \neq 0$, Farmer John will win. Otherwise, Farmer Nh
 
 Now, we consider the case $N>1$.  Since each room is independent, we treat the overall game as $N$ individual games. For each room, we define the attacker as the guaranteed winner and the defender as the guaranteed loser.
 
-The next pair of operations on a room will only be done when all the other rooms have been visited.
-Thus, the attacker in a room would like to get the room's number of cows to 0 as fast as possible to minimize their chances at getting beaten at another room, and the defender would like this to happen as slow as possible instead to maximize the chances of winning early at another room.
-When two players play with this way, let the number of total operations on room $i$ if it is played to the end be $T_i$.
-The game's winner will be the winner of the room with the minimum $\left\lceil\frac{T_i}2\right\rceil$ (if tied, the one with the minimum room number), as it's the room that will be reached after the least amount of times around the circle.
+The next pair of moves on a room will only be done when all the other rooms have been visited.
+Thus, the players use the following strategies:
+- The attacker in a room reduces the number of cows as fast as possible to return to this room and potentially win sooner.
+- The defender would like this to play slow instead to maximize the chances of winning early at another room.
+Let the total amount of operations to finish room $i$ individually be $T_i$.
+The game's winner will be the winner of the room with the minimum $\left\lceil\frac{T_i}2\right\rceil$ (if tied, the one with the minimum room number).
 
 To minimize the number of rounds, the attacker can use a modified version of his strategy when $N=1$:
-Instead of giving $a_i\bmod4=0$'s to the the defender by taking away $a_i\bmod 4$ cows, he can take away any $p\equiv a_i\mod 4$ cows, where $p \in \mathbb P$;
-the maximum $p<a_i$ is desired to provide the largest speedup to ending the game.
+Instead of taking away $a_i\bmod 4$ cows, he can take away any $p\equiv a_i\mod 4$ cows as long as $p$ is allowed to be taken away;
+we want the largest $p<a_i$ to give the largest speedup.
 To compute the largest $p<x$ such that $p\equiv x\mod 4$, first use a sieve to find all primes, and keep an array $t_i$ with $0\leq i<4$ for the most recent prime $t_i=p$ we found where where $p\bmod 4=i$ and assign $m_x=t_{x\bmod 4}$ to represent the requested result, all as we go.
 On the other hand, the defender can block this speedup by relying on the fact that there are no primes $p>4$ that satisfies $p\bmod 4=2$ (so no speedups when $a_i\bmod 4=2$).
 If the defender takes $2$ cows from their $a_i\bmod 4=2=0$ and hand back $a_i\bmod 4=2$ each time, there will be no way for the attacker to speed up the game any more.
 
-Thsu, when $a_i\bmod4\in\{1,3\}$, the only speedup the attacker can apply removing $m_{a_i}$ initially, and in all other cases there are no speedups.
-When there are no speedups, $T_i=\frac{a_i}2$; when there is a speedup, $T_i=1+\frac{a_i-m_{a_i}}2$, as one operation is used to remove $m_{a_i}$.
+Thus:
+- When $a_i\bmod4\in\{1,3\}$, the only speedup the attacker can apply is removing $m_{a_i}$ initially, resulting in $T_i=1+\frac{a_i-m_{a_i}}2$.
+- Otherwise, there are no speedups with $T_i=\frac{a_i}2$.
 
 We first compute $T_i$ for each room, and then then find the argmin of $\left\lceil\frac{T_i}2\right\rceil$ (if tied, with smallest $i$), and output the winner of that room.
 (Instead of using our initial strategy to compute the winner of a room, we could also check the parity of $T_i$.)
@@ -49,10 +52,12 @@ We first compute $T_i$ for each room, and then then find the argmin of $\left\lc
 #include <iostream>
 #include <vector>
 using namespace std;
+
 constexpr int MAX_NUMBER = 5e6;
 constexpr int MAX_INT = 2e9;
 
 int main() {
+
 	vector<bool> is_prime(MAX_NUMBER + 1, true);
 	// This is m[] in the explanation.
 	vector<int> largest_prime_equiv(MAX_NUMBER + 1);
@@ -76,24 +81,29 @@ int main() {
 	for (int t = 0; t < test_cases; t++) {
 		int n;
 		cin >> n;
+
 		// Minimum of turns, i.e. operations / 2
 		int min_turn = MAX_INT;
 		// Number of operations on the minimum-turns room.
 		int min_turn_ops = MAX_INT;
-		for (int i = 1; i <= n; i++) {
+		
+    for (int i = 1; i <= n; i++) {
 			int cows;
 			cin >> cows;
+
 			int operations;
 			if (cows % 2 == 0) {
 				operations = cows / 2;
 			} else {
 				operations = 1 + (cows - largest_prime_equiv[cows]) / 2;
 			}
+
 			if (operations / 2 < min_turn) {
 				min_turn = operations / 2;
 				min_turn_ops = operations;
 			}
 		}
+
 		cout << ((min_turn_ops % 2 != 0) ? "Farmer John" : "Farmer Nhoj") << endl;
 	}
 	return 0;
