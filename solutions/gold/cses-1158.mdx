@@ -8,10 +8,10 @@ author: Abhinav Singh, Sofia Yang, Neha Sane
 [Official Editorial (C++)](https://codeforces.com/blog/entry/70018)
 
 ## Explanation
-For each book $i$, we either buy it - spending $h[i]$ to gain $s[i]$ pages, or skip it and gain nothing. This is exactly the 0/1 knapsack problem, with cost $h[i]$, value $s[i]$, and capacity $x$, so we can solve it with DP. Let $dp[i][j]$ be the maximum number of pages obtainable using only the first $i$ books with a budget of at most $j$. 
+For each book $i$, we either buy it - spending $h[i]$ to gain $s[i]$ pages, or skip it and gain nothing. This is exactly the 0/1 knapsack problem, with cost $h[i]$, value $s[i]$, and capacity $x$, so we can solve it with DP. Let $dp[i][j]$ be the maximum number of pages obtainable using only the first $i$ books with a budget of at most $j$.
 
-Then the transition follows as: 
-$dp[i][j] = dp[i-1][j]$ by default, and if $j \geq h[i]$, we can instead buy book $i$ for $dp[i][j] = \max(dp[i-1][j], dp[i-1][j-h[i]] + s[i])$. 
+Then the transition follows as:
+$dp[i][j] = dp[i-1][j]$ by default, and if $j \geq h[i]$, we can instead buy book $i$ for $dp[i][j] = \max(dp[i-1][j], dp[i-1][j-h[i]] + s[i])$.
 
 The final answer is $dp[n][x]$.
 
