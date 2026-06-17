@@ -9,9 +9,20 @@ author: Sachet Abeysinghe
 
 ## Explanation
 
-First, we preprocess the array of costs so that $a_i$ is the minimum cost to buy $2^i$ buckets. This is achieved by setting $a_i$ to $\min(a_i, 2 \cdot a_{i-1})$ in increasing $i$, because we can either use the original deal or use two of the previous deals. We only need to keep the first $30$ powers because $x \le 10^9$ and $2^{30} \gt 10^9$. We fill in any of the remaining thirty elements if needed.
+First, we preprocess the array of costs so that $a_i$ is the minimum cost to buy $2^i$ buckets. 
+This is achieved by setting $a_i$ to $\min(a_i, 2 \cdot a_{i-1})$ in increasing $i$, because we 
+can either use the original deal or use two of the previous deals. We only need to keep the first 
+$30$ powers because $x \le 10^9$ and $2^{30} \gt 10^9$. We fill in any of the remaining thirty 
+elements if needed.
 
-Then, we proceed greedily. Suppose we currently need $x$ remaining buckets of milk. We can buy the largest power of two deal that does not exceed $x$, which corresponds to the cost at index $\lfloor\log_{2}\left(x\right)\rfloor$. It is not optimal to buy a smaller power of two amount. The second option is to overshoot $x$, which corresponds to the cost at index $\lceil\log_{2}\left(x\right)\rceil$. It is not optimal to overshoot with a higher power of two because the costs are higher at higher indexes. An example of when it is optimal to overshoot is $x = 7$ and $a=[10,20,40,60]$. You can get a cost of $70$ moonies by getting exactly $7$ buckets of milk, but you can achieve a lower cost of $60$ moonies by buying $8$ buckets of milk immediately.
+Then, we proceed greedily. Suppose we currently need $x$ remaining buckets of milk. We can buy the 
+largest power of two deal that does not exceed $x$, which corresponds to the cost at index 
+$\lfloor\log_{2}\left(x\right)\rfloor$. It is not optimal to buy a smaller power of two amount. 
+The second option is to overshoot $x$, which corresponds to the cost at index $\lceil\log_{2}\left(x\right)\rceil$. 
+It is not optimal to overshoot with a higher power of two because the costs are higher at higher indexes. 
+An example of when it is optimal to overshoot is $x = 7$ and $a=[10,20,40,60]$. 
+You can get a cost of $70$ moonies by getting exactly $7$ buckets of milk, but you can achieve 
+a lower cost of $60$ moonies by buying $8$ buckets of milk immediately.
 
 ## Implementation
 
