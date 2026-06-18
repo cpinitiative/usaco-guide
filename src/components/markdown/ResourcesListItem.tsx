@@ -60,7 +60,7 @@ export default function ResourcesListItem({
         )}
         <a
           href={resource.url}
-          className={resource.starred ? 'pl-1 sm:pl-2' : 'sm:pl-6'}
+          className={`no-underline ${resource.starred ? 'pl-1 sm:pl-2' : 'sm:pl-6'}`}
           target="_blank"
           rel="nofollow noopener noreferrer"
         >

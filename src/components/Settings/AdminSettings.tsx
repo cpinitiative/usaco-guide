@@ -46,7 +46,7 @@ export default function AdminSettings() {
         setUserData(response.data.users[0]);
         setUserPermissions(response.data.users[0].customClaims);
       }
-    } catch (e) {
+    } catch (e: any) {
       toast.error(e.message);
     }
 
@@ -83,7 +83,7 @@ export default function AdminSettings() {
         }
       );
       handleSearch(null);
-    } catch (e) {
+    } catch (e: any) {
       toast.error(e.message);
     }
 

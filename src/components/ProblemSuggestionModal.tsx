@@ -104,9 +104,14 @@ export default function ProblemSuggestionModal({
           kind: 'none',
         },
       };
-      editorActions.addProblem(listName, problemToAdd);
-      setLoading(false);
-      onClose();
+      if ('addProblem' in editorActions) {
+        editorActions.addProblem(listName, problemToAdd);
+        setLoading(false);
+        onClose();
+      } else {
+        alert('You are not in editor mode.');
+        setLoading(false);
+      }
       return;
     }
     if (!markdownLayoutInfo) throw new Error('No markdown layout info');
@@ -114,6 +119,7 @@ export default function ProblemSuggestionModal({
       SECTION_LABELS[(markdownLayoutInfo as ModuleInfo).section]
     } - ${markdownLayoutInfo.title}`;
 
+    const removePrefix = (a, b) => a.substring(b.length);
     submitSuggestion({
       name,
       link,
@@ -123,7 +129,10 @@ export default function ProblemSuggestionModal({
       problemTableLink,
       problemListName: listName,
       moduleName,
-      filePath: (markdownLayoutInfo as ModuleInfo).fileRelativePath,
+      filePath: removePrefix(
+        (markdownLayoutInfo as ModuleInfo).fileRelativePath,
+        'content/'
+      ),
       section: (markdownLayoutInfo as ModuleInfo).section,
       source,
     })
@@ -443,22 +452,7 @@ export default function ProblemSuggestionModal({
                 </p>
               )}
               <div className="mt-6 space-y-6">
-                {createdIssueLink ? (
-                  <>
-                    {successMessage}
-                    <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 dark:bg-gray-900">
-                      <button
-                        type="button"
-                        onClick={onClose}
-                        className="focus:shadow-outline-blue inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base leading-6 font-medium text-white shadow-sm transition duration-150 ease-in-out hover:bg-blue-500 focus:border-blue-700 focus:outline-hidden sm:ml-3 sm:w-auto sm:text-sm sm:leading-5"
-                      >
-                        Done
-                      </button>
-                    </div>
-                  </>
-                ) : (
-                  form
-                )}
+                {createdIssueLink ? successMessage : form}
               </div>
             </div>
           </DialogPanel>

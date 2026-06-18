@@ -1,5 +1,4 @@
-import { StoryFn } from '@storybook/react-webpack5';
-import React from 'react';
+import { StoryFn } from '@storybook/react';
 import ModuleLink from '../../components/syllabus/ModuleLink';
 import { ModuleLinkInfo } from '../../models/module';
 

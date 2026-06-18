@@ -1,4 +1,3 @@
-import React from 'react';
 import { olympiads, ProblemInfo, probSources } from '../../../models/problem';
 import { UsacoTableProgress } from '../../Dashboard/DashboardProgress';
 import DifficultyBox from '../../DifficultyBox';
@@ -113,7 +112,7 @@ export default function ProblemsListItem(
           className={
             (isDivisionTable == false && problem.isStarred
               ? 'pl-1 sm:pl-2'
-              : 'sm:pl-6') + ' problem-list-item-anchor truncate'
+              : 'sm:pl-6') + ' problem-list-item-anchor truncate no-underline'
           }
           style={{ maxWidth: '20rem' }}
           target="_blank"
@@ -158,7 +157,6 @@ export default function ProblemsListItem(
       {isDivisionTable && props.modules && (
         <ListTableCell className="font-medium whitespace-nowrap">
           {problem.moduleLink ? (
-            // eslint-disable-next-line react/jsx-no-target-blank
             <a href={problem.moduleLink} target="_blank">
               Link
             </a>

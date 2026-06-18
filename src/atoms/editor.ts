@@ -85,7 +85,7 @@ export const activeFileAtom = atom(
     const activeFile = get(baseActiveFileAtom);
     return activeFile ? get(filesFamily(activeFile)) : null;
   },
-  (get, set, nextActiveFilePath) => {
+  (get, set, nextActiveFilePath: string) => {
     set(baseActiveFileAtom, nextActiveFilePath);
   }
 );
@@ -116,10 +116,9 @@ export const openOrCreateExistingFileAtom = atom(
 export const createNewInternalSolutionFileAtom = atom(
   null,
   async (get, set, file: AlgoliaEditorSolutionFile) => {
-    const module = file.problemModules[0]?.path.split('/')[1];
+    const mod = file.problemModules[0]?.path.split('/')[1];
     const division =
-      file.division ||
-      (!module ? 'orphaned' : module.split('_')[1].toLowerCase());
+      file.division || (!mod ? 'orphaned' : mod.split('_')[1].toLowerCase());
     const newFile: EditorFile = {
       path: `solutions/${division}/${file.id}.mdx`,
       markdown: `---
@@ -215,9 +214,9 @@ $\\texttt{func(var)}$
     };
 
     await Promise.all(
-      file.problemModules.map(async module => {
-        if (get(filesListAtom).find(file => file === module.path)) {
-          const currentFile = get(filesFamily(module.path));
+      file.problemModules.map(async mod => {
+        if (get(filesListAtom).find(file => file === mod.path)) {
+          const currentFile = get(filesFamily(mod.path));
           const formattedProblems = await updateProblemJSON(
             currentFile.problems
           );
@@ -227,10 +226,10 @@ $\\texttt{func(var)}$
           });
           return;
         }
-        const data = await fetchFileContent(module.path);
+        const data = await fetchFileContent(mod.path);
         const formattedProblems = await updateProblemJSON(data.problems);
         set(saveFileAtom, {
-          path: module.path,
+          path: mod.path,
           markdown: data.markdown,
           problems: formattedProblems,
         });
@@ -241,7 +240,7 @@ $\\texttt{func(var)}$
       ...new Set([
         ...prev,
         newFile.path,
-        ...file.problemModules.map(module => module.path),
+        ...file.problemModules.map(mod => mod.path),
       ]),
     ]);
     set(saveFileAtom, newFile);

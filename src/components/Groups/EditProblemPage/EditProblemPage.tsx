@@ -8,10 +8,10 @@ import {
   query,
   Timestamp,
 } from 'firebase/firestore';
-import { Link, navigate } from 'gatsby';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import { useReducer } from 'react';
-import Flatpickr from 'react-flatpickr';
 import toast from 'react-hot-toast';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePost } from '../../../hooks/groups/usePost';
@@ -32,6 +32,8 @@ import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Breadcrumbs from '../Breadcrumbs';
 import MarkdownEditor from '../MarkdownEditor';
 import EditProblemHintSection from './EditProblemHintSection';
+
+const Flatpickr = React.lazy(() => import('react-flatpickr'));
 
 type Props = RouteComponentProps<{
   groupId: string;
@@ -64,6 +66,7 @@ export default function EditProblemPage(props: Props) {
   );
   const { saveProblem, deleteProblem } = usePostActions(groupId);
   const [isSearchOpen, setIsSearchOpen] = React.useState(false);
+  const router = useRouter();
 
   React.useEffect(() => {
     if (!problem && originalProblem) editProblem(originalProblem);
@@ -92,15 +95,13 @@ export default function EditProblemPage(props: Props) {
     if (confirm('Are you sure you want to delete this problem?')) {
       deleteProblem(post, problem.id)
         .then(() => {
-          navigate('../../../', {
-            replace: true,
-          });
+          router.push('../../../');
         })
         .catch(e => toast.error(e.message));
     }
   };
   const handleSaveProblem = () => {
-    saveProblem(post, problem).then(() => navigate(-1));
+    saveProblem(post, problem).then(() => router.back());
   };
 
   const handleProblemSearchSelect = (problem: AlgoliaProblemInfo) => {
@@ -149,11 +150,7 @@ export default function EditProblemPage(props: Props) {
 
   return (
     <Layout>
-      <SEO
-        title={`Edit ${problem.name} · ${post.name}`}
-        image={undefined}
-        pathname={undefined}
-      />
+      <SEO title={`Edit ${problem.name} · ${post.name}`} image={undefined} />
       <TopNavigationBar />
       <nav className="mt-6 mb-4 flex" aria-label="Breadcrumb">
         <Breadcrumbs
@@ -170,7 +167,11 @@ export default function EditProblemPage(props: Props) {
             </h1>
           </div>
           <div className="mt-4 flex space-x-3 md:mt-0">
-            <Link to="../" replace className="btn">
+            <Link
+              href={`/groups/${groupId}/post/${postId}/problems/${problemId}`}
+              replace
+              className="btn"
+            >
               <span>Back</span>
             </Link>
             <button type="submit" onClick={handleSaveProblem} className="btn">
@@ -286,35 +287,45 @@ export default function EditProblemPage(props: Props) {
                       </p>
                     )}
                     {problem.solutionReleaseMode === 'custom' && (
-                      <Flatpickr
-                        placeholder={'Choose a release time'}
-                        options={{
-                          dateFormat:
-                            'l, F J, Y, h:i K ' +
-                            [
-                              '',
-                              ...(
-                                'UTC' +
-                                // sign is reversed for some reason
-                                (new Date().getTimezoneOffset() > 0
-                                  ? '-'
-                                  : '+') +
-                                Math.abs(new Date().getTimezoneOffset()) / 60
-                              ).split(''),
-                            ].join('\\\\'),
-                          enableTime: true,
-                        }}
-                        value={problem.solutionReleaseTimestamp?.toDate()}
-                        onChange={date => {
-                          console.log(date);
-                          editProblem({
-                            solutionReleaseTimestamp: Timestamp.fromDate(
-                              date[0]
-                            ),
-                          });
-                        }}
-                        className="input mt-2"
-                      />
+                      <React.Suspense
+                        fallback={
+                          <input
+                            className="input mt-2"
+                            placeholder="Loading date picker..."
+                            disabled
+                          />
+                        }
+                      >
+                        <Flatpickr
+                          placeholder={'Choose a release time'}
+                          options={{
+                            dateFormat:
+                              'l, F J, Y, h:i K ' +
+                              [
+                                '',
+                                ...(
+                                  'UTC' +
+                                  // sign is reversed for some reason
+                                  (new Date().getTimezoneOffset() > 0
+                                    ? '-'
+                                    : '+') +
+                                  Math.abs(new Date().getTimezoneOffset()) / 60
+                                ).split(''),
+                              ].join('\\\\'),
+                            enableTime: true,
+                          }}
+                          value={problem.solutionReleaseTimestamp?.toDate()}
+                          onChange={date => {
+                            console.log(date);
+                            editProblem({
+                              solutionReleaseTimestamp: Timestamp.fromDate(
+                                date[0]
+                              ),
+                            });
+                          }}
+                          className="input mt-2"
+                        />
+                      </React.Suspense>
                     )}
                   </div>
                 </div>

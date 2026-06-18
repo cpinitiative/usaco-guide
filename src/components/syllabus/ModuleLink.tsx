@@ -1,6 +1,5 @@
 import clsx from 'clsx';
-import { Link } from 'gatsby';
-import * as React from 'react';
+import Link from 'next/link';
 import {
   LANGUAGE_LABELS,
   useUserLangSetting,
@@ -61,9 +60,6 @@ function time_ago(time: unknown): string {
     token = 'from now';
     list_choice = 2;
   }
-  if (seconds > 4838400) {
-    return '';
-  }
   let i = 0,
     format;
   while ((format = time_formats[i++])) {
@@ -118,7 +114,7 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
           'link-with-progress-container--syllabus--small'
       )}
     >
-      <Link to={link.url}>
+      <Link href={link.url}>
         <div className="link-with-progress-link link-with-progress-link--syllabus group py-3 text-xl leading-6">
           <p
             className={`${
@@ -152,7 +148,7 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
               ) : null}
             </span>
           </p>
-          {link.frequency !== null && (
+          {link.frequency != null && (
             <p className="mb-1 flex items-center text-sm leading-4">
               <ModuleFrequencyDots
                 count={link.frequency}
@@ -176,10 +172,12 @@ const ModuleLink = ({ link }: { link: ModuleLinkInfo }): JSX.Element => {
           <p className="dark:group-hover:text-dark-high-emphasis block text-sm leading-5 text-gray-400 transition group-hover:text-blue-700">
             {link.description}
 
-            <i>
-              <br />
-              {timeAgoString(link.gitAuthorTime)}
-            </i>
+            {link.gitAuthorTime != null && (
+              <i>
+                <br />
+                {timeAgoString(link.gitAuthorTime)}
+              </i>
+            )}
           </p>
         </div>
       </Link>

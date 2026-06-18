@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import React from 'react';
 
 const TableRow = ({
   source,
@@ -75,7 +74,7 @@ export const ResourcesFeature = (): JSX.Element => {
                     >
                       both optimizations, diagrams
                     </TableRow>
-                    <TableRow source="PAPS" title="11.1 - Disjoint Sets">
+                    <TableRow source="PAPS1" title="13.1 - Union-Find">
                       both optimizations, no diagrams
                     </TableRow>
                     <TableRow

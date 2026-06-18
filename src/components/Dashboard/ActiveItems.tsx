@@ -1,5 +1,4 @@
-import { Link } from 'gatsby';
-import * as React from 'react';
+import Link from 'next/link';
 import { difficultyClasses } from '../DifficultyBox';
 import DashboardCard from './DashboardCard';
 
@@ -83,19 +82,18 @@ export default function ActiveItems({
         <div className="mt-4 text-gray-500">
           {items.map((item, idx) => (
             <p className={idx === 0 ? '' : 'mt-2'} key={item.url}>
-              <Link
-                to={item.url}
-                className="font-medium text-blue-600 transition duration-150 ease-in-out hover:text-blue-500 dark:text-blue-300 dark:hover:text-blue-200"
-              >
-                {item.label}
-                <span
-                  className={
-                    'ml-2 inline-flex items-center rounded-full px-2.5 py-0.5 text-xs leading-4 font-medium ' +
-                    statusClasses[item.status]
-                  }
-                >
-                  {item.status}
-                </span>
+              <Link href={item.url}>
+                <div className="font-medium text-blue-600 transition duration-150 ease-in-out hover:text-blue-500 dark:text-blue-300 dark:hover:text-blue-200">
+                  {item.label}
+                  <span
+                    className={
+                      'ml-2 inline-flex items-center rounded-full px-2.5 py-0.5 text-xs leading-4 font-medium ' +
+                      statusClasses[item.status]
+                    }
+                  >
+                    {item.status}
+                  </span>
+                </div>
               </Link>
             </p>
           ))}

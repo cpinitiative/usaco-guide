@@ -25,9 +25,9 @@ const Optional: React.FC<OptionalProps> = ({ children, title }) => (
         </svg>
       </div>
       <div className="ml-3">
-        <h3 className="text-sm leading-5 font-medium text-purple-800 dark:text-purple-200">
+        <div className="text-sm leading-5 font-medium text-purple-800 dark:text-purple-200">
           Optional{title ? `: ${title}` : ''}
-        </h3>
+        </div>
         <div className="no-y-margin tailwind-alert tailwind-alert--optional mt-2 text-sm leading-5 text-purple-700 dark:text-purple-300">
           {children}
         </div>

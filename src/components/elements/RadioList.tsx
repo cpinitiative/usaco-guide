@@ -1,6 +1,5 @@
 import { RadioGroup } from '@headlessui/react';
 import classNames from 'classnames';
-import React from 'react';
 
 export default function RadioList({
   name,

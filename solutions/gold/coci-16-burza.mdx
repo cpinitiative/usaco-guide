@@ -49,7 +49,7 @@ after $r$ moves, and $t_r$ as the number of valid nodes Stjepan
 can move to after $r$ moves (aka the number of valid nodes of depth $r+1$).
 
 For example, let's say that we were at a depth of 1 in the following tree:
-![](<coci-16-burza/fork.png>)
+![](</solutions/gold/coci-16-burza/fork.png>)
 
 If we cut off node 2, $n_1$ would be 3 and
 $t_1$ would be 1, since Stjepan can only move to node 3.
@@ -63,11 +63,16 @@ $$
 n_{r+1} \leq (k-r-1)^2 = (k-r)^2 - 2r + 2k - 1
 $$
 
-If we show this, we'll know that $n_r \leq (k-r)^2$ for *all* $r$.
-Setting $r=k$, we get $n_k \leq (k-k)^2=0$, which effectively means that it's possible
-for us to make all nodes invalid after $k$ moves.
+If we show this, we'll know that $n_r \leq (k-r)^2$ for $r\lt k$.
+Substituting $r = k - 1$, we get
+$$
+n_{k-1} \leq (k - (k - 1))^2 = 1
+$$
+This would guarantee that after $k-1$ moves, there is at most one valid node remaining for Stjepan to move to.
+Since Daniel would be the first to move on turn $k$, he would place his final mark on this single remaining node.
+Stjepan would then be left with zero valid adjacent nodes to step on, preventing his $k$-th move and securing Daniel's win.
 
-To prove this, let's first define a more concrete strategy:
+To prove the inductive step, let's first define a more concrete strategy:
 
 > At each level, cut off the node with the largest subtree size that hasn't been already
 > cut off. If there's multiple nodes with this quality, cut off any of them.
@@ -107,7 +112,7 @@ Note that since a tree is a [planar graph](https://en.wikipedia.org/wiki/Planar_
 any node we cut off will cover a continuous segment of leaves.
 
 Take the following tree as an example:
-![](<coci-16-burza/tree.png>)
+![](</solutions/gold/coci-16-burza/tree.png>)
 
 No node can cover only, say, 3 and 14. If it can cover those two then it also *must*
 cover node 1.

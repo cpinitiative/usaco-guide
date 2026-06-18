@@ -16,6 +16,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20.x
+          corepack: true
+      - name: Enable Corepack
+        run: corepack enable
       - uses: dart-lang/setup-dart@v1
 
       - run: yarn add serve@14.2.4
@@ -29,6 +32,7 @@ jobs:
           key: node-modules-${{ hashFiles('**/yarn.lock') }}
 
       - run: yarn
+      - run: yarn prebuild
       - run: yarn build
         env:
           NODE_OPTIONS: --max-old-space-size=4096
@@ -39,7 +43,7 @@ jobs:
         run: $HOME/.pub-cache/bin/linkcheck --no-nice :3000
 
       - name: Bundle Watch
-        run: yarn bundlewatch ./public/*.js
+        run: yarn bundlewatch .next/static/chunks/*.js
         env:
           BUNDLEWATCH_GITHUB_TOKEN: ${{ secrets.BUNDLEWATCH_GITHUB_TOKEN }}
           CI_COMMIT_SHA: ${{ github.event.pull_request.head.sha }}

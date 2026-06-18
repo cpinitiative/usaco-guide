@@ -1,5 +1,5 @@
-import { StoryFn } from '@storybook/react-webpack5';
-import React, { ComponentProps } from 'react';
+import { StoryFn } from '@storybook/react';
+import { ComponentProps } from 'react';
 import RadioList from '../components/elements/RadioList';
 import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/simpleProperties';
 

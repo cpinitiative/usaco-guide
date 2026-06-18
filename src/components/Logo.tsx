@@ -1,4 +1,3 @@
-import * as React from 'react';
 import LogoSquare from './LogoSquare';
 
 export default function Logo(): JSX.Element {

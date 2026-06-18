@@ -1,5 +1,5 @@
 /*eslint-disable */
-module.exports = ({ mdast }) => {
+export default ({ mdast }) => {
   return node => {
     mdast.data = JSON.stringify(node);
   };

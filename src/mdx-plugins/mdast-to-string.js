@@ -1,9 +1,8 @@
-/*eslint-disable */
 // modified from https://github.com/syntax-tree/mdast-util-to-string/blob/main/index.js
 
-const katex = require('katex');
+import katex from 'katex';
 
-module.exports = toString;
+export default toString;
 
 const escapeHTML = str =>
   str.replace(

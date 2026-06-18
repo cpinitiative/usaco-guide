@@ -2,16 +2,30 @@
 id: usaco-1063
 source: USACO Silver 2020 December
 title: Rectangular Pasture
-author: Kevin Sheng
+author: Kevin Sheng, Ruben Jing
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_prob2_silver_dec20.html)
+
+# Video Solution 1
+
+By Kyle Xu
+
+Note: The video solution might not be the same as other solutions. Code in C++ and Java.
+
+<YouTube id="1rZqkPkXVYk" />
+
+# Video Solution 2
+
+<YouTube id="AH1wyxq8nPM" />
+
+# Solution 1
 
 ## Explanation
 
 Let's analyze the sample case a bit more:
 
-![](usaco-1063/initial.png)
+![](/solutions/silver/usaco-1063/initial.png)
 
 The bound of $N \leq 2500$ suggests a complexity of $\mathcal{O}(N^2)$,
 so let's try to think about this problem from the perspective of each pair of cows.
@@ -22,11 +36,11 @@ at a corner and the other cow at the opposing corner.
 Note that we can do this because the problem stipulates that all x-positions and y-positions
 are distinct. If they weren't, we could form the same box with two different pairs of points like so:
 
-![](usaco-1063/countercase.png)
+![](/solutions/silver/usaco-1063/countercase.png)
 
 Drawing out the boxes created by this observation, we now have the following boxes:
 
-![](usaco-1063/corners.png)
+![](/solutions/silver/usaco-1063/corners.png)
 
 This only gives us $6$ rectangles, though, which is less than the actual answer.
 The reason for this is because we've failed to account for the boxes where there's only one or
@@ -42,7 +56,7 @@ The $+1$ is because a choice is to simply not include any cows above and/or belo
 
 Using the method of construction described above, we can now have the following additional boxes:
 
-![](usaco-1063/new.png)
+![](/solutions/silver/usaco-1063/new.png)
 
 However, if we iterate through all cows to find the number of cows above and below a bounding box,
 this would give us a complexity of $\mathcal{O}(N^3)$, since we're already iterating
@@ -59,10 +73,6 @@ Now, we have our constant-time method!
 Notice, though, that our $6+2=8$ rectangles still falls short of the $13$ stipulated.
 This is because we've failed to account for the cases where FJ encases a single cow or none at all.
 Thus, we have to add $N+1$ to our subtotal, which in our case gives us the $4+1=5$ extra needed sets!
-
-## Video Solution
-
-<YouTube id="AH1wyxq8nPM" />
 
 ## Implementation
 
@@ -222,4 +232,92 @@ public class RPasture {
 ```
 
 </JavaSection>
+</LanguageSection>
+
+# Solution 2
+
+## Explanation
+
+The central idea behind this solution is identical to the previous solution, but differs
+in how we count the cows above and below a bounding box.
+
+Instead of keeping two prefix sums for the number of cows above and below a y-coordinate, we
+directly use 2D prefix sums on coordinate compressed locations. To count the number of cows
+above and below a bounding box, we use rectangular sums to directly sum the frequency of
+cows in the column above a box.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+bool sort_by_x(const pair<int, int> &a, const pair<int, int> &b) {
+	return a.first < b.first;
+}
+bool sort_by_y(const pair<int, int> &a, const pair<int, int> &b) {
+	return a.second < b.second;
+}
+
+int rect_sum(const vector<vector<int>> &grid, int r1, int r2, int c1, int c2) {
+	return (grid[r2][c2] - grid[r2][c1 - 1] - grid[r1 - 1][c2] + grid[r1 - 1][c1 - 1]);
+}
+
+int main() {
+	int n;
+	cin >> n;
+	vector<pair<int, int>> nums(n);
+	for (auto &[x, y] : nums) { cin >> x >> y; }
+
+	// coordinate compress X
+	sort(nums.begin(), nums.end(), sort_by_x);
+	for (int i = 0; i < nums.size(); i++) { nums[i].first = i + 1; }
+
+	// coordinate compress Y
+	sort(nums.begin(), nums.end(), sort_by_y);
+	for (int i = 0; i < nums.size(); i++) { nums[i].second = i + 1; }
+
+	// grid is n+1 by n+1 because locations are 1 indexed
+	vector<vector<int>> grid(n + 1, vector<int>(n + 1));
+
+	// add points to grid and compute 2D prefix sums
+	for (auto [x, y] : nums) { grid[x][y] = 1; }
+
+	for (int i = 1; i < grid.size(); i++) {
+		for (int j = 1; j < grid[i].size(); j++) {
+			grid[i][j] += grid[i - 1][j] + grid[i][j - 1] - grid[i - 1][j - 1];
+		}
+	}
+
+	// choose two points, count rectangles
+	sort(nums.begin(), nums.end(), sort_by_x);
+	long long res = 0;
+
+	for (int i = 0; i < n; i++) {
+		for (int j = i + 1; j < n; j++) {
+			int r1 = nums[i].first;
+			int r2 = nums[j].first;
+			int c1 = min(nums[i].second, nums[j].second);
+			int c2 = max(nums[i].second, nums[j].second);
+
+			int above = rect_sum(grid, 1, r1 - 1, c1, c2);
+			int below = rect_sum(grid, r2 + 1, n, c1, c2);
+
+			res += 1ll * (above + 1) * (below + 1);
+		}
+	}
+
+	// add results for single or no cow
+	res += n + 1;
+
+	cout << res << '\n';
+}
+```
+
+</CPPSection>
 </LanguageSection>

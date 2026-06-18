@@ -7,8 +7,7 @@ import {
 } from '@headlessui/react';
 import { ChevronDownIcon, ExternalLinkIcon } from '@heroicons/react/solid';
 import classNames from 'classnames';
-import { Link } from 'gatsby';
-import * as React from 'react';
+import Link from 'next/link';
 import { Fragment, useContext } from 'react';
 import {
   moduleIDToSectionMap,
@@ -220,7 +219,7 @@ export default function ModuleHeaders({
             </Menu>
 
             <Link
-              to={`/editor?filepath=${useSuffix()}`}
+              href={`/editor?filepath=${useSuffix()}`}
               className="group my-0 inline-flex items-center space-x-1.5 text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
             >
               <span>Edit This Page</span>

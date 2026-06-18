@@ -1,6 +1,8 @@
-import algoliasearch from 'algoliasearch/lite';
+import { algoliasearch } from 'algoliasearch';
 
-export const searchClient = algoliasearch(
-  '3CFULMFIDW',
-  'cdfadff49930ec4dc3327807edd10b8c'
+const searchClient = algoliasearch(
+  process.env.ALGOLIA_APP_ID || '3CFULMFIDW',
+  process.env.ALGOLIA_API_KEY || 'cdfadff49930ec4dc3327807edd10b8c'
 );
+
+export default searchClient;

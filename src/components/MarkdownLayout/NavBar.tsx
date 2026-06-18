@@ -1,4 +1,4 @@
-import { Link } from 'gatsby';
+import Link from 'next/link';
 import * as React from 'react';
 import MODULE_ORDERING from '../../../content/ordering';
 import { useMarkdownLayout } from '../../context/MarkdownLayoutContext';
@@ -47,7 +47,7 @@ const NavBar = ({ alignNavButtonsRight = true }) => {
       {alignNavButtonsRight && <div className="flex-1 sm:hidden" />}
       <span className="-ml-4 rounded-md">
         <Link
-          to={prevModule === null ? markdownLayoutInfo.url : prevModule.url}
+          href={prevModule === null ? markdownLayoutInfo.url : prevModule.url}
           className={
             'inline-flex items-center rounded-md px-4 py-2 text-sm leading-5 font-medium ' +
             (prevModule === null ? disabledClasses : activeClasses)
@@ -72,7 +72,7 @@ const NavBar = ({ alignNavButtonsRight = true }) => {
       </div>
       <span className="-mr-4 rounded-md">
         <Link
-          to={nextModule === null ? markdownLayoutInfo.url : nextModule.url}
+          href={nextModule === null ? markdownLayoutInfo.url : nextModule.url}
           className={
             'inline-flex items-center rounded-md px-4 py-2 text-sm leading-5 font-medium ' +
             (nextModule === null ? disabledClasses : activeClasses)

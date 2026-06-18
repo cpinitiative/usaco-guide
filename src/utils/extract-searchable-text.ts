@@ -1,7 +1,7 @@
 /* eslint @typescript-eslint/no-use-before-define: off */
 
 // based on mdast-util-to-string
-export default function extractSearchableText(node) {
+export default function extractSearchableText(node: any) {
   if (
     node.type === 'code' ||
     node.type === 'import' ||
@@ -14,6 +14,8 @@ export default function extractSearchableText(node) {
   return (
     (node.type === 'paragraph' || node.type === 'heading' ? ' ' : '') +
     ((node &&
+      node &&
+      typeof node === 'object' &&
       (node.value ||
         node.alt ||
         node.title ||

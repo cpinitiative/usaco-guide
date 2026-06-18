@@ -1,5 +1,4 @@
-import { Link } from 'gatsby';
-import * as React from 'react';
+import Link from 'next/link';
 import Logo from '../Logo';
 import SidebarBottomButtons from './SidebarBottomButtons';
 import { SidebarNav } from './SidebarNav/SidebarNav';
@@ -17,7 +16,7 @@ export default function DesktopSidebar() {
         <div className="flex h-0 grow flex-col pt-5">
           <Link
             className="flex shrink-0 items-center px-4 pb-2"
-            to="/dashboard/"
+            href="/dashboard/"
           >
             <Logo />
           </Link>

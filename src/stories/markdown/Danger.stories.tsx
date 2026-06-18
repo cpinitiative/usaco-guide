@@ -1,4 +1,4 @@
-import { StoryFn } from '@storybook/react-webpack5';
+import { StoryFn } from '@storybook/react';
 import React, { ComponentProps } from 'react';
 import Danger from '../../components/markdown/Danger';
 import { IncompleteSection as MarkdownIncompleteSection } from '../../components/markdown/IncompleteSection';

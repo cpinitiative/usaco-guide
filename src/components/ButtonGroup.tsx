@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import * as React from 'react';
 
 export default function ButtonGroup<T extends string>({
   options,

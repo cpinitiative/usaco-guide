@@ -7,6 +7,29 @@ author: Óscar Garries, Benjamin Qi, Ryan Chou
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_split_gold_open16.html)
 
+# Video Solution
+
+By David Zhou
+
+Note: The video solution might not be the same as other solutions. Code in C++ and Java.
+
+<YouTube id="kNOSUBvMyTQ" />
+
+# Solution
+
+## Explanation
+
+Since the enclosures must be rectangular, there *must* be a vertical or horizontal line that separates the two. Otherwise,
+we'd have a case where one enclosure would have to overlap the other in order to enclose all the cows.
+
+![](/solutions/silver/usaco-645/enclosures.png)
+
+Thus, we'll perform two sweeps, one checking vertical splits, and the other checking horizontal splits. To keep track of the best answer, we'll keep
+prefix and suffix minimums and maximums to calculate each possible solution in $\mathcal{O}(1)$ time.
+
+We can also use a binary search tree instead of prefix/suffix minimums and maximums. To do this, we can create two ordered sets: a set representing the current enclosure,
+and a set representing the other enclosure. As we sweep across these coordinates, we'll add them to the current set and remove them from the other enclosure. To query, we'll fetch the minimum and maximum values from the sets.
+
 <Warning title="Weak Test Data">
 
 Some accepted submissions may give different outputs on the following test case:
@@ -19,19 +42,6 @@ The right answer should be $6$.
     // EndCodeSnip
 ```
 </Warning>
-
-## Explanation
-
-Since the enclosures must be rectangular, there *must* be a vertical or horizontal line that separates the two. Otherwise,
-we'd have a case where one enclosure would have to overlap the other in order to enclose all the cows.
-
-![](<usaco-645/enclosures.png>)
-
-Thus, we'll perform two sweeps, one checking vertical splits, and the other checking horizontal splits. To keep track of the best answer, we'll keep
-prefix and suffix minimums and maximums to calculate each possible solution in $\mathcal{O}(1)$ time.
-
-We can also use a binary search tree instead of prefix/suffix minimums and maximums. To do this, we can create two ordered sets: a set representing the current enclosure,
-and a set representing the other enclosure. As we sweep across these coordinates, we'll add them to the current set and remove them from the other enclosure. To query, we'll fetch the minimum and maximum values from the sets.
 
 ## Implementation
 

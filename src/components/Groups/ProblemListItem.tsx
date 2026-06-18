@@ -1,5 +1,4 @@
-import { Link } from 'gatsby';
-import * as React from 'react';
+import Link from 'next/link';
 import { useActiveGroup } from '../../hooks/groups/useActiveGroup';
 import { useUserLeaderboardData } from '../../hooks/groups/useLeaderboardData';
 import { GroupData } from '../../models/groups/groups';
@@ -54,7 +53,7 @@ const ProblemListItem = ({
               <span className="block">
                 <h2 className="leading-3 font-medium">
                   <Link
-                    to={`/groups/${group.id}/post/${post.id}/problems/${problem.id}`}
+                    href={`/groups/${group.id}/post/${post.id}/problems/${problem.id}`}
                   >
                     <span className="absolute inset-0" aria-hidden="true" />
                     {problem.name}
@@ -100,7 +99,7 @@ const ProblemListItem = ({
           <div className="hidden shrink-0 flex-col items-end space-y-3 sm:flex">
             <p className="flex items-center space-x-4">
               <Link
-                to={`/groups/${group.id}/post/${post.id}/problems/${problem.id}`}
+                href={`/groups/${group.id}/post/${post.id}/problems/${problem.id}`}
                 className="relative text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
               >
                 View Problem

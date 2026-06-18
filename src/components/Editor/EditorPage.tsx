@@ -9,11 +9,12 @@
 //   );
 // }
 
-import { PageProps } from 'gatsby';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom, WritableAtom } from 'jotai';
+import { useRouter } from 'next/router';
 import React, { lazy } from 'react';
 import Split from 'react-split';
 import {
+  activeFileAtom,
   filesListAtom,
   monacoEditorInstanceAtom,
   openOrCreateExistingFileAtom,
@@ -42,26 +43,27 @@ const MainEditorInterface = lazy(() =>
   }))
 );
 
-// From https://stackoverflow.com/questions/2090551/parse-query-string-in-javascript
-function getQueryVariable(query, variable) {
-  const vars = query.split('&');
-  for (let i = 0; i < vars.length; i++) {
-    const pair = vars[i].split('=');
-    if (decodeURIComponent(pair[0]) == variable) {
-      return decodeURIComponent(pair[1]);
-    }
-  }
-  return null;
-}
-
-export default function EditorPage(props: PageProps): JSX.Element {
+export default function EditorPage(): JSX.Element {
+  const router = useRouter();
+  const { query } = router;
   const editor = useAtomValue(monacoEditorInstanceAtom);
+  const activeFile = useAtomValue(activeFileAtom);
+  const setActiveFile = useSetAtom(activeFileAtom);
   const openOrCreateExistingFile = useSetAtom(openOrCreateExistingFileAtom);
-  const setToken = useSetAtom(tokenAtom);
+  const setToken = useSetAtom(
+    tokenAtom as WritableAtom<string | null, [string | null], void>
+  );
+  const lock = React.useRef(false);
 
   React.useEffect(() => {
-    const code = new URLSearchParams(props.location.search).get('code');
-    if (!code) return;
+    const code = query.code as string;
+
+    // 2. Check the lock AND the code
+    if (!code || lock.current) return;
+
+    // 3. Set the lock immediately
+    lock.current = true;
+
     fetch('/api/get-token', {
       method: 'POST',
       headers: {
@@ -71,27 +73,37 @@ export default function EditorPage(props: PageProps): JSX.Element {
     })
       .then(res => res.json())
       .then(json => {
-        console.log(json);
-        setToken(json.token);
+        if (json.token) {
+          setToken(json.token);
+        }
+      })
+      .catch(err => console.error('Token exchange failed', err))
+      .finally(() => {
+        // 4. Clean up the URL AFTER starting the process
+        router.replace('/editor', undefined, { shallow: true });
       });
-    history.replaceState({}, '', '/editor');
-  }, [props.location.search, setToken]);
+  }, [query.code, setToken, router]);
 
   const filesList = useAtomValue(filesListAtom);
   React.useEffect(() => {
-    const defaultFilePath =
-      props.location?.search?.length > 0
-        ? getQueryVariable(props.location.search.slice(1), 'filepath')
-        : null;
+    const defaultFilePath = query.filepath as string;
     if (defaultFilePath && filesList !== null) {
       openOrCreateExistingFile(defaultFilePath);
     }
-  }, [filesList, openOrCreateExistingFile, props.location.search]);
+  }, [filesList, openOrCreateExistingFile, query.filepath]);
+
+  React.useEffect(() => {
+    if (activeFile) return;
+    if (!filesList || filesList.length === 0) return;
+    setActiveFile(filesList[0]);
+  }, [activeFile, filesList, setActiveFile]);
+
+  const isAuthenticating = !!query.code;
 
   return (
     <QuizGeneratorProvider>
       <Layout>
-        <SEO title="Editor" image={undefined} pathname={undefined} />
+        <SEO title="Editor" image={undefined} />
 
         <div className="flex h-screen min-w-[768px] flex-col">
           <LazyLoad>
@@ -110,13 +122,14 @@ export default function EditorPage(props: PageProps): JSX.Element {
                 <LazyLoad>
                   <EditorSidebar
                     className="h-full shrink-0"
-                    loading={
-                      !!new URLSearchParams(props.location.search).get('code')
-                    }
+                    loading={!!query.code}
                   />
                 </LazyLoad>
                 <LazyLoad>
-                  <MainEditorInterface className="h-full w-0 flex-1" />
+                  <MainEditorInterface
+                    className="h-full w-0 flex-1"
+                    loading={isAuthenticating}
+                  />
                 </LazyLoad>
               </div>
               <div className="flex flex-col">

@@ -1,5 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-webpack5';
-import React from 'react';
+import type { Meta, StoryObj } from '@storybook/react';
 import ForumCTA from '../../components/ForumCTA';
 
 export default {
