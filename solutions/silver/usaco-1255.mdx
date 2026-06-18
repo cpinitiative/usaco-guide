@@ -25,19 +25,17 @@ Thus, the players use the following strategies:
 Let the total amount of operations to finish room $i$ individually be $T_i$.
 The game's winner will be the winner of the room with the minimum $\left\lceil\frac{T_i}2\right\rceil$ (if tied, the one with the minimum room number).
 
-To minimize the number of rounds, the attacker can use a modified version of his strategy when $N=1$:
-Instead of taking away $a_i\bmod 4$ cows, he can take away any $p\equiv a_i\mod 4$ cows as long as $p$ is allowed to be taken away;
-we want the largest $p<a_i$ to give the largest speedup.
-To compute the largest $p<x$ such that $p\equiv x\mod 4$, first use a sieve to find all primes, and keep an array $t_i$ with $0\leq i<4$ for the most recent prime $t_i=p$ we found where where $p\bmod 4=i$ and assign $m_x=t_{x\bmod 4}$ to represent the requested result, all as we go.
-On the other hand, the defender can block this speedup by relying on the fact that there are no primes $p>4$ that satisfies $p\bmod 4=2$ (so no speedups when $a_i\bmod 4=2$).
-If the defender takes $2$ cows from their $a_i\bmod 4=2=0$ and hand back $a_i\bmod 4=2$ each time, there will be no way for the attacker to speed up the game any more.
+To minimize the number of rounds, the attacker can use a modified version of his strategy when $N=1$. Instead of taking away $a_i\bmod 4$ cows, they can take away any $p\equiv a_i\mod 4$ cows as long as $p$ is prime and less than $a_i$.
+To compute the largest $p<x$ such that $p\equiv x\mod 4$, first use a sieve to find all primes, and keep an array $t_i$ with $0\leq i<4$ for the most recent prime $t_i=p$ we found where $p\bmod 4=i$. As we iterate on values of $x$, we store $m_x=t_{x\bmod 4}$ to represent the largest equivalent prime.
+
+On the other hand, the defender can block this speedup by relying on the fact that there are no primes $p>4$ that satisfy $p\bmod 4=2$, resulting in no speedups when $a_i\bmod 4=2$.
+If the defender takes $2$ cows from their $a_i\bmod 4=2=0$ and hand back $a_i\bmod 4=2$ each time, there will be no way for the attacker to speed up the game anymore.
 
 Thus:
 - When $a_i\bmod4\in\{1,3\}$, the only speedup the attacker can apply is removing $m_{a_i}$ initially, resulting in $T_i=1+\frac{a_i-m_{a_i}}2$.
 - Otherwise, there are no speedups with $T_i=\frac{a_i}2$.
 
-We first compute $T_i$ for each room, and then then find the argmin of $\left\lceil\frac{T_i}2\right\rceil$ (if tied, with smallest $i$), and output the winner of that room.
-(Instead of using our initial strategy to compute the winner of a room, we could also check the parity of $T_i$.)
+We first compute $T_i$ for each room, and then find the minimum of $\left\lceil\frac{T_i}2\right\rceil$ (if tied, with smallest $i$), and output the winner of that room.
 
 
 ## Implementation
