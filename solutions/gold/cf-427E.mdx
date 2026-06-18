@@ -13,7 +13,7 @@ Notice that we only need to try placing the police station at positions where cr
 
 Now, consider only one side of the station. The optimal strategy is to take criminals in groups of at most $m$, starting from the farthest ones. For each group, only the farthest criminal matters because all the closer criminals can just be picked up on the way without increasing the distance.
 
-So, if the station is at $\texttt{a}[i]$, the one-way distance on the left side is determined by the criminals at indices:
+So, if the station is at $a_i$, the one-way distance on the left side is determined by the criminals at indices:
 
 $$
 0, m, 2m, 3m, \dots
@@ -21,11 +21,19 @@ $$
 
 because each of these is the farthest criminal of one group.
 
-We can compute these distances by looping through the list of positions once. When the station position moves to the right, every existing group becomes farther by the same amount. So, if there are currently $\texttt{cnt}$ groups, moving by distance $d$ increases the distance by $\texttt{cnt} \cdot d$. Every time we pass another block of size $m$, a new group is added. In other words, moving the station from $\texttt{a}[j]$ to $\texttt{a}[i]$ adds $\texttt{cnt} \cdot (\texttt{a}[i] - \texttt{a}[j])$ to the one-way distance.
+We can compute these distances by looping through the list of positions once. When the station position moves to the right, every existing group becomes farther by the same amount. So, if there are currently $\texttt{cnt}$ groups, moving by distance $d$ increases the distance by $\texttt{cnt} \cdot d$. Every time we pass another block of size $m$, a new group is added. In other words, moving the station from $a_j$ to $a_i$ adds $\texttt{cnt} \cdot (a_i - a_j)$ to the one-way distance.
 
 This gives the distance for the left side of every possible station. To get the right side, we simply reverse the array and run the same process again.
 
-To choose $\texttt{a}[i]$ as the station, the total distance will be the sum of the left distance and the right distance. The final answer is double the minimum distance over all indices $i$ because every trip must return to the station.
+To choose $a_i$ as the station, the total distance will be the sum of the left distance and the right distance. The final answer is double the minimum distance over all indices $i$ because every trip must return to the station.
+
+<Info>
+
+We can also solve this problem using ternary search over the cost
+function because `left_cost[i] + right_cost[n - i - 1]` is unimodal
+over $i$, the criminal index chosen as a station.
+
+</Info>
 
 ## Implementation
 
@@ -134,9 +142,3 @@ print(2 * ans)
 
 </PySection>
 </LanguageSection>
-
-<Info>
-We can also solve this problem using ternary search over the cost
-function because `left_cost[i] + right_cost[n - i - 1]` is unimodal
-over $i$, the criminal index chosen as a station.
-</Info>
