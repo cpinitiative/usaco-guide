@@ -32,23 +32,30 @@ int main() {
 		cin >> a >> b >> c >> d;
 		long long opers = 0;
 
+		// since time complexity is logarithmic, 100 iterations
+		// is enough for the process to conclude
 		for (int i = 0; i < 100; i++) {
 			if ((a == c && b == d) || c < a || d < b) break;
 
 			long long ops;
-			if (c < d) {
-				ops = min((d - b) / c, d / c);
-				d -= ops * c;
-			} else {
+			if (c >= d) {
+                // backtrack from multiple type 1 operations
 				ops = min((c - a) / d, c / d);
 				c -= ops * d;
+			} else {
+				// backtrack from multiple type 2 operations
+				ops = min((d - b) / c, d / c);
+				d -= ops * c;
 			}
 
 			opers += ops;
 		}
 
-		if (a == c && b == d) cout << opers << "\n";
-		else cout << -1 << "\n";
+		if (a == c && b == d) {
+            cout << opers << '\n';
+        } else {
+            cout << -1 << '\n';
+        }
 	}
 }
 ```
@@ -60,15 +67,20 @@ int main() {
 for t in range(int(input())):
 	a, b, c, d = map(int, input().split())
 	opers = 0
+
+	# since time complexity is logarithmic, 100 iterations
+	# is enough for the process to conclude
 	for i in range(100):
 		if (a == c and b == d) or c < a or d < b:
 			break
-		if c < d:
-			ops = min((d - b) // c, d // c)
-			d -= ops * c
-		else:
+		if c >= d:
+			# backtrack from multiple type 1 operations
 			ops = min((c - a) // d, c // d)
 			c -= ops * d
+		else:
+			# backtrack from multiple type 2 operations
+			ops = min((d - b) // c, d // c)
+			d -= ops * c
 
 		opers += ops
 
