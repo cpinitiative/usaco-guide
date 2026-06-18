@@ -1,19 +1,89 @@
 ---
 id: usaco-716
-source: USACO Silver 2017 December
+source: USACO Silver 2017 February
 title: Why Did the Cow Cross the Road III
-author: Óscar Garries, Kevin Sheng, David Guo
+author: Óscar Garries, Kevin Sheng, David Guo, John Zhou
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_countcross_silver_feb17.html)
 
 ## Explanation
 
-We want to find the number of pairs of cows for which crossing at least one road is necessary for one cow to visit the other.
+Let's view the grid as a graph, where each cell is a vertex, and each border between two grids that does not contain a road is an edge.
+For two cows to need to cross a road to reach each other, they must belong to two different connected components in the graph.
 
-Let's consider an arbitrary cow. By performing either BFS or DFS, we can determine which squares that cow can reach without crossing any roads. Then, we can determine which cows cannot be visited without crossing any roads by checking if that cow's square is reachable.
+We perform floodfill to find each connected component and the number of cows within it.
+For a pair of connected components, each possible pair of cows between these connected components must cross a road to reach the other.
+Thus, the answer is the sum of pairwise products between the number of cows in each component.
 
-Finally, to determine all such pairs of cows, we can perform BFS or DFS for each cow and compute the number of unreachable cows, making sure to avoid double-counting pairs.
+
+Naively implementing this solution takes $\mathcal{O}(N^4)$ time, as we are computing pairwise products with up to $\mathcal{O}(N^2)$ components. This can be optimized to $\mathcal{O}(N^2)$, as described below:
+
+<Spoiler title="Optimizing Pairwise Product Sums">
+
+Let the 0-indexed array containing the number of cows in each connected component be $\mathrm{C}$.
+Naively, we would implement the pairwise product sum as follows:
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+int distant_pairs = 0;
+for (int i = 0; i < C.size(); i++) {
+	for (int j = 0; j < i; j++) { distant_pairs += C[i] * C[j]; }
+}
+```
+
+</CPPSection>
+
+<PySection>
+
+```py
+distant_pairs = 0
+for i in range(len(C)):
+	for j in range(i):
+		distant_pairs += C[i] * C[j]
+```
+
+</PySection>
+
+</LanguageSection>
+
+Using the distributive property, we may factor out $\mathrm C[i]$ from the inner loop, and do the rest using a temporary variable representing the prefix sum, like this:
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+int distant_pairs = 0;
+int prefix_sum = 0;
+for (int i = 0; i < C.size(); i++) {
+	distant_pairs += C[i] * prefix_sum;
+	prefix_sum += C[i];
+}
+```
+
+</CPPSection>
+
+<PySection>
+
+```py
+distant_pairs = 0
+prefix_sum = 0
+for i in range(len(C)):
+	distant_pairs += C[i] * prefix_sum
+	prefix_sum += C[i]
+```
+
+</PySection>
+
+</LanguageSection>
+
+This will make the time complexity linear to the number of connected components, making our final time complexity $\mathcal O(N^2)$.
+
+</Spoiler>
 
 ## Implementation
 
@@ -22,8 +92,7 @@ Finally, to determine all such pairs of cows, we can perform BFS or DFS for each
 <LanguageSection>
 <CPPSection>
 
-Note that using `set` here instead of `unordered_set`
-adds an extra $\log R$ factor to the time complexity.
+Note that using `set` here adds an extra $\log R$ factor to the time complexity.
 
 ```cpp
 #include <bits/stdc++.h>
@@ -102,13 +171,10 @@ int main() {
 		}
 	}
 
-	int distant_pairs = 0;
+	int distant_pairs = 0, prefix_sum = 0;
 	for (int i = 0; i < cow_components.size(); i++) {
-		for (int j = i + 1; j < cow_components.size(); j++) {
-			// all pairs of cows from these two components are considered
-			// distant
-			distant_pairs += cow_components[i] * cow_components[j];
-		}
+		distant_pairs += cow_components[i] * prefix_sum;
+		prefix_sum += cow_components[i];
 	}
 
 	freopen("countcross.out", "w", stdout);
@@ -124,6 +190,7 @@ import java.io.*;
 import java.util.*;
 
 public class CountCross {
+
 	// BeginCodeSnip{Road Class}
 	private static class Road {
 		int sr, sc;
@@ -187,13 +254,10 @@ public class CountCross {
 			}
 		}
 
-		int distantPairs = 0;
+		int distantPairs = 0, prefixSum = 0;
 		for (int i = 0; i < cowComponents.size(); i++) {
-			for (int j = i + 1; j < cowComponents.size(); j++) {
-				// all pairs of cows from these two components are considered
-				// distant
-				distantPairs += cowComponents.get(i) * cowComponents.get(j);
-			}
+			distantPairs += cowComponents.get(i) * prefixSum;
+			prefixSum += cowComponents.get(i);
 		}
 
 		io.println(distantPairs);
@@ -289,10 +353,10 @@ for r in range(side_len):
 				cow_components.append(comp_sz)
 
 distant_pairs = 0
+prefix_sum = 0
 for i in range(len(cow_components)):
-	for j in range(i + 1, len(cow_components)):
-		# all pairs of cows from these two components are considered distant
-		distant_pairs += cow_components[i] * cow_components[j]
+	distant_pairs += cow_components[i] * prefix_sum
+	prefix_sum += cow_components[i]
 
 print(distant_pairs, file=open("countcross.out", "w"))
 ```

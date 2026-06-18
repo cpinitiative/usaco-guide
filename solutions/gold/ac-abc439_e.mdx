@@ -1,0 +1,61 @@
+---
+id: ac-abc439_e
+source: AC
+title: Kite
+author: xneolxnoel
+---
+
+[Official Analysis (C++)](https://atcoder.jp/contests/abc439/editorial)
+
+## Explanation
+
+Each person $i$ corresponds to a segment from $(A_i, 0)$ to $(B_i, 1)$. Notice that two
+segments do not touch if and only if $A_i < A_j \iff B_i < B_j$, where sharing an
+endpoint counts as touching. Thus, we want the largest
+subset of indices in which both coordinates are simultaneously strictly
+increasing.
+
+We can sort the people by $A_i$ ascending, breaking ties by $B_i$ descending.
+After sorting, any subsequence we pick will already have $A$ in non-decreasing
+order. Note that the descending tiebreak on $B$ ensures that picking two entries
+with the same $A$ would violate $B$ being strictly increasing, since their $B$ values
+appear in decreasing order. Therefore, we can reduce the problem to finding the length of
+the strict LIS of the resulting $B$ sequence.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(false);
+
+	int n;
+	cin >> n;
+	vector<pair<int, int>> p(n);
+	for (auto &[a, b] : p) { cin >> a >> b; }
+
+	sort(p.begin(), p.end(), [](const auto &x, const auto &y) {
+		return x.first != y.first ? x.first < y.first : x.second > y.second;
+	});
+
+	vector<int> dp;
+	for (auto &[a, b] : p) {
+		auto it = lower_bound(dp.begin(), dp.end(), b);
+		if (it == dp.end()) dp.push_back(b);
+		else *it = b;
+	}
+
+	cout << dp.size() << '\n';
+}
+```
+
+</CPPSection>
+</LanguageSection>
