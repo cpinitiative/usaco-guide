@@ -2,12 +2,25 @@
 id: cses-1746
 source: CSES
 title: Array Description
-author: Andrew Wang, Sofia Yang
+author: Abhinav Singh, Andrew Wang, Sofia Yang
 ---
 
-[Editorial (icecuber)](https://codeforces.com/blog/entry/70018)
+[Editorial (C++)](https://codeforces.com/blog/entry/70018)
 
 # Implementation
+
+
+Let's define $dp[i][j]$ as the number of ways to fill the first $i$ elements of the array such that $a_i = j$.
+
+**Base case:** if $x_1 = 0$, the first element is unknown and can be anything from $1$ to $m$, so $dp[1][j] = 1$ for all $j$. Otherwise, the first element is fixed, so $dp[1][x_1] = 1$ and all other $dp[1][j] = 0$.
+
+For $i > 1$, since adjacent elements can differ by at most $1$, $a_i = j$ is only possible if $a_{i-1}$ was $j-1$, $j$, or $j+1$:
+$$dp[i][j] = dp[i-1][j-1] + dp[i-1][j] + dp[i-1][j+1]$$
+
+We use the same idea which we saw in [Grid Paths](https://cses.fi/problemset/task/1638), where a trap cell forces $dp[x][y] = 0$ since no path can end there, and set $dp[i][j] = 0$ whenever index $i$ is fixed to a value other than $j$, since no valid array can have $a_i = j$ in that case.
+
+The final answer is the sum of $dp[n][j]$ over all $j$ from $1$ to $m$.
+
 **Time Complexity:** $\mathcal{O}(NM)$
 
 <LanguageSection>
@@ -15,52 +28,48 @@ author: Andrew Wang, Sofia Yang
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
+#include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
-#define pb push_back
-#define pi pair<int, int>
-#define f first
-#define mp make_pair
-#define s second
+using ll = long long;
+const int MOD = 1e9 + 7;
 
-ll dp[100001][101];
-const ll MOD = (10e8) + 7;
 int main() {
-	ios_base::sync_with_stdio(0);
-	cin.tie(0);
 	int n, m;
 	cin >> n >> m;
-	int arr[n];
-	for (int i = 0; i < n; i++) { cin >> arr[i]; }
-	if (arr[0] == 0) {
-		fill(dp[0], dp[0] + 101, 1);
+
+	vector<int> a(n);
+	for (int i = 0; i < n; i++) { cin >> a[i]; }
+
+	// dp[i][j] is the number of ways to fill the first i elements
+	// of the array such that the i-th element equals j
+	vector<vector<ll>> dp(n + 1, vector<ll>(m + 2, 0));
+
+	// base case: the first element is either fixed or free to be 1..m
+	if (a[0] == 0) {
+		for (int j = 1; j <= m; j++) { dp[1][j] = 1; }
 	} else {
-		dp[0][arr[0]] = 1;
+		dp[1][a[0]] = 1;
 	}
-	for (int i = 1; i < n; i++) {
-		if (arr[i] == 0) {
-			for (int j = 1; j <= m; j++) {
-				dp[i][j] += dp[i - 1][j];
-				if (j - 1 > 0) dp[i][j] += dp[i - 1][j - 1];
-				if (j + 1 <= m) dp[i][j] += dp[i - 1][j + 1];
-				dp[i][j] %= MOD;
-			}
-		} else {
-			dp[i][arr[i]] += dp[i - 1][arr[i]];
-			if (arr[i] - 1 > 0) dp[i][arr[i]] += dp[i - 1][arr[i] - 1];
-			if (arr[i] + 1 <= m) dp[i][arr[i]] += dp[i - 1][arr[i] + 1];
-			dp[i][arr[i]] %= MOD;
+
+	for (int i = 2; i <= n; i++) {
+		int curr = a[i - 1];
+		for (int j = 1; j <= m; j++) {
+			// if this position is fixed and doesn't match j, it's unreachable
+			if (curr != 0 && curr != j) continue;
+
+			// otherwise, j can be reached from j-1, j, or j+1 at the previous index
+			dp[i][j] = dp[i - 1][j];
+			if (j - 1 >= 1) dp[i][j] += dp[i - 1][j - 1];
+			if (j + 1 <= m) dp[i][j] += dp[i - 1][j + 1];
+			dp[i][j] %= MOD;
 		}
 	}
+
 	ll ans = 0;
-	for (int i = 1; i <= m; i++) {
-		ans += dp[n - 1][i];
-		ans %= MOD;
-	}
-	cout << ans;
+	for (int j = 1; j <= m; j++) { ans = (ans + dp[n][j]) % MOD; }
+
+	cout << ans << '\n';
 }
 ```
 </CPPSection>
