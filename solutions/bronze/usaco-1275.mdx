@@ -90,4 +90,69 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Leaders {
+    public static void main(String[] args) throws Exception {
+        Kattio io = new Kattio();
+        
+        int n = io.nextInt();
+        String breeds = io.next();
+        int[] cows = new int[n];
+
+        int firstGuernsey = n, lastGuernsey = 0;
+        int firstHolstein = n, lastHolstein = 0;
+        int res = 0;
+
+        for (int i = 0; i < n; i++) {
+            cows[i] = io.nextInt() - 1;
+
+            if (breeds.charAt(i) == 'G') {
+                firstGuernsey = Math.min(firstGuernsey, i);
+                lastGuernsey = Math.max(lastGuernsey, i);
+            } else {
+                firstHolstein = Math.min(firstHolstein, i);
+                lastHolstein = Math.max(lastHolstein, i);
+            }
+        }
+
+        if (cows[firstGuernsey] >= lastGuernsey) {
+            for (int i = 0; i < firstGuernsey; i++) {
+                if (i != firstHolstein && breeds.charAt(i) == 'H' && cows[i] >= firstGuernsey) {
+                    res++;
+                }
+            }
+        }
+
+        if (cows[firstHolstein] >= lastHolstein) {
+            for (int i = 0; i < firstHolstein; i++) {
+                if (i != firstGuernsey && breeds.charAt(i) == 'G' && cows[i] >= firstHolstein) {
+                    res++;
+                }
+            }
+        }
+
+        if ((cows[firstGuernsey] >= lastGuernsey ||
+            (firstGuernsey <= firstHolstein &&
+            cows[firstGuernsey] >= firstHolstein)) &&
+            (cows[firstHolstein] >= lastHolstein ||
+            (firstHolstein <= firstGuernsey &&
+            cows[firstHolstein] >= firstGuernsey))) {
+
+            res++;
+        }
+
+        io.println(res);
+        io.close();
+    }
+
+    // BeginCodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 </LanguageSection>
