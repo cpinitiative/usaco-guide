@@ -97,60 +97,62 @@ import java.io.*;
 import java.util.*;
 
 public class Leaders {
-    public static void main(String[] args) throws Exception {
-        Kattio io = new Kattio();
-        
-        int n = io.nextInt();
-        String breeds = io.next();
-        int[] cows = new int[n];
+	public static void main(String[] args) throws Exception {
+		Kattio io = new Kattio();
 
-        int firstGuernsey = n, lastGuernsey = 0;
-        int firstHolstein = n, lastHolstein = 0;
-        int res = 0;
+		int n = io.nextInt();
+		String breeds = io.next();
+		int[] cows = new int[n];
 
-        for (int i = 0; i < n; i++) {
-            cows[i] = io.nextInt() - 1;
+		int firstGuernsey = n, lastGuernsey = 0;
+		int firstHolstein = n, lastHolstein = 0;
+		int res = 0;
 
-            if (breeds.charAt(i) == 'G') {
-                firstGuernsey = Math.min(firstGuernsey, i);
-                lastGuernsey = Math.max(lastGuernsey, i);
-            } else {
-                firstHolstein = Math.min(firstHolstein, i);
-                lastHolstein = Math.max(lastHolstein, i);
-            }
-        }
+		for (int i = 0; i < n; i++) {
+			cows[i] = io.nextInt() - 1;
 
-        if (cows[firstGuernsey] >= lastGuernsey) {
-            for (int i = 0; i < firstGuernsey; i++) {
-                if (i != firstHolstein && breeds.charAt(i) == 'H' && cows[i] >= firstGuernsey) {
-                    res++;
-                }
-            }
-        }
+			if (breeds.charAt(i) == 'G') {
+				firstGuernsey = Math.min(firstGuernsey, i);
+				lastGuernsey = Math.max(lastGuernsey, i);
+			} else {
+				firstHolstein = Math.min(firstHolstein, i);
+				lastHolstein = Math.max(lastHolstein, i);
+			}
+		}
 
-        if (cows[firstHolstein] >= lastHolstein) {
-            for (int i = 0; i < firstHolstein; i++) {
-                if (i != firstGuernsey && breeds.charAt(i) == 'G' && cows[i] >= firstHolstein) {
-                    res++;
-                }
-            }
-        }
+		if (cows[firstGuernsey] >= lastGuernsey) {
+			for (int i = 0; i < firstGuernsey; i++) {
+				if (i != firstHolstein && breeds.charAt(i) == 'H' &&
+				    cows[i] >= firstGuernsey) {
+					res++;
+				}
+			}
+		}
 
-        if ((cows[firstGuernsey] >= lastGuernsey ||
-            (firstGuernsey <= firstHolstein &&
-            cows[firstGuernsey] >= firstHolstein)) &&
-            (cows[firstHolstein] >= lastHolstein ||
-            (firstHolstein <= firstGuernsey &&
-            cows[firstHolstein] >= firstGuernsey))) {
+		if (cows[firstHolstein] >= lastHolstein) {
+			for (int i = 0; i < firstHolstein; i++) {
+				if (i != firstGuernsey && breeds.charAt(i) == 'G' &&
+				    cows[i] >= firstHolstein) {
+					res++;
+				}
+			}
+		}
 
-            res++;
-        }
+		if ((cows[firstGuernsey] >= lastGuernsey ||
+		     (firstGuernsey <= firstHolstein &&
+		      cows[firstGuernsey] >= firstHolstein)) &&
+		    (cows[firstHolstein] >= lastHolstein ||
+		     (firstHolstein <= firstGuernsey &&
+		      cows[firstHolstein] >= firstGuernsey))) {
 
-        io.println(res);
-        io.close();
-    }
+			res++;
+		}
 
-    // BeginCodeSnip{Kattio}
+		io.println(res);
+		io.close();
+	}
+
+	// BeginCodeSnip{Kattio}
 }
 ```
 
@@ -169,28 +171,31 @@ last_holstein = 0
 res = 0
 
 for i in range(n):
-    if breeds[i] == 'G':
-        first_guernsey = min(first_guernsey, i)
-        last_guernsey = max(last_guernsey, i)
-    else:
-        first_holstein = min(first_holstein, i)
-        last_holstein = max(last_holstein, i)
+	if breeds[i] == "G":
+		first_guernsey = min(first_guernsey, i)
+		last_guernsey = max(last_guernsey, i)
+	else:
+		first_holstein = min(first_holstein, i)
+		last_holstein = max(last_holstein, i)
 
 if cows[first_guernsey] >= last_guernsey:
-    for i in range(first_guernsey):
-        if i != first_holstein and breeds[i] == 'H' and cows[i] >= first_guernsey:
-            res += 1
+	for i in range(first_guernsey):
+		if i != first_holstein and breeds[i] == "H" and cows[i] >= first_guernsey:
+			res += 1
 
 if cows[first_holstein] >= last_holstein:
-    for i in range(first_holstein):
-        if i != first_guernsey and breeds[i] == 'G' and cows[i] >= first_holstein:
-            res += 1
+	for i in range(first_holstein):
+		if i != first_guernsey and breeds[i] == "G" and cows[i] >= first_holstein:
+			res += 1
 
-if ((cows[first_guernsey] >= last_guernsey or
-        (first_guernsey <= first_holstein and cows[first_guernsey] >= first_holstein)) and
-    (cows[first_holstein] >= last_holstein or
-        (first_holstein <= first_guernsey and cows[first_holstein] >= first_guernsey))):
-    res += 1
+if (
+	cows[first_guernsey] >= last_guernsey
+	or (first_guernsey <= first_holstein and cows[first_guernsey] >= first_holstein)
+) and (
+	cows[first_holstein] >= last_holstein
+	or (first_holstein <= first_guernsey and cows[first_holstein] >= first_guernsey)
+):
+	res += 1
 
 print(res)
 ```
