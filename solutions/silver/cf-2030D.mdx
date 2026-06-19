@@ -8,9 +8,9 @@ author: Abhinav Singh
 [Official Analysis (C++)](https://codeforces.com/blog/entry/135218)
 
 ## Explanation
-We note that the order of swaps doesn't matter at all. Whether a value can move from one position to another depends only on $s$ , so the problem reduces to a static question: for each value, is its required path through $s$ unobstructed?
+A value can cross the gap between position $k$ and position $k+1$ to the right if $s_k = R$, and to the left if $s_{k+1} = L$. As long as a gap stays open, values can keep crossing it back and forth in either direction, so any sequence of swaps across open gaps can be rearranged into any other order without changing which values end up where. So, the order of swaps doesn't matter: whether a value can move from one position to another depends only on $s$, and the problem reduces to a static question - for each value, is its required path through $s$ unobstructed?
 
-A value can cross the gap between position $k$ and position $k+1$ to the right if $s_k = R$, and to the left if $s_{k+1} = L$. The gap is impassable only when $s_k = L$ and $s_{k+1} = R$ hold simultaneously: call this a **bad gap**. The bad gaps are what split the array into maximal intervals where every two adjacent positions are freely swappable, so within one such interval, the values can be rearranged into any order.
+The gap is impassable only when $s_k = L$ and $s_{k+1} = R$ hold simultaneously: call this a **bad gap**. Bad gaps split the array into maximal intervals where every two adjacent positions are freely swappable, so within one such interval, the values can be rearranged into any order.
 
 For each value $v$, let $pos$ be its current position in $p$. For $p$ to become sorted, $v$ must end up at position $v$, so it must travel from $pos$ to $v$, crossing every gap strictly between $\min(pos, v)$ and $\max(pos, v)$. Another way of saying this is that $pos$ and $v$ must lie in the same interval - there can be no bad gaps between $pos$ and $v$ for all values of $v$.
 
