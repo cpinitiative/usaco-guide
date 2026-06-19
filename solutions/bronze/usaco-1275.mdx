@@ -1,0 +1,75 @@
+---
+id: usaco-1275
+source: USACO Bronze 2023 January
+title: Leaders
+author: Rameez Parwez
+---
+
+## Explanation
+
+-- in process
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int main() {
+
+	int n;
+	std::string breeds;
+	std::cin >> n >> breeds;
+	std::vector<int> cows(n);
+	int first_guernsey = n, last_guernsey = 0;
+	int first_holstein = n, last_holstein = 0;
+	int res = 0;
+
+	for (int i = 0; i < n; i++) {
+		std::cin >> cows[i];
+		cows[i]--;
+
+		if (breeds[i] == 'G') {
+			first_guernsey = std::min(first_guernsey, i);
+			last_guernsey = std::max(last_guernsey, i);
+		} else {
+			first_holstein = std::min(first_holstein, i);
+			last_holstein = std::max(last_holstein, i);
+		}
+	}
+
+	if (cows[first_guernsey] >= last_guernsey) {
+		for (int i = 0; i < first_guernsey; i++) {
+			if (i != first_holstein && breeds[i] == 'H' && cows[i] >= first_guernsey) {
+				res++;
+			}
+		}
+	}
+
+	if (cows[first_holstein] >= last_holstein) {
+		for (int i = 0; i < first_holstein; i++) {
+			if (i != first_guernsey && breeds[i] == 'G' && cows[i] >= first_holstein) {
+				res++;
+			}
+		}
+	}
+
+	if ((cows[first_guernsey] >= last_guernsey || 
+		(first_guernsey <= first_holstein && cows[first_guernsey] >= first_holstein)) &&
+		(cows[first_holstein] >= last_holstein || 
+		(first_holstein <= first_guernsey && cows[first_holstein] >= first_guernsey))) {
+			res++;
+		}
+
+	std::cout << res << '\n';
+
+}
+```
+
+</CPPSection>
+</LanguageSection>
