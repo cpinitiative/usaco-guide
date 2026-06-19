@@ -155,4 +155,45 @@ public class Leaders {
 ```
 
 </JavaSection>
+<PySection>
+
+```py
+n = int(input())
+breeds = input()
+cows = [x - 1 for x in map(int, input().split())]
+
+first_guernsey = n
+last_guernsey = 0
+first_holstein = n
+last_holstein = 0
+res = 0
+
+for i in range(n):
+    if breeds[i] == 'G':
+        first_guernsey = min(first_guernsey, i)
+        last_guernsey = max(last_guernsey, i)
+    else:
+        first_holstein = min(first_holstein, i)
+        last_holstein = max(last_holstein, i)
+
+if cows[first_guernsey] >= last_guernsey:
+    for i in range(first_guernsey):
+        if i != first_holstein and breeds[i] == 'H' and cows[i] >= first_guernsey:
+            res += 1
+
+if cows[first_holstein] >= last_holstein:
+    for i in range(first_holstein):
+        if i != first_guernsey and breeds[i] == 'G' and cows[i] >= first_holstein:
+            res += 1
+
+if ((cows[first_guernsey] >= last_guernsey or
+        (first_guernsey <= first_holstein and cows[first_guernsey] >= first_holstein)) and
+    (cows[first_holstein] >= last_holstein or
+        (first_holstein <= first_guernsey and cows[first_holstein] >= first_guernsey))):
+    res += 1
+
+print(res)
+```
+
+</PySection>
 </LanguageSection>
