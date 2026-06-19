@@ -7,7 +7,24 @@ author: Rameez Parwez
 
 ## Explanation
 
--- in process
+For a cow to be a leader of its breed, it has to cover all cows of
+its breed or the leader of the other breed. Based on this intuition,
+the leader of the Guernseys must be the earliest Guernsey, or the
+leader of the Holsteins must be the earliest Holstein (or both).
+
+Once we confirm that the earliest Guernsey is the leader of the
+Guernseys by checking if it visited every other Guernsey, we search
+over all Holsteins that appear before the earliest Guernsey. A
+Holstein at position $i$ is a valid co-leader if it visits the
+Guernsey leader.
+
+Similarly, we perform the same operation with the earliest Holstein
+as leader, searching over all Guernseys that appear before it.
+
+Lastly, we separately check whether the earliest Guernsey and the
+earliest Holstein can both be valid leaders simultaneously. This
+case requires careful handling to avoid double-counting this pair
+in the two passes above.
 
 ## Implementation
 
