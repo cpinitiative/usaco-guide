@@ -89,31 +89,30 @@ public class ArrayDesc {
 		int N = Integer.parseInt(st.nextToken());
 		int M = Integer.parseInt(st.nextToken());
 
-		// DP[i][j] is the number of ways
-		// to make a valid array from 0 to i, if the ith value is j.
+		// dp[i][j] is the number of ways to fill the first i+1 elements
+		// of the array such that the i-th element equals j
 		int[][] dp = new int[N][M + 1];
 
-		// Process the first element in the array.
+		// base case: the first element is either fixed or free to be 1..M
 		StringTokenizer arr = new StringTokenizer(r.readLine());
 		int first = Integer.parseInt(arr.nextToken());
 
-		// The first element can be anything.
+		// if the first element is free, it may be any value from 1..M
 		if (first == 0) {
 			Arrays.fill(dp[0], 1);
 		} else {
-			// This is the only valid value.
+			// otherwise, the first element is fixed
 			dp[0][first] = 1;
 		}
 
 		for (int i = 1; i < N; i++) {
 			int A = Integer.parseInt(arr.nextToken());
-			// A free element.
+			// if this position is free, try all values 1..M
 			if (A == 0) {
 				for (int j = 1; j <= M; j++) {
 					int[] neighborVals = new int[] {j - 1, j, j + 1};
 					for (int k : neighborVals) {
-						// Number of values,
-						// where the previous value is in the valid range.
+						// j can be reached from j-1, j, or j+1 at the previous index
 						if (1 <= k && k <= M) {
 							dp[i][j] += dp[i - 1][k];
 							dp[i][j] %= MOD;
@@ -121,7 +120,8 @@ public class ArrayDesc {
 					}
 				}
 			} else {
-				// Find number of ways that the current value is valid.
+				// if this position is fixed to A,
+				// it can only be reached from A-1, A, or A+1
 				int[] neighborVals = new int[] {A - 1, A, A + 1};
 				for (int k : neighborVals) {
 					if (1 <= k && k <= M) {
@@ -132,7 +132,7 @@ public class ArrayDesc {
 			}
 		}
 
-		// Aggregate the dp values.
+		// sum over all possible values of the last element
 		int ans = 0;
 		for (int j = 1; j <= M; j++) {
 			ans += dp[N - 1][j];
