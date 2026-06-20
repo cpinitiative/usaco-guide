@@ -2,14 +2,12 @@
 id: usaco-419
 source: USACO Old Gold 2014 March
 title: Sabotage
-author: Sachet Abeysinghe, John Zhou
+author: Sachet Abeysinghe
 ---
 
 [Official Analysis (C++)](https://usaco.org/current/data/sol_sabotage.html)
 
-## Solution 1 (Binary Search, Prefix Sum, and Math)
-
-### Explanation
+## Explanation
 
 We can binary search on real values to find the minimum average $X$ we can achieve.
 
@@ -23,7 +21,13 @@ $$
 $$
 For a fixed $j$, we should try to minimize the left side expression. So we can iterate $j$ from $2$ to $N - 1$ and keep a running minimum of the left side of the inequality. If the condition is satisfied, we can achieve an average $\le X$.
 
-### Implementation
+<Info title="Note">
+
+If we pre-subtract each element in the inequality by the average $X$ we look for from the milk production array and compute its prefix sum, then we can reformulate the final inequality as a maximum subarray sum problem and use DP instead.
+
+</Info>
+
+## Implementation
 
 **Time Complexity:** $\mathcal{O}(N\log\left(\frac{1}{\varepsilon}\right))$, where $\varepsilon$ is the fixed error margin.
 
@@ -108,79 +112,4 @@ print(f"{l:.3f}", file=open("sabotage.out", "w"))
 ```
 
 </PySection>
-</LanguageSection>
-
-## Solution 2 (Binary Search, Maximum Sum Subarray with DP)
-
-As before, we can binary search on real values to find the minimum average $X$ we can achieve.
-
-Note that we now must find if a specific average is possible in $\mathcal O(n)$ time.
-However, the average is dependent on the number of stations that are not unplugged, which makes this difficult in $\mathcal O(n)$.
-But since we already know the target average, we can temporarily subtract each number in the list by the target average;
-now, the sign of the sum of a set of stations will tell us whether their average is equal to or below the target ($<=0$) or above the target ($>0$).
-
-To have the best chance at achieving the average, the sum of the remaining elements in the temporary array after the sabotage should be at a minimum;
-this means the sum of the sabotaged elements, a continuous range in $[2, n-1]$ should be at a maximum.
-
-The maximum continuous range in an list could be found using a standard DP algorithm:
-Let $K_i$ be the maximum sum of a range ending at index $2\leq i \leq N-1$.
-The transitions are $K_i=\max(K_{i-1}+M_i,M_i)$, as either a new range can be began at $i$, or a previous range may be continued.
-In this problem, we initialize $K_2=M_2$, as there can only be a 1-element array ending with index 2, and transition until $K_{N-1}$.
-The maximum subarray sum will be the maximum of all elements from $K_2$ to $K_{N-1}$.
-
-We check if the sum of the entire array minus the sum of the maximum subarray range is nonpositive, and if so, the check passes.
-
-### Implementation
-
-<LanguageSection>
-
-<CPPSection>
-
-```cpp
-#include <fstream>
-#include <iomanip>
-using namespace std;
-constexpr int MAX_N = 1e5;
-double M[MAX_N + 1];
-double diff[MAX_N + 1];
-double K[MAX_N + 1];
-int n;
-
-// Check whether an average is possible
-bool check(double x) {
-	double total = 0;
-	// Compute the temporary difference array
-	// and compute its total sum
-	for (int i = 1; i <= n; i++) {
-		diff[i] = M[i] - x;
-		total += diff[i];
-	}
-
-	// Compute each K[i] and find the maximum of the elements
-	K[2] = diff[2];
-	double max_sum = K[2];
-	for (int i = 3; i < n; i++) {
-		K[i] = max(K[i - 1] + diff[i], diff[i]);
-		max_sum = max(max_sum, K[i]);
-	}
-	return total - max_sum < 1e-6;
-}
-int main() {
-	ifstream fin("sabotage.in");
-	fin >> n;
-	for (int i = 1; i <= n; i++) fin >> M[i];
-	double l = 0, r = 10000;
-	while (l + 1e-4 < r) {
-		double mid = (l + r) / 2;
-		if (check(mid)) r = mid;
-		else l = mid;
-	}
-	ofstream fout("sabotage.out");
-	fout << fixed << setprecision(3) << l << endl;
-	return 0;
-}
-```
-
-</CPPSection>
-
 </LanguageSection>
