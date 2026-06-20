@@ -30,104 +30,19 @@ In hint $2$, what do you observe about the *change* in those times as the numbee
 
 ## Explanation
 
-To minimize time, each carrot should be cut into pieces of lengths that are as close together as possible, without any pair of lengths differing by more than $1$.
+The sum of squares of two numbers given a fixed sum is minimized when the two numbers are equal.
+If we extend that to this problem under each carrot, then they should be cut into pieces of lengths that are as close together as possible, without any pair of lengths differing by more than $1$.
 Specifically, if a carrot of length $l$ is cut into $t$ parts, there will be $t-l\bmod t$ of pieces with length $\lfloor\frac lt\rfloor$, and $l\bmod t$ pieces with length $\lfloor\frac lt\rfloor+1$.
 Let the time taken to eat these pieces be $f(l,p)$, which can be calculated in $\mathcal O(1)$ time.
-
-<Spoiler title = "Proof: Optimal lengths differ by at most 1">
-
-Suppose two pieces differ by at least $2$.  One can use another cut with $1$ more length to the smaller piece, and $1$ less length to the larger piece;
-this preserves the sum of the lengths, which also ensures that the other pieces' arrangements are not affected;
-in addition, this reduces the difference between the lengths.
-
-Let the old lengths of the carrots be $X$ and $Y$, and the new lengths of the carrots be $X'$ and $Y'$.
-Since $X+Y=X'+Y'$ and $\lvert X-Y\rvert > \lvert X'-Y'\rvert$, we have
-
-$$
-\begin{aligned}
-X^2 + Y^2 &= \frac{(X+Y)^2+(X-Y)^2}2 = \frac{(X'+Y')^2+(\lvert X-Y\rvert)^2}2 \\
-          &> \frac{(X'+Y')^2+(\lvert X'-Y'\rvert)^2}2 = (X')^2+(Y')^2.
-\end{aligned}
-$$
-
-The eating time for the $2$ segments is thus reduced; since other segments are unaffected, the overall time is reduced as well.
-
-</Spoiler>
-
-<Spoiler title = "Proof: Construction for f(l, p)">
-
-For cutting a specific $l$ into $t$ pieces, let the only possible lengths be $q$ and $q+1$, and let there be $c<t$ (if all are $q+1$, we may use $q+1$ as $q$ instead) segments of length $q+1$ and $t-c$ segments of length $q$;
-the total sum is $l$, so
-
-$$
-l=c(q+1)+(t-c)q
-$$
-
-which implies
-
-$$
-l = tq + c.
-$$
-
-Since $0\leq c<t$ and $c$, $t$, $q$ are integers, the
-[Euclidean Division Lemma](https://en.wikipedia.org/wiki/Euclidean_division#Division_theorem)
-directly implies the aforementioned construction.
-
-</Spoiler>
 
 Now, the problem reduces to deciding the number of cuts on each carrot.
 Inuititively, we guess that the more pieces we cut a carrot into, the more the total time gets smaller.
 And if we manually work out the time for each number of cuts, we see that the decrease in total time gets smaller as well.
 
-To roughly see why, assume that the cuts are perfectly even, allowing fractional lengths;
+To approximately see why, assume that the cuts are perfectly even, allowing fractional lengths;
 in that case, $f(l, t)\approx t(\frac lt)^2=\frac{l^2}t$.
 Note that since the function is in the form of $g(x)=\frac ax$, $f$ decreases and does so slower as $t$ increases;
 this means that when incrementing the number of cuts on a carrot, each incrementation will save time, but the saving will decrease as we go further.
-
-<Spoiler title = "Proof: More pieces equals less total time">
-
-Consider the arrangement produced during the calculation $f(l, t)$.
-Unless $t=l$, in which it is impossible to cut into $t+1$ pieces, there will be (at least) a piece in the cuts using $t$ with length $v>2$.
-Split a $1$ out from that piece; now, the cost to eat these two split pieces is
-
-$$
-(v-1)^2+1^2=v^2-2v+1+1=v^2-2v+2=v^2-2(v-1)\leq v^2.
-$$
-
-which is a reduction in time to eat.
-
-Let the sum of the time for the rest of the pieces be $S$.
-Now, the above may or may not be the best way to split $l$ into $t+1$, which is $f(l, t+1)$;
-thus we have
-
-$$
-f(l, t) = S + v^2 \geq S + (v-1)^2 + 1^2 \geq f(l, t+1)
-$$
-
-which proves our proposition.
-
-</Spoiler>
-
-<Spoiler title = "Proof: Reduction in time is smaller when increasing higher cuts">
-
-Formally, we must prove
-
-$$
-f(l, p-1) - f(l, p) \geq f(l, p) - f(l, p+1).
-$$
-
-Rearranging we get
-
-$$
-f(l, p-1) + f(l, p+1) \geq 2f(l, p) = f(2l, 2p).
-$$
-
-Here, $2f(l, p)=f(2l, 2p)$; this is because, as $2l$ and $2p$ are both even, there will be a cut in the middle of the carrot, and it is equivalent to cutting the already-cut pieces on the left and right side into half the number of cut fragments.
-
-Now, we use a similar logic on the left side; $f(l, p-1) + f(l, p+1)$ is a way to cut $2l$ into $2p$ as well, shown trivially if one simply glues the two carrots together.
-This means that it'll be larger than or equal to the optimum, $f(2l, 2p)$, proving our proposition.
-
-</Spoiler>
 
 This inspires a greedy solution;
 we have set carrots to be cut into $1$ segment initially (uncut), and precompute the decrease in time of that carrot if the number of cuts on it is increased by $1$.
@@ -135,8 +50,7 @@ We maintain a priority queue of carrots sorted by the change described above;
 for $k-n$ times, we take the carrot with the largest change value and increase its number of cuts by $1$.
 We then recompute the time of eating that carrot, and the change to that time if the number of cuts is *further* increased by $1$ before reenqueing the carrot.
 
-This is guaranteed to be optimal;
-as the returns are diminishing for each increase in the cuts, there cannot be a situation where picking a suboptimal cut first will result in better cuts later for a carrot.
+As the returns are diminishing for each increase in the cuts, there cannot be a situation where picking a suboptimal cut first will result in better cuts later for a carrot.
 
 ## Implementation
 
