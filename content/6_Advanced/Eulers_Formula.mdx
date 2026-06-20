@@ -30,7 +30,7 @@ This can also expanded to graphs that are not connected, to incorporate connecte
 		title="Planar Graphs"
 		url="https://mfleck.cs.illinois.edu/building-blocks/version-1.0/planargraphs.pdf"
 	/>
-	
+
 </Resources>
 
 ## Example 1
@@ -216,7 +216,7 @@ $$
 
 ### Applying Eulur's Formula
 
-Again, Eulur's formula states that $V - E + F = C + 1$, where $V$ is the number of vertices, $E$ is the number of edges, $F$ is the number of faces, and $C$ is the number of connected components. 
+Again, Eulur's formula states that $V - E + F = C + 1$, where $V$ is the number of vertices, $E$ is the number of edges, $F$ is the number of faces, and $C$ is the number of connected components.
 
 However, for the sake of this question, we are intrested in the number of faces $(F = E - V + C + 1)$ the graph has, which is the number of regions adjacent cells with the same colors. Thus, by calculating $V, E,$ and $C$ and using those values to supplement the formula, we obtain the answer.
 
@@ -224,7 +224,7 @@ Obtaining $V$ and $E$ are the most straightforward. For $V$, simply count the to
 
 ### Calculating $C$
 
-To calculate $C$, we can use an algorithm similair to [Rooms from the Romainian IOI 2017 Selection](https://csacademy.com/contest/romanian-ioi-2017-selection-1/task/rooms/statement/). For each connected component in the entire canvas, mark the top-left most vertex as critical. Then, let's use 2D prefix sums to count the number of critical vertices in the current sub-rectangle. 
+To calculate $C$, we can use an algorithm similair to [Rooms from the Romainian IOI 2017 Selection](https://csacademy.com/contest/romanian-ioi-2017-selection-1/task/rooms/statement/). For each connected component in the entire canvas, mark the top-left most vertex as critical. Then, let's use 2D prefix sums to count the number of critical vertices in the current sub-rectangle.
 
 This gives us a good estimate to the value of $C$, but we have to account for overcounting. Say some connected component's critical vertex exists in the current subrectangle, but the entire structure does not. This means that the component will have some vertex on the border of the subrectangle, implying it is not a unique connected component.
 
@@ -241,146 +241,143 @@ But wait how did we get $5$, if it only takes $4$ brushstrokes to paint these re
 using namespace std;
 #define int long long
 
-vector<array<int,2>> dir = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
+vector<array<int, 2>> dir = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
 
 signed main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    int n, m, q;
-    cin >> n >> m >> q;
+	int n, m, q;
+	cin >> n >> m >> q;
 
-    vector<vector<int>> grid(n + 2, vector<int> (m + 2)), pvert(n + 2, vector<int> (m + 2)), phorz(n + 2, vector<int> (m + 2)), pcrit(n + 2, vector<int> (m+2));
+	vector<vector<int>> grid(n + 2, vector<int>(m + 2)),
+	    pvert(n + 2, vector<int>(m + 2)), phorz(n + 2, vector<int>(m + 2)),
+	    pcrit(n + 2, vector<int>(m + 2));
 
-    for (int i = 0; i < n; i++) {
-        string s; cin >> s;
-        for (int j = 0; j < m; j++) {
-            grid[i][j] = s[j] - '0';
-        }
-    }
+	for (int i = 0; i < n; i++) {
+		string s;
+		cin >> s;
+		for (int j = 0; j < m; j++) { grid[i][j] = s[j] - '0'; }
+	}
 
-    vector<vector<array<int,2>>> critical(n + 2, vector<array<int,2>> (m + 2, {-1,-1}));
+	vector<vector<array<int, 2>>> critical(n + 2,
+	                                       vector<array<int, 2>>(m + 2, {-1, -1}));
 
+	// Transitions from vertex (i, j) to neighboring vertices
+	auto dfs = [&](auto &&self, int i, int j) -> void {
+		for (int d = 0; d < 4; d++) {
 
-    // Transitions from vertex (i, j) to neighboring vertices
-    auto dfs = [&] (auto&& self, int i, int j) -> void {
+			int ni = i + dir[d][0], nj = j + dir[d][1];
+			bool edge = false;
+			if (ni >= 0 and nj >= 0 and ni <= n and nj <= m) {
 
-        for (int d = 0; d < 4; d++) {
-             
-            int ni = i + dir[d][0], nj = j + dir[d][1];
-            bool edge = false;
-            if (ni >= 0 and nj >= 0 and ni <= n and nj <= m) {
-                
-                if (i + 1 == ni) edge = (j == 0 or grid[i][j] != grid[i][j - 1]);
-                else if (i - 1 == ni) edge = (j == 0 or grid[ni][j] != grid[ni][j - 1]);
-                else if (j + 1 == nj) edge = (i == 0 or grid[i][j] != grid[i-1][j]);
-                else if (j - 1 == nj) edge = (i == 0 or grid[i][nj] != grid[i-1][nj]);
-                
+				if (i + 1 == ni) edge = (j == 0 or grid[i][j] != grid[i][j - 1]);
+				else if (i - 1 == ni) edge = (j == 0 or grid[ni][j] != grid[ni][j - 1]);
+				else if (j + 1 == nj) edge = (i == 0 or grid[i][j] != grid[i - 1][j]);
+				else if (j - 1 == nj) edge = (i == 0 or grid[i][nj] != grid[i - 1][nj]);
+
 				// If there does exist an edge to (ni, nj)
-                if (edge) {
-                    if (ni == i + 1 and j != 0) pvert[ni][j] = 1;
-                    if (ni == i - 1 and j != 0) pvert[i][j] = 1;
-                    if (nj == j + 1 and i != 0) phorz[i][nj] = 1;
-                    if (nj == j - 1 and i != 0) phorz[i][j] = 1;
-                    
-                    if (critical[ni][nj][0] == -1) {
-                        critical[ni][nj] = critical[i][j];
-                        self(self, ni, nj);
-                    }
-                }
-               
-            }
-            
-         
-        }
-        
-    };
+				if (edge) {
+					if (ni == i + 1 and j != 0) pvert[ni][j] = 1;
+					if (ni == i - 1 and j != 0) pvert[i][j] = 1;
+					if (nj == j + 1 and i != 0) phorz[i][nj] = 1;
+					if (nj == j - 1 and i != 0) phorz[i][j] = 1;
 
-    // Run DFS through the grid to find all the connected componenets and mark them
-    for (int i = 0; i < n + 1; i++) {
-        for (int j = 0; j < m + 1; j++) {
-            if (critical[i][j][0] == -1) {
-                critical[i][j] = {i, j};
-                pcrit[i][j] = 1;
-                dfs(dfs, i, j);
-            }
-        }
-    }
+					if (critical[ni][nj][0] == -1) {
+						critical[ni][nj] = critical[i][j];
+						self(self, ni, nj);
+					}
+				}
+			}
+		}
+	};
 
+	// Run DFS through the grid to find all the connected componenets and mark them
+	for (int i = 0; i < n + 1; i++) {
+		for (int j = 0; j < m + 1; j++) {
+			if (critical[i][j][0] == -1) {
+				critical[i][j] = {i, j};
+				pcrit[i][j] = 1;
+				dfs(dfs, i, j);
+			}
+		}
+	}
 
-    // Set up prefix arrays for edges and special vertices
-    for (int i = 0; i < n + 1; i++) {
-        for (int j = 0; j < m + 1; j++) {
-            pcrit[i][j] += ((i < 1) ? 0 : pcrit[i-1][j]) + ((j < 1) ? 0 : pcrit[i][j-1]) - ((i < 1 or j < 1) ? 0 : pcrit[i-1][j-1]);
-            pvert[i][j] += ((i < 1) ? 0 : pvert[i-1][j]) + ((j < 1) ? 0 : pvert[i][j-1]) - ((i < 1 or j < 1) ? 0 : pvert[i-1][j-1]);
-            phorz[i][j] += ((i < 1) ? 0 : phorz[i-1][j]) + ((j < 1) ? 0 : phorz[i][j-1]) - ((i < 1 or j < 1) ? 0 : phorz[i-1][j-1]);
-        }
-    }
+	// Set up prefix arrays for edges and special vertices
+	for (int i = 0; i < n + 1; i++) {
+		for (int j = 0; j < m + 1; j++) {
+			pcrit[i][j] += ((i < 1) ? 0 : pcrit[i - 1][j]) +
+			               ((j < 1) ? 0 : pcrit[i][j - 1]) -
+			               ((i < 1 or j < 1) ? 0 : pcrit[i - 1][j - 1]);
+			pvert[i][j] += ((i < 1) ? 0 : pvert[i - 1][j]) +
+			               ((j < 1) ? 0 : pvert[i][j - 1]) -
+			               ((i < 1 or j < 1) ? 0 : pvert[i - 1][j - 1]);
+			phorz[i][j] += ((i < 1) ? 0 : phorz[i - 1][j]) +
+			               ((j < 1) ? 0 : phorz[i][j - 1]) -
+			               ((i < 1 or j < 1) ? 0 : phorz[i - 1][j - 1]);
+		}
+	}
 
+	vector<vector<bool>> deleted(n + 5, vector<bool>(m + 5));
+	queue<array<int, 2>> to_add;
 
-    vector<vector<bool>> deleted(n + 5, vector<bool> (m + 5));
-    queue<array<int,2>> to_add;
-
-    auto calc_region = [&](vector<vector<int>>& v, int x1, int x2, int y1, int y2) -> int {
-        return v[x2][y2] - ((y1 >= 0) ? v[x2][y1] : 0) - ((x1 >= 0) ? v[x1][y2] : 0) + ((x1 >= 0 and y1 >= 0) ? v[x1][y1] : 0);
-    };
+	auto calc_region = [&](vector<vector<int>> &v, int x1, int x2, int y1,
+	                       int y2) -> int {
+		return v[x2][y2] - ((y1 >= 0) ? v[x2][y1] : 0) - ((x1 >= 0) ? v[x1][y2] : 0) +
+		       ((x1 >= 0 and y1 >= 0) ? v[x1][y1] : 0);
+	};
 
 	// Checks whether the critical vert. is in the region
 	// and removes it from the answer if possible
-    auto check_vertice = [&](int x, int y, int x1, int x2, int y1, int y2) -> bool {
-        int crit_x = critical[x][y][0];
-        int crit_y = critical[x][y][1];
-        if (crit_x >= x1 and crit_x <= x2 and crit_y >= y1 and crit_y <= y2 and !deleted[crit_x][crit_y]) {
-            deleted[crit_x][crit_y] = true;
-            to_add.push({crit_x, crit_y});
-            return true;
-        }
-        return false;
-    };
+	auto check_vertice = [&](int x, int y, int x1, int x2, int y1, int y2) -> bool {
+		int crit_x = critical[x][y][0];
+		int crit_y = critical[x][y][1];
+		if (crit_x >= x1 and crit_x <= x2 and crit_y >= y1 and crit_y <= y2 and
+		    !deleted[crit_x][crit_y]) {
+			deleted[crit_x][crit_y] = true;
+			to_add.push({crit_x, crit_y});
+			return true;
+		}
+		return false;
+	};
 
+	while (q--) {
+		int x1, y1, x2, y2;
+		cin >> x1 >> y1 >> x2 >> y2;
+		if (x1 > x2) swap(x1, x2);
+		if (y1 > y2) swap(y1, y2);
+		x1--, y1--;
 
-    while (q--) {
-        int x1, y1, x2, y2;
-        cin >> x1 >> y1 >> x2 >> y2;
-        if (x1 > x2) swap(x1, x2);
-        if (y1 > y2) swap(y1, y2);
-        x1--, y1--;
-
-        // Calculating E and V
-        int v = (x2 - x1 + 1) * (y2 - y1 + 1);
-        int e = calc_region(pvert, x1, x2, y1, y2 - 1) + calc_region(phorz, x1, x2 - 1, y1, y2);
-        e += 2 * (x2 - x1) + 2 * (y2 - y1);
-        
+		// Calculating E and V
+		int v = (x2 - x1 + 1) * (y2 - y1 + 1);
+		int e = calc_region(pvert, x1, x2, y1, y2 - 1) +
+		        calc_region(phorz, x1, x2 - 1, y1, y2);
+		e += 2 * (x2 - x1) + 2 * (y2 - y1);
 
 		// Calculating C
 
-        int c = calc_region(pcrit, x1 - 1, x2, y1 - 1, y2); 
-        
-        for (int i = x1; i <= x2; i++) {
-            c -= check_vertice(i, y1, x1, x2, y1, y2);
-            c -= check_vertice(i, y2, x1, x2, y1, y2);
-        }
+		int c = calc_region(pcrit, x1 - 1, x2, y1 - 1, y2);
 
+		for (int i = x1; i <= x2; i++) {
+			c -= check_vertice(i, y1, x1, x2, y1, y2);
+			c -= check_vertice(i, y2, x1, x2, y1, y2);
+		}
 
-        for (int j = y1; j <= y2; j++) {
-            c -= check_vertice(x1, j, x1, x2, y1, y2);
-            c -= check_vertice(x2, j, x1, x2, y1, y2);
-        }
+		for (int j = y1; j <= y2; j++) {
+			c -= check_vertice(x1, j, x1, x2, y1, y2);
+			c -= check_vertice(x2, j, x1, x2, y1, y2);
+		}
 
+		while (!to_add.empty()) {
+			auto point = to_add.front();
+			to_add.pop();
+			deleted[point[0]][point[1]] = false;
+		}
 
-        while (!to_add.empty()) {
-            auto point = to_add.front();
-            to_add.pop();
-            deleted[point[0]][point[1]] = false;
-        }
-		
 		// Use Eulur's formula to calculate query answer
-        cout << e - v + c + 1 << '\n';
-    }
-
+		cout << e - v + c + 1 << '\n';
+	}
 }
-
-
 ```
 
 ## Problems
