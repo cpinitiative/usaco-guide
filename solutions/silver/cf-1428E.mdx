@@ -60,43 +60,44 @@ As the returns are diminishing for each increase in the cuts, there cannot be a 
 <CPPSection>
 
 ```cpp
-#include <queue>
-#include <iostream>
 #include <array>
+#include <iostream>
+#include <queue>
 using namespace std;
 
 int main() {
-    int n, k;
-    cin >> n >> k;
+	int n, k;
+	cin >> n >> k;
 
-    // The priority queue for tracking.
-    // The elements are in the form of {diff, length, cuts},
-    // where diff is the difference in time if cuts is increased by 1.
-    priority_queue<array<long long, 3>> carrots;
+	// The priority queue for tracking.
+	// The elements are in the form of {diff, length, cuts},
+	// where diff is the difference in time if cuts is increased by 1.
+	priority_queue<array<long long, 3>> carrots;
 
-    // Calculate the cost given length of carrot and number of cuts.
-    auto cost = [&](int length, int cuts) -> long long {
-        long long avg = length / cuts;
-        return 1ll * avg * avg * (cuts - length % cuts)
-             + 1ll * (avg + 1) * (avg + 1) * (length % cuts);
-    };
+	// Calculate the cost given length of carrot and number of cuts.
+	auto cost = [&](int length, int cuts) -> long long {
+		long long avg = length / cuts;
+		return 1ll * avg * avg * (cuts - length % cuts) +
+		       1ll * (avg + 1) * (avg + 1) * (length % cuts);
+	};
 
-    long long ans = 0;
-    for (int i = 0; i < n; i++) {
-        int a;
-        cin >> a;
-        ans += 1ll * a * a;
-        carrots.push({cost(a, 1) - cost(a, 2), a, 1});
-    }
+	long long ans = 0;
+	for (int i = 0; i < n; i++) {
+		int a;
+		cin >> a;
+		ans += 1ll * a * a;
+		carrots.push({cost(a, 1) - cost(a, 2), a, 1});
+	}
 
-    for (int i = 0; i < k - n; i++) {
-        auto [diff, length, cuts] = carrots.top();
-        carrots.pop();
-        ans -= diff;
-        carrots.push({cost(length, cuts + 1) - cost(length, cuts + 2), length, cuts + 1});
-    }
+	for (int i = 0; i < k - n; i++) {
+		auto [diff, length, cuts] = carrots.top();
+		carrots.pop();
+		ans -= diff;
+		carrots.push(
+		    {cost(length, cuts + 1) - cost(length, cuts + 2), length, cuts + 1});
+	}
 
-    cout << ans << '\n';
+	cout << ans << '\n';
 }
 ```
 
