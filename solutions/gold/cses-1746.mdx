@@ -32,41 +32,42 @@ We compute the final answer by summing $dp[n][j]$ over all $j$ from $1$ to $m$.
 #include <bits/stdc++.h>
 using namespace std;
 
+using ll = long long;
 const int MOD = 1e9 + 7;
 
 int main() {
 	int n, m;
 	cin >> n >> m;
 
-	vector<int> a(n);
-	for (int i = 0; i < n; i++) { cin >> a[i]; }
+	vector<int> values(n+1);
+	for (int i = 1; i <= n; i++) { cin >> values[i]; }
 
-	// dp[i][j] is the number of ways to fill the first i elements
-	// of the array such that the i-th element equals j
-	vector<vector<long long>> dp(n + 1, vector<long long>(m + 2, 0));
+	// dp[position][value] is the number of ways to fill the first "position" elements
+	// of the array such that the element at "position" equals value
+	vector<vector<ll>> dp(n + 1, vector<ll>(m + 1));
 
 	// base case: the first element is either fixed or free to be 1..m
-	if (a[0] == 0) {
+	if (values[1] == 0) {
 		for (int j = 1; j <= m; j++) { dp[1][j] = 1; }
 	} else {
-		dp[1][a[0]] = 1;
+		dp[1][values[1]] = 1;
 	}
 
-	for (int i = 2; i <= n; i++) {
-		int curr = a[i - 1];
-		for (int j = 1; j <= m; j++) {
+	for (int position = 2; position <= n; position++) {
+		int fixed_value = values[position];
+		for (int val = 1; val <= m; val++) {
 			// if this position is fixed and doesn't match j, it's unreachable
-			if (curr != 0 && curr != j) continue;
+			if (fixed_value != 0 && fixed_value != val) continue;
 
 			// otherwise, j can be reached from j-1, j, or j+1 at the previous index
-			dp[i][j] = dp[i - 1][j];
-			if (j - 1 >= 1) dp[i][j] += dp[i - 1][j - 1];
-			if (j + 1 <= m) dp[i][j] += dp[i - 1][j + 1];
-			dp[i][j] %= MOD;
+			dp[position][val] = dp[position - 1][val];
+			if (val - 1 >= 1) dp[position][val] += dp[position - 1][val - 1];
+			if (val + 1 <= m) dp[position][val] += dp[position - 1][val + 1];
+			dp[position][val] %= MOD;
 		}
 	}
 
-	long long ans = 0;
+	ll ans = 0;
 	for (int j = 1; j <= m; j++) { ans = (ans + dp[n][j]) % MOD; }
 
 	cout << ans << '\n';
