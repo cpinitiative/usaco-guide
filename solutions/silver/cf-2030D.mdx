@@ -12,26 +12,26 @@ author: Abhinav Singh
 A value can cross the gap between position $k$ and position $k+1$ to the right if $s_k = R$, and to the left if $s_{k+1} = L$.
 As long as a gap stays open, values can keep crossing it back and forth in either direction, so any sequence of swaps across
 open gaps can be rearranged into any other order without changing which values end up where. So, the order of swaps doesn't
-matter: whether a value can move from one position to another depends only on $s$, and the problem reduces to a static
-question - for each value, is its required path through $s$ unobstructed?
+matter: whether a value can move from one position to another depends only on $s$, which reduces to checking if the required
+path is obstructed.
 
-The gap is impassable only when $s_k = L$ and $s_{k+1} = R$ hold simultaneously: call this a **bad gap**. Bad gaps split
+The gap is impassable only when $s_k = L$ and $s_{k+1} = R$, which we define as a **bad gap**. Bad gaps split
 the array into maximal intervals where every two adjacent positions are freely swappable, so within one such
 interval, the values can be rearranged into any order.
 
 For each value $v$, let $pos$ be its current position in $p$. For $p$ to become sorted, $v$ must end up at position
 $v$, so it must travel from $pos$ to $v$, crossing every gap strictly between $\min(pos, v)$ and $\max(pos, v)$.
-Another way of saying this is that $pos$ and $v$ must lie in the same interval - there can be no bad gaps
+Another way of saying this is that $pos$ and $v$ must lie in the same interval, meaning that there are no bad gaps
 between $pos$ and $v$ for all values of $v$.
 
-Each value's range $[\min(pos,v), \max(pos,v)]$ marks the gaps it depends on. Build a difference array: add $1$
-at $\min(pos,v)$ and subtract $1$ at $\max(pos,v)$ for each value $v$. After taking prefix sums, any gap with a
-positive value is required by at least one value: call this an **important** gap. An **important** gap can't be
+Each value's range $[\min(pos,v), \max(pos,v)]$ marks the gaps it depends on. We construct a difference array, adding $1$
+at $\min(pos,v)$ and subtracting $1$ at $\max(pos,v)$ for each value $v$. After taking prefix sums, any gap with a
+positive value is required by at least one value. We define such gaps as **important** gaps. An important gap can't be
 ignored since some value $v$ needs to cross it to reach its desired position. All other gaps can be
 ignored, regardless of whether they are bad.
 
 Only important gaps matter, since those are the only gaps that can block sorting. Maintain a counter, `bad`,
-for how many important gaps are currently bad - the answer is YES exactly when `bad` equals zero. A query
+for how many important gaps are currently bad, with the answer being YES when `bad` equals zero. A query
 at index $i$ only affects gap $i-1$ and gap $i$, since those are the only two gaps involving $s_i$,
 so we can update `bad` directly.
 
@@ -57,6 +57,7 @@ int main() {
 			cin >> p[i];
 			pos[p[i]] = i;
 		}
+
 		string s;
 		cin >> s;
 		s = " " + s;  // 1-index s
@@ -68,6 +69,7 @@ int main() {
 			d[lo]++;
 			d[hi]--;
 		}
+
 		for (int k = 1; k <= n - 1; k++) {
 			d[k] += d[k - 1];  // d[k] > 0 means gap k is important
 		}
@@ -83,15 +85,18 @@ int main() {
 		while (q--) {
 			int i;
 			cin >> i;
+
 			// only gaps i-1 and i can change "bad-ness" when s[i] flips
 			for (int k : {i - 1, i}) {
 				if (k >= 1 && k <= n - 1 && d[k] > 0 && is_bad(k)) { bad--; }
 			}
+
 			s[i] = (s[i] == 'L') ? 'R' : 'L';
 			for (int k : {i - 1, i}) {
 				if (k >= 1 && k <= n - 1 && d[k] > 0 && is_bad(k)) { bad++; }
 			}
-			cout << (bad == 0 ? "YES" : "NO") << "\n";
+
+			cout << (bad == 0 ? "YES" : "NO") << '\n';
 		}
 	}
 }
