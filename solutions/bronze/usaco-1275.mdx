@@ -62,7 +62,14 @@ int main() {
 		}
 	}
 
+    // check whether first_guernsey is the leader or not
 	if (cows[first_guernsey] >= last_guernsey) {
+
+        /*
+         * with first_guernsey as the leader,
+         * check which holstein (other than first_holstein) is a valid
+         * co-leader by visiting guernsey's leader
+         */
 		for (int i = 0; i < first_guernsey; i++) {
 			if (i != first_holstein && breeds[i] == 'H' && cows[i] >= first_guernsey) {
 				res++;
@@ -70,14 +77,23 @@ int main() {
 		}
 	}
 
+    // check whether first_holstein is the leader or not
 	if (cows[first_holstein] >= last_holstein) {
+
+        /*
+         * with first_holstein as the leader,
+         * check which guernsey (other than first_guernsey) is a valid
+         * co-leader by visiting holstein's leader
+         */
 		for (int i = 0; i < first_holstein; i++) {
 			if (i != first_guernsey && breeds[i] == 'G' && cows[i] >= first_holstein) {
-				res++;
+				res++; 
 			}
 		}
 	}
 
+    // check whether the earliest Guernsey and the
+    // earliest Holstein can both be valid leaders simultaneously
 	if ((cows[first_guernsey] >= last_guernsey ||
 	     (first_guernsey <= first_holstein &&
 	      cows[first_guernsey] >= first_holstein)) &&
