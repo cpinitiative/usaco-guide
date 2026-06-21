@@ -212,16 +212,32 @@ for i in range(n):
 		first_holstein = min(first_holstein, i)
 		last_holstein = max(last_holstein, i)
 
+# check whether first_guernsey is the leader or not
 if cows[first_guernsey] >= last_guernsey:
-	for i in range(first_guernsey):
-		if i != first_holstein and breeds[i] == "H" and cows[i] >= first_guernsey:
-			res += 1
 
+    """
+    with first_guernsey as the leader,
+    check which holstein (other than first_holstein) is a valid
+    co-leader by visiting guernsey's leader
+    """   
+    for i in range(first_guernsey):
+        if i != first_holstein and breeds[i] == 'H' and cows[i] >= first_guernsey:
+            res += 1
+
+# check whether first_holstein is the leader or not
 if cows[first_holstein] >= last_holstein:
-	for i in range(first_holstein):
-		if i != first_guernsey and breeds[i] == "G" and cows[i] >= first_holstein:
-			res += 1
 
+    """
+    with first_holstein as the leader,
+    check which guernsey (other than first_guernsey) is a valid
+    co-leader by visiting holstein's leader
+    """
+    for i in range(first_holstein):
+        if i != first_guernsey and breeds[i] == 'G' and cows[i] >= first_holstein:
+            res += 1
+
+# check whether the earliest Guernsey and the
+# earliest Holstein can both be valid leaders simultaneously
 if (
 	cows[first_guernsey] >= last_guernsey
 	or (first_guernsey <= first_holstein and cows[first_guernsey] >= first_holstein)
