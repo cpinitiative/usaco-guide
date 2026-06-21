@@ -15,13 +15,13 @@ We begin by initializing a $\texttt{dp}$ array, where $\texttt{dp}[i][j]$ is the
 
 This means we initialize the $\texttt{dp}$ array as follows. Initialize $\texttt{dp}[i][0],$ where $i$ is the length of the prefix in $\texttt{str1}$, to be $i$ because it takes a minimum of $i$ deletions to convert the first $i$ characters into the first $0$ characters of $\texttt{str2}$ (an empty string). Similarly, initialize $\texttt{dp}[0][j],$ where $j$ is the length of the prefix in $\texttt{str2}$, to be $j$ because it takes $j$ insertions to convert the first $0$ characters of $\texttt{str1}$ (also an empty string) into the first $j$ characters of $\texttt{str2}$.
 
-Now that we have initialized our $\texttt{dp}$ array, we can move onto the $\texttt{dp}[i][j]$ transition. The options we have are to delete, insert, or replace a character from $\texttt{str1}$, or do nothing if the current characters are already equal. 
+Now that we have initialized our $\texttt{dp}$ array, we can move onto the $\texttt{dp}[i][j]$ transition. The options we have are to delete, insert, or replace a character from $\texttt{str1}$, or do nothing if the current characters are already equal.
 
 When we delete a character, we convert $\texttt{str1}[:i-1]$ into $\texttt{str2}[:j]$, and then delete $\texttt{str1}[i-1]$. Therefore, this means that, if the last operation is a deletion, $\texttt{dp}[i][j]$ is equal to $\texttt{dp}[i - 1][j] + 1$, where the extra $1$ is the cost of the delete operation.
 
 When we insert a character, we effectively convert $\texttt{str1}[:i]$ into $\texttt{str2}[:j-1]$, and then insert $\texttt{str2}[j-1]$. So, $\texttt{dp}[i][j]$ is equal to $\texttt{dp}[i][j-1] + 1$, where the extra $1$ is the cost of the insert operation.
 
-Finally, when we replace a character, we essentially convert $\texttt{str1}[:i-1]$ into $\texttt{str2}[:j-1]$, then handle the last character. If $\texttt{str1}[i-1]$ and $\texttt{str2}[j-1]$ are different, then that counts as a replacement operation. So, the replacement operation can be represented compactly as 
+Finally, when we replace a character, we essentially convert $\texttt{str1}[:i-1]$ into $\texttt{str2}[:j-1]$, then handle the last character. If $\texttt{str1}[i-1]$ and $\texttt{str2}[j-1]$ are different, then that counts as a replacement operation. So, the replacement operation can be represented compactly as
 
 $$
 \texttt{dp}[i][j] = \texttt{dp}[i - 1][j - 1] + (\texttt{str1}[i - 1] \neq \texttt{str2}[j - 1]),
@@ -29,7 +29,7 @@ $$
 
 where $\texttt{str1}[i - 1] \neq \texttt{str2}[j - 1]$ is only $1$ when we actually need to replace the letter.
 
-Combining the transition for each operation, the minimum number of edits required to convert the first $i$ characters in $\texttt{str1}$ into the first $j$ characters of $\texttt{str2}$ is 
+Combining the transition for each operation, the minimum number of edits required to convert the first $i$ characters in $\texttt{str1}$ into the first $j$ characters of $\texttt{str2}$ is
 
 $$
 \texttt{dp}[i][j] = \min(\texttt{dp}[i - 1][j] + 1,~\texttt{dp}[i][j-1] + 1,~\texttt{dp}[i - 1][j - 1] + (\texttt{str1}[i - 1] \neq \texttt{str2}[j - 1])).
@@ -145,21 +145,23 @@ str1 = input()
 str2 = input()
 
 # dp[i][j] = minimum number of edits to convert
-dp = [[0]*(len(str2)+1) for _ in range(len(str1)+1)] 
+dp = [[0] * (len(str2) + 1) for _ in range(len(str1) + 1)]
 
 # i edits needed to convert first i chars of string 1 into empty string
-for i in range(len(str1)+1): dp[i][0] = i
+for i in range(len(str1) + 1):
+	dp[i][0] = i
 # j edits needed to convert empty string to first j chars of string 2
-for j in range(len(str2)+1): dp[0][j] = j
+for j in range(len(str2) + 1):
+	dp[0][j] = j
 
-for i in range(1, len(str1)+1):
-    for j in range(1, len(str2)+1): 
+for i in range(1, len(str1) + 1):
+	for j in range(1, len(str2) + 1):
 		# dp of deleting, inserting, or substituting a char
-        dp[i][j] = min(
-            dp[i - 1][j] + 1,
-            dp[i][j - 1] + 1,
-            dp[i - 1][j - 1] + (str1[i - 1] != str2[j - 1])
-        )
+		dp[i][j] = min(
+			dp[i - 1][j] + 1,
+			dp[i][j - 1] + 1,
+			dp[i - 1][j - 1] + (str1[i - 1] != str2[j - 1]),
+		)
 
 print(dp[len(str1)][len(str2)])
 ```
