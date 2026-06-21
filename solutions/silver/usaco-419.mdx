@@ -21,9 +21,11 @@ $$
 $$
 For a fixed $j$, we should try to minimize the left side expression. So we can iterate $j$ from $2$ to $N - 1$ and keep a running minimum of the left side of the inequality. If the condition is satisfied, we can achieve an average $\le X$.
 
-<Info title="Note">
+<Info>
 
-If we pre-subtract each element in the inequality by the average $X$ we look for from the milk production array and compute its prefix sum, then we can reformulate the final inequality as a maximum subarray sum problem and use DP instead.
+Alternatively, one may subtract the average $X$ being verified from each value in $M$, resulting in an array where the average of a set in $M$ is smaller than or equal to $X$ if and only if the sum of the corresponding set in the modified array is less than or equal to $0$. This means that the maximum subarray sum of the modified array except the first and last elements is desired to minimize the average of the modified sum of the remaining elements, obtained using a greedy method.
+
+To see how this is equivalent to the main approach, note that that the sum of $[l, r]$ in the modified array is the sum in the original array minus $X\cdot (r-l+1)$.  Using this to rewrite the prefix sum array and thus the last equation in the main solution will result the same optimization goal.
 
 </Info>
 
