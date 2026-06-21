@@ -15,7 +15,10 @@ Let's define $dp[i][j]$ as the number of ways to fill the first $i$ elements of 
 Base case: if $x_1 = 0$, then the first element is unknown and can be anything from $1$ to $m$, so $dp[1][j] = 1$ for all $j$. Otherwise, the first element is fixed, so $dp[1][x_1] = 1$ and all other $dp[1][j] = 0$.
 
 For $i > 1$, since adjacent elements differ by at most $1$, $a_i = j$ is possibly only if $a_{i-1}$ is $j-1$, $j$, or $j+1$:
-$$dp[i][j] = dp[i-1][j-1] + dp[i-1][j] + dp[i-1][j+1]$$
+
+$$
+dp[i][j] = dp[i-1][j-1] + dp[i-1][j] + dp[i-1][j+1]
+$$
 
 We can use the same idea seen in [Grid Paths](https://cses.fi/problemset/task/1638), where a trap cell forces $dp[x][y] = 0$ since no path can end there. Then, we set $dp[i][j] = 0$ whenever index $i$ is fixed to a value other than $j$, since no valid array can have $a_i = j$ in that case.
 
