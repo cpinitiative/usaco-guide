@@ -9,8 +9,7 @@ author: Abhinav Singh, Andrew Wang, Sofia Yang
 
 ## Explanation
 
-
-Let's define $dp[i][j]$ as the number of ways to fill the first $i$ elements of the array, such that $a_i = j$.
+Let's define $\text{dp}[i][j]$ as the number of ways to fill the first $i$ elements of the array, such that $a_i = j$.
 
 Base case: if $x_1 = 0$, then the first element is unknown and can be anything from $1$ to $m$, so $dp[1][j] = 1$ for all $j$. Otherwise, the first element is fixed, so $dp[1][x_1] = 1$ and all other $dp[1][j] = 0$.
 
@@ -60,12 +59,12 @@ int main() {
 		int fixed_value = values[position];
 		for (int val = 1; val <= m; val++) {
 			// if this position is fixed and doesn't match j, it's unreachable
-			if (fixed_value != 0 && fixed_value != val) continue;
+			if (fixed_value != 0 && fixed_value != val) { continue; }
 
 			// otherwise, j can be reached from j-1, j, or j+1 at the previous index
 			dp[position][val] = dp[position - 1][val];
-			if (val - 1 >= 1) dp[position][val] += dp[position - 1][val - 1];
-			if (val + 1 <= m) dp[position][val] += dp[position - 1][val + 1];
+			if (val - 1 >= 1) { dp[position][val] += dp[position - 1][val - 1]; }
+			if (val + 1 <= m) { dp[position][val] += dp[position - 1][val + 1]; }
 			dp[position][val] %= MOD;
 		}
 	}
