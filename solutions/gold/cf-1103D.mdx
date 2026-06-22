@@ -1,0 +1,378 @@
+---
+id: cf-1103D
+source: CF
+title: Cardbluff
+author: Abhinav Singh
+---
+
+[Official Analysis](https://codeforces.com/blog/entry/63586)
+
+<Spoiler title="Hint 1">
+
+The final gcd can only be affected by primes that currently divide $\gcd(a_1, \ldots, a_n)$. How many such primes can there be?
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Since there are at most 11 target primes, represent the set of primes a judge can "clear" in one game as a bitmask. What's the minimum divisor needed to clear a specific subset of primes from a judge's value?
+
+</Spoiler>
+
+<Spoiler title="Hint 3">
+
+The cost function is $x \cdot y$ (count × sum), so you need to track both the number of judges used and the total experience. Think about why a 1D DP over masks isn't enough, and what two-dimensional state you need.
+
+</Spoiler>
+
+<Spoiler title="Hint 4">
+
+With $n$ up to $10^6$, running the DP once per judge is too slow. Two judges are completely interchangeable in the DP if they offer the same set of "maximal achievable masks." How can you collapse $10^6$ judges down to a tiny set?
+
+</Spoiler>
+
+## Explanation
+
+Our first key observation is that the only way that the final $\gcd$ can remain $> 1$ is if some prime $p$ divides every $a_i$. So the only primes that can block us are those dividing $g = \gcd(a_1, \ldots, a_n)$.
+
+**This means we can ignore all the other primes.** Any prime not dividing $g$ already fails to divide some $a_i$, so it can never contribute to the final $\gcd$ no matter what we do.
+
+If $g = 1$ already, output $0$ immediately, since no games needed.
+
+Otherwise, factor $g$, and let $m$ be the number of distinct prime factors of $g$. Let $\text{primes}[0], \ldots, \text{primes}[m-1]$ denote each of the $m$ prime factors. 
+We note that $m \leq 11$, since the product of the first 12 primes exceeds $10^{12}$:
+
+$$
+2 \cdot 3 \cdot 5 \cdot 7 \cdot 11 \cdot 13 \cdot 17 \cdot 19 \cdot 23 \cdot 29 \cdot 31 \cdot 37 > 10^{12}
+$$
+
+Since $g \mid a_i$ for all $i$, every prime in $\text{primes}$ divides every $a_i$. However, "divides" and "can remove in one game" are different things.
+
+Define $\text{pw}[j]$ for judge $i$ as the **full prime power** of $\text{primes}[j]$ in $a_i$:
+
+$$
+\text{pw}[j] = p_j^{v_{p_j}(a_i)}, \quad p_j = \text{primes}[j]
+$$
+
+For example: $a_i = 12 = 2^2 \cdot 3$, $\text{primes}[j] = 2$ → $\text{pw}[j] = 4$.
+
+Therefore:
+- To clear prime $j$ from judge $i$, you need divisor $d$ with $\text{pw}[j] \mid d$, i.e. $d \geq \text{pw}[j]$.
+- To clear a subset $S$ of primes simultaneously, you need $d$ divisible by all $\text{pw}[j]$ for $j \in S$. Since the target primes are distinct, these are coprime, so the minimum such $d$ is $\prod_{j \in S} \text{pw}[j]$.
+
+If this product exceeds $k$, the subset $S$ is impossible for this judge in one game.
+
+### Step 1: Reformulating the Problem Using Bitmasks
+
+Since $m \leq 11$, represent subsets of target primes as bitmasks (bit $j$ being toggled = $\text{primes}[j]$ is in the subset).
+
+For each judge $i$ and bitmask $s$, the minimum divisor to clear subset $s$ in one game is:
+
+$$
+\text{prod}[s] = \prod_{j \in s} \text{pw}[j]
+$$
+
+If $\text{prod}[s] \leq k$, judge $i$ can clear all primes in $s$ in a single game.
+
+**So the problem reduces to choosing a set of judges such that the union of their cleared prime sets equals all $m$ target primes 
+$(\text{full} = (1 \ll m) - 1)$, minimizing $(\text{count}) \times (\text{sum of experience})$. This is the key simplification.**
+
+### Step 2: Efficient Subset-Product Computation
+
+Computing $\text{prod}[s]$ naively for each subset is $O(2^m \cdot m)$ per judge. But we can optimise our code to compute it in $O(2^m)$: 
+
+For each $s$, let $j$ be the index of the lowest set bit, then 
+$\text{prod}[s] = \text{prod}[s \text{ with bit } j \text{ cleared}] \times \text{pw}[j]$.
+Since we iterate $s$ upward from $1$, the smaller subset is always already computed.
+
+```cpp
+prod[0] = 1;
+for (int s = 1; s < full; ++s) {
+    int j = __builtin_ctz(s);         // index of lowest set bit
+    ll prev = prod[s ^ (s & -s)];     // prod[s without lowest bit]
+    prod[s] = (prev > k / pw[j]) ? (k + 1) : prev * pw[j];
+}
+```
+
+**Overflow guard:** Both `prev` and `pw[j]` can reach $10^{12}$, so their product may overflow `long long`. Instead of computing the product, check `prev > k / pw[j]` first. 
+If the product exceeds $k$, store a sentinel value `k+1`. 
+
+### Step 3: Maximal Achievable Masks (Pruning)
+
+For a given judge, many affordable subsets are dominated. If subset $s$ is affordable and some strict superset $s' \supset s$ is also affordable, 
+there's never any reason to clear just $s$: you could clear $s'$ instead for the same cost (same game, same judge, same experience $e_i$), getting strictly more coverage.
+
+So we only care about **maximal** affordable subsets: those where no affordable strict superset exists.
+
+```cpp
+vector<int> opts;
+for (int s = 1; s < full; ++s) {
+    if (prod[s] > k) continue; // subset s is unaffordable, skip
+    bool maximal = true;
+    for (int j = 0; j < m && maximal; ++j)
+        // if we can add prime j to s and still afford it, s is dominated
+        if (!(s & (1 << j)) && prod[s | (1 << j)] <= k) maximal = false;
+    if (maximal) opts.push_back(s);
+}
+```
+
+These are the only meaningful choices this judge offers the DP. Note that `opts` can never have too many elements, since no subset in it can contain another. 
+For more info, check out [Sperner's Theorem.](https://en.wikipedia.org/wiki/Sperner%27s_theorem)
+
+### The DP
+
+The cost is $c \times \sum e_i$ where $c$ is the number of judges used. Sadly, we can't just track $\min(\sum e_i)$, since we also need to know $c$, as two 
+solutions covering the same prime mask with different judge counts have different costs.
+
+**State:** $dp[c][s]$ = minimum sum of experience using **exactly** $c$ judges covering prime-mask $s$.
+
+**Base case:** $dp[0][0] = 0$, everything else $= \infty$.
+
+**Transition:** For each judge with options list `opts`, for each option $T \in \text{opts}$:
+
+$$
+dp[c+1][s \mid T] = \min(dp[c+1][s \mid T],\ dp[c][s] + e_i)
+$$
+
+**Answer:** $\min_{c=1}^{m}\ c \cdot dp[c][\text{full}-1]$
+
+Why cap at $c = m$? Any judge that doesn't contribute at least one new prime bit is purely wasteful - both $c$ and $\sum e$ increase for zero coverage gain. 
+With $m$ target primes, you never need more than $m$ judges.
+
+**Preventing double-use of the same judge:** Iterate $c$ **downward** from $m-1$ to $0$. Reads come from $dp[c][\cdot]$ and writes go to $dp[c+1][\cdot]$. 
+Since $c+1 > c$ and we iterate downward, no read ever sees a value written by the current judge's own pass. 
+This is the standard 0/1 knapsack backward-iteration trick.
+
+### Issue 1: Why the Naive DP TLEs and How to Fix It
+
+The naive approach runs the DP update once per judge: $O(n \cdot m \cdot 2^m \cdot |\text{opts}|)$. 
+With $n = 10^6$, $m = 11$, $2^m = 2048$, $|\text{opts}| \leq 462$:
+
+$$
+10^6 \times 11 \times 2048 \times 462 \approx 10^{13}
+$$
+
+Completely infeasible. We need to collapse $10^6$ judges to a tiny set.
+
+**Key reduction:** Two judges are completely interchangeable in the DP iff they have the same `opts` list. This is because the DP only cares about 2 things: 
+which transitions are available (`opts`) and the cost ($e_i$) matter. Therefore, among judges with the same opts, the only distinguishing feature is their cost. 
+And since we never use more than $m$ judges total, we never need more than $m$ judges of any single type. So for each unique `opts` type, we keep only the $m$ cheapest experience values.
+
+This reduction happens in two layers:
+
+**Optimization 1: Group by exponent pattern.** Two judges with identical prime-power vectors ($\text{pw}[0], \ldots, \text{pw}[m-1]$) produce identical `prod[]` tables and identical `opts`. 
+We encode each judge's exponent vector into a unique hash value (6 bits per exponent × up to 11 primes), allowing judges with identical exponent patterns to be grouped together efficiently.
+Per group, maintain a max-heap of size $\leq m$, keeping only the $m$ cheapest experience values.
+
+6 bits per exponent is enough: the smallest prime is 2, and $2^{40} > 10^{12}$, so no exponent exceeds 39.
+
+**Optimization 2: Group by opts vector.** Even across different exponent patterns, two groups can produce the same `opts` list. These groups are interchangeable in the DP. 
+Use `opts` itself as the second-level key, and again keep only the $m$ cheapest experience values per type, merging across all exponent groups sharing the same `opts`.
+
+**After both optimizaitons:** At most $\binom{11}{5} = 462$ distinct opt-types exist, each with at most $m = 11$ virtual judges - so at most $462 \times 11 \approx 5082$ judges ever touch the DP. 
+The final DP is:
+
+$$
+5082 \times 11 \times 2048 \times |\text{opts}| \approx 5.7 \times 10^8
+$$
+
+Which passes within the time limit.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \cdot M + 2^M \cdot M^2 \cdot \binom{M}{\lfloor M/2 \rfloor})$ where $M \leq 11$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const long long INF = 1e18;
+
+long long gcd(long long a, long long b) { return b ? gcd(b, a % b) : a; }
+
+// hash function for vector<int> keys in unordered_map
+struct vector_int_hash {
+    size_t operator()(const vector<int>& v) const {
+        size_t h = 0;
+        for (int x : v) h = h * 1000003 ^ (unsigned)x;
+        return h;
+    }
+};
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n; long long k;
+    cin >> n >> k;
+
+    vector<long long> a(n), e(n);
+    for (auto& x : a) cin >> x;
+    for (auto& x : e) cin >> x;
+
+    // only prime factors of gcd(a[]) can ever appear in the final gcd
+    long long g = a[0];
+    for (int i = 1; i < n; ++i) g = gcd(g, a[i]);
+    if (g == 1) { cout << 0; return 0; } // already sorted, no games needed
+
+    // factor g to get the target primes we need to eliminate
+    vector<long long> target_primes;
+    long long tmp = g;
+    for (long long i = 2; i * i <= tmp; ++i) {
+        if (tmp % i == 0) {
+            target_primes.push_back(i);
+            while (tmp % i == 0) tmp /= i;
+        }
+    }
+    if (tmp > 1) target_primes.push_back(tmp);
+
+    int m = (int)target_primes.size(); // at most 11 since product of first 12 primes > 1e12
+    int full_mask = (1 << m) - 1;      // bitmask with all m primes set
+
+    // hash function for (uint64_t, int) pairs used as exponent hashes
+    struct pair_hash {
+        size_t operator()(pair<uint64_t, int> p) const {
+            return hash<uint64_t>{}(p.first) ^
+                   ((size_t)(unsigned)p.second * 2654435761ULL);
+        }
+    };
+
+    // one bucket per distinct exponent pattern
+    struct exp_group {
+        vector<long long> prime_powers; // pw[j] = full power of target_primes[j] in a[i]
+        vector<long long> cheap_heap;   // max-heap of the m cheapest experience values seen
+    };
+
+    // optimization 1: group judges by their exponent hash
+    unordered_map<pair<uint64_t, int>, exp_group, pair_hash> exp_groups;
+    exp_groups.reserve(1 << 14);
+
+    vector<long long> prime_powers(m); // reused each iteration to hold pw[] for current judge
+    for (int i = 0; i < n; ++i) {
+        long long val = a[i];
+        uint64_t key64 = 0; // packs exponents of primes 0..9 into 6 bits each
+        int key_last = 0;   // exponent of prime 10 (if m == 11) stored separately
+
+        for (int j = 0; j < m; ++j) {
+            long long p = target_primes[j];
+            int exponent = 0;
+            long long full_power = 1;
+            // extract the full power of p from val
+            while (val % p == 0) { val /= p; ++exponent; full_power *= p; }
+            prime_powers[j] = full_power;
+            // pack exponent into the hash (6 bits per prime, enough since max exp <= 39)
+            if (j < 10) key64 |= (uint64_t)exponent << (6 * j);
+            else        key_last = exponent; // 11th prime overflows 64 bits, store separately
+        }
+
+        auto key = make_pair(key64, key_last);
+        auto it = exp_groups.find(key);
+        if (it == exp_groups.end()) {
+            // first judge with this exponent pattern: create a new bucket
+            exp_groups.emplace(key, exp_group{prime_powers, {}});
+            it = exp_groups.find(key);
+        }
+
+        // maintain a max-heap of the m cheapest experience values for this group
+        auto& heap = it->second.cheap_heap;
+        heap.push_back(e[i]);
+        push_heap(heap.begin(), heap.end()); // largest experience floats to top
+        if ((int)heap.size() > m) {
+            // drop the most expensive one — we never need more than m per group
+            pop_heap(heap.begin(), heap.end());
+            heap.pop_back();
+        }
+    }
+
+    // optimization 2: group exponent groups by their opts vector
+    // two groups with the same opts are fully interchangeable in the DP
+    unordered_map<vector<int>, vector<long long>, vector_int_hash> opt_groups;
+    opt_groups.reserve(1 << 10);
+
+    vector<long long> subset_prod(1 << m); // subset_prod[s] = product of prime_powers[j] for j in s
+    for (auto& [_, grp] : exp_groups) {
+        const vector<long long>& pw = grp.prime_powers;
+
+        // build subset-product table in O(2^m) using the recurrence:
+        // subset_prod[s] = subset_prod[s with lsb removed] * pw[index of lsb]
+        subset_prod[0] = 1;
+        for (int s = 1; s < (1 << m); ++s) {
+            int j = __builtin_ctz(s);            // index of lowest set bit
+            long long prev = subset_prod[s ^ (s & -s)]; // product without bit j
+            // guard overflow: if prev * pw[j] > k store sentinel k+1
+            subset_prod[s] = (prev > k / pw[j]) ? (k + 1) : prev * pw[j];
+        }
+
+        // collect maximal affordable subsets (opts):
+        // a subset s is maximal if it's affordable but no affordable strict superset exists
+        vector<int> opts;
+        for (int s = 1; s < (1 << m); ++s) {
+            if (subset_prod[s] > k) continue; // subset s is unaffordable, skip
+            bool is_maximal = true;
+            for (int j = 0; j < m && is_maximal; ++j)
+                // if we can add prime j and still afford it, s is dominated
+                if (!(s & (1 << j)) && subset_prod[s | (1 << j)] <= k)
+                    is_maximal = false;
+            if (is_maximal) opts.push_back(s);
+        }
+        if (opts.empty()) continue; // this judge can't clear any prime, skip
+
+        // merge this group's cheapest experience values into the opts bucket
+        vector<long long> sorted_exp = grp.cheap_heap;
+        sort(sorted_exp.begin(), sorted_exp.end());
+        auto& bucket = opt_groups[opts];
+        for (long long exp_val : sorted_exp) {
+            bucket.push_back(exp_val);
+            push_heap(bucket.begin(), bucket.end());
+            if ((int)bucket.size() > m) {
+                pop_heap(bucket.begin(), bucket.end());
+                bucket.pop_back();
+            }
+        }
+    }
+
+    // flatten opt_groups into a list of virtual judges for the DP
+    struct virtual_judge { vector<int> opts; long long exp; };
+    vector<virtual_judge> virtual_judges;
+    for (auto& [opts, heap] : opt_groups) {
+        vector<long long> sorted_exp = heap;
+        sort(sorted_exp.begin(), sorted_exp.end());
+        for (long long exp_val : sorted_exp)
+            virtual_judges.push_back({opts, exp_val});
+    }
+
+    // dp[c][s] = min sum of experience using exactly c judges covering prime mask s
+    vector<vector<long long>> dp(m + 1, vector<long long>(1 << m, INF));
+    dp[0][0] = 0;
+
+    for (auto& [opts, exp] : virtual_judges) {
+        // iterate c downward to prevent reusing the same virtual judge twice (0/1 knapsack)
+        for (int c = m - 1; c >= 0; --c) {
+            for (int s = 0; s < (1 << m); ++s) {
+                if (dp[c][s] == INF) continue; // unreachable state, skip
+                for (int T : opts) {
+                    // try assigning this judge to clear prime subset T
+                    long long new_exp_sum = dp[c][s] + exp;
+                    int new_mask = s | T;
+                    if (new_exp_sum < dp[c + 1][new_mask])
+                        dp[c + 1][new_mask] = new_exp_sum;
+                }
+            }
+        }
+    }
+
+    // answer is min over all judge counts c of c * (sum of experience)
+    long long ans = INF;
+    for (int c = 1; c <= m; ++c)
+        if (dp[c][full_mask] < INF)
+            ans = min(ans, (long long)c * dp[c][full_mask]);
+
+    cout << (ans == INF ? -1 : ans);
+    return 0;
+}
+```
+</CPPSection>
+</LanguageSection>
