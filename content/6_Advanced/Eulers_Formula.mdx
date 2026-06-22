@@ -222,25 +222,25 @@ $$
 
 ### Applying Euler's Formula
 
-Again, Euler's formula states that $V - E + F = C + 1$, where $V$ is the number of vertices, $E$ is the number of edges, $F$ is the number of faces, and $C$ is the number of connected components.
+Again, Euler’s formula states that $V - E + F = C + 1$, where $V$ is the number of vertices, $E$ is the number of edges, $F$ is the number of faces, and $C$ is the number of connected components.
 
-However, for the sake of this question, we are intrested in the number of faces $(F = E - V + C + 1)$ the graph has, which is the number of regions adjacent cells with the same colors. Thus, by calculating $V, E,$ and $C$ and using those values to supplement the formula, we obtain the answer.
+However, for the sake of this question, we are interested in the number of faces $(F = E - V + C + 1)$ the graph has, which is the number of regions adjacent cells with the same colors. Thus, by calculating $V, E,$ and $C$ and using these values to substitute into the formula, we obtain the answer.
 
-Obtaining $V$ and $E$ are the most straightforward. For $V$, simply count the total number of corners, which corresponds to the dimensions of the subrectangle. For $E$, we can maintain a 2D prefix sums array representing the number of edges, calculating both $E$ and $V$ in $O(1)$.
+Obtaining $V$ and $E$ is the most straightforward. For $V$, simply count the total number of corners, which corresponds to the dimensions of the subrectangle. For $E$, we can maintain a 2D prefix sums array representing the number of edges, calculating both $E$ and $V$ in $O(1)$.
 
-### Calculating $C$
+Calculating $C$
 
-To calculate $C$, we can use an algorithm similair to [Rooms from the Romainian IOI 2017 Selection](https://csacademy.com/contest/romanian-ioi-2017-selection-1/task/rooms/statement/). For each connected component in the entire canvas, mark the top-left most vertex as critical. Then, let's use 2D prefix sums to count the number of critical vertices in the current sub-rectangle.
+To calculate $C$, we can use an algorithm similar to [Rooms from the Romanian IOI 2017 Selection](https://csacademy.com/contest/romanian-ioi-2017-selection-1/task/rooms/statement/). For each connected component in the entire canvas, mark the top-left-most vertex as critical. Then, let’s use 2D prefix sums to count the number of critical vertices in the current sub-rectangle.
 
-This gives us a good estimate to the value of $C$, but we have to account for overcounting. Say some connected component's critical vertex exists in the current subrectangle, but the entire structure does not. This means that the component will have some vertex on the border of the subrectangle, implying it is not a unique connected component.
+This gives us a good estimate to the value of $C$, but we have to account for overcounting. Say some connected component’s critical vertex exists in the current subrectangle, but the entire structure does not. This means that the component will have some vertex on the border of the subrectangle, implying it is not a unique connected component.
 
-So, to filter out these such components, we can traverse through the border of the subrectangle and remove all connected components that share a vertex with the border. In the end, we must add $1$ back to $C$, to account for the component that contains the border.
+So, to filter out such components, we can traverse the border of the subrectangle and remove all connected components that share a vertex with it. In the end, we must add $1$ back to $C$ to account for the component that contains the border.
 
-### Calculating the Answer
+Calculating the Answer
 
 In our example, $V = 16,\ E = 18,$ and $C = 2$. By plugging these values into our formula, we get $F = 18 - 16 + 2 + 1 = 5$.
 
-But wait how did we get $5$, if it only takes $4$ brushstrokes to paint these region, and looking at the graph, there is only $4$ faces. This is because the formula also accounts for the face that consists of everything outside the subrectangle. So the final answer would be $E - V + C$, and for our sample that gives *$4$*, as expected.
+But wait, how did we get $5$ if it only takes $4$ brushstrokes to paint these regions, and looking at the graph, there are only $4$ faces? This is because the formula also accounts for the fact that it consists of everything outside the subrectangle. So the final answer would be $E - V + C$, and for our sample, that gives $4$, as expected.
 
 <LanguageSection>
 <CPPSection>
