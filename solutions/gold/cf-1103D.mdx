@@ -191,7 +191,9 @@ using namespace std;
 
 const long long INF = 1e18;
 
-long long gcd(long long a, long long b) { return b ? gcd(b, a % b) : a; }
+long long gcd(long long a, long long b) { 
+    return b ? gcd(b, a % b) : a; 
+}
 
 // hash function for vector<int> keys in unordered_map
 struct vector_int_hash {
@@ -240,7 +242,8 @@ int main() {
         }
     };
 
-    // one bucket per distinct exponent pattern
+    // group judges by identical exponent vectors (same prime-power structure)
+    // keep only the m cheapest costs per pattern (others are useless for DP)
     struct exp_group {
         vector<long long> prime_powers; // pw[j] = full power of target_primes[j] in a[i]
         vector<long long> cheap_heap;   // max-heap of the m cheapest experience values seen
@@ -288,11 +291,12 @@ int main() {
     }
 
     // optimization 2: group exponent groups by their opts vector
-    // two groups with the same opts are fully interchangeable in the DP
+    // merge exponent-pattern groups with same opts
+    // only costs differ, so we keep m cheapest per opts-class
     unordered_map<vector<int>, vector<long long>, vector_int_hash> opt_groups;
     opt_groups.reserve(1 << 10);
 
-    vector<long long> subset_prod(1 << m); // subset_prod[s] = product of prime_powers[j] for j in s
+    vector<long long> subset_prod(1 << m); // subset_prod[s] = value contributed by selecting primes in subset s capped at k+1 to avoid overflow and track feasibility (<= k)
     for (auto& [_, grp] : exp_groups) {
         const vector<long long>& pw = grp.prime_powers;
 
@@ -307,7 +311,8 @@ int main() {
         }
 
         // collect maximal affordable subsets (opts):
-        // a subset s is maximal if it's affordable but no affordable strict superset exists
+        // subsets that are ≤ k but cannot be extended without exceeding k
+        // (removes dominated transitions)
         vector<int> opts;
         for (int s = 1; s < (1 << m); ++s) {
             if (subset_prod[s] > k) continue; // subset s is unaffordable, skip
@@ -334,8 +339,12 @@ int main() {
         }
     }
 
-    // flatten opt_groups into a list of virtual judges for the DP
-    struct virtual_judge { vector<int> opts; long long exp; };
+    // convert opt_groups into a list of virtual judges for the DP
+    // each (opts, exp) behaves like a 0/1 knapsack item
+    struct virtual_judge { 
+        vector<int> opts; long long exp; 
+    };
+
     vector<virtual_judge> virtual_judges;
     for (auto& [opts, heap] : opt_groups) {
         vector<long long> sorted_exp = heap;
