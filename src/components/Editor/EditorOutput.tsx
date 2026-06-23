@@ -91,7 +91,7 @@ export const EditorOutput = (): JSX.Element => {
 
   return (
     <div className="markdown p-4">
-      <React.Suspense fallback={<p>Loading...</p>}>
+      <React.Suspense fallback={<p style={{ background: 'red' }}>TEST</p>}>
         <EditorContext.Provider
           value={{
             addProblem: handleAddProblem,
