@@ -1,0 +1,144 @@
+---
+id: cf-427E
+source: CF
+title: Police Patrol
+author: Raagav Bala
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/12082)
+
+## Explanation
+
+Notice that we only need to try placing the police station at positions where criminals already stand. Between two neighboring criminal positions, the groups of criminals do not change. So, the distance changes linearly, with the minimum distance at an endpoint.
+
+Now, consider only one side of the station. The optimal strategy is to take criminals in groups of at most $m$, starting from the farthest ones. For each group, only the farthest criminal matters because all the closer criminals can just be picked up on the way without increasing the distance.
+
+So, if the station is at $a_i$, the one-way distance on the left side is determined by the criminals at indices:
+
+$$
+0, m, 2m, 3m, \dots
+$$
+
+because each of these is the farthest criminal of one group.
+
+We can compute these distances by looping through the list of positions once. When the station position moves to the right, every existing group becomes farther by the same amount. So, if there are currently $\texttt{cnt}$ groups, moving by distance $d$ increases the distance by $\texttt{cnt} \cdot d$. Every time we pass another block of size $m$, a new group is added. In other words, moving the station from $a_j$ to $a_i$ adds $\texttt{cnt} \cdot (a_i - a_j)$ to the one-way distance.
+
+This gives the distance for the left side of every possible station. To get the right side, we simply reverse the array and run the same process again.
+
+To choose $a_i$ as the station, the total distance will be the sum of the left distance and the right distance. The final answer is double the minimum distance over all indices $i$ because every trip must return to the station.
+
+<Info>
+
+We can also solve this problem using ternary search over the cost
+function because `left_cost[i] + right_cost[n - i - 1]` is unimodal
+over $i$, the criminal index chosen as a station.
+
+</Info>
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+<Warning>
+As mentioned in the statement, fast I/O is recommended due to the large input size.
+</Warning>
+
+```cpp
+#include <bits/stdc++.h>
+
+std::vector<long long> side_cost(const std::vector<int> &positions, int n, int m) {
+	std::vector<int> cnt(n);
+	std::vector<long long> left(n);
+
+	cnt[0] = 1;
+	for (int i = 1; i < n; i++) {
+		cnt[i] = cnt[i - 1];
+
+		// extend the current cost using prev block boundary
+		int pre = i - i % m;
+		if (i == pre) { pre -= m; }
+
+		left[i] = left[pre] + 1LL * cnt[i] * std::abs(positions[i] - positions[pre]);
+
+		if (i % m == 0) {
+			cnt[i] += 1;  // new block starts here
+		}
+	}
+
+	return left;
+}
+
+int main() {
+	std::ios_base::sync_with_stdio(false);
+	std::cin.tie(nullptr);
+
+	int n, m;
+	std::cin >> n >> m;
+
+	std::vector<int> positions(n);
+
+	for (int &x : positions) { std::cin >> x; }
+
+	m = std::min(n, m);
+
+	std::vector<long long> left_cost = side_cost(positions, n, m);
+	std::reverse(begin(positions), end(positions));
+	std::vector<long long> right_cost = side_cost(positions, n, m);
+
+	long long res = LLONG_MAX;
+	for (int i = 0; i < n; i++) {
+		// try every criminal position as station
+		res = std::min(res, left_cost[i] + right_cost[n - i - 1]);
+	}
+
+	std::cout << 2LL * res << '\n';
+}
+```
+
+</CPPSection>
+<PySection>
+
+<Warning>
+The following code only works for PyPy 3.10 and TLEs on all other versions.
+</Warning>
+
+```py
+def side_cost(a, n, m):
+	cnt, left = [0] * n, [0] * n
+	cnt[0] = 1
+
+	for i in range(1, n):
+		cnt[i] = cnt[i - 1]
+
+		# extend the current cost using prev block boundary
+		pre = i - i % m
+		if i == pre:
+			pre -= m
+
+		left[i] = left[pre] + cnt[i] * abs(a[i] - a[pre])
+		if i % m == 0:
+			cnt[i] += 1  # new block starts here
+
+	return left
+
+
+n, m = map(int, input().split())
+positions = list(map(int, input().split()))
+
+m = min(n, m)
+left_cost = side_cost(positions, n, m)
+positions.reverse()
+right_cost = side_cost(positions, n, m)
+
+ans = float("inf")
+for i in range(n):
+	# try every criminal position as station
+	ans = min(ans, left_cost[i] + right_cost[n - i - 1])
+print(2 * ans)
+```
+
+</PySection>
+</LanguageSection>

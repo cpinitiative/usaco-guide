@@ -53,6 +53,50 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class GuessTheKthZero {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();
+		int t = io.nextInt();
+		int k = io.nextInt() - 1;
+
+		int lo = 0;
+		int hi = n;
+
+		while (hi - lo > 1) {
+			int mid = (lo + hi) >> 1;
+			if (query(mid, k)) {
+				lo = mid;
+			} else {
+				hi = mid;
+			}
+		}
+
+		io.println("! " + hi);
+		io.flush();
+		io.close();
+	}
+
+	private static boolean query(int r, int k) {
+		Kattio io = new Kattio();
+		io.println("? " + 1 + " " + r);
+		io.flush();
+		int res = io.nextInt();
+		return (r - res <= k);
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py

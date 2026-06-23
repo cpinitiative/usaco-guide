@@ -1,17 +1,16 @@
-import { Link } from 'gatsby';
-import * as React from 'react';
+import Link from 'next/link';
 import useSuffix from './useSuffix';
 
 const LinksToEdit = ({ className = null as string | null }) => {
   return (
     <Link
-      to={`/editor/?filepath=${useSuffix()}`}
+      href={`/editor/?filepath=${useSuffix()}`}
       target="_blank"
       className={className ?? undefined}
     >
       Edit this page
       <svg
-        className="w-4 h-5 mb-1 ml-1 inline-block text-gray-400 group-hover:text-blue-400"
+        className="mb-1 ml-1 inline-block h-5 w-4 text-gray-400 group-hover:text-blue-400"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"

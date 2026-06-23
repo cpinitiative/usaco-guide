@@ -1,30 +1,29 @@
-import { globalHistory } from '@reach/router';
+import { Transition } from '@headlessui/react';
+import { usePathname } from 'next/navigation';
 import * as React from 'react';
-import 'tippy.js/themes/light.css';
+import { Fragment } from 'react';
 import { useMarkdownProblemLists } from '../../../context/MarkdownProblemListsContext';
 import {
   useHideDifficultySetting,
   useShowTagsSetting,
 } from '../../../context/UserDataContext/properties/simpleProperties';
 import { ProblemInfo } from '../../../models/problem';
-import Transition from '../../Transition';
+import { ListTable } from '../ListTable/ListTable';
 import { DivisionProblemInfo } from './DivisionList/DivisionProblemInfo';
 import ProblemsListHeader from './ProblemsListHeader';
 import ProblemsListItem from './ProblemsListItem';
 import SuggestProblemRow from './SuggestProblemRow';
 
-/* eslint-disable react/prop-types */
-
 type ProblemsListProps =
   | {
       title?: string;
-      children?: React.ReactChildren;
+      children?: React.ReactNode;
       problems?: string;
       hideSuggestProblemButton?: boolean;
     }
   | {
       title?: string;
-      children?: React.ReactChildren;
+      children?: React.ReactNode;
       problems?: DivisionProblemInfo[]; // normally string; only DivisionProblemInfo[] when it's a division table
       division?: string; // only if is division table
       modules?: boolean; // only if is division table
@@ -34,14 +33,14 @@ type AnnotatedProblemsListProps =
       isDivisionTable: false;
       tableName?: string;
       title?: string;
-      children?: React.ReactChildren;
+      children?: React.ReactNode;
       problems: ProblemInfo[];
       hideSuggestProblemButton?: boolean;
     }
   | {
       isDivisionTable: true;
       title?: string;
-      children?: React.ReactChildren;
+      children?: React.ReactNode;
       problems?: DivisionProblemInfo[]; // normally string; only DivisionProblemInfo[] when it's a division table
       division?: string; // only if is division table
       modules?: boolean; // only if is division table
@@ -79,84 +78,76 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
     props.isDivisionTable &&
     props.problems!.some(problem => !!problem.percentageSolved);
 
-  const path = globalHistory.location.pathname || '';
+  const path = usePathname();
 
   return (
-    <div
-      className="-mx-4 sm:-mx-6 lg:mx-0"
-      id={`problemlist-${
-        props.isDivisionTable === false
-          ? props.tableName
-          : 'division-' + props.division
-      }`}
-    >
-      <div className="flex flex-col">
-        <div className="-my-2 py-2 overflow-x-auto lg:-mx-4 lg:px-4">
-          <div className="align-middle inline-block shadow overflow-hidden min-w-full lg:rounded-lg dark:bg-gray-900 border-b border-gray-200 dark:border-transparent">
-            <table className="w-full no-markdown text-gray-500 dark:text-dark-med-emphasis">
-              <thead>
-                <ProblemsListHeader
-                  showTags={showTags}
-                  showDifficulty={showDifficulty}
-                  isDivisionTable={props.isDivisionTable}
-                  showSolvePercentage={shouldShowSolvePercentage}
-                  showPlatinumSolvePercentageMessage={
-                    props.isDivisionTable
-                      ? props.division === 'Platinum'
-                      : (undefined as any)
-                  }
-                />
-              </thead>
-              <tbody className="table-alternating-stripes">
-                {props.isDivisionTable === true &&
-                  props.problems!.map((problem: DivisionProblemInfo) => {
-                    return (
-                      <ProblemsListItem
-                        key={problem.uniqueId}
-                        problem={problem}
-                        showTags={showTags}
-                        showDifficulty={showDifficulty}
-                        onShowSolutionSketch={problem => {
-                          setProblem(problem);
-                          setShowModal(true);
-                        }}
-                        isDivisionTable={props.isDivisionTable}
-                        modules={props.modules!}
-                        showPercent={shouldShowSolvePercentage}
-                      />
-                    );
-                  })}
-                {props.isDivisionTable === false && (
-                  <>
-                    {props.problems.map((problem: ProblemInfo) => (
-                      <ProblemsListItem
-                        key={problem.uniqueId}
-                        problem={problem}
-                        showTags={showTags}
-                        showDifficulty={showDifficulty}
-                        onShowSolutionSketch={problem => {
-                          setProblem(problem);
-                          setShowModal(true);
-                        }}
-                        isDivisionTable={props.isDivisionTable}
-                        showPercent={shouldShowSolvePercentage}
-                      />
-                    ))}
-                    {!props.hideSuggestProblemButton &&
-                      path.includes('conclusion') && (
-                        <SuggestProblemRow listName={props.tableName!} />
-                      )}
-                  </>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+    <>
+      <ListTable
+        id={`problemlist-${
+          props.isDivisionTable === false
+            ? props.tableName
+            : 'division-' + props.division
+        }`}
+        header={
+          <ProblemsListHeader
+            showTags={showTags}
+            showDifficulty={showDifficulty}
+            isDivisionTable={props.isDivisionTable}
+            showSolvePercentage={shouldShowSolvePercentage}
+            showPlatinumSolvePercentageMessage={
+              props.isDivisionTable
+                ? props.division === 'Platinum'
+                : (undefined as any)
+            }
+          />
+        }
+      >
+        {props.isDivisionTable === true &&
+          props.problems!.map((problem: DivisionProblemInfo) => {
+            return (
+              <ProblemsListItem
+                key={problem.uniqueId}
+                problem={problem}
+                showTags={showTags}
+                showDifficulty={showDifficulty}
+                onShowSolutionSketch={problem => {
+                  setProblem(problem);
+                  setShowModal(true);
+                }}
+                isDivisionTable={props.isDivisionTable}
+                modules={props.modules!}
+                showPercent={shouldShowSolvePercentage}
+              />
+            );
+          })}
+        {props.isDivisionTable === false && (
+          <>
+            {props.problems.map((problem: ProblemInfo) => (
+              <ProblemsListItem
+                key={problem.uniqueId}
+                problem={problem}
+                showTags={showTags}
+                showDifficulty={showDifficulty}
+                onShowSolutionSketch={problem => {
+                  setProblem(problem);
+                  setShowModal(true);
+                }}
+                isDivisionTable={props.isDivisionTable}
+                showPercent={shouldShowSolvePercentage}
+              />
+            ))}
+            {!props.hideSuggestProblemButton && path.includes('conclusion') && (
+              <SuggestProblemRow listName={props.tableName!} />
+            )}
+          </>
+        )}
+      </ListTable>
 
-      <Transition show={showModal} timeout={300}>
-        <div className="fixed z-10 bottom-0 inset-x-0 px-4 pb-6 sm:inset-0 sm:p-0 sm:flex sm:items-center sm:justify-center">
+      <Transition show={showModal} as={Fragment}>
+        <div className="fixed inset-x-0 bottom-0 z-10 px-4 pb-6 sm:inset-0 sm:flex sm:items-center sm:justify-center sm:p-0">
           <Transition
+            show={showModal}
+            as={Fragment}
             enter="ease-out duration-300"
             enterFrom="opacity-0"
             enterTo="opacity-100"
@@ -173,6 +164,8 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
           </Transition>
 
           <Transition
+            show={showModal}
+            as={Fragment}
             enter="ease-out duration-300"
             enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             enterTo="opacity-100 translate-y-0 sm:scale-100"
@@ -181,15 +174,15 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
           >
             <div
-              className="relative bg-white rounded-lg px-4 pt-5 pb-4 overflow-hidden shadow-xl transform transition-all sm:max-w-xl sm:w-full sm:p-6"
+              className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 shadow-xl transition-all sm:w-full sm:max-w-xl sm:p-6"
               role="dialog"
               aria-modal="true"
               aria-labelledby="modal-headline"
             >
-              <div className="hidden sm:block absolute top-0 right-0 pt-4 pr-4">
+              <div className="absolute top-0 right-0 hidden pt-4 pr-4 sm:block">
                 <button
                   type="button"
-                  className="text-gray-400 hover:text-gray-500 focus:outline-none focus:text-gray-500 transition ease-in-out duration-150"
+                  className="text-gray-400 transition duration-150 ease-in-out hover:text-gray-500 focus:text-gray-500 focus:outline-hidden"
                   aria-label="Close"
                   onClick={() => setShowModal(false)}
                 >
@@ -227,6 +220,6 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
           </Transition>
         </div>
       </Transition>
-    </div>
+    </>
   );
 }

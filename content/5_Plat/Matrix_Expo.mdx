@@ -3,7 +3,7 @@ id: matrix-expo
 redirects:
   - /plat/mat-exp
 title: 'Matrix Exponentiation'
-author: 'Benjamin Qi, Harshini Rayasam, Neo Wang'
+author: 'Benjamin Qi, Harshini Rayasam, Neo Wang, Peng Bai'
 description: Repeatedly multiplying a square matrix by itself.
 prerequisites:
   - intro-dp
@@ -37,20 +37,11 @@ frequency: 1
 	</Resource>
 </Resources>
 
-
 ## Example - Fibonacci
 
-<FocusProblem problem='sample' />
+<FocusProblem problem="sample" />
 
-The fibonacci numbers are defined by the following matrix relation
-
-$$
-A = \begin{bmatrix}1&1\\1&0\end{bmatrix}^n=\begin{bmatrix}F_{n+1} & F_n \\ F_n & F_{n-1}\end{bmatrix}
-$$
-
-### Proof by Induction
-
-The fibonacci numbers are defined as follows:
+The Fibonacci numbers are defined as follows:
 
 $$
 \begin{align*}
@@ -60,13 +51,21 @@ F_{n+1} &= F_{n} + F_{n-1}
 \end{align*}
 $$
 
+We can also write them using the following matrix recurrence:
+
+$$
+A = \begin{bmatrix}1&1\\1&0\end{bmatrix}^n=\begin{bmatrix}F_{n+1} & F_n \\ F_n & F_{n-1}\end{bmatrix}
+$$
+
+### Proof by Induction
+
 Base case ($n=1$):
 
 $$
 A^1 = \begin{bmatrix}1 & 1 \\ 1 & 0\end{bmatrix} = \begin{bmatrix}F_2 & F_1 \\ F_1 & F_0\end{bmatrix}
 $$
 
-Induction step ($n+1$):
+Inductive step ($n+1$):
 
 $$
 A^{n+1}=A\,A^n=\begin{bmatrix}
@@ -80,16 +79,14 @@ F_{n+2} & F_{n+1} \\ F_{n+1} & F_{n}
 \end{bmatrix}
 $$
 
-The base case is true, and the induction step is true. Therefore the formula
-holds for all $n \in \mathbb{N}$.
-
-<LanguageSection>
-
-<CPPSection>
+With this, we've shown that the formula holds for all $n \in \mathbb{N}$.
 
 ## Implementation
 
-**Time complexity:** $\mathcal{O}(\log n)$
+**Time Complexity:** $\mathcal{O}(\log N)$
+
+<LanguageSection>
+<CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
@@ -129,9 +126,10 @@ int main() {
 	cout << base[0][1];
 }
 ```
-</CPPSection>
 
+</CPPSection>
 <PySection>
+
 ```py
 from typing import List
 
@@ -168,8 +166,178 @@ elif n > 2:
 else:
 	print(1)
 ```
+
 </PySection>
 </LanguageSection>
+
+## Finding the Right Matrix - Generalized Linear Recurrences
+
+<FocusProblem problem="sample2" />
+
+We can generalize the technique above to calculate values in any linear recurrence. The tricky part is finding the correct matrix for the problem. Let's see how we can find this matrix $M$. We know that following equation must hold:
+
+$$
+	\begin{bmatrix}
+    M_{1,1} & M_{1, 2} & \dots \\
+    \vdots & \ddots & \vdots \\
+    M_{k, 1} & \dots & M_{k, k}
+    \end{bmatrix}
+	\begin{bmatrix}
+	a_1 \\ \vdots \\ a_k
+	\end{bmatrix} =
+	\begin{bmatrix}
+	a_2 \\ \vdots \\ a_{k + 1}
+	\end{bmatrix}
+$$
+
+Here, we use the values of $a_1, \dots, a_n$ to find $a_{k+1}$. We can also discard $a_1$ since it won't be used to calculate $a_{k+2}$. If we think about the matrix multiplication, we notice that there is a diagonal of $1$s shifted to the right by $1$ since $a_i \rarr a_{i + 1}$ for $i < k$. So now we have (using $k = 5$ as an example):
+
+$$
+M =	\begin{bmatrix}
+	0 & 1 & 0 & 0 & 0 \\
+	0 & 0 & 1 & 0 & 0 \\
+	0 & 0 & 0 & 1 & 0 \\
+	0 & 0 & 0 & 0 & 1 \\
+    M_{5, 1} & M_{5, 2} & M_{5, 3} & M_{5, 4} & M_{5, 5}
+    \end{bmatrix}
+$$
+
+To find the bottom row, we use the recurrence formula:
+$$
+M =	\begin{bmatrix}
+	0 & 1 & 0 & 0 & 0 \\
+	0 & 0 & 1 & 0 & 0 \\
+	0 & 0 & 0 & 1 & 0 \\
+	0 & 0 & 0 & 0 & 1 \\
+    c_5 & c_4 & c_3 & c_2 & c_1
+    \end{bmatrix}
+$$
+
+With this $M$, the equation always holds.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(K^3 \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+
+const int MOD = 1e9;
+
+template <typename T> void matmul(vector<vector<T>> &a, vector<vector<T>> b) {
+	int n = a.size(), m = a[0].size(), p = b[0].size();
+	assert(m == b.size());
+	vector<vector<T>> c(n, vector<T>(p));
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < p; j++) {
+			for (int k = 0; k < m; k++) {
+				c[i][j] = (c[i][j] + a[i][k] * b[k][j]) % MOD;
+			}
+		}
+	}
+
+	a = c;
+}
+
+template <typename T> struct Matrix {
+	vector<vector<T>> mat;
+	Matrix() {}
+	Matrix(vector<vector<T>> a) { mat = a; }
+	Matrix(int n, int m) {
+		mat.resize(n);
+		for (int i = 0; i < n; i++) { mat[i].resize(m); }
+	}
+
+	int rows() const { return mat.size(); }
+	int cols() const { return mat[0].size(); }
+
+	// makes the identity matrix for a n by n matrix
+	void makeiden() {
+		for (int i = 0; i < rows(); i++) { mat[i][i] = 1; }
+	}
+
+	void print() const {
+		for (int i = 0; i < rows(); i++) {
+			for (int j = 0; j < cols(); j++) { cout << mat[i][j] << ' '; }
+			cout << '\n';
+		}
+	}
+
+	Matrix operator*=(const Matrix &b) {
+		matmul(mat, b.mat);
+		return *this;
+	}
+
+	Matrix operator*(const Matrix &b) { return Matrix(*this) *= b; }
+};
+
+int main() {
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int n, k;
+		cin >> k;
+		Matrix<ll> mat(k, k), vec(k, 1), cur(k, k);
+		cur.makeiden();
+		for (int i = 0; i < k; i++) { cin >> vec.mat[i][0]; }
+
+		for (int i = 0; i < k; i++) { cin >> mat.mat[k - 1][k - i - 1]; }
+
+		for (int i = 1; i < k; i++) { mat.mat[i - 1][i] = 1; }
+
+		cin >> n;
+		n--;
+		while (n > 0) {
+			if (n & 1) cur *= mat;
+			mat *= mat;
+			n >>= 1;
+		}
+
+		Matrix<ll> res = cur * vec;
+		cout << res.mat[0][0] << '\n';
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+## Takeaway
+
+The takeaway here is not the exact matrix used in linear recurrences, but the method in deriving it. The process of thinking about a vector before and after applying $M$, then deducing $M$ through logic, is a technique that generalizes far beyond standard linear recurrences. For example, see if you can find the equation needed and correct matrix (using $k = 5$ as an example) to solve this modified recurrence for $i > k$:
+
+$$
+a_i = c_1a_{i-1} + c_2a_{i-2} + ... + c_ka_{i-k} + C
+$$
+
+where $C$ is a given constant.
+
+<Spoiler title = "Solution">
+
+$$
+	\begin{bmatrix}
+	0 & 1 & 0 & 0 & 0 & 0 \\
+	0 & 0 & 1 & 0 & 0 & 0 \\
+	0 & 0 & 0 & 1 & 0 & 0 \\
+	0 & 0 & 0 & 0 & 1 & 0 \\
+    c_5 & c_4 & c_3 & c_2 & c_1 & 1 \\
+	0 & 0 & 0 & 0 & 0 & 1
+    \end{bmatrix}
+	\begin{bmatrix}
+	a_1 \\ a_2 \\ a_3 \\ a_4 \\ a_5 \\ C
+	\end{bmatrix} =
+	\begin{bmatrix}
+	a_2 \\ a_3 \\ a_4 \\ a_5 \\ a_6 \\ C
+	\end{bmatrix}
+$$
+
+</Spoiler>
+
 ## Problems
 
 <Problems problems="probs" />

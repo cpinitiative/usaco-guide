@@ -1,0 +1,127 @@
+---
+id: cf-276C
+source: CF
+title: Little Girl and Maximum Sum
+author: Rameez Parwez
+---
+
+[Official Editorial (C++/Java)](https://codeforces.com/blog/entry/6779)
+
+## Explanation
+
+We can calculate the contribution of each index in the range query using a difference array technique.
+
+To maximize the sum, sort both the array and frequency array in ascending order
+and pair the elements of the array with their respective frequencies, ignoring the first element of frequency array.
+
+## Implementation
+
+**Time Complexity:** $ \mathcal{O} (N \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	int n, q;
+	std::cin >> n >> q;
+	vector<int> arr(n);
+
+	for (int &x : arr) { std::cin >> x; }
+
+	vector<int> freq(n + 1);
+	for (int i = 0; i < q; i++) {
+		int l, r;
+		std::cin >> l >> r;
+		l--;
+		freq[l] += 1;
+		freq[r] -= 1;
+	}
+
+	for (int i = 1; i <= n; i++) { freq[i] += freq[i - 1]; }
+
+	std::sort(std::begin(freq), std::end(freq));
+	std::sort(std::begin(arr), std::end(arr));
+
+	long long res = 0;
+	for (int i = 0; i < n; i++) { res += 1LL * freq[i + 1] * arr[i]; }
+
+	cout << res << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class LittleGirlMaxSum {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		int q = io.nextInt();
+
+		int[] arr = new int[n];
+		for (int i = 0; i < n; i++) { arr[i] = io.nextInt(); }
+
+		int[] freq = new int[n + 1];
+		for (int i = 0; i < q; i++) {
+			int l = io.nextInt() - 1;
+			int r = io.nextInt();
+			freq[l] += 1;
+			freq[r] -= 1;
+		}
+
+		for (int i = 1; i <= n; i++) { freq[i] += freq[i - 1]; }
+
+		Arrays.sort(freq);
+		Arrays.sort(arr);
+
+		long res = 0;
+		for (int i = 0; i < n; i++) { res += (long)freq[i + 1] * arr[i]; }
+		io.println(res);
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+n, q = map(int, input().split())
+arr = list(map(int, input().split()))
+
+freq = [0] * (n + 1)
+for _ in range(q):
+	l, r = map(int, input().split())
+	freq[l - 1] += 1
+	freq[r] -= 1
+
+for i in range(1, n + 1):
+	freq[i] += freq[i - 1]
+
+freq.sort()
+arr.sort()
+
+res = 0
+for i in range(n):
+	res += freq[i + 1] * arr[i]
+
+print(res)
+```
+
+</PySection>
+</LanguageSection>

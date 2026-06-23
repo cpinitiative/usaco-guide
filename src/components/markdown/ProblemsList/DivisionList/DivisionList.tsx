@@ -1,5 +1,5 @@
-import { graphql, useStaticQuery } from 'gatsby';
-import React, { useEffect } from 'react';
+import { Transition } from '@headlessui/react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { moduleIDToURLMap } from '../../../../../content/ordering';
 import {
   useDivisionTableQuery,
@@ -9,17 +9,27 @@ import {
   ProblemDifficulty,
   ProblemSolutionInfo,
 } from '../../../../models/problem';
-import Transition from '../../../Transition';
+import { ProblemInfo } from '../../../../types/content';
 import { ProblemsList } from '../ProblemsList';
-import { DivisionProblemInfo } from './DivisionProblemInfo';
 import contestToPoints from './contest_to_points.json';
 import divToProbs from './div_to_probs.json';
+import { DivisionProblemInfo } from './DivisionProblemInfo';
 import idToSol from './id_to_sol.json';
 
-const startYear = 2016;
-const endYear = 2024; // manually increment this for a new season
-const allYears = `All (${startYear - 1} - ${endYear})`;
 const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
+const startYear = 2016;
+
+let endYear = startYear;
+
+for (const division of divisions) {
+  for (const [, contest] of divToProbs[division]) {
+    let year = Number(contest.substring(0, 4));
+    if (contest.includes('December')) year++;
+    endYear = Math.max(endYear, year);
+  }
+}
+
+const allYears = `All (${startYear - 1} - ${endYear})`;
 
 const getSeasons = () => {
   const res: string[] = [];
@@ -34,9 +44,9 @@ const seasons = getSeasons();
 
 const color: { [key: string]: string } = {
   Bronze: 'bg-red-800',
-  Silver: 'bg-gray-300',
+  Silver: 'bg-gray-400',
   Gold: 'bg-yellow-300',
-  Platinum: 'bg-gray-300', // whoops plat looks basically the same as silver on the website
+  Platinum: 'bg-gray-200',
 };
 
 const getCircle = option => {
@@ -83,9 +93,9 @@ const DivisionButton = ({
         <span className="rounded-md shadow-sm">
           <button
             type="button"
-            className={`inline-flex justify-center w-full rounded-md border border-gray-300 dark:border-gray-800 pr-4 ${
+            className={`inline-flex w-full justify-center rounded-md border border-gray-300 pr-4 dark:border-gray-800 ${
               getCircle(state) ? 'pl-3' : 'pl-4'
-            } py-2 bg-white dark:bg-gray-900 text-sm leading-5 font-medium text-gray-700 dark:text-dark-high-emphasis hover:text-gray-500 dark:hover:text-dark-high-emphasis focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150`}
+            } dark:text-dark-high-emphasis dark:hover:text-dark-high-emphasis focus:shadow-outline-blue bg-white py-2 text-sm leading-5 font-medium text-gray-700 transition duration-150 ease-in-out hover:text-gray-500 focus:border-blue-300 focus:outline-hidden dark:bg-gray-900`}
             id="options-menu"
             aria-haspopup="true"
             aria-expanded="true"
@@ -115,6 +125,7 @@ const DivisionButton = ({
 
       <Transition
         show={show}
+        as={Fragment}
         enter="transition ease-out duration-100"
         enterFrom="transform opacity-0 scale-95"
         enterTo="transform opacity-100 scale-100"
@@ -125,11 +136,11 @@ const DivisionButton = ({
         <div
           className={`${
             dropdownAbove
-              ? 'origin-bottom-right bottom-0 mb-12'
+              ? 'bottom-0 mb-12 origin-bottom-right'
               : 'origin-top-right'
-          } right-0 absolute z-10 mt-2 rounded-md shadow-lg`} // w-36
+          } absolute right-0 z-10 mt-2 rounded-md shadow-lg`} // w-36
         >
-          <div className="rounded-md bg-white dark:bg-gray-900 shadow-xs">
+          <div className="rounded-md bg-white shadow-xs dark:bg-gray-900">
             <div
               className="py-1"
               role="menu"
@@ -140,7 +151,7 @@ const DivisionButton = ({
                 <button
                   key={option}
                   onClick={() => handleSelect(option)}
-                  className="flex items-center w-full text-left px-3 py-2 text-sm leading-5 text-gray-700 dark:text-dark-high-emphasis hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-dark-high-emphasis focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                  className="dark:text-dark-high-emphasis dark:hover:text-dark-high-emphasis flex w-full items-center px-3 py-2 text-left text-sm leading-5 text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-hidden dark:hover:bg-gray-700"
                   role="menuitem"
                 >
                   {getCircle(option)}
@@ -157,41 +168,44 @@ const DivisionButton = ({
   );
 };
 
-export function DivisionList(props): JSX.Element {
-  const data: Queries.DivisionListQuery = useStaticQuery(graphql`
-    query DivisionList {
-      allProblemInfo(
-        filter: { source: { in: ["Bronze", "Silver", "Gold", "Platinum"] } }
-      ) {
-        nodes {
-          solution {
-            kind
-            label
-            labelTooltip
-            sketch
-            url
-            hasHints
-          }
-          uniqueId
-          url
-          tags
-          difficulty
-          module {
-            frontmatter {
-              id
-            }
-          }
+export default function DivisionList(): JSX.Element {
+  const [problems, setProblems] = useState<ProblemInfo[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  // Move all hooks to the top
+  const divisionTableQuery = useDivisionTableQuery();
+  const setDivisionTableQuery = useSetDivisionTableQuery();
+  const [divisionHash, setDivisionHash] = React.useState('');
+  const [seasonHash, setSeasonHash] = React.useState('');
+
+  useEffect(() => {
+    const loadProblems = async () => {
+      try {
+        // Try to load from static JSON file first
+        const response = await fetch('/usaco-divisions.json');
+        if (!response.ok) {
+          throw new Error('Failed to load problems data');
         }
+        const data = await response.json();
+        setProblems(data.problems);
+      } catch (err) {
+        console.error('Error loading problems:', err);
+        setError('Failed to load problems. Please try again later.');
+      } finally {
+        setIsLoading(false);
       }
-    }
-  `);
+    };
+
+    loadProblems();
+  }, []);
+
   const probToLink: { [key: string]: string } = {};
   const probToURL: { [key: string]: string } = {};
   const probToTags: { [key: string]: string[] } = {};
   const probToDifficulty: { [key: string]: ProblemDifficulty } = {};
   const probToSol: { [key: string]: ProblemSolutionInfo } = {};
-  for (const node of data.allProblemInfo.nodes) {
-    const problem = node;
+
+  for (const problem of problems) {
     const uniqueId = problem.uniqueId;
     probToLink[uniqueId] =
       problem.module! &&
@@ -268,18 +282,18 @@ export function DivisionList(props): JSX.Element {
     }
   }
 
-  const divisionTableQuery = useDivisionTableQuery();
-  const setDivisionTableQuery = useSetDivisionTableQuery();
+  // Calculate derived state after hooks
+  const curDivision = divisions.includes(
+    divisionHash || divisionTableQuery?.division || ''
+  )
+    ? divisionHash || divisionTableQuery?.division || divisions[0]
+    : divisions[0];
 
-  const [divisionHash, setDivisionHash] = React.useState('');
-  const [seasonHash, setSeasonHash] = React.useState('');
-  let curDivision =
-    divisionHash || (divisionTableQuery && divisionTableQuery.division);
-  if (!divisions.includes(curDivision)) curDivision = divisions[0];
-
-  let curSeason =
-    seasonHash || (divisionTableQuery && divisionTableQuery.season);
-  if (!seasons.includes(curSeason)) curSeason = seasons[seasons.length - 1];
+  const curSeason = seasons.includes(
+    seasonHash || divisionTableQuery?.season || ''
+  )
+    ? seasonHash || divisionTableQuery?.season || seasons[seasons.length - 1]
+    : seasons[seasons.length - 1];
 
   useEffect(() => {
     // https://dev.to/vvo/how-to-solve-window-is-not-defined-errors-in-react-and-next-js-5f97
@@ -299,65 +313,85 @@ export function DivisionList(props): JSX.Element {
     }
   }, []);
 
-  const problems: DivisionProblemInfo[] =
+  const filteredProblems: DivisionProblemInfo[] =
     divisionToSeasonToProbs[curDivision][curSeason];
 
-  const someHavePercent = problems.some(problem => !!problem.percentageSolved);
+  const someHavePercent = filteredProblems.some(
+    problem => !!problem.percentageSolved
+  );
   const sortOrders = ['By Contest'];
   if (someHavePercent) sortOrders.push('By Percent');
   const [sortOrder, setSortOrder] = React.useState('Sort: ' + sortOrders[0]);
   const sortedProblems = React.useMemo(() => {
-    if (!someHavePercent) return problems;
-    return [...problems].sort(
+    if (!someHavePercent) return filteredProblems;
+    return [...filteredProblems].sort(
       (a, b) => (b.percentageSolved || 0) - (a.percentageSolved || 0)
     );
-  }, [problems]);
+  }, [filteredProblems]);
+
+  if (isLoading) {
+    return <div className="py-4 text-center">Loading problems...</div>;
+  }
+
+  if (error) {
+    return <div className="py-4 text-center text-red-600">{error}</div>;
+  }
 
   return (
     <>
-      <div className="flex items-center space-x-4 mb-4">
-        <DivisionButton
-          options={divisions}
-          state={curDivision}
-          onChange={newDivision => {
-            if (curDivision === newDivision) return;
-            setDivisionHash('');
-            setSeasonHash('');
-            setDivisionTableQuery({
-              division: newDivision,
-              season: curSeason,
-            });
-          }}
-        />
-        <DivisionButton
-          options={seasons}
-          state={curSeason}
-          onChange={newSeason => {
-            if (curSeason === newSeason) return;
-            setDivisionHash('');
-            setSeasonHash('');
-            setDivisionTableQuery({
-              division: curDivision,
-              season: newSeason,
-            });
-          }}
-        />
-        {sortOrders.length > 1 && (
-          <DivisionButton
-            options={sortOrders}
-            state={sortOrder}
-            onChange={newOrder => {
-              setSortOrder('Sort: ' + newOrder);
-            }}
-          />
-        )}
-      </div>
+      {isLoading ? (
+        <div className="py-4 text-center">Loading problems...</div>
+      ) : error ? (
+        <div className="py-4 text-center text-red-600">{error}</div>
+      ) : (
+        <div>
+          <div className="mb-4 flex items-center space-x-4">
+            <DivisionButton
+              options={divisions}
+              state={curDivision}
+              onChange={newDivision => {
+                if (curDivision === newDivision) return;
+                setDivisionHash('');
+                setSeasonHash('');
+                setDivisionTableQuery({
+                  division: newDivision,
+                  season: curSeason,
+                });
+              }}
+            />
+            <DivisionButton
+              options={seasons}
+              state={curSeason}
+              onChange={newSeason => {
+                if (curSeason === newSeason) return;
+                setDivisionHash('');
+                setSeasonHash('');
+                setDivisionTableQuery({
+                  division: curDivision,
+                  season: newSeason,
+                });
+              }}
+            />
+            {sortOrders.length > 1 && (
+              <DivisionButton
+                options={sortOrders}
+                state={sortOrder}
+                onChange={newOrder => {
+                  setSortOrder('Sort: ' + newOrder);
+                }}
+              />
+            )}
+          </div>
 
-      <ProblemsList
-        problems={sortOrder.endsWith('Percent') ? sortedProblems : problems}
-        division={curDivision}
-        modules={true}
-      />
+          <ProblemsList
+            problems={
+              sortOrder.endsWith('Percent') ? sortedProblems : filteredProblems
+            }
+            division={curDivision}
+            modules={true}
+          />
+        </div>
+      )}
     </>
   );
 }

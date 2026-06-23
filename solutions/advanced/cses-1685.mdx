@@ -1,0 +1,199 @@
+---
+id: cses-1685
+source: CSES
+title: New Flight Routes
+author: Chongtian Ma
+---
+
+## Explanation
+
+Let's first compose the graph into many SCCs and construct the corresponding DAG
+with SCCs as vertices. The problem boils down to: How many edges will we need to
+add in the DAG such that the DAG becomes strongly connected?
+
+From now on we will only consider the DAG. A node is a **source** if it has no
+incoming connections. On the other hand, a node is a **sink** if it has no
+outgoing connections. Let $S$ denote the set of sources and $T$ denote the set
+of sinks. We should only add edges that goes from a sink to a source (otherwise,
+any other edges that we add can be replaced with edges that goes from a sink to
+a source and connect more vertices).
+
+For each vertex $u \in S$, we should find a unique vertex $b \in T$ that it can
+reach. The sink it matches with can be arbitrary but it should only travel through vertices that have not been visited yet. Note that it may be the case that each source cannot be matched to a
+unique sink. For now, we've created many pairs $(u_i, v_i)$. With these pairs,
+one optimal construction is to add edges $v_i \rightarrow u_{i-1}$ for each
+$i \geq 2$ and $v_1 \rightarrow u_k$. This way, we create a "ring" where we can
+guarantee for all vertex that $u_i$, it can also reached by all vertices that is
+reachable from $u_{i+1}$. This is strongly connected because of the
+$v_1 \rightarrow u_k$ edge. If we have a pair of vertices $(a, b)$ such that $b$
+was reachable from $a$ but $a$ was not reachable from $b$ in the original graph,
+now we can start from $b$ and travel around the ring to $a$.
+
+However, there may be some sources and sinks that were not originally matched.
+We can connect each sink to a unique source with an edge so that their components are strongly connected. For any
+sources or sinks that still remain, we can just connect them to the new graph by adding an edge.
+Note that whether we connect a source or a sink to the main graph, the
+connection will propagate to the rest of the vertices in their SCCs.
+
+Thus, the minimum number of edges we must add is $\max(|S|,|T|)$. As an
+exercise, prove why it is optimal.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N + M)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct SCC {
+	vector<vector<int>> adj, c_adj, r_adj;
+	vector<int> c, v, ord;
+
+	SCC(vector<vector<int>> _adj) : adj(_adj) {}
+
+	void dfs(int i) {
+		v[i] = 1;
+		for (int j : adj[i])
+			if (!v[j]) dfs(j);
+		ord.push_back(i);
+	}
+
+	void partition(int i, int t) {
+		v[i] = 1, c[i] = t;
+		for (int j : r_adj[i])
+			if (!v[j]) partition(j, t);
+	}
+
+	// returns a component vector c s.t. c[i] == c[j] iff i and j
+	// are in the same strongly connected component, runs in O(E).
+	vector<int> components() {
+		int n = adj.size(), t = 0;
+		v.assign(n, 0), r_adj.resize(n);
+		for (int i = 0; i < n; i++) {
+			for (int j : adj[i]) r_adj[j].push_back(i);
+			if (!v[i]) dfs(i);
+		}
+		v.assign(n, 0), c.assign(n, 0);
+		for (int i = n - 1; i >= 0; i--)
+			if (!v[ord[i]]) partition(ord[i], t++);
+		return c;
+	}
+};
+
+int main() {
+	int n, m;
+	cin >> n >> m;
+	vector<vector<int>> adj(n);
+	for (int i = 0; i < m; i++) {
+		int u, v;
+		cin >> u >> v;
+		--u;
+		--v;
+		adj[u].push_back(v);
+	}
+
+	SCC strong(adj);
+	vector<int> comp = strong.components();
+
+	int num_comps = *max_element(comp.begin(), comp.end()) + 1;
+
+	// one happy strongly connected component :D
+	if (num_comps == 1) {
+		cout << 0 << "\n";
+		return 0;
+	}
+
+	vector<vector<int>> comp_adj(num_comps);  // SCC DAG
+	vector<int> any_in_comp(num_comps), in_deg(num_comps), out_deg(num_comps);
+
+	// construct SCC DAG
+	for (int i = 0; i < n; i++) {
+		int cur_comp = comp[i];
+		any_in_comp[cur_comp] = i;
+
+		for (int j : adj[i]) {
+			int next_comp = comp[j];
+			if (cur_comp != next_comp) {
+				comp_adj[cur_comp].push_back(next_comp);
+				out_deg[cur_comp]++;
+				in_deg[next_comp]++;
+			}
+		}
+	}
+
+	// source = no incoming connections
+	// sink = no outgoing connections
+	vector<int> sources, sinks;
+	for (int c = 0; c < num_comps; c++) {
+		if (!in_deg[c]) { sources.push_back(c); }
+		if (!out_deg[c]) { sinks.push_back(c); }
+	}
+
+	vector<bool> vis(n);
+
+	// for each source try to match a sink that it can reach
+	auto find_sink = [&](auto self, int node) -> int {
+		vis[node] = true;
+		// this is a sink since no outgoing
+		if (comp_adj[node].empty()) { return node; }
+		for (int i : comp_adj[node]) {
+			if (vis[i]) continue;
+			int sink = self(self, i);
+			// we found a sink
+			if (sink != -1) return sink;
+		}
+		return -1;
+	};
+
+	vector<int> matched_sources, matched_sinks;
+	vector<int> unmatched_sources, unmatched_sinks;
+	for (int source : sources) {
+		// try to match an edge from source to a sink
+		int sink = find_sink(find_sink, source);
+		if (sink == -1) {
+			unmatched_sources.push_back(source);
+		} else {
+			matched_sources.push_back(source);
+			matched_sinks.push_back(sink);
+		}
+	}
+	for (int sink : sinks) {
+		if (!vis[sink]) { unmatched_sinks.push_back(sink); }
+	}
+
+	vector<pair<int, int>> ans;
+
+	// form a ring with the existing matches
+	for (int i = 0; i < matched_sources.size(); i++) {
+		ans.push_back(
+		    {matched_sinks[i], matched_sources[(i + 1) % matched_sources.size()]});
+	}
+	while (!unmatched_sources.empty() && !unmatched_sinks.empty()) {
+		ans.push_back({unmatched_sinks.back(), unmatched_sources.back()});
+		unmatched_sinks.pop_back();
+		unmatched_sources.pop_back();
+	}
+	// just link the first sink to the remaining unmatched sources
+	while (!unmatched_sources.empty()) {
+		ans.push_back({0, unmatched_sources.back()});
+		unmatched_sources.pop_back();
+	}
+	// just link the first source to the remaining unmatched sinks
+	while (!unmatched_sinks.empty()) {
+		ans.push_back({unmatched_sinks.back(), 0});
+		unmatched_sinks.pop_back();
+	}
+
+	cout << ans.size() << "\n";
+	for (auto [u, v] : ans) {
+		cout << any_in_comp[u] + 1 << " " << any_in_comp[v] + 1 << "\n";
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>

@@ -1,0 +1,314 @@
+---
+id: usaco-1324
+source: USACO Bronze 2023 US Open
+title: Moo Language
+author: Kevin Sheng
+---
+
+[Official Editorial (C++, Python)](https://usaco.org/current/data/sol_prob2_bronze_open23.html)
+
+## Explanation
+
+The official editorial covers a linear time approach, but quadratic is sufficient for full credit.
+
+This problem certainly is a doozy, though.
+The way to think about it is to pin down what you want to set as constant,
+then see how the others can be defined in terms of the things that you've already set.
+
+In this case, the constants we'll brute force over are the number of transitive and intransitive verbs,
+which I'll call TVs and ITVs for brevity.
+The intuitive reason for this is that each sentence, not counting conjunctions, has exactly one verb.
+Thus, if we know how many verbs we're going to use, we can know how many nouns, commas, etc. we're going to use as well.
+
+TVs and ITVs need two and one noun respectively, so we have to check if we have enough nouns first.
+If we use a nonzero number of TVs, we can use commas to append nouns at the end of a TV sentence.
+
+We also try to use as many conjunctions as possible;
+if there's $s$ sentences, we can use a maximum of $\left\lfloor\frac{s}{2}\right\rfloor$ conjunctions,
+since each sentence can be joined at most one time.
+
+The rest is formatting; no algorithmic tricks are required.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <map>
+#include <vector>
+
+using namespace std;
+
+int main() {
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int word_num, comma_num, period_num;
+		cin >> word_num >> comma_num >> period_num;
+		map<string, vector<string>> words{{"noun", {}},
+		                                  {"transitive-verb", {}},
+		                                  {"intransitive-verb", {}},
+		                                  {"conjunction", {}}};
+		for (int w = 0; w < word_num; w++) {
+			string token, type;
+			cin >> token >> type;
+			words[type].push_back(token);
+		}
+
+		int max_size = 0;  // The largest number of words we can use
+		// Along with how many TVs/ITVs bring about that largest size
+		int best_tv = 0;
+		int best_itv = 0;
+		const vector<string> &nouns = words["noun"];  // just a shorthand
+		int max_verbs = period_num + min(period_num, (int)words["conjunction"].size());
+		// Test all combinations of transntive/intransitive verbs
+		for (int tv = 0; tv <= words["transitive-verb"].size(); tv++) {
+			for (int itv = 0; itv <= words["intransitive-verb"].size(); itv++) {
+				int nouns_left = nouns.size() - itv - 2 * tv;
+				if (nouns_left < 0 || tv + itv > max_verbs) { break; }
+
+				// Try to use as many conjunctions as possible
+				int conj_used = min((int)words["conjunction"].size(), (tv + itv) / 2);
+				// If a transitive verb was used, put nouns until we run out of commas
+				int extra = tv > 0 ? min(comma_num, nouns_left) : 0;
+				int total = 2 * itv + 3 * tv + extra + conj_used;
+
+				if (total > max_size) {
+					max_size = total;
+					best_tv = tv;
+					best_itv = itv;
+				}
+			}
+		}
+
+		// Build all initial phrases (n + itv or n + tv + n)
+		int noun_at = 0;
+		vector<string> phrases;
+		for (int i = 0; i < best_itv; i++) {
+			string itv = words["intransitive-verb"][i];
+			string noun = nouns[noun_at++];
+			phrases.push_back(noun + " " + itv);
+		}
+		for (int i = 0; i < best_tv; i++) {
+			string tv = words["transitive-verb"][i];
+			string noun1 = nouns[noun_at++];
+			string noun2 = nouns[noun_at++];
+			phrases.push_back(noun1 + " " + tv + " " + noun2);
+		}
+		// Add as many nouns to the end of a tv-sentence as possible
+		if (best_tv > 0) {
+			string &last = phrases.back();
+			for (int c = 0; c < comma_num && noun_at < nouns.size(); c++) {
+				last.append(", ").append(nouns[noun_at++]);
+			}
+		}
+
+		// Join all the sentences we can using conjunctions
+		int phrase_at = 0;
+		vector<string> sentences;
+		for (string conj : words["conjunction"]) {
+			if (phrase_at + 1 >= phrases.size()) { break; }
+			string first = phrases[phrase_at++];
+			string second = phrases[phrase_at++];
+			sentences.push_back(first + " " + conj + " " + second);
+		}
+		sentences.insert(sentences.end(), phrases.begin() + phrase_at, phrases.end());
+
+		cout << max_size << endl;
+		string res = "";
+		for (const string &s : sentences) { res += s + ". "; }
+		if (!res.empty()) { res.pop_back(); }
+		cout << res << '\n';
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class MooLanguage {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		int testNum = Integer.parseInt(read.readLine());
+		for (int t = 0; t < testNum; t++) {
+			StringTokenizer initial = new StringTokenizer(read.readLine());
+			int wordNum = Integer.parseInt(initial.nextToken());
+			int commaNum = Integer.parseInt(initial.nextToken());
+			int periodNum = Integer.parseInt(initial.nextToken());
+			Map<String, List<String>> words = new HashMap<>() {
+				{
+					put("noun", new ArrayList<>());
+					put("transitive-verb", new ArrayList<>());
+					put("intransitive-verb", new ArrayList<>());
+					put("conjunction", new ArrayList<>());
+				}
+			};
+			for (int w = 0; w < wordNum; w++) {
+				StringTokenizer word = new StringTokenizer(read.readLine());
+				String token = word.nextToken();
+				String type = word.nextToken();
+				words.get(type).add(token);
+			}
+
+			int maxSize = 0;  // The largest number of words we can use
+			// Along with how many TVs/ITVs bring about that largest size
+			int bestTV = 0;
+			int bestITV = 0;
+			final List<String> nouns = words.get("noun");  // just a shorthand
+			int maxVerbs =
+			    periodNum + Math.min(periodNum, words.get("conjunction").size());
+			// Test all combinations of transntive/intransitive verbs
+			for (int tv = 0; tv <= words.get("transitive-verb").size(); tv++) {
+				for (int itv = 0; itv <= words.get("intransitive-verb").size(); itv++) {
+					int nounsLeft = nouns.size() - itv - 2 * tv;
+					if (nounsLeft < 0 || tv + itv > maxVerbs) { break; }
+
+					// Try to use as many conjunctions as possible
+					int conjUsed =
+					    Math.min(words.get("conjunction").size(), (tv + itv) / 2);
+					// If a transitive verb was used, put nouns until we run out of
+					// commas
+					int extra = tv > 0 ? Math.min(commaNum, nounsLeft) : 0;
+					int total = 2 * itv + 3 * tv + extra + conjUsed;
+
+					if (total > maxSize) {
+						maxSize = total;
+						bestTV = tv;
+						bestITV = itv;
+					}
+				}
+			}
+
+			// Build all initial phrases (n + itv or n + tv + n)
+			int nounAt = 0;
+			List<String> phrases = new ArrayList<>();
+			for (int i = 0; i < bestITV; i++) {
+				String itv = words.get("intransitive-verb").get(i);
+				String noun = nouns.get(nounAt++);
+				phrases.add(noun + " " + itv);
+			}
+			for (int i = 0; i < bestTV; i++) {
+				String tv = words.get("transitive-verb").get(i);
+				String noun1 = nouns.get(nounAt++);
+				String noun2 = nouns.get(nounAt++);
+				phrases.add(noun1 + " " + tv + " " + noun2);
+			}
+			// Add as many nouns to the end of a tv-sentence as possible
+			if (bestTV > 0) {
+				StringBuilder last = new StringBuilder(phrases.get(phrases.size() - 1));
+				for (int c = 0; c < commaNum && nounAt < nouns.size(); c++) {
+					last.append(", ").append(nouns.get(nounAt++));
+				}
+				phrases.set(phrases.size() - 1, last.toString());
+			}
+
+			// Join all the sentences we can using conjunctions
+			int phraseAt = 0;
+			List<String> sentences = new ArrayList<>();
+			for (String conj : words.get("conjunction")) {
+				if (phraseAt + 1 >= phrases.size()) { break; }
+				String first = phrases.get(phraseAt++);
+				String second = phrases.get(phraseAt++);
+				sentences.add(first + " " + conj + " " + second);
+			}
+			sentences.addAll(phrases.subList(phraseAt, phrases.size()));
+
+			System.out.println(maxSize);
+			String res = String.join(". ", sentences);
+			res += res.isEmpty() ? "" : ".";
+			System.out.println(res);
+		}
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+for _ in range(int(input())):
+	word_num, comma_num, period_num = [int(i) for i in input().split()]
+	words = {
+		"noun": [],
+		"transitive-verb": [],
+		"intransitive-verb": [],
+		"conjunction": [],
+	}
+	for _ in range(word_num):
+		token, type_ = input().split()
+		words[type_].append(token)
+
+	max_size = 0  # The largest number of words we can use
+	# Along with how many TVs/ITVs bring about that largest size
+	best_tv = 0
+	best_itv = 0
+	nouns = words["noun"]  # just a shorthand
+	max_verbs = period_num + min(period_num, len(words["conjunction"]))
+	# Test all combinations of transntive/intransitive verbs
+	for tv in range(len(words["transitive-verb"]) + 1):
+		for itv in range(len(words["intransitive-verb"]) + 1):
+			nouns_left = len(nouns) - itv - 2 * tv
+			if nouns_left < 0 or tv + itv > max_verbs:
+				break
+
+			# Try to use as many conjunctions as possible
+			conj_used = min(len(words["conjunction"]), (tv + itv) // 2)
+			# If a transitive verb was used, put nouns until we run out of commas
+			extra = min(comma_num, nouns_left) if tv > 0 else 0
+			total = 2 * itv + 3 * tv + extra + conj_used
+
+			if total > max_size:
+				max_size = total
+				best_tv = tv
+				best_itv = itv
+
+	# Build all initial phrases (n + itv or n + tv + n)
+	noun_at = 0
+	phrases = []
+	for i in range(best_itv):
+		phrases.append(nouns[noun_at] + " " + words["intransitive-verb"][i])
+		noun_at += 1
+	for i in range(best_tv):
+		noun1, noun2 = nouns[noun_at], nouns[noun_at + 1]
+		noun_at += 2
+		phrases.append(noun1 + " " + words["transitive-verb"][i] + " " + noun2)
+
+	# Add as many nouns to the end of a tv-sentence as possible
+	if best_tv > 0:
+		last = [phrases[-1]]
+		c = 0
+		while c < comma_num and noun_at < len(nouns):
+			last.append(", ")
+			last.append(nouns[noun_at])
+			noun_at += 1
+			c += 1
+		phrases[-1] = "".join(last)
+
+	# Join all the sentences we can using conjunctions
+	phrase_at = 0
+	sentences = []
+	for conj in words["conjunction"]:
+		if phrase_at + 1 >= len(phrases):
+			break
+		first, second = phrases[phrase_at], phrases[phrase_at + 1]
+		phrase_at += 2
+		sentences.append(first + " " + conj + " " + second)
+	sentences.extend(phrases[phrase_at:])
+
+	print(max_size)
+	res = ". ".join(sentences)
+	res += "." if res else ""
+	print(res)
+```
+
+</PySection>
+</LanguageSection>

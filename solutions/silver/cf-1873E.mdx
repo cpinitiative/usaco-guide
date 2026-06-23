@@ -1,0 +1,170 @@
+---
+id: cf-1873E
+source: CF
+title: Building an Aquarium
+author: Ruben Jing
+---
+
+[Official Editorial (C++)](https://codeforces.com/blog/entry/120634)
+
+## Explanation
+
+We binary search for the largest value $h$ that uses less than or equal to $x$ units of water.
+The amount of water used monotonically increases with height: the taller the tank,
+the more water that is needed to fill it!
+
+To find the amount of water used, we sum the values of $\text{max}(h-a_i, 0) \ \forall i\in n$.
+$h-a_i$ represents the units of water above coral $i$ because $h-a_i$ is the empty space
+which must be filled by water (refer to the visual in the problem statement if confused). $0$
+occurs if $h<a_i$, meaning the coral is taller than the tank. As the problem statement says,
+this means no water should be added above that coral.
+
+We binary search from $[0,a_\text{max}+x]$ where $a_\text{max}$ is the tallest coral.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n\log\left(a_\text{max}+x\right))$ per testcase
+
+<LanguageSection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+void solve() {
+	int n, x;
+	cin >> n >> x;
+
+	vector<int> corals(n);
+	int maxCoral = 0;
+
+	for (int &coral : corals) {
+		cin >> coral;
+
+		if (coral > maxCoral) { maxCoral = coral; }
+	}
+
+	// define bounds for binary search
+	ll l = 0, r = maxCoral + x;
+
+	while (l < r) {
+		ll h = l + (r - l + 1) / 2;
+
+		// calculate water used
+		ll waterUsed = 0;
+
+		for (int &coral : corals) { waterUsed += max(h - coral, (ll)0); }
+
+		if (waterUsed > x) {
+			r = h - 1;
+		} else {
+			l = h;
+		}
+	}
+
+	cout << l << "\n";
+}
+
+int main() {
+	int t;
+	cin >> t;
+
+	while (t--) { solve(); }
+}
+```
+</CPPSection>
+<JavaSection>
+```java
+import java.io.*;
+import java.lang.*;
+import java.util.*;
+
+public class BuildingAquarium {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int t = Integer.parseInt(st.nextToken());
+
+		while (t-- > 0) {
+			st = new StringTokenizer(br.readLine());
+			int n = Integer.parseInt(st.nextToken());
+			int x = Integer.parseInt(st.nextToken());
+
+			List<Integer> corals = new ArrayList<>();
+			int maxCoral = 0;
+
+			st = new StringTokenizer(br.readLine());
+			for (int i = 0; i < n; i++) {
+				int coral = Integer.parseInt(st.nextToken());
+
+				corals.add(coral);
+
+				if (coral > maxCoral) { maxCoral = coral; }
+			}
+
+			// define bounds for binary search
+			long l = 0, r = maxCoral + x;
+
+			while (l < r) {
+				long h = l + (r - l + 1) / 2;
+
+				// calculate water used
+				long waterUsed = 0;
+
+				for (int coral : corals) { waterUsed += Math.max(h - coral, 0); }
+
+				if (waterUsed > x) {
+					r = h - 1;
+				} else {
+					l = h;
+				}
+			}
+
+			System.out.println(l);
+		}
+	}
+}
+```
+</JavaSection>
+<PySection>
+```py
+def solve():
+	n, x = map(int, input().split())
+	corals = list(map(int, input().split()))
+
+	maxCoral = corals[0]
+
+	for coral in corals:
+		if coral > maxCoral:
+			maxCoral = coral
+
+	# define bounds for binary search
+	l = 0
+	r = maxCoral + x
+
+	while l < r:
+		h = int(l + (r - l + 1) / 2)
+
+		# calculate water used
+		waterUsed = 0
+
+		for coral in corals:
+			waterUsed += max(h - coral, 0)
+
+		if waterUsed > x:
+			r = h - 1
+		else:
+			l = h
+
+	print(l)
+
+
+t = int(input())
+
+for _ in range(t):
+	solve()
+```
+</PySection>
+</LanguageSection>

@@ -15,17 +15,18 @@ Let us consider the Euler Tour of the tree. We flatten the tree into an array, w
 
 Let us consider iterating through the Euler Tour array from left to right.
 When we consider a node at index $i$ in the Euler Tour array, its subtree range will be $[j, i]$, where $j\leq i$.
-Now, let's focus on a single color. Notice that if there are multiple colors $c$ to the left of a certain index $i$, only $c$'s most rightmost occurrence is relevant. We only want to count $c$ once so we choose to only count the most rightmost occurence. This is because any non-rightmost occurrence of $c$
+Now, let's focus on a single color. Notice that if there are multiple colors $c$ to the left of a certain index $i$, only $c$'s most rightmost occurrence is relevant. We only want to count $c$ once so we choose to only count the most rightmost occurrence. This is because any non-rightmost occurrence of $c$
 from $i$ must include the rightmost occurrence of $c$. More formally,
 any segment $[l, r]$ must contains $i$ if $l <= i <= r$.
 
 With this observation, we can essentially reduce the distinct colors queries to a simple range query. As we iterate through the Euler Tour from left to right, mark the current index (in the BIT) as $1$, and if the color of the node at the current index has occurred before, make it $0$ in the BIT. We can find the solution to every node by doing a sum query
- as we iterate.
+as we iterate.
+
+## Implementation
 
 **Time Complexity:** $\mathcal O(N\log N)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -117,5 +118,4 @@ int main() {
 ```
 
 </CPPSection>
-
 </LanguageSection>

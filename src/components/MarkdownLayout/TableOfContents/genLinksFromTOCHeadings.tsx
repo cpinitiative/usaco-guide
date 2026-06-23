@@ -31,8 +31,8 @@ export default function genLinksFromTOCHeadings(
                 headings[idx + 1].depth > heading.depth))
               ? '1rem'
               : indentIdx === 0
-              ? '0.5rem'
-              : 0,
+                ? '0.5rem'
+                : 0,
         }}
         dangerouslySetInnerHTML={{ __html: heading.value }}
       />

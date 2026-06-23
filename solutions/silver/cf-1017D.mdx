@@ -2,12 +2,12 @@
 id: cf-1017D
 source: CF
 title: The Wu
-author: Chongtian Ma
+author: Chongtian Ma, David Guo
 ---
 
 [Official Editorial (C++)](https://codeforces.com/blog/entry/61081)
 
-## Alternative Solution
+## Explanation
 
 We can first precompute the wu values for each pair of strings. Then, we can sum up the number of strings that gives each wu value of each string in a prefix sum (represented by `pref_wu` in the following implementation). Thus, for each query, we can utilize the output of our prefix sum array.
 
@@ -20,7 +20,6 @@ minus wu of $(i \oplus j)$ will also give wu values of the bits that are the sam
 **Time Complexity:** $\mathcal{O}({2^{2n}} + qn)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -30,7 +29,6 @@ using namespace std;
 const int MAX_K = 100;
 
 int main() {
-	cin.tie(0)->sync_with_stdio(0);
 	int n, m, q;
 	cin >> n >> m >> q;
 	vector<int> w(n);
@@ -84,5 +82,75 @@ int main() {
 	}
 }
 ```
+
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class TheWu {
+	public final static int MAX_K = 100;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+		int q = Integer.parseInt(st.nextToken());
+		int[] w = new int[n];
+		st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < n; i++) { w[i] = Integer.parseInt(st.nextToken()); }
+
+		// precompute wu value for every subset
+		int[] wu = new int[1 << n];
+		for (int i = 0; i < (1 << n); i++) {
+			for (int j = 0; j < n; j++) {
+				if ((i & (1 << j)) != 0) { wu[i] += w[j]; }
+			}
+		}
+
+		// convert all strings to integers and store count
+		int[] strCount = new int[1 << n];
+		for (int i = 0; i < m; i++) {
+			String s = br.readLine();
+			int val = 0;
+			for (int j = 0; j < n; j++) {
+				if (s.charAt(j) == '1') { val += 1 << j; }
+			}
+			strCount[val]++;
+		}
+
+		/*
+		 * precompute wu value every possible k for a string
+		 * prefWu[i][j] stores prefix of count up to k = j for string i
+		 */
+		int[][] prefWu = new int[1 << n][MAX_K + 1];
+		for (int i = 0; i < (1 << n); i++) {
+			for (int j = 0; j < (1 << n); j++) {
+				int allSame = (1 << n) - 1;
+				int diff = i ^ j;
+				int wuValue = wu[allSame] - wu[diff];
+				if (wuValue <= MAX_K) { prefWu[i][wuValue] += strCount[j]; }
+			}
+			// accumulate prefix sums of count
+			for (int j = 1; j <= MAX_K; j++) { prefWu[i][j] += prefWu[i][j - 1]; }
+		}
+
+		for (int query = 0; query < q; query++) {
+			st = new StringTokenizer(br.readLine());
+			String t = st.nextToken();
+			int k = Integer.parseInt(st.nextToken());
+			int val = 0;
+			for (int i = 0; i < n; i++) {
+				if (t.charAt(i) == '1') { val += 1 << i; }
+			}
+			System.out.println(prefWu[val][k]);
+		}
+	}
+}
+```
+
+</JavaSection>
 </LanguageSection>

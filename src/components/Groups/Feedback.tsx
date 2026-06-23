@@ -7,7 +7,7 @@ import {
   setDoc,
   updateDoc,
 } from 'firebase/firestore';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useFirebaseUser } from '../../context/UserDataContext/UserDataContext';
 import { useFirebaseApp } from '../../hooks/useFirebase';
@@ -17,7 +17,7 @@ export default function Feedback({ videoId }): JSX.Element {
   const db = getFirestore(firebaseApp);
   const { uid } = useFirebaseUser()!;
   const baseClasses =
-    'rounded-full border h-8 w-8 text-xl transform transition focus:outline-none';
+    'rounded-full border h-8 w-8 text-xl transform transition focus:outline-hidden';
   const unselectedClasses = 'hover:scale-110 border-gray-200';
   const selectedClasses = 'scale-110 border-cyan-600';
 
@@ -51,68 +51,64 @@ export default function Feedback({ videoId }): JSX.Element {
   return (
     <>
       <div className="text-center">
-        <span className="flex items-center space-x-2 justify-left">
+        <span className="justify-left flex items-center space-x-2">
           <div className="font-medium">How was the video?</div>
-          {[
-            ['😨', 'very_bad', 'very bad'],
-            ['🤨', 'bad'],
-            ['😀', 'good'],
-            ['😍', 'great'],
-          ].map(
-            ([emoji, key, name]: [
-              string,
-              'very_bad' | 'bad' | 'good' | 'great',
-              string
-            ]) => (
-              <button
-                key={key}
-                type="button"
-                title={`Rate video as ${name || key}`}
-                className={classNames(
-                  baseClasses,
-                  selected === key ? selectedClasses : unselectedClasses
-                )}
-                onClick={() => {
-                  if (selected === key) {
-                    setSelected(null);
-                    updateDoc(doc(db, 'videos', videoId, 'feedback', uid), {
-                      rating: null,
-                    });
-                  } else {
-                    setSelected(key);
-                    if (key == 'very_bad' || key == 'bad') {
-                      setShowAdditionalFeedback(true);
-                    }
-                    toast.promise(
-                      setDoc(
-                        doc(db, 'videos', videoId, 'feedback', uid),
-                        {
-                          rating: key,
-                        },
-                        { merge: true }
-                      ),
-                      {
-                        loading: 'Submitting...',
-                        success: 'Thanks for the feedback!',
-                        error: err => {
-                          console.log(err);
-                          return 'Error submitting feedback.';
-                        },
-                      }
-                    );
+          {(
+            [
+              ['😨', 'very_bad', 'very bad'],
+              ['🤨', 'bad', 'bad'],
+              ['😀', 'good', 'good'],
+              ['😍', 'great', 'great'],
+            ] as const
+          ).map(([emoji, key, name]) => (
+            <button
+              key={key}
+              type="button"
+              title={`Rate video as ${name || key}`}
+              className={classNames(
+                baseClasses,
+                selected === key ? selectedClasses : unselectedClasses
+              )}
+              onClick={() => {
+                if (selected === key) {
+                  setSelected(null);
+                  updateDoc(doc(db, 'videos', videoId, 'feedback', uid), {
+                    rating: null,
+                  });
+                } else {
+                  setSelected(key);
+                  if (key == 'very_bad' || key == 'bad') {
+                    setShowAdditionalFeedback(true);
                   }
-                }}
-              >
-                {emoji}
-              </button>
-            )
-          )}
+                  toast.promise(
+                    setDoc(
+                      doc(db, 'videos', videoId, 'feedback', uid),
+                      {
+                        rating: key,
+                      },
+                      { merge: true }
+                    ),
+                    {
+                      loading: 'Submitting...',
+                      success: 'Thanks for the feedback!',
+                      error: err => {
+                        console.log(err);
+                        return 'Error submitting feedback.';
+                      },
+                    }
+                  );
+                }
+              }}
+            >
+              {emoji}
+            </button>
+          ))}
           {!showAdditionalFeedback && (
             <button
               title={'Write us a private comment'}
               type="button"
               className={classNames(
-                'rounded-full border h-8 px-2 ml-4 text-sm transform transition focus:outline-none hover:border-cyan-600'
+                'ml-4 h-8 transform rounded-full border px-2 text-sm transition hover:border-cyan-600 focus:outline-hidden'
               )}
               onClick={() => setShowAdditionalFeedback(true)}
             >
@@ -153,7 +149,7 @@ export default function Feedback({ videoId }): JSX.Element {
               height: '4rem',
               minHeight: '4rem',
             }}
-            className="text-sm w-full mt-4 px-2 py-2 placeholder-gray-500 focus:ring-cyan-500 focus:border-cyan-500 border-gray-300 rounded-md mr-2"
+            className="mt-4 mr-2 w-full rounded-md border-gray-300 px-2 py-2 text-sm placeholder-gray-500 focus:border-cyan-500 focus:ring-cyan-500"
             placeholder="Tell us how you felt about the video..."
             value={comment}
             onChange={e => setComment(e.target.value)}
@@ -161,14 +157,14 @@ export default function Feedback({ videoId }): JSX.Element {
           <div className="block">
             <button
               type="submit"
-              className="items-center mt-2 sm:mt-0 px-3 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500"
+              className="mt-2 items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-hidden sm:mt-0"
             >
               Submit Private Comment
             </button>
             <button
               type="button"
               onClick={() => setShowAdditionalFeedback(false)}
-              className="ml-2 items-center mt-2 sm:mt-0 px-3 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-cyan-500 focus:border-cyan-500"
+              className="mt-2 ml-2 items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 focus:outline-hidden sm:mt-0"
             >
               Close
             </button>

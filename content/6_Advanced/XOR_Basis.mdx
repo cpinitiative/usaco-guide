@@ -79,6 +79,7 @@ Once the basis is constructed, the final result is calculated as  $$2^{basis.siz
 <LanguageSection>
 
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -111,7 +112,35 @@ int main() {
 }
 ```
 </CPPSection>
+
+<PySection>
+
+```py
+N = int(input())
+numbers = list(map(int, input().split()))
+
+# compute basis size
+basis_size = 0
+for i in range(N):
+	if numbers[i]:
+		basis_size += 1  # add numbers[i] to basis
+		for j in range(i + 1, N):  # reduce remaining vectors
+			numbers[j] = min(numbers[j], numbers[j] ^ numbers[i])
+
+# print number of missing elements
+print(2**basis_size - N)
+```
+
+</PySection>
+
 </LanguageSection>
+
+You might be wondering why this method of reduction works. For instance, if the basis elements were currently $[1_2, 11_2]$ and you tried inserting $10_2$, you'd end up with a result of $1_2$. This is clearly wrong, since $10_2$ is not independent of the basis $[1_2, 11_2]$.
+
+However, the catch is that every other basis element must be reduced via the same method. This means $[1_2, 11_2]$ is not actually a valid basis: properly reduced, it should be $[1_2, 10_2]$ instead.
+
+More generally, this reduction guarantees that, if bit $x$ is the MSB of one basis element, it must be switched off in every basis element after it: this is why this method of reduction works without having to maintain the basis vectors in sorted order.
+
 ## Example - Trees and XOR Queries Again
 <FocusProblem problem="xorqueries" />
 

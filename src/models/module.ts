@@ -24,9 +24,9 @@ export class ModuleLinkInfo {
     public probs?: any,
     public gitAuthorTime?: any
   ) {
-    if (this.id === 'using-this-guide') {
-      // The "Using This Guide" module is complete already, but it contains an <IncompleteModule> tag
-      // We want to ignore it and manually mark it as complete
+    if (this.id === 'using-this-guide' || this.id === 'working-mdx') {
+      // The "Using This Guide" and "Working With MDX" modules are complete already, but
+      // they contain an <IncompleteModule> tag. We want to ignore it and manually mark it as complete.
       this.isIncomplete = false;
     }
     this.url = `/${section}/${id}`;

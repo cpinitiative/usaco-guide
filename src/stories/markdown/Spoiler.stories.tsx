@@ -1,8 +1,8 @@
-import { Story } from '@storybook/react';
-import React, { ComponentProps } from 'react';
+import { StoryFn } from '@storybook/react';
+import { ComponentProps } from 'react';
 import HTMLComponents from '../../components/markdown/HTMLComponents';
-import Spoiler from '../../components/markdown/Spoiler';
 import markdownDecorator from '../../components/markdown/markdownDecoratorForStorybook';
+import Spoiler from '../../components/markdown/Spoiler';
 import MiscMarkdownContent from './MiscMarkdownContent';
 
 export default {
@@ -11,7 +11,7 @@ export default {
   decorators: [markdownDecorator],
 };
 
-const Template: Story<ComponentProps<typeof Spoiler>> = args => (
+const Template: StoryFn<ComponentProps<typeof Spoiler>> = args => (
   <Spoiler {...args} />
 );
 

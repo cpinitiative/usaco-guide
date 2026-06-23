@@ -1,0 +1,249 @@
+---
+id: cf-358C
+source: CF
+title: Dima and Containers
+author: Justin Ji
+---
+
+## Explanation
+
+Instead of directly processing each command one-by-one, we can instead process
+every addition operation once we have to extract our numbers. This allows us for
+more foresight when it comes to which numbers we prioritize.
+
+If we have $\leq 3$ elements to process, then we arbitrarily put each element in
+an empty container, and pop those respective containers.
+
+Among the three container types, the deque is the most flexible operation wise.
+On the other hand, the stack and queue are relatively inflexible. Because we
+are processing all of our addition commands at once, we can figure out the biggest
+three elements that have been added, and prioritize those.
+
+For the largest two elements, we can place them into our stack and queue once
+we encounter them. For our third largest element, our strategy is to always
+keep it at either the front or back once we insert it into our deque, and
+place any new elements on the opposite side. This guarantees that we can always
+extract the biggest three elements inserted.
+
+## Implementation
+
+<Warning>
+
+The grader for the problem is very particular
+when it comes to whitespace. Any additional or missing spaces will result in a
+WA verdict, even if your code's output is correct. In addition, some test
+cases will have a sequence of operations that doesn't end with an extraction
+operation, which you have to be a bit careful about.
+
+</Warning>
+
+**Time Complexity:** $\mathcal{O}(N\log{N})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using ll = long long;
+
+int main() {
+	int n;
+	std::cin >> n;
+
+	std::vector<int> nums;
+	std::priority_queue<int> best;
+	for (int i = 0; i < n; i++) {
+		int a;
+		std::cin >> a;
+
+		if (a == 0) {
+			// keep track of the 3 biggest elements
+			std::multiset<int> top3;
+			for (int i = 0; i < 3; i++) {
+				if (best.empty()) { continue; }
+				top3.insert(best.top());
+				best.pop();
+			}
+
+			bool stack_used = false;
+			bool queue_used = false;
+			bool deque_used = false;
+			std::vector<std::string> ops;
+
+			for (int x : nums) {
+				if (!top3.contains(x)) {
+					std::cout << "pushBack\n";
+					continue;
+				}
+
+				if (!stack_used) {
+					std::cout << "pushStack\n";
+					ops.push_back("popStack");
+					stack_used = true;
+				} else if (!queue_used) {
+					std::cout << "pushQueue\n";
+					ops.push_back("popQueue");
+					queue_used = true;
+				} else if (!deque_used) {
+					std::cout << "pushFront\n";
+					ops.push_back("popFront");
+					deque_used = true;
+				}
+
+				// we have to erase this element from top3, otherwise we might
+				// accidentally consider it later when it doesn't count
+				top3.erase(top3.find(x));
+			}
+
+			std::cout << ops.size();
+			for (const std::string &op : ops) { std::cout << ' ' << op; }
+			std::cout << '\n';
+
+			nums.clear();
+			while (!best.empty()) { best.pop(); }
+		} else {
+			nums.push_back(a);
+			best.push(a);
+		}
+	}
+
+	// if our last operation isn't a 0, we need to process remaining nums
+	for (int i = 0; i < nums.size(); i++) { std::cout << "pushBack\n"; }
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class DimaContainers {
+	public static void main(String[] args) throws IOException {
+		BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter pw = new PrintWriter(System.out);
+		int n = Integer.parseInt(r.readLine());
+
+		List<Integer> nums = new ArrayList<>();
+		PriorityQueue<Integer> best = new PriorityQueue<>(Collections.reverseOrder());
+
+		for (int i = 0; i < n; i++) {
+			int a = Integer.parseInt(r.readLine());
+
+			if (a == 0) {
+				// keep track of the 3 biggest elements
+				List<Integer> top3 = new ArrayList<>();
+				for (int j = 0; j < 3; j++) {
+					if (best.isEmpty()) { continue; }
+					top3.add(best.poll());
+				}
+
+				boolean stackUsed = false;
+				boolean queueUsed = false;
+				boolean dequeUsed = false;
+				List<String> ops = new ArrayList<>();
+
+				for (int x : nums) {
+					if (!top3.contains(x)) {
+						pw.println("pushBack");
+					} else {
+						if (!stackUsed) {
+							pw.println("pushStack");
+							ops.add("popStack");
+							stackUsed = true;
+						} else if (!queueUsed) {
+							pw.println("pushQueue");
+							ops.add("popQueue");
+							queueUsed = true;
+						} else if (!dequeUsed) {
+							pw.println("pushFront");
+							ops.add("popFront");
+							dequeUsed = true;
+						}
+
+						// we have to erase this element from top3, otherwise we might
+						// accidentally consider it later when it doesn't count
+						top3.remove((Integer)x);
+					}
+				}
+
+				pw.print(ops.size());
+				for (String op : ops) { pw.print(" " + op); }
+				pw.println();
+
+				nums.clear();
+				best.clear();
+			} else {
+				nums.add(a);
+				best.add(a);
+			}
+		}
+
+		// if our last operation isn't a 0, we need to process remaining nums
+		for (int i = 0; i < nums.size(); i++) { pw.println("pushBack"); }
+
+		r.close();
+		pw.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+operations = []
+nums = []
+
+for _ in range(int(input())):
+	i = int(input())
+
+	if i == 0:
+		# keep track of the 3 biggest elements
+		top3 = sorted(nums)[-3:]
+
+		stack_used = False
+		queue_used = False
+		deck_used = False
+
+		for n in nums:
+			if n in top3:
+				if not stack_used:
+					stack_used = True
+					operations.append("pushStack")
+				elif not queue_used:
+					queue_used = True
+					operations.append("pushQueue")
+				elif not deck_used:
+					deck_used = True
+					operations.append("pushFront")
+
+				# we have to erase this element from top3, otherwise we might
+				# accidentally consider it later when it doesn't count
+				top3.remove(n)
+			else:
+				operations.append("pushBack")
+
+		nums = []
+
+		operations.append(stack_used + queue_used + deck_used)
+		if stack_used:
+			operations.append("popStack")
+		if queue_used:
+			operations.append("popQueue")
+		if deck_used:
+			operations.append("popFront")
+	else:
+		nums.append(i)
+
+# if our last operation isn't a 0, we need to process remaining nums
+for _ in range(len(nums)):
+	operations.append("pushBack")
+
+print("\n".join(str(o) for o in operations))
+```
+
+</PySection>
+</LanguageSection>

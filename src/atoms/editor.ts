@@ -24,20 +24,20 @@ export const filesFamily = atomFamily((path: string) => {
  */
 export const saveFileAtom = atom(
   null,
-  (
+  async (
     get,
     set,
     update:
       | {
           path: string;
-          update: (f: EditorFile) => EditorFile;
+          update: (f: EditorFile) => Promise<EditorFile>;
         }
       | EditorFile
   ) => {
     const file = update.hasOwnProperty('update')
-      ? (update as { update: (f: EditorFile) => EditorFile }).update(
-          get(filesFamily(update.path))
-        )
+      ? await (
+          update as { update: (f: EditorFile) => Promise<EditorFile> }
+        ).update(get(filesFamily(update.path)))
       : (update as EditorFile);
     set(filesFamily(file.path), file);
   }
@@ -66,16 +66,16 @@ export const trueFilePathAtom = atom(get => {
   return activeFile === null
     ? 'NONE'
     : get(tabAtom) === 'content'
-    ? activeFile.path
-    : activeFile.path.replace(/\.mdx$/, '.problems.json');
+      ? activeFile.path
+      : activeFile.path.replace(/\.mdx$/, '.problems.json');
 });
 export const trueFileAtom = atom(get => {
   const activeFile = get(activeFileAtom);
   return activeFile === null
     ? 'Open a file to begin'
     : get(tabAtom) === 'content'
-    ? activeFile.markdown
-    : activeFile.problems;
+      ? activeFile.markdown
+      : activeFile.problems;
 });
 export const githubInfoAtom = atom(
   async get => (await get(octokitAtom)?.request('GET /user'))?.data
@@ -85,7 +85,7 @@ export const activeFileAtom = atom(
     const activeFile = get(baseActiveFileAtom);
     return activeFile ? get(filesFamily(activeFile)) : null;
   },
-  (get, set, nextActiveFilePath) => {
+  (get, set, nextActiveFilePath: string) => {
     set(baseActiveFileAtom, nextActiveFilePath);
   }
 );
@@ -116,10 +116,9 @@ export const openOrCreateExistingFileAtom = atom(
 export const createNewInternalSolutionFileAtom = atom(
   null,
   async (get, set, file: AlgoliaEditorSolutionFile) => {
-    const module = file.problemModules[0]?.path.split('/')[1];
+    const mod = file.problemModules[0]?.path.split('/')[1];
     const division =
-      file.division ||
-      (!module ? 'orphaned' : module.split('_')[1].toLowerCase());
+      file.division || (!mod ? 'orphaned' : mod.split('_')[1].toLowerCase());
     const newFile: EditorFile = {
       path: `solutions/${division}/${file.id}.mdx`,
       markdown: `---
@@ -215,20 +214,24 @@ $\\texttt{func(var)}$
     };
 
     await Promise.all(
-      file.problemModules.map(async module => {
-        if (get(filesListAtom).find(file => file === module.path)) {
-          const currentFile = get(filesFamily(module.path));
+      file.problemModules.map(async mod => {
+        if (get(filesListAtom).find(file => file === mod.path)) {
+          const currentFile = get(filesFamily(mod.path));
+          const formattedProblems = await updateProblemJSON(
+            currentFile.problems
+          );
           set(saveFileAtom, {
             ...currentFile,
-            problems: updateProblemJSON(currentFile.problems),
+            problems: formattedProblems,
           });
           return;
         }
-        const data = await fetchFileContent(module.path);
+        const data = await fetchFileContent(mod.path);
+        const formattedProblems = await updateProblemJSON(data.problems);
         set(saveFileAtom, {
-          path: module.path,
+          path: mod.path,
           markdown: data.markdown,
-          problems: updateProblemJSON(data.problems),
+          problems: formattedProblems,
         });
       })
     );
@@ -237,7 +240,7 @@ $\\texttt{func(var)}$
       ...new Set([
         ...prev,
         newFile.path,
-        ...file.problemModules.map(module => module.path),
+        ...file.problemModules.map(mod => mod.path),
       ]),
     ]);
     set(saveFileAtom, newFile);

@@ -1,0 +1,147 @@
+---
+id: usaco-577
+source: USACO Platinum 2015 December
+title: High Card Low Card
+author: Chongtian Ma
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_cardgame_platinum_dec15.html)
+
+## Explanation
+
+First, let's determine the cards that Bessie will play for each mode.
+Intuitively, if she plays $x$ turns of the "higher mode", then she must play the
+$x$ highest cards in some order. Her score for "higher mode" can't improve if she
+switches out any card for a lower-numbered card. Even if the score for the "higher mode" stays the same, doing this could worsen our score for the "lower mode". As for her strategy, she always wants to
+play the smallest card available **among all $x$ cards** that is greater than
+Elsie's card. Therefore, the following algorithm is always optimal for "highest
+mode":
+
+```
+Let E = An array of Elsie's first x cards
+let B = An array of Bessie's highest x cards
+score = 0
+for d from 1 to 2n:
+  for elsie_card in E:
+    if bessie_card with number (elsie_card + d) exists in B:
+      remove elsie_card from E
+      remove bessie_card from B
+      add 1 to score
+```
+
+Directly implementing the above algorithm yields quadratic time for each $x$,
+which is too slow. We can use a segment tree to speed things up.
+
+Essentially, the segment tree calculates the score for each $d$ within a
+interval of length $2^k$, where $k$ is the depth of the vertex from its leaves.
+For each vertex of the segment tree, we have to track the following:
+
+- The maximum achievable score after pairing all Bessie cards with Elsie cards
+  in the interval.
+- The number of Elsie cards that have not been paired with a Bessie card.
+- The number of Bessie cards that have not been paired with an Elsie card.
+
+To merge two intervals into a bigger interval, we can pair all unpaired Elsie
+cards in the left interval with unpaired Bessie cards in the right interval.
+Therefore, the minimum of these two values will contribute to the score for the
+bigger interval.
+
+The algorithm for "lower mode" can be determined similarly.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Segtree {
+	bool higher_mode;
+	int n;
+
+	struct item {
+		int ans, bessie, elsie;
+	};
+
+	item merge(item a, item b) {
+		int take = higher_mode ? min(a.elsie, b.bessie) : min(a.bessie, b.elsie);
+		return {a.ans + b.ans + take, a.bessie + b.bessie - take,
+		        a.elsie + b.elsie - take};
+	}
+
+	item NEUTRAL = {0, 0, 0};
+
+	vector<item> seg;
+
+	Segtree(int n, bool higher_mode) {
+		this->n = n;
+		this->higher_mode = higher_mode;
+		seg.resize(2 * n, NEUTRAL);
+	}
+
+	void update(int idx, item x) {
+		idx += n;
+		seg[idx] = x;
+		while (idx /= 2) { seg[idx] = merge(seg[2 * idx], seg[2 * idx + 1]); }
+	}
+
+	int query() {
+		item left_item = NEUTRAL, right_item = NEUTRAL;
+		for (int l = n, r = 2 * n; l < r; l /= 2, r /= 2) {
+			if (l % 2 == 1) { left_item = merge(left_item, seg[l++]); }
+			if (r % 2 == 1) { right_item = merge(seg[--r], right_item); }
+		}
+		return merge(left_item, right_item).ans;
+	}
+};
+
+int main() {
+	ifstream cin("cardgame.in");
+	ofstream cout("cardgame.out");
+
+	int n;
+	cin >> n;
+	vector<bool> contain(2 * n);
+	vector<int> elsie;
+	for (int i = 0; i < n; i++) {
+		int x;
+		cin >> x;
+		contain[--x] = true;
+		elsie.push_back(x);
+	}
+	vector<int> bessie;
+	for (int i = 0; i < 2 * n; i++) {
+		if (!contain[i]) { bessie.push_back(i); }
+	}
+
+	Segtree higher_st(2 * n, true), lower_st(2 * n, false);
+	const Segtree::item BESSIE_CARD = {0, 1, 0}, ELSIE_CARD = {0, 0, 1},
+	                    RESET = {0, 0, 0};
+
+	for (int i = 0; i < n; i++) {
+		higher_st.update(bessie[i], BESSIE_CARD);
+		higher_st.update(elsie[i], ELSIE_CARD);
+	}
+
+	int ans = higher_st.query();
+	// sort to allocate smallest cards first for "lower mode"
+	reverse(bessie.begin(), bessie.end());
+	for (int i = n - 1; i >= 0; i--) {
+		higher_st.update(bessie[i], RESET);
+		higher_st.update(elsie[i], RESET);
+		lower_st.update(bessie[i], BESSIE_CARD);
+		lower_st.update(elsie[i], ELSIE_CARD);
+		ans = max(ans, higher_st.query() + lower_st.query());
+	}
+	cout << ans << "\n";
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

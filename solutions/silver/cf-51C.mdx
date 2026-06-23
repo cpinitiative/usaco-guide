@@ -2,7 +2,7 @@
 id: cf-51C
 source: CF
 title: Three Base Stations
-author: KJ Karaisz
+author: KJ Karaisz, Rameez Parwez
 ---
 
 <Spoiler title = "Hint 1">
@@ -47,87 +47,139 @@ stations in this manner.
 #include <bits/stdc++.h>
 using namespace std;
 
-const long double EPSILON = 1e-7;
+const double EPSILON = 1e-7;
+
 int main() {
 	int n;
 	cin >> n;
-	vector<int> x(n);
-	for (int i = 0; i < n; i++) { cin >> x[i]; }
-	sort(x.begin(), x.end());
+	vector<int> houses(n);
+	for (int i = 0; i < n; i++) { cin >> houses[i]; }
+	sort(houses.begin(), houses.end());
 
-	auto test = [&](long double d) -> optional<array<long double, 3>> {
+	auto possible_coords = [&](double d) -> pair<bool, array<double, 3>> {
 		int used = 0;
-		array<long double, 3> pos = {x[0] + d};
+		array<double, 3> pos = {houses[0] + d};
 		// Checks if each house is within range of the most recently placed
 		// station, if not, builds a new one (unless there are none left)
 		for (int i = 1; i < n; i++) {
-			if (x[i] - pos[used] > d) {
+			if (houses[i] - pos[used] > d) {
 				used++;
-				if (used == 3) { return nullopt; }
-				pos[used] = x[i] + d;
+				if (used == 3) { return {false, {}}; }
+				pos[used] = houses[i] + d;
 			}
 		}
-		return pos;
+		return {true, pos};
 	};
 
-	auto midpoint = [&](long double x, long double y) -> long double {
-		return (x + y) / 2;
-	};
+	double lo = 0, hi = 1e9;
+	array<double, 3> ans;
 
-	long double lo = 0, hi = 1e9;
-	array<long double, 3> ans;
 	while (hi - lo > EPSILON) {
-		long double mid = midpoint(lo, hi);
-		if (auto res = test(mid); res) {
+		double mid = (lo + hi) / 2;
+		auto res = possible_coords(mid);
+		if (res.first) {
 			hi = mid;
-			ans = *res;
+			ans = res.second;
 		} else {
 			lo = mid;
 		}
 	}
 
-	cout << fixed << lo << "\n";
-	printf("%.6Lf %.6Lf %.6Lf\n", ans[0], ans[1], ans[2]);
+	cout << fixed << lo << '\n';
+	printf("%.6f %.6f %.6f\n", ans[0], ans[1], ans[2]);
 }
 ```
 
 </CPPSection>
+<JavaSection>
 
+```java
+import java.io.*;
+import java.util.*;
+
+public class ThreeBaseStations {
+	private final static double EPSILON = 1E-7;
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();
+		int[] houses = new int[n];
+		for (int i = 0; i < n; i++) { houses[i] = io.nextInt(); }
+
+		Arrays.sort(houses);
+		double lo = 0, hi = 1E9;
+		double[] ans = new double[3];
+
+		while (hi - lo > EPSILON) {
+			double mid = (lo + hi) / 2;
+			double[] res = possibleCoords(mid, houses);
+			if (res.length != 0) {
+				hi = mid;
+				ans = res;
+			} else {
+				lo = mid;
+			}
+		}
+
+		io.printf("%.6f\n", lo);
+		io.printf("%.6f %.6f %.6f\n", ans[0], ans[1], ans[2]);
+		io.close();
+	}
+
+	private static double[] possibleCoords(double d, int[] houses) {
+		int used = 0;
+		double[] pos = new double[3];
+		pos[0] = houses[0] + d;
+
+		// Checks if each house is within range of the most recently placed
+		// station, if not, builds a new one (unless there are none left)
+		for (int i = 1; i < houses.length; i++) {
+			if (houses[i] - pos[used] > d) {
+				used++;
+				if (used == 3) { return new double[0]; }
+				pos[used] = houses[i] + d;
+			}
+		}
+		return pos;
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
 EPSILON = 1e-7
 
 
-def test(d: int, x: list) -> int:
+def possible_coords(d: int, houses: list) -> int:
 	used = 0
-	pos = [x[0] + d] * 3
+	pos = [houses[0] + d] * 3
 
-	"""
-	Checks if each house is within range of the most recently placed
-	station, if not, builds a new one (unless there are none left)
-	"""
-
-	for i in range(1, len(x)):
-		if x[i] - pos[used] > d:
+	# Checks if each house is within range of the most recently placed
+	# station, if not, builds a new one (unless there are none left)
+	for i in range(1, len(houses)):
+		if houses[i] - pos[used] > d:
 			used += 1
 			if used == 3:
 				return None
-			pos[used] = x[i] + d
+			pos[used] = houses[i] + d
 
 	return pos
 
 
 n = int(input())
-x = list(map(int, input().split()))
-x.sort()
+houses = list(map(int, input().split()))
+houses.sort()
 
 lo, hi = 0, 1e9
 ans = [0.0] * 3
 
 while hi - lo > EPSILON:
 	mid = (lo + hi) / 2
-	res = test(mid, x)
+	res = possible_coords(mid, houses)
 
 	if res is not None:
 		hi = mid
@@ -140,7 +192,6 @@ print(f"{ans[0]:.6f} {ans[1]:.6f} {ans[2]:.6f}")
 ```
 
 </PySection>
-
 </LanguageSection>
 
 </Spoiler>

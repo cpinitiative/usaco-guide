@@ -1,27 +1,27 @@
-import { Menu, Transition } from '@headlessui/react';
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/solid';
-import classNames from 'classnames';
-import { Link } from 'gatsby';
-import * as React from 'react';
+import clsx from 'clsx';
+import Link from 'next/link';
 import { SECTIONS, SECTION_LABELS } from '../../content/ordering';
+import { ClientOnly } from './ClientOnly';
 
 export default function SectionsDropdown({
   currentSection = null as string | null,
   sidebarNav = false,
   onSelect = null as ((section: string) => void) | null,
-  noDarkMode = false,
 }): JSX.Element {
   return (
-    <Menu as="div">
-      {({ open }) => (
-        <div className="relative h-full">
-          {sidebarNav ? (
-            <Menu.Button
-              className={`group ${
-                open || sidebarNav ? 'text-gray-900' : 'text-gray-500'
-              } inline-flex items-center h-full space-x-2 text-base leading-6 font-medium hover:text-gray-900 focus:outline-none focus:text-gray-900 transition ease-in-out duration-150 ${
-                !noDarkMode && `dark:text-dark-high-emphasis`
-              }`}
+    <ClientOnly>
+      <Menu as="div">
+        {({ open }) => (
+          <div className="relative h-full">
+            <MenuButton
+              className={clsx(
+                'group dark:text-dark-high-emphasis inline-flex h-full items-center space-x-2 text-base leading-6 font-medium transition duration-160 ease-in-out hover:text-gray-900 focus:text-gray-900 focus:outline-hidden',
+                open || sidebarNav ? 'text-gray-900' : 'text-gray-500',
+                !sidebarNav &&
+                  'border-b-2 border-transparent pt-0.5 hover:border-gray-300 focus:border-gray-300 dark:hover:border-gray-500 dark:focus:border-gray-500'
+              )}
             >
               <span>
                 {currentSection ? SECTION_LABELS[currentSection] : 'Sections'}
@@ -29,60 +29,27 @@ export default function SectionsDropdown({
               <ChevronDownIcon
                 className={`${
                   open ? 'text-gray-500' : 'text-gray-400'
-                } h-5 w-5 group-hover:text-gray-500 group-focus:text-gray-500 transition ease-in-out duration-150 ${
-                  !noDarkMode &&
-                  'dark:text-dark-med-emphasis dark:group-hover:text-dark-med-emphasis dark:group-focus:text-dark-med-emphasis'
-                }`}
+                } h-5 w-5 transition duration-150 ease-in-out group-hover:text-gray-500 group-focus:text-gray-500 ${'dark:text-dark-med-emphasis dark:group-hover:text-dark-med-emphasis dark:group-focus:text-dark-med-emphasis'}`}
                 aria-hidden="true"
               />
-            </Menu.Button>
-          ) : (
-            <Menu.Button
-              className={`group ${
-                open || sidebarNav ? 'text-gray-900' : 'text-gray-500'
-              } inline-flex items-center h-full space-x-2 border-b-2 border-transparent text-base leading-6 font-medium hover:text-gray-900 hover:border-gray-300  focus:outline-none focus:text-gray-900 focus:border-gray-300 transition ease-in-out duration-150 ${
-                !noDarkMode &&
-                `dark:text-dark-high-emphasis dark:hover:border-gray-500 dark:focus:border-gray-500`
-              }`}
-            >
-              <span className="mt-0.5">
-                {currentSection ? SECTION_LABELS[currentSection] : 'Sections'}
-              </span>
-              <ChevronDownIcon
-                className={`${
-                  open ? 'text-gray-500' : 'text-gray-400'
-                } h-5 w-5 mt-0.5 group-hover:text-gray-500 group-focus:text-gray-500 transition ease-in-out duration-150 ${
-                  !noDarkMode &&
-                  'dark:text-dark-med-emphasis dark:group-hover:text-dark-med-emphasis dark:group-focus:text-dark-med-emphasis'
-                }`}
-                aria-hidden="true"
-              />
-            </Menu.Button>
-          )}
-          <Transition
-            show={open}
-            as={React.Fragment}
-            enter="transition ease-out duration-100"
-            enterFrom="transform opacity-0 scale-95"
-            enterTo="transform opacity-100 scale-100"
-            leave="transition ease-in duration-75"
-            leaveFrom="transform opacity-100 scale-100"
-            leaveTo="transform opacity-0 scale-95"
-          >
-            <Menu.Items
-              static
-              className={`origin-top-left absolute z-20 left-0 w-56 -ml-4 rounded-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 shadow-lg focus:outline-none ${
+            </MenuButton>
+            <MenuItems
+              transition
+              anchor="top start"
+              className={`absolute left-0 z-[100] -ml-4 w-56 rounded-lg bg-white shadow-lg ring-1 ring-black/5 focus:outline-hidden dark:bg-gray-800 ${
                 sidebarNav ? 'mt-2' : '-mt-2'
-              }`}
+              } transition data-[closed]:translate-y-1 data-[closed]:opacity-0 data-[enter]:duration-200 data-[enter]:ease-out data-[leave]:duration-150 data-[leave]:ease-in`}
+              style={{ zIndex: 9999 }}
             >
               <div className="py-1">
-                {SECTIONS.map(section =>
-                  section === currentSection ? (
-                    <Menu.Item key={section} disabled>
-                      <span className="block px-4 py-2 text-base font-medium leading-6 text-gray-400 dark:text-dark-med-emphasis relative">
-                        {SECTION_LABELS[section]}
-
-                        <span className="text-gray-300 dark:text-dark-med-emphasis absolute inset-y-0 right-0 flex items-center pr-4">
+                {SECTIONS.map(section => {
+                  const className =
+                    'w-full text-left block px-4 py-2 text-base font-medium leading-6 focus:outline-hidden text-gray-700 dark:text-gray-100 data-[active]:bg-gray-100 data-[active]:text-gray-900 dark:data-[active]:bg-gray-700 dark:data-[active]:text-gray-100 data-[disabled]:text-gray-400 dark:data-[disabled]:text-dark-med-emphasis relative';
+                  const children = (
+                    <>
+                      {SECTION_LABELS[section]}
+                      {section === currentSection && (
+                        <span className="dark:text-dark-med-emphasis absolute inset-y-0 right-0 flex items-center pr-4 text-gray-300">
                           <svg
                             className="h-5 w-5"
                             viewBox="0 0 20 20"
@@ -95,49 +62,36 @@ export default function SectionsDropdown({
                             />
                           </svg>
                         </span>
-                      </span>
-                    </Menu.Item>
-                  ) : sidebarNav ? (
-                    <Menu.Item key={section}>
-                      {({ active }) => (
-                        <button
-                          onClick={() => {
-                            if (onSelect) onSelect(section);
-                          }}
-                          className={classNames(
-                            'w-full text-left block px-4 py-2 text-base font-medium leading-6 focus:outline-none',
-                            active
-                              ? 'bg-gray-100 text-gray-900 dark:text-gray-100 dark:bg-gray-700'
-                              : 'text-gray-700 dark:text-gray-100'
-                          )}
-                        >
-                          {SECTION_LABELS[section]}
-                        </button>
                       )}
-                    </Menu.Item>
-                  ) : (
-                    <Menu.Item key={section}>
-                      {({ active }) => (
-                        <Link
-                          to={`/${section}/`}
-                          className={classNames(
-                            'block px-4 py-2 text-base font-medium leading-6 focus:outline-none',
-                            active
-                              ? 'bg-gray-100 text-gray-900 dark:text-gray-100 dark:bg-gray-700'
-                              : 'text-gray-700 dark:text-gray-100'
-                          )}
+                    </>
+                  );
+                  return (
+                    <MenuItem
+                      key={section}
+                      disabled={section === currentSection}
+                    >
+                      {section === currentSection ? (
+                        <span className={className}>{children}</span>
+                      ) : onSelect ? (
+                        <button
+                          className={className}
+                          onClick={() => onSelect(section)}
                         >
-                          {SECTION_LABELS[section]}
+                          {children}
+                        </button>
+                      ) : (
+                        <Link className={className} href={`/${section}/`}>
+                          {children}
                         </Link>
                       )}
-                    </Menu.Item>
-                  )
-                )}
+                    </MenuItem>
+                  );
+                })}
               </div>
-            </Menu.Items>
-          </Transition>
-        </div>
-      )}
-    </Menu>
+            </MenuItems>
+          </div>
+        )}
+      </Menu>
+    </ClientOnly>
   );
 }

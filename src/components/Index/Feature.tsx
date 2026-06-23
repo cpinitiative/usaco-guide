@@ -24,7 +24,7 @@ export const Feature = ({
     <div className="flex flex-col md:flex-row md:items-center">
       <div
         className={classNames(
-          'hidden md:block md:flex-1 md:w-0 relative',
+          'relative hidden md:block md:w-0 md:flex-1',
           featurePosition === 'left' && 'md:pr-12 lg:pr-24'
         )}
       >
@@ -33,7 +33,7 @@ export const Feature = ({
         {fade !== 'none' && (
           <div
             className={classNames(
-              'absolute top-0 bottom-0 w-36 bg-gradient-to-l from-white dark:from-gray-900 z-20',
+              'absolute top-0 bottom-0 z-20 w-36 bg-linear-to-l from-white dark:from-gray-900',
               featurePosition === 'left'
                 ? 'right-0 md:right-12 lg:right-24'
                 : 'right-0'
@@ -43,7 +43,7 @@ export const Feature = ({
 
         <div
           className={classNames(
-            'absolute left-0 right-1/2 top-0 bottom-0 inset-0 opacity-[35%] transform-gpu animate-blob1 rounded-full blur-2xl',
+            'animate-blob1 absolute inset-0 top-0 right-1/2 bottom-0 left-0 transform-gpu rounded-full opacity-[35%] blur-2xl',
             blobClasses
           )}
         />
@@ -57,17 +57,17 @@ export const Feature = ({
         <div>
           <div
             className={classNames(
-              'w-12 h-12 rounded-xl mb-4 bg-gradient-to-br flex items-center justify-center text-white',
+              'mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-linear-to-br text-white',
               iconClasses
             )}
           >
             <Icon className="h-6 w-6" />
           </div>
         </div>
-        <h3 className="font-bold text-xl md:text-3xl text-gray-900 dark:text-gray-100">
+        <h3 className="text-xl font-bold text-gray-900 md:text-3xl dark:text-gray-100">
           {title}
         </h3>
-        <p className="md:text-lg mt-2 md:mt-4 text-gray-600 dark:text-gray-300">
+        <p className="mt-2 text-gray-600 md:mt-4 md:text-lg dark:text-gray-300">
           {children}
         </p>
       </div>

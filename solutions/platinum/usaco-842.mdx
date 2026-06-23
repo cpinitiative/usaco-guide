@@ -1,0 +1,157 @@
+---
+id: usaco-842
+source: USACO Platinum Open 2018
+title: Disruption
+author: Akshaj Arora
+---
+
+[Official Editorial (Java)](https://usaco.org/current/data/sol_disrupt_platinum_open18.html)
+
+## Explanation
+
+Root the tree arbitrarily. Each original pathway detaches a subtree from the rest of the tree. For a replacement edge to replace this pathway, one of its endpoints must lie in the detached subtree and the other endpoint must lie outside of the subtree. To solve the problem, we need to find the edge with minimum length out of all of these possible edges.
+
+To calculate this, traverse the tree using a DFS, calculating the set of possible edges for each node's subtree. To calculate the set for the current node, we merge the sets of its children, insert all replacement edges that this node is an endpoint of into the set, and remove all edges where this node is the least common ancestor of the endpoints (because both endpoints of these edges are in the subtree of the current node). This runs in $\mathcal{O}(NM \log M)$.
+
+We can optimize this by using small-to-large merging when merging the sets of child nodes. Each insertion moves an element to a set at least twice as large as before, so each element is inserted at most $O(\log M)$ times, meaning that the time complexity of the DFS is $O(N + M \log^2 M)$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N + M \log^2 M)$, although the time complexity of similar solutions may vary based on how LCA is implemented.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int bit_width(int x) { return __lg(x) + 1; }
+
+// BeginCodeSnip{LCA}
+struct LCA {
+	using Tree = const vector<vector<int>>;
+	int n, k, root;
+	vector<int> first, depth, parent, tour;
+	vector<vector<int>> st;
+
+	void dfs(Tree &adj, int node, int par) {
+		parent[node] = par;
+		if (par != -1) depth[node] = depth[par] + 1;
+		first[node] = tour.size();
+		tour.push_back(node);
+		for (int i : adj[node]) {
+			if (i != par) {
+				dfs(adj, i, node);
+				tour.push_back(node);
+			}
+		}
+	}
+
+	int min_depth(int x, int y) { return depth[x] < depth[y] ? x : y; }
+
+	LCA(Tree &adj, int root = 0)
+	    : n(adj.size()), k(bit_width(2 * n - 1)), root(root), first(n), depth(n),
+	      parent(n), st(k) {
+		tour.reserve(2 * n - 1);
+		dfs(adj, root, -1);
+
+		st[0] = tour;
+		int pow = 2;
+		for (int i = 1; i < k; i++) {
+			st[i].resize(2 * n - pow);
+			for (int j = 0; j < 2 * n - pow; j++) {
+				st[i][j] = min_depth(st[i - 1][j], st[i - 1][j + pow / 2]);
+			}
+			pow <<= 1;
+		}
+	}
+
+	int lca(int a, int b) {
+		int l = first[a], r = first[b];
+		if (l > r) swap(l, r);
+		int i = bit_width(r - l + 1) - 1;
+		return min_depth(st[i][l], st[i][r - (1 << i) + 1]);
+	}
+
+	bool is_ancestor(int a, int b) { return lca(a, b) == a; }
+
+	int dist(int a, int b) { return depth[a] + depth[b] - 2 * depth[lca(a, b)]; }
+};
+// EndCodeSnip
+
+int n, m;
+vector<vector<int>> adj;
+vector<int> ans;
+vector<vector<int>> add, rem;
+
+multiset<int> dfs(int i, int p) {
+	// Merge sets of children
+	multiset<int> s;
+	for (int j : adj[i])
+		if (j != p) {
+			auto ss = dfs(j, i);
+			if (ss.size() > s.size()) swap(s, ss);
+			s.insert(ss.begin(), ss.end());
+		}
+	// Insert edges where i is an endpoint
+	for (int j : add[i]) s.insert(j);
+	// Remove edges where i is the LCA of the endpoints
+	// They are removed twice because edges are added once for each point
+	for (int j : rem[i]) s.erase(s.find(j)), s.erase(s.find(j));
+	// Calculate answer for this edge
+	if (s.size()) ans[i] = *s.begin();
+	return s;
+}
+
+void solve() {
+	cin >> n >> m;
+	adj.resize(n);
+	vector<pair<int, int>> edges;
+	for (int i = 0; i < n - 1; i++) {
+		int a, b;
+		cin >> a >> b;
+		a--;
+		b--;
+		adj[a].push_back(b);
+		adj[b].push_back(a);
+		edges.push_back({a, b});
+	}
+
+	// Precompute LCA
+	LCA lca(adj);
+
+	// Each edge will be inserted at both endpoints and removed at their LCA
+	add.resize(n);
+	rem.resize(n);
+	while (m--) {
+		int p, q, r;
+		cin >> p >> q >> r;
+		int l = lca.lca(--p, --q);
+		add[p].push_back(r);
+		add[q].push_back(r);
+		rem[l].push_back(r);
+	}
+
+	// dfs
+	ans.assign(n, -1);
+	dfs(0, -1);
+
+	// output answer
+	for (auto &[a, b] : edges) {
+		// a is the higher node
+		if (lca.depth[a] < lca.depth[b]) swap(a, b);
+		cout << ans[a] << '\n';
+	}
+}
+
+signed main() {
+	freopen("disrupt.in", "r", stdin);
+	freopen("disrupt.out", "w", stdout);
+	cin.tie(0)->sync_with_stdio(0);
+	solve();
+}
+```
+
+</CPPSection>
+</LanguageSection>

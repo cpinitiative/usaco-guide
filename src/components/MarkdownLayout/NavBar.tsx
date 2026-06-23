@@ -1,4 +1,4 @@
-import { Link } from 'gatsby';
+import Link from 'next/link';
 import * as React from 'react';
 import MODULE_ORDERING from '../../../content/ordering';
 import { useMarkdownLayout } from '../../context/MarkdownLayoutContext';
@@ -47,14 +47,14 @@ const NavBar = ({ alignNavButtonsRight = true }) => {
       {alignNavButtonsRight && <div className="flex-1 sm:hidden" />}
       <span className="-ml-4 rounded-md">
         <Link
-          to={prevModule === null ? markdownLayoutInfo.url : prevModule.url}
+          href={prevModule === null ? markdownLayoutInfo.url : prevModule.url}
           className={
-            'inline-flex items-center px-4 py-2 text-sm leading-5 font-medium rounded-md ' +
+            'inline-flex items-center rounded-md px-4 py-2 text-sm leading-5 font-medium ' +
             (prevModule === null ? disabledClasses : activeClasses)
           }
         >
           <svg
-            className="-ml-0.5 mr-1 h-4 w-4"
+            className="mr-1 -ml-0.5 h-4 w-4"
             fill="none"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -67,14 +67,14 @@ const NavBar = ({ alignNavButtonsRight = true }) => {
           Prev
         </Link>
       </span>
-      <div className="hidden sm:flex items-center">
+      <div className="hidden items-center sm:flex">
         <Breadcrumbs />
       </div>
-      <span className="rounded-md -mr-4">
+      <span className="-mr-4 rounded-md">
         <Link
-          to={nextModule === null ? markdownLayoutInfo.url : nextModule.url}
+          href={nextModule === null ? markdownLayoutInfo.url : nextModule.url}
           className={
-            'inline-flex items-center px-4 py-2 text-sm leading-5 font-medium rounded-md ' +
+            'inline-flex items-center rounded-md px-4 py-2 text-sm leading-5 font-medium ' +
             (nextModule === null ? disabledClasses : activeClasses)
           }
         >

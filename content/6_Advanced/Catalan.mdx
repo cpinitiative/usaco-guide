@@ -1,7 +1,7 @@
 ---
 id: catalan
 title: 'Catalan Numbers'
-author: Mihnea Brebenel
+author: Mihnea Brebenel, Daniel Zhu
 description: ''
 prerequisites:
   - combo
@@ -20,7 +20,7 @@ frequency: 1
 </Resources>
 
 The [Catalan numbers](https://en.wikipedia.org/wiki/Catalan_number) are a sequence of positive integers that can be very useful in counting problems in combinatorics.
-The $n$-th Catalan can be expressed as follows using binomial coeffiecients:
+The $n$-th Catalan can be expressed as follows using binomial coefficients:
 
 $$
 C_n=\frac{1}{n+1}\cdot \binom{2n}{n}=\frac{(2n)!}{(n+1)!\,n!}
@@ -45,7 +45,7 @@ The first $5$ Catalan numbers are
 
 </center>
 
-# Applications
+## Applications
 
 The Catalan numbers can be used to represent a wide variety of things.
 
@@ -60,14 +60,14 @@ Take, for instance, $C_3=5$:
 It's also equal to the number of full binary trees with $n+1$ leaves.
 The following image shows the $5$ binary trees with $4$ leaves:
 
-![binary-trees](./assets/catalan-binary-trees.png)
+![binary-trees](/content/6_Advanced/assets/catalan-binary-trees.png)
 
 $C_n$ is also the number of monotonic lattice paths along the edges of a $n \times n$ grid that don't pass above the diagonal.
 The paths start in the lower left corner and ends in the upper right corner.
 
 For example, there are $C_4=14$ paths in a $4 \times 4$ grid:
 
-![lattice points](./assets/catalan-lattice-paths.png)
+![lattice points](/content/6_Advanced/assets/catalan-lattice-paths.png)
 
 The next two examples are a bit more niche, but they're still interesting to think about.
 
@@ -76,21 +76,78 @@ The number of different ways to divide the polygon in this way is equal to $C_n$
 
 Here's the particular case for $n=3$ in which we have $C_3=5$:
 
-![polygons](./assets/catalan-polygons.png)
+![polygons](/content/6_Advanced/assets/catalan-polygons.png)
 
 $C_n$ is also equal to the number of [mountain ranges](https://mathcircle.berkeley.edu/sites/default/files/BMC6/pdf0607/catalan.pdf#page=2) of length $2n$ consisting of $n$ upstrokes and $n$ downstrokes.
 
-![mountains](./assets/catalan-mountain-strokes.png)
+![mountains](/content/6_Advanced/assets/catalan-mountain-strokes.png)
 
-# Bracket Sequences I
+## Derivations
+
+Using the "mountain ranges" interpretation, we can derive two nice bijective proofs for the Catalan formulas.
+
+### Reflection
+
+Consider complementary counting: we then need to characterize the paths that dip below ground level, i.e. the paths that touch the line $y = -1$. It turns out that for every such path ending at $(2n, 0)$, we can biject it to a path ending at $(2n, -2)$ by reflecting a portion of the path, like so:
+
+![](/content/6_Advanced/Catalan/reflection.png)
+
+To be precise, the bijection is defined as follows:
+- To go from blue to red, we reflect the blue path about the first point that touches the $y = -1$. Since we assumed the blue path touches $y = -1$ at least once, this point is guaranteed to exist.
+- To go from red to blue, we also reflect the red path about the first point that touches $y = -1$. This point is guaranteed to exist because the path starts at $y = 0$ and ends at $y = -2$, which means it must cross $y = -1$ at some point.
+
+Therefore, the number of blue paths equals the number of red paths, and the number of red paths is easy to count:
+$$
+\text{\# of red paths} = \binom{\text{up + down}}{\text{down}} = \binom{2n}{n + 1}
+$$
+
+Thus, the number of mountain ranges is the total number of paths minus the number of blue paths:
+$$
+\begin{align*}
+\binom{2n}{n} - \binom{2n}{n + 1} &= \binom{2n}{n} - \frac{n}{n + 1}\binom{2n}{n} \\
+&= \frac{1}{n + 1}\binom{2n}{n}
+\end{align*}
+$$
+
+Note that we can generalize this bijection: to count the paths that cross $y = -k$, we can instead count the number of paths that end at $(2n, -2k)$.
+
+### Exceedance
+
+This explanation offers more insight into why $\frac{1}{n + 1}$ appears in the final expression.
+
+First, let's define the **exceedance** of a path as the total number of upstrokes it takes above $y = 0$.
+
+![](/content/6_Advanced/Catalan/exceedance.png)
+
+_A path with exceedance 5._
+
+The core result is that for all $i$ from $0$ to $n$, the number of paths with exceedance $i$ **is equal**. Therefore, the number of mountain ranges, i.e. the number of paths with exceedance $n$, is precisely $\frac{1}{n + 1}$ of the total number of paths.
+
+To prove this equality, we will define a bijection between paths with exceedance $i$ and paths with exceedance $i + 1$ for $0 \leq i \lt n$. Let's consider the following mapping: for a path with exceedance $i$, we take the last downstroke that goes from $y = 0$ to $y = -1$ and move it to the end of the path.
+
+![](/content/6_Advanced/Catalan/mapping1.png)
+
+This transformation indeed increases exceedance by 1, but unfortunately it is not bijective. One easy way to see this is the fact that the resultant path always ends in a downstroke, which clearly does not cover every possible path of exceedance $i + 1$.
+
+Thankfully, we can make an easy fix: after applying our current mapping, just swap the second half (i.e. the part originally after the red arrow) of the path with the first!
+
+![](/content/6_Advanced/Catalan/mapping2.png)
+
+We can show that this mapping is invertible by verifying that it transforms the red arrow from the last downstroke from $y = 0$ to $y = -1$, to the first downstroke from $y = 1$ to $y = 0$. Therefore, we have established a bijection between paths with exceedance $i$ and paths with exceedance $i + 1$, as desired.
+
+Just for fun, here's an image from Wikipedia that demonstrates how this algorithm decreases the exceedance of various paths:
+![500|center](https://upload.wikimedia.org/wikipedia/commons/6/65/Catalan_number_algorithm_table.png)
+
+
+## Bracket Sequences I
 
 <FocusProblem problem="sample" />
 
-## Explanation
+### Explanation
 
 The problem is a direct application of Catalan numbers. The answer for $N$ is the $N/2$ Catalan Number.
 
-## Implementation
+### Implementation
 
 **Time Complexity:** $\mathcal{O}(N)$
 
@@ -208,6 +265,6 @@ else:
 </PySection>
 </LanguageSection>
 
-# Problems
+## Problems
 
 <Problems problems="catalan-practice" />

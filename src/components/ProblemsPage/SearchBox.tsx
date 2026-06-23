@@ -21,7 +21,7 @@ export default function SearchBox(props: UseSearchBoxProps): JSX.Element {
   }, []);
   return (
     <div className="relative">
-      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
         <svg
           className="h-5 w-5 text-gray-700 dark:text-blue-900"
           fill="currentColor"
@@ -36,7 +36,7 @@ export default function SearchBox(props: UseSearchBoxProps): JSX.Element {
       </div>
       <input
         id="search"
-        className="block w-full pl-12 pr-3 py-3 rounded-md bg-blue-100 dark:bg-blue-100 placeholder-gray-900 dark:placeholder-blue-900 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition text-black dark:text-blue-900"
+        className="focus:shadow-outline-blue block w-full rounded-md bg-blue-100 py-3 pr-3 pl-12 text-black placeholder-gray-900 transition focus:border-blue-300 focus:outline-hidden dark:bg-blue-100 dark:text-blue-900 dark:placeholder-blue-900"
         placeholder="Search"
         type="search"
         autoComplete="off"

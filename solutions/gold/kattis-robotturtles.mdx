@@ -5,9 +5,7 @@ title: Robot Turtles
 author: Maggie Liu
 ---
 
-Official Analysis:
-[Solution Outline](https://icpc.cs.vt.edu/hs/2016/outlines-vths-2016.pdf#page=20),
-[Code](https://icpc.cs.vt.edu/hs/2016/judge/robotturtles/submissions/accepted/)
+[Official Analysis](https://vthspc.cs.vt.edu/assets/files/outlines-vths-2016-20584eee6ff9cc2b00f5b30baf0c4d22.pdf#page=20)
 
 ## Explanation
 
@@ -54,8 +52,11 @@ struct State {
 	string moves;
 	bool operator>(const State &a) const { return dist > a.dist; }
 };
+
 bool ingrid(int a, int b) { return a >= 0 && a < 8 && b >= 0 && b < 8; }
-int di[] = {-1, 0, 1, 0}, dj[] = {0, 1, 0, -1};
+
+int di[] = {-1, 0, 1, 0};
+int dj[] = {0, 1, 0, -1};
 
 int main() {
 	string grid[8];
@@ -79,6 +80,7 @@ int main() {
 			cout << cur.moves << endl;
 			return 0;
 		}
+
 		// move forward
 		int newi = cur.i + di[cur.dir], newj = cur.j + dj[cur.dir];
 		if (ingrid(newi, newj) &&
@@ -87,12 +89,14 @@ int main() {
 			dist[cur.dir][newi][newj] = dist[cur.dir][cur.i][cur.j] + 1;
 			pq.push({dist[cur.dir][newi][newj], newi, newj, cur.dir, cur.moves + "F"});
 		}
+
 		// melt ice castle and move forward
 		if (ingrid(newi, newj) && grid[newi][newj] == 'I' &&
 		    dist[cur.dir][cur.i][cur.j] + 2 < dist[cur.dir][newi][newj]) {
 			dist[cur.dir][newi][newj] = dist[cur.dir][cur.i][cur.j] + 2;
 			pq.push({dist[cur.dir][newi][newj], newi, newj, cur.dir, cur.moves + "XF"});
 		}
+
 		// turn left or right
 		for (int turn : {-1, 1}) {
 			int newdir = (cur.dir + turn + 4) % 4;
@@ -104,11 +108,10 @@ int main() {
 			}
 		}
 	}
+
 	cout << "no solution" << endl;
-	return 0;
 }
 ```
 
 </CPPSection>
-
 </LanguageSection>

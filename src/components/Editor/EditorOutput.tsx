@@ -1,6 +1,4 @@
 import { useAtomValue, useSetAtom } from 'jotai';
-import babelParser from 'prettier/parser-babel';
-import prettier from 'prettier/standalone';
 import * as React from 'react';
 import { useState } from 'react';
 import { activeFileAtom, saveFileAtom } from '../../atoms/editor';
@@ -11,6 +9,7 @@ import {
   PROBLEM_DIFFICULTY_OPTIONS,
   ProblemMetadata,
 } from '../../models/problem';
+import { formatMarkdown } from '../../utils/prettierFormatter';
 import QuizGeneratorModal from '../QuizGeneratorModal';
 
 const RawMarkdownRenderer = React.lazy(
@@ -21,13 +20,13 @@ export const EditorOutput = (): JSX.Element => {
   const activeFile = useAtomValue(activeFileAtom);
   const saveFile = useSetAtom(saveFileAtom);
 
-  const markdown: string = activeFile?.markdown ?? '';
-  const problems: string = activeFile?.problems ?? '';
-
   const [
     markdownProblemListsProviderValue,
     setMarkdownProblemListsProviderValue,
   ] = useState<{ listId: string; problems: any }[]>([]);
+
+  const markdown: string = activeFile?.markdown ?? '';
+  const problems: string = activeFile?.problems ?? '';
   React.useEffect(() => {
     try {
       const parsedProblems = JSON.parse(problems || '{}');
@@ -43,10 +42,11 @@ export const EditorOutput = (): JSX.Element => {
     }
   }, [problems]);
 
-  const handleAddProblem = (
+  const handleAddProblem = async (
     listId: string,
     problemMetadata: ProblemMetadata
   ) => {
+    if (!activeFile) return;
     const parsedOldFileData = JSON.parse(problems);
     const tableToEdit = parsedOldFileData[listId];
 
@@ -69,25 +69,25 @@ export const EditorOutput = (): JSX.Element => {
     // Use pretty JSON.stringify because it inserts a newline before all objects, which forces prettier to then convert
     // these objects into multiline ones.
     const newContent = JSON.stringify(parsedOldFileData, null, 2) + '\n';
-    const formattedNewContent = prettier.format(newContent, {
-      endOfLine: 'lf',
-      semi: true,
-      singleQuote: true,
-      tabWidth: 2,
-      useTabs: false,
-      trailingComma: 'es5',
-      arrowParens: 'avoid',
-      parser: 'json',
-      plugins: [babelParser],
-    });
+    const formattedNewContent = await formatMarkdown(newContent);
     saveFile({
-      path: activeFile!.path,
-      update: prev => ({
+      path: activeFile.path,
+      update: async prev => ({
         ...prev,
         problems: formattedNewContent,
       }),
     });
   };
+
+  if (!activeFile) {
+    return (
+      <div className="markdown p-4">
+        <div className="rounded-lg border border-gray-200 bg-white p-4 text-sm text-gray-700 dark:border-gray-800 dark:bg-gray-950 dark:text-gray-200">
+          Open a file from the left sidebar to preview it here.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="markdown p-4">

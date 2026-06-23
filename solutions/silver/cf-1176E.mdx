@@ -1,0 +1,192 @@
+---
+id: cf-1176E
+source: CF
+title: Cover It!
+author: David Zhou
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/67598)
+
+## Explanation
+
+To solve this problem, we need to find a bipartite coloring where every node is either selected or adjacent to one that is.
+
+Perform [BFS](/silver/graph-traversal) starting from any node and calculate the distance (level) from the root to each node. Every node will have a parity of even or odd.
+
+Since BFS visits every node at the same level before moving on, edges must connect nodes of opposite parities. This provides the bipartition that separates every node.
+
+The categories are disjoint and exhaustive, so one group must have less than or equal to $\left \lfloor \frac{n}{2} \right \rfloor$ nodes. We can output the smaller of the two sets to satisfy the problem's requirements.
+
+Another interpretation is that the BFS traversal constructs a spanning tree, which we do a bipartite coloring on. Because doing a bipartite coloring on the tree satisfies the requirement, we can ignore all edges that aren't part of our spanning tree.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N+M)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int n, m;
+		cin >> n >> m;
+		vector<vector<int>> adj(n);
+		for (int i = 0; i < m; i++) {
+			int u, v;
+			cin >> u >> v;
+			adj[--u].push_back(--v);
+			adj[v].push_back(u);
+		}
+
+		// BFS from node 0
+		queue<int> q;
+		q.push(0);
+		vector<int> dist(n, -1);
+		dist[0] = 0;
+		while (!q.empty()) {
+			int curr = q.front();
+			q.pop();
+			for (int next : adj[curr]) {
+				if (dist[next] == -1) {
+					dist[next] = dist[curr] + 1;
+					q.push(next);
+				}
+			}
+		}
+
+		// separates nodes by parity and outputs smaller group
+		vector<int> even;
+		vector<int> odd;
+
+		for (int i = 0; i < n; i++) {
+			(dist[i] % 2 == 0 ? even : odd).push_back(i + 1);
+		}
+		if (even.size() < odd.size()) {
+			cout << even.size() << "\n";
+			for (int num : even) { cout << num << " "; }
+		} else {
+			cout << odd.size() << "\n";
+			for (int num : odd) { cout << num << " "; }
+		}
+		cout << "\n";
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Cover {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		PrintWriter pw = new PrintWriter(new OutputStreamWriter(System.out));
+
+		int testNum = Integer.parseInt(br.readLine());
+		for (int t = 0; t < testNum; t++) {
+			String[] nm = br.readLine().split(" ");
+			int n = Integer.parseInt(nm[0]);
+			int m = Integer.parseInt(nm[1]);
+			List<Integer>[] adj = new ArrayList[n];
+			for (int i = 0; i < n; i++) { adj[i] = new ArrayList<>(); }
+			for (int i = 0; i < m; i++) {
+				String[] uv = br.readLine().split(" ");
+				int u = Integer.parseInt(uv[0]) - 1;
+				int v = Integer.parseInt(uv[1]) - 1;
+				adj[u].add(v);
+				adj[v].add(u);
+			}
+
+			// BFS from node 0
+			Queue<Integer> q = new LinkedList<>();
+			int[] dist = new int[n];
+			Arrays.fill(dist, -1);
+			q.add(0);
+			dist[0] = 0;
+			while (!q.isEmpty()) {
+				int curr = q.poll();
+				for (int next : adj[curr]) {
+					if (dist[next] == -1) {
+						dist[next] = dist[curr] + 1;
+						q.add(next);
+					}
+				}
+			}
+
+			// separates nodes by parity and outputs smaller group
+			List<Integer> even = new ArrayList<>();
+			List<Integer> odd = new ArrayList<>();
+			for (int i = 0; i < n; i++) {
+				if (dist[i] % 2 == 0) {
+					even.add(i + 1);
+				} else {
+					odd.add(i + 1);
+				}
+			}
+			List<Integer> smaller = even.size() <= odd.size() ? even : odd;
+			pw.println(smaller.size());
+			for (int num : smaller) { pw.print(num + " "); }
+			pw.println();
+		}
+
+		pw.close();
+		br.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from collections import deque
+import sys
+
+input = sys.stdin.readline  # redefine input for performance reasons
+
+for _ in range(int(input())):
+	n, m = map(int, input().split())
+	adj = [[] for _ in range(n)]
+	for _ in range(m):
+		u, v = map(int, input().split())
+		u -= 1
+		v -= 1
+		adj[u].append(v)
+		adj[v].append(u)
+
+	# BFS from node 0
+	dist = [-1] * n
+	dist[0] = 0
+	q = deque([0])
+	while q:
+		curr = q.popleft()
+		for next in adj[curr]:
+			if dist[next] == -1:
+				dist[next] = dist[curr] + 1
+				q.append(next)
+
+	# separates nodes by parity and outputs smaller group
+	even = []
+	odd = []
+	for i in range(n):
+		if dist[i] % 2 == 0:
+			even.append(i + 1)
+		else:
+			odd.append(i + 1)
+
+	smaller = even if len(even) <= len(odd) else odd
+	print(len(smaller))
+	print(" ".join(map(str, smaller)))
+```
+
+</PySection>
+</LanguageSection>

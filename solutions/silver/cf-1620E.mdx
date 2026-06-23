@@ -1,0 +1,144 @@
+---
+id: cf-1620E
+source: CF
+title: Replace the Numbers
+author: Kevin Sheng
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/98061)
+
+## Explanation
+
+The trick here is to process the queries in reverse.
+That way, when we come across an append operation,
+we'll know all the replace operations that will come after.
+
+Let's keep a hashmap $h$, where $h[x]$ is the number
+$x$ will get mapped to after all replace operations have completed.
+
+For example, consider the third sample case
+and say we've only processed the last query
+In this case,
+```
+h = {2: 7}
+```
+However, after we've processed *all* the queries, our map will now be
+```
+h = {1: 3, 2: 3, 4: 3}
+```
+
+If we hit an "append $x$" operation, we add $h[x]$ to the beginning of our array.
+
+For the "replace $x$ with $y$" operation, it's a bit trickier:
+* If $y$ isn't in $h$ yet, set $h[x]=y$.
+* Otherwise, $h[x]=h[y]$, since $y$ won't be $x$'s final state after all operations.
+
+And that's both types of queries handled!
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(q)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <map>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	int query_num;
+	std::cin >> query_num;
+	vector<vector<int>> queries;
+	for (int q = 0; q < query_num; q++) {
+		int type;
+		std::cin >> type;
+		if (type == 1) {
+			int elem;
+			std::cin >> elem;
+			queries.push_back({type, elem});
+		} else if (type == 2) {
+			int x, y;
+			std::cin >> x >> y;
+			queries.push_back({type, x, y});
+		}
+	}
+
+	std::map<int, int> mappings;
+	vector<int> arr;
+	std::reverse(queries.begin(), queries.end());
+	for (const vector<int> &q : queries) {
+		if (q[0] == 1) {
+			arr.push_back(mappings.count(q[1]) ? mappings[q[1]] : q[1]);
+		} else if (q[0] == 2) {
+			mappings[q[1]] = mappings.count(q[2]) ? mappings[q[2]] : q[2];
+		}
+	}
+
+	for (int i = arr.size() - 1; i >= 0; i--) { cout << arr[i] << " \n"[i == 0]; }
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class ReplaceTheNumbers {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		int queryNum = Integer.parseInt(read.readLine());
+		int[][] queries = new int[queryNum][];
+		for (int q = 0; q < queryNum; q++) {
+			queries[q] = Arrays.stream(read.readLine().split(" "))
+			                 .mapToInt(Integer::parseInt)
+			                 .toArray();
+		}
+
+		Map<Integer, Integer> mappings = new HashMap<>();
+		List<Integer> arr = new ArrayList<>();
+		for (int q = queryNum - 1; q >= 0; q--) {
+			if (queries[q][0] == 1) {
+				arr.add(mappings.getOrDefault(queries[q][1], queries[q][1]));
+			} else if (queries[q][0] == 2) {
+				int x = queries[q][1], y = queries[q][2];
+				mappings.put(x, mappings.getOrDefault(y, y));
+			}
+		}
+
+		for (int i = arr.size() - 1; i >= 0; i--) {
+			System.out.print(arr.get(i) + (i == 0 ? "\n" : " "));
+		}
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+queries = []
+for _ in range(int(input())):
+	queries.append(tuple(int(i) for i in input().split()))
+
+mappings = {}
+arr = []
+for q in reversed(queries):
+	if q[0] == 1:
+		arr.append(mappings.get(q[1], q[1]))
+	elif q[0] == 2:
+		mappings[q[1]] = mappings.get(q[2], q[2])
+
+print(" ".join(str(i) for i in reversed(arr)))
+```
+
+</PySection>
+</LanguageSection>

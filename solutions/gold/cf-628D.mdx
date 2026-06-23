@@ -1,0 +1,114 @@
+---
+id: cf-628D
+source: CF
+title: Magic Numbers
+author: Justin Ji
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/43203)
+
+## Explanation
+
+First, to reduce our problem, we observe the following:
+1. Being divisible by $M$ means that our number is equivalent to $0$, mod $M$.
+2. Let $\texttt{count\_magic}(x)$ define all the magic numbers $\leq x$.
+   The frequency of magic numbers in the range $[a, b]$ is $\texttt{count\_magic}(b) - \texttt{count\_magic}(a - 1)$.
+
+Then, we can use a somewhat typical DP state to model the problem.
+
+Let $\texttt{dp}[i][j][k]$ represent all the possibilities, when:
+- We have considered the first $i$ digits
+- Our number is equivalent to $j$, mod $M$
+- $k$ represents if our number is "free" or not
+  - If the first $i$ digits in our number match up with the bound or not
+
+Then, after considering all of our digits, we consider all the numbers equivalent
+to $0$ mod $M$.
+
+Here are some key points to consider when implementing the problem:
+- Handling $a-1$ in string form is annoying. Instead, we can consider the values of $\texttt{count\_magic}(a)$ and $\texttt{count\_magic}(b)$, then manually handle $a$ on its own.
+- Note how the problem guarantees that $a$ and $b$ are the same length. This means that we can effectively ignore leading zeroes in our implementation.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(M \cdot D)$, where $D$ is the number of digits
+in $a$ and $b$.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+constexpr int MOD = 1e9 + 7;
+
+int count_magic(int m, int d, string bound, bool ok) {
+	if (bound.length() == 1) {
+		int num_good = 0;
+		int cur_digit = bound[0] - '0';
+		for (int i = 0; i < cur_digit; i++) { num_good += (i != d) && (i % m == 0); }
+
+		if (ok && cur_digit != d && cur_digit % m == 0) { num_good++; }
+
+		return num_good;
+	}
+
+	vector<int> digits;
+	for (int i = 0; i < bound.length(); i++) { digits.push_back(bound[i] - '0'); }
+
+	// dp[i][j] = # of ways, if cur is equiv to i, and j = free or not
+	vector<array<int, 2>> dp(m);
+	for (int i = 1; i <= digits[0]; i++) {
+		if (i == d) { continue; }
+		dp[i % m][(i < digits[0])]++;
+	}
+
+	for (int i = 1; i < digits.size(); i++) {
+		const int cur = digits[i];
+		vector<array<int, 2>> next_dp(m);
+		for (int j = 0; j < m; j++) {
+			if (i % 2 == 1) {
+				// we force this digit to be D
+				int nxt = (10 * j + d) % m;
+				(next_dp[nxt][1] += dp[j][1]) %= MOD;
+				if (cur > d) {
+					(next_dp[nxt][1] += dp[j][0]) %= MOD;
+				} else if (cur == d) {
+					(next_dp[nxt][0] += dp[j][0]) %= MOD;
+				}
+			} else {
+				// we just need to make sure next digit isn't D
+				for (int dig = 0; dig <= 9; dig++) {
+					if (dig == d) { continue; }
+					int nxt = (10 * j + dig) % m;
+					(next_dp[nxt][1] += dp[j][1]) %= MOD;
+					if (dig < cur) {
+						(next_dp[nxt][1] += dp[j][0]) %= MOD;
+					} else if (dig == cur) {
+						(next_dp[nxt][0] += dp[j][0]) %= MOD;
+					}
+				}
+			}
+		}
+
+		dp = move(next_dp);
+	}
+
+	return (dp[0][1] + dp[0][0] * ok) % MOD;
+}
+
+int main() {
+	int m, d;
+	cin >> m >> d;
+
+	string a, b;
+	cin >> a >> b;
+
+	cout << (count_magic(m, d, b, true) - count_magic(m, d, a, false) + MOD) % MOD
+	     << endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>

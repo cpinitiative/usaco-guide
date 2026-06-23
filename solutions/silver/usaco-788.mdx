@@ -2,7 +2,7 @@
 id: usaco-788
 source: USACO Silver 2018 January
 title: Mootube
-author: Óscar Garries, Qi Wang
+author: Óscar Garries, Qi Wang, David Guo
 ---
 
 <Spoiler title="Hint 1">
@@ -22,6 +22,14 @@ What observations can we make about how the relevance value influences our decis
 <Spoiler title="Solution">
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_mootube_silver_jan18.html)
+
+## Explanation
+
+We represent the videos and their relationships using a tree, where each node corresponds to a video and the edges denote the relevance between them.
+
+For each query, we perform a depth-first search starting from the given video, only traversing edges that are greater than or equal to the relevance threshold.
+
+This allows us to efficiently identify all videos that satisfy the threshold, so we count each valid video and finally output the computed total.
 
 ## Implementation
 
@@ -164,7 +172,7 @@ public class MooTube {
 <PySection>
 
 <Warning>
-Due to the strict time limits, this Python code recieves a TLE verdict on a test case.
+Due to the strict time limits, this Python code receives a TLE verdict on a test case.
 </Warning>
 
 ```py

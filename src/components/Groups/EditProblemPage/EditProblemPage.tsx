@@ -1,18 +1,17 @@
 import { CheckIcon, XIcon } from '@heroicons/react/solid';
 import { RouteComponentProps } from '@reach/router';
 import {
-  Timestamp,
   collection,
   getDocs,
   getFirestore,
   limit,
   query,
+  Timestamp,
 } from 'firebase/firestore';
-import 'flatpickr/dist/themes/material_blue.css';
-import { Link, navigate } from 'gatsby';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import { useReducer } from 'react';
-import Flatpickr from 'react-flatpickr';
 import toast from 'react-hot-toast';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePost } from '../../../hooks/groups/usePost';
@@ -22,17 +21,19 @@ import { useFirebaseApp } from '../../../hooks/useFirebase';
 import { GroupProblemData } from '../../../models/groups/problem';
 import {
   AlgoliaProblemInfo,
-  ProblemInfo,
   getProblemURL,
+  ProblemInfo,
 } from '../../../models/problem';
 import ButtonGroup from '../../ButtonGroup';
-import ProblemAutocompleteModal from '../../ProblemAutocompleteModal/ProblemAutocompleteModal';
-import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Layout from '../../layout';
+import ProblemAutocompleteModal from '../../ProblemAutocompleteModal/ProblemAutocompleteModal';
 import SEO from '../../seo';
+import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Breadcrumbs from '../Breadcrumbs';
 import MarkdownEditor from '../MarkdownEditor';
 import EditProblemHintSection from './EditProblemHintSection';
+
+const Flatpickr = React.lazy(() => import('react-flatpickr'));
 
 type Props = RouteComponentProps<{
   groupId: string;
@@ -51,14 +52,21 @@ export default function EditProblemPage(props: Props) {
   if (!post) throw new Error('Post not found');
   const originalProblem = useProblem(problemId);
   const [problem, editProblem] = useReducer(
-    (oldProblem, updates: Partial<GroupProblemData>): GroupProblemData => ({
-      ...oldProblem,
-      ...updates,
-    }),
+    (oldProblem, updates: Partial<GroupProblemData>): GroupProblemData => {
+      const merged = {
+        ...oldProblem,
+        ...updates,
+      };
+      if (merged.solutionReleaseMode === 'custom' && !merged.usacoGuideId) {
+        merged.usacoGuideId = '';
+      }
+      return merged as GroupProblemData;
+    },
     originalProblem
   );
   const { saveProblem, deleteProblem } = usePostActions(groupId);
   const [isSearchOpen, setIsSearchOpen] = React.useState(false);
+  const router = useRouter();
 
   React.useEffect(() => {
     if (!problem && originalProblem) editProblem(originalProblem);
@@ -87,15 +95,13 @@ export default function EditProblemPage(props: Props) {
     if (confirm('Are you sure you want to delete this problem?')) {
       deleteProblem(post, problem.id)
         .then(() => {
-          navigate('../../../', {
-            replace: true,
-          });
+          router.push('../../../');
         })
         .catch(e => toast.error(e.message));
     }
   };
   const handleSaveProblem = () => {
-    saveProblem(post, problem).then(() => navigate(-1));
+    saveProblem(post, problem).then(() => router.back());
   };
 
   const handleProblemSearchSelect = (problem: AlgoliaProblemInfo) => {
@@ -115,12 +121,12 @@ export default function EditProblemPage(props: Props) {
               getProblemURL(problemInfo),
             ]}/solution)`
           : problem.solution?.kind == 'link'
-          ? `See [${problem.solution.url}](${problem.solution.url})`
-          : problem.solution?.kind == 'label'
-          ? problem.solution.label
-          : problem.solution?.kind === 'sketch'
-          ? problem.solution.sketch
-          : '',
+            ? `See [${problem.solution.url}](${problem.solution.url})`
+            : problem.solution?.kind == 'label'
+              ? problem.solution.label
+              : problem.solution?.kind === 'sketch'
+                ? problem.solution.sketch
+                : '',
 
       source: problem.source,
       difficulty: problem.difficulty,
@@ -135,8 +141,8 @@ export default function EditProblemPage(props: Props) {
     return (
       <>
         <TopNavigationBar />
-        <main className="text-center py-10">
-          <p className="font-medium text-2xl">Loading...</p>
+        <main className="py-10 text-center">
+          <p className="text-2xl font-medium">Loading...</p>
         </main>
       </>
     );
@@ -144,24 +150,28 @@ export default function EditProblemPage(props: Props) {
 
   return (
     <Layout>
-      <SEO title={`Edit ${problem.name} · ${post.name}`} />
+      <SEO title={`Edit ${problem.name} · ${post.name}`} image={undefined} />
       <TopNavigationBar />
-      <nav className="flex mt-6 mb-4" aria-label="Breadcrumb">
+      <nav className="mt-6 mb-4 flex" aria-label="Breadcrumb">
         <Breadcrumbs
-          className="max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-4"
+          className="mx-auto w-full max-w-4xl px-4 pt-3 pb-4 sm:px-6 lg:px-8"
           group={activeGroup.groupData!}
           post={post}
         />
       </nav>
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="md:flex md:items-center md:justify-between md:space-x-4 xl:border-b dark:border-gray-700 xl:pb-6">
+      <main className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <div className="md:flex md:items-center md:justify-between md:space-x-4 xl:border-b xl:pb-6 dark:border-gray-700">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
               Edit Problem: {problem.name}
             </h1>
           </div>
           <div className="mt-4 flex space-x-3 md:mt-0">
-            <Link to="../" replace className="btn">
+            <Link
+              href={`/groups/${groupId}/post/${postId}/problems/${problemId}`}
+              replace
+              className="btn"
+            >
               <span>Back</span>
             </Link>
             <button type="submit" onClick={handleSaveProblem} className="btn">
@@ -172,7 +182,7 @@ export default function EditProblemPage(props: Props) {
         <div className="h-6" />
         <div className="space-y-8 divide-y divide-gray-200 dark:divide-gray-700">
           <div>
-            <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+            <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
               <div className="sm:col-span-4">
                 <button
                   type="button"
@@ -186,7 +196,7 @@ export default function EditProblemPage(props: Props) {
                 {problem.usacoGuideId ? (
                   <b className="block text-sm font-medium text-green-700 dark:text-green-200">
                     <CheckIcon
-                      className={'text-green-700 h-5 w-5 mr-2 inline'}
+                      className={'mr-2 inline h-5 w-5 text-green-700'}
                     />
                     This problem is linked to a USACO Guide Problem (
                     <button
@@ -199,7 +209,7 @@ export default function EditProblemPage(props: Props) {
                   </b>
                 ) : (
                   <b className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                    <XIcon className={'text-gray-700 h-4 w-4 mr-1 inline'} />
+                    <XIcon className={'mr-1 inline h-4 w-4 text-gray-700'} />
                     This problem is not linked to a USACO Guide Problem. To link
                     this problem to a USACO Guide Problem, import a problem from
                     above.
@@ -277,35 +287,45 @@ export default function EditProblemPage(props: Props) {
                       </p>
                     )}
                     {problem.solutionReleaseMode === 'custom' && (
-                      <Flatpickr
-                        placeholder={'Choose a release time'}
-                        options={{
-                          dateFormat:
-                            'l, F J, Y, h:i K ' +
-                            [
-                              '',
-                              ...(
-                                'UTC' +
-                                // sign is reversed for some reason
-                                (new Date().getTimezoneOffset() > 0
-                                  ? '-'
-                                  : '+') +
-                                Math.abs(new Date().getTimezoneOffset()) / 60
-                              ).split(''),
-                            ].join('\\\\'),
-                          enableTime: true,
-                        }}
-                        value={problem.solutionReleaseTimestamp?.toDate()}
-                        onChange={date => {
-                          console.log(date);
-                          editProblem({
-                            solutionReleaseTimestamp: Timestamp.fromDate(
-                              date[0]
-                            ),
-                          });
-                        }}
-                        className="input mt-2"
-                      />
+                      <React.Suspense
+                        fallback={
+                          <input
+                            className="input mt-2"
+                            placeholder="Loading date picker..."
+                            disabled
+                          />
+                        }
+                      >
+                        <Flatpickr
+                          placeholder={'Choose a release time'}
+                          options={{
+                            dateFormat:
+                              'l, F J, Y, h:i K ' +
+                              [
+                                '',
+                                ...(
+                                  'UTC' +
+                                  // sign is reversed for some reason
+                                  (new Date().getTimezoneOffset() > 0
+                                    ? '-'
+                                    : '+') +
+                                  Math.abs(new Date().getTimezoneOffset()) / 60
+                                ).split(''),
+                              ].join('\\\\'),
+                            enableTime: true,
+                          }}
+                          value={problem.solutionReleaseTimestamp?.toDate()}
+                          onChange={date => {
+                            console.log(date);
+                            editProblem({
+                              solutionReleaseTimestamp: Timestamp.fromDate(
+                                date[0]
+                              ),
+                            });
+                          }}
+                          className="input mt-2"
+                        />
+                      </React.Suspense>
                     )}
                   </div>
                 </div>
@@ -391,14 +411,14 @@ export default function EditProblemPage(props: Props) {
               <button
                 type="button"
                 onClick={handleDeleteProblem}
-                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-dark-surface"
+                className="dark:focus:ring-offset-dark-surface inline-flex justify-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-hidden"
               >
                 Delete Problem
               </button>
               <button
                 type="button"
                 onClick={handleSaveProblem}
-                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-dark-surface"
+                className="dark:focus:ring-offset-dark-surface inline-flex justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden"
               >
                 Save
               </button>

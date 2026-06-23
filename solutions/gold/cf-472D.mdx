@@ -1,21 +1,36 @@
 ---
 id: cf-472D
-source: Codeforces
+source: CF
 title: Design Tutorial Inverse the Problem
-author: Weiming Zhou
+author: Weiming Zhou, David Guo
 ---
 
 [Official Analysis](https://codeforces.com/blog/entry/14028)
 
+## Explanation
+
+This may seem like a bit of a deus ex machina, but we can claim the following:
+
+> The minimal length edge must belong to the weighted tree, and in general,
+> the $k$-th minimal length edge connecting nodes $A$ and $B$ belongs to the tree *if and only if* there isn't already a path between them.
+
+Why is this? Well, since we consider the edges in non-decreasing order of weight, $A$ and $B$ already sharing a path would imply that they can be connected by edges of lesser length than the $k$-th minimal length edge.
+
+Notice how similar this idea of considering edges in order non-decreaasing weight and adding edges between disconnected nodes is to [Kruskal's Algorithm](/gold/mst#kruskals).
+This gives us the idea that if the given distance matrix is of a weighted tree,
+then that weighted tree must be the [Minimum Spanning Tree (MST)](/gold/mst) of the original graph, given by the distance matrix!
+
+Therefore, we must first find the MST, then check if the distances between the nodes on this tree match with the given distance matrix.
+To check distances between nodes, we use DFS, however BFS and other methods work as well.
+
+## Implementation
+
 **Time Complexity:** $\mathcal{O}(N^2\log N)$ with Kruskal's MST or $\mathcal{O}(N^2)$ with $N^2$ Prims.
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
-// https://codeforces.com/contest/472/submission/117118910
-
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -110,5 +125,4 @@ int main() {
 ```
 
 </CPPSection>
-
 </LanguageSection>

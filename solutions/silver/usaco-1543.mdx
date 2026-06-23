@@ -1,0 +1,217 @@
+---
+id: usaco-1543
+source: USACO Silver 2026 First Contest
+title: Mooclear Reactor
+author: John Zhou
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_prob2_silver_season26contest1.html)
+
+# Solution
+
+## Explanation
+
+The constraints $(x, y, z)$ form an undirected weighted graph, where the constraints
+are the edges and the generators are the vertices.
+We optimize each component independently.
+
+### Case 1: Tree
+
+If the component is a tree, we can take any node (say node $v$) and represent its value $a_v$ with $x$.
+
+We then DFS from $v$ to see what the other node's values are in terms of $x$.
+For example, if there's an edge from $v$ to $u$, we can write $a_u=5-a_v=5-x$.
+After this DFS, all nodes' values are in the form $a-x$ or $a+x$, where $a$ is some integer.
+
+To get the most reactor rods out of this, we calculate for each rod the smallest and largest value
+that $x$ can take for the rod to be activated.
+This now becomes finding the value of $x$ that is inside the most ranges,
+which can be solved using a difference array and coordinate compresison.
+
+### Case 2: Graph With Cycles
+
+If there's cycles, then there's a chance that we visit the same node twice.
+When we do revisit one, we will get _two_ different representations of power
+mandated for a generator. We equate the expressions and solve for $x$, resulting in three cases:
+
+1. If there are no **integer** solutions, fulfilling the constraints is impossible.
+2. If there are **infinite** solutions, we do nothing.
+   Either representation will work from here on out.
+3. If there is **one** solution, we set the value of $x$ for this component.
+   If there's already a different fixed value for this component, declare this problem unsolvable.
+
+If there is a fixed value set for the component, then we check how many ranges of $x$ this specific fixed
+value is inside, instead of choosing an arbitrary $x$ with the most ranges covering it.
+
+Performing the above procedure for each connected component and summing yields the answer.
+
+## Implementation
+
+**Time Complexity**: $\mathcal O(N+M)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <cstdint>
+#include <iostream>
+#include <map>
+#include <vector>
+
+using namespace std;
+using ll = long long;
+
+constexpr int MAX_N = 2e5 + 1;
+
+ll lo[MAX_N];
+ll hi[MAX_N];
+vector<int> adj[MAX_N];
+vector<int> adj_val[MAX_N];
+
+vector<int> components[MAX_N];
+ll sign[MAX_N];
+ll offset[MAX_N];
+ll forced[MAX_N];
+// If a node i isn't fixed, these two variables indicate
+// a range for the source node to be in so i can activate
+ll central_lb[MAX_N];
+ll central_ub[MAX_N];
+
+bool okay = true;
+
+/**
+ * Sometimes for a single node we have it in terms of m1 * x + b1 and m2 * x + b2
+ * This function check to see if this equation fixes x or if it's unresolvable,
+ * and returns the value it's fixed to if it is.
+ * @returns {solvable, {fixed value, what value if so}}
+ */
+pair<bool, pair<bool, ll>> resolve_eq(ll m1, ll b1, ll m2, ll b2) {
+	if (m1 == m2 && b1 != b2) {
+		return {false, {false, 0}};
+	} else if (m1 == m2 && b1 == b2) {
+		return {true, {false, 0}};
+	}
+	if ((b2 - b1) % (m1 - m2) == 0) { return {true, {true, (b2 - b1) / (m1 - m2)}}; }
+	return {false, {false, 0}};
+}
+
+/**
+ * Define all nodes reachable from source in terms of it.
+ * Will set forced[source] to some value or okay to false,
+ * depending on whether the component is solvable or if the value of source
+ * has to be a certain value.
+ */
+void dfs(int source, int prev, int curr) {
+	components[source].push_back(curr);
+
+	if (sign[curr] == 1) {
+		central_lb[curr] = lo[curr] - offset[curr];
+		central_ub[curr] = hi[curr] - offset[curr];
+	} else if (sign[curr] == -1) {
+		central_lb[curr] = -hi[curr] + offset[curr];
+		central_ub[curr] = -lo[curr] + offset[curr];
+	}
+
+	for (int i = 0; i < adj[curr].size(); i++) {
+		int y = adj[curr][i];
+		int z = adj_val[curr][i];
+		if (y == prev) { continue; }
+
+		ll m1 = -sign[curr];
+		ll b1 = z - offset[curr];
+		if (sign[y] == 0) {
+			// Not visited yet
+			sign[y] = m1;
+			offset[y] = b1;
+			dfs(source, curr, y);
+		} else {
+			// Already visited- see if this equation forces/breaks anything
+			ll m2 = sign[y];
+			ll b2 = offset[y];
+			const auto &[solvable, fixed] = resolve_eq(m1, b1, m2, b2);
+			if (!solvable) { okay = false; }
+			if (fixed.first) {
+				if (forced[source] == INT64_MAX) {
+					forced[source] = fixed.second;
+				} else if (forced[source] != fixed.second) {
+					okay = false;
+				}
+			}
+		}
+	}
+}
+
+int main() {
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int n, m;
+		cin >> n >> m;
+		for (int i = 1; i <= n; i++) {
+			adj[i].clear();
+			adj_val[i].clear();
+			components[i].clear();
+			sign[i] = 0;
+			offset[i] = 0;
+		}
+
+		for (int i = 1; i <= n; i++) { cin >> lo[i]; }
+		for (int i = 1; i <= n; i++) { cin >> hi[i]; }
+		for (int i = 1; i <= n; i++) { forced[i] = INT64_MAX; }
+		for (int i = 1; i <= m; i++) {
+			int x, y, z;
+			cin >> x >> y >> z;
+			adj[x].push_back(y);
+			adj_val[x].push_back(z);
+			adj[y].push_back(x);
+			adj_val[y].push_back(z);
+		}
+
+		okay = true;
+		for (int src = 1; src <= n; src++) {
+			if (!sign[src]) {
+				sign[src] = 1;
+				offset[src] = 0;
+				dfs(src, -1, src);
+			}
+		}
+		if (!okay) {
+			cout << -1 << endl;
+			continue;
+		}
+
+		int most_rods = 0;
+		for (int src = 1; src <= n; src++) {
+			if (forced[src] == INT64_MAX) {
+				// If the node isn't forced, so a prefix sum-esque approach
+				map<ll, int> segments;
+				for (int pt : components[src]) {
+					segments[central_lb[pt]]++;
+					segments[central_ub[pt] + 1]--;
+				}
+
+				int curr_total = 0;
+				int best = 0;
+				for (const auto &[pt, delta] : segments) {
+					curr_total += delta;
+					best = max(best, curr_total);
+				}
+				most_rods += best;
+			} else {
+				// Otherwise just check and see how many rods we get
+				for (int pt : components[src]) {
+					if (central_lb[pt] <= forced[src] &&
+					    forced[src] <= central_ub[pt]) {
+						most_rods++;
+					}
+				}
+			}
+		}
+
+		cout << most_rods << endl;
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>

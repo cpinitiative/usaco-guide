@@ -117,6 +117,72 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	static int n;
+	static int[] segtree;
+	static int[] a;
+
+	static void build(int node, int l, int r) {
+		if (l == r) {
+			segtree[node] = a[l];
+			return;
+		}
+		int mid = (l + r) / 2;
+		build(node * 2, l, mid);
+		build(node * 2 + 1, mid + 1, r);
+		segtree[node] = Math.max(segtree[node * 2], segtree[node * 2 + 1]);
+	}
+
+	static void queryUpdate(int node, int l, int r, int val, StringBuilder out) {
+		if (l == r) {
+			segtree[node] -= val;
+			out.append(l).append(' ');
+			return;
+		}
+		int mid = (l + r) / 2;
+		if (segtree[node * 2] >= val) {
+			queryUpdate(node * 2, l, mid, val, out);
+		} else {
+			queryUpdate(node * 2 + 1, mid + 1, r, val, out);
+		}
+		segtree[node] = Math.max(segtree[node * 2], segtree[node * 2 + 1]);
+	}
+
+	public static void main(String[] args) throws Exception {
+		Kattio io = new Kattio();
+		n = io.nextInt();
+		int q = io.nextInt();
+
+		a = new int[n + 1];
+		for (int i = 1; i <= n; i++) a[i] = io.nextInt();
+
+		segtree = new int[4 * n];
+		build(1, 1, n);
+
+		StringBuilder out = new StringBuilder();
+		while (q-- > 0) {
+			int x = io.nextInt();
+			if (segtree[1] < x) {
+				out.append("0 ");
+			} else {
+				queryUpdate(1, 1, n, x, out);
+			}
+		}
+		io.println(out.toString());
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+</JavaSection>
+
 </LanguageSection>
 
 <FocusProblem problem="walkSam2" />
@@ -268,6 +334,111 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	static class SumSegTree {
+		int n;
+		int[] tree;
+
+		SumSegTree(int n) {
+			this.n = n;
+			tree = new int[4 * n];
+		}
+
+		void set(int idx, int val, int node, int l, int r) {
+			if (l == r) {
+				tree[node] = val;
+				return;
+			}
+			int mid = (l + r) / 2;
+			if (idx <= mid) set(idx, val, node * 2, l, mid);
+			else set(idx, val, node * 2 + 1, mid + 1, r);
+			tree[node] = tree[node * 2] + tree[node * 2 + 1];
+		}
+
+		void set(int idx, int val) { set(idx, val, 1, 0, n - 1); }
+
+		int rangeSum(int ql, int qr, int node, int l, int r) {
+			if (qr < l || r < ql) return 0;
+			if (ql <= l && r <= qr) return tree[node];
+			int mid = (l + r) / 2;
+			return rangeSum(ql, qr, node * 2, l, mid) +
+			    rangeSum(ql, qr, node * 2 + 1, mid + 1, r);
+		}
+
+		int rangeSum(int l, int r) {
+			if (l > r) return 0;
+			return rangeSum(l, r, 1, 0, n - 1);
+		}
+
+		int walk(int node, int l, int r, int k, int pref) {
+			if (l == r) return l;
+			int mid = (l + r) / 2;
+			int leftSum = pref + tree[node * 2];
+			if (leftSum >= k) { return walk(node * 2, l, mid, k, pref); }
+			return walk(node * 2 + 1, mid + 1, r, k, leftSum);
+		}
+
+		int walk(int k) { return walk(1, 0, n - 1, k, 0); }
+	}
+
+	public static void main(String[] args) throws Exception {
+		Kattio io = new Kattio();
+		int q = io.nextInt();
+
+		char[] type = new char[q];
+		int[] val = new int[q];
+		ArrayList<Integer> coords = new ArrayList<>();
+
+		for (int i = 0; i < q; i++) {
+			type[i] = io.next().charAt(0);
+			val[i] = io.nextInt();
+			coords.add(val[i]);
+		}
+
+		Collections.sort(coords);
+		coords = new ArrayList<>(new LinkedHashSet<>(coords));
+
+		int m = coords.size();
+		HashMap<Integer, Integer> id = new HashMap<>();
+		for (int i = 0; i < m; i++) id.put(coords.get(i), i);
+
+		int[] freq = new int[m];
+		SumSegTree st = new SumSegTree(m);
+
+		for (int i = 0; i < q; i++) {
+			int loc = id.get(val[i]);
+			if (type[i] == 'I') {
+				if (freq[loc] == 0) {
+					freq[loc] = 1;
+					st.set(loc, 1);
+				}
+			} else if (type[i] == 'D') {
+				if (freq[loc] == 1) {
+					freq[loc] = 0;
+					st.set(loc, 0);
+				}
+			} else if (type[i] == 'K') {
+				if (st.rangeSum(0, m - 1) < val[i]) {
+					io.println("invalid");
+				} else {
+					io.println(st.walk(val[i]));
+				}
+			} else {
+				io.println(st.rangeSum(0, loc - 1));
+			}
+		}
+		io.close();
+	}
+	// CodeSnip{Kattio}
+}
+```
+</JavaSection>
 </LanguageSection>
 
 ### Problems

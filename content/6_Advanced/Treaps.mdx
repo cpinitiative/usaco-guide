@@ -54,7 +54,7 @@ erased, and searched for in $\mathcal{\Theta}(\log n)$. However, regular
 binary search trees suffer from imbalancing, which causes the tree to have up to
 an $\mathcal{O}(n)$ depth and blows up the time complexity.
 
-![Unbalanced Binary Search Tree](./unbalanced_bst.png)
+![Unbalanced Binary Search Tree](/content/6_Advanced/unbalanced_bst.png)
 
 A treap is a randomized binary search tree that stores two numbers in its nodes:
 a value and a priority. The values of a treap will satisfy the binary search
@@ -63,7 +63,7 @@ the current node and all the nodes in the right subtree are strictly greater
 than the current node), and the priorities will satisfy the heap property (where
 all descendants of a node will have smaller or equal priorities).
 
-![Treap](./treap.png)
+![Treap](/content/6_Advanced/treap.png)
 
 Treaps have two main operations: splitting and merging. Other operations like
 insert, erase, and searching can be implemented in terms of these operations.
@@ -94,7 +94,7 @@ as $n.\texttt{left}$ and the right child as $n.\texttt{right}$.
 
 The `merge` method inverts the `split` method by taking in two treaps
 $\texttt{left}$ and $\texttt{right}$ and returns a single treap that has the
-nodes of both treaps. It works under the assuption that all keys
+nodes of both treaps. It works under the assumption that all keys
 $x \in \texttt{left}$ are strictly smaller than all keys $y \in \texttt{right}$.
 Furthermore, we need to merge these two treaps such that the resultant treap
 still satisfies the max heap property.
@@ -184,7 +184,7 @@ fenwick trees. The following operations are supported by implicit treaps:
 - Perform interval updates (add, set, reverse, etc.)
 
 The key behind implicit treaps lies in their name. We will use the index of the
-node to be its key. Because maintaining this value explicitely will result in up
+node to be its key. Because maintaining this value explicitly will result in up
 to $\mathcal{O}(n)$ values to be updated per insertion/deletion, we will keep
 this value implicitly.
 
@@ -418,7 +418,7 @@ Implicit treaps are also capable of updates/removals of elements, range queries,
 - **Range queries** can be performed by maintaining additional data in each
   node. We update this data whenever we update $\texttt{size}$.
 - **Range updates** can be performed by maintaining a lazy tag in each node (as
-  in lazy propogation). When splitting or merging, we push these tags downwards
+  in lazy propagation). When splitting or merging, we push these tags downwards
   and perform the corresponding operation.
 - **Range reversals** can be performed by maintaining a lazy `reversed` tag in each node. When splitting or merging, we first swap the node's left and right children, then push the tag down.
 

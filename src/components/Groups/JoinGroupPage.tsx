@@ -1,6 +1,5 @@
-import { RouteComponentProps } from '@reach/router';
 import { getFunctions, httpsCallable } from 'firebase/functions';
-import { navigate } from 'gatsby';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import { useSignIn } from '../../context/SignInContext';
 import {
@@ -9,9 +8,9 @@ import {
 } from '../../context/UserDataContext/UserDataContext';
 import { useUserGroups } from '../../hooks/groups/useUserGroups';
 import { useFirebaseApp } from '../../hooks/useFirebase';
-import TopNavigationBar from '../TopNavigationBar/TopNavigationBar';
 import Layout from '../layout';
 import SEO from '../seo';
+import TopNavigationBar from '../TopNavigationBar/TopNavigationBar';
 
 const getQuery = name => {
   const url = window.location.href;
@@ -23,7 +22,8 @@ const getQuery = name => {
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 };
 
-const JoinGroupPage = (props: RouteComponentProps) => {
+const JoinGroupPage = () => {
+  const router = useRouter();
   const firebaseUser = useFirebaseUser();
   const isLoaded = useIsUserDataLoaded();
   const { signIn } = useSignIn();
@@ -51,24 +51,19 @@ const JoinGroupPage = (props: RouteComponentProps) => {
       )({
         key: joinKey,
       })
-        .then(
-          ({
-            data,
-          }: {
-            data: {
-              success: boolean;
-              errorCode?: string;
-              message?: string;
-              name?: string;
-            };
-          }) => {
-            if (data.success) {
-              setGroupName(data.name ?? null);
-            } else {
-              setError({ errorCode: data.errorCode, message: data.message });
-            }
+        .then(r => {
+          const data = r.data as {
+            success: boolean;
+            errorCode?: string;
+            message?: string;
+            name?: string;
+          };
+          if (data.success) {
+            setGroupName(data.name ?? null);
+          } else {
+            setError({ errorCode: data.errorCode, message: data.message });
           }
-        )
+        })
         .catch(e => {
           setError(e);
         })
@@ -81,16 +76,16 @@ const JoinGroupPage = (props: RouteComponentProps) => {
 
   return (
     <Layout>
-      <SEO title="Join Group" />
+      <SEO title="Join Group" image={null} />
       <TopNavigationBar />
       <main>
-        <div className="max-w-7xl px-2 sm:px-4 lg:px-8 mx-auto py-16">
+        <div className="mx-auto max-w-7xl px-2 py-16 sm:px-4 lg:px-8">
           {showNotSignedInMessage && (
             <div>
-              <p className="font-medium text-2xl text-center">
+              <p className="text-center text-2xl font-medium">
                 Please{' '}
                 <button
-                  className="focus:outline-none underline text-blue-600"
+                  className="text-blue-600 underline focus:outline-hidden"
                   onClick={() => signIn()}
                 >
                   sign in
@@ -102,13 +97,13 @@ const JoinGroupPage = (props: RouteComponentProps) => {
 
           {showLoading && (
             <div>
-              <p className="font-medium text-2xl text-center">Loading...</p>
+              <p className="text-center text-2xl font-medium">Loading...</p>
             </div>
           )}
 
           {error && (
             <div className="mb-8">
-              <p className="font-medium text-2xl text-center">
+              <p className="text-center text-2xl font-medium">
                 Error: {error.message}
               </p>
             </div>
@@ -132,35 +127,26 @@ const JoinGroupPage = (props: RouteComponentProps) => {
                     )({
                       key: joinKey,
                     })
-                      .then(
-                        ({
-                          data,
-                        }: {
-                          data: {
-                            success: boolean;
-                            errorCode?: string;
-                            message?: string;
-                            groupId?: string;
-                          };
-                        }) => {
-                          if (data.success) {
-                            userGroups.invalidateData();
-                            navigate(`/groups/${data.groupId}`, {
-                              replace: true,
-                            });
-                          } else {
-                            if (data.errorCode === 'ALREADY_IN_GROUP') {
-                              navigate(`/groups/${data.groupId}`, {
-                                replace: true,
-                              });
-                            }
-                            setError({
-                              errorCode: data.errorCode,
-                              message: data.message,
-                            });
+                      .then(r => {
+                        const data = r.data as {
+                          success: boolean;
+                          errorCode?: string;
+                          message?: string;
+                          groupId?: string;
+                        };
+                        if (data.success) {
+                          userGroups.invalidateData();
+                          router.push(`/groups/${data.groupId}`);
+                        } else {
+                          if (data.errorCode === 'ALREADY_IN_GROUP') {
+                            router.push(`/groups/${data.groupId}`);
                           }
+                          setError({
+                            errorCode: data.errorCode,
+                            message: data.message,
+                          });
                         }
-                      )
+                      })
                       .catch(e => {
                         setError(e);
                       })

@@ -1,5 +1,6 @@
 import { Transition } from '@headlessui/react';
-import { Link, navigate } from 'gatsby';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import { useRef, useState } from 'react';
 import { useFirebaseUser } from '../../../context/UserDataContext/UserDataContext';
@@ -14,10 +15,11 @@ export default function GroupPageHeader(props: { group: GroupData }) {
   const [isActionsOpen, setIsActionsOpen] = useState(false);
   const { showAdminView, setInStudentView } = useActiveGroup();
   const firebaseUser = useFirebaseUser();
+  const router = useRouter();
   const ref = useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
-    const handleClick = e => {
+    const handleClick = (e: any) => {
       if (ref.current?.contains(e.target)) return;
       setIsActionsOpen(false);
     };
@@ -26,22 +28,22 @@ export default function GroupPageHeader(props: { group: GroupData }) {
   }, []);
 
   return (
-    <header className="py-6 sm:py-12 bg-gradient-to-r from-light-blue-800 to-cyan-600">
-      <div className="max-w-7xl px-4 sm:px-8 mx-auto md:flex md:items-center md:justify-between">
-        <div className="flex-1 min-w-0">
-          <h1 className="text-white text-xl sm:text-3xl font-bold">
+    <header className="bg-linear-to-r from-sky-800 to-cyan-600 py-6 sm:py-12">
+      <div className="mx-auto max-w-7xl px-4 sm:px-8 md:flex md:items-center md:justify-between">
+        <div className="min-w-0 flex-1">
+          <h1 className="text-xl font-bold text-white sm:text-3xl">
             {props.group?.name ?? 'Loading...'}
           </h1>
-          <p className="text-cyan-100 text-base sm:text-lg mt-2">
+          <p className="mt-2 text-base text-cyan-100 sm:text-lg">
             {props.group?.description}
           </p>
         </div>
-        <div className="mt-4 md:mt-0 md:ml-4 text-right">
+        <div className="mt-4 text-right md:mt-0 md:ml-4">
           <div className="relative inline-block text-left" ref={ref}>
             <div>
               <button
                 type="button"
-                className="inline-flex justify-center w-full rounded-md px-4 py-2 bg-light-blue-800 text-sm font-medium text-white hover:bg-light-blue-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-light-blue-600 focus:ring-black transition"
+                className="inline-flex w-full justify-center rounded-md bg-sky-800 px-4 py-2 text-sm font-medium text-white transition hover:bg-sky-900 focus:ring-2 focus:ring-black focus:ring-offset-2 focus:ring-offset-sky-600 focus:outline-hidden"
                 id="options-menu"
                 onClick={() => setIsActionsOpen(!isActionsOpen)}
               >
@@ -62,6 +64,7 @@ export default function GroupPageHeader(props: { group: GroupData }) {
             </div>
 
             <Transition
+              as="div"
               show={isActionsOpen}
               enter="transition ease-out duration-100"
               enterFrom="transform opacity-0 scale-95"
@@ -69,7 +72,7 @@ export default function GroupPageHeader(props: { group: GroupData }) {
               leave="transition ease-in duration-75"
               leaveFrom="transform opacity-100 scale-100"
               leaveTo="transform opacity-0 scale-95"
-              className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10"
+              className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5"
             >
               <div
                 className="py-1"
@@ -81,12 +84,14 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                   <>
                     <button
                       type="button"
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                      className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-hidden"
                       onClick={() => {
                         const groupId = props.group?.id;
                         if (groupId) {
                           createNewPost('assignment').then(postId =>
-                            navigate(`post/${postId}/edit`)
+                            router.push(
+                              `/groups/${groupId}/post/${postId}/edit`
+                            )
                           );
                         }
                       }}
@@ -95,12 +100,14 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                     </button>
                     <button
                       type="button"
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                      className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-hidden"
                       onClick={() => {
                         const groupId = props.group?.id;
                         if (groupId) {
                           createNewPost('announcement').then(postId =>
-                            navigate(`post/${postId}/edit`)
+                            router.push(
+                              `/groups/${groupId}/post/${postId}/edit`
+                            )
                           );
                         }
                       }}
@@ -108,20 +115,20 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                       Create New Announcement
                     </button>
                     <Link
-                      to="edit"
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                      href={'/groups/' + props.group?.id + '/edit'}
+                      className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-hidden"
                     >
                       Edit Group
                     </Link>
                     <Link
-                      to="join-links"
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                      href={'/groups/' + props.group?.id + '/join-links'}
+                      className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-hidden"
                     >
                       View Join Links
                     </Link>
                     <Link
-                      to="members"
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                      href={'/groups/' + props.group?.id + '/members'}
+                      className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-hidden"
                     >
                       View Members
                     </Link>
@@ -131,7 +138,7 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                   isUserAdminOfGroup(props.group, firebaseUser.uid) && (
                     <button
                       type="button"
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                      className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-hidden"
                       onClick={() => {
                         setInStudentView(showAdminView);
                       }}
@@ -143,7 +150,7 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                   )}
                 <button
                   type="button"
-                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:bg-gray-100 focus:text-gray-900"
+                  className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 focus:bg-gray-100 focus:text-gray-900 focus:outline-hidden"
                   onClick={() => {
                     const groupId = props.group?.id;
                     if (
@@ -158,7 +165,7 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                         .indexOf('yes i am sure i want to leave') > -1
                     ) {
                       leaveGroup(groupId, firebaseUser!.uid)
-                        .then(() => navigate(`/groups/`))
+                        .then(() => router.push(`/groups/`))
                         .catch(e => {
                           console.log(e);
                           alert('Error: ' + e.message);

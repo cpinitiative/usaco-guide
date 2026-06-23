@@ -7,16 +7,16 @@ author: Qi Wang, Ryan Chou, George Pong
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_pump_gold_dec19.html)
 
+## Explanation
+
 The larger the denominator, the smaller the result will be. We also want to minimize the cost of the path. This hints at a shortest-path problem. Due to the low number of junction points, we can fix the minimum flow rate and search for the lowest cost path we could take.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(M^2 \log N + MN)$
-
 <LanguageSection>
-
 <CPPSection>
 
+**Time Complexity:** $\mathcal{O}(M^2 \log N + MN)$
 
 ```cpp
 #include <bits/stdc++.h>
@@ -33,8 +33,6 @@ vector<vector<Edge>> adj;
 int dijkstra(int minf) {
 	priority_queue<pair<int, int>> pq;
 	vector<int> cost(n, INT32_MAX);
-	vector<bool> visited(n, false);
-
 	cost[0] = 0;
 	pq.push({0, 0});
 
@@ -42,7 +40,7 @@ int dijkstra(int minf) {
 		pair<int, int> nxt = pq.top();
 		pq.pop();
 
-		if (nxt.second != cost[nxt.first] || visited[nxt.first]) { continue; }
+		if (nxt.second != cost[nxt.first]) { continue; }
 
 		for (Edge u : adj[nxt.first]) {
 			int ct = u.c + nxt.second;
@@ -51,7 +49,7 @@ int dijkstra(int minf) {
 			 * if the path has a flow value less
 			 * than our minimum, we can't consider it
 			 */
-			if (u.fl < minf || visited[u.v]) { continue; }
+			if (u.fl < minf) { continue; }
 
 			// path more optimal
 			if (cost[u.v] > ct) {
@@ -93,9 +91,11 @@ int main() {
 	cout << ans << '\n';
 }
 ```
-</CPPSection>
 
+</CPPSection>
 <PySection>
+
+**Time Complexity:** $\mathcal{O}(M^2 \log N + MN)$
 
 ```py
 import heapq
@@ -149,7 +149,6 @@ print(int(max_worth * 10**6), file=open("pump.out", "w"))
 ```
 
 </PySection>
-
 <JavaSection>
 
 **Time Complexity:** $\mathcal{O}(M \log N + N)$
@@ -316,5 +315,6 @@ public class pump {
 	}
 }
 ```
+
 </JavaSection>
 </LanguageSection>

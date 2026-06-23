@@ -1,0 +1,168 @@
+---
+id: cf-687C
+source: CF
+title: The Values You Can Make
+author: Rameez Parwez
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/45770)
+
+## Explanation
+
+Let $\texttt{dp[i][j]}$ represent whether it's possible to select a group of coins such that a subset of them sum to $i$ and the rest of them in the group sum to $j$.
+This way we'll have coins whose sum is $i + j$, and we're interested in cases where $i + j = k$.
+
+Our base case is $\texttt{dp[0][0] = 1}$ representing an empty selection.
+Now for each coin, we can update our DP array by considering two possibilities:
+1. Include the coin in Arya's part
+2. Include the coin in the rest of the selection
+
+Finally we collect all the values $x$ such that $\texttt{dp[x][k - x]}$ is true which are eventually the values Arya can form.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(NK^2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int main() {
+	int n, k;
+	std::cin >> n >> k;
+	std::vector<int> coins(n);
+	for (int &x : coins) { std::cin >> x; }
+
+	std::vector dp(k + 1, std::vector<int>(k + 1));
+	dp[0][0] = 1;
+	for (int a : coins) {
+		std::vector<std::vector<int>> new_dp(dp);
+		for (int i = 0; i <= k; i++) {
+			for (int j = 0; j <= k - i; j++) {
+
+				/*
+				 * If we can reach (i - a, j), then we can reach
+				 * (i, j) by adding a to arya's subset.
+				 */
+				if (i >= a) { new_dp[i][j] |= dp[i - a][j]; }
+
+				/*
+				 * If we can reach (i, j - a), then we can reach
+				 * (i, j) by adding a to the rest.
+				 */
+				if (j >= a) { new_dp[i][j] |= dp[i][j - a]; }
+			}
+		}
+		dp = std::move(new_dp)
+	}
+
+	std::vector<int> res;
+	for (int i = 0; i <= k; i++) {
+		if (dp[i][k - i]) { res.push_back(i); }
+	}
+
+	std::cout << res.size() << '\n';
+	for (int i = 0; i < res.size(); i++) {
+		std::cout << res[i] << " \n"[i == res.size() - 1];
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class TheValuesYouCanMake {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		int k = io.nextInt();
+
+		int[] coins = new int[n];
+		for (int i = 0; i < n; i++) { coins[i] = io.nextInt(); }
+
+		int[][] dp = new int[k + 1][k + 1];
+		dp[0][0] = 1;
+
+		for (int a : coins) {
+			int[][] newDp = new int[k + 1][k + 1];
+
+			for (int i = 0; i <= k; i++) {
+				System.arraycopy(dp[i], 0, newDp[i], 0, k + 1);
+			}
+
+			for (int i = 0; i <= k; i++) {
+				for (int j = 0; j <= k; j++) {
+
+					/*
+					 * If we can reach (i - a, j), then we can reach
+					 * (i, j) by adding a to arya's subset.
+					 */
+					if (i >= a) { newDp[i][j] |= dp[i - a][j]; }
+
+					/*
+					 * If we can reach (i, j - a), then we can reach
+					 * (i, j) by adding a to the rest.
+					 */
+					if (j >= a) { newDp[i][j] |= dp[i][j - a]; }
+				}
+			}
+			dp = newDp;
+		}
+
+		List<Integer> res = new ArrayList<>();
+		for (int i = 0; i <= k; i++) {
+			if (dp[i][k - i] == 1) { res.add(i); }
+		}
+
+		io.println(res.size());
+		for (int i = 0; i < res.size(); i++) { io.print(res.get(i) + " "); }
+
+		io.println();
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+n, k = map(int, input().split())
+coins = list(map(int, input().split()))
+
+dp = [[0] * (k + 1) for _ in range(k + 1)]
+dp[0][0] = 1
+
+for a in coins:
+	new_dp = [x[:] for x in dp]
+	for i in range(k + 1):
+		for j in range(k - i + 1):
+
+			# If we can reach (i - a, j), then we can reach
+			# (i, j) by adding a to arya's subset.
+			if i >= a:
+				new_dp[i][j] |= dp[i - a][j]
+
+			# If we can reach (i, j - a), then we can reach
+			# (i, j) by adding a to the rest.
+			if j >= a:
+				new_dp[i][j] |= dp[i][j - a]
+	dp = new_dp
+
+res = [i for i in range(k + 1) if dp[i][k - i]]
+
+print(len(res))
+print(*res)
+```
+
+</PySection>
+</LanguageSection>

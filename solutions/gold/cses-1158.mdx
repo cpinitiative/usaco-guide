@@ -2,19 +2,33 @@
 id: cses-1158
 source: CSES
 title: Book Shop
-author: Sofia Yang, Neha Sane
+author: Abhinav Singh, Sofia Yang, Neha Sane
 ---
 
-[Official Editorial](https://codeforces.com/blog/entry/70018)
+[Official Editorial (C++)](https://codeforces.com/blog/entry/70018)
 
-## Solution
+## Explanation
+For each book $i$, we either buy it, spending $h[i]$ to gain $s[i]$ pages, or skip it and gain nothing. This is the 0/1 knapsack problem, with cost $h[i]$, value $s[i]$, and capacity $x$, allowing a DP solution.
 
-**Time Complexity:** $\mathcal{O}(N\cdot X)$
+Let $dp[i][j]$ be the maximum number of pages obtainable using only the first $i$ books with a budget of at most $j$. The base case is $dp[0][j] = 0$ for all $j$, since with no books available, no pages can be obtained regardless of budget.
+
+The transition follows as:
+- $dp[i][j] = dp[i-1][j]$ by default (skip book $i$)
+- if $j \geq h[i]$, we can instead buy book $i$, giving $dp[i][j] = \max(dp[i-1][j], dp[i-1][j-h[i]] + s[i])$
+
+The final answer is $dp[n][x]$.
+
+<Optional title="1D Knapsack">
+
+Since $dp[i][j]$ only depends on row $i-1$, we don't need to keep every row around: we can compress the DP into a single 1D array of size $x+1$, overwriting it in place as we go. For each book $i$, iterate $j$ from $x$ down to $h[i]$, updating $dp[j] = \max(dp[j], dp[j-h[i]] + s[i])$. Going downward matters: it keeps $dp[j-h[i]]$ holding last book's value (row $i-1$) when we read it, rather than a value already updated for book $i$ (which would let us buy the same book twice).
+
+</Optional>
 
 ## Implementation
 
-<LanguageSection>
+**Time Complexity:** $\mathcal{O}(N\cdot X)$
 
+<LanguageSection>
 <CPPSection>
 
 ```cpp
@@ -107,5 +121,4 @@ public class bookShop {
 ```
 
 </JavaSection>
-
 </LanguageSection>

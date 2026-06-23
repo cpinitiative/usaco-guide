@@ -1,0 +1,139 @@
+---
+id: leetcode-502
+source: LC
+title: IPO
+author: Rameez Parwez
+---
+
+## Explanation
+
+We can solve this problem using a greedy approach.
+
+The idea is to prioritize projects that offer the highest profit.
+At the same time, we ensure that the projects we choose can be started with the capital we currently have.
+
+## Implementation
+
+**Time Complexity:** $ \mathcal{O} (N \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+class Solution {
+  public:
+	int findMaximizedCapital(int k, int w, vector<int> &profits, vector<int> &capital) {
+		const int n = (int)profits.size();
+
+		vector<pair<int, int>> projects(n);
+		for (int i = 0; i < n; i++) { projects[i] = {capital[i], profits[i]}; }
+		sort(begin(projects), end(projects));
+
+		priority_queue<int> pq;
+		int j = 0;
+		while (j < n && k > 0) {
+			if (projects[j].first <= w) {
+				pq.push(projects[j].second);
+				j++;
+			} else {
+				if (pq.empty()) { return w; }
+				w += pq.top();
+				pq.pop();
+				k--;
+			}
+		}
+
+		while (k > 0 && !pq.empty()) {
+			w += pq.top();
+			pq.pop();
+			k--;
+		}
+
+		return w;
+	}
+};
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+class Solution {
+	public int findMaximizedCapital(int k, int w, int[] profits, int[] capital) {
+		int n = profits.length;
+
+		List<Project> projects = new ArrayList<>();
+		for (int i = 0; i < n; i++) {
+			projects.add(new Project(capital[i], profits[i]));
+		}
+		Collections.sort(projects, Comparator.comparingInt(p -> p.capital));
+
+		PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
+		int j = 0;
+		while (j < n && k > 0) {
+			if (projects.get(j).capital <= w) {
+				pq.offer(projects.get(j).profit);
+				j++;
+			} else {
+				if (pq.isEmpty()) { return w; }
+				w += pq.poll();
+				k--;
+			}
+		}
+
+		while (k > 0 && !pq.isEmpty()) {
+			w += pq.poll();
+			k--;
+		}
+
+		return w;
+	}
+
+	private static class Project {
+		int capital;
+		int profit;
+
+		Project(int capital, int profit) {
+			this.capital = capital;
+			this.profit = profit;
+		}
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+import heapq
+
+
+class Solution:
+	def findMaximizedCapital(
+		self, k: int, w: int, profits: List[int], capital: List[int]
+	) -> int:
+		n = len(profits)
+		projects = sorted((capital[i], profits[i]) for i in range(n))
+
+		j = 0
+		pq = []
+		while j < n and k > 0:
+			if projects[j][0] <= w:
+				heapq.heappush(pq, -projects[j][1])
+				j += 1
+			else:
+				if not pq:
+					return w
+
+				w += -heapq.heappop(pq)
+				k -= 1
+
+		while k > 0 and pq:
+			w += -heapq.heappop(pq)
+			k -= 1
+
+		return w
+```
+
+</PySection>
+</LanguageSection>

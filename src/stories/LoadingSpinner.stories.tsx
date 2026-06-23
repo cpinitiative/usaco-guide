@@ -1,5 +1,5 @@
-import { Story } from '@storybook/react';
-import React, { ComponentProps } from 'react';
+import { StoryFn } from '@storybook/react';
+import { ComponentProps } from 'react';
 import { LoadingSpinner } from '../components/elements/LoadingSpinner';
 
 export default {
@@ -7,7 +7,7 @@ export default {
   component: LoadingSpinner,
 };
 
-const Template: Story<ComponentProps<typeof LoadingSpinner>> = args => (
+const Template: StoryFn<ComponentProps<typeof LoadingSpinner>> = args => (
   <LoadingSpinner {...args} />
 );
 

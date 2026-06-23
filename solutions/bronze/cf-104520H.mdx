@@ -1,0 +1,137 @@
+---
+id: cf-104520H
+source: CF
+title: Permutator
+author: Kevin Sheng
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/119632)
+
+## Explanation
+
+### Simplification
+
+First off, let's just do away with all that weird subarray stuff and look
+at the following simplification:
+
+> Given two arrays $a$ and $b$, permute $b$ to minimize $\sum_{i=0}^{n-1} a_i \cdot b_i$.
+
+This simpler one is solvable by a greedy approach.
+We match the largest element in $a$ to the smallest one in $b$,
+the second-largest in $a$ to the second-smallest in $b$, and so on and so forth
+until we've matched all of them.
+
+The intuition behind this is that we want to minimize the impact larger elements in $a$
+will have on the sum so we match them to smaller ones in $b$.
+
+### Actual Problem
+
+Unfortunately, the original problem isn't as simple.
+
+However, notice that we can precompute the number of occurrences
+a particular index $k$ will appear among all the summations.
+
+With this, if we know $a_2 \cdot b_2$ will appear exactly $5$ times in the summation,
+then we can preemptively multiply $a_2$ by $5$ before doing the matching in our simplification.
+
+If we use 0-indexing, each index $k$ is included in $(k + 1) \cdot (n - k)$ positions.
+This is because there's $k+1$ start positions for subarrays on the left
+and $n-k$ end positions on the right.
+
+Then, we can multiply each element of $a$ by its number of occurrences
+to reduce this to our simpler problem!
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n \log n)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	int len;
+	std::cin >> len;
+	vector<int> a(len);
+	for (int &i : a) { std::cin >> i; }
+	vector<int> b(len);
+	for (int &i : b) { std::cin >> i; }
+
+	vector<long long> subarr_num(len);
+	for (int i = 0; i < len; i++) { subarr_num[i] = (long long)(i + 1) * (len - i); }
+
+	vector<long long> actual_a(len);
+	for (int i = 0; i < len; i++) { actual_a[i] = subarr_num[i] * a[i]; }
+
+	std::sort(actual_a.begin(), actual_a.end());
+	std::sort(b.begin(), b.end(), std::greater<int>());
+
+	long long total = 0;
+	for (int i = 0; i < len; i++) { total += actual_a[i] * b[i]; }
+	cout << total << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Permutator {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		int len = Integer.parseInt(read.readLine());
+		int[] a = Arrays.stream(read.readLine().split(" "))
+		              .mapToInt(Integer::parseInt)
+		              .toArray();
+		int[] b = Arrays.stream(read.readLine().split(" "))
+		              .mapToInt(Integer::parseInt)
+		              .toArray();
+
+		long[] subarrNum = new long[len];
+		for (int i = 0; i < len; i++) { subarrNum[i] = (long)(i + 1) * (len - i); }
+
+		long[] actualA = new long[len];
+		for (int i = 0; i < len; i++) { actualA[i] = subarrNum[i] * a[i]; }
+
+		Arrays.sort(actualA);
+		Arrays.sort(b);
+
+		long total = 0;
+		for (int i = 0; i < len; i++) { total += actualA[i] * b[len - i - 1]; }
+		System.out.println(total);
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+len_ = int(input())
+a = [int(i) for i in input().split()]
+b = [int(i) for i in input().split()]
+
+subarr_num = [(i + 1) * (len_ - i) for i in range(len_)]
+
+actual_a = [i * j for i, j in zip(subarr_num, a)]
+
+actual_a.sort()
+b.sort(reverse=True)
+
+total = sum(i * j for i, j in zip(actual_a, b))
+print(total)
+```
+
+</PySection>
+</LanguageSection>

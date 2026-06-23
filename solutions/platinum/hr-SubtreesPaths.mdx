@@ -1,0 +1,220 @@
+---
+id: hr-SubtreesPaths
+source: HR
+title: Subtrees & Paths
+author: Jack Lim
+---
+
+[Official Editorial (C++, Java)](https://www.hackerrank.com/challenges/subtrees-and-paths/editorial)
+
+## Explanation
+
+This problem is a classic implementation of [Heavy Light Decomposition](/plat/hld).
+
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(\log^2N)$ per query
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// BeginCodeSnip{Lazy Segment Tree}
+/* https://usaco.guide/plat/RURQ?lang=cpp#lazy-segment-tree */
+enum QueryType { ADD, SET, NONE };
+
+struct Query {
+	QueryType type = NONE;
+	int val = 0;
+};
+
+template <class T> class LazySegtree {
+  private:
+	const int sz;
+	vector<T> tree;      // tree[i] = sum of this node's range
+	vector<Query> lazy;  // lazy[i] = lazy update for the range
+
+	/** @return result of joining two tree nodes together */
+	inline T comb(T a, T b) { return max(a, b); }
+
+	/** builds the segtree nodes */
+	void build(int v, int l, int r, const vector<T> &a) {
+		if (l == r) {
+			tree[v] = a[l];
+		} else {
+			int m = (l + r) / 2;
+			build(2 * v, l, m, a);
+			build(2 * v + 1, m + 1, r, a);
+			tree[v] = comb(tree[2 * v], tree[2 * v + 1]);
+		}
+	}
+
+	/** applies lazy update to t[v], places update at lz[v] */
+	void apply(int v, int len, const Query &x) {
+		if (x.type == ADD) {
+			// if lazy[v]'s type is NONE or ADD, then we add to the range
+			// otherwise, we add to our lazy set value
+			if (lazy[v].type != SET) {
+				lazy[v] = Query{ADD, lazy[v].val + x.val};
+			} else {
+				lazy[v] = Query{SET, lazy[v].val + x.val};
+			}
+			tree[v] += x.val;
+			// cerr << v << " " << tree[v] << " " << x.val << endl;
+		} else if (x.type == SET) {
+			// lazy set overrides any previous update
+			tree[v] = x.val;
+			lazy[v] = x;
+		}
+	}
+
+	/** pushes down lazy update to children of v */
+	void push_down(int v, int l, int r) {
+		if (lazy[v].type != NONE && l != r) {
+			int m = (l + r) / 2;
+			apply(2 * v, m - l + 1, lazy[v]);
+			apply(2 * v + 1, r - m, lazy[v]);
+		}
+		lazy[v] = Query{NONE, 0};
+	}
+
+	void range_update(int v, int l, int r, int ql, int qr, const Query &x) {
+		if (qr < l || ql > r) { return; }
+		if (ql <= l && r <= qr) {
+			apply(v, r - l + 1, x);
+		} else {
+			push_down(v, l, r);
+			int m = (l + r) / 2;
+			range_update(2 * v, l, m, ql, qr, x);
+			range_update(2 * v + 1, m + 1, r, ql, qr, x);
+			tree[v] = comb(tree[2 * v], tree[2 * v + 1]);
+		}
+	}
+
+	T range_max(int v, int l, int r, int ql, int qr) {
+		if (qr < l || ql > r) { return -1e9; }
+		if (l >= ql && r <= qr) { return tree[v]; }
+		push_down(v, l, r);
+		int m = (l + r) / 2;
+		return comb(range_max(2 * v, l, m, ql, qr),
+		            range_max(2 * v + 1, m + 1, r, ql, qr));
+	}
+
+  public:
+	LazySegtree(const vector<T> &a) : sz(a.size()), tree(4 * sz), lazy(4 * sz) {
+		build(1, 0, sz - 1, a);
+	}
+
+	/** updates [ql, qr] with the update x */
+	void range_update(int ql, int qr, const Query &x) {
+		range_update(1, 0, sz - 1, ql, qr, x);
+	}
+
+	/** sum of array values on [ql, qr] */
+	T range_max(int ql, int qr) { return range_max(1, 0, sz - 1, ql, qr); }
+};
+// EndCodeSnip
+
+// BeginCodeSnip{HLD}
+/* https://usaco.guide/plat/hld?lang=cpp#implementations */
+template <class T, bool VALS_IN_EDGES> class HLD {
+  private:
+	int N, R, tim = 0;  // n, root node, time
+	vector<vector<int>> adj;
+	vector<int> par, siz, depth, rt, pos;  // parent, size, depth, root, position arrays
+	LazySegtree<T> segtree;
+
+	/** Compute the size of each subtree and set parent-child relationship
+	 * Subtree of node v corresponds to segment [ pos[v], pos[v] + sz[v] ) */
+	void dfs_sz(int v) {
+		if (par[v] != -1) adj[v].erase(find(adj[v].begin(), adj[v].end(), par[v]));
+		for (int &u : adj[v]) {
+			par[u] = v, depth[u] = depth[v] + 1;
+			dfs_sz(u);
+			siz[v] += siz[u];
+			if (siz[u] > siz[adj[v][0]]) swap(u, adj[v][0]);
+		}
+	}
+
+	/** Assign positions for nodes
+	  * Path from v to the last vertex in ascending heavy path
+	    corresponds to [ pos[rt[v]], pos[v] ] */
+	void dfs_hld(int v) {
+		pos[v] = tim++;
+		for (int u : adj[v]) {
+			rt[u] = (u == adj[v][0] ? rt[v] : u);
+			dfs_hld(u);
+		}
+	}
+
+	/** process all heavy path and combine their results */
+	template <class B> void process(int u, int v, B op) {
+		for (; rt[u] != rt[v]; v = par[rt[v]]) {
+			if (depth[rt[u]] > depth[rt[v]]) swap(u, v);
+			op(pos[rt[v]], pos[v]);
+		}
+		if (depth[u] > depth[v]) swap(u, v);
+		op(pos[u] + VALS_IN_EDGES, pos[v]);
+	}
+
+  public:
+	HLD(vector<vector<int>> adj_, int _R)
+	    : N(adj_.size()), R(_R), adj(adj_), par(N, -1), siz(N, 1), depth(N), rt(N),
+	      pos(N), segtree(vector<int>(N, 0))  // modify if need
+	{
+		rt[R] = R;
+		dfs_sz(R);
+		dfs_hld(R);
+	}
+
+	T query_path(int u, int v) {
+		T res = -1e9;  // default value, modify depending on problem
+		process(u, v, [&](int l, int r) {
+			res = max(res, segtree.range_max(l, r));  // modify depending on problem
+		});
+		return res;
+	}
+
+	void modify_subtree(int v, T val) {
+		segtree.range_update(pos[v] + VALS_IN_EDGES, pos[v] + siz[v] - 1,
+		                     Query{ADD, val});  // modify if need
+	}
+};
+// EndCodeSnip
+
+int main() {
+
+	int n, q;
+	cin >> n;
+	vector<vector<int>> adj(n);
+
+	for (int i = 0; i < n - 1; i++) {
+		int a, b;
+		cin >> a >> b;
+		adj[--a].push_back(--b);
+		adj[b].push_back(a);
+	}
+
+	HLD<int, false> H(adj, 0);
+
+	cin >> q;
+
+	while (q--) {
+		string type;
+		int a, b;
+		cin >> type >> a >> b;
+		if (type == "add") {
+			H.modify_subtree(--a, b);
+		} else if (type == "max") {
+			cout << H.query_path(--a, --b) << '\n';
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>

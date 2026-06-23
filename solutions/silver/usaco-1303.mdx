@@ -1,0 +1,202 @@
+---
+id: usaco-1303
+source: USACO Silver 2023 February
+title: Cow-libi
+author: David Guo
+---
+
+[Official Analysis (Python)](https://usaco.org/current/data/sol_prob2_silver_feb23.html)
+
+## Explanation
+
+Let's first think about how to determine if a cow can go from $(x_1, y_1)$ at time $t_1$ to $(x_2, y_2)$ at time $t_2$.
+
+The shortest path a cow can take is the straight line connecting $(x_1, y_1)$ to $(x_2, y_2)$, which has a length of
+
+$$
+\sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2}
+$$
+
+by the distance formula.
+
+Now, the cow's journey is possible if and only if this length is no greater than $t_2 - t_1$. In other words, we have the following inequality:
+
+$$
+(t_2 - t_1)^2 \geq (x_2 - x_1)^2 + (y_2 - y_1)^2
+$$
+
+Therefore, we can check if the inequality holds for each cow and grazing site, and if every grazing site satisfies the inequality for a particular cow, then it is a suspect. Otherwise, it must be innocent.
+
+Now, rather than using brute force to iterate through all cows and grazing sites, we use the condition that a cow can reach any grazing site from another within the specified times.
+
+Consider a cow at $(x_1, y_1)$ at time $t_1$ and two grazing sites at $(x_2, y_2)$ and $(x_3, y_3)$ at times $t_2$ and $t_3$, where $t_1 < t_2 < t_3$. If the cow can reach the grazing site at $(x_2, y_2)$, then it can also reach the grazing site at $(x_3, y_3)$. The same is true when $t_1 > t_2 > t_3$.
+
+This means that for each cow, we only need to check the two grazing sites with times closest to their reported time! We can find these two sites by sorting the list of grazing sites by time and using binary search, which is fast enough to solve the problem.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}((N+G)\log G)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Event {
+	int t, x, y;
+
+	bool operator<(const Event &other) const { return t < other.t; }
+};
+
+Event read() {
+	int x, y, t;
+	cin >> x >> y >> t;
+	return {t, x, y};
+}
+
+bool reachable(const Event &a, const Event &b) {
+	long long dx = a.x - b.x;
+	long long dy = a.y - b.y;
+	long long dt = a.t - b.t;
+	return dx * dx + dy * dy <= dt * dt;
+}
+
+int main() {
+	int g, n;
+	cin >> g >> n;
+
+	vector<Event> grazings(g);
+	for (int i = 0; i < g; i++) { grazings[i] = read(); }
+
+	sort(grazings.begin(), grazings.end());
+
+	int ans = 0;
+	for (int i = 0; i < n; i++) {
+		Event alibi = read();
+		int pos =
+		    upper_bound(grazings.begin(), grazings.end(), alibi) - grazings.begin();
+
+		bool innocent = false;
+		for (int y = pos - 1; y <= pos; y++) {
+			if (0 <= y && y < g) { innocent |= !reachable(grazings[y], alibi); }
+		}
+
+		ans += innocent;
+	}
+
+	cout << ans << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class CowLibi {
+	private static class Event implements Comparable<Event> {
+		int t, x, y;
+
+		private Event(int t, int x, int y) {
+			this.t = t;
+			this.x = x;
+			this.y = y;
+		}
+
+		@Override
+		public int compareTo(Event other) {
+			return Integer.compare(this.t, other.t);
+		}
+	}
+
+	private static Event read(BufferedReader br) throws IOException {
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int x = Integer.parseInt(st.nextToken());
+		int y = Integer.parseInt(st.nextToken());
+		int t = Integer.parseInt(st.nextToken());
+		return new Event(t, x, y);
+	}
+
+	private static boolean reachable(Event a, Event b) {
+		long dx = a.x - b.x;
+		long dy = a.y - b.y;
+		long dt = a.t - b.t;
+		return dx * dx + dy * dy <= dt * dt;
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int g = Integer.parseInt(st.nextToken());
+		int n = Integer.parseInt(st.nextToken());
+
+		List<Event> grazings = new ArrayList<>();
+		for (int i = 0; i < g; i++) { grazings.add(read(br)); }
+
+		Collections.sort(grazings);
+
+		int ans = 0;
+		for (int i = 0; i < n; i++) {
+			Event alibi = read(br);
+
+			int pos = Collections.binarySearch(grazings, alibi);
+			if (pos < 0) { pos = -pos - 1; }
+
+			boolean innocent = false;
+			for (int y = pos - 1; y <= pos; y++) {
+				if (0 <= y && y < g) { innocent |= !reachable(grazings.get(y), alibi); }
+			}
+
+			ans += innocent ? 1 : 0;
+		}
+
+		System.out.println(ans);
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+import bisect
+from typing import Tuple
+
+g, n = map(int, input().split())
+
+
+def read():
+	x, y, t = map(int, input().split())
+	return t, x, y
+
+
+def reachable(a: Tuple[int, int, int], b: Tuple[int, int, int]) -> bool:
+	dx = a[1] - b[1]
+	dy = a[2] - b[2]
+	dt = a[0] - b[0]
+	return dx * dx + dy * dy <= dt * dt
+
+
+grazings = sorted(read() for _ in range(g))
+
+ans = 0
+for _ in range(n):
+	alibi = read()
+	pos = bisect.bisect(grazings, alibi)
+
+	innocent = False
+	for y in range(pos - 1, pos + 1):
+		if 0 <= y < g:
+			innocent |= not reachable(grazings[y], alibi)
+
+	ans += innocent
+
+print(ans)
+```
+
+</PySection>
+</LanguageSection>

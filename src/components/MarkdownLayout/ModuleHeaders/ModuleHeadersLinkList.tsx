@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Info from '../../markdown/Info';
 
 export default function ModuleHeadersLinkList(props: {
@@ -7,7 +6,7 @@ export default function ModuleHeadersLinkList(props: {
 }) {
   return (
     <Info title={props.title}>
-      <ul className="list-disc list-inside pl-3 space-y-1">
+      <ul className="list-inside list-disc space-y-1 pl-3">
         {props.links.map(link => (
           <li key={link.url ?? link.label}>
             {link.url ? (
@@ -15,7 +14,7 @@ export default function ModuleHeadersLinkList(props: {
                 href={link.url}
                 target="_blank"
                 rel="noreferrer"
-                className="underline text-black dark:text-blue-200"
+                className="text-black underline dark:text-blue-200"
               >
                 {link.label}
               </a>

@@ -1,0 +1,159 @@
+---
+id: spoj-QueryOnATreeAgain
+source: SPOJ
+title: Query on a tree again!
+author: Jack Lim
+---
+
+## Explanation
+
+This problem can be solved using [Heavy-Light Decomposition](/plat/hld).
+In the segment tree, toggle sets a node’s position if it is black, or
+`INF` if it is white. For path queries, HLD breaks the path into
+segments and takes the minimum position over them. If the result is
+`INF`, the answer is `-1`. Otherwise, it is mapped back to the node
+index using `inv[]`.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(\log^2N)$ per query
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// BeginCodeSnip{Segment Tree}
+template <class T> class MinSegmentTree {
+  private:
+	const T INF = 1e9;
+	int len;
+	vector<T> segtree;
+
+  public:
+	MinSegmentTree(int len) : len(len), segtree(len * 2, INF) {}
+
+	/** set index ind to value val */
+	void set(int ind, T val) {
+		ind += len;
+		segtree[ind] = val;
+		for (; ind > 1; ind /= 2) {
+			segtree[ind / 2] = min(segtree[ind], segtree[ind ^ 1]);
+		}
+	}
+
+	/** minimum on interval [start, end) */
+	T range_min(int start, int end) {
+		T ans = INF;
+		for (start += len, end += len; start < end; start /= 2, end /= 2) {
+			if (start % 2 == 1) { ans = min(ans, segtree[start++]); }
+			if (end % 2 == 1) { ans = min(ans, segtree[--end]); }
+		}
+		return ans;
+	}
+
+	T INFVAL() const { return INF; }
+};
+// EndCodeSnip
+
+// BeginCodeSnip{HLD}
+template <class T, bool VALS_IN_EDGES> class HLD {
+  private:
+	int N, R, tim = 0;  // n, root node, time
+	vector<vector<int>> adj;
+	vector<int> par, siz, depth, rt, pos,
+	    inv;                    // parent, size, depth, root, position arrays
+	MinSegmentTree<T> segtree;  // Modify as needed
+
+	/** Compute the size of each subtree and set parent-child relationship
+	 * Subtree of node v corresponds to segment [ pos[v], pos[v] + sz[v] ) */
+	void dfs_sz(int v) {
+		siz[v] = 1;
+		if (par[v] != -1) { adj[v].erase(find(adj[v].begin(), adj[v].end(), par[v])); }
+		for (int &u : adj[v]) {
+			par[u] = v, depth[u] = depth[v] + 1;
+			dfs_sz(u);
+			siz[v] += siz[u];
+			if (siz[u] > siz[adj[v][0]]) swap(u, adj[v][0]);
+		}
+	}
+
+	/** Assign positions for nodes
+	  * Path from v to the last vertex in ascending heavy path
+	    corresponds to [ pos[rt[v]], pos[v] ] */
+	void dfs_hld(int v) {
+		pos[v] = tim;
+		inv[tim] = v;
+		tim++;
+		for (int u : adj[v]) {
+			rt[u] = (u == adj[v][0] ? rt[v] : u);
+			dfs_hld(u);
+		}
+	}
+
+	/** process all heavy paths and combine their results */
+	template <class B> void process(int u, int v, B op) {
+		for (; rt[u] != rt[v]; v = par[rt[v]]) {
+			if (depth[rt[u]] > depth[rt[v]]) swap(u, v);
+			op(pos[rt[v]], pos[v]);
+		}
+		if (depth[u] > depth[v]) swap(u, v);
+		op(pos[u] + VALS_IN_EDGES, pos[v]);
+	}
+
+  public:
+	HLD(vector<vector<int>> adj_, int _R)
+	    : N(adj_.size()), R(_R), adj(adj_), par(N, -1), siz(N, 1), depth(N), rt(N),
+	      pos(N), inv(N), segtree(N) {
+		rt[R] = R;
+		dfs_sz(R);
+		dfs_hld(R);
+	}
+
+	void toggle_node(int u) {
+		int cur = segtree.range_min(pos[u], pos[u] + 1);
+		if (cur == segtree.INFVAL()) segtree.set(pos[u], pos[u]);  // make black
+		else segtree.set(pos[u], segtree.INFVAL());                // make white
+	}
+
+	T query_path(int u, int v) {
+		T res = segtree.INFVAL();
+		process(u, v,
+		        [&](int l, int r) { res = min(res, segtree.range_min(l, r + 1)); });
+		if (res == segtree.INFVAL()) return -1;
+		return inv[res] + 1;  // return 1-indexed node id
+	}
+};
+// EndCodeSnip
+
+int main() {
+	int n, q;
+	cin >> n >> q;
+	vector<vector<int>> adj(n);
+	for (int i = 0; i < n - 1; i++) {
+		int u, v;
+		cin >> u >> v;
+		--u, --v;
+		adj[u].push_back(v);
+		adj[v].push_back(u);
+	}
+
+	HLD<int, false> hld(adj, 0);
+
+	while (q--) {
+		int type, v;
+		cin >> type >> v;
+		--v;
+		if (type == 0) {
+			hld.toggle_node(v);
+		} else {
+			cout << hld.query_path(0, v) << "\n";
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>

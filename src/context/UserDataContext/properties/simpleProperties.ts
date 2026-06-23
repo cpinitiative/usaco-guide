@@ -89,20 +89,16 @@ export const useSetDivisionTableQuery = createSimpleUserDataMutation(
   }
 );
 
-export const useLastReadAnnouncement = createUserDataGetter(
-  userData => userData.lastReadAnnouncement
-);
-export const useSetLastReadAnnouncement = createSimpleUserDataMutation(
-  (userData, lastReadAnnouncement: string) => {
-    return {
-      lastReadAnnouncement,
-    };
-  }
-);
-
 // last viewed module is set in useUpdateStreakEffect
 // we have a limitation of one update per second (firebase rate limit),
 // so we combine the two updates
 export const useLastViewedModule = createUserDataGetter(
   userData => userData.lastViewedModule
 );
+
+/*
+TODO LATER
+export const blindMode = defineBooleanProperty({
+  default: false,
+});
+*/

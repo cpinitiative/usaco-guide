@@ -1,11 +1,10 @@
-import { Story } from '@storybook/react';
-import React from 'react';
+import { StoryFn } from '@storybook/react';
 
 export default {
   title: 'Textarea',
 };
 
-const Template: Story = args => <textarea rows={4} {...args} />;
+const Template: StoryFn = args => <textarea rows={4} {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

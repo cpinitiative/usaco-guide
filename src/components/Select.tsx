@@ -1,4 +1,3 @@
-import React from 'react';
 import Select from 'react-select';
 import { useDarkMode } from '../context/DarkModeContext';
 export default function StyledSelect(props) {
@@ -48,8 +47,8 @@ export default function StyledSelect(props) {
                       backgroundColor: '#4d94ff',
                     }
                   : isSelected
-                  ? { backgroundColor: '#0063e6' }
-                  : {}),
+                    ? { backgroundColor: '#0063e6' }
+                    : {}),
               }),
             }
       }

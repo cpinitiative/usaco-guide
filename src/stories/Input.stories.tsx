@@ -1,11 +1,10 @@
-import { Story } from '@storybook/react';
-import React from 'react';
+import { StoryFn } from '@storybook/react';
 
 export default {
   title: 'Input',
 };
 
-const Template: Story = args => <input type="text" {...args} />;
+const Template: StoryFn = args => <input type="text" {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

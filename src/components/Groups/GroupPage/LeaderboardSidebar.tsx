@@ -1,10 +1,10 @@
-import { Link } from 'gatsby';
-import * as React from 'react';
+import Link from 'next/link';
+import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import LeaderboardList from '../LeaderboardList/LeaderboardList';
 
 export default function LeaderboardSidebar() {
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
+    <div className="rounded-lg bg-white shadow-sm dark:bg-gray-800">
       <div className="p-6 pb-3">
         <div className="flex items-baseline justify-between">
           <h2
@@ -14,13 +14,13 @@ export default function LeaderboardSidebar() {
             Leaderboard
           </h2>
           <Link
-            to="leaderboard"
-            className="text-sm font-medium text-gray-800 dark:text-gray-200 hover:text-black dark:hover:text-white"
+            href={'/groups/' + useActiveGroup().activeGroupId + '/leaderboard'}
+            className="text-sm font-medium text-gray-800 hover:text-black dark:text-gray-200 dark:hover:text-white"
           >
             View All &rarr;
           </Link>
         </div>
-        <div className="flow-root mt-2">
+        <div className="mt-2 flow-root">
           <LeaderboardList />
         </div>
       </div>

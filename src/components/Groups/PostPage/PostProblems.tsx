@@ -15,7 +15,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { MenuIcon } from '@heroicons/react/solid';
-import { navigate } from 'gatsby';
+import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useActivePostProblems } from '../../../hooks/groups/useActivePostProblems';
@@ -49,7 +49,7 @@ function SortableItem(props: {
         problem={props.problem}
         dragHandle={
           <div
-            className="self-stretch flex items-center px-2"
+            className="flex items-center self-stretch px-2"
             {...attributes}
             {...listeners}
           >
@@ -66,6 +66,7 @@ export default function PostProblems({
 }: {
   post: PostData;
 }): JSX.Element {
+  const router = useRouter();
   const activeGroup = useActiveGroup();
   const { createNewProblem, updateProblemOrdering } = usePostActions(
     activeGroup.activeGroupId!
@@ -116,7 +117,7 @@ export default function PostProblems({
     <section className="mt-8 xl:mt-10">
       <div>
         <div className="divide-y divide-gray-200 dark:divide-gray-700">
-          <div className="pb-4 flex justify-between space-x-4">
+          <div className="flex justify-between space-x-4 pb-4">
             <div>
               <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">
                 Problems
@@ -133,7 +134,9 @@ export default function PostProblems({
                   type="button"
                   onClick={() =>
                     createNewProblem(post).then(id =>
-                      navigate(`problems/${id}/edit`)
+                      router.push(
+                        `/groups/${router.query.id}/post/${router.query.postId}/problems/${id}/edit`
+                      )
                     )
                   }
                   className="btn"
@@ -156,7 +159,7 @@ export default function PostProblems({
                       items={items}
                       strategy={verticalListSortingStrategy}
                     >
-                      <div className="divide-y divide-gray-200 dark:divide-gray-700 border-b border-gray-200 dark:border-gray-700">
+                      <div className="divide-y divide-gray-200 border-b border-gray-200 dark:divide-gray-700 dark:border-gray-700">
                         {items.map(problemId => (
                           <SortableItem
                             key={problemId}
@@ -170,7 +173,7 @@ export default function PostProblems({
                     </SortableContext>
                   </DndContext>
                 ) : (
-                  <div className="divide-y divide-gray-200 dark:divide-gray-700 border-b border-gray-200 dark:border-gray-700">
+                  <div className="divide-y divide-gray-200 border-b border-gray-200 dark:divide-gray-700 dark:border-gray-700">
                     {items.map(problemId => (
                       <ProblemListItem
                         key={problemId}

@@ -1,9 +1,6 @@
 // Heavily inspired by https://joshwcomeau.com/
 
 import * as React from 'react';
-import 'tippy.js/animations/scale-subtle.css';
-import 'tippy.js/dist/tippy.css';
-import 'tippy.js/themes/material.css';
 import Tooltip, { TooltipProps } from './Tooltip';
 
 const Asterisk: React.FC<Omit<TooltipProps, 'type'>> = ({
@@ -12,7 +9,7 @@ const Asterisk: React.FC<Omit<TooltipProps, 'type'>> = ({
   ...other
 }) => {
   return (
-    <span className="inline-block h-4 relative" style={{ width: 9 }}>
+    <span className="relative inline-block h-4" style={{ width: 9 }}>
       <Tooltip
         {...other}
         content={children}
@@ -20,7 +17,7 @@ const Asterisk: React.FC<Omit<TooltipProps, 'type'>> = ({
         type="asterisk"
       >
         <button
-          className="absolute block cursor-pointer focus:outline-none"
+          className="absolute block cursor-pointer focus:outline-hidden"
           style={{
             transform: 'translateY(5px)',
             top: '-19px',

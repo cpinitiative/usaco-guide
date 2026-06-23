@@ -1,23 +1,28 @@
-import { Link } from 'gatsby';
 import { BaseHit, Hit } from 'instantsearch.js';
+import Link from 'next/link';
 import * as React from 'react';
+import { useEffect } from 'react';
 import { Highlight, useHits } from 'react-instantsearch';
 import { moduleIDToSectionMap } from '../../../content/ordering';
+import { useBlindMode } from '../../context/BlindModeContext';
 import { ConfettiProvider } from '../../context/ConfettiContext';
 import {
   useHideDifficultySetting,
   useHideModulesSetting,
   useShowTagsSetting,
 } from '../../context/UserDataContext/properties/simpleProperties';
+import { useUserProgressOnProblems } from '../../context/UserDataContext/properties/userProgress';
 import {
   AlgoliaProblemInfo,
-  ProblemInfo,
   getProblemURL,
   isUsaco,
+  ProblemInfo,
+  ProblemProgress,
   recentUsaco,
 } from '../../models/problem';
 import DifficultyBox from '../DifficultyBox';
 import Info from '../markdown/Info';
+import divToProbs from '../markdown/ProblemsList/DivisionList/div_to_probs.json';
 import ProblemStatusCheckbox from '../markdown/ProblemsList/ProblemStatusCheckbox';
 
 type AlgoliaProblemInfoHit = Hit<BaseHit> & AlgoliaProblemInfo;
@@ -25,10 +30,54 @@ interface ProblemHitProps {
   hit: AlgoliaProblemInfoHit;
 }
 
+function getContestDateForProblem(
+  division: string,
+  problemId: string
+): string | null {
+  const divisionProblems = divToProbs[division];
+  if (!divisionProblems) return null;
+
+  for (const [id, date] of divisionProblems) {
+    if ('usaco-' + id === problemId) return date;
+  }
+  return null;
+}
+function getProblemDivision(problemId: string): string {
+  for (const [division, problems] of Object.entries(divToProbs)) {
+    for (const [id] of problems) {
+      if ('usaco-' + id === problemId) return division;
+    }
+  }
+  return null;
+}
+function getContestURL(source: string) {
+  let resultsUrl = '';
+  const parts = source.split(' ');
+  parts[0] = parts[0].substring(2);
+
+  if (parseInt(parts[0]) >= 26) {
+    // season26contest1results
+    let index = 0;
+    if (parts[1] == 'First') index = 1;
+    else if (parts[1] == 'Second') index = 2;
+    else if (parts[1] == 'Third') index = 3;
+    else if (parts[1] == 'Fourth') index = 4; // unsure of how US Open will be formatted yet, for now just use fourth + 4.
+
+    resultsUrl = `http://www.usaco.org/index.php?page=season${parts[0]}contest${index}results`;
+  } else {
+    // dec24results
+    if (parts[1] === 'US') parts[1] = 'open';
+    else parts[1] = parts[1].toLowerCase().substring(0, 3);
+    resultsUrl = `http://www.usaco.org/index.php?page=${parts[1]}${parts[0]}results`;
+  }
+  return resultsUrl;
+}
 function ProblemHit({ hit }: ProblemHitProps) {
   const hideDifficulty = useHideDifficultySetting();
   const showTags = useShowTagsSetting();
   const hideModules = useHideModulesSetting();
+  const { isBlindMode } = useBlindMode();
+
   if (hit.problemModules.length == 0 && recentUsaco.includes(hit.source)) {
     hit.problemModules.push({
       id: 'usaco-monthlies',
@@ -37,14 +86,18 @@ function ProblemHit({ hit }: ProblemHitProps) {
   }
   const problem = hit as unknown as ProblemInfo;
   problem.uniqueId = hit.objectID;
+
+  const contestDate = isUsaco(problem.source)
+    ? getContestDateForProblem(hit.source, problem.uniqueId)
+    : null;
   return (
-    <div className="bg-white dark:bg-gray-900 shadow p-4 sm:p-6 rounded-lg ">
-      <div className="flex flex-row justify-between w-full">
+    <div className="rounded-lg bg-white p-4 shadow-sm sm:p-6 dark:bg-gray-900">
+      <div className="flex w-full flex-row justify-between">
         <span>
-          <span className="text-blue-700 dark:text-blue-400 font-medium text-sm">
+          <span className="text-sm font-medium text-blue-700 dark:text-blue-400">
             {hit.source}
           </span>
-          <p className="text-xl leading-6 mt-1 mb-2">
+          <p className="mt-1 mb-2 text-xl leading-6">
             <a
               href={hit.url}
               target="_blank"
@@ -55,7 +108,7 @@ function ProblemHit({ hit }: ProblemHitProps) {
             </a>
             {hit.isStarred && (
               <svg
-                className="h-6 w-4 text-blue-400 ml-2 pb-1 inline-block"
+                className="ml-2 inline-block h-6 w-4 pb-1 text-blue-400"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -99,14 +152,13 @@ function ProblemHit({ hit }: ProblemHitProps) {
                 : hit.solution.url
             }
             target="_blank"
-            rel="noreferrer"
-            className="text-gray-500 dark:text-dark-med-emphasis text-sm"
+            className="dark:text-dark-med-emphasis text-sm text-gray-500"
           >
             View Solution
             <svg
               viewBox="0 0 20 20"
               fill="currentColor"
-              className="h-4 w-4 inline ml-0.5 mb-1"
+              className="mb-1 ml-0.5 inline h-4 w-4"
             >
               <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
               <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
@@ -122,30 +174,47 @@ function ProblemHit({ hit }: ProblemHitProps) {
             )}`}
             target="_blank"
             rel="noreferrer"
-            className="text-gray-500 dark:text-dark-med-emphasis text-sm"
+            className="dark:text-dark-med-emphasis text-sm text-gray-500"
           >
             Open in IDE
             <svg
               viewBox="0 0 20 20"
               fill="currentColor"
-              className="h-4 w-4 inline ml-0.5 mb-1"
+              className="mb-1 ml-0.5 inline h-4 w-4"
             >
               <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
               <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
             </svg>
           </a>
+
+          {contestDate && (
+            <>
+              <br />
+              <span className="dark:text-dark-med-emphasis text-sm text-gray-500">
+                Contest:{' '}
+                <a
+                  href={getContestURL(contestDate)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm text-blue-600 dark:text-blue-400"
+                >
+                  {contestDate}
+                </a>
+              </span>
+            </>
+          )}
         </>
       )}
-      {!hideModules && (
+      {!hideModules && !isBlindMode && (
         <>
-          <p className="text-sm text-gray-500 dark:text-dark-med-emphasis  mt-2">
+          <p className="dark:text-dark-med-emphasis mt-2 text-sm text-gray-500">
             Appears In:
           </p>
-          <ul className="list-disc ml-6">
+          <ul className="ml-6 list-disc">
             {hit.problemModules.map(({ id: moduleID, title: moduleLabel }) => (
               <li key={moduleID}>
                 <Link
-                  to={`/${moduleIDToSectionMap[moduleID]}/${moduleID}/#problem-${hit.objectID}`}
+                  href={`/${moduleIDToSectionMap[moduleID]}/${moduleID}/#problem-${hit.objectID}`}
                   className="text-sm text-blue-600 dark:text-blue-400"
                 >
                   {moduleLabel}
@@ -161,7 +230,7 @@ function ProblemHit({ hit }: ProblemHitProps) {
         {showTags &&
           hit.tags?.map(tag => (
             <span
-              className="mr-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium leading-4 bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-dark-high-emphasis"
+              className="dark:text-dark-high-emphasis mr-2 inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs leading-4 font-medium text-gray-800 dark:bg-gray-800"
               key={tag}
             >
               {tag}
@@ -172,9 +241,132 @@ function ProblemHit({ hit }: ProblemHitProps) {
   );
 }
 
-export default function ProblemHits() {
+export default function ProblemHits({ shuffle, random, sort }) {
   const { hits } = useHits() as { hits: AlgoliaProblemInfoHit[] };
-  if (!hits.length) {
+  const [displayHits, setDisplayHits] =
+    React.useState<AlgoliaProblemInfoHit[]>(hits);
+  const userProgressOnProblems = useUserProgressOnProblems();
+
+  const difficultySortOrder = {
+    'Very Easy': 1,
+    Easy: 2,
+    Normal: 3,
+    Hard: 4,
+    'Very Hard': 5,
+    Insane: 6,
+    'N/A': 0,
+  };
+  const divisionFactor = {
+    Bronze: 0,
+    Silver: 10,
+    Gold: 20,
+    Platinum: 30,
+  };
+
+  function shuffleArr(arr: AlgoliaProblemInfoHit[]) {
+    const nArr = [...arr];
+    let l = nArr.length;
+
+    while (l > 0) {
+      const i = Math.floor(Math.random() * l--);
+      [nArr[l], nArr[i]] = [nArr[i], nArr[l]];
+    }
+
+    return nArr;
+  }
+  function sortHitsByDifficulty(
+    hitsToSort: AlgoliaProblemInfoHit[],
+    ascending: boolean
+  ) {
+    const hasNA = [];
+    const withoutNA = [];
+
+    for (const hit of hitsToSort) {
+      if (hit.difficulty === 'N/A') {
+        hasNA.push(hit);
+      } else {
+        withoutNA.push(hit);
+      }
+    }
+
+    withoutNA.sort((a, b) => {
+      const aDivision = getProblemDivision(a.objectID);
+      const bDivision = getProblemDivision(b.objectID);
+      const aOrder =
+        (difficultySortOrder[a.difficulty] || 0) +
+        (aDivision ? divisionFactor[aDivision] : 0);
+      const bOrder =
+        (difficultySortOrder[b.difficulty] || 0) +
+        (bDivision ? divisionFactor[bDivision] : 0);
+      return ascending ? aOrder - bOrder : bOrder - aOrder;
+    });
+
+    return [...withoutNA, ...hasNA];
+  }
+  function sortHitsByContest(
+    hitsToSort: AlgoliaProblemInfoHit[],
+    ascending: boolean
+  ) {
+    const withDates = [];
+    const withoutDates = [];
+
+    for (const hit of hitsToSort) {
+      const id = hit.objectID;
+      const date = getContestDateForProblem(hit.source, id);
+      if (date) {
+        withDates.push(hit);
+      } else {
+        withoutDates.push(hit);
+      }
+    }
+
+    withDates.sort((a, b) => {
+      const aId = a.objectID;
+      const bId = b.objectID;
+      const aDate = Number(
+        getContestDateForProblem(a.source, aId).match(/\d+/)?.[0]
+      );
+      const bDate = Number(
+        getContestDateForProblem(b.source, bId).match(/\d+/)?.[0]
+      );
+      return ascending ? aDate - bDate : bDate - aDate;
+    });
+
+    return [...withDates, ...withoutDates];
+  }
+
+  useEffect(() => {
+    if (sort.indexOf('Contest') !== -1)
+      setDisplayHits(sortHitsByContest(hits, sort.indexOf('Older') !== -1));
+    else if (sort.indexOf('Difficulty') !== -1)
+      setDisplayHits(
+        sortHitsByDifficulty(hits, sort.indexOf('Ascending') !== -1)
+      );
+    else if (shuffle) setDisplayHits(shuffleArr(hits));
+    else setDisplayHits(hits);
+  }, [shuffle, hits, sort]);
+
+  useEffect(() => {
+    if (random) {
+      const unsolvedURLs: string[] = [];
+      for (const h of hits) {
+        const status: ProblemProgress =
+          userProgressOnProblems[String(h.uniqueId)] || 'Not Attempted';
+        if (status === 'Not Attempted') {
+          unsolvedURLs.push(h.url);
+        }
+      }
+
+      if (unsolvedURLs.length > 0) {
+        window.open(
+          unsolvedURLs[Math.floor(Math.random() * unsolvedURLs.length)],
+          '_blank'
+        );
+      }
+    }
+  }, [random]);
+
+  if (!hits.length || !displayHits.length) {
     return (
       <Info title="No Problems Found">
         No problems were found matching your search criteria. Try changing your
@@ -182,9 +374,10 @@ export default function ProblemHits() {
       </Info>
     );
   }
+
   return (
     <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {hits.map(hit => (
+      {displayHits.map(hit => (
         <ProblemHit hit={hit} key={hit.objectID} />
       ))}
     </div>

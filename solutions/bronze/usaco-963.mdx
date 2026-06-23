@@ -2,12 +2,16 @@
 id: usaco-963
 source: USACO Bronze 2019 December
 title: Cow Gymnastics
-author: Krish Thawani, Hua Zhi Vee, Jonathan Paulson, Ben Dodge, David Li
+author: Krish Thawani, Hua Zhi Vee, Jonathan Paulson, Ben Dodge, David Li, David Guo
 ---
 
-## Official Solution
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_gymnastics_bronze_dec19.html)
 
-[Official Analysis](http://www.usaco.org/current/data/sol_gymnastics_bronze_dec19.html)
+## Explanation
+
+As the problem statement says, we tally how many sessions cow A finished ahead of cow B across all pairs.
+If cow A outperforms cow B in all $K$ sessions, we increment our answer.
+We get the final output once we iterate over all pairs.
 
 ## Video Solution
 
@@ -18,43 +22,51 @@ By David Li
 <Spoiler title="Video Solution Code">
 <LanguageSection>
 <CPPSection>
+
 ```cpp
-	       #include <iostream>
-	       using namespace std;
-	       int N, K;
-	       int rankings[10][20], better[20][20];
-	       int main() {
-	       	freopen("gymnastics.in", "r", stdin);
-	       	freopen("gymnastics.out", "w", stdout);
-	       	// reading in input
-	       	cin >> K >> N;
-	       	for (int i = 0; i < K; i++) {
-	       		for (int j = 0; j < N; j++) {
-	       			cin >> rankings[i][j];
-	       			rankings[i][j]--;
-	       		}
-	       	}
-	       	// calculating the amount of times that cow a comes before cow b
-	       	for (int i = 0; i < K; i++) {              // looping over the trials
-	       		for (int j = 0; j < N; j++) {          // rankings[i][j] = cow a
-	       			for (int k = j + 1; k < N; k++) {  // rankings[i][k] = cow b
-	       				better[rankings[i][j]][rankings[i][k]]++;
-	       			}
-	       		}
-	       	}
-	       	// calculating answer
-	       	int ans = 0;
-	       	for (int i = 0; i < N; i++) {
-	       		for (int j = 0; j < N; j++) {
-	       			if (better[i][j] == K)  // if cow i comes before cow j K times then
-	       			                        // increment our answer
-	       				ans++;
-	       		}
-	       	}
-	       	// print answer
-	       	cout << ans;
-	       }
-	       ```
+#include <iostream>
+using namespace std;
+
+int N, K;
+int rankings[10][20], better[20][20];
+
+int main() {
+	freopen("gymnastics.in", "r", stdin);
+	freopen("gymnastics.out", "w", stdout);
+
+	// reading in input
+	cin >> K >> N;
+	for (int i = 0; i < K; i++) {
+		for (int j = 0; j < N; j++) {
+			cin >> rankings[i][j];
+			rankings[i][j]--;
+		}
+	}
+
+	// calculating the amount of times that cow a comes before cow b
+	for (int i = 0; i < K; i++) {              // looping over the trials
+		for (int j = 0; j < N; j++) {          // rankings[i][j] = cow a
+			for (int k = j + 1; k < N; k++) {  // rankings[i][k] = cow b
+				better[rankings[i][j]][rankings[i][k]]++;
+			}
+		}
+	}
+
+	// calculating answer
+	int ans = 0;
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			if (better[i][j] == K)  // if cow i comes before cow j K times then
+				ans++;
+		}
+	}
+
+	// print answer
+	cout << ans;
+
+	return 0;
+}
+```
 
 </CPPSection>
 
@@ -115,6 +127,9 @@ public class gymnastics {
 	</Spoiler>
 
 ## Implementation
+
+**Time Complexity:** $\mathcal{O}(K \cdot N^3)$
+
 <LanguageSection>
 <CPPSection>
 

@@ -1,0 +1,166 @@
+---
+id: cf-1722E
+source: CF
+title: Counting Rectangles
+author: Kevin Sheng
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/106478)
+
+## Explanation
+
+The overall approach is to use 2D prefix sums along with some jank combinatorics stuff.
+
+We start by constructing a 2D array $a$ where $a[h][w]$
+contains the area of all rectangles with height $h$ and width $w$ *exactly*.
+
+To get the area of all rectangles that satisfy a certain query, we
+perform a 2D prefix sum from $a[h_s+1][w_s+1]$ to $a[h_b-1][w_b-1]$ inclusive.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(D^2+n+q)$, where $D$ is the largest dimension we have to handle.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+constexpr int MAX_SIDE = 1000;
+
+int main() {
+	int test_num;
+	std::cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int rect_num;
+		int query_num;
+		std::cin >> rect_num >> query_num;
+
+		vector<vector<long long>> pref(MAX_SIDE + 1, vector<long long>(MAX_SIDE + 1));
+		for (int r = 0; r < rect_num; r++) {
+			int h, w;
+			std::cin >> h >> w;
+			pref[h][w] += h * w;
+		}
+
+		// fill out the prefix sum array
+		for (int r = 0; r <= MAX_SIDE; r++) {
+			for (int c = 0; c <= MAX_SIDE; c++) {
+				if (r > 0) { pref[r][c] += pref[r - 1][c]; }
+				if (c > 0) { pref[r][c] += pref[r][c - 1]; }
+				if (r > 0 && c > 0) { pref[r][c] -= pref[r - 1][c - 1]; }
+			}
+		}
+
+		for (int q = 0; q < query_num; q++) {
+			int hs, ws;
+			int hb, wb;
+			std::cin >> hs >> ws >> hb >> wb;
+			long long submatrix = pref[hb - 1][wb - 1] - pref[hs][wb - 1] -
+			                      pref[hb - 1][ws] + pref[hs][ws];
+			cout << submatrix << '\n';
+		}
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class CountingRectangles {
+	private static final int MAX_SIDE = 1000;
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		int testNum = Integer.parseInt(read.readLine());
+		for (int t = 0; t < testNum; t++) {
+			StringTokenizer initial = new StringTokenizer(read.readLine());
+			int rectNum = Integer.parseInt(initial.nextToken());
+			int queryNum = Integer.parseInt(initial.nextToken());
+
+			long[][] pref = new long[MAX_SIDE + 1][MAX_SIDE + 1];
+			for (int r = 0; r < rectNum; r++) {
+				StringTokenizer rect = new StringTokenizer(read.readLine());
+				int h = Integer.parseInt(rect.nextToken());
+				int w = Integer.parseInt(rect.nextToken());
+				pref[h][w] += h * w;
+			}
+
+			// fill out the prefix sum array
+			for (int r = 0; r <= MAX_SIDE; r++) {
+				for (int c = 0; c <= MAX_SIDE; c++) {
+					if (r > 0) { pref[r][c] += pref[r - 1][c]; }
+					if (c > 0) { pref[r][c] += pref[r][c - 1]; }
+					if (r > 0 && c > 0) { pref[r][c] -= pref[r - 1][c - 1]; }
+				}
+			}
+
+			for (int q = 0; q < queryNum; q++) {
+				StringTokenizer query = new StringTokenizer(read.readLine());
+				int hs = Integer.parseInt(query.nextToken());
+				int ws = Integer.parseInt(query.nextToken());
+				int hb = Integer.parseInt(query.nextToken());
+				int wb = Integer.parseInt(query.nextToken());
+
+				long submatrix = pref[hb - 1][wb - 1] - pref[hs][wb - 1] -
+				                 pref[hb - 1][ws] + pref[hs][ws];
+				System.out.println(submatrix);
+			}
+		}
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+<Warning>
+
+This solution only runs in time when submitted with PyPy.
+
+</Warning>
+
+```py
+MAX_SIDE = 1000
+
+overall_ans = []
+
+for _ in range(int(input())):
+	rect_num, query_num = [int(i) for i in input().split()]
+
+	pref = [[0 for _ in range(MAX_SIDE + 1)] for _ in range(MAX_SIDE + 1)]
+	for _ in range(rect_num):
+		h, w = [int(i) for i in input().split()]
+		pref[h][w] += h * w
+
+	# fill out the prefix sum array
+	for r in range(MAX_SIDE + 1):
+		for c in range(MAX_SIDE + 1):
+			if r > 0:
+				pref[r][c] += pref[r - 1][c]
+			if c > 0:
+				pref[r][c] += pref[r][c - 1]
+			if r > 0 and c > 0:
+				pref[r][c] -= pref[r - 1][c - 1]
+
+	for _ in range(query_num):
+		hs, ws, hb, wb = [int(i) for i in input().split()]
+		overall_ans.append(
+			pref[hb - 1][wb - 1] - pref[hs][wb - 1] - pref[hb - 1][ws] + pref[hs][ws]
+		)
+
+print("\n".join(str(a) for a in overall_ans))
+```
+
+</PySection>
+</LanguageSection>

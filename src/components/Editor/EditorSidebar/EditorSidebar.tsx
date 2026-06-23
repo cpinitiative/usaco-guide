@@ -1,4 +1,4 @@
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { PrimitiveAtom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   activeFileAtom,
@@ -18,7 +18,9 @@ import {
 import { FileListSidebar } from './FileListSidebar';
 
 function GithubActions() {
-  const [fork, setFork] = useAtom(forkAtom);
+  const [fork, setFork] = useAtom(
+    forkAtom as PrimitiveAtom<string | undefined>
+  );
   const githubInfo = useAtomValue(githubInfoAtom);
   const octokit = useAtomValue(octokitAtom);
   const [branch, setBranch] = useAtom(branchAtom);
@@ -31,32 +33,23 @@ function GithubActions() {
   const [installed, setInstalled] = useState<boolean | undefined>(undefined);
   useEffect(() => {
     if (!octokit || !githubInfo) return;
-    octokit
-      .request('GET /user/installations', {
-        headers: {
-          'X-GitHub-Api-Version': '2022-11-28',
-        },
-      })
-      .then(res =>
-        setInstalled(
-          !!res.data.installations.find(
-            installation => installation.account?.id === githubInfo.id
-          )
-        )
+    octokit.paginate('GET /user/installations', {}).then(data => {
+      console.log(data);
+      setInstalled(
+        !!data.find(installation => installation.account?.id === githubInfo.id)
       );
+    });
     octokit
-      .request('GET /user/repos', {
+      .paginate('GET /user/repos', {
         affiliation: 'owner',
-        headers: {
-          'X-GitHub-Api-Version': '2022-11-28',
-        },
+        per_page: 100,
+        direction: 'desc',
       })
-      .then(res =>
-        setFork(
-          res.data.find(repo => repo.name === 'usaco-guide')?.html_url ??
-            undefined
-        )
-      );
+      .then(data => {
+        return setFork(
+          data.find(repo => repo.name === 'usaco-guide')?.html_url ?? undefined
+        );
+      });
   }, [githubInfo, branch, octokit, setFork]);
   const createBranch = useCallback(
     async branchName => {
@@ -88,8 +81,11 @@ function GithubActions() {
       if (branches.find(branch => branch.name === branchName)) {
         setBranchState('Setting Branch...');
       } else setBranchState('Creating Branch...');
+      if (!octokit) {
+        throw new Error('Octokit not available');
+      }
       const masterSha = (
-        await octokit?.request(
+        await octokit.request(
           'GET /repos/{owner}/{repo}/git/matching-refs/{ref}',
           {
             owner: 'cpinitiative',
@@ -212,12 +208,8 @@ function GithubSidebar({ loading }: { loading: boolean }) {
         ) : (
           <a
             href={`https://github.com/login/oauth/authorize?client_id=${
-              process.env.GATSBY_EDITOR_CLIENT_ID
-            }&redirect_uri=${
-              process.env.NODE_ENV === 'development'
-                ? 'http://localhost:8000/editor'
-                : ''
-            }`}
+              process.env.NEXT_PUBLIC_EDITOR_CLIENT_ID ?? 'Iv1.6da85d62d6b62202'
+            }&redirect_uri=https://usaco.guide/editor`} // change this in dev mode to localhost:3000/editor
             className="btn"
           >
             Login with GitHub &rarr;
@@ -279,7 +271,7 @@ export const EditorSidebar = (props): JSX.Element => {
     }
   };
   return (
-    <div className="flex-col w-[250px] border-r border-gray-200 dark:border-gray-800">
+    <div className="w-[250px] flex-col border-r border-gray-200 dark:border-gray-800">
       <FileListSidebar
         {...props}
         activeFile={activeFile}

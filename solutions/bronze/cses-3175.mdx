@@ -1,0 +1,66 @@
+---
+id: cses-3175
+source: CSES
+title: Beautiful Permutation II
+author: Rameez Parwez
+---
+
+## Explanation
+
+We can solve this problem recursively. At every index, we look for the smallest number
+that satisfies the asked condition (i.e., *there are no adjacent elements whose difference is 1*)
+and if it satisfies, we add it to our permutation.
+
+For $n = 2$ and $n = 3$, we know that no permutation satisfies the asked condition.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+
+std::vector<int> res;
+std::vector<int> ele;
+
+void backtrack() {
+
+	if (ele.empty()) {
+		for (int x : res) { std::cout << x << " \n"[x == res.back()]; }
+		exit(0);
+	}
+
+	for (int i = ele.size() - 1; i >= 0; --i) {
+		int x = ele[i];
+
+		if (res.empty() || std::abs(res.back() - x) != 1) {
+			ele.erase(ele.begin() + i);
+			res.push_back(x);
+			backtrack();
+			res.pop_back();
+			ele.insert(ele.begin() + i, x);
+		}
+	}
+}
+
+int main() {
+	int n;
+	std::cin >> n;
+
+	if (n == 2 || n == 3) {
+		std::cout << "NO SOLUTION" << '\n';
+		return 0;
+	}
+
+	for (int i = n; i >= 1; i--) { ele.push_back(i); }
+
+	backtrack();
+}
+```
+
+</CPPSection>
+</LanguageSection>

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {
-  LANGUAGE_LABELS,
   Language,
+  LANGUAGE_LABELS,
   useUserLangSetting,
 } from '../../context/UserDataContext/properties/simpleProperties';
 import Danger from './Danger';

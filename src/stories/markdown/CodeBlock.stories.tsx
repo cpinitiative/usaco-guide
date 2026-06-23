@@ -1,5 +1,5 @@
-import { Story } from '@storybook/react';
-import React, { ComponentProps } from 'react';
+import { StoryFn } from '@storybook/react';
+import { ComponentProps } from 'react';
 import CodeBlock from '../../components/markdown/CodeBlock/CodeBlock';
 import markdownDecorator from '../../components/markdown/markdownDecoratorForStorybook';
 import { useDarkMode } from '../../context/DarkModeContext';
@@ -10,7 +10,7 @@ export default {
   decorators: [markdownDecorator],
 };
 
-const Template: Story<ComponentProps<typeof CodeBlock>> = args => {
+const Template: StoryFn<ComponentProps<typeof CodeBlock>> = args => {
   const isDarkMode = useDarkMode();
 
   return <CodeBlock {...args} isDarkMode={isDarkMode} />;

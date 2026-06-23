@@ -1,0 +1,229 @@
+---
+id: cses-3398
+source: CSES
+title: Permutation Rounds
+author: Justin Ji
+---
+
+## Explanation
+
+Let's interpret our permutation $p$ as the edges in a functional graph, where
+for each $i$, there exists a directed edge $(i, p_i)$. As $p$ is a permutation,
+each node has an in-degree and an out-degree of one, meaning that our graph is composed
+of disjoint cycles. To understand why, observe that a node which is connected to a cycle without being part
+of it would imply that some node has an in-degree greater than one.
+
+As each node is in a cycle, each value will eventually return to its starting position
+after a certain amount of time. Specifically, if $s_i$ denotes the size of the cycle which
+node $i$ is in, then each value $i$ returns to its location after $s_i$ rounds.
+
+This means that our answer is $\text{lcm}(s_1, s_2, \dots, s_n)$, as the LCM
+of cycle sizes corresponds to the first value divisible by all the cycle sizes.
+However, trivially calculating the LCM is not possible, as we need to find
+the value modulo $10^9 + 7$, and the LCM can grow far beyond that bound.
+Note that using the formula $\text{lcm}(a, b) = \frac{a \cdot b}{\gcd(a, b)}$ and
+iteratively calculating the LCM doesn't work either, as $a$ and $b$ being under modulo means
+that the modular inverse of the GCD will not be calculated correctly.
+
+Recall that the LCM of two numbers can be calculated by taking each prime appearing in either number and raising it to the largest power appearing in either factorization. Formally, this can be written as
+
+$$
+\text{lcm}(a, b) = \prod_{p \mid ab} p^{\max(\text{power of } p \text{ in } a, \text{ power of } p \text{ in } b)}.
+$$
+
+With this in mind, we can calculate the LCM of our $s_i$ values by prime factorizing
+each $s_i$, and combining it with the LCM of all previous $i$ using the formulation above. We store prime factors in a map and use simple division to calculate our prime factorization.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \sqrt N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using ll = long long;
+
+constexpr int MOD = 1e9 + 7;
+
+std::vector<std::array<int, 2>> prime_factorize(int x) {
+	std::vector<std::array<int, 2>> res;
+	for (int i = 2; i * i <= x; i++) {
+		int freq = 0;
+		while (x % i == 0) {
+			x /= i;
+			freq++;
+		}
+
+		if (freq > 0) { res.push_back({i, freq}); }
+	}
+
+	if (x > 1) { res.push_back({x, 1}); }
+
+	return res;
+}
+
+int main() {
+	std::ios_base::sync_with_stdio(false);
+	std::cin.tie(nullptr);
+
+	int n;
+	std::cin >> n;
+	std::vector<int> p(n);
+	for (int &i : p) { std::cin >> i, i--; }
+
+	std::vector<bool> vis(n);
+	std::map<int, int> primes;
+	for (int i = 0; i < n; i++) {
+		if (vis[i]) { continue; }
+		int in_cycle = 0;
+		int ptr = i;
+		while (!vis[ptr]) {
+			in_cycle++;
+			vis[ptr] = true;
+			ptr = p[ptr];
+		}
+
+		auto factors = prime_factorize(in_cycle);
+		for (const auto &[prime, freq] : factors) {
+			primes[prime] = std::max(primes[prime], freq);
+		}
+	}
+
+	int res = 1;
+	for (const auto &[prime, freq] : primes) {
+		for (int i = 0; i < freq; i++) { res = (1ll * res * prime) % MOD; }
+	}
+
+	std::cout << res << '\n';
+}
+```
+
+</CPPSection>
+
+<PySection>
+
+```py
+MOD = 10**9 + 7
+
+
+def prime_factorize(x):
+	res = []
+	i = 2
+	while i * i <= x:
+		freq = 0
+		while x % i == 0:
+			x //= i
+			freq += 1
+		if freq > 0:
+			res.append((i, freq))
+		i += 1
+
+	if x > 1:
+		res.append((x, 1))
+
+	return res
+
+
+n = int(input())
+p = [int(x) - 1 for x in input().split()]
+
+vis = [False] * n
+primes = {}
+
+for i in range(n):
+	if vis[i]:
+		continue
+	in_cycle = 0
+	ptr = i
+	while not vis[ptr]:
+		in_cycle += 1
+		vis[ptr] = True
+		ptr = p[ptr]
+
+	for prime, freq in prime_factorize(in_cycle):
+		primes[prime] = max(primes.get(prime, 0), freq)
+
+res = 1
+
+for prime, freq in primes.items():
+	for _ in range(freq):
+		res = (res * prime) % MOD
+
+print(res)
+```
+
+</PySection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class PermutationRounds {
+	static final long MOD = 1000000007L;
+
+	static List<int[]> primeFactorize(int x) {
+		List<int[]> res = new ArrayList<>();
+		for (int i = 2; i * i <= x; i++) {
+			int freq = 0;
+			while (x % i == 0) {
+				x /= i;
+				freq++;
+			}
+
+			if (freq > 0) { res.add(new int[] {i, freq}); }
+		}
+
+		if (x > 1) { res.add(new int[] {x, 1}); }
+
+		return res;
+	}
+
+	public static void main(String[] args) throws Exception {
+		Scanner sc = new Scanner(System.in);
+
+		int n = sc.nextInt();
+		int[] p = new int[n];
+		for (int i = 0; i < n; i++) { p[i] = sc.nextInt() - 1; }
+
+		boolean[] vis = new boolean[n];
+		Map<Integer, Integer> primes = new HashMap<>();
+
+		for (int i = 0; i < n; i++) {
+			if (vis[i]) continue;
+
+			int inCycle = 0;
+			int ptr = i;
+			while (!vis[ptr]) {
+				vis[ptr] = true;
+				inCycle++;
+				ptr = p[ptr];
+			}
+
+			for (int[] factor : primeFactorize(inCycle)) {
+				int prime = factor[0];
+				int freq = factor[1];
+				primes.put(prime, Math.max(primes.getOrDefault(prime, 0), freq));
+			}
+		}
+
+		long res = 1;
+		for (Map.Entry<Integer, Integer> e : primes.entrySet()) {
+			int prime = e.getKey();
+			int freq = e.getValue();
+			for (int i = 0; i < freq; i++) { res = (res * prime) % MOD; }
+		}
+
+		System.out.println(res);
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>

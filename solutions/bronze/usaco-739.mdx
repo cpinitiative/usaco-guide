@@ -2,10 +2,8 @@
 id: usaco-739
 source: USACO Silver 2017 US Open
 title: Bovine Genomics
-author: Brad Ma, Kevin Sheng, Jay Fu
+author: Brad Ma, Kevin Sheng, Jay Fu, Arnav Gokhale
 ---
-
-[Official Editorial (C++)](http://www.usaco.org/current/data/sol_cownomics_silver_open17.html)
 
 ## Video Solution
 
@@ -173,7 +171,27 @@ public class cownomicsSilver {
 
 </JavaSection>
 </LanguageSection>
+
 </Spoiler>
+
+[Official Editorial (C++)](http://www.usaco.org/current/data/sol_cownomics_silver_open17.html)
+
+## Explanation
+
+We need to loop over all possible sets of 3 distinct positions.
+
+For each set of positions, we then go through all spotted cows and store their gene pattern at these three positions as an integer.
+
+The way we do this is by interpreting the pattern as a base-4 integer.
+If we map A to 0, T to 1, C to 2, and G to 3, the gene pattern CTG would be
+the base-4 number $213$ (or $32 + 4 + 3 = 39$ in base 10).
+
+The benefit of this approach is that it allows us to quickly
+check if two cows have the same pattern without doing a direct string comparison.
+
+We then loop through the non-spotted cows, and create the integers the same way as above.
+If any integer appears in both a plain cow and a spotted cow, then the current set of positions isn't valid.
+Otherwise, we can add one to our answer.
 
 ## Implementation
 

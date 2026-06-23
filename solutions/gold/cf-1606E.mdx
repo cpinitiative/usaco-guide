@@ -1,0 +1,124 @@
+---
+id: cf-1606E
+source: CF
+title: Arena
+author: Justin Ji
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/96454)
+
+## Explanation
+
+Let's consider our first round, where we have $n$ players and no damage
+has been dealt so far. Then, after this first round, any player with
+health in the range $[1, n-1]$ will be killed. In general, if we have $i$ heroes, and $j$ damage has been dealt so far, then any hero with health in the range $[j + 1, j + i - 1]$ will be killed in this round.
+
+Notice that the ranges of health values that get killed in each around are disjoint. This indicates that we should do our counting based on
+the results from each round.
+
+The only thing that affects which range of values gets killed in a round
+are the number of heroes $i$ that are alive, and the damage $j$. Instead of thinking from the perspective of assigning health to the heroes currently alive, we instead assign health to the heroes that die, as
+the round that a hero dies in directly maps to a range of possible health values.
+
+With this approach in mind, let's formulate a DP state $\texttt{dp}[i][j]$, which equals the number of ways we can assign health to the heroes that were killed, if $i$ of them are still alive and a total of $j$ damage has been dealt to all the heroes. Then, we have to consider
+three separate cases for the outcome of a round.
+
+If no hero dies, we still need to consider this as a round that has been completed. Thus, we perform the following transition:
+
+$$
+\texttt{dp}[i][j + i - 1] \mathrel{+}= \texttt{dp}[i][j]
+$$
+
+If some, but not all heroes die, then we know that the heroes who died had health values in the range $[j + 1, j + i - 1]$. Also, we have to choose which heroes out of the $i$ heroes currently alive will die. Let $k$ be the new number of heroes after this round. Then, we have the following transition:
+
+$$
+\texttt{dp}[k][j + i - 1] \mathrel{+}= \texttt{dp}[i][j] \cdot {i \choose i - k} \cdot (\min(x - j, i - 1))^{i-k}
+$$
+
+Lastly, if all the heros die, then we handle the transition in the exact
+same way as the previous one.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2 X)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using ll = long long;
+
+// BeginCodeSnip{Binary Exponentiation (from the module)}
+ll exp(ll x, ll n, ll m) {
+	assert(n >= 0);
+	x %= m;  // note: m * m must be less than 2^63 to avoid ll overflow
+	ll res = 1;
+	while (n > 0) {
+		if (n % 2 == 1) { res = res * x % m; }
+		x = x * x % m;
+		n /= 2;
+	}
+	return res;
+}
+// EndCodeSnip
+
+constexpr int MOD = 998244353;
+
+int main() {
+	int n, x;
+	std::cin >> n >> x;
+
+	// compute binomial coefficients with DP
+	std::vector nck(n + 1, std::vector<ll>(n + 1));
+	for (int i = 0; i <= n; i++) {
+		nck[i][0] = nck[i][i] = 1;
+		for (int j = 1; j < i; j++) {
+			nck[i][j] = (nck[i - 1][j - 1] + nck[i - 1][j]) % MOD;
+		}
+	}
+
+	/*
+	 * dp[i][j] = # of assignments if i heroes are alive and x damage has been dealt
+	 * Note: we only assign health to heroes who have died
+	 */
+	std::vector dp(n + 1, std::vector<ll>(x));
+	dp[n][0] = 1;
+
+	ll res = 0;
+	for (int i = n; i >= 2; i--) {
+		for (int j = 0; j < x; j++) {
+			/*
+			 * Our transition happens when a round happens. Note that
+			 * the ranges of health values eliminated are disjoint, so this works.
+			 */
+
+			// transition for if all the heroes die this round
+			int pick = std::min(x - j, i - 1);
+			res += dp[i][j] * exp(pick, i, MOD);
+			res %= MOD;
+
+			int dmg = j + (i - 1);
+			if (dmg >= x) continue;
+
+			// transition if no one dies this round
+			dp[i][dmg] += dp[i][j];
+			dp[i][dmg] %= MOD;
+
+			for (int k = i - 1; k >= 2; k--) {
+				// iterate on the number of heroes we kill this round
+				int num_del = i - k;
+				ll ways = nck[i][num_del] * exp(pick, num_del, MOD) % MOD;
+				dp[k][dmg] += dp[i][j] * ways;
+				dp[k][dmg] %= MOD;
+			}
+		}
+	}
+
+	std::cout << res << std::endl;
+}
+```
+
+</CPPSection>
+</LanguageSection>

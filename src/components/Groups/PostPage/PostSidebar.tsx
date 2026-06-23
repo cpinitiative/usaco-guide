@@ -1,5 +1,4 @@
-import { Link } from 'gatsby';
-import React from 'react';
+import Link from 'next/link';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useActivePostProblems } from '../../../hooks/groups/useActivePostProblems';
 import { useUserLeaderboardData } from '../../../hooks/groups/useLeaderboardData';
@@ -41,7 +40,7 @@ export default function PostSidebar({
               clipRule="evenodd"
             />
           </svg>
-          <span className="text-green-700 dark:text-green-400 text-sm font-medium">
+          <span className="text-sm font-medium text-green-700 dark:text-green-400">
             {userLeaderboardData?.[post.id!]?.totalPoints ?? 0} /{' '}
             {problems && getTotalPointsFromProblems(problems)} points earned
           </span>
@@ -49,13 +48,22 @@ export default function PostSidebar({
         <SidebarDueDate post={post} />
         {isMobile && (
           <div>
-            <Link to="leaderboard" className="font-medium hover:underline">
+            <Link
+              href={
+                '/groups/' +
+                activeGroup.activeGroupId +
+                '/post/' +
+                post.id +
+                '/leaderboard'
+              }
+              className="font-medium hover:underline"
+            >
               View Assignment Leaderboard &rarr;
             </Link>
           </div>
         )}
       </div>
-      <div className="mt-6 border-t border-gray-200 dark:border-gray-700 py-6 space-y-8">
+      <div className="mt-6 space-y-8 border-t border-gray-200 py-6 dark:border-gray-700">
         {!isMobile && (
           <div>
             <div className="flex items-baseline justify-between">
@@ -66,8 +74,14 @@ export default function PostSidebar({
                 Assignment Leaderboard
               </h3>
               <Link
-                to="leaderboard"
-                className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
+                href={
+                  '/groups/' +
+                  activeGroup.activeGroupId +
+                  '/post/' +
+                  post.id +
+                  '/leaderboard'
+                }
+                className="text-sm font-medium text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-white"
               >
                 View All &rarr;
               </Link>

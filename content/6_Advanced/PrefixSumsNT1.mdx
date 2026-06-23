@@ -1,0 +1,620 @@
+---
+id: prefix-sums-nt-1
+title: 'Prefix Sums of Number-Theoretic Functions (Part 1)'
+author: Benjamin Qi and others
+description: Introduces Dirichlet convolution.
+frequency: 0
+---
+
+In this module we introduce how to compute prefix sums of certain number-theoretic functions in sublinear time. Here are some examples:
+
+<FocusProblem problem="f2" />
+
+<FocusProblem problem="f5" />
+
+<FocusProblem problem="f6" />
+
+This module (part 1) will focus on topics relating to the first two focus problems.
+Prime counting and related applications will be deferred to part 2.
+
+## Multiplicative Functions
+
+The functions that we'd like to compute prefix sums over in the first two focus problems are both **multiplicative**.
+
+### Definition
+
+1. If a function $f: \mathbb{Z}^+ \rightarrow \mathbb{C}$ maps positive integers
+   to complex numbers, it's an arithmetic function.
+2. If $f(n)$ is an arithmetic function, $f(1) = 1$ and $f(p\cdot q) =
+   f(p) \cdot f(q)$ for any coprime positive integers $p$, $q$, it's a
+   multiplicative function.
+3. If $f(n)$ is multiplicative and $f(p \cdot q)$ = $f(p)\cdot f(q)$ for any
+   positive integers $p$, $q$, it's a completely multiplicative function.
+
+If $f(n)$ is a multiplicative function, then for a positive integer
+$n = \prod_{i=1}^{k} p_i^{k_i}$, we have
+
+$$
+f(n) = \prod_{i=1}^{k} f(p_i^{k_i})
+$$
+
+If $f(n)$ is a completely multiplicative function, then for a positive integer
+$n = \prod_{i=1}^{k} p_i^{k_i}$, we have
+
+$$
+f(n) = \prod_{i=1}^{k} f(p_i)^{k_i}
+$$
+
+### Examples
+
+Common multiplicative functions are
+
+- Divisor function: $\sigma_k(n) = \sum_{d|n} d^k$, representing the sum of the
+  $k$th powers of divisors of $n$. Note that $\sigma_k(n)$ and $σ^k(n)$ are
+  different.
+- Divisor count function: $\tau(n) = \sigma_0(n) = \sum_{d|n} 1$, representing
+  the count of divisors of $n$, also denoted as $d(n)$.
+- Divisor sum function: $\sigma(n) = \sigma_1(n) = \sum_{d|n} d$, representing
+  the sum of divisors of $n$.
+- Euler's totient function: $\varphi(n) = \sum_{i=1}^n [(n,i)=1] \cdot 1$,
+  representing the count of positive integers less than or equal to $n$ and
+  coprime to $n$. Additionally,
+  $\sum_{i=1}^n [(n,i)=1] \cdot i = $ $$\frac{n\varphi(n) +
+  [n=1]}{2}$$, $\varphi(n)$ is even.
+- Möbius function: $\mu(n)$, serving as the multiplicative inverse of the
+  identity function in Dirichlet convolution, $\mu(1) = 1$, for a square-free
+  number $n = \prod_{i=1}^t p_i$, $\mu(n) = (-1)^t$, and for a number with
+  square factors, $\mu(n) = 0$.
+- Unit function: $e(n) = [n=1]$, serving as the identity element in Dirichlet
+  convolution, completely multiplicative.
+- Constant function: $I(n) = 1$, completely multiplicative.
+- Identity function: $id(n) = n$, completely multiplicative.
+- Power function: $id^k(n) = n^k$, completely multiplicative.
+
+The two classic formulas regarding the Möbius function and the Euler function
+are:
+
+- $$[n=1] = \sum_{d|n} \mu(d)$$, Interpreting $\mu(d)$ as the coefficients of
+  the inclusion-exclusion principle proves it.
+- $$ n = \sum_{d|n} \varphi(d) $$. To prove it, we can count the number of occurrences of $$\frac{1}{n}(1 \leq i \leq n)$$ in its simplest fraction form.
+
+## Resources
+
+As this module is supposed to serve as a gentle introduction to this topic,
+we will usually describe only the simplest solution that passes the given constraints.
+Solutions with asymptotically better time complexities can be found in blogs
+such as the following, though keep in mind that they might not be much
+faster under the given constraints.
+
+<Resources>
+	<Resource source="CF" title="[Tutorial] Math note — Möbius inversion" url="53925"/>
+	<Resource source="CF" title="[Tutorial] Math note — Dirichlet convolution" url="54150" />
+	<Resource source="CF" title="Dirichlet convolution. Part 1: Fast prefix sum computations" url="117635" />
+	<Resource source="CF" title="Catalog" url="https://codeforces.com/catalog">see number theory section for blog posts on related topics</Resource>
+</Resources>
+
+## Warm-Up
+
+Let's start with introducing a set of numbers $Q_N$ we often work with when computing
+prefix sums of multiplicative functions up to $N$.
+
+<FocusProblem problem="f1" />
+
+Exercise for the reader: How large can this set be?
+
+<Spoiler title="Answer">
+
+Let $s=\lfloor \sqrt N\rfloor$. Then set can have size at most $2\sqrt N$ since
+every element in it is either at most $s$, or of the form $\lfloor N/i\rfloor$
+for some $i\le s$.
+
+</Spoiler>
+
+An important property of this set is that if $x\in Q_N$ then $Q_x \subseteq Q_N$.
+
+<Spoiler title="Why?">
+
+$\lfloor \lfloor N/i\rfloor / j\rfloor =\lfloor N/(ij)\rfloor$
+
+</Spoiler>
+
+### Implementation
+
+<Spoiler title="Code">
+
+Time Complexity: $O(\sqrt N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+template <class T> using V = vector<T>;
+#define all(x) begin(x), end(x)
+
+using ll = long long;
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	ll N;
+	cin >> N;
+
+	auto square = [&](ll s) { return s * s; };
+
+	ll s = 1;
+	while (square(s + 1) <= N) ++s;
+
+	V<ll> a;
+	for (ll i = 1; i <= s; ++i) a.push_back(i);
+	for (ll i = s; i >= 1; --i) {
+		if (i == s && a.back() == N / i) continue;
+		a.push_back(N / i);
+	}
+
+	int k = size(a);
+	cout << k << "\n";
+	for (int i = 0; i < k; ++i) cout << a[i] << " \n"[i + 1 == k];
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>
+
+## Example - Sum of Divisors
+
+<FocusProblem problem="f2" />
+
+Hint: The time complexity is the same as for the previous problem.
+
+### Solution
+
+<Spoiler title="Explanation">
+
+It's not feasible to compute directly, but we can rewrite the summation as follows:
+
+$$
+\sum_{i=1}^{n}\sigma(i)=\sum_{i=1}^{n}\sum_{j=1}^{n}[j|i]\cdot j=\sum_{i=1}^{n}i\cdot\sum_{j=1}^{n}[i|j]=\sum_{i=1}^{n}i\cdot\left\lfloor\frac{n}{i}\right\rfloor
+$$
+
+When $i \leq \sqrt{n}$, there are only $O(\sqrt{n})$ distinct values for
+$\left\lfloor\frac{n}{i}\right\rfloor$. Similarly, when $i > \sqrt{n}$,
+$\left\lfloor\frac{n}{i}\right\rfloor < n$ has only $O(\sqrt{n})$ distinct
+values. For a fixed $\left\lfloor\frac{n}{i}\right\rfloor$, the values of $i$
+form a contiguous interval, which is
+$\left[\left\lfloor\frac{n}{\left\lfloor\frac{n}{i}\right\rfloor+1}\right\rfloor+1,\left\lfloor\frac{n}{\left\lfloor\frac{n}{i}\right\rfloor}\right\rfloor\right]$.
+We can calculate both each of these contribution in $O(\sqrt n)$ time.
+
+Additional notes:
+- The sum of the number of divisors for the first $n$ positive integers
+can be calculated in the same manner.
+- $\sum_{i=1}^{n}\left\lfloor\frac{n}{i}\right\rfloor\cdot i=\sum_{i=1}^{n}\left\lfloor\frac{n}{i}\right\rfloor\cdot\frac{(\left\lfloor\frac{n}{i}\right\rfloor+1)}{2}$. This is true because they each count $\sum_{ij\le n}i$, where the first summation sums over $i$ and the second sums over $j$.
+
+</Spoiler>
+
+### Implementation
+
+<Spoiler title="Code">
+
+**Time Complexity: $\mathcal{O}(\sqrt{n})$**
+
+<LanguageSection>
+<CPPSection>
+
+We use AtCoder's [Modint](https://atcoder.github.io/ac-library/production/document_en/modint.html) class to simplify implementation.
+
+```cpp
+#include <atcoder/modint>
+#include <bits/stdc++.h>
+
+using namespace std;
+using namespace atcoder;
+
+using mint = modint1000000007;
+
+template <class T> using V = vector<T>;
+#define all(x) begin(x), end(x)
+
+using ll = long long;
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	ll n;
+	cin >> n;
+
+	const mint i2 = mint(1) / 2;
+	auto arith = [&](mint l, mint r) { return (l + r) * (r - l + 1) * i2; };
+
+	mint ans = 0;
+	for (ll l = 1; l <= n;) {
+		ll q = n / l;
+		ll r = n / q;
+		ans += arith(l, r) * mint(q);
+		l = r + 1;
+	}
+
+	cout << ans.val() << "\n";
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>
+
+## Dirichlet Convolution
+
+### Introduction
+
+The **Dirichlet convolution** of number-theoretic functions $f$ and $g$ is defined
+as $(f*g)(n) = \sum_{d|n} f(d) \cdot g(\frac{n}{d})$. Dirichlet convolution
+satisfies commutativity, associativity, and distributivity with respect to
+addition. There exists an identity function $e(n) = [n=1]$ such that
+$f*e = f = e*f$。If $f$ and $g$ are multiplicative functions, then $f*g$ is also
+multiplicative.
+
+A common technique with Dirichlet convolution involves dealing with the
+convolution of a function $f$ and the identity function $I$. For
+example, if $n = \prod_{i=1}^{t} p_i^{k_i}$ and $g=f* I$, then $g(n) = \sum_{d|n} f(d)$.
+If $f$ is multiplicative, then we have
+
+$$
+g(n) = \prod_{i=1}^{t} \sum_{j=0}^{k_i} f(p_i^j).
+$$
+
+If we wish to recover $f$ from $g$, we can write $g* \mu = (f* I)* \mu=f* (I* \mu)=f* e=f$. That is, $f(n) = \sum_{d|n} g(d) \cdot \mu\left(\frac{n}{d}\right)$. This is known as **Möbius inversion**.
+
+### Example - Dirichlet Convolution and Prefix Sums
+
+<FocusProblem problem="f3" />
+
+Given $\{f_x | x \in Q_N\}$ and $\{g_x | x \in Q_N\}$, then if we define $h=f*g$,
+we can compute $\{h_x | x \in Q_N\}$ in sublinear time.
+
+#### Solution
+
+<Spoiler title="Explanation">
+
+For $x\in Q_N$ we can compute $h_x$ in $O(\sqrt x)$ time since if $ij\le x$, then
+either $i\le \sqrt x$ or $j\le \sqrt x$ ($i$ is small or $j$ is small). We can account
+for both small cases, then subtract out their overlap.
+
+Additionally, $\sum_{x\in Q_N}\sqrt x\le O(\sum_{i=1}^{\sqrt N}\sqrt {N/i})\le O(N^{3/4})$.
+
+Bonus: It is possible to reduce this to $O(N^{2/3})$ time (see [this comment](https://codeforces.com/blog/entry/117635?#comment-1041002)).
+
+</Spoiler>
+
+#### Implementation
+
+<Spoiler title="Code">
+
+Time Complexity: $O(N^{3/4})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <atcoder/modint>
+#include <bits/stdc++.h>
+
+using namespace std;
+using namespace atcoder;
+
+using mint = modint998244353;
+
+template <class T> using V = vector<T>;
+#define all(x) begin(x), end(x)
+
+using ll = long long;
+
+ll sq(ll x) { return x * x; }
+
+// BeginCodeSnip{Dirichlet Convolution}
+struct Dirichlet {
+	ll N;
+	int s = 0, k;
+	Dirichlet(ll N_) : N(N_) {
+		while (sq(s + 1) <= N) ++s;
+		k = 2 * s - (s == N / s);
+	}
+	ll pos_to_val(int i) {
+		if (i < s) return i + 1;
+		return N / (k - i);
+	}
+	int val_to_pos(ll l) {
+		if (l <= s) return l - 1;
+		return k - N / l;
+	}
+	V<mint> convolve(const V<mint> &f, const V<mint> &g) {
+		V<mint> h(k);
+		for (int i = 0; i < k; ++i) {
+			ll v = pos_to_val(i);
+			ll j = 1;
+			for (; j * j <= v; ++j) {
+				int p = val_to_pos(v / j);
+				h[i] += (f[j - 1] - (j == 1 ? 0 : f[j - 2])) * g[p];
+				h[i] += (g[j - 1] - (j == 1 ? 0 : g[j - 2])) * f[p];
+			}
+			--j;
+			assert(j > 0);
+			h[i] -= f[j - 1] * g[j - 1];
+		}
+		return h;
+	}
+};
+// EndCodeSnip{}
+
+void solve() {
+	ll N;
+	cin >> N;
+	Dirichlet dc(N);
+	int k = dc.k;
+	V<mint> f(k), g(k);
+	for (auto &t : f) {
+		int v;
+		cin >> v;
+		t = v;
+	}
+	for (auto &t : g) {
+		int v;
+		cin >> v;
+		t = v;
+	}
+	auto ret = dc.convolve(f, g);
+	for (int i = 0; i < k; ++i) { cout << ret.at(i).val() << " \n"[i + 1 == k]; }
+}
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+	int T;
+	cin >> T;
+	while (T--) solve();
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>
+
+
+### Example - Dirichlet Inverse and Prefix Sums
+
+Suppose instead of finding $h=f*g$ given $f$ and $g$, we'd like to recover $g$
+given $h$ and $f$.
+
+<FocusProblem problem="f4" />
+
+#### Solution
+
+<Spoiler title="Explanation">
+
+Similar to the previous problem: iterate over $x\in Q_N$ in increasing order,
+but instead of deriving $h_x$ from $f_{1\dots x}$ and $g_{1\dots x}$ we can derive
+$g_x$ from $f_{1\dots x}$, $g_{1\dots x-1}$ and $h_x$.
+
+</Spoiler>
+
+#### Implementation
+
+<Spoiler title="Code">
+
+<LanguageSection>
+<CPPSection>
+
+Time Complexity: $O(N^{3/4})$
+
+```cpp
+#include <atcoder/modint>
+#include <bits/stdc++.h>
+
+using namespace std;
+using namespace atcoder;
+
+using mint = modint998244353;
+
+template <class T> using V = vector<T>;
+#define all(x) begin(x), end(x)
+
+using ll = long long;
+
+ll sq(ll x) { return x * x; }
+
+// BeginCodeSnip{Dirichlet Inverse}
+struct Dirichlet {
+	ll N;
+	int s = 0, k;
+	Dirichlet(ll N_) : N(N_) {
+		while (sq(s + 1) <= N) ++s;
+		k = 2 * s - (s == N / s);
+	}
+	ll pos_to_val(int i) {
+		if (i < s) return i + 1;
+		return N / (k - i);
+	}
+	int val_to_pos(ll l) {
+		if (l <= s) return l - 1;
+		return k - N / l;
+	}
+	V<mint> invert(const V<mint> &f, const V<mint> &h) {
+		// return g s.t. f * g = h
+		V<mint> g(k);
+		mint inv_f0 = mint(1) / f.front();
+		for (int i = 0; i < k; ++i) {
+			mint remainder = h.at(i);
+			if (i > 0) {
+				ll v = pos_to_val(i);
+				ll j = 1;
+				for (; j * j <= v; ++j) {
+					int p = val_to_pos(v / j);
+					if (j > 1) remainder -= (f[j - 1] - (j == 1 ? 0 : f[j - 2])) * g[p];
+					remainder -= (g[j - 1] - (j == 1 ? 0 : g[j - 2])) * f[p];
+				}
+				--j;
+				assert(j > 0);
+				remainder += f[j - 1] * g[j - 1];
+			}
+			g.at(i) = remainder * inv_f0;
+		}
+		return g;
+	}
+};
+// EndCodeSnip
+
+void solve() {
+	ll N;
+	cin >> N;
+	Dirichlet dc(N);
+	int k = dc.k;
+	V<mint> f(k);
+	for (auto &t : f) {
+		int v;
+		cin >> v;
+		t = v;
+	}
+	vector<mint> h(k, 1);
+	auto ret = dc.invert(f, h);
+	for (int i = 0; i < k; ++i) { cout << ret.at(i).val() << " \n"[i + 1 == k]; }
+}
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+	int T;
+	cin >> T;
+	while (T--) solve();
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>
+
+## Example - Totient Sum
+
+<FocusProblem problem="f5" />
+
+### Solution
+
+<Spoiler title="Explanation">
+
+We know that $\phi* I=id$. The prefix sums of both $I$ and $id$ are known,
+so all we need to do is apply the solution to "Dirichlet Inverse and Prefix Sums"
+with $f=I$ and $h=id$.
+
+</Spoiler>
+
+### Implementation
+
+<Spoiler title="Code">
+
+<LanguageSection>
+<CPPSection>
+
+Time Complexity: $O(N^{3/4})$
+
+```cpp
+#include <atcoder/modint>
+#include <bits/stdc++.h>
+
+using namespace std;
+using namespace atcoder;
+
+using mint = modint998244353;
+
+template <class T> using V = vector<T>;
+#define all(x) begin(x), end(x)
+
+using ll = long long;
+
+ll sq(ll x) { return x * x; }
+
+// BeginCodeSnip{Dirichlet Inverse}
+struct Dirichlet {
+	ll N;
+	int s = 0, k;
+	Dirichlet(ll N_) : N(N_) {
+		while (sq(s + 1) <= N) ++s;
+		k = 2 * s - (s == N / s);
+	}
+	ll pos_to_val(int i) {
+		if (i < s) return i + 1;
+		return N / (k - i);
+	}
+	int val_to_pos(ll l) {
+		if (l <= s) return l - 1;
+		return k - N / l;
+	}
+	V<mint> invert(const V<mint> &f, const V<mint> &h) {
+		// return g s.t. f * g = h
+		V<mint> g(k);
+		mint inv_f0 = mint(1) / f.front();
+		for (int i = 0; i < k; ++i) {
+			mint remainder = h.at(i);
+			if (i > 0) {
+				ll v = pos_to_val(i);
+				ll j = 1;
+				for (; j * j <= v; ++j) {
+					int p = val_to_pos(v / j);
+					if (j > 1) remainder -= (f[j - 1] - (j == 1 ? 0 : f[j - 2])) * g[p];
+					remainder -= (g[j - 1] - (j == 1 ? 0 : g[j - 2])) * f[p];
+				}
+				--j;
+				assert(j > 0);
+				remainder += f[j - 1] * g[j - 1];
+			}
+			g.at(i) = remainder * inv_f0;
+		}
+		return g;
+	}
+};
+// EndCodeSnip
+
+void solve() {
+	ll N;
+	cin >> N;
+	Dirichlet dc(N);
+	int k = dc.k;
+	V<mint> f(k), h(k);
+	mint i2 = mint(1) / 2;
+	for (int i = 0; i < k; ++i) {
+		mint v = dc.pos_to_val(i);
+		f.at(i) = v;
+		h.at(i) = v * (v + 1) * i2;
+	}
+	auto ret = dc.invert(f, h);
+	cout << ret.back().val() << "\n";
+}
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+	solve();
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+Bonus: You can optimize this to $O(N^{2/3})$ by applying the method introduced
+in the second resource. More specifically, $g$ and its prefix sums can be precomputed
+up to $N^{2/3}$ in $O(N^{2/3})$ time using a linear sieve. Then computing the remaining
+prefix sums takes $O(\sum_{i=1}^{N^{1/3}}\sqrt{N/i})=O(N^{2/3})$ additional time.
+
+</Spoiler>
+
+## Problems
+
+The first two problems are from the first resource.
+
+<Problems problems="general" />

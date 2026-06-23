@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useMemo } from 'react';
 import { useActiveHash } from '../../../hooks/useActiveHash';
 import { TOCHeading } from '../../../models/module';
@@ -24,7 +23,7 @@ const TableOfContentsSidebar = ({
 
   return (
     <div className="sticky" style={{ top: '2.5rem' }}>
-      <h2 className="uppercase text-gray-500 dark:text-dark-med-emphasis font-bold mb-4 text-sm tracking-wider">
+      <h2 className="dark:text-dark-med-emphasis mb-4 text-sm font-bold tracking-wider text-gray-500 uppercase">
         Table of Contents
       </h2>
       {links}

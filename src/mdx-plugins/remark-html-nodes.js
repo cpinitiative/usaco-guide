@@ -1,6 +1,6 @@
 /*eslint-disable */
 
-module.exports = () => {
+export default () => {
   function process(node) {
     if (node.type === 'html') {
       node.type = 'mdxJsxTextElement';

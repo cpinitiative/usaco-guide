@@ -2,94 +2,49 @@
 id: cses-1640
 source: CSES
 title: Sum of Two Values
-author: Michael Cao, Benjamin Qi, Brad Ma, Ryan Chou, David Zhang
+author: Michael Cao, Benjamin Qi, Brad Ma, Ryan Chou, David Zhang, David Zhou
 ---
 
-Given an array of $n$ elements, you are asked to find two values which sum to
-$x$.
+## Solution 1 - Hashmap
 
-## Solution 1 - Dictionary/Map
+Using a hash map, we can store the numbers in the array as keys and their indices as values.
+To check if a pair exists, we use the hashmap to quickly look up if any past value plus the current one equals $x$.
+If so, we output the current index and the one stored in the hashmap.
 
-Let's start by iterating over the first value in $\mathcal{O}(n)$ time. Given
-one value, $a$, the other value must be $x - a$ unless $a > x$ (in which case
-$a$ cannot be a valid first value).
+## Implementation
 
-So the question reduces to, given some value $a$, does some other value $x - a$
-exist?
-
-<LanguageSection>
-<PySection>
-
-### Using a Dictionary
-
-</PySection>
-<CPPSection>
-
-### Using a Map
-
-</CPPSection>
-
-<JavaSection>
-
-### Using a Map
-
-</JavaSection>
-</LanguageSection>
-
-One idea that comes to mind would be to used a boolean array to store the
-values. Unfortunately, since $a_i \leq 10^9$, this approach isn't feasible.
+**Time Complexity:** $\mathcal{O}(N \log N)$
 
 <LanguageSection>
 <CPPSection>
 
-However, we can store the values in an (un)ordered map which maps each value to
-an index, and use the `.count` method to check whether a value exists, and
-return the corresponding index if it does.
+<Warning>
 
-</CPPSection>
-<JavaSection>
+Note that this code uses `std::map` instead of `std::unordered_map`, which does add a log factor to the complexity.
+This is because CSES has anti-hash test cases, which are specifically designed to heavily slow down unordered maps.
 
-However, we can store the values in a map which maps each value to an index, and
-use the `.containsKey` method to check whether a value exists, and return the
-corresponding index if it does.
-
-</JavaSection>
-<PySection>
-
-However, we can store the values in a dictionary which maps each value to an
-index. Then, we can use the dictionary to check in $\mathcal{O}(1)$ time get the corresponding
-index for a value (if there is one).
-
-</PySection>
-</LanguageSection>
-
-To be careful not to count the same index twice, we'll add values to the map as
-we iterate through it, so at some index $i$ you only consider values with index
-$j < i$.
-
-<LanguageSection>
-<CPPSection>
+</Warning>
 
 ```cpp
-#include <bits/stdc++.h>
+#include <iostream>
+#include <map>
+
 using namespace std;
 
 int main() {
-	int n, x;
+	int n;
+	int x;
 	cin >> n >> x;
 
-	vector<int> values(n);
-	for (int i = 0; i < n; i++) { cin >> values[i]; }
-
-	// use a map to avoid using a very large array
-	map<int, int> val_to_ind;
+	map<int, int> m;
 	for (int i = 0; i < n; i++) {
-		// target minus a number is the other number
-		if (val_to_ind.count(x - values[i])) {
-			cout << i + 1 << " " << val_to_ind[x - values[i]] << endl;
+		int a;
+		cin >> a;
+		if (m.count(x - a)) {
+			cout << i + 1 << " " << m[x - a] + 1 << endl;
 			return 0;
 		}
-		val_to_ind[values[i]] = i + 1;
+		m[a] = i;
 	}
 
 	cout << "IMPOSSIBLE" << endl;
@@ -103,56 +58,50 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-public class TwoSum {
-	public static void main(String[] args) {
-		Kattio io = new Kattio();
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int x = Integer.parseInt(st.nextToken());
 
-		int n = io.nextInt();
-		int target = io.nextInt();
-
-		int[] values = new int[n];
-		for (int i = 0; i < n; i++) { values[i] = io.nextInt(); }
-
-		// use a map to avoid using a very large array
-		Map<Integer, Integer> valToInd = new HashMap<>();
+		Map<Integer, Integer> m = new HashMap<>();
+		st = new StringTokenizer(br.readLine());
 		for (int i = 0; i < n; i++) {
-			// target minus a number is the other number
-			if (valToInd.containsKey(target - values[i])) {
-				io.println((i + 1) + " " + valToInd.get(target - values[i]));
-				// remember to close here before exiting to avoid blank output
-				io.close();
-				System.exit(0);
+			int a = Integer.parseInt(st.nextToken());
+			if (m.containsKey(x - a)) {
+				System.out.println((i + 1) + " " + (m.get(x - a) + 1));
+				return;
 			}
-			valToInd.put(values[i], i + 1);
+			m.put(a, i);
 		}
 
-		io.println("IMPOSSIBLE");
-		io.close();
+		System.out.println("IMPOSSIBLE");
 	}
-
-	// CodeSnip{Kattio}
 }
 ```
 
 </JavaSection>
 <PySection>
 
+<Warning>
+
+The below code TLEs on a couple test cases due to anti-hashing test cases on CSES.
+
+</Warning>
+
 ```py
-import sys
+n, x = map(int, input().split())
+nums = list(map(int, input().split()))
 
-n, target = map(int, input().split())
-values = [int(x) for x in input().split()]
-
-# use a map to avoid using a very large array
-val_to_ind = {}
-for i, val in enumerate(values):
-	# target minus a number is the other number
-	if target - val in val_to_ind:
-		print(i + 1, val_to_ind[target - val])
-		sys.exit(0)
-	val_to_ind[val] = i + 1
-
-print("IMPOSSIBLE")
+m = {}
+for i, a in enumerate(nums):
+	if x - a in m:
+		print(i + 1, m[x - a] + 1)
+		break
+	m[a] = i
+else:
+	print("IMPOSSIBLE")
 ```
 
 </PySection>
@@ -160,47 +109,45 @@ print("IMPOSSIBLE")
 
 ## Solution 2 - Two Pointers
 
-By keeping two pointers, one at each end of the list, we can greedily move the left and right pointers if the sum of the two elements
-are less than or greater than the target sum, finding the two indices in $\mathcal{O}(N)$ time.
+We can sort the array and use a left pointer and right pointer. If the sum is greater than $x$, we decrement right. If the sum is less than $x$, we increment left.
 
-However, we do have to sort the values in order to use two pointers, bringing our total complexity to $\mathcal{O}(N \log N)$.
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
+#include <algorithm>
+#include <iostream>
+#include <utility>
+#include <vector>
+
 using namespace std;
 
 int main() {
-	int n, target;
-	cin >> n >> target;
-
-	vector<pair<int, int>> values;
-	// append the element and its index
+	int n, x;
+	cin >> n >> x;
+	vector<pair<int, int>> nums(n);
 	for (int i = 0; i < n; i++) {
-		int x;
-		cin >> x;
-		values.push_back({x, i + 1});
+		cin >> nums[i].first;
+		nums[i].second = i;
 	}
-
-	sort(values.begin(), values.end());
-	int left = 0;
-	int right = n - 1;
-	while (left < right) {
-		// adjust left and right pointers
-		if (values[left].first + values[right].first > target) {
-			right--;
-		} else if (values[left].first + values[right].first < target) {
-			left++;
-		} else if (values[left].first + values[right].first == target) {
-			cout << values[left].second << " " << values[right].second << endl;
+	sort(nums.begin(), nums.end());
+	int l = 0, r = n - 1;
+	while (l < r) {
+		int sum = nums[l].first + nums[r].first;
+		if (sum == x) {
+			cout << nums[l].second + 1 << " " << nums[r].second + 1 << endl;
 			return 0;
+		} else if (sum < x) {
+			l++;
+		} else if (sum > x) {
+			r--;
 		}
 	}
-
-	// print IMPOSSIBLE if we haven't found a pair
-	cout << "IMPOSSIBLE" << endl;
+	if (l == r) { cout << "IMPOSSIBLE" << endl; }
 }
 ```
 
@@ -211,58 +158,34 @@ int main() {
 import java.io.*;
 import java.util.*;
 
-public class TwoSum {
-	public static void main(String[] args) {
-		Kattio io = new Kattio();
-		int n = io.nextInt();
-		int target = io.nextInt();
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int x = Integer.parseInt(st.nextToken());
 
-		List<Pair> values = new ArrayList<>();
-		// append the element and its index
+		List<int[]> nums = new ArrayList<>();
+		st = new StringTokenizer(br.readLine());
 		for (int i = 0; i < n; i++) {
-			int x = io.nextInt();
-			values.add(new Pair(x, i + 1));
+			nums.add(new int[] {Integer.parseInt(st.nextToken()), i});
 		}
-
-		Collections.sort(values);
-
-		int left = 0;
-		int right = n - 1;
-		while (left < right) {
-			// adjust the left and right pointers
-			if (values.get(left).val + values.get(right).val > target) {
-				right--;
-			} else if (values.get(left).val + values.get(right).val < target) {
-				left++;
-			} else if (values.get(left).val + values.get(right).val == target) {
-				int leftInd = values.get(left).index;
-				int rightInd = values.get(right).index;
-				io.println(leftInd + " " + rightInd);
-				io.close();
+		nums.sort(Comparator.comparingInt(a -> a[0]));
+		int l = 0, r = n - 1;
+		while (l < r) {
+			int sum = nums.get(l)[0] + nums.get(r)[0];
+			if (sum == x) {
+				System.out.println((nums.get(l)[1] + 1) + " " + (nums.get(r)[1] + 1));
 				return;
+			} else if (sum < x) {
+				l++;
+			} else {
+				r--;
 			}
 		}
 
-		// print IMPOSSIBLE if we haven't found a pair
-		io.println("IMPOSSIBLE");
-		io.close();
+		System.out.println("IMPOSSIBLE");
 	}
-
-	static class Pair implements Comparable<Pair> {
-		int val, index;
-
-		public Pair(int x, int y) {
-			this.val = x;
-			this.index = y;
-		}
-
-		@Override
-		public int compareTo(Pair o) {
-			return -Integer.compare(o.val, val);
-		}
-	}
-
-	// CodeSnip{Kattio}
 }
 ```
 
@@ -270,33 +193,24 @@ public class TwoSum {
 <PySection>
 
 ```py
-n, target = list(map(int, input().split()))
-nums = list(map(int, input().split()))
-values = []
+n, x = map(int, input().split())
 
-# append the element and its index
-for i in range(n):
-	values.append([nums[i], i + 1])
+nums = [(int(val), i) for i, val in enumerate(input().split())]
+nums.sort()
 
-values.sort()
-
-ans = []
-left = 0
-right = n - 1
-while left < right:
-	lr_sum = values[left][0] + values[right][0]
-	# adjust the left and right pointers
-	if lr_sum == target:
-		ans.append(str(values[right][1]))
-		ans.append(str(values[left][1]))
-		break
-	elif lr_sum > target:
-		right -= 1
+l = 0
+r = n - 1
+while l < r:
+	sum = nums[l][0] + nums[r][0]
+	if sum == x:
+		print(nums[l][1] + 1, nums[r][1] + 1)
+		exit()
+	elif sum < x:
+		l += 1
 	else:
-		left += 1
+		r -= 1
 
-# print IMPOSSIBLE if we haven't found a pair
-print(" ".join(ans) if ans else "IMPOSSIBLE")
+print("IMPOSSIBLE")
 ```
 
 </PySection>

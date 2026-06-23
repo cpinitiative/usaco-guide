@@ -1,0 +1,147 @@
+---
+id: ys-RangeAffineRangeSum
+source: YS
+title: Range Affine Range Sum
+author: Kiruthees G
+---
+
+## Explanation
+
+We need to support range updates of the form $x \leftarrow b \cdot x + c$ and range sum queries. This is a classic application of a **Segment Tree with Lazy Propagation**.
+
+Each node in the segment tree will store the sum of values in its range. Additionally, we need to maintain "lazy tags" to represent pending updates. Since the update is a linear function, our lazy tag will be a pair $(b, c)$ representing the operation $f(x) = b \cdot x + c$.
+
+### 1. Node Update
+
+If a segment tree node covers a range of length $L$ with a current sum $S$, applying the operation $(b, c)$ changes the sum to:
+
+$$
+\sum_{i=1}^L (b \cdot a_i + c) = b \cdot \left(\sum a_i\right) + \sum c = b \cdot S + c \cdot L
+$$
+
+### 2. Merging Lazy Tags
+
+The most important part of this problem is handling multiple updates. Suppose a node already has a pending update $f_1(x) = b_1 x + c_1$. If we apply a new update $f_2(x) = b_2 x + c_2$ on top of it, the effective operation becomes:
+
+$$
+f_{new}(x) = f_2(f_1(x)) = b_2 (b_1 x + c_1) + c_2 = (b_2 b_1) x + (b_2 c_1 + c_2)
+$$
+
+Thus, the new lazy tag $(b_{new}, c_{new})$ is $(b_2 b_1, b_2 c_1 + c_2)$.
+
+**Base Case**: Initially, the lazy tag is $(1, 0)$ because $1 \cdot x + 0 = x$ (no change)
+
+---
+
+## Implementation
+
+**Time Complexity**: $\mathcal{O}(N + Q \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+const int MOD = 998244353;
+
+int N, Q;
+vector<ll> a;
+vector<ll> tree;
+vector<pair<ll, ll>> lazy;  // Stores {b, c} for operation x -> b*x + c
+
+// Applies the affine transformation (b, c) to a specific node
+void apply_tag(int node, int l, int r, ll b, ll c) {
+	// Update: sum = sum * b + c * length
+	ll len = r - l;
+	tree[node] = (tree[node] * b + c * len) % MOD;
+
+	// Update the lazy tag using function composition
+	// (b_new, c_new) = (b_2*b_1) * x + (b_2*c_1 + c_2)
+	lazy[node].first = (lazy[node].first * b) % MOD;
+	lazy[node].second = (lazy[node].second * b + c) % MOD;
+}
+
+// Pushes lazy tags down to children
+void push(int node, int l, int r) {
+	if (lazy[node].first == 1 && lazy[node].second == 0) return;  // Identity check
+
+	int mid = (l + r) / 2;
+	int left = 2 * node;
+	int right = 2 * node + 1;
+
+	apply_tag(left, l, mid, lazy[node].first, lazy[node].second);
+	apply_tag(right, mid, r, lazy[node].first, lazy[node].second);
+
+	// Reset current node's tag to identity
+	lazy[node] = {1, 0};
+}
+
+void build(int node, int l, int r) {
+	lazy[node] = {1, 0};  // Initialize identity
+	if (l + 1 == r) {
+		tree[node] = a[l] % MOD;
+		return;
+	}
+	int mid = (l + r) / 2;
+	build(2 * node, l, mid);
+	build(2 * node + 1, mid, r);
+	tree[node] = (tree[2 * node] + tree[2 * node + 1]) % MOD;
+}
+
+void update(int node, int l, int r, int ql, int qr, ll b, ll c) {
+	if (ql >= r || qr <= l) return;
+	if (ql <= l && r <= qr) {
+		apply_tag(node, l, r, b, c);
+		return;
+	}
+	push(node, l, r);
+	int mid = (l + r) / 2;
+	update(2 * node, l, mid, ql, qr, b, c);
+	update(2 * node + 1, mid, r, ql, qr, b, c);
+	tree[node] = (tree[2 * node] + tree[2 * node + 1]) % MOD;
+}
+
+ll query(int node, int l, int r, int ql, int qr) {
+	if (ql >= r || qr <= l) return 0;
+	if (ql <= l && r <= qr) return tree[node];
+	push(node, l, r);
+	int mid = (l + r) / 2;
+	return (query(2 * node, l, mid, ql, qr) + query(2 * node + 1, mid, r, ql, qr)) %
+	       MOD;
+}
+
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	cin >> N >> Q;
+	a.resize(N);
+	for (int i = 0; i < N; i++) cin >> a[i];
+
+	tree.resize(4 * N);
+	lazy.resize(4 * N);
+
+	build(1, 0, N);
+
+	while (Q--) {
+		int type;
+		cin >> type;
+		if (type == 0) {
+			int l, r;
+			ll b, c;
+			cin >> l >> r >> b >> c;
+			update(1, 0, N, l, r, b, c);
+		} else {
+			int l, r;
+			cin >> l >> r;
+			cout << query(1, 0, N, l, r) << "\n";
+		}
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>

@@ -1,10 +1,11 @@
 /*eslint-disable */
-const visit = require('unist-util-visit');
-const katex = require('katex').renderToString;
-const unified = require('unified');
-const parse = require('rehype-parse');
-const toText = require('hast-util-to-text');
+import { toText } from 'hast-util-to-text';
+import katexPkg from 'katex';
+import parse from 'rehype-parse';
+import { unified } from 'unified';
+import { visit } from 'unist-util-visit';
 
+const { renderToString } = katexPkg;
 const assign = Object.assign;
 
 const parseHtml = unified().use(parse, { fragment: true, position: false });
@@ -34,17 +35,24 @@ const customRehypeKatex = options => {
       let result;
 
       try {
-        result = katex(
+        result = renderToString(
           value,
-          assign({}, settings, { displayMode: displayMode, throwOnError: true })
+          assign({}, settings, {
+            displayMode: displayMode,
+            throwOnError: true,
+          })
         );
       } catch (error) {
         const fn = throwOnError ? 'fail' : 'message';
         const origin = [source, error.name.toLowerCase()].join(':');
 
-        file[fn](error.message, element.position, origin);
+        if (typeof file[fn] === 'function') {
+          file[fn](error.message, element.position, origin);
+        } else {
+          throw error; // throw the error if the file doesn't have a fail or message function
+        }
 
-        result = katex(
+        result = renderToString(
           value,
           assign({}, settings, {
             displayMode: displayMode,
@@ -54,20 +62,18 @@ const customRehypeKatex = options => {
         );
       }
 
-      if (element.tagName === 'div') element.tagName = 'MATHDIV';
-      else if (element.tagName === 'span') element.tagName = 'MATHSPAN';
-      else throw 'unknown tag?';
-
-      element.children = [
-        {
-          type: 'text',
-          value: result,
+      const newNode = {
+        type: 'element',
+        tagName: displayMode ? 'MATHDIV' : 'MATHSPAN',
+        properties: {
+          className: element.properties.className,
+          latex: value,
         },
-      ];
-      element.properties['latex'] = value;
-      // element.children = parseHtml.parse(result).children
+        children: [{ type: 'text', value: result }],
+      };
+      assign(element, newNode);
     }
   }
 };
 
-module.exports = customRehypeKatex;
+export default customRehypeKatex;

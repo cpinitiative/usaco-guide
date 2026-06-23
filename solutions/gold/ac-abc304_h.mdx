@@ -1,0 +1,99 @@
+---
+id: ac-abc304_h
+source: AC
+title: Constrained Topological Sort
+author: Benjamin Qi
+---
+
+## Solution 1
+
+[Official Editorial (no code)](https://atcoder.jp/contests/abc304/editorial/6522)
+
+**Time Complexity:** $\mathcal{O}(M+N\log N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+void fail() {
+	cout << "No\n";
+	exit(0);
+}
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+	int N, M;
+	cin >> N >> M;
+	vector<vector<int>> out(N), in(N);
+	for (int i = 0; i < M; ++i) {
+		int s, t;
+		cin >> s >> t;
+		--s, --t;
+		out.at(s).push_back(t);
+		in.at(t).push_back(s);
+	}
+
+	// find topological order
+	vector<int> order;
+	vector<int> indeg(N);
+	for (int i = 0; i < N; ++i) {
+		indeg.at(i) = size(in.at(i));
+		if (!indeg.at(i)) order.push_back(i);
+	}
+	for (int i = 0; i < size(order); ++i) {
+		int s = order.at(i);
+		for (int t : out.at(s)) {
+			if (!(--indeg.at(t))) order.push_back(t);
+		}
+	}
+	if (size(order) != N) fail();
+
+	struct Bound {
+		int l, r;
+	};
+	vector<Bound> bounds(N);
+	for (auto &b : bounds) cin >> b.l >> b.r;
+	for (int i = N - 1; i >= 0; --i) {
+		int t = order.at(i);
+		for (int s : in.at(t)) bounds.at(s).r = min(bounds.at(s).r, bounds.at(t).r - 1);
+	}
+
+	// assign labels in order
+	using pi = pair<int, int>;
+	priority_queue<pi, vector<pi>, greater<pi>> by_l, by_r;
+	// for each unassigned vertex i with in-degree 0
+	// store either {l[i], i} in by_l or {r[i], i} in by_r
+	for (int i = 0; i < N; ++i) {
+		indeg.at(i) = size(in.at(i));
+		if (!indeg.at(i)) by_l.push({bounds.at(i).l, i});
+	}
+	vector<int> P(N);
+	for (int p = 1; p <= N; ++p) {
+		while (!by_l.empty() && by_l.top().first <= p) {
+			// move from by_l to by_r
+			int v = by_l.top().second;
+			by_l.pop();
+			by_r.push({bounds.at(v).r, v});
+		}
+		if (by_r.empty() || by_r.top().first < p) fail();
+		int v = by_r.top().second;
+		by_r.pop();
+		P.at(v) = p;
+		for (int t : out.at(v)) {
+			if (!(--indeg.at(t))) by_l.push({bounds.at(t).l, t});
+		}
+	}
+
+	cout << "Yes\n";
+	for (int i = 0; i < N; ++i) cout << P.at(i) << " ";
+}
+```
+
+</CPPSection>
+
+</LanguageSection>

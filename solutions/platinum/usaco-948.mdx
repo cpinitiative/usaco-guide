@@ -1,0 +1,198 @@
+---
+id: usaco-948
+source: USACO Platinum 2019 Open
+title: Tree Boxes
+author: Justin Ji
+---
+
+<Spoiler title="Hint 1">
+
+We are given up to two rectangles to divide our path. What's the most logical
+way to split a path for a rooted tree?
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Consider a star graph with edges $(1, 2)$, $(1, 3)$, and $(1, 4)$. One
+possible layout is to place our first node at $(1, 1)$, and
+place all the other nodes on a diagonal. You can find a visualization [here](https://www.desmos.com/calculator/qar1mufj1d).
+
+Can we generalize this idea?
+
+</Spoiler>
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_boxes_platinum_open19.html)
+
+# Solution
+
+<Spoiler title="Solution">
+
+## Explanation
+
+We can split any path based on the LCA of the two endpoints. More specifically,
+if $l$ is the least common ancestor of our nodes $a$ and $b$, then we split our path into
+the path from $a$ to $l$, and the path from $l$ to $b$. By splitting our path, we can construct any path as two smaller paths between
+a node and one of its ancestors.
+
+All that remains is constructing a scheme in which a rectangle can correctly
+cover the nodes in a vertical path. Consider the example graph from the second hint, where
+constructing a graph with a diagonal works. Because we are asked to embed our graph
+in a $N \times N$ grid, we can afford to give each node its own column and row. So,
+we can think of our example case in a recursive fashion: instead of placing nodes
+on a diagonal, we can place subtrees on diagonals and partition our grid that way.
+
+Let the current subtree size be $s_i$, and suppose our node is at $(x,y)$. For the root (node 1), we have $s_i = n$ and $(x,y) = (1,1)$. We embed the subtree into an $s_i \times s_i$ grid whose lower-left corner is at $(x,y)$.
+Recursively, for each of the node's children, we assign a subgrid within that square: the first child and its subtree occupies a square in the lower-right, and each subsequent child is placed "diagonally" continuing toward the top-left.
+
+With this embedding, any vertical path in our tree corresponds to an axis-aligned rectangle with its corners at the endpoints of our path. To understand why this is the case, consider creating our rectangle
+by expanding it as we traverse from the top node to the bottom node in our path. Our lower-left corner remains fixed at our top node, and we move our upper-right corner as we traverse towards our bottom node.
+Because each embedded subgrid is disjoint from one another, our upper-right corner will never cross into an unintentional subgrid, and we are strictly expanding the rectangle with each move. Thus, our
+desired rectangle has its corners at the endpoints of our path.
+
+For example, the graph formed with edges $(1, 2)$, $(1, 3)$, $(3, 4)$, and $(3, 5)$ will
+be processed in the following fashion:
+- Node $1$ is placed at $(1, 1)$ and occupies the grid from $(1, 1)$ to $(5, 5)$.
+  - Node $2$ has a subtree of size $1$. Thus, it occupies the cell $(5, 2)$.
+  - Node $3$ has a subtree of size $3$. Thus, it occupies the cell $(2, 3)$, and is recursively processed.
+- Node $3$ occupies the grid from $(2, 3)$ to $(4, 5)$.
+  - Node $4$ has a subtree of size $1$. Thus, it occupies the cell $(4, 4)$.
+  - Node $5$ has a subtree of size $1$. Thus, it occupies the cell $(3, 5)$.
+
+An example of the case above can be found [here](https://www.desmos.com/calculator/anfr1bswtr).
+
+With that in mind, our algorithm for processing a path involves two steps: splitting
+our path, and finding a suitable rectangle for the vertical path produced. The first part can be done with any fast LCA algorithm of choice, with the implementation below
+using binary lifting. For the second step, our
+rectangle is constructed from the two endpoints of our path. Note that
+we must make sure our LCA isn't included in both of our rectangles.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}((N+Q)\log{N})$
+
+<LanguageSection>
+<CPPSection>
+
+<Warning>
+
+The USACO website does not accept submissions in C++ 17. Make sure to
+submit any code in C++ 11.
+
+</Warning>
+
+```cpp
+#include "grader.h"
+#include <bits/stdc++.h>
+
+using ll = long long;
+
+constexpr int LG = 20;
+
+std::vector<std::array<int, LG>> lift;
+std::vector<int> dep, sub;
+std::vector<std::vector<int>> adj;
+std::vector<std::array<int, 2>> locs;
+int n;
+
+// returns the least common ancestor of u and v using binary lifting
+int lca(int u, int v) {
+	if (dep[u] < dep[v]) std::swap(u, v);
+
+	int diff = dep[u] - dep[v];
+	for (int k = LG - 1; k >= 0; k--) {
+		if (diff & (1 << k)) { u = lift[u][k]; }
+	}
+
+	if (u == v) return u;
+
+	for (int k = LG - 1; k >= 0; k--) {
+		if (lift[u][k] != lift[v][k]) {
+			u = lift[u][k];
+			v = lift[v][k];
+		}
+	}
+
+	return lift[u][0];
+}
+
+void addRoad(int a, int b) {
+	if (!n) {
+		n = getN();
+		adj.resize(n);
+		locs.resize(n);
+		lift.resize(n);
+		dep.resize(n);
+		sub.resize(n);
+	}
+
+	adj[a].push_back(b);
+	adj[b].push_back(a);
+}
+
+// calculating subtree sizes and binary lifts
+void dfs1(int u, int p) {
+	sub[u] = 1;
+	for (int v : adj[u]) {
+		if (v == p) continue;
+		dep[v] = dep[u] + 1;
+		lift[v][0] = u;
+		for (int i = 1; i < LG; i++) { lift[v][i] = lift[lift[v][i - 1]][i - 1]; }
+
+		dfs1(v, u);
+		sub[u] += sub[v];
+	}
+}
+
+int timer = 1;
+
+// setting all the farm locations
+void dfs2(int u, int p, int x1, int x2) {
+	// timer is used instead of passing in y1 and y2 values for subgrid
+	locs[u] = {x1, timer};
+	setFarmLocation(u, x1, timer);
+	timer++;
+
+	// recursively embedding values, with first child occupying bottom-right
+	// and last child occupying upper-left section of the diagonal
+	int prev = x2 + 1;
+	for (int v : adj[u]) {
+		if (v == p) continue;
+		dfs2(v, u, prev - sub[v], prev - 1);
+		prev -= sub[v];
+	}
+}
+
+void buildFarms() {
+	dfs1(0, -1);
+	dfs2(0, -1, 1, n);
+}
+
+void notifyFJ(int a, int b) {
+	int l = lca(a, b);
+
+	// processes the path from anc to desc, where anc is an ancestor to desc
+	// exclude indicates whether or not we have to exclude the ancestor node
+	auto process_path = [&](int anc, int desc, bool exclude = false) {
+		int x1 = locs[anc][0];
+		int y1 = locs[anc][1];
+		int x2 = locs[desc][0];
+		int y2 = locs[desc][1];
+		addBox(x1 + exclude, y1 + exclude, x2, y2);
+	};
+
+	if (l == a) {
+		process_path(a, b);
+	} else if (l == b) {
+		process_path(b, a);
+	} else {
+		process_path(l, a);
+		process_path(l, b, true);
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>

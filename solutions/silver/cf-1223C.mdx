@@ -15,14 +15,12 @@ Let's try to determine the maximum contribution attainable with $t$ tickets.
 
 The problem indicates that only $x\%$ of the $a$-th ticket and $y\%$ of the $b$-th ticket could contribute to the total ecological contribution. We can precompute these multipliers $pct$ (either $0$, $x$, $y$, or $x+y$ depending on the ticket) over $t$ tickets, then greedily match the largest multiplier with the highest value ticket. This can be done by sorting the multipliers $pct$ and tickets $p$ in decreasing order; then the maximum total ecological contribution would be $\sum\limits_{i=1}^{t} p_i \cdot pct_i$.
 
+## Implementation
 
 **Time Complexity:** $\mathcal{O}(N\log^2 N)$
 
 <LanguageSection>
-
 <CPPSection>
-
-### C++ Implementation
 
 ```cpp
 #include <bits/stdc++.h>
@@ -35,19 +33,19 @@ vector<ll> p;
 
 ll x, a, y, b, k;
 
-bool works(int sellTickets) {
-	vector<ll> percentages(sellTickets);
+bool works(int sell_tickets) {
+	vector<ll> percentages(sell_tickets);
 
 	// Add x% to every a-th ticket.
-	for (int i = a - 1; i < sellTickets; i += a) { percentages[i] += x; }
+	for (int i = a - 1; i < sell_tickets; i += a) { percentages[i] += x; }
 
 	// Add y% to every b-th ticket
-	for (int i = b - 1; i < sellTickets; i += b) { percentages[i] += y; }
+	for (int i = b - 1; i < sell_tickets; i += b) { percentages[i] += y; }
 
 	sort(percentages.begin(), percentages.end(), greater<ll>());
 
 	ll cur = 0;
-	for (int i = 0; i < sellTickets; i++) { cur += percentages[i] * p[i] / 100; }
+	for (int i = 0; i < sell_tickets; i++) { cur += percentages[i] * p[i] / 100; }
 
 	return cur >= k;
 }
@@ -85,10 +83,7 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
-
-### Java Implementation
 
 ```java
 import java.io.BufferedReader;
@@ -157,10 +152,7 @@ public final class SaveNature {
 ```
 
 </JavaSection>
-
 <PySection>
-
-### Python Implementation
 
 ```py
 from math import gcd
@@ -209,5 +201,4 @@ for _ in range(int(input())):
 ```
 
 </PySection>
-
 </LanguageSection>

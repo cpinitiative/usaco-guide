@@ -1,10 +1,10 @@
-import { Story } from '@storybook/react';
-import React, { ComponentProps } from 'react';
+import { StoryFn } from '@storybook/react';
+import { ComponentProps } from 'react';
+import markdownDecorator from '../../components/markdown/markdownDecoratorForStorybook';
 import {
   Resource,
   ResourcesList,
 } from '../../components/markdown/ResourcesList';
-import markdownDecorator from '../../components/markdown/markdownDecoratorForStorybook';
 
 export default {
   title: 'Markdown/ResourcesList',
@@ -12,7 +12,7 @@ export default {
   decorators: [markdownDecorator],
 };
 
-const Template: Story<ComponentProps<typeof ResourcesList>> = args => (
+const Template: StoryFn<ComponentProps<typeof ResourcesList>> = args => (
   <ResourcesList {...args} />
 );
 

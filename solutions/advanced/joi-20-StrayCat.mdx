@@ -1,0 +1,47 @@
+---
+id: joi-20-StrayCat
+source: JOI
+title: 2020 - Stray Cat
+author: Daniel Zhu
+---
+
+## Explanation
+
+### $A = 3$, $B = 0$
+
+Although the problem asks us to solve this subtask on a general graph, it's always helpful to consider a simpler one first. So, let's consider solving this problem on a chain!
+
+Since $B = 0$, we know we can't afford to make a single wrong move. From this, it immediately follows that if a node in our chain has degree 2, its two incident edges *must have different marks.*
+
+Moreover, the marks of the two incident edges must uniquely determine a direction for Catherine. For instance, the following marking will not work:
+
+![img](https://gcdnb.pbrd.co/images/r5bLyfKiR88B.png?o=1)
+
+because in order to satisfy $B = 0$, Catherine must select the edge marked $1$ when starting at node 1, and the edge marked $0$ when starting at node 2, but this is impossible since from her perspective, the two nodes are identical.
+
+From the two observations above, it follows that if four nodes are connected in sequence, the marks of the 3 edges connecting them must all be different. One easy way to do this is assign each edge $(u, v)$ a mark of $\min(d(u), d(v)) \mod 3$, where $d(u)$ denotes the distance from node $u$ to node $0$.
+
+To solve the general case, we can notice that this specific method of marking actually generalizes to any graph! The proof and Catherine's resultant strategy are left as exercises to the reader.
+
+### $A = 2$, $B = 6$, $M = N - 1$
+
+Again, let's first consider solving this problem on a chain.
+
+Let's return to our first observation from the previous subtask, which was that two edges incident to the same node had to have different marks. Since $B = 6$, this condition is no longer necessary. In fact, we can show that for most $N$, this condition is necessarily false.
+
+Thus, let's assume we have a node $u$ with degree 2 whose incident edges both have mark $0$. Since both marks are the same, her first move could go in either direction, so we need to guarantee that Catherine will be able to determine whether she's going the right way after no more than $B/2$ moves.
+
+If Catherine reaches either end of the chain within $B/2$ moves, she has either reached her destination or knows that she must turn around. If she does not reach either end, she will have seen a sequence of exactly $B/2 + 2 = 5$ marks, from which she must be able to deduce her direction.
+
+Since we're dealing with a chain, let's write the edge weights as an array (for instance, we can represent the above graph as $[1, 0, 1]$). We now just need a array of length $n - 1$ consisting of $0$'s and $1$'s which satisfies the following property:
+> For each subarray of length 5, its reverse cannot also be a subarray.
+
+An example of an array which violates this condition is $[1, 0, 0, 0, 1]$.
+
+As we observed earlier, we can assume there's at least one occurrence of the subarray $[0, 0]$ in our array, so let's try to extend it to the left and right such that the above condition is still satisfied.
+
+Note that our condition precludes the existence of 3 consecutive $0$'s, so we can extend our subarray to $[1, 0, 0, 1]$. If we add one element to both sides from here, only two possibilities remain: $[0, 1, 0, 0, 1, 1]$ or $[1, 1, 0, 0, 1, 0]$.
+
+From here, note that in order to get to an array of size $n - 1$, we can just repeat this size $6$ array over and over. Chain case—solved!
+
+Solving the general tree case requires one more crucial observation. Notice that when a node has degree more than 2, we can uniquely identify its edge to its parent by using a different mark for that edge than all the other incident edges. This doesn't work for degree-2 nodes because Catherine would see one of each mark and be unable to distinguish them. Luckily, we've already solved the degree-2 situation in our above analysis of chains, so we can combine these two observations to get the full solution.

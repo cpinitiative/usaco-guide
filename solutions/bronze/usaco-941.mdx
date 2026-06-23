@@ -5,9 +5,7 @@ title: Cow Evolution
 author: Jesse Choe, Ryan Chou, Chuyang Wang, Vivian Han
 ---
 
-## Video Solution
-
-<YouTube id="4YTijr0BbrA" />
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_evolution_bronze_open19.html)
 
 <Spoiler title="Hint">
 
@@ -16,9 +14,9 @@ How can we generalize to different trees?
 
 </Spoiler>
 
-<Spoiler title="Solution">
+# Solution
 
-[Official Analysis (C++)](http://www.usaco.org/current/data/sol_evolution_bronze_open19.html)
+<Spoiler title="Solution">
 
 ## Explanation
 
@@ -50,26 +48,32 @@ $$
 The fundamental problem here is that there are populations in $A$ only, populations in $B$ only, and populations in both $A$ and $B$.
 If we look at the Venn diagram for the sets $A$ and $B$, the picture therefore looks like this:
 
-![Venn Diagram 1](usaco-941/venn_1.png)
+![Venn Diagram 1](/solutions/bronze/usaco-941/venn_1.png)
 
 Let's call this situation a "crossing" pair of sets.
 In general, two sets can be disjoint (no overlap), nesting (one inside the other), or crossing (overlap but not nesting).
 If any two of the characteristics $A$ and $B$ in our instance represent crossing sets as above, then we cannot build a proper tree.
 On the other hand, if all the characteristics represent sets that don't cross (they are either disjoint or nested), then we get a Venn diagram like this:
 
-![Venn Diagram 2](usaco-941/venn_2.png)
+![Venn Diagram 2](/solutions/bronze/usaco-941/venn_2.png)
 
 If you look at this picture carefully, hopefully you see a tree formed by the nesting structure of the sets:
 
-![Evolution tree diagram](usaco-941/tree_1.png)
+![Evolution tree diagram](/solutions/bronze/usaco-941/tree_1.png)
 
 A tree like this is easy to convert into a proper evolutionary tree: if we have three children $A$, $B$, and $C$, we could just make three sequential two-way splits that add the $A$, $B$ and $C$ characteristics.
 
 So we actually don't need to build a proper evolutionary tree; we just need to test if any of our characteristics represent crossing sets.
 
+<Optional title="Math Note">
+
+In other words, we need to check whether the provided family of sets is [laminar](https://en.wikipedia.org/wiki/Laminar_set_family) or not.
+
+</Optional>
+
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N^2)$
+**Time Complexity:** $\mathcal{O}((\sum K)^3)$
 
 <LanguageSection>
 <CPPSection>
@@ -261,3 +265,7 @@ print("yes", file=written)
 </LanguageSection>
 
 </Spoiler>
+
+# Video Solution
+
+<YouTube id="4YTijr0BbrA" />

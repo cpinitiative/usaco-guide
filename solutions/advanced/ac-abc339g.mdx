@@ -1,0 +1,105 @@
+---
+id: ac-abc339g
+source: AtCoder
+title: Smaller Sum
+author: Benjamin Qi
+---
+
+## [Official Solution](https://atcoder.jp/contests/abc339/editorial/9270)
+
+This uses merge-sort tree.
+
+**Time Complexity:** $O(N\log N+Q\log^2N)$
+
+**Memory Complexity:** $O(N\log N)$
+
+## Alternative solution (Wavelet Tree)
+
+Similar as K-query from SPOJ, but you additionally need to store prefix sums of $A$.
+
+**Time Complexity:** $O((N+Q)\log M)$, where $M$ is the max value
+
+**Memory Complexity:** $O(N\log M)$
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct PrefixSummer {
+	const int BITS = 64;
+	vector<uint64_t> packed;
+	vector<int> psums;
+	vector<int64_t> psumA;
+	void init(const vector<bool> &v, vector<int> A) {
+		packed.resize(size(v) / BITS + 1);
+		for (int i = 0; i < size(v); ++i) {
+			if (v.at(i)) packed.at(i / BITS) |= 1ULL << (i % BITS);
+		}
+		psums = {0};
+		for (auto b : packed) psums.push_back(psums.back() + __builtin_popcountll(b));
+		psumA = {0};
+		for (int x : A) psumA.push_back(psumA.back() + x);
+	}
+	int count_prefix(int r) {
+		return psums.at(r / BITS) +
+		       __builtin_popcountll(packed.at(r / BITS) & ((1ULL << (r % BITS)) - 1));
+	}
+	int count() { return psums.back(); }
+	int64_t sum(int l, int r) { return psumA.at(r) - psumA.at(l); }
+};
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int N;
+	cin >> N;
+	vector<int> A(N);
+	for (int &a : A) cin >> a;
+
+	const int MAX_BIT = 30;
+	vector<PrefixSummer> num_lefts(MAX_BIT);
+	for (int b = MAX_BIT - 1; b >= 0; --b) {
+		vector<int> A0, A1;
+		vector<bool> bitvec;
+		for (int x : A) {
+			if (x & (1 << b)) {
+				bitvec.push_back(0);
+				A1.push_back(x);
+			} else {
+				bitvec.push_back(1);
+				A0.push_back(x);
+			}
+		}
+		swap(A, A0);
+		A.insert(end(A), begin(A1), end(A1));
+		num_lefts.at(b).init(bitvec, A);
+	}
+	auto range_count = [&](int l, int r, int x) {
+		int64_t ans = 0;
+		for (int b = MAX_BIT - 1; b >= 0; --b) {
+			int pr = num_lefts.at(b).count_prefix(r);
+			int pl = num_lefts.at(b).count_prefix(l);
+			if (!(x & (1 << b))) {
+				l = pl, r = pr;
+			} else {
+				ans += num_lefts.at(b).sum(pl, pr);
+				l = l - pl + num_lefts.at(b).count();
+				r = r - pr + num_lefts.at(b).count();
+			}
+		}
+		return ans;
+	};
+
+	int Q;
+	cin >> Q;
+	int64_t b = 0;
+	for (int q = 0; q < Q; ++q) {
+		int64_t l, r, x;
+		cin >> l >> r >> x;
+		l ^= b, r ^= b, x ^= b;
+		b = range_count(l - 1, r, x + 1);
+		cout << b << "\n";
+	}
+}
+```

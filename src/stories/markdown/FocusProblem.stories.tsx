@@ -1,5 +1,5 @@
-import { Story } from '@storybook/react';
-import React, { ComponentProps } from 'react';
+import { StoryFn } from '@storybook/react';
+import { ComponentProps } from 'react';
 import FocusProblem from '../../components/markdown/FocusProblem';
 import markdownDecorator from '../../components/markdown/markdownDecoratorForStorybook';
 import { MarkdownProblemListsProvider } from '../../context/MarkdownProblemListsContext';
@@ -53,7 +53,7 @@ const problemLists: {
   },
 ];
 
-const Template: Story<ComponentProps<typeof FocusProblem>> = args => (
+const Template: StoryFn<ComponentProps<typeof FocusProblem>> = args => (
   <MarkdownProblemListsProvider value={problemLists}>
     <FocusProblem {...args} />
   </MarkdownProblemListsProvider>

@@ -2,23 +2,232 @@
 id: cses-1193
 source: CSES
 title: Labyrinth
-author: Nathan Wang, Sofia Yang
+author: Nathan Wang, Sofia Yang, David Zhou
 ---
 
-In this problem, we're asked to find and output the shortest path between two
-nodes. We can't use DFS here because we're looking for the _shortest_ path.
-Instead, we can use BFS to solve this problem.
+## Video Solution
 
-Below is a video solution for this problem by Jonathan Paulson. The video uses
-Python.
+By David Zhou
 
-<YouTube id="Xp6MwU5fGT8" />
+<YouTube id="02I_HdNIfuo" />
 
-(Note: The video solution TLE's on one of the test cases. I think (??) it may be
-possible to get AC by setting `SEEN[rr][cc]` to `true` after line 42, and
-removing lines 23, 24, and 38. However, I haven't tested this.)
+<Spoiler title="Video Solution Code">
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <queue>
+#include <string>
+#include <utility>
+#include <vector>
+
+using namespace std;
+
+int main() {
+	int n, m;
+	cin >> n >> m;
+	vector<string> labyrinth(n);
+	queue<pair<int, int>> q;
+	int a_row, a_col, b_row, b_col;
+	for (int i = 0; i < n; i++) {
+		cin >> labyrinth[i];
+		for (int j = 0; j < m; j++) {
+			if (labyrinth[i][j] == 'A') {
+				a_row = i;
+				a_col = j;
+				q.push({i, j});
+			} else if (labyrinth[i][j] == 'B') {
+				b_row = i;
+				b_col = j;
+			}
+		}
+	}
+
+	// Directions: Up, Right, Down, Left
+	vector<int> dirR{-1, 0, 1, 0};
+	vector<int> dirC{0, 1, 0, -1};
+	vector<vector<int>> arrive(n, vector<int>(m, -1));
+
+	while (!q.empty()) {
+		int row = q.front().first, col = q.front().second;
+		q.pop();
+		for (int i = 0; i < 4; i++) {
+			int nextR = row + dirR[i], nextC = col + dirC[i];
+			if (nextR >= 0 && nextR < n && nextC >= 0 && nextC < m &&
+			    labyrinth[nextR][nextC] != '#' && arrive[nextR][nextC] == -1) {
+				arrive[nextR][nextC] = i;
+				q.push({nextR, nextC});
+			}
+		}
+	}
+
+	if (arrive[b_row][b_col] == -1) {
+		cout << "NO" << endl;
+	} else {
+		string res = "", dir = "URDL";
+		int row = b_row, col = b_col;
+		while (row != a_row || col != a_col) {
+			int ind = arrive[row][col];
+			res += dir[ind];
+			row -= dirR[ind];
+			col -= dirC[ind];
+		}
+		reverse(res.begin(), res.end());
+		cout << "YES\n" << res.length() << "\n" << res << endl;
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.util.*;
+
+public class Labyrinth {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int n = sc.nextInt(), m = sc.nextInt();
+		sc.nextLine();  // consume newline
+
+		char[][] labyrinth = new char[n][m];
+		int[][] arrive = new int[n][m];
+		for (int[] row : arrive) Arrays.fill(row, -1);
+
+		int aRow = -1, aCol = -1, bRow = -1, bCol = -1;
+		Queue<int[]> q = new LinkedList<>();
+
+		for (int i = 0; i < n; i++) {
+			String line = sc.nextLine();
+			for (int j = 0; j < m; j++) {
+				labyrinth[i][j] = line.charAt(j);
+				if (labyrinth[i][j] == 'A') {
+					aRow = i;
+					aCol = j;
+					q.add(new int[] {i, j});
+				} else if (labyrinth[i][j] == 'B') {
+					bRow = i;
+					bCol = j;
+				}
+			}
+		}
+
+		// Directions: Up, Right, Down, Left
+		int[] dirR = {-1, 0, 1, 0};
+		int[] dirC = {0, 1, 0, -1};
+		char[] dirChar = {'U', 'R', 'D', 'L'};
+
+		while (!q.isEmpty()) {
+			int[] pos = q.poll();
+			int row = pos[0], col = pos[1];
+			for (int i = 0; i < 4; i++) {
+				int nextR = row + dirR[i], nextC = col + dirC[i];
+				if (nextR >= 0 && nextR < n && nextC >= 0 && nextC < m &&
+				    labyrinth[nextR][nextC] != '#' && arrive[nextR][nextC] == -1) {
+					arrive[nextR][nextC] = i;
+					q.add(new int[] {nextR, nextC});
+				}
+			}
+		}
+
+		if (arrive[bRow][bCol] == -1) {
+			System.out.println("NO");
+		} else {
+			StringBuilder res = new StringBuilder();
+			int row = bRow, col = bCol;
+			while (row != aRow || col != aCol) {
+				int move = arrive[row][col];
+				res.append(dirChar[move]);
+				row -= dirR[move];
+				col -= dirC[move];
+			}
+
+			res.reverse();
+			System.out.println("YES");
+			System.out.println(res.length());
+			System.out.println(res.toString());
+		}
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+<Warning>
+
+We have to submit with PyPy to avoid a TLE.
+
+</Warning>
+
+```py
+import sys
+from collections import deque
+
+input = sys.stdin.readline  # faster input
+
+n, m = map(int, input().split())
+labyrinth = []
+a_row = a_col = b_row = b_col = -1
+for i in range(n):
+	row = input().strip()
+	labyrinth.append(row)
+	for j in range(m):
+		if row[j] == "A":
+			a_row, a_col = i, j
+		elif row[j] == "B":
+			b_row, b_col = i, j
+
+queue = deque()
+queue.append((a_row, a_col))
+arrive = [[-1] * m for _ in range(n)]
+
+dir_r = [-1, 0, 1, 0]
+dir_c = [0, 1, 0, -1]
+dir_char = "URDL"
+
+while queue:
+	row, col = queue.popleft()
+	for i in range(4):
+		next_r = row + dir_r[i]
+		next_c = col + dir_c[i]
+		if 0 <= next_r < n and 0 <= next_c < m:
+			if labyrinth[next_r][next_c] != "#" and arrive[next_r][next_c] == -1:
+				arrive[next_r][next_c] = i
+				queue.append((next_r, next_c))
+
+if arrive[b_row][b_col] == -1:
+	sys.stdout.write("NO\n")
+else:
+	path = []
+	row, col = b_row, b_col
+	while (row, col) != (a_row, a_col):
+		i = arrive[row][col]
+		path.append(dir_char[i])
+		row -= dir_r[i]
+		col -= dir_c[i]
+
+	path.reverse()
+	sys.stdout.write("YES\n")
+	sys.stdout.write(str(len(path)) + "\n")
+	sys.stdout.write("".join(path) + "\n")
+```
+
+</PySection>
+</LanguageSection>
+
+</Spoiler>
+
+## Explanation
+
+We can BFS from the starting point of A and check if we can reach B. If we reach B, we must have done it in the shortest path possible.
 
 ## Implementation
+
+**Time Complexity:** $\mathcal{O}(NM)$
 
 <LanguageSection>
 <CPPSection>
@@ -39,12 +248,12 @@ bool vis[1000][1000];
 
 // previousStep stores the previous direction that we moved in to arrive at
 // this cell
-int previousStep[1000][1000];
+int previous_step[1000][1000];
 
 // 0 = up, 1 = right, 2 = down, 3 = left
 int dx[4] = {-1, 0, 1, 0};
 int dy[4] = {0, 1, 0, -1};
-string stepDir = "URDL";
+string step_dir = "URDL";
 
 int main() {
 	cin >> n >> m;
@@ -74,7 +283,7 @@ int main() {
 			if (A[v.f][v.s] == '#') continue;
 			if (vis[v.f][v.s]) continue;
 			vis[v.f][v.s] = true;
-			previousStep[v.f][v.s] = i;
+			previous_step[v.f][v.s] = i;
 			q.push(v);
 		}
 	}
@@ -83,7 +292,7 @@ int main() {
 		cout << "YES" << endl;
 		vector<int> steps;
 		while (end != begin) {
-			int p = previousStep[end.f][end.s];
+			int p = previous_step[end.f][end.s];
 			steps.push_back(p);
 			// undo the previous step to get back to the previous square
 			// Notice how we subtract dx/dy, whereas we added dx/dy before
@@ -92,17 +301,15 @@ int main() {
 		reverse(steps.begin(), steps.end());
 
 		cout << steps.size() << endl;
-		for (char c : steps) { cout << stepDir[c]; }
+		for (char c : steps) { cout << step_dir[c]; }
 		cout << endl;
 	} else {
 		cout << "NO" << endl;
 	}
-
-	return 0;
 }
 ```
-</CPPSection>
 
+</CPPSection>
 <JavaSection>
 
 ```java

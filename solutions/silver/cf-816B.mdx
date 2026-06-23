@@ -1,0 +1,148 @@
+---
+id: cf-816B
+source: CF
+title: Karen and Coffee
+author: Rameez Parwez
+---
+
+[Official Analysis](https://codeforces.com/blog/entry/52742)
+
+## Explanation
+
+In order to find how many "good" coffee brewing temperatures are in a range $[a, b]$, we start by finding which temperatures are recommended by at least $k$ recipes. Instead of checking each temperature one by one, we use a **difference array** to quickly mark all temperatures covered by each recipe's range. Once we've processed all the ranges, we use a **prefix sum** to count how many recipes recommend each temperature. If a temperature is recommended by at least $k$ recipes, we call it "good". Finally, we convert these "good" temperatures into a running total, allowing us to instantly answer Karen's queries by subtracting two values for any range $[a, b]$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N + Q)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+
+using std::cin;
+using std::cout;
+
+constexpr int MAX_TEMP = 200000;
+
+int main() {
+	int n, k, q;
+	cin >> n >> k >> q;
+
+	/*
+	 * +2 is required since we are decrementing r + 1 and max r will be 2e5
+	 * thus prevents out-of-bounds errors, and the additional +1 ensures safe
+	 * prefix sum computation.
+	 */
+	std::vector<int> diff_arr(MAX_TEMP + 2);
+
+	for (int i = 0; i < n; i++) {
+		int l, r;
+		cin >> l >> r;
+		diff_arr[l]++;
+		diff_arr[r + 1]--;
+	}
+
+	for (int i = 1; i <= MAX_TEMP; i++) { diff_arr[i] += diff_arr[i - 1]; }
+
+	for (int i = 1; i <= MAX_TEMP; i++) {
+		diff_arr[i] = (diff_arr[i] >= k) + diff_arr[i - 1];
+	}
+
+	for (int i = 0; i < q; i++) {
+		int a, b;
+		cin >> a >> b;
+		cout << diff_arr[b] - diff_arr[a - 1] << '\n';
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class KarenAndCoffee {
+	static int MAX_TEMP = 200000;
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		int k = io.nextInt();
+		int q = io.nextInt();
+
+		/*
+		 * +2 is required since we are decrementing r + 1 and max r will be 2e5
+		 * thus prevents out-of-bounds errors, and the additional +1 ensures safe
+		 * prefix sum computation.
+		 */
+		int[] diff_arr = new int[N + 2];
+		for (int i = 0; i < n; i++) {
+			int l, r;
+			l = io.nextInt();
+			r = io.nextInt();
+			diff_arr[l]++;
+			diff_arr[r + 1]--;
+		}
+
+		for (int i = 1; i <= MAX_TEMP; i++) { diff_arr[i] += diff_arr[i - 1]; }
+
+		for (int i = 1; i <= MAX_TEMP; i++) {
+			diff_arr[i] = (diff_arr[i] >= k ? 1 : 0) + diff_arr[i - 1];
+		}
+
+		for (int i = 0; i < q; i++) {
+			int a, b;
+			a = io.nextInt();
+			b = io.nextInt();
+			io.println(diff_arr[b] - diff_arr[a - 1]);
+		}
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+<Warning>
+
+The solution gives TLE in PyPy3.
+
+</Warning>
+
+```py
+MAX_TEMP = 200000
+
+n, k, q = map(int, input().split())
+
+"""
++2 is required since we are decrementing r + 1 and max r will be 2e5
+thus prevents out-of-bounds errors, and the additional +1 ensures safe
+prefix sum computation.
+"""
+diff_arr = [0] * (MAX_TEMP + 2)
+
+for _ in range(n):
+	l, r = map(int, input().split())
+	diff_arr[l] += 1
+	diff_arr[r + 1] -= 1
+
+for i in range(1, MAX_TEMP + 1):
+	diff_arr[i] += diff_arr[i - 1]
+
+for i in range(1, MAX_TEMP + 1):
+	diff_arr[i] = (diff_arr[i] >= k) + diff_arr[i - 1]
+
+for _ in range(q):
+	a, b = map(int, input().split())
+	print(diff_arr[b] - diff_arr[a - 1])
+```
+
+</PySection>
+</LanguageSection>

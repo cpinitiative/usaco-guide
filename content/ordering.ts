@@ -83,7 +83,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Additional',
-      items: ['ad-hoc', 'intro-greedy', 'intro-graphs', 'rect-geo'],
+      items: ['casework', 'intro-greedy', 'intro-graphs', 'rect-geo', 'ad-hoc'],
     },
     {
       name: 'Conclusion',
@@ -99,12 +99,12 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     {
       name: 'Sorting & Searching',
       items: [
-        'sorting-custom',
         'two-pointers',
-        'intro-sorted-sets',
-        'custom-cpp-stl',
-        'greedy-sorting',
+        'binary-search-sorted-array',
         'binary-search',
+        'sorting-custom',
+        'greedy-sorting',
+        'priority-queues',
       ],
     },
     {
@@ -156,7 +156,13 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Data Structures',
-      items: ['stacks', 'sliding-window', 'PURS'],
+      items: [
+        'intro-sorted-sets',
+        'custom-cpp-stl',
+        'stacks',
+        'sliding-window',
+        'PURS',
+      ],
     },
     {
       name: 'Trees',
@@ -165,7 +171,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     {
       name: 'Additional Topics',
       description: 'Rarely required.',
-      items: ['hashing', 'hashmaps', 'meet-in-the-middle'],
+      items: ['hashing', 'hashmaps', 'meet-in-the-middle', 'ternary-search'],
     },
     {
       name: 'Conclusion',
@@ -188,7 +194,14 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Trees',
-      items: ['binary-jump', 'merging', 'hld', 'centroid'],
+      items: [
+        'binary-jump',
+        'merging',
+        'hld',
+        'centroid',
+        'VT',
+        'kruskal-tree',
+      ],
     },
     {
       name: 'Geometry',
@@ -196,7 +209,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Misc. Topics',
-      items: ['PIE', 'matrix-expo', 'bitsets', 'DC-DP'],
+      items: ['PIE', 'matrix-expo', 'bitsets', 'DC-DP', 'dp-sos'],
     },
     {
       name: 'Conclusion',
@@ -234,7 +247,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Dynamic Programming',
-      items: ['comb-sub', 'dp-more', 'dp-sos'],
+      items: ['comb-sub', 'dp-broken-profile', 'dp-more'],
     },
     {
       name: 'Flows',
@@ -256,8 +269,10 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'xor-basis',
         'fracturing-search',
         'game-theory',
-        'multiplicative',
+        'prefix-sums-nt-1',
+        'prefix-sums-nt-2',
         'matroid-isect',
+        'random',
         'interactive',
         'vectorization',
       ],

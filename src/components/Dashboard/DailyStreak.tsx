@@ -1,7 +1,8 @@
-import { graphql, useStaticQuery } from 'gatsby';
-import { GatsbyImage } from 'gatsby-plugin-image';
+import Image from 'next/image';
+import Link from 'next/link';
 import * as React from 'react';
 import { useState } from 'react';
+import { useCowImages } from '../../context/CowImagesContext';
 import { useLastVisitInfo } from '../../context/UserDataContext/properties/lastVisit';
 
 // note: cows will be unlocked in lexicographical order
@@ -13,20 +14,21 @@ const ComeBackTimer = ({ tomorrowMilliseconds }) => {
 
   React.useEffect(() => {
     const interval = setInterval(() => {
-      setMilliseconds(tomorrowMilliseconds - Date.now());
+      setMilliseconds(Math.max(0, tomorrowMilliseconds - Date.now()));
     }, 1000);
     return () => clearInterval(interval);
   }, []);
 
-  const days = Math.floor(milliseconds / 1000 / 60 / 60 / 24);
-  const hours = Math.floor((milliseconds / 1000 / 60 / 60) % 24);
-  const minutes = Math.floor((milliseconds / 1000 / 60) % 60);
-  const seconds = Math.floor((milliseconds / 1000) % 60);
+  const ms = Math.max(0, milliseconds); // Clamp to zero
+  const days = Math.floor(ms / 1000 / 60 / 60 / 24);
+  const hours = Math.floor((ms / 1000 / 60 / 60) % 24);
+  const minutes = Math.floor((ms / 1000 / 60) % 60);
+  const seconds = Math.floor((ms / 1000) % 60);
 
   return (
     <div>
       Come back in
-      <p className="text-2xl my-2">
+      <p className="my-2 text-2xl">
         {hours} hours {minutes} minutes {seconds} seconds
       </p>
       to {days ? 'continue your streak' : 'unlock this cow photo'}!
@@ -39,58 +41,44 @@ const PhotoCard = ({ img, day, tomorrowMilliseconds, hiddenOnDesktop }) => {
   return (
     <div
       className={
-        'max-w-[592px] mx-auto mb-8' + (hiddenOnDesktop ? ' lg:hidden' : '')
+        'mx-auto mb-8 max-w-[592px]' + (hiddenOnDesktop ? ' lg:hidden' : '')
       }
     >
-      <div className="bg-white dark:bg-gray-800 shadow sm:rounded-lg overflow-hidden flex flex-col">
-        <div className="px-4 pt-5 sm:px-6 sm:pt-6 pb-4">
-          <h3 className="text-lg leading-6 font-medium text-gray-800 dark:text-dark-high-emphasis">
+      <div className="flex flex-col overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
+        <div className="px-4 pt-5 pb-4 sm:px-6 sm:pt-6">
+          <h3 className="dark:text-dark-high-emphasis text-lg leading-6 font-medium text-gray-800">
             Day {day} Photo
           </h3>
         </div>
         {/* We set text size to 0px because GatsbyImage is inline block. Without it, there's extra space after the image. */}
-        <div className="overflow-hidden relative text-[0px]">
-          {tomorrowMilliseconds >= 0 ? (
-            <div className="text-base absolute inset-0 text-center flex items-center justify-center text-black font-medium bg-white dark:bg-black dark:text-white bg-opacity-25 dark:bg-opacity-25 z-10 p-4">
+        <div className="relative overflow-hidden text-[0px]">
+          {tomorrowMilliseconds >= 0 && (
+            <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/25 p-4 text-center text-base font-medium text-black dark:bg-black/25 dark:text-white">
               <ComeBackTimer tomorrowMilliseconds={tomorrowMilliseconds} />
             </div>
-          ) : null}
-          <GatsbyImage
-            image={img}
-            className="w-full object-cover"
-            alt="Cow"
-            style={
-              tomorrowMilliseconds >= 0 ? { filter: 'blur(60px)' } : undefined
-            }
-          />
+          )}
+          <div className="relative aspect-[16/9] w-full">
+            <Image
+              src={img.src}
+              alt="Cow"
+              fill
+              sizes="(max-width: 768px) 100vw, 592px"
+              className={`object-cover ${tomorrowMilliseconds >= 0 ? 'blur-2xl' : ''}`}
+              priority={day === 1} // Only preload the first image
+            />
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default function DailyStreak({ streak }) {
-  const data: Queries.DailyStreakQuery = useStaticQuery(graphql`
-    query DailyStreak {
-      allFile(
-        filter: { relativePath: { regex: "/^cows/.*/" } }
-        sort: { fields: name }
-      ) {
-        nodes {
-          childImageSharp {
-            gatsbyImageData(quality: 100, layout: CONSTRAINED, width: 592)
-          }
-          name
-        }
-      }
-    }
-  `);
-  // https://www.digitalocean.com/community/tutorials/react-usememo
-  const cows = React.useMemo(() => {
-    return data.allFile.nodes.map(
-      node => node.childImageSharp!.gatsbyImageData
-    );
-  }, []);
+interface DailyStreakProps {
+  streak: number;
+}
+
+export default function DailyStreak({ streak }: DailyStreakProps) {
+  const cows = useCowImages() || [];
   const { lastVisitDate } = useLastVisitInfo();
 
   // we don't want to render streaks during Server-Side Generation
@@ -128,21 +116,21 @@ export default function DailyStreak({ streak }) {
     if (i == times.length) {
       return (
         <div className="mb-8" key={times.length}>
-          <div className="bg-white dark:bg-gray-800 shadow sm:rounded-lg overflow-hidden flex flex-col">
+          <div className="flex flex-col overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
             <div className="px-4 py-5 sm:p-6">
               <div className="text-center">
-                <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
+                <h3 className="dark:text-dark-high-emphasis text-lg leading-6 font-medium text-gray-900">
                   You've ran out of cow photos!
                 </h3>
-                <div className="mt-3 text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis space-y-1">
+                <div className="dark:text-dark-med-emphasis mt-3 space-y-1 text-sm leading-5 text-gray-500">
                   Seeing that you're addicted to USACO Guide, you should
                   definitely reach out to us regarding{' '}
-                  <a
+                  <Link
                     href="/general/contributing"
                     className="font-bold text-blue-500"
                   >
                     contributing
-                  </a>
+                  </Link>
                   !
                 </div>
               </div>
@@ -184,13 +172,13 @@ export default function DailyStreak({ streak }) {
   };
   return (
     <>
-      <div className="bg-white dark:bg-gray-800 shadow sm:rounded-lg overflow-hidden lg:col-span-2">
+      <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg lg:col-span-2 dark:bg-gray-800">
         <div className="px-4 py-5 sm:p-6">
           <div className="text-center">
-            <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-dark-high-emphasis">
+            <h3 className="dark:text-dark-high-emphasis text-lg leading-6 font-medium text-gray-900">
               🔥 {streak} Day Streak: Keep it up!
             </h3>
-            <div className="mt-3 text-sm leading-5 text-gray-500 dark:text-dark-med-emphasis space-y-1">
+            <div className="dark:text-dark-med-emphasis mt-3 space-y-1 text-sm leading-5 text-gray-500">
               <p>
                 You've visited this guide for {streak} consecutive day
                 {streak !== 1 && 's'}.

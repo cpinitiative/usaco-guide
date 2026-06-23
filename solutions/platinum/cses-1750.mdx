@@ -59,4 +59,76 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class PlanetQueries {
+	static final int MAXLOG = 32;
+	static int[][] parent;
+
+	public static void main(String[] args) throws IOException {
+		FastReader fr = new FastReader();
+		StringBuilder sb = new StringBuilder();
+
+		int n = fr.nextInt();
+		int q = fr.nextInt();
+
+		parent = new int[n + 1][MAXLOG];
+
+		for (int i = 1; i <= n; i++) parent[i][0] = fr.nextInt();
+
+		// Precompute binary lifting table
+		for (int j = 1; j < MAXLOG; j++) {
+			for (int i = 1; i <= n; i++) parent[i][j] = parent[parent[i][j - 1]][j - 1];
+		}
+
+		while (q-- > 0) {
+			int u = fr.nextInt();
+			int k = fr.nextInt();
+
+			for (int j = 0; j < MAXLOG; j++) {
+				if ((k & (1 << j)) != 0) u = parent[u][j];
+			}
+			sb.append(u).append('\n');
+		}
+
+		System.out.print(sb);
+	}
+
+	// FastReader using byte buffer
+	static class FastReader {
+		private final InputStream in = System.in;
+		private final byte[] buffer = new byte[1 << 16];
+		private int ptr = 0, len = 0;
+
+		private int readByte() throws IOException {
+			if (ptr >= len) {
+				len = in.read(buffer);
+				ptr = 0;
+				if (len <= 0) return -1;
+			}
+			return buffer[ptr++];
+		}
+
+		int nextInt() throws IOException {
+			int c, sign = 1, val = 0;
+			do { c = readByte(); } while (c <= ' ');
+			if (c == '-') {
+				sign = -1;
+				c = readByte();
+			}
+			while (c > ' ') {
+				val = val * 10 + (c - '0');
+				c = readByte();
+			}
+			return val * sign;
+		}
+	}
+}
+```
+
+</JavaSection>
 </LanguageSection>

@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { useDarkMode } from '../../context/DarkModeContext';
 import CodeBlock from './CodeBlock/CodeBlock';
-
+import MarkdownImage from './MarkdownImage';
+import { MATHDIV, MATHSPAN } from './MathComponents';
 // Note: try to avoid adding inline styles here; rather, use css selectors to target them.
 // Otherwise it's really hard to override some of these styles
 
@@ -17,7 +18,7 @@ export const OffsetAnchor = ({ id, ...props }): JSX.Element => (
 const h1 = ({ id, children, ...props }): JSX.Element => (
   <h1
     {...props}
-    className="leading-tight text-4xl font-bold mb-5 mt-12 text-gray-700 dark:text-dark-high-emphasis"
+    className="dark:text-dark-high-emphasis mt-12 mb-5 text-4xl leading-tight font-bold text-gray-700"
   >
     <OffsetAnchor id={id} />
     {children}
@@ -25,7 +26,7 @@ const h1 = ({ id, children, ...props }): JSX.Element => (
 );
 const h2 = ({ id, children, ...props }): JSX.Element => (
   <h2
-    className="leading-tight text-3xl font-bold mb-5 mt-12 text-gray-700 dark:text-dark-high-emphasis"
+    className="dark:text-dark-high-emphasis mt-12 mb-5 text-3xl leading-tight font-bold text-gray-700"
     {...props}
   >
     <OffsetAnchor id={id} />
@@ -33,13 +34,13 @@ const h2 = ({ id, children, ...props }): JSX.Element => (
   </h2>
 );
 const h3 = ({ id, children, ...props }): JSX.Element => (
-  <h3 {...props} className="leading-snug text-2xl font-semibold mb-4 mt-8">
+  <h3 {...props} className="mt-8 mb-4 text-2xl leading-snug font-semibold">
     <OffsetAnchor id={id} />
     {children}
   </h3>
 );
 const h4 = ({ id, children, ...props }): JSX.Element => (
-  <h4 {...props} className="leading-none text-xl font-semibold mb-2 mt-6">
+  <h4 {...props} className="mt-6 mb-2 text-xl leading-none font-semibold">
     <OffsetAnchor id={id} />
     {children}
   </h4>
@@ -66,6 +67,21 @@ const a = ({ children, ...props }) => (
 const pre = ({ children, copyButton = true, ...props }) => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const isDarkMode = useDarkMode();
+
+  const isMATHSPAN = children.props.className?.includes('math-inline');
+  const isMATHDIV = children.props.className?.includes('math-display');
+
+  if (isMATHDIV) {
+    return MATHDIV({
+      ...children.props,
+    });
+  }
+
+  if (isMATHSPAN) {
+    return MATHSPAN({
+      ...children.props,
+    });
+  }
 
   return (
     <pre {...props}>
@@ -107,6 +123,21 @@ const HTMLComponents = {
   pre,
   a,
   HeaderLink,
+  img: ({ src, alt, title }) => {
+    const parts = (alt ?? '').split('|').map(s => s.trim());
+    const numericWidth = parts.find(p => /^\d+$/.test(p));
+    const centered = parts.includes('center');
+    const altText = parts.find(p => !/^\d+$/.test(p) && p !== 'center');
+    return (
+      <MarkdownImage
+        src={src}
+        alt={altText}
+        title={title}
+        width={numericWidth ? parseInt(numericWidth, 10) : undefined}
+        centered={centered}
+      />
+    );
+  },
 };
 
 export default HTMLComponents;

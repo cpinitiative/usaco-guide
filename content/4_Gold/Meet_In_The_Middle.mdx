@@ -53,7 +53,6 @@ $\texttt{right}$. This can be done using simple binary search.
 Time Complexity: $O(N\cdot 2^{N/2})$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -101,11 +100,13 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 <Warning title="Tight Time Limit">
-CSES has very tight time constraints for java, so the following code will barely pass in around 1 second. It is not guaranteed to pass on first submits, so you might need to submit multiple times.
+
+CSES has very tight time constraints for Java, so the following code will barely pass in around 1 second.
+You might need to submit multiple times.
+
 </Warning>
 
 ```java
@@ -171,7 +172,40 @@ public class Main {
 ```
 
 </JavaSection>
+<PySection>
 
+<Warning>
+
+The solution below only runs in time when submitted with PyPy.
+
+</Warning>
+
+```py
+import collections
+
+n, x = map(int, input().split())
+t = list(map(int, input().split()))
+
+
+def get_subset_sums(l: int, r: int) -> collections.Counter:
+	sums = [0]
+	for ti in t[l:r]:
+		sums.extend([s + ti for s in sums])
+	return collections.Counter(sums)
+
+
+# compute sum frequencies for first and second part of the array
+freq = [get_subset_sums(0, n // 2), get_subset_sums(n // 2, n)]
+
+# combine results of both parts
+answer = 0
+for s in freq[0]:
+	answer += freq[0][s] * freq[1].get(x - s, 0)
+
+print(answer)
+```
+
+</PySection>
 </LanguageSection>
 
 ### Problems

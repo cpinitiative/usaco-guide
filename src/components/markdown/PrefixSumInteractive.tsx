@@ -57,7 +57,7 @@ const PrefixSumInteractive = ({ demo2 = false }) => {
     return (
       <div
         className={
-          'font-mono px-2 py-1 border border-gray-300 dark:border-gray-600 cursor-pointer rounded ' +
+          'cursor-pointer rounded-sm border border-gray-300 px-2 py-1 font-mono dark:border-gray-600 ' +
           (isActive
             ? 'bg-green-200 dark:bg-green-700'
             : 'bg-gray-100 dark:bg-gray-800')
@@ -94,7 +94,7 @@ const PrefixSumInteractive = ({ demo2 = false }) => {
               {renderStep([0, 0, A, b - 1, -1], 'subtract prefix[A][b-1]')}
               {renderStep([0, 0, a - 1, b - 1, 1], 'add prefix[a-1][b-1]')}
               <div
-                className="font-mono p-1"
+                className="p-1 font-mono"
                 onMouseEnter={() => setHighlightRect([a, b, A, B])}
                 onMouseLeave={() => setHighlightRect(null)}
               >
@@ -111,7 +111,7 @@ const PrefixSumInteractive = ({ demo2 = false }) => {
               )}
               {renderStep([prefI, prefJ, prefI, prefJ, 1], 'add array[i][j]')}
               <div
-                className="font-mono p-1"
+                className="p-1 font-mono"
                 onMouseEnter={() => setHighlightRect([0, 0, prefI, prefJ])}
                 onMouseLeave={() => setHighlightRect(null)}
               >
@@ -120,7 +120,7 @@ const PrefixSumInteractive = ({ demo2 = false }) => {
             </>
           )}
         </div>
-        <div className="text-center relative">
+        <div className="relative text-center">
           {PrefMatrix.map(renderRow)}
           {highlightRect && (
             <div

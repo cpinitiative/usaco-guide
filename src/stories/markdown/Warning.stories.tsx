@@ -1,8 +1,8 @@
-import { Story } from '@storybook/react';
-import React, { ComponentProps } from 'react';
+import { StoryFn } from '@storybook/react';
+import { ComponentProps } from 'react';
 import HTMLComponents from '../../components/markdown/HTMLComponents';
-import Warning from '../../components/markdown/Warning';
 import markdownDecorator from '../../components/markdown/markdownDecoratorForStorybook';
+import Warning from '../../components/markdown/Warning';
 import MiscMarkdownContent from './MiscMarkdownContent';
 
 export default {
@@ -11,7 +11,7 @@ export default {
   decorators: [markdownDecorator],
 };
 
-const Template: Story<ComponentProps<typeof Warning>> = args => (
+const Template: StoryFn<ComponentProps<typeof Warning>> = args => (
   <Warning {...args} />
 );
 

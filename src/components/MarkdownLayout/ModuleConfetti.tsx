@@ -1,4 +1,3 @@
-import * as React from 'react';
 import {
   forwardRef,
   useEffect,
@@ -22,7 +21,7 @@ const ModuleConfetti = (props, ref) => {
   const { height, width } = useWindowDimensions();
   const [show, setShow] = useState(false);
 
-  const confettiRef = useRef<any>();
+  const confettiRef = useRef<any>(null);
 
   useImperativeHandle(ref, () => ({
     showConfetti: () => {
@@ -43,7 +42,7 @@ const ModuleConfetti = (props, ref) => {
   if (!show) return null;
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-20">
+    <div className="pointer-events-none fixed inset-0 z-20">
       <Confetti
         width={width}
         height={height}

@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { getPostDueDateString, PostData } from '../../models/groups/posts';
 
 export default function SidebarDueDate({ post }: { post: PostData }) {
@@ -18,7 +17,7 @@ export default function SidebarDueDate({ post }: { post: PostData }) {
           clipRule="evenodd"
         />
       </svg>
-      <span className="text-gray-900 dark:text-gray-300 text-sm font-medium">
+      <span className="text-sm font-medium text-gray-900 dark:text-gray-300">
         Due on {getPostDueDateString(post)}
       </span>
     </div>

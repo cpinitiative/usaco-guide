@@ -1,0 +1,165 @@
+---
+id: cf-1873G
+source: CF
+title: ABBC or BACB
+author: Kevin Sheng
+---
+
+[Official Editorial (C++)](https://codeforces.com/blog/entry/1206342)
+
+## Explanation
+
+The somewhat weird observation we have to make here is that the replacement process
+can be thought of as Bs "eating" As and leaving Cs where they once were.
+
+This process is shown most clearly in the 5th sample test case:
+```
+AAAAAAB
+AAAAABC
+AAAABCC
+...
+BCCCCCC
+```
+Since Bs leave Cs behind when they eat an A, they have to choose one direction and commit to it.
+
+With that, all we need is this info:
+1. How many "runs" of As there are and their sizes
+2. How many Bs there are that are adjacent to a run of As.
+
+Notice that since the initial string can only alternate between As and Bs,
+there can be at most one more run of As then there are available Bs.
+
+If this is the case, we have to give up the smallest run of As that occurs.
+If not, though, we can output the sum of all the runs of As- that is,
+the total number of As in the string.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(|s|)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+int main() {
+	int test_num;
+	std::cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		std::string str;
+		std::cin >> str;
+		str += 'X';  // Add an X for convenience in the below for loop
+
+		int b_amts = 0;
+		vector<int> a_runs;
+		int a_total = 0;
+
+		char last = str[0];
+		int run_len = 1;
+		for (int i = 1; i < str.size(); i++) {
+			if (str[i] != last) {
+				if (last == 'A') {
+					a_runs.push_back(run_len);
+					a_total += run_len;
+				} else if (last == 'B') {
+					// Any run of Bs can have at most 2 adjacent to As
+					b_amts += std::min(run_len, 2);
+				}
+				run_len = 0;
+			}
+			last = str[i];
+			run_len++;
+		}
+
+		// Apply formula described in explanation above
+		if (b_amts < a_runs.size()) {
+			int exclude = *std::min_element(a_runs.begin(), a_runs.end());
+			cout << a_total - exclude << '\n';
+		} else {
+			cout << a_total << '\n';
+		}
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class ABBCorBACB {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		int testNum = Integer.parseInt(read.readLine());
+		for (int t = 0; t < testNum; t++) {
+			// Add an X for convenience in the below for loop
+			String str = read.readLine() + 'X';
+
+			int bAmts = 0;
+			List<Integer> aRuns = new ArrayList<>();
+			int aTotal = 0;
+
+			char last = str.charAt(0);
+			int runLen = 1;
+			for (int i = 1; i < str.length(); i++) {
+				if (str.charAt(i) != last) {
+					if (last == 'A') {
+						aRuns.add(runLen);
+						aTotal += runLen;
+					} else if (last == 'B') {
+						// Any run of Bs can have at most 2 adjacent to As
+						bAmts += Math.min(runLen, 2);
+					}
+					runLen = 0;
+				}
+				last = str.charAt(i);
+				runLen++;
+			}
+
+			// Apply formula described in explanation above
+			if (bAmts < aRuns.size()) {
+				System.out.println(aTotal - Collections.min(aRuns));
+			} else {
+				System.out.println(aTotal);
+			}
+		}
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from itertools import groupby
+
+for _ in range(int(input())):
+	string = input()
+
+	b_amts = 0
+	a_runs = []
+	for char, amt in groupby(string):
+		if char == "A":
+			a_runs.append(len(list(amt)))
+		else:
+			# Any run of Bs can have at most 2 adjacent to As
+			b_amts += min(len(list(amt)), 2)
+
+	# Apply formula described in explanation above
+	if b_amts < len(a_runs):
+		print(sum(a_runs) - min(a_runs))
+	else:
+		print(sum(a_runs))
+```
+
+</PySection>
+</LanguageSection>

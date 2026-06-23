@@ -1,5 +1,4 @@
-import { Link } from 'gatsby';
-import * as React from 'react';
+import Link from 'next/link';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePostActions } from '../../../hooks/groups/usePostActions';
 import { getPostTimestampString, PostData } from '../../../models/groups/posts';
@@ -11,19 +10,30 @@ export default function PostHeader({ post }: { post: PostData }) {
   return (
     <div className="md:flex md:items-center md:justify-between md:space-x-4 xl:border-b xl:pb-4 dark:border-gray-700">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 leading-tight">
+        <h1 className="text-2xl leading-tight font-bold text-gray-900 dark:text-gray-100">
           {post.name}
           {post.isPublished ? '' : ' (Unpublished)'}
         </h1>
-        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-          {getPostTimestampString(post)}
-        </p>
+        {getPostTimestampString(post) && (
+          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+            {getPostTimestampString(post)}
+          </p>
+        )}
       </div>
       {activeGroup.showAdminView && (
         <div className="mt-4 flex space-x-3 md:mt-0">
-          <Link to="edit" className="btn">
+          <Link
+            href={
+              '/groups/' +
+              activeGroup.groupData!.id +
+              '/post/' +
+              post.id +
+              '/edit'
+            }
+            className="btn"
+          >
             <svg
-              className="-ml-1 mr-2 h-5 w-5 text-gray-400"
+              className="mr-2 -ml-1 h-5 w-5 text-gray-400"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
               fill="currentColor"

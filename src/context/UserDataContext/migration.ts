@@ -31,7 +31,6 @@ export default function runMigration() {
       showIgnored: getLegacy('showIgnored')!,
       divisionTableQuery: getLegacy('divisionTableQuery')!,
       lang: getLegacy('lang')!,
-      lastReadAnnouncement: getLegacy('lastReadAnnouncement')!,
       lastViewedModule: getLegacy('lastViewedModule')!,
       lastVisitDate: getLegacy('lastVisitDate')!,
       numPageviews: getLegacy('numPageviews')!,
@@ -67,7 +66,6 @@ export default function runMigration() {
     localStorage.removeItem('guide:userData:showIgnored');
     localStorage.removeItem('guide:userData:divisionTableQuery');
     localStorage.removeItem('guide:userData:lang');
-    localStorage.removeItem('guide:userData:lastReadAnnouncement');
     localStorage.removeItem('guide:userData:lastViewedModule');
     localStorage.removeItem('guide:userData:lastVisitDate');
     localStorage.removeItem('guide:userData:numPageviews');

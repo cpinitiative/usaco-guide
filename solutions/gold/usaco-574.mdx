@@ -2,12 +2,16 @@
 id: usaco-574
 source: USACO Gold 2015 December
 title: Fruit Feast
-author: Danh Ta Chi Thanh, Mark Phan, Arpan Banerjee, Juheon Rhee
+author: Danh Ta Chi Thanh, Mark Phan, Arpan Banerjee, Juheon Rhee, David Zhou
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_feast_gold_dec15.html)
 
-## Implementation - DP
+## Explanation
+
+We run a knapsack DP with the weights of the fruits and a capacity of $T$. To handle the drinking of water, we take half the weight of each valid state and mark those states as valid as well. Finally, we can run another knapsack DP based on the halved weights.
+
+## Implementation
 
 **Time Complexity:** $\mathcal{O}(T)$, where $T$ is the maximum fullness.
 
@@ -15,32 +19,42 @@ author: Danh Ta Chi Thanh, Mark Phan, Arpan Banerjee, Juheon Rhee
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
+#include <fstream>
+#include <iostream>
+#include <vector>
 using namespace std;
 
-bool dp[2][5000001];
-
 int main() {
-	freopen("feast.in", "r", stdin);
+	ifstream fin("feast.in");
+	ofstream fout("feast.out");
+
 	int max_fullness, orange, lemon;
-	cin >> max_fullness >> orange >> lemon;
+	fin >> max_fullness >> orange >> lemon;
 
-	dp[0][0] = true;
+	// dp[i].first is no water; dp[i].second is water used
+	vector<pair<bool, bool>> dp(max_fullness + 1);
+	dp[0].first = true;
+
+	// First knapsack: no water states and initial halved states
 	for (int i = 0; i <= max_fullness; i++) {
-		if (i - orange >= 0) dp[0][i] |= dp[0][i - orange];
-		if (i - lemon >= 0) dp[0][i] |= dp[0][i - lemon];
-		dp[1][i / 2] |= dp[0][i];
+		if (dp[i].first) {
+			if (i + orange <= max_fullness) { dp[i + orange].first = true; }
+			if (i + lemon <= max_fullness) { dp[i + lemon].first = true; }
+			dp[i / 2].second = true;
+		}
 	}
 
+	// Second knapsack: water used states
 	for (int i = 0; i <= max_fullness; i++) {
-		if (i - orange >= 0) dp[1][i] |= dp[1][i - orange];
-		if (i - lemon >= 0) dp[1][i] |= dp[1][i - lemon];
+		if (dp[i].second) {
+			if (i + orange <= max_fullness) { dp[i + orange].second = true; }
+			if (i + lemon <= max_fullness) { dp[i + lemon].second = true; }
+		}
 	}
 
-	freopen("feast.out", "w", stdout);
 	for (int i = max_fullness; i >= 0; i--) {
-		if (dp[1][i]) {
-			cout << i << endl;
+		if (dp[i].first || dp[i].second) {
+			fout << i << endl;
 			break;
 		}
 	}
@@ -48,44 +62,289 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("feast.in"));
+		PrintWriter pw =
+		    new PrintWriter(new BufferedWriter(new FileWriter("feast.out")));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		int maxFullness = Integer.parseInt(st.nextToken());
+		int orange = Integer.parseInt(st.nextToken());
+		int lemon = Integer.parseInt(st.nextToken());
+
+		// dp[i][0] is no water; dp[i][1] is water used
+		boolean[][] dp = new boolean[maxFullness + 1][2];
+		dp[0][0] = true;
+
+		// First knapsack: no water states and initial halved states
+		for (int i = 0; i <= maxFullness; i++) {
+			if (dp[i][0]) {
+				if (i + orange <= maxFullness) dp[i + orange][0] = true;
+				if (i + lemon <= maxFullness) dp[i + lemon][0] = true;
+				dp[i / 2][1] = true;
+			}
+		}
+
+		// Second knapsack: water used states
+		for (int i = 0; i <= maxFullness; i++) {
+			if (dp[i][1]) {
+				if (i + orange <= maxFullness) dp[i + orange][1] = true;
+				if (i + lemon <= maxFullness) dp[i + lemon][1] = true;
+			}
+		}
+
+		for (int i = maxFullness; i >= 0; i--) {
+			if (dp[i][0] || dp[i][1]) {
+				pw.println(i);
+				break;
+			}
+		}
+
+		br.close();
+		pw.close();
+	}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
-with open("feast.in") as read:
-	max_fullness, orange, lemon = map(int, read.readline().split())
+with open("feast.in") as fin:
+	max_fullness, orange, lemon = map(int, fin.readline().split())
 
-dp = [[0] * (max_fullness + 1) for _ in range(2)]
+# dp[i][0] is no water; dp[i][1] is water used
+dp = [[False, False] for _ in range(max_fullness + 1)]
 dp[0][0] = True
+
+# First knapsack: no water states and initial halved states
 for i in range(max_fullness + 1):
-	if i - orange >= 0:
-		dp[0][i] |= dp[0][i - orange]
+	if dp[i][0]:
+		if i + orange <= max_fullness:
+			dp[i + orange][0] = True
+		if i + lemon <= max_fullness:
+			dp[i + lemon][0] = True
+		dp[i // 2][1] = True
 
-	if i - lemon >= 0:
-		dp[0][i] |= dp[0][i - lemon]
-
-	dp[1][i // 2] |= dp[0][i]
-
-
+# Second knapsack: water used states
 for i in range(max_fullness + 1):
-	if i - orange >= 0:
-		dp[1][i] |= dp[1][i - orange]
+	if dp[i][1]:
+		if i + orange <= max_fullness:
+			dp[i + orange][1] = True
+		if i + lemon <= max_fullness:
+			dp[i + lemon][1] = True
 
-	if i - lemon >= 0:
-		dp[1][i] |= dp[1][i - lemon]
-
-
-for i in range(max_fullness, -1, -1):
-	if dp[1][i]:
-		print(i, file=open("feast.out", "w"))
-		break
+with open("feast.out", "w") as fout:
+	for i in range(max_fullness, -1, -1):
+		if dp[i][0] or dp[i][1]:
+			fout.write(f"{i}\n")
+			break
 ```
 
 </PySection>
 </LanguageSection>
 
-## Alternative Implementation - BFS/DFS
+## Alternative Explanation
 
-Instead of a knapsack solution, a BFS/DFS can be done to iterate though **all** attainable states and simply choose the one with maximum fullness. The scene can be thought of as a graph by defining each edge to be the transition from fullness $i$ to $j$. Each state is defined by fullness and whether Bessie has drank water. Since there are $2T$ states and each state is visited at most once, the time and space complexity of this solution is $\mathcal{O}(T)$. Below is a BFS implementation.
+Instead of a knapsack solution, a BFS/DFS can be done to iterate though **all** attainable states and determine the one with maximum fullness. The scene can be thought of as a graph by defining each edge to be the transition from fullness $i$ to $j$. Each state is defined by fullness and whether Bessie has drank water. There are thus $2T$ states, and each state is visited at most once.
+
+## Implementation - BFS
+
+**Time Complexity:** $\mathcal{O}(T)$, where $T$ is the maximum fullness.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <fstream>
+#include <queue>
+#include <utility>
+#include <vector>
+using namespace std;
+
+int main() {
+	ifstream fin("feast.in");
+	ofstream fout("feast.out");
+
+	int max_fullness, orange, lemon;
+	fin >> max_fullness >> orange >> lemon;
+
+	// visited.first is water unused; visited.second is water used
+	vector<pair<bool, bool>> visited(max_fullness + 1);
+	visited[0].first = true;
+
+	//{fullness, water_used}
+	queue<pair<int, bool>> q;
+	q.push({0, false});
+
+	while (!q.empty()) {
+		int fullness = q.front().first;
+		bool water = q.front().second;
+		q.pop();
+		if (water) {
+			if (fullness + orange <= max_fullness &&
+			    !visited[fullness + orange].second) {
+				visited[fullness + orange].second = true;
+				q.push({fullness + orange, water});
+			}
+			if (fullness + lemon <= max_fullness && !visited[fullness + lemon].second) {
+				visited[fullness + lemon].second = true;
+				q.push({fullness + lemon, water});
+			}
+		} else {
+			if (fullness + orange <= max_fullness &&
+			    !visited[fullness + orange].first) {
+				visited[fullness + orange].first = true;
+				q.push({fullness + orange, water});
+			}
+			if (fullness + lemon <= max_fullness && !visited[fullness + lemon].first) {
+				visited[fullness + lemon].first = true;
+				q.push({fullness + lemon, water});
+			}
+			if (!visited[fullness / 2].second) {
+				visited[fullness / 2].second = true;
+				q.push({fullness / 2, true});
+			}
+		}
+	}
+
+	for (int i = max_fullness; i >= 0; i--) {
+		if (visited[i].first || visited[i].second) {
+			fout << i << endl;
+			break;
+		}
+	}
+	return 0;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("feast.in"));
+		PrintWriter pw =
+		    new PrintWriter(new BufferedWriter(new FileWriter("feast.out")));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		int maxFullness = Integer.parseInt(st.nextToken());
+		int orange = Integer.parseInt(st.nextToken());
+		int lemon = Integer.parseInt(st.nextToken());
+
+		// visited[i][0] is water unused; visited[i][1] is water used
+		boolean[][] visited = new boolean[maxFullness + 1][2];
+		visited[0][0] = true;
+
+		// {fullness, waterUsed}
+		Queue<int[]> queue = new ArrayDeque<>();
+		queue.add(new int[] {0, 0});
+
+		while (!queue.isEmpty()) {
+			int[] curr = queue.poll();
+			int fullness = curr[0];
+			int water = curr[1];
+			if (water == 1) {
+				if (fullness + orange <= maxFullness &&
+				    !visited[fullness + orange][1]) {
+					visited[fullness + orange][1] = true;
+					queue.add(new int[] {fullness + orange, 1});
+				}
+				if (fullness + lemon <= maxFullness && !visited[fullness + lemon][1]) {
+					visited[fullness + lemon][1] = true;
+					queue.add(new int[] {fullness + lemon, 1});
+				}
+			} else {
+				if (fullness + orange <= maxFullness &&
+				    !visited[fullness + orange][0]) {
+					visited[fullness + orange][0] = true;
+					queue.add(new int[] {fullness + orange, 0});
+				}
+				if (fullness + lemon <= maxFullness && !visited[fullness + lemon][0]) {
+					visited[fullness + lemon][0] = true;
+					queue.add(new int[] {fullness + lemon, 0});
+				}
+				if (!visited[fullness / 2][1]) {
+					visited[fullness / 2][1] = true;
+					queue.add(new int[] {fullness / 2, 1});
+				}
+			}
+		}
+
+		for (int i = maxFullness; i >= 0; i--) {
+			if (visited[i][0] || visited[i][1]) {
+				pw.println(i);
+				break;
+			}
+		}
+
+		br.close();
+		pw.close();
+	}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+from collections import deque
+
+with open("feast.in") as fin:
+	max_fullness, orange, lemon = map(int, fin.readline().split())
+
+# visited[i][0] is water unused; visited[i][1] is water used
+visited = [[False, False] for _ in range(max_fullness + 1)]
+visited[0][0] = True
+
+# (fullness, water)
+q = deque()
+q.append((0, 0))
+
+while q:
+	fullness, water = q.popleft()
+	if water:
+		if fullness + orange <= max_fullness and not visited[fullness + orange][1]:
+			visited[fullness + orange][1] = True
+			q.append((fullness + orange, 1))
+		if fullness + lemon <= max_fullness and not visited[fullness + lemon][1]:
+			visited[fullness + lemon][1] = True
+			q.append((fullness + lemon, 1))
+	else:
+		if fullness + orange <= max_fullness and not visited[fullness + orange][0]:
+			visited[fullness + orange][0] = True
+			q.append((fullness + orange, 0))
+		if fullness + lemon <= max_fullness and not visited[fullness + lemon][0]:
+			visited[fullness + lemon][0] = True
+			q.append((fullness + lemon, 0))
+		if not visited[fullness // 2][1]:
+			visited[fullness // 2][1] = True
+			q.append((fullness // 2, 1))
+
+with open("feast.out", "w") as fout:
+	for i in range(max_fullness, -1, -1):
+		if visited[i][0] or visited[i][1]:
+			fout.write(f"{i}\n")
+			break
+```
+
+</PySection>
+</LanguageSection>
+
+## Implementation - DFS
+
+**Time Complexity:** $\mathcal{O}(T)$, where $T$ is the maximum fullness.
 
 <LanguageSection>
 <CPPSection>
@@ -93,88 +352,127 @@ Instead of a knapsack solution, a BFS/DFS can be done to iterate though **all** 
 ```cpp
 #include <fstream>
 #include <iostream>
-#include <queue>
-#include <set>
 #include <vector>
+using namespace std;
 
-using std::cout;
-using std::endl;
-using std::pair;
-using std::vector;
+int max_fullness, orange, lemon;
+vector<pair<bool, bool>>
+    visited;  // visited[i][0] is water unused; visited[i][1] is water used
+
+void dfs(int fullness, bool water) {
+	if (water) {
+		if (visited[fullness].second) { return; }
+		visited[fullness].second = true;
+		if (fullness + orange <= max_fullness) { dfs(fullness + orange, true); }
+		if (fullness + lemon <= max_fullness) { dfs(fullness + lemon, true); }
+	} else {
+		if (visited[fullness].first) { return; }
+		visited[fullness].first = true;
+		if (fullness + orange <= max_fullness) { dfs(fullness + orange, false); }
+		if (fullness + lemon <= max_fullness) { dfs(fullness + lemon, false); }
+		dfs(fullness / 2, true);
+	}
+}
 
 int main() {
-	std::ifstream read("feast.in");
-	int max_fullness;
-	int orange;
-	int lemon;
-	read >> max_fullness >> orange >> lemon;
+	ifstream fin("feast.in");
+	ofstream fout("feast.out");
 
-	// Keep track of which states we visited
-	std::set<pair<int, bool>> poss_fullness{{0, false}};
-	std::queue<pair<int, bool>> to_process;
-	to_process.push({0, false});
-	while (!to_process.empty()) {
-		auto [fullness, drank_water] = to_process.front();
-		to_process.pop();
+	fin >> max_fullness >> orange >> lemon;
 
-		// Drink water (if we haven't drank it already)
-		if (!drank_water) {
-			pair<int, bool> water{fullness / 2, true};
-			if (!poss_fullness.count(water)) {
-				to_process.push(water);
-				poss_fullness.insert(water);
-			}
-		}
+	visited.assign(max_fullness + 1, {false, false});
 
-		// Eat a fruit
-		for (int fruit : vector<int>{orange, lemon}) {
-			int after = fullness + fruit;
-			pair<int, bool> to_add{after, drank_water};
-			if (after <= max_fullness && !poss_fullness.count(to_add)) {
-				to_process.push(to_add);
-				poss_fullness.insert(to_add);
-			}
+	dfs(0, false);
+
+	for (int i = max_fullness; i >= 0; i--) {
+		if (visited[i].first || visited[i].second) {
+			fout << i << endl;
+			break;
 		}
 	}
-
-	int best = 0;
-	for (const auto &[fullness, _] : poss_fullness) { best = std::max(best, fullness); }
-
-	std::ofstream("feast.out") << best << endl;
 }
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	static int maxFullness, orange, lemon;
+	static boolean[][] visited;
+
+	static void dfs(int fullness, int water) {
+		if (visited[fullness][water]) return;
+		visited[fullness][water] = true;
+		if (fullness + orange <= maxFullness) { dfs(fullness + orange, water); }
+		if (fullness + lemon <= maxFullness) { dfs(fullness + lemon, water); }
+		if (water == 0) { dfs(fullness / 2, 1); }
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("feast.in"));
+		PrintWriter pw =
+		    new PrintWriter(new BufferedWriter(new FileWriter("feast.out")));
+		StringTokenizer st = new StringTokenizer(br.readLine());
+
+		maxFullness = Integer.parseInt(st.nextToken());
+		orange = Integer.parseInt(st.nextToken());
+		lemon = Integer.parseInt(st.nextToken());
+
+		// visited[i][0] is water unused; visited[i][1] is water used
+		visited = new boolean[maxFullness + 1][2];
+
+		dfs(0, 0);
+
+		for (int i = maxFullness; i >= 0; i--) {
+			if (visited[i][0] || visited[i][1]) {
+				pw.println(i);
+				break;
+			}
+		}
+
+		br.close();
+		pw.close();
+	}
+}
+```
+</JavaSection>
 <PySection>
 
 ```py
-from collections import deque
+from sys import setrecursionlimit
 
-with open("feast.in") as read:
-	max_fullness, orange, lemon = map(int, read.readline().split())
+setrecursionlimit(1 << 25)
 
-poss_fullness = {(0, False)}  # Keep track of which states we visited
-to_process = deque([(0, False)])
-while to_process:
-	fullness, drank_water = to_process.pop()
+with open("feast.in") as fin:
+	max_fullness, orange, lemon = map(int, fin.readline().split())
 
-	# Drink water (if we haven't drank it already)
-	if not drank_water:
-		water = (fullness // 2, True)
-		if water not in poss_fullness:
-			to_process.appendleft(water)
-			poss_fullness.add(water)
+# visited[i][0] is water unused; visited[i][1] is water used
+visited = [[False, False] for _ in range(max_fullness + 1)]
 
-	# Eat a fruit
-	for fruit in (orange, lemon):
-		after = fullness + fruit
-		to_add = (after, drank_water)
-		if after <= max_fullness and to_add not in poss_fullness:
-			to_process.appendleft(to_add)
-			poss_fullness.add(to_add)
 
-best = max([n[0] for n in poss_fullness])
-print(best, file=open("feast.out", "w"))
+def dfs(fullness, water):
+	if visited[fullness][water]:
+		return
+	visited[fullness][water] = True
+	if fullness + orange <= max_fullness:
+		dfs(fullness + orange, water)
+	if fullness + lemon <= max_fullness:
+		dfs(fullness + lemon, water)
+	if water == 0:
+		dfs(fullness // 2, 1)
+
+
+dfs(0, 0)
+
+with open("feast.out", "w") as fout:
+	for i in range(max_fullness, -1, -1):
+		if visited[i][0] or visited[i][1]:
+			fout.write(f"{i}\n")
+			break
 ```
 
 </PySection>

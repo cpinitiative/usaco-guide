@@ -59,7 +59,7 @@ Recall a bit in $a \oplus b$ is $1$ only if the bit in $a$ is different from the
 - If it's $0$ in $a$ and $1$ in $b$
 - If it's $0$ in $a$ and $0$ in $b$
 
-Now this looks pretty great, but we need to get rid of the third case. By taking the bitwise AND with $a | b$, the ones that are left on is only if there is a $1$ in either $a$ or $b$. Obviously, the third case isnt included in $a | b$ since both bits are off, and we successfully eliminate that case.
+Now this looks pretty great, but we need to get rid of the third case. By taking the bitwise AND with $a | b$, the ones that are left on is only if there is a $1$ in either $a$ or $b$. Obviously, the third case isn't included in $a | b$ since both bits are off, and we successfully eliminate that case.
 
 Now that we can acquire the sum of any two numbers in two queries, we can easily solve the problem now. We can find the values of the first three numbers of the array using a system of equations involving their sum (note $n \geq 3$). Once we have acquired their independent values, we can loop through the rest of the array.
 
@@ -391,7 +391,7 @@ int main() {
 			 * Count the # of sequences ending at this position with xor-sum
 			 * non-zero by counting the prefixes of the inversed bit, i.e.
 			 * pref[i] ^ pref[j] = 1. Update the answer by adding the # of such
-			 * sequnces multiplied by the respective power of two.
+			 * sequences multiplied by the respective power of two.
 			 */
 			ans += pref[s ^ 1] * 1LL << i;
 			// Update the prexies
@@ -404,6 +404,57 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.StringTokenizer;
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+
+		StringTokenizer st = new StringTokenizer(read.readLine());
+
+		int n = Integer.parseInt(st.nextToken());
+		int[] v = new int[n];
+
+		st = new StringTokenizer(read.readLine());
+
+		long ans = 0;
+		for (int i = 0; i < n; i++) {
+			v[i] = Integer.parseInt(st.nextToken());
+			ans -= v[i];
+		}
+
+		// For every bit position,
+		// check if it's set on in the xor-sum of every subsequence
+		for (int i = 0; i < 30; i++) {
+			int s = 0;
+			// Count the prefix sums
+			//  The # of 0 xor-sum prefixes start from 1 to count the prefixes with
+			//  xor-sum 1
+			int[] pref = {1, 0};
+			for (int a : v) {
+				s ^= (a >> i) & 1;
+				/*
+				 * Count the # of sequences ending at this position with xor-sum
+				 * non-zero by counting the prefixes of the inversed bit, i.e.
+				 * pref[i] ^ pref[j] = 1. Update the answer by adding the # of such
+				 * sequences multiplied by the respective power of two.
+				 */
+				ans += (long)pref[s ^ 1] << i;
+				// Update the prefixes
+				pref[s]++;
+			}
+		}
+
+		System.out.println(ans);
+	}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
@@ -429,7 +480,7 @@ for i in range(30):
 		Count the # of sequences ending at this position with xor-sum
 		non-zero by counting the prefixes of the inversed bit, i.e.
 		pref[i] ^ pref[j] = 1. Update the answer by adding the # of such
-		sequnces multiplied by the respective power of two.
+		sequences multiplied by the respective power of two.
 		"""
 		res += pref[s ^ 1] * (1 << i)
 		# update the prexies

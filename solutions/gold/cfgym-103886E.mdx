@@ -2,7 +2,7 @@
 id: cfgym-103886E
 source: CF
 title: Jeopardized Projects
-author: Kevin Sheng
+author: Kevin Sheng, Ruben Jing
 ---
 
 [Official Editorial](https://codeforces.com/gym/103886/attachments/download/17094/Cereal_Codes_SUMMER_2022_EDITORIAL.pdf#page=2)
@@ -28,7 +28,7 @@ $$
 In this summation, we sum over all possible lengths $l$ of the array,
 and then use [stars and bars](https://en.wikipedia.org/wiki/Stars_and_bars_(combinatorics))
 to count how many arrays of length $l$ sum to $x$.
-The initial subtraction is to account for that all elements must be positive.
+The initial subtraction of $l$ is to account for that all elements must be positive.
 
 This expression then simplifies to
 $$
@@ -37,6 +37,7 @@ $$
 &= \boxed{2^{x-1}}
 \end{align*}
 $$
+The binomial theorem is applied to simplify the summation.
 
 It remains to count the number of *palindromic* arrays that sum to $x$.
 For this, there's two cases to consider: $x$ being even and $x$ being odd.
@@ -50,14 +51,14 @@ This gives us a grand total of
 $$
 1+2^{\frac{x}{2}-1}+\sum_{i=1}^{x/2-1} 2^{(x-2i)/2-1}
 $$
-The $1$ at the font is another edge case when we put all of $x$ as the middle.
+The $1$ at the front is another edge case when we put all of $x$ as the middle.
 But anyways, notice that this actually simplifies to $2^{\frac{x}{2}}$!
 Pretty cool, huh?
 
 If $x$ is odd, though, we can't have an even-length palindromic array.
 We can only take an odd amount from $x$ and set it as the center, giving us
 $$
-1+\sum_{i=1}^{\lfloor x/2 \rfloor-1} 2^{(x-2i-1)/2-1}
+1+\sum_{i=0}^{\lfloor x/2 \rfloor-1} 2^{(x-2i-1)/2-1}
 $$
 This also simplifies like the one we did previously, only this time it's to $2^{\frac{x-1}{2}}$.
 
@@ -90,4 +91,44 @@ for _ in range(int(input())):
 ```
 
 </PySection>
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MOD = 1e9 + 7;
+const int MAX_SUM = 1e5;
+int mod(long long a) { return (a + MOD) % MOD; }
+
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	vector<int> pow_two;
+	vector<int> pref;
+
+	// define powers of two up to max sum value for lookup later
+	pow_two.push_back(1);
+	for (int i = 1; i < MAX_SUM + 1; i++) {
+		pow_two.push_back((pow_two.back() * 2) % MOD);
+	}
+
+	// prefix amount of solutions at every i
+	pref.push_back(0);
+	for (int i = 1; i < MAX_SUM + 1; i++) {
+		pref.push_back(mod(pref.back() + mod(pow_two[i - 1] - pow_two[i / 2])));
+	}
+
+	int tests = 0;
+	cin >> tests;
+
+	for (int i = 0; i < tests; i++) {
+		int l, r;
+		cin >> l >> r;
+
+		cout << mod(pref[r] - pref[l - 1]) << "\n";
+	}
+}
+```
+</CPPSection>
 </LanguageSection>

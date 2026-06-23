@@ -51,9 +51,9 @@ export const SidebarNav = () => {
   }, [activeSection, sidebarLinks]);
 
   return (
-    <nav className="flex-grow bg-white dark:bg-dark-surface flex flex-col h-0">
-      <div className="flex-shrink-0 border-b border-gray-200 dark:border-gray-800">
-        <div className="flex justify-center my-4">
+    <nav className="dark:bg-dark-surface flex h-0 grow flex-col bg-white">
+      <div className="shrink-0 border-b border-gray-200 dark:border-gray-800">
+        <div className="my-4 flex justify-center">
           <SectionsDropdown
             currentSection={activeSection}
             sidebarNav={true}
@@ -61,7 +61,7 @@ export const SidebarNav = () => {
           />
         </div>
       </div>
-      <div className="flex-1 h-0 overflow-y-auto">
+      <div className="h-0 flex-1 overflow-y-auto">
         {links.map(group => (
           <Accordion
             key={group.label}

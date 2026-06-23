@@ -13,13 +13,17 @@ Sort the queries in a specific order before answering them.
 
 <Spoiler title="Solution">
 
-**Time Complexity:** $\mathcal{O}(N\log{N})$
+## Explanation
 
 We answer the queries from right to left, sorted by their left indices. By using a BIT, we can keep track of indices that contain distinct values. For every value $arr[i]$, we set the latest (i.e. the left-most) index in $bit[i]$ to $1$. If this value appeared before, we set the last used index back to $0$. Then, we can answer all queries with $a = i$ by summing up the values between $[i, b]$. This ensures later indices after $i$ are included in the BIT to accurately answer queries.
 
-<LanguageSection>
+## Implementation
 
+**Time Complexity:** $\mathcal{O}(N\log{N})$
+
+<LanguageSection>
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -73,7 +77,7 @@ int main() {
 		last_index[val] = i;
 		bit.update(i, 1);
 
-		// Answer all queires with a == i.
+		// Answer all queries with a == i.
 		for (auto &qr : queries[i]) {
 			/*
 			 * The solution for this query is bit[i,b].
@@ -86,8 +90,8 @@ int main() {
 	for (auto &a : solution) { cout << a << "\n"; }
 }
 ```
-</CPPSection>
 
+</CPPSection>
 <JavaSection>
 
 <Warning title="TLE">
@@ -137,7 +141,7 @@ public class DistinctValuesQueries {
 			last_index.put(val, i);
 			bit.update(i, 1);
 
-			// Answer all queires with a == i.
+			// Answer all queries with a == i.
 			for (Pair qr : queries.get(i)) {
 				/*
 				 * The solution for this query is bit[i,b].
@@ -194,8 +198,8 @@ public class DistinctValuesQueries {
 	// EndCodeSnip
 }
 ```
-</JavaSection>
 
+</JavaSection>
 </LanguageSection>
 
 </Spoiler>

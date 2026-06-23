@@ -1,11 +1,15 @@
-import { Dialog } from '@headlessui/react';
+import {
+  Dialog,
+  DialogBackdrop,
+  DialogPanel,
+  DialogTitle,
+} from '@headlessui/react';
 import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/outline';
 import { XIcon } from '@heroicons/react/solid';
 import React, { useMemo } from 'react';
 import { useDarkMode } from '../context/DarkModeContext';
 import { useQuizOpen } from '../context/QuizGeneratorContext';
 import CopyButton from './Editor/CopyButton';
-import Modal from './Modal';
 import CodeBlock from './markdown/CodeBlock/CodeBlock';
 
 interface Answer {
@@ -122,157 +126,174 @@ export default function QuizGeneratorModal(): JSX.Element {
     return code;
   }, [quiz]);
   return (
-    <Modal isOpen={open} onClose={closeModal}>
-      <Dialog.Panel className="px-4 text-center w-full max-w-4xl h-auto">
-        <div className="inline-block w-full max-w-4xl p-8 my-8 overflow-hidden text-left align-middle transition-all transform bg-white dark:bg-black shadow-xl rounded-2xl">
-          <div className={'flex justify-between items-center'}>
-            <Dialog.Title
-              as="h3"
-              className="text-lg font-medium leading-6 text-gray-900 dark:text-gray-200"
-            >
-              Quiz Generator
-            </Dialog.Title>
-            <button className={'btn'} onClick={() => addQuestion()}>
-              Add question
-            </button>
-          </div>
-          <div className={'space-y-8 mt-4'}>
-            {quiz.map((question, idx) => (
-              <div
-                key={idx}
-                className="flex border-l-4 focus-within:border-blue-500 dark:border-gray-800 dark:focus-within:border-blue-900"
+    <Dialog
+      open={open}
+      onClose={() => setOpen(false)}
+      className="relative z-30"
+    >
+      <DialogBackdrop
+        transition
+        className="fixed inset-0 bg-gray-500/75 transition-opacity data-[closed]:opacity-0 data-[enter]:duration-300 data-[enter]:ease-out data-[leave]:duration-200 data-[leave]:ease-in dark:bg-gray-900/75"
+      />
+
+      <div className="fixed inset-0 z-30 w-screen overflow-y-auto">
+        <div className="flex min-h-full items-center justify-center p-4 text-center">
+          <DialogPanel
+            transition
+            className="h-auto w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white p-8 text-left align-middle shadow-xl transition-all data-[closed]:translate-y-4 data-[closed]:opacity-0 data-[enter]:duration-300 data-[enter]:ease-out data-[leave]:duration-200 data-[leave]:ease-in data-[closed]:sm:translate-y-0 data-[closed]:sm:scale-95 dark:bg-black"
+          >
+            <div className={'flex items-center justify-between'}>
+              <DialogTitle
+                as="h3"
+                className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200"
               >
-                <div className={'mx-2'}>
-                  <button onClick={() => deleteQuestion(idx)}>
-                    <XIcon className={'h-4 w-4'} />
-                  </button>
-                </div>
-                <div className={'flex-grow'}>
-                  <label htmlFor={`question-${idx + 1}`}>
-                    Question {idx + 1}
-                  </label>
-                  <textarea
-                    id={`question-${idx + 1}`}
-                    value={question.question}
-                    onChange={e => changeQuestion(e.target.value, idx)}
-                    className={
-                      'mt-2 w-full shadow-sm focus:ring-blue-500 focus:border-blue-500 block text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700'
-                    }
-                  />
-                  <div className={'ml-4'}>
-                    <h5 className={'font-medium my-2'}>Answers</h5>
-                    <div className={'space-y-4'}>
-                      {question.answers.map((answer, i) => (
-                        <div key={i} className={'flex'}>
-                          <div className={'mr-1'}>
-                            <button onClick={() => deleteAnswer(idx, i)}>
-                              <XIcon className={'h-4 w-4'} />
-                            </button>
-                          </div>
-                          <div className={'w-full'}>
-                            <div className={'w-full flex gap-6 items-center'}>
+                Quiz Generator
+              </DialogTitle>
+              <button className={'btn'} onClick={() => addQuestion()}>
+                Add question
+              </button>
+            </div>
+            <div className={'mt-4 space-y-8'}>
+              {quiz.map((question, idx) => (
+                <div
+                  key={idx}
+                  className="flex border-l-4 focus-within:border-blue-500 dark:border-gray-800 dark:focus-within:border-blue-900"
+                >
+                  <div className={'mx-2'}>
+                    <button onClick={() => deleteQuestion(idx)}>
+                      <XIcon className={'h-4 w-4'} />
+                    </button>
+                  </div>
+                  <div className={'grow'}>
+                    <label htmlFor={`question-${idx + 1}`}>
+                      Question {idx + 1}
+                    </label>
+                    <textarea
+                      id={`question-${idx + 1}`}
+                      value={question.question}
+                      onChange={e => changeQuestion(e.target.value, idx)}
+                      className={
+                        'mt-2 block w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900'
+                      }
+                    />
+                    <div className={'ml-4'}>
+                      <h5 className={'my-2 font-medium'}>Answers</h5>
+                      <div className={'space-y-4'}>
+                        {question.answers.map((answer, i) => (
+                          <div key={i} className={'flex'}>
+                            <div className={'mr-1'}>
+                              <button onClick={() => deleteAnswer(idx, i)}>
+                                <XIcon className={'h-4 w-4'} />
+                              </button>
+                            </div>
+                            <div className={'w-full'}>
+                              <div className={'flex w-full items-center gap-6'}>
+                                <textarea
+                                  value={answer.answer}
+                                  onChange={e =>
+                                    changeAnswer(
+                                      e.target.value,
+                                      answer.explanation,
+                                      answer.correct,
+                                      idx,
+                                      i
+                                    )
+                                  }
+                                  className={
+                                    'block grow rounded-md border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900'
+                                  }
+                                  placeholder={`Answer ${i + 1}`}
+                                />
+                                <button
+                                  onClick={() =>
+                                    changeAnswer(
+                                      answer.answer,
+                                      answer.explanation,
+                                      !answer.correct,
+                                      idx,
+                                      i
+                                    )
+                                  }
+                                  className={
+                                    'w-18 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-hidden md:w-24'
+                                  }
+                                >
+                                  {quiz[idx].answers[i].correct ? (
+                                    <div
+                                      className={
+                                        'flex items-center gap-2 text-green-600 dark:text-green-300'
+                                      }
+                                    >
+                                      <CheckCircleIcon
+                                        className={'h-4 w-4 md:h-6 md:w-6'}
+                                      />
+                                      <span className={'text-xs md:text-sm'}>
+                                        Correct
+                                      </span>
+                                    </div>
+                                  ) : (
+                                    <div
+                                      className={
+                                        'flex items-center gap-2 text-red-600 dark:text-red-300'
+                                      }
+                                    >
+                                      <XCircleIcon
+                                        className={'h-4 w-4 md:h-6 md:w-6'}
+                                      />
+                                      <span className={'text-xs md:text-sm'}>
+                                        Incorrect
+                                      </span>
+                                    </div>
+                                  )}
+                                </button>
+                              </div>
                               <textarea
-                                value={answer.answer}
+                                className={
+                                  'mt-2 block w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-900'
+                                }
+                                value={answer.explanation}
                                 onChange={e =>
                                   changeAnswer(
+                                    answer.answer,
                                     e.target.value,
-                                    answer.explanation,
                                     answer.correct,
                                     idx,
                                     i
                                   )
                                 }
-                                className={
-                                  'flex-grow shadow-sm focus:ring-blue-500 focus:border-blue-500 block text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700'
-                                }
-                                placeholder={`Answer ${i + 1}`}
+                                placeholder={'Explanation'}
                               />
-                              <button
-                                onClick={() =>
-                                  changeAnswer(
-                                    answer.answer,
-                                    answer.explanation,
-                                    !answer.correct,
-                                    idx,
-                                    i
-                                  )
-                                }
-                                className={
-                                  'w-18 md:w-24 focus:ring-blue-500 focus:ring-2 rounded-md focus:outline-none'
-                                }
-                              >
-                                {quiz[idx].answers[i].correct ? (
-                                  <div
-                                    className={
-                                      'flex items-center gap-2 text-green-600 dark:text-green-300'
-                                    }
-                                  >
-                                    <CheckCircleIcon
-                                      className={'h-4 w-4 md:h-6 md:w-6'}
-                                    />
-                                    <span className={'text-xs md:text-sm'}>
-                                      Correct
-                                    </span>
-                                  </div>
-                                ) : (
-                                  <div
-                                    className={
-                                      'flex items-center gap-2 text-red-600 dark:text-red-300'
-                                    }
-                                  >
-                                    <XCircleIcon
-                                      className={'h-4 w-4 md:h-6 md:w-6'}
-                                    />
-                                    <span className={'text-xs md:text-sm'}>
-                                      Incorrect
-                                    </span>
-                                  </div>
-                                )}
-                              </button>
                             </div>
-                            <textarea
-                              className={
-                                'mt-2 w-full shadow-sm focus:ring-blue-500 focus:border-blue-500 block text-sm border-gray-300 rounded-md dark:bg-gray-900 dark:border-gray-700'
-                              }
-                              value={answer.explanation}
-                              onChange={e =>
-                                changeAnswer(
-                                  answer.answer,
-                                  e.target.value,
-                                  answer.correct,
-                                  idx,
-                                  i
-                                )
-                              }
-                              placeholder={'Explanation'}
-                            />
                           </div>
-                        </div>
-                      ))}
-                    </div>
-                    <div className={'w-full flex justify-end my-2'}>
-                      <button className={'btn'} onClick={() => addAnswer(idx)}>
-                        Add answer
-                      </button>
+                        ))}
+                      </div>
+                      <div className={'my-2 flex w-full justify-end'}>
+                        <button
+                          className={'btn'}
+                          onClick={() => addAnswer(idx)}
+                        >
+                          Add answer
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
+              ))}
+              <div className={'relative text-sm'}>
+                <CopyButton
+                  onClick={() => {
+                    navigator.clipboard.writeText(code);
+                  }}
+                  className="btn absolute top-2 right-3"
+                />
+                <CodeBlock className="language-mdx" isDarkMode={isDarkMode}>
+                  {code}
+                </CodeBlock>
               </div>
-            ))}
-            <div className={'relative text-sm'}>
-              <CopyButton
-                onClick={() => {
-                  navigator.clipboard.writeText(code);
-                }}
-                className="btn absolute right-3 top-2"
-              />
-              <CodeBlock className="language-mdx" isDarkMode={isDarkMode}>
-                {code}
-              </CodeBlock>
             </div>
-          </div>
+          </DialogPanel>
         </div>
-      </Dialog.Panel>
-    </Modal>
+      </div>
+    </Dialog>
   );
 }

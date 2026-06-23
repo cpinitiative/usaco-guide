@@ -89,12 +89,12 @@ zero, you have several options:
 
 <Warning>
 
-[`memset(arr, 0, sizeof arr)`](http://www.cplusplus.com/reference/cstring/memset/)
-will also zero-initialize an array. However, it's important to note that
-`memset` treats the value that is passed to it as an `unsigned char`. So for an
-array of 32-bit integers, `memset(arr, 1, sizeof arr)` will set each element to
-$1$, as you might expect. On the other hand, `memset(arr, -1, sizeof arr)` will
-set each element to $1+2^8+2^{16}+2^{24}=16843009$, not $-1$.
+`memset(arr, 0, sizeof arr)` will zero-initialize an array. However, it's important to note that
+`memset` treats the value that is passed to it as an `unsigned char`. So for an array of 32-bit integers,
+`memset(arr, 1, sizeof arr)` will set each **byte** to 1, resulting in each element becoming
+`0x01010101` (i.e. 16843009 in decimal), not 1. On the other hand,
+`memset(arr, -1, sizeof arr)` will set each byte to `0xFF`, which makes each element `0xFFFFFFFF`. For
+signed 32-bit integers, this bit pattern represents -1 (or 4294967295 if the integers are unsigned).
 
 </Warning>
 
@@ -107,7 +107,7 @@ set each element to $1+2^8+2^{16}+2^{24}=16843009$, not $-1$.
 	<Resource source="CPH" title="4.1 - Dynamic Arrays">
 		vectors, strings
 	</Resource>
-	<Resource source="PAPS" title="3.1 - Vectors" />
+	<Resource source="PAPS1" title="6.1 - Vectors" />
 	<Resource
 		source="LCPP"
 		title="11.17 - Intro to std::vector"
@@ -345,12 +345,12 @@ list.add(4);
 list.add(5);
 list.add(2);
 int[] arr = {1, 7, 4, 5, 2};
-for (int i = 0; i < list.size(); i++) {  // regular
-	System.out.println(list.get(i));
-}
-for (int element : arr) {  // for-each
-	System.out.println(element);
-}
+
+// regular for loop
+for (int i = 0; i < list.size(); i++) { System.out.println(list.get(i)); }
+
+// for-each loop
+for (int element : arr) { System.out.println(element); }
 ```
 
 ## Adding and Removing
@@ -373,11 +373,6 @@ System.out.println(list.get(2));  // 5
 ```
 
 </JavaSection>
-
-<!-- END JAVA SECTION ON ARRAYS -->
-
-<!-- BEGIN PYTHON SECTION ON ARRAYS -->
-
 <PySection>
 
 # Lists
@@ -628,7 +623,7 @@ int main() {
 <JavaSection>
 
 Although pairs and tuples aren't available in Java, we can make
-our own with classses and generic types.
+our own with classes and generic types.
 
 ```java
 import java.io.*;
@@ -648,8 +643,8 @@ public class PairDemo {
 }
 
 class Pair<K, V> {
-	K first;
-	V second;
+	public K first;
+	public V second;
 
 	public Pair(K first, V second) {
 		this.first = first;

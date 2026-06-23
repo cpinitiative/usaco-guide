@@ -12,9 +12,9 @@ export interface DangerProps {
 }
 
 const Danger: React.FC<DangerProps> = ({ children, title }) => (
-  <div className="rounded-md bg-red-50 dark:bg-red-700 dark:bg-opacity-25 p-4 mb-4">
+  <div className="mb-4 rounded-md bg-red-50 p-4 dark:bg-red-700/25">
     <div className="flex">
-      <div className="flex-shrink-0">
+      <div className="shrink-0">
         <svg
           className="h-5 w-5 text-red-400"
           viewBox="0 0 20 20"
@@ -28,10 +28,10 @@ const Danger: React.FC<DangerProps> = ({ children, title }) => (
         </svg>
       </div>
       <div className="ml-3 flex-1">
-        <h3 className="text-sm leading-5 font-medium text-red-800 my-0 dark:text-red-100">
+        <h3 className="my-0 text-sm leading-5 font-medium text-red-800 dark:text-red-100">
           {title}
         </h3>
-        <div className="text-sm leading-5 text-red-700 mt-2 no-y-margin dark:text-red-300 tailwind-alert tailwind-alert--danger">
+        <div className="no-y-margin tailwind-alert tailwind-alert--danger mt-2 text-sm leading-5 text-red-700 dark:text-red-300">
           {children}
         </div>
       </div>

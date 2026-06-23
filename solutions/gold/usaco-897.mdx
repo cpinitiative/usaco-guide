@@ -2,7 +2,7 @@
 id: usaco-897
 source: USACO Gold 2019 January
 title: Cow Poetry
-author: Jeffrey Zhang
+author: Jeffrey Zhang, Rameez Parwez
 ---
 
 [Official Analysis (C++ and Java)](http://www.usaco.org/current/data/sol_poetry_gold_jan19.html)
@@ -65,7 +65,7 @@ To calculate our final answer, we just need to find the sum of this polynomial b
 To keep it simple, let's just assume total number of rhyme classes is $2$.
 
 $$
-f(1)^{q_1+ \dots +q_k} + f(1)^{q_1 + \dots + q_{k-1}} f(2)^{q_k} + \dots + f(1)^{q_k} f(2)^{q_1 + \dots + q_{k-1}} + f(2)^{q_1+ \dots + q_k}
+f(1)^{p_1+ \dots +p_k} + f(1)^{p_1 + \dots + p_{k-1}} f(2)^{p_k} + \dots + f(1)^{p_1} f(2)^{p_2 + \dots + p_k} + f(2)^{p_1+ \dots + p_k}
 $$
 
 But this polynomial is pretty darn awful, and the number of terms in it grows much faster than the number of rhyme classes.
@@ -80,7 +80,7 @@ When we expand this, we get the exact same distribution of the powers in the pol
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(NK+NM\log M)$
+**Time Complexity:** $\mathcal{O}(NK+(N+M)\log M)$
 
 <LanguageSection>
 <CPPSection>
@@ -92,11 +92,7 @@ using namespace std;
 
 const ll MOD = 1e9 + 7;
 
-/**
- * Binary exponentiation with a modulus
- * Slightly modified version of
- * https://usaco.guide/gold/modular?lang=cpp#solution---exponentiation
- */
+// BeginCodeSnip{Modular exponentiation (from the module)}
 ll mod_exp(ll a, ll b) {
 	if (a == 0) { return 0; }
 	ll ret = 1;
@@ -107,6 +103,7 @@ ll mod_exp(ll a, ll b) {
 	}
 	return ret;
 }
+// EndCodeSnip
 
 int main() {
 	ifstream fin("poetry.in");
@@ -174,4 +171,169 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class CowPoetry {
+	private final static int MOD = 1000000007;
+	public static void main(String[] args) throws IOException {
+		Kattio io = new Kattio("poetry");
+
+		int n = io.nextInt();
+		int m = io.nextInt();
+		int k = io.nextInt();
+
+		long[] count = new long[k + 1];
+		List<Integer>[] type = new ArrayList[n + 1];
+
+		for (int i = 0; i <= n; i++) { type[i] = new ArrayList<Integer>(); }
+
+		for (int i = 0; i < n; i++) {
+			int a = io.nextInt();
+			int b = io.nextInt();
+			count[a]++;
+			type[b].add(a);
+		}
+
+		int[] rhyme = new int[m];
+		for (int i = 0; i < m; i++) {
+			char a = io.next().charAt(0);
+			rhyme[i] = (a - 'A');
+		}
+
+		long[] dp = new long[k + 1];
+		dp[0] = 1;
+		for (int i = 1; i <= k; i++) {
+			for (int j = 0; j <= i; j++) {
+				dp[i] = (dp[i] + (dp[i - j] * count[j])) % MOD;
+			}
+		}
+
+		long[] total = new long[n + 1];
+		for (int i = 1; i <= n; i++) {
+			for (int j = 0; j < type[i].size(); j++) {
+				total[i] = (total[i] + dp[k - type[i].get(j)]) % MOD;
+			}
+		}
+
+		if (dp[k] == 0) {
+			io.println(0);
+			io.close();
+			return;
+		}
+
+		Arrays.sort(rhyme);
+		List<Integer> groups = new ArrayList<>();
+		int back = 0;
+		for (int i = 1; i <= m; i++) {
+			if (i == m || rhyme[i] != rhyme[i - 1]) {
+				groups.add(i - back);
+				back = i;
+			}
+		}
+
+		long ans = 1;
+		for (int i = 0; i < groups.size(); i++) {
+			long curr = 0;
+			for (int j = 1; j <= n; j++) {
+				curr = (curr + exp(total[j], groups.get(i))) % MOD;
+			}
+			ans = (ans * curr) % MOD;
+		}
+
+		io.println(ans);
+		io.close();
+	}
+
+	// BeginCodeSnip{Modular exponentiation (from the module)}
+	private static long exp(long x, long n) {
+		assert (n >= 0);
+		x %= MOD;
+		long res = 1;
+		while (n > 0) {
+			if (n % 2 == 1) { res = res * x % MOD; }
+			x = x * x % MOD;
+			n /= 2;
+		}
+		return res;
+	}
+
+	// EndCodeSnip
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+<Info title = "Note">
+
+The update of values in the `dp` array is done differently to avoid TLE. Here, we only consider those values of `j` for which `count[j] > 0`, thus avoiding unnecessary iterations.
+
+</Info>
+
+```py
+MOD = 1000000007
+
+with open("poetry.in") as read:
+	n, m, k = map(int, read.readline().split())
+	count = [0] * (k + 1)
+	type = [[] for _ in range(n + 1)]
+
+	for i in range(n):
+		a, b = map(int, read.readline().split())
+		count[a] += 1
+		type[b].append(a)
+
+	rhyme = []
+	for i in range(m):
+		a = read.readline().strip()
+		rhyme.append(ord(a) - ord("A"))
+
+
+dp = [0] * (k + 1)
+dp[0] = 1
+
+lengths = [i for i in range(1, k + 1) if count[i] > 0]
+
+for i in range(1, k + 1):
+	for j in lengths:
+		if j <= i:
+			dp[i] = (dp[i] + (dp[i - j] * count[j])) % MOD
+
+
+total = [0] * (n + 1)
+for i in range(1, n + 1):
+	for j in range(len(type[i])):
+		total[i] = (total[i] + dp[k - type[i][j]]) % MOD
+
+if dp[k] == 0:
+	print(0, file=open("poetry.out", "w"))
+	exit(0)
+
+rhyme.sort()
+groups = []
+rhyme.append(-1)
+back = 0
+
+for i in range(1, m + 1):
+	if rhyme[i] != rhyme[i - 1]:
+		groups.append(i - back)
+		back = i
+
+ans = 1
+for i in range(len(groups)):
+	curr = 0
+	for j in range(1, n + 1):
+		curr = curr + pow(total[j], groups[i], MOD)
+	ans = (ans * curr) % MOD
+
+print(ans, file=open("poetry.out", "w"))
+```
+
+</PySection>
 </LanguageSection>

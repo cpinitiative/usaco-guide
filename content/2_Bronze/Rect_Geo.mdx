@@ -52,9 +52,12 @@ int main() {
 	cin >> a >> b >> c >> d;
 
 	vector<bool> painted(MAX_POS + 1);
+	// Add Farmer John's painted interval
 	for (int i = a; i < b; i++) { painted[i] = true; }
+	// Add Bessie's painted interval
 	for (int i = c; i < d; i++) { painted[i] = true; }
 
+	// Count the total amount of intervals painted
 	int total = 0;
 	for (bool i : painted) { total += i; }
 
@@ -80,9 +83,12 @@ public class Paint {
 		int d = io.nextInt();
 
 		boolean[] painted = new boolean[MAX_POS + 1];
+		// Add Farmer John's painted interval
 		for (int i = a; i < b; i++) { painted[i] = true; }
+		// Add Bessie's painted interval
 		for (int i = c; i < d; i++) { painted[i] = true; }
 
+		// Count the total amount of intervals painted
 		int total = 0;
 		for (boolean i : painted) { total += i ? 1 : 0; }
 
@@ -109,12 +115,14 @@ a, b = map(int, input().split())
 c, d = map(int, input().split())
 
 painted = [False for _ in range(MAX_POS + 1)]
+# Add Farmer John's painted interval
 for i in range(a, b):
 	painted[i] = True
+# Add Bessie's painted interval
 for i in range(c, d):
 	painted[i] = True
 
-print(sum(painted))
+print(sum(painted))  # Print the total amount of intervals painted
 ```
 
 </PySection>
@@ -250,15 +258,18 @@ int main() {
 		x2 += MAX_POS / 2;
 		y2 += MAX_POS / 2;
 		for (int x = x1; x < x2; x++) {
+			// Mark billboard area as visible, truck as not visible
 			for (int y = y1; y < y2; y++) { visible[x][y] = i < 2; }
 		}
 	}
 
+	// Count all visible billboard squares
 	int ans = 0;
 	for (int x = 0; x < MAX_POS; x++) {
 		for (int y = 0; y < MAX_POS; y++) { ans += visible[x][y]; }
 	}
-	cout << ans << "\n";
+
+	cout << ans << endl;
 }
 ```
 
@@ -281,15 +292,18 @@ public class Billboard {
 			int y1 = io.nextInt();
 			int x2 = io.nextInt();
 			int y2 = io.nextInt();
+			// make all the coordinates positive
 			x1 += MAX_POS / 2;
 			y1 += MAX_POS / 2;
 			x2 += MAX_POS / 2;
 			y2 += MAX_POS / 2;
+			// Mark billboard area as visible, truck as not visible
 			for (int x = x1; x < x2; x++) {
 				for (int y = y1; y < y2; y++) { visible[x][y] = i < 2 ? 1 : 0; }
 			}
 		}
 
+		// Count all visible billboard squares
 		int ans = 0;
 		for (int x = 0; x < 2000; ++x) {
 			for (int y = 0; y < 2000; ++y) { ans += visible[x][y]; }
@@ -329,10 +343,12 @@ def main():
 		y1 += MAX_POS // 2
 		x2 += MAX_POS // 2
 		y2 += MAX_POS // 2
+		# Mark billboard area as visible, truck as not visible
 		for x in range(x1, x2):
 			for y in range(y1, y2):
 				visible[x][y] = i < 2
 
+	# Count all visible billboard squares
 	ans = 0
 	for x in range(MAX_POS):
 		for y in range(MAX_POS):
@@ -346,8 +362,7 @@ main()
 </PySection>
 </LanguageSection>
 
-Of course, this wouldn't suffice if the coordinates were changed to be up to
-$10^9$.
+This wouldn't suffice if the coordinates were changed to be up to $10^9$.
 
 ### Fast Solution
 
@@ -367,7 +382,7 @@ import java.util.*;
 
 class Rect {
 	int x1, y1, x2, y2;
-	int area() { return (y2 - y1) * (x2 - x1); }
+	int area() { return (y2 - y1) * (x2 - x1); }  // Area of the rectangle
 }
 
 public class Billboard {
@@ -388,14 +403,16 @@ public class Billboard {
 		t.x2 = io.nextInt();
 		t.y2 = io.nextInt();
 
+		// Total visible area = area of both billboards minus area covered by truck
 		io.println(a.area() + b.area() - intersect(a, t) - intersect(b, t));
 		io.close();
 	}
 
 	static int intersect(Rect p, Rect q) {
+		// Calculate overlap in x and y directions
 		int xOverlap = Math.max(0, Math.min(p.x2, q.x2) - Math.max(p.x1, q.x1));
 		int yOverlap = Math.max(0, Math.min(p.y2, q.y2) - Math.max(p.y1, q.y1));
-		return xOverlap * yOverlap;
+		return xOverlap * yOverlap;  // Area of intersection
 	}
 
 	// CodeSnip{Kattio}
@@ -439,7 +456,7 @@ instead of `y2`.
 
 Alternatively, you can think of `newRect` as creating a rectangle with
 _lower-left_ corner at $(x,y)$ and work with Cartesian coordinates instead. So
-the solution below will work if all occurences of `-y2` are replaced with `y1`.
+the solution below will work if all occurrences of `-y2` are replaced with `y1`.
 
 </Info>
 
@@ -507,21 +524,21 @@ for an example of usage.
 Note how creating a struct `Rect` to represent a rectangle makes the code easier
 to understand.
 
-<!-- Unfortunately, C++ doesn't have a built in rectangle `struct` or `class`, so you need to write the functions yourself. Here is the code from the official analysis (modified slightly): -->
-
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
 
 struct Rect {
 	int x1, y1, x2, y2;
-	int area() { return (y2 - y1) * (x2 - x1); }
+	void read() { cin >> x1 >> y1 >> x2 >> y2; }
+	int area() { return (y2 - y1) * (x2 - x1); }  // Area of the rectangle
 };
 
 int intersect(Rect p, Rect q) {
+	// Calculate overlap in x and y directions
 	int xOverlap = max(0, min(p.x2, q.x2) - max(p.x1, q.x1));
 	int yOverlap = max(0, min(p.y2, q.y2) - max(p.y1, q.y1));
-	return xOverlap * yOverlap;
+	return xOverlap * yOverlap;  // Area of intersection
 }
 
 int main() {
@@ -529,17 +546,17 @@ int main() {
 	freopen("billboard.out", "w", stdout);
 
 	Rect a, b, t;  // billboards a, b, and the truck
-	cin >> a.x1 >> a.y1 >> a.x2 >> a.y2;
-	cin >> b.x1 >> b.y1 >> b.x2 >> b.y2;
-	cin >> t.x1 >> t.y1 >> t.x2 >> t.y2;
+	a.read();
+	b.read();
+	t.read();
+
+	// Total visible area = area of both billboards minus area covered by truck
 	cout << a.area() + b.area() - intersect(a, t) - intersect(b, t) << endl;
 }
 ```
 
 </CPPSection>
 <PySection>
-
-<!-- Unfortunately, Python doesn't have a built in rectangle class, so you need to write the class yourself. -->
 
 Note how creating a class `Rect` to represent a rectangle makes the code easier
 to understand.
@@ -550,16 +567,20 @@ import sys
 
 class Rect:
 	def __init__(self):
+		# Read rectangle coordinates from input
 		self.x1, self.y1, self.x2, self.y2 = map(int, input().split())
 
 	def area(self):
+		# Calculate area of the rectangle
 		return (self.y2 - self.y1) * (self.x2 - self.x1)
 
 
 def intersect(p, q):
+	# Calculate overlap in x direction
 	x_overlap = max(0, min(p.x2, q.x2) - max(p.x1, q.x1))
+	# Calculate overlap in y direction
 	y_overlap = max(0, min(p.y2, q.y2) - max(p.y1, q.y1))
-	return x_overlap * y_overlap
+	return x_overlap * y_overlap  # Area of intersection
 
 
 sys.stdin = open("billboard.in", "r")
@@ -567,13 +588,15 @@ sys.stdout = open("billboard.out", "w")
 
 rects = []
 for _ in range(3):
-	rects.append(Rect())
+	rects.append(Rect())  # Read the two billboards and the truck
 
 print(
-	rects[0].area()
-	+ rects[1].area()
-	- intersect(rects[0], rects[2])
-	- intersect(rects[1], rects[2])
+	rects[0].area()  # Area of first billboard
+	+ rects[1].area()  # Area of second billboard
+	- intersect(rects[0], rects[2])  # Subtract area of first billboard covered by truck
+	- intersect(
+		rects[1], rects[2]
+	)  # Subtract area of second billboard covered by truck
 )
 ```
 
@@ -581,6 +604,12 @@ print(
 </LanguageSection>
 
 ## Common Formulas
+
+<Warning>
+
+This entire section can be skipped if you already understand the fast solution to Blocked Billboard.
+
+</Warning>
 
 Certain tasks show up often in rectangle geometry problems. For example, many problems
 involve finding the overlapping area of two or more rectangles based on their coordinate points,
@@ -610,6 +639,7 @@ $\texttt{length}$ is the length of the vertical sides, and $\texttt{width}$ is t
 
 <LanguageSection>
 <CPPSection>
+
 ```cpp
 long long area(int bl_x, int bl_y, int tr_x, int tr_y) {
 	long long length = tr_y - bl_y;
@@ -617,8 +647,10 @@ long long area(int bl_x, int bl_y, int tr_x, int tr_y) {
 	return length * width;
 }
 ```
+
 </CPPSection>
 <JavaSection>
+
 ```java
 int area(int bl_x, int bl_y, int tr_x, int tr_y) {
 	int length = tr_y - bl_y;
@@ -626,14 +658,17 @@ int area(int bl_x, int bl_y, int tr_x, int tr_y) {
 	return length * width;
 }
 ```
+
 </JavaSection>
 <PySection>
+
 ```py
 def area(bl_x: int, bl_y: int, tr_x: int, tr_y: int) -> int:
 	length = tr_y - bl_y
 	width = tr_x - bl_x
 	return length * width
 ```
+
 </PySection>
 </LanguageSection>
 

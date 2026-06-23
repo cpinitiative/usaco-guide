@@ -18,7 +18,7 @@ export default function CopyButton({ className, onClick }) {
         setCopied(true);
         onClick();
       }}
-      className={`appearance-none p-2 border-0 outline-none cursor-pointer ${className}`}
+      className={`cursor-pointer appearance-none border-0 p-2 outline-hidden ${className}`}
     >
       <div className="relative h-4 w-4">
         <Clippy
@@ -49,7 +49,7 @@ function Clippy(props) {
       fill="none"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="stroke-gray-400 stroke-[1.5] absolute top-0 left-0"
+      className="absolute top-0 left-0 stroke-gray-400 stroke-[1.5]"
       {...props}
     >
       <path d="M5.75 4.75H10.25V1.75H5.75V4.75Z" />
@@ -68,7 +68,7 @@ function Check(props) {
       strokeLinecap="round"
       strokeLinejoin="round"
       {...props}
-      className="stroke-green-500 stroke-[1.5] absolute top-0 left-0"
+      className="absolute top-0 left-0 stroke-green-500 stroke-[1.5]"
     >
       <path d="M13.25 4.75L6 12L2.75 8.75" />
     </svg>

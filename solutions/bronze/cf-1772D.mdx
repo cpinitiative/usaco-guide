@@ -1,0 +1,146 @@
+---
+id: cf-1772D
+source: CF
+title: Absolute Sorting
+author: Kevin Sheng
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/110313)
+
+## Explanation
+
+Sorting the entire array with just one operation seems a little intimidating.
+
+The way to simplify this is to look at adjacent pairs of elements instead.
+If for each pair of elements $a$ and $b$ we made it so that $|a-x| \le |b-x|$,
+then this would imply the entire array being sorted!
+
+There's still a little casework after noticing this, though:
+1. If $a < b$, we know $x \le \left\lfloor\frac{a+b}{2}\right\rfloor$.
+   Intuitively, this means that we can't put $x$ *past* the middle of $a$ and $b$,
+   as that would make $x$ closer to $b$ than it is to $a$.
+2. If $a > b$, we similarly have $x \ge \left\lceil\frac{a+b}{2}\right\rceil$.
+3. Otherwise, both are equal and it doesn't matter what value of $x$ we choose.
+
+All these pairs limit $x$ to a (possibly empty) range of numbers.
+We keep track of this range as we go along the array and output
+any element in it at the end.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <cstdint>
+#include <iostream>
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
+
+/**
+ * @return The ceiling of a / b.
+ * Unlike the Java/Python functions, this only works for positive numbers.
+ */
+int ceildiv(int a, int b) { return (a + (b - 1)) / b; }
+
+int main() {
+	int test_num;
+	std::cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int len;
+		std::cin >> len;
+		vector<int> arr(len);
+		for (int &i : arr) { std::cin >> i; }
+
+		int at_least = INT32_MIN;
+		int at_most = INT32_MAX;
+		// Go through all adjacent pairs of elements
+		for (int i = 0; i < len - 1; i++) {
+			// Update the range of the number we can use
+			if (arr[i] < arr[i + 1]) {
+				at_most = std::min(at_most, (arr[i] + arr[i + 1]) / 2);
+			} else if (arr[i] > arr[i + 1]) {
+				at_least = std::max(at_least, ceildiv(arr[i] + arr[i + 1], 2));
+			}
+		}
+
+		int use = std::max(at_least, 0);  // The number we use can't be negative
+		cout << (at_least <= at_most ? use : -1) << '\n';
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class AbsoluteSorting {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
+		int testNum = Integer.parseInt(read.readLine());
+		for (int t = 0; t < testNum; t++) {
+			int len = Integer.parseInt(read.readLine());
+			int[] arr = Arrays.stream(read.readLine().split(" "))
+			                .mapToInt(Integer::parseInt)
+			                .toArray();
+			assert arr.length == len;
+
+			int atLeast = Integer.MIN_VALUE;
+			int atMost = Integer.MAX_VALUE;
+			// Go through all adjacent pairs of elements
+			for (int i = 0; i < len - 1; i++) {
+				// Update the range of the number we can use
+				if (arr[i] < arr[i + 1]) {
+					atMost = Math.min(atMost, (arr[i] + arr[i + 1]) / 2);
+				} else if (arr[i] > arr[i + 1]) {
+					atLeast = Math.max(atLeast, ceildiv(arr[i] + arr[i + 1], 2));
+				}
+			}
+
+			int use = Math.max(atLeast, 0);  // The number we use can't be negative
+			System.out.println(atLeast <= atMost ? use : -1);
+		}
+	}
+
+	private static int ceildiv(int a, int b) { return -Math.floorDiv(a, -b); }
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+def ceildiv(a, b):
+	return -(a // -b)
+
+
+for _ in range(int(input())):
+	len_ = int(input())
+	arr = [int(i) for i in input().split()]
+	assert len(arr) == len_
+
+	at_least = -float("inf")
+	at_most = float("inf")
+	# Go through all adjacent pairs of elements
+	for i in range(len_ - 1):
+		# Update the range of the number we can use
+		if arr[i] < arr[i + 1]:
+			at_most = min(at_most, (arr[i] + arr[i + 1]) // 2)
+		elif arr[i] > arr[i + 1]:
+			at_least = max(at_least, ceildiv(arr[i] + arr[i + 1], 2))
+
+	use = max(at_least, 0)  # The number we use can't be negative
+	print(use if at_least <= at_most else -1)
+```
+
+</PySection>
+</LanguageSection>

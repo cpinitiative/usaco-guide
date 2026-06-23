@@ -5,7 +5,7 @@ title: Cow Camp
 author: Aakash Gokhale
 ---
 
-[Official Analysis](http://usaco.org/current/data/sol_prob2_gold_feb22.html)
+[Official Analysis (Python, Java)](http://usaco.org/current/data/sol_prob2_gold_feb22.html)
 
 ## Solution
 We can subtract $1$ from $T$ because we will always get the sample test case and add it to our final answer.
@@ -23,9 +23,9 @@ Case 2: If you get more test cases than $E_{x-1}$, you do want to resubmit.
 
 Case 3: If you get the same number of test cases as $E_{x-1}$, it doesn't matter if you resubmit. In this case it wouldn't hurt to resubmit or stay the same so we can combine this with Case 1 (or Case 2).
 
-The probablity that you get less than or equal to $E_{x-1}$ test cases is ${\sum_{i=0}}^{E_{x - 1}} p_i$. We can multiply this by the $E_{x-1}$ to get the expected value of $E_x$ if we stop before the $x$th submission and we get $E_{x-1} \cdot {\sum_{i=0}}^{E_{x - 1}} p_i$
+The probability that you get less than or equal to $E_{x-1}$ test cases is ${\sum_{i=0}}^{E_{x - 1}} p_i$. We can multiply this by the $E_{x-1}$ to get the expected value of $E_x$ if we stop before the $x$th submission and we get $E_{x-1} \cdot {\sum_{i=0}}^{E_{x - 1}} p_i$
 
-The probablity that you get more than $E_{x-1}$ test cases is ${\sum_{i=\lfloor E_{x-1} \rfloor + 1}}^T p_i$. The expected value of getting more than $E_{x-1}$ test cases is the sum of $i$ from ${\lfloor E_{x-1} \rfloor + 1}$ to $T$ of the probability of getting $i$ test cases multiplied by $i$ or ${\sum_{\lfloor E_{x-1} \rfloor + 1}}^T p_i i$.
+The probability that you get more than $E_{x-1}$ test cases is ${\sum_{i=\lfloor E_{x-1} \rfloor + 1}}^T p_i$. The expected value of getting more than $E_{x-1}$ test cases is the sum of $i$ from ${\lfloor E_{x-1} \rfloor + 1}$ to $T$ of the probability of getting $i$ test cases multiplied by $i$ or ${\sum_{\lfloor E_{x-1} \rfloor + 1}}^T p_i i$.
 
 In addition, these formulas for both cases can help us mathematically prove that you can merge Case 3 with either Case 1 or 2. The only difference between both cases is whether the $i = E_{x-1}$ will belong to the first or second summation. If we merge it with Case 1, the term of the summation will become $E_{x-1} \cdot p_{E_{x-1}}$. If we merge it with Case 3, it would also become $E_{x-1} \cdot p_{E_{x-1}}$. This happens because $p_i \cdot E_{x-1} = p_i \cdot i$ is only satisfied when $i=E_{x-1}$.
 
@@ -58,7 +58,7 @@ $E_x = a^k \cdot E_{x - k} + \frac{b(a^k - 1)}{a - 1}$
 
 Here is more information about [geometric series](https://artofproblemsolving.com/wiki/index.php/Geometric_sequence).
 
-However, the values of $a$ and $b$ won't always remain the same. We can binary search on the max number of submissions Bessie can make before the values of $a$ and $b$ change. $a$ and $b$ will change when the value of ${\lfloor E_x \rfloor}$ changes. The conditions for binary search are fullfilled because $E_x$ is a non-decreasing function.
+However, the values of $a$ and $b$ won't always remain the same. We can binary search on the max number of submissions Bessie can make before the values of $a$ and $b$ change. $a$ and $b$ will change when the value of ${\lfloor E_x \rfloor}$ changes. The conditions for binary search are fulfilled because $E_x$ is a non-decreasing function.
 
 Since there are at most $T$ values of $E_x$, $a$ and $b$ can change at most $T$ times so the resulting time complexity will be $O(T^2 + T \log K)$.
 
@@ -96,7 +96,7 @@ int main() {
 	// Subtract sample test case
 	T--;
 
-	// Precompute probablity of choosing exactly i test cases using Pascal's
+	// Precompute probability of choosing exactly i test cases using Pascal's
 	// Identity.
 	prob[0][0] = 1;
 	for (int i = 1; i <= T; i++) {
@@ -105,7 +105,7 @@ int main() {
 			prob[i][j] = (prob[i - 1][j] + prob[i - 1][j - 1]) / 2;
 	}
 
-	// Create prefix sum of probablity
+	// Create prefix sum of probability
 	pref_prob[0] = prob[T][0];
 	for (int i = 1; i <= T; i++) pref_prob[i] = pref_prob[i - 1] + prob[T][i];
 
@@ -170,7 +170,7 @@ t, k = map(int, input().split())
 # Subtract sample
 t -= 1
 
-# Precompute probablility of getting i test cases using pascal's identity
+# Precompute probability of getting i test cases using pascal's identity
 prob = [[0 for i in range(t + 1)] for j in range(t + 1)]
 prob[0][0] = 1
 for i in range(1, t + 1):
@@ -179,7 +179,7 @@ for i in range(1, t + 1):
 	for j in range(1, t + 1):
 		prob[i][j] = (prob[i - 1][j] + prob[i - 1][j - 1]) / 2
 
-# Prefix sums for probablity
+# Prefix sums for probability
 pref_prob = [0 for i in range(t + 1)]
 pref_prob[0] = prob[t][0]
 for i in range(1, t + 1):

@@ -5,31 +5,22 @@ author: Darren Yao, Benjamin Qi
 contributors: Ryan Chou
 description:
   'Problems that can be solved by selecting the choice that seems to be the best at the moment at every step.'
-frequency: 2
-prerequisites:
-  - ad-hoc
-  - intro-ds
+frequency: 3
 ---
 
-## Greedy Algorithms
+<Warning>
 
-Some USACO Bronze problems that appear to be ad hoc can actually be solved using
-**greedy** algorithms. This idea will be covered in a future
-[module](/silver/greedy-sorting), but we'll introduce the general mindset in
-this section.
+Although the [USACO website](https://usaco.org/index.php?page=details) says
+that greedy algorithms start appearing in [Silver](/silver/greedy-sorting), many Bronze problems can
+also be solved using greedy algorithms.
+
+</Warning>
 
 <Resources>
 	<Resource source="CPH" title="6.1 - Coin Problem" starred>
 		other examples are outside scope of bronze
 	</Resource>
 </Resources>
-
-<Warning>
-
-True **"greedy"** problems start to show up in silver, though the greedy mindset
-can be very helpful for bronze problems.
-
-</Warning>
 
 From the above:
 
@@ -43,13 +34,11 @@ that is applied to problems; there's no one way to do greedy algorithms. Hence,
 we use a selection of well-known examples to help you understand the greedy
 paradigm.
 
-### Example - Mad Scientist
-
 <FocusProblem problem="tutorial" />
 
-Try to come up with a greedy algorithm for problem above.
+## Solution - Mad Scientist
 
-### Correct Greedy Algorithm
+<Spoiler title="Solution">
 
 In this problem, the correct greedy solution is to continually flip the longest
 possible ranges of mismatching cows.
@@ -61,121 +50,134 @@ with a video solution and intuitive proof.
 It is highly recommended you read it to gain a better understanding of the
 greedy algorithm.
 
-### Solution - Mad Scientist
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
-
 <CPPSection>
 
-From the
-[official analysis](http://www.usaco.org/current/data/sol_breedflip_bronze_feb20.html):
-
 ```cpp
+#include <fstream>
 #include <iostream>
-#include <string>
-using namespace std;
-using ll = long long;
+#include <vector>
+
+using std::cout;
+using std::endl;
+using std::vector;
 
 int main() {
-	freopen("breedflip.in", "r", stdin);
-	freopen("breedflip.out", "w", stdout);
-	ll n;
-	cin >> n;
-	string A;
-	string B;
-	cin >> A >> B;
-	ll ans = 0;
-	bool mismatched = false;
-	for (ll i = 0; i < n; i++) {
-		if (A[i] != B[i]) {
-			if (!mismatched) {
-				mismatched = true;
-				ans++;
-			}
-		} else {
-			mismatched = false;
-		}
+	int cow_num;
+	std::ifstream read("breedflip.in");
+	read >> cow_num;
+	vector<char> a(cow_num);
+	for (char &c : a) { read >> c; }
+	vector<char> b(cow_num);
+	for (char &c : b) { read >> c; }
+
+	// diff[i] is true if the cows differ at the ith position
+	// notice that there's an extra false at the beginning
+	vector<bool> diff(cow_num + 1);
+	for (int i = 0; i < cow_num; i++) { diff[i + 1] = a[i] != b[i]; }
+
+	/*
+	 * count the number of times [false, true] occurs in diff
+	 * this is equivalent to the number of continous segments of trues
+	 * that extra false at the beginning comes in handy here,
+	 * since if we didn't have it we've have to have an edge case for
+	 * the first segment that doesn't have a preceding false
+	 */
+	int min_flips = 0;
+	for (int i = 0; i < cow_num; i++) {
+		if (!diff[i] && diff[i + 1]) { min_flips++; }
 	}
-	cout << ans << endl;
+
+	std::ofstream("breedflip.out") << min_flips << endl;
 }
 ```
 
 </CPPSection>
-
 <JavaSection>
-
-From the
-[official analysis](http://www.usaco.org/current/data/sol_breedflip_bronze_feb20.html)
-(with Kattio added):
 
 ```java
 import java.io.*;
 import java.util.*;
-public class Solution {
-	public static void main(String[] args) throws IOException {
-		Kattio io = new Kattio("breedflip");
-		int n = io.nextInt();
-		char[] a = io.next().toCharArray();
-		char[] b = io.next().toCharArray();
-		int ret = 0;
-		while (!new String(a).equals(new String(b))) {
-			ret++;
-			int lhs = 0;
-			while (a[lhs] == b[lhs]) lhs++;
-			int rhs = n - 1;
-			while (a[rhs] == b[rhs]) rhs--;
-			for (int i = lhs; i <= rhs; i++) {
-				if (a[i] == 'G') a[i] = 'H';
-				else a[i] = 'G';
-			}
-		}
-		io.println(ret);
-		io.close();
-	}
 
-	// CodeSnip{Kattio}
+public class BreedFlip {
+	public static void main(String[] args) throws IOException {
+		BufferedReader read = new BufferedReader(new FileReader("breedflip.in"));
+		int cowNum = Integer.parseInt(read.readLine());
+		String a = read.readLine();
+		String b = read.readLine();
+
+		// diff[i] is true if the cows differ at the ith position
+		// notice that there's an extra false at the beginning
+		boolean[] diff = new boolean[cowNum + 1];
+		for (int i = 0; i < cowNum; i++) { diff[i + 1] = a.charAt(i) != b.charAt(i); }
+
+		/*
+		 * count the number of times [false, true] occurs in diff
+		 * this is equivalent to the number of continous segments of trues
+		 * that extra false at the beginning comes in handy here,
+		 * since if we didn't have it we've have to have an edge case for
+		 * the first segment that doesn't have a preceding false
+		 */
+		int minFlips = 0;
+		for (int i = 0; i < cowNum; i++) {
+			if (!diff[i] && diff[i + 1]) { minFlips++; }
+		}
+
+		PrintWriter written = new PrintWriter(new FileWriter("breedflip.out"));
+		written.println(minFlips);
+		written.close();
+	}
 }
 ```
 
 </JavaSection>
-
 <PySection>
 
 ```py
-import sys
+with open("breedflip.in") as f:
+	cow_num = int(f.readline())
+	a = f.readline().strip()
+	b = f.readline().strip()
 
-sys.stdin = open("breedflip.in", "r")
-sys.stdout = open("breedflip.out", "w")
+# diff[i] is true if the cows differ at the ith position
+# notice that there's an extra false at the beginning
+diff = [False for _ in range(cow_num + 1)]
+for i in range(cow_num):
+	diff[i + 1] = a[i] != b[i]
 
-N, a, b = input(), input(), input()
-s = [False] + [x != y for x, y in zip(a, b)]  # difference list
-# now count occurrences of [False,True], as the first C++ solution does
-print(sum(1 if not x and y else 0 for x, y in zip(s, s[1:])))
+"""
+count the number of times [false, true] occurs in diff
+this is equivalent to the number of continous segments of trues
+that extra false at the beginning comes in handy here,
+since if we didn't have it we've have to have an edge case for
+the first segment that doesn't have a preceding false
+"""
+min_flips = 0
+for i in range(cow_num):
+	if not diff[i] and diff[i + 1]:
+		min_flips += 1
+
+print(min_flips, file=open("breedflip.out", "w"))
 ```
 
 </PySection>
-
 </LanguageSection>
 
-Note that not all greedy problems necessarily require mathematical proofs of
-correctness. It is often sufficent to intuitively convince yourself your
-algorithm is correct.
+</Spoiler>
 
-<Info title="Pro Tip">
-
-Sometimes, if the algorithm is easy enough to implement, you don't even need to
-convince yourself it's correct; just code it and see if it passes. Competitive
-programmers refer to this as "Proof by AC," or "Proof by Accepted."
-
-<!-- Don't overuse it though? -->
-
-</Info>
+Note: it often is not obvious whether a greedy algorithm is
+correct or not. If it is the intended solution, problem authors are expected to
+be able to prove its correctness. However, as a contestant, if the algorithm is
+easy to implement, one option is to just code it and see whether it passes.
+Competitive programmers refer to this as "Proof by AC," or "Proof by Accepted."
 
 ## Problems
 
 <Problems problems="general" />
-
-<!-- Anything else major that needs to be added? Bronze Ad Hoc is not very complicated. -->
 
 ## Quiz
 

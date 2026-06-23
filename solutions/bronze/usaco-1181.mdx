@@ -50,10 +50,8 @@ void solve() {
 	for (int i = 1; i < n; i++) {
 		if (hunger[i + 1] > hunger[i]) {
 			if (i + 2 > n) {
-				/*
-				 * If the i+2'th cow doesn't exist, then we can't
-				 * possibly decrease the pair of cows starting with i+1.
-				 */
+				// If the i + 2'th cow doesn't exist, then we can't
+				// possibly decrease the pair of cows starting with i + 1.
 				cout << -1 << "\n";
 				return;
 			}
@@ -62,13 +60,13 @@ void solve() {
 			hunger[i + 1] -= difference;
 			hunger[i + 2] -= difference;
 			if (hunger[i + 2] < 0) {
-				// Cow i+2 can't possibly have a negative hunger value.
-				cout << -1 << "\n";
+				// Cow i + 2 can't possibly have a negative hunger value.
+				cout << -1 << '\n';
 				return;
 			}
 
-			// It takes difference * 2 bags to get cows i+1 and i+2 to cow i's
-			// level.
+			// It takes difference * 2 bags to get cows i + 1 and i + 2
+			// to cow i's level.
 			bags_needed += difference * 2;
 		} else if (hunger[i] > hunger[i + 1]) {
 			if (i % 2 == 1) {
@@ -78,15 +76,14 @@ void solve() {
 			}
 
 			ll difference = hunger[i] - hunger[i + 1];
-			/*
-			 * It takes difference * i bags to get every cow
-			 * from 1 to i to the same hunger value as cow i + 1.
-			 */
+
+			// It takes difference * i bags to get every cow
+			// from 1 to i to the same hunger value as cow i + 1.
 			bags_needed += difference * i;
 		}
 	}
 
-	cout << bags_needed << "\n";
+	cout << bags_needed << '\n';
 }
 
 int main() {
@@ -97,67 +94,117 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Drought {
+	public static void main(String[] args) {
+		Kattio io = new Kattio();
+		int testNum = io.nextInt();
+		for (int t = 0; t < testNum; t++) {
+			int n = io.nextInt();
+
+			int[] hunger = new int[n + 1];  // hunger for each cow, (1-indexed)
+			for (int i = 1; i <= n; i++) { hunger[i] = io.nextInt(); }
+
+			long bagsNeeded = 0;
+			boolean ok = false;
+			for (int i = 1; i < n; i++) {
+				if (hunger[i + 1] > hunger[i]) {
+					if (i + 2 > n) {
+						// If the i + 2'th cow doesn't exist, then we can't
+						// possibly decrease the pair of cows starting with i + 1.
+						ok = true;
+						break;
+					}
+
+					long difference = hunger[i + 1] - hunger[i];
+					hunger[i + 1] -= difference;
+					hunger[i + 2] -= difference;
+
+					if (hunger[i + 2] < 0) {
+						// Cow i + 2 can't possibly have a negative hunger value.
+						ok = true;
+						break;
+					}
+
+					// It takes difference * 2 bags to get cows i + 1 and i + 2
+					// to cow i's level.
+					bagsNeeded += difference * 2;
+				} else if (hunger[i] > hunger[i + 1]) {
+					if (i % 2 == 1) {
+						// If i is an odd index, then it is impossible.
+						ok = true;
+						break;
+					}
+
+					long difference = hunger[i] - hunger[i + 1];
+
+					// It takes difference * i bags to get every cow
+					// from 1 to i to the same hunger value as cow i + 1.
+
+					bagsNeeded += difference * i;
+				}
+			}
+
+			io.println((ok ? -1 : bagsNeeded));
+		}
+
+		io.close();
+	}
+
+	// CodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
-from typing import List
-
-
-def check(same_lvl: int, corn: List[int], hunger_lvl: List[int]) -> bool:
-	# check if proposed corn is achievable
-	hunger_lvl[0] -= corn[0]
-	hunger_lvl[-1] -= corn[-1]
-
-	for i in range(1, len(hunger_lvl) - 1):
-		sum_of_corn = corn[i - 1] + corn[i]
-		hunger_lvl[i] -= sum_of_corn
-
-	return len(set(hunger_lvl)) == 1 and same_lvl >= 0 and min(corn) >= 0
-
-
 for _ in range(int(input())):
-	n_cows = int(input())
-	lvl = list(map(int, input().split()))
-	corns = [0] * (n_cows - 1)
+	n = int(input())
+	hunger = list(map(int, input().split()))
+	hunger = [0] + hunger
 
-	if n_cows < 3:
-		print(0 if len(set(lvl)) == 1 else -1)
-		continue
+	bags_needed = 0
+	ok = False
+	for i in range(1, n):
+		if hunger[i + 1] > hunger[i]:
+			if i + 2 > n:
+				# If the i + 2'th cow doesn't exist, then we can't
+				# possibly decrease the pair of cows starting with i + 1.
+				ok = True
+				break
 
-	find_min_level = []
-	# skip two to find the corn amount difference
-	for i in range(1, n_cows - 1, 2):
-		if i - 2 >= 0:
-			pos_lvl = lvl[i - 1] - corns[i - 2]
-		else:
-			pos_lvl = lvl[i - 1]
-		find_min_level.append(pos_lvl)
-		corns[i] = lvl[i] - pos_lvl
+			difference = hunger[i + 1] - hunger[i]
+			hunger[i + 1] -= difference
+			hunger[i + 2] -= difference
 
-	# find leveling, in which all the hunger level is the same
-	if n_cows % 2 == 0:
-		same_lvl = min(min(find_min_level), min(lvl))
-	else:
-		same_lvl = lvl[-1] - corns[-1]
+			if hunger[i + 2] < 0:
+				# Cow i + 2 can't possibly have a negative hunger value.
+				ok = True
+				break
 
-	corns[0] = lvl[0] - same_lvl
+			# It takes difference * 2 bags to get cows i + 1 and i + 2
+			# to cow i's level.
+			bags_needed += difference * 2
 
-	# fill in rest corn amount
-	if n_cows % 2 == 0:
-		n_cows_sub = n_cows - 2
-		corns[-1] = lvl[-1] - same_lvl
-	else:
-		n_cows_sub = n_cows - 1
+		elif hunger[i] > hunger[i + 1]:
+			if i % 2 == 1:
+				# If i is an odd index, then it is impossible.
+				ok = True
+				break
 
-	for i in range(2, n_cows_sub, 2):
-		corns[i] = lvl[i] - corns[i - 1] - same_lvl
+		difference = hunger[i] - hunger[i + 1]
 
-	works = check(same_lvl, corns, lvl)
+		# It takes difference * i bags to get every cow
+		# from 1 to i to the same hunger value as cow i + 1.
+		bags_needed += difference * i
 
-	if works:
-		print(sum(corns) * 2)
-	else:
-		print(-1)
+	print(-1 if ok else bags_needed)
 ```
 
 </PySection>

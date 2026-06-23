@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/browser';
 import { getAuth, onAuthStateChanged, signOut, User } from 'firebase/auth';
 import {
   doc,
@@ -8,8 +7,9 @@ import {
   setDoc,
   updateDoc,
 } from 'firebase/firestore';
+import debounce from 'lodash/debounce';
 import * as React from 'react';
-import { createContext, ReactNode, useRef, useState } from 'react';
+import { createContext, ReactNode, useMemo, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useFirebaseApp } from '../../hooks/useFirebase';
 import { ModuleProgress } from '../../models/module';
@@ -37,7 +37,6 @@ export type UserData = {
     season: string;
   };
   lang: Language;
-  lastReadAnnouncement: string;
   lastViewedModule: string;
   lastVisitDate: number; // timestamp
   numPageviews: number;
@@ -91,7 +90,6 @@ export const assignDefaultsToUserData = (data: object): UserData => {
       season: '',
     },
     lang: 'cpp',
-    lastReadAnnouncement: '',
     lastViewedModule: '',
     lastVisitDate: new Date().getTime(),
     numPageviews: 0,
@@ -221,8 +219,7 @@ export const UserDataProvider = ({
                 LOCAL_STORAGE_KEY,
                 JSON.stringify(newUserData)
               );
-              console.log('got new fb data', newUserData);
-              setUserData(newUserData);
+              debouncedSetUserData(newUserData); // Use debounced version here
             }
 
             shouldUseLangQueryParam = false;
@@ -230,11 +227,6 @@ export const UserDataProvider = ({
           },
           error: error => {
             toast.error(error.message);
-            Sentry.captureException(error, {
-              extra: {
-                userId: user.uid,
-              },
-            });
           },
         });
       }
@@ -271,7 +263,7 @@ export const UserDataProvider = ({
     // write back all the time.
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(actualUserData));
 
-    setUserData(actualUserData);
+    debouncedSetUserData(actualUserData); // Use debounced version here too
   };
 
   // initialize from localstorage
@@ -280,6 +272,12 @@ export const UserDataProvider = ({
     initializeFromLocalStorage();
     // todo: does this actually run before isLoaded is set to true?
   }, []);
+
+  // Add debouncing to prevent excessive Firebase updates
+  const debouncedSetUserData = useMemo(
+    () => debounce(data => setUserData(data), 100),
+    []
+  );
 
   const userDataAPI: UserDataContextAPI = {
     userData,
@@ -290,7 +288,7 @@ export const UserDataProvider = ({
      * Sometimes, such as when we just linked a Github account to a Google account,
      * firebaseUser changes, but React doesn't know about the change so it doesn't rerender.
      * This function forces React to update firebaseUser and trigger any rerenders
-     * that might be necessary. This funcation is used in SignInModal.tsx,
+     * that might be necessary. This function is used in SignInModal.tsx,
      * when someone links a Google or Github account, causing firebaseUser to change,
      * but onAuthStateChanged doesn't rereun.
      */
@@ -316,7 +314,7 @@ export const UserDataProvider = ({
           // Since we write valid user data to local storage every time the page loads,
           // just assume reading will be valid. If it isn't, the user can always reload
           // the page to get a working version of user data.
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
           localStorage.getItem(LOCAL_STORAGE_KEY)!
         );
 
@@ -361,7 +359,7 @@ export const UserDataProvider = ({
 
           localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newUserData));
 
-          setUserData(newUserData);
+          debouncedSetUserData(newUserData); // Use debounced version here
         }
       },
       [firebaseApp, setUserData, isLoaded, !!firebaseUser]
@@ -382,7 +380,7 @@ export const UserDataProvider = ({
       ) {
         const updatedData = assignDefaultsToUserData(data);
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedData));
-        setUserData(updatedData);
+        debouncedSetUserData(updatedData); // Use debounced version here
         if (firebaseUser) {
           // Stupid hack: if firebase user is set, userData will actually have
           // the CREATING_ACCOUNT_FOR_FIRST_TIME property, since userData will

@@ -4,7 +4,7 @@ import {
   getDocs,
   getFirestore,
 } from '@firebase/firestore';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useFirebaseUser } from '../../../context/UserDataContext/UserDataContext';
 import { useFirebaseApp } from '../../../hooks/useFirebase';
 import { GroupData } from '../../../models/groups/groups';
@@ -37,7 +37,7 @@ export default function AdminViewAllGroups(): JSX.Element {
     <>
       {!groups ? (
         <div>
-          <p className="font-medium text-2xl">Loading...</p>
+          <p className="text-2xl font-medium">Loading...</p>
         </div>
       ) : (
         groups.map(group => <GroupCard key={group.id} group={group} />)
