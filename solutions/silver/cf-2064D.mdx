@@ -1,0 +1,169 @@
+---
+id: cf-2064D
+source: CF
+title: Eating
+author: Abhinav Singh
+---
+
+[Official Analysis(C++)](https://codeforces.com/blog/entry/138912)
+
+## Explanation
+ 
+Define **suffix XOR** values $\text{suf}[i] = w_{i+1} \oplus \cdots \oplus w_{n-1}$ with $\text{suf}[n-1] = 0$. When a new slime of weight $x$ eats its way left, after consuming slimes at positions $n-1, n-2, \ldots, n-k$, its weight becomes $x \oplus \text{suf}[n-k-1]$. 
+So it can eat the slime at position $i$ iff $x \oplus \text{suf}[i] \geq w_i$, and the score is the number of slimes eaten before this first fails.
+ 
+To answer all $q$ queries offline, we can load every query value into a binary trie. Then we sweep $i$ down from $n-1$ to $0$, maintaining $\text{curx} = \text{suf}[i]$ (the XOR of everything to the right of position $i$). 
+At each position $i$, query $v$ is blocked(i.e. the new slime with weight $v$ cannot eat the slime at position $i$) iff $v \oplus \text{curx} < w_i$. We repeatedly call `min_xor(curx)` on the trie - if the minimum XOR across all remaining queries is $< w_i$, that query is blocked here (score $= n - i - 1$), so we remove it and repeat. 
+If the minimum XOR is $\geq w_i$, then no remaining query is blocked at this position, so we can update $\text{curx} \mathrel{\oplus}= w_i$ and move to position $i - 1$.
+Whatever query is still in the trie after the full sweep has eaten all the $n$ slimes.
+ 
+**Time Complexity:** $\mathcal{O}((n + q) \log \max w)$ - each query is inserted and removed from the trie at most once.
+ 
+## Implementation
+ 
+<LanguageSection>
+  
+<CPPSection>
+  
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+#define fast_io ios::sync_with_stdio(false); cin.tie(nullptr);
+
+struct Node {
+    int child[2];
+    int cnt;
+
+    Node() {
+        child[0] = child[1] = -1;
+        cnt = 0;
+    }
+};
+
+struct BinaryTrie {
+    static const int MAX_BIT = 30;
+    vector<Node> trie;
+
+    BinaryTrie() {
+        trie.resize(1);
+    }
+
+    int new_node() {
+        trie.push_back(Node());
+        return (int)trie.size() - 1;
+    }
+
+    void add(int val) {
+        int x = 0;
+
+        for (int i = MAX_BIT; i >= 0; --i) {
+            trie[x].cnt++;
+
+            int b = (val >> i) & 1;
+
+            if (trie[x].child[b] == -1)
+                trie[x].child[b] = new_node();
+
+            x = trie[x].child[b];
+        }
+
+        trie[x].cnt++;
+    }
+
+    void remove(int val) {
+        int x = 0;
+
+        for (int i = MAX_BIT; i >= 0; --i) {
+            trie[x].cnt--;
+
+            int b = (val >> i) & 1;
+
+            x = trie[x].child[b];
+        }
+
+        trie[x].cnt--;
+    }
+
+    int min_xor(int x) {
+        int node = 0, res = 0;
+
+        for (int i = MAX_BIT; i >= 0; --i) {
+            int b = (x >> i) & 1;
+
+            if (trie[node].child[b] != -1 &&
+                trie[trie[node].child[b]].cnt > 0) {
+                node = trie[node].child[b];
+            } else {
+                res |= (1 << i);
+                node = trie[node].child[b ^ 1];
+            }
+        }
+
+        return res;
+    }
+};
+
+int main() {
+    fast_io;
+
+    int t;
+    cin >> t;
+
+    while (t--) {
+
+        int n, q;
+        cin >> n >> q;
+
+        vector<long long> w(n);
+        for (auto &x : w) cin >> x;
+
+        vector<long long> queries(q);
+
+        BinaryTrie trie;
+
+        for (int i = 0; i < q; i++) {
+            cin >> queries[i];
+            trie.add((int)queries[i]);
+        }
+
+        map<long long, long long> answer;
+
+        long long curx = 0;
+        long long processed = 0;
+
+        for (int i = n - 1; i >= 0; --i) {
+
+            while (processed < q) {
+
+                long long best_xor_value = trie.min_xor((int)curx);
+
+                if (best_xor_value < w[i]) {
+
+                    long long v = best_xor_value ^ curx;
+
+                    answer[v] = n - i - 1;
+
+                    trie.remove((int)v);
+                    processed++;
+                } else {
+                    break;
+                }
+            }
+
+            curx ^= w[i];
+        }
+
+        for (long long v : queries) {
+            if (answer.count(v)) cout << answer[v] << ' ';
+            else cout << n << ' ';
+        }
+
+        cout << '\n';
+    }
+
+    return 0;
+}
+```
+</CPPSection>
+</LanguageSection>
