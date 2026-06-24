@@ -74,10 +74,9 @@ async function ensureFullGitHistory() {
   const { execSync } = await import('child_process');
 
   try {
-    const isShallow = execSync(
-      'git rev-parse --is-shallow-repository',
-      { encoding: 'utf8' }
-    ).trim();
+    const isShallow = execSync('git rev-parse --is-shallow-repository', {
+      encoding: 'utf8',
+    }).trim();
 
     if (isShallow === 'true') {
       console.log('Fetching full git history...');
