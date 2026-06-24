@@ -13,6 +13,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 }
 
 export async function main() {
+  await ensureFullGitHistory();
   console.log('Starting content indexing...');
   const startTime = Date.now();
 
@@ -66,6 +67,26 @@ export async function main() {
     );
   } finally {
     db.close();
+  }
+}
+
+async function ensureFullGitHistory() {
+  const { execSync } = await import('child_process');
+
+  try {
+    const isShallow = execSync(
+      'git rev-parse --is-shallow-repository',
+      { encoding: 'utf8' }
+    ).trim();
+
+    if (isShallow === 'true') {
+      console.log('Fetching full git history...');
+      execSync('git fetch --unshallow', {
+        stdio: 'inherit',
+      });
+    }
+  } catch (err) {
+    console.warn('Unable to fetch full git history:', err);
   }
 }
 
