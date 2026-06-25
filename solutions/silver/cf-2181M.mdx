@@ -1,0 +1,134 @@
+---
+id: cf-2181M
+source: CF
+title: Medical Parity
+author: John Zhou
+---
+
+[Official Analysis](https://codeforces.com/contest/2181/attachments/download/34932/NEF_2025_Tutorial.pdf#page=11)
+
+## Explanation
+
+Note that $y_i$ is just the XOR of the first $i$ bits in $x$.
+By the cumulative nature of the operation, flipping bit $i$ in $x$ will flip all bits in $[i, n]$ in $y$.
+We can therefore treat a bit flip in $x'$ as flipping a trailing range in $y'$, and manipulate only $y'$ to match an expected $z$, the $y$-value produced by $x'$ as-is.
+The problem now becomes manipulating $y'$ in one of the following ways to match $z_i=\bigoplus_{j=1}^i x'_j$:
+
+1. Flipping the continuous range of digits $y'_{[i, n]}$.
+2. Flipping a single digit $y'_{i}$.
+
+For simplicity, we transform the problem into a different one so that the expected array is entirely $0$.
+We do this by letting $d=y'\oplus z$, and as only the differences between the target and source array matters, the problem is equivalent to transforming a $0$ array into $d$.
+
+Now, we consider Operation 1:
+Note that it is possible to create a range of $1$s, $d_{[i, j]}$, by flipping the range $[i, n]$ and then the range $[j+1, n]$.
+This requires $2$ operations, except when $j=n$, in which only $1$ operation, flipping $[i, n]$, is needed.
+The number of operations can be treated as the number of "changes" in $d_i$ when scanned from left to right, with an artificial $0$-th value inserted at $0$ (so that if the first value is $1$, an additional change is considered).
+
+Next, Operation 2 allows us to alter any single digit in $d$ on top of a construction where we only use Operation 1.
+We name the value of $d_i$ after modification by Operation 2 the "modified value", $d'_i$.
+The impact of Operation 2 is local and Operation 1's do not depend on anything but whether $d'_i$ differs from $d'_{i-1}$, so we use DP with $d'_i$ as an extra dimension.
+Let $\texttt{dp}[i][k]$ be the minimum number of operations for the first $i$ digits to be flipped, with $k=d'_i$. 
+The transitions are as follows:
+
+$$
+\left\{
+\begin{aligned}
+\texttt{dp}[i][d_i]
+&=
+\min\!\left\{
+    \texttt{dp}[i-1][d_i],
+    \texttt{dp}[i-1][\neg d_i]+1
+\right\}\text{ and}\\
+\texttt{dp}[i][\neg d_i]
+&=
+\min\!\left\{
+    \texttt{dp}[i-1][\neg d_i],
+    \texttt{dp}[i-1][d_i]+1
+\right\}+1.
+\end{aligned}
+\right.
+$$
+
+At each $i$, there are two states:
+
+1. $\texttt{dp}[i][d_i]$, where the modified value is the original value.
+   In this case, no cost from Operation 2 is induced on $i$; one may do the following in terms of Operation 1 to reach this state:
+   
+   - Keep the modified value from the last index, transitioning from $\texttt{dp}[i-1][d_i]$.  This has no additional cost.
+   - Change the modified value from the last index, transitioning from $\texttt{dp}[i-1][\neg d_i]$.  This has $1$ additional cost.
+
+2. $\texttt{dp}[i][\neg d_i]$, where the modified value is the opposite of the original value.
+   In this case, $1$ cost from Operation 2 is induced; one may do the following in terms of Operation 1 to reach this state:
+   
+   - Keep the modified value from the last index, transitioning from $\texttt{dp}[i-1][\neg d_i]$.  This has no additional cost.
+   - Change the modified value from the last index, transitioning from $\texttt{dp}[i-1][d_i]$.  This has $1$ additional cost.
+
+We initialized $f$ using the following:
+
+$$
+\left\{
+\begin{aligned}
+\texttt{dp}[0][0] &= 0\text{ and}\\
+\texttt{dp}[0][1] &= +\infty,
+\end{aligned}
+\right,
+$$
+
+due to the fact that $d'_0$ must be $0$ for the change counting mechanism to work for Operation 1's.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+#include <array>
+using namespace std;
+
+// 1e9 is a safe constant for INF in DP to prevent overflow.
+constexpr int INF = 1e9;
+
+int main() {
+    int t;
+    cin >> t;
+    while (t--) {
+        string x_prime, y_prime;
+        cin >> x_prime >> y_prime;
+        int n = x_prime.length();
+
+		// 1-index the vectors to allow for the initial sentinel in DP.
+        vector<bool> d(n+1);
+        vector<array<int, 2>> dp(n+1);
+
+		// The dynamic value of z_i, the expected array produced by x'.
+        bool z_i = 0;
+        for (int i = 0; i < n; i++) {
+			// -'0' is used to convert ASCII digit into integer.
+			// ^= is equivalent to adding and modding 2.
+            z_i ^= x_prime[i] - '0';
+			// Compute the XOR with b to get the difference; store in index i+1 since our DP starts from 1.
+            d[i+1] = z_i ^ (y_prime[i] - '0');
+        }
+		
+		// DP needs to start from 1 because of the initial values below, which are at 0.
+        dp[0][1] = INF;
+        dp[0][0] = 0;
+        for (int i = 1; i <= n; i++)
+        {
+            dp[i][d[i]] = min(dp[i-1][d[i]], dp[i-1][1-d[i]]+1);
+            dp[i][1-d[i]] = 1 + min(dp[i-1][1-d[i]], dp[i-1][d[i]]+1);
+        }
+        cout << min(dp[n][0], dp[n][1]) << endl;
+    }
+    return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
