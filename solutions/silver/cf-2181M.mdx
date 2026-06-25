@@ -20,7 +20,8 @@ The problem now becomes manipulating $y'$ in one of the following ways to match 
 For simplicity, we transform the problem into a different one so that the expected array is entirely $0$.
 We do this by letting $d=y'\oplus z$, and as only the differences between the target and source array matters, the problem is equivalent to transforming a $0$ array into $d$.
 
-Now, we consider Operation 1:
+Now, we consider Operation 1.
+Since the operations are all from the end, we take inspiration from prefix sums to operate on an arbitrary range with $2$ opertaions:
 Note that it is possible to create a range of $1$s, $d_{[i, j]}$, by flipping the range $[i, n]$ and then the range $[j+1, n]$.
 This requires $2$ operations, except when $j=n$, in which only $1$ operation, flipping $[i, n]$, is needed.
 The number of operations can be treated as the number of "changes" in $d_i$ when scanned from left to right, with an artificial $0$-th value inserted at $0$ (so that if the first value is $1$, an additional change is considered).
