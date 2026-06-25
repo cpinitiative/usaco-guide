@@ -1,7 +1,7 @@
 ---
 id: usaco-1545
-source: USACO Gold 2026 Contest 1
-title: COW Transversals
+source: USACO Gold 2026 First Contest
+title: COW Traversals
 author: I-Chen Chou
 ---
 
@@ -9,13 +9,14 @@ author: I-Chen Chou
 
 ## Explanation
 
-We can use a Disjoint Set Union to represent the friendships of the cows, where each cow is a node and we add directed edges from each cow to their best friend.
-The problem states that each cow follows their friend, so it makes sense to represent this with a DSU and unite each cow with their best friend when they aren't
-hosting a party.
+When a new party is established, quite often, it is the result of taking some cows from another party. If we think of this as each party having a set of guests attending, this would mean that in many cases, a new party forces a set to be split into 2.
+Splitting a set into 2 is difficult to implement, as we need to figure out precisely how to split it. However, if we were to think about processing each query in reverse, then it turns into uniting 2 sets together, which is much easier.
 
-Since newly established parties don't suddenly disappear and at most change type, the best solution is to process each DSU query (each night) in reverse.
-This way, when a cow starts to host a new party on a particular night, when done in reverse, after we've calculated the number of cows at each type of party for a
-particular night, we can simply merge the host cow with their best friend.
+A Disjoint Set Union data structure allows us to unite sets together.
+In particular, once a cow decides to start hosting a party (not simply changing the type), when processed in reverse, after we've completed the query, we can simply merge that cow with their best friend to join the 2 sets together. 
+Every cow in that particular party will travel to wherever the host cow goes, so we only need to merge 2 sets together.
+
+We can use a Disjoint Set Union to represent the friendships of the cows, where each cow is a node. We add edges between a cow and their best friend depending on the situation (as described earlier), and the size() function easily lets us figure out how many cows are attending a particular cow's party.
 
 ## Implementation
 
@@ -28,6 +29,9 @@ particular night, we can simply merge the host cow with their best friend.
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
+
+// BeginCodeSnip{Disjoint Set Union}
+
 struct DSU {
 	vector<int> e;
 	DSU(int N) { e = vector<int>(N + 1, -1); }
@@ -47,6 +51,7 @@ struct DSU {
 		return true;
 	}
 };
+// EndCodeSnip
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
 	int n;
