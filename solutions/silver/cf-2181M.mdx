@@ -27,10 +27,9 @@ This will result in a block of $1$s if the range has not been operated on before
 This requires $2$ operations, except when $j=n$, in which only $1$ operation, flipping $[i, n]$, is needed.
 The number of operations can be treated as the number of "transitions" in $d_i$ when scanned from left to right, with an artificial $0$-th value inserted at $0$ (so that if the first value is $1$, an additional transition is considered).
 
-Operation 2 allows us to alter any single digit in $d$ on top of a construction where we only use Operation 1.
-Note that it is always optimal always more optimal to use at most two Operation 1's to flip at least 2 conescutive locations using Operation 2,
-as flipping the range can be done with at most $2$ Operation 1's, while flipping individually requires at least $2$ Operation 2's.
-The only optimization for Operation 2 is therefore to flip singular elements that are different from both of its neighbors, so that the two Operation 1's from the transitions to and from the location involved can become one Operation 2 flipping the location itself.
+An Operation 2 allows us to change a single digit in $d$ from a construction with only Operation 1.
+Note that when flipping at least $2$ adjacent elements, it is always more optimal to use at most $2$ Operation 1's than to flip them individually with at least $2$ Operation 2’s.
+The only optimization using Operation 2 is therefore to reduce the number of transitions from our Operation 1 strategy by flip singular elements that are different from both of its neighbors, which combines the two adjacent transitions into $1$ flip.
 
 We first compute $d$ and build an array of the indices of all transitions; then, if the locations of two transitions are only $1$ apart, we reduce the operation count by $1$ since we can use Operation 2 to flip the singular element to remove the transition.
 
