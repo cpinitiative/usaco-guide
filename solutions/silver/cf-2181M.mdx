@@ -47,7 +47,6 @@ We first compute $d$ and build an array of the indices of all transitions; then,
 #include <vector>
 using namespace std;
 
-
 int main() {
 	int t;
 	cin >> t;
@@ -57,12 +56,13 @@ int main() {
 		int n = x_prime.length();
 
 		// 1-index the vectors to allow for the initial sentinel 0 in counting.
-		vector<bool> d(n+1);
+		vector<bool> d(n + 1);
 
 		// The dynamic value of z_i, the expected array produced by x'.
 		bool z_i = 0;
 		for (int i = 0; i < n; i++) {
-			// -'0' is used to convert ASCII digit into integer. ^= is equivalent to adding and modding 2
+			// -'0' is used to convert ASCII digit into integer. ^= is equivalent to
+			// adding and modding 2
 			z_i ^= x_prime[i] - '0';
 			// Compute the XOR with b to get the difference; store in index i+1 since
 			// our DP starts from 1.
@@ -71,13 +71,14 @@ int main() {
 
 		vector<int> transitions;
 		for (int i = 1; i <= n; i++) {
-			if (d[i] != d[i-1]) transitions.push_back(i);
+			if (d[i] != d[i - 1]) transitions.push_back(i);
 		}
 
 		int ans = transitions.size();
-	
-		// Match adjacent transitions, and reduce answer by 1 to account for Operation 2 replacement
-		for (int i = 0; i + 1 < (int)transitions.size(); ) {
+
+		// Match adjacent transitions, and reduce answer by 1 to account for Operation 2
+		// replacement
+		for (int i = 0; i + 1 < (int)transitions.size();) {
 			if (transitions[i + 1] == transitions[i] + 1) {
 				ans--;
 				i += 2;
