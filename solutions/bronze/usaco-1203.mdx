@@ -20,12 +20,12 @@ $\texttt{sum}/\texttt{num\_hours}$. Since every modification reduces the length
 of the log by 1, the number of modifications Elsie makes will be
 $N-\texttt{sum}/\texttt{num\_hours}$.
 
-Since $N$ and $\texttt{sum}$ are constant, to maximize the above expression
+Since $N$ and $\texttt{sum}$ are constant, to minimize the above expression
 our only option is to minimize $\texttt{num\_hours}$.
 
-In order to do that, we iterate over possible values of $\texttt{num\_hours}$
-from smallest to largest and check if it's possible to reduce the log to an
-array with all elements equal to it.
+In order to do that, we iterate over divisor values of
+$\texttt{num\_hours}$ from smallest to largest and check if it's possible to
+reduce the log to an array with all elements equal to it.
 As soon as we hit a valid element, we print out the number of modifications needed
 and end, since we know it's the best we can do.
 
@@ -36,7 +36,7 @@ we know that $\texttt{num\_hours}$ is not valid.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N \cdot \texttt{sum})$ for each test case.
+**Time Complexity:** $\mathcal{O}(N\sqrt{\texttt{sum}})$ for each test case.
 
 <LanguageSection>
 <CPPSection>
@@ -58,35 +58,46 @@ int main() {
 			log_sum += h;
 		}
 
-		// Try all possible number of hours after modification
-		for (int num_hours = 0; num_hours <= log_sum; num_hours++) {
-			if (num_hours != 0 && log_sum % num_hours != 0) {
-				// The sum must be divisible by num_hours
-				continue;
-			}
+		if (log_sum == 0) {
+			cout << 0 << '\n';
+			continue;
+		}
 
-			// Check if num_hours leads to a valid answer
+		auto valid = [&](int num_hours) {
 			int curr_sum = 0;  // The current number of hours Elsie's logging
-			bool valid = true;
 			for (int h : elsie_log) {
 				curr_sum += h;
 				if (curr_sum > num_hours) {
-					valid = false;  // curr_sum can't exceed num_hours
-					break;
+					return false;  // curr_sum can't exceed num_hours
 				} else if (curr_sum == num_hours) {
 					curr_sum = 0;
 				}
 			}
+			return true;
+		};
 
-			if (valid) {
-				if (num_hours == 0) {
-					// Handle the edge case where num_hours is 0
-					cout << 0 << '\n';
-				} else {
-					// sum/num_hours is the total # of classes AFTER modifying
-					cout << n - log_sum / num_hours << '\n';
-				}
+		// Try possible number of hours after modification in increasing order.
+		bool found = false;
+		int max_factor = 0;
+		for (int factor = 1; factor * factor <= log_sum; factor++) {
+			max_factor = factor;
+			if (log_sum % factor == 0 && valid(factor)) {
+				// log_sum/factor is the total # of classes AFTER modifying
+				cout << n - log_sum / factor << '\n';
+				found = true;
 				break;
+			}
+		}
+		if (found) { continue; }
+
+		for (int factor = max_factor; factor >= 1; factor--) {
+			if (log_sum % factor == 0 && factor * factor != log_sum) {
+				int num_hours = log_sum / factor;
+				if (valid(num_hours)) {
+					// log_sum/num_hours is the total # of classes AFTER modifying
+					cout << n - log_sum / num_hours << '\n';
+					break;
+				}
 			}
 		}
 	}
@@ -101,6 +112,19 @@ import java.io.*;
 import java.util.*;
 
 public class SleepingInClass {
+	private static boolean valid(int[] elsieLog, int numHours) {
+		int currSum = 0;  // The current number of hours Elsie's logging
+		for (int h : elsieLog) {
+			currSum += h;
+			if (currSum > numHours) {
+				return false;  // currSum can't exceed numHours
+			} else if (currSum == numHours) {
+				currSum = 0;
+			}
+		}
+		return true;
+	}
+
 	public static void main(String[] args) throws IOException {
 		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
 		int testNum = Integer.parseInt(read.readLine());
@@ -114,36 +138,34 @@ public class SleepingInClass {
 				logSum += elsieLog[i];
 			}
 
-			// Try all possible number of hours after modification
-			for (int numHours = 0; numHours <= logSum; numHours++) {
-				if (numHours != 0 && logSum % numHours != 0) {
-					// The sum must be divisible by numHours
-					continue;
-				}
+			if (logSum == 0) {
+				System.out.println(0);
+				continue;
+			}
 
-				// Check if numHours leads to a valid answer
-				int currSum = 0;  // The current number of hours Elsie's logging
-				boolean valid = true;
-				for (int h : elsieLog) {
-					currSum += h;
-					if (currSum > numHours) {
-						valid = false;  // curr_sum can't exceed numHours
-						break;
-					} else if (currSum == numHours) {
-						currSum = 0;
-					}
+			// Try possible number of hours after modification in increasing order.
+			boolean found = false;
+			int maxFactor = 0;
+			for (int factor = 1; factor * factor <= logSum; factor++) {
+				maxFactor = factor;
+				if (logSum % factor == 0 && valid(elsieLog, factor)) {
+					// logSum/factor is the total # of classes AFTER modifying
+					System.out.println(n - logSum / factor);
+					found = true;
+					break;
 				}
+			}
+			if (found) { continue; }
 
-				if (valid) {
-					if (numHours == 0) {
-						// Handle the edge case where numHours is 0
-						System.out.println(0);
-					} else {
-						// sum/numHours is the total # of classes AFTER
+			for (int factor = maxFactor; factor >= 1; factor--) {
+				if (logSum % factor == 0 && factor * factor != logSum) {
+					int numHours = logSum / factor;
+					if (valid(elsieLog, numHours)) {
+						// logSum/numHours is the total # of classes AFTER
 						// modifying
 						System.out.println(n - logSum / numHours);
+						break;
 					}
-					break;
 				}
 			}
 		}
@@ -155,6 +177,17 @@ public class SleepingInClass {
 <PySection>
 
 ```py
+def valid(elsie_log, num_hours):
+	curr_sum = 0  # The current number of hours Elsie's logging
+	for h in elsie_log:
+		curr_sum += h
+		if curr_sum > num_hours:
+			return False  # curr_sum can't exceed num_hours
+		elif curr_sum == num_hours:
+			curr_sum = 0
+	return True
+
+
 for _ in range(int(input())):
 	n = int(input())
 	elsie_log = [int(i) for i in input().split()]
@@ -162,28 +195,32 @@ for _ in range(int(input())):
 
 	log_sum = sum(elsie_log)
 
-	# Try all possible number of hours after modification
-	for num_hours in range(log_sum + 1):
-		# The sum must be divisible by num_hours
-		if num_hours != 0 and log_sum % num_hours != 0:
-			continue
+	if log_sum == 0:
+		print(0)
+		continue
 
-		# Check if num_hours leads to a valid answer
-		curr_sum = 0  # The current number of hours Elsie's logging
-		for h in elsie_log:
-			curr_sum += h
-			if curr_sum > num_hours:
-				break  # curr_sum can't exceed num_hours
-			elif curr_sum == num_hours:
-				curr_sum = 0
-		else:
-			if num_hours == 0:
-				# Handle the edge case where num_hours is 0
-				print(0)
-			else:
-				# sum/num_hours is the total # of classes AFTER modifying
-				print(n - log_sum // num_hours)
+	# Try possible number of hours after modification in increasing order.
+	found = False
+	max_factor = 0
+	factor = 1
+	while factor * factor <= log_sum:
+		max_factor = factor
+		if log_sum % factor == 0 and valid(elsie_log, factor):
+			# log_sum/factor is the total # of classes AFTER modifying
+			print(n - log_sum // factor)
+			found = True
 			break
+		factor += 1
+	if found:
+		continue
+
+	for factor in range(max_factor, 0, -1):
+		if log_sum % factor == 0 and factor * factor != log_sum:
+			num_hours = log_sum // factor
+			if valid(elsie_log, num_hours):
+				# log_sum/num_hours is the total # of classes AFTER modifying
+				print(n - log_sum // num_hours)
+				break
 ```
 
 </PySection>
