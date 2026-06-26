@@ -5,9 +5,18 @@ title: List Removals
 author: Benjamin Qi
 ---
 
-## Solution 1
+## Explanation
 
-Use an indexed set.
+Each query asks: *"remove the element at the given position from what's currently in the list."*
+
+The naive approach to do this would be to **actually** shift the elements in the array, which would be $O(n)$ per query, which simply doesn't suffice here given the constraints. We need a data structure that can answer **k-th element** queries and **deletions** efficiently.
+
+All three solutions below do exactly that in $O(\log n)$ per operation, giving $O(n \log n)$ overall.
+
+## Solution 1: Indexed Set
+
+We store the **original indices** of still-present elements in an indexed set. Given a query "remove position $p$", `find_by_order(p - 1)` directly returns the original index of the $p$-th remaining element in $O(\log n)$.
+
 
 <LanguageSection>
 <CPPSection>
@@ -20,36 +29,41 @@ using namespace std;
 using namespace __gnu_pbds;
 
 template <class T>
-using Tree =
+using OrderedSet =
     tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
 int main() {
-	int n;
-	cin >> n;
-	Tree<int> ist;
-	vector<int> p(n);
-	for (int i = 0; i < n; i++) {
-		ist.insert(i);
-		cin >> p[i];
-	}
+    int n;
+    cin >> n;
 
-	for (int i = 0; i < n; i++) {
-		int ind;
-		cin >> ind;
-		ind--;
-		int pos = *ist.find_by_order(ind);
-		ist.erase(pos);
-		cout << p[pos] << (i == n - 1 ? '\n' : ' ');
-	}
+    vector<int> values(n);
+    for (int i = 0; i < n; i++) cin >> values[i];
+
+    // Store original indices 0..n-1 of elements still present
+    OrderedSet<int> remaining_indices;
+    for (int i = 0; i < n; i++) remaining_indices.insert(i);
+
+    for (int i = 0; i < n; i++) {
+        int query_pos;
+        cin >> query_pos;
+        query_pos--;  // 1-indexed → 0-indexed
+
+        // k-th smallest in remaining_indices = original index of k-th element
+        int original_idx = *remaining_indices.find_by_order(query_pos);
+        remaining_indices.erase(original_idx);
+        cout << values[original_idx] << (i == n - 1 ? '\n' : ' ');
+    }
 }
 ```
 
 </CPPSection>
 </LanguageSection>
 
-## Solution 2
+## Solution 2: Binary Search on BIT
 
-Binary search on a BIT.
+We maintain a BIT where each position starts as `1` (present) and gets set to `0` when removed. `prefix_sum(i)` then counts how many elements are still present in positions `1..i`.
+
+To find the original index of the $k$-th remaining element, binary search for the smallest index where `prefix_sum(index) == k`. Each step of the binary search does a BIT query, giving $O(\log^2 n)$ per operation.
 
 <LanguageSection>
 <CPPSection>
@@ -58,146 +72,112 @@ Binary search on a BIT.
 #include <bits/stdc++.h>
 using namespace std;
 
-constexpr int bits(int x) { return x == 0 ? 0 : 31 - __builtin_clz(x); }
+const int MAXN = 2e5 + 5;
 
-/**
- * Description: range sum queries and point updates for $D$ dimensions
- * Source: https://codeforces.com/blog/entry/64914
- * Verification: SPOJ matsum
- * Usage: \texttt{BIT<int,10,10>} gives 2D BIT
- * Time: O((\log N)^D)
- */
+struct BIT {
+    int tree[MAXN] = {};
+    int n;
+    void update(int pos, int delta) {
+        for (; pos <= n; pos += pos & -pos) tree[pos] += delta;
+    }
+    int prefix_sum(int pos) {
+        int result = 0;
+        for (; pos > 0; pos -= pos & -pos) result += tree[pos];
+        return result;
+    }
+} presence;
 
-template <class T, int... Ns> struct BIT {
-	T val = 0;
-	void upd(T v) { val += v; }
-	T query() { return val; }
-};
-
-template <class T, int N, int... Ns> struct BIT<T, N, Ns...> {
-	BIT<T, Ns...> bit[N + 1];
-	template <typename... Args> void upd(int pos, Args... args) {
-		assert(pos > 0);
-		for (; pos <= N; pos += pos & -pos) bit[pos].upd(args...);
-	}
-	template <typename... Args> T sum(int r, Args... args) {
-		T res = 0;
-		for (; r; r -= r & -r) res += bit[r].query(args...);
-		return res;
-	}
-	template <typename... Args> T query(int l, int r, Args... args) {
-		return sum(r, args...) - sum(l - 1, args...);
-	}
-};
-
-template <class T, int N> int get_kth(const BIT<T, N> &bit, T des) {
-	assert(des > 0);
-	int ind = 0;
-	for (int i = 1 << bits(N); i; i /= 2)
-		if (ind + i <= N && bit.bit[ind + i].val < des) des -= bit.bit[ind += i].val;
-	assert(ind < N);
-	return ind + 1;
+// Binary search for smallest index where prefix_sum == target
+int find_kth(int target) {
+    int lo = 1, hi = presence.n;
+    while (lo < hi) {
+        int mid = (lo + hi) / 2;
+        if (presence.prefix_sum(mid) >= target) hi = mid;
+        else lo = mid + 1;
+    }
+    return lo;
 }
 
-const int MX = 2e5 + 5;
-BIT<int, MX> B;
-
-int N;
-
 int main() {
-	cin.tie(0)->sync_with_stdio(0);
-	cin >> N;
-	vector<int> x(N);
-	for (int i = 0; i < N; i++) cin >> x[i];
-	for (int i = 1; i <= N; i++) B.upd(i, 1);
-	for (int _ = 0; _ < N; _++) {
-		int p;
-		cin >> p;
-		int ind = get_kth(B, p);
-		cout << x[ind - 1] << ' ';
-		B.upd(ind, -1);
-	}
+    cin.tie(0)->sync_with_stdio(0);
+    cin >> presence.n;
+    int n = presence.n;
+
+    vector<int> values(n + 1);
+    for (int i = 1; i <= n; i++) cin >> values[i];
+    for (int i = 1; i <= n; i++) presence.update(i, 1);
+
+    for (int q = 0; q < n; q++) {
+        int query_pos;
+        cin >> query_pos;
+        int original_idx = find_kth(query_pos);
+        cout << values[original_idx] << " \n"[q == n - 1];
+        presence.update(original_idx, -1);
+    }
 }
 ```
 
 </CPPSection>
 </LanguageSection>
 
+
 ## Solution 3
 
-Use a segment tree to store the number of elements present in each segment and
-[walk down it](/plat/segtree-ext#walking-on-a-segment-tree).
+Build a segment tree where each node stores the count of present elements in its range. To find the $k$-th remaining element, [walk down the tree](https://usaco.guide/plat/segtree-ext?lang=cpp): 
+
+if the left child has $\geq k$ elements, recurse left; otherwise subtract the left child's count from $k$ and recurse right. 
+
+This finds the answer in $O(\log n)$ by descending exactly one root-to-leaf path.
+
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
-#include <algorithm>
-#include <iostream>
-#include <vector>
+#include <bits/stdc++.h>
 using namespace std;
 
-struct node;
+const int MAXN = 2e5 + 5;
 
-vector<int> information;  // stores the actual array with our data in
+struct SegTree {
+    int cnt[4 * MAXN];
 
-vector<int> results;
+    void build(int node, int lo, int hi) {
+        if (lo == hi) { cnt[node] = 1; return; }
+        int mid = (lo + hi) / 2;
+        build(2 * node, lo, mid);
+        build(2 * node + 1, mid + 1, hi);
+        cnt[node] = cnt[2 * node] + cnt[2 * node + 1];
+    }
 
-struct node {
-	// left child manages data from left to midpoint
-	// right child manages data from midpoint+1 to right
-	int left, right, midpoint;
-	node *left_child;
-	node *right_child;
-	node *parent;
-	int count;  // stores the number of elements in the subtree
-	node(int left, int right, node *parent)
-	    : left(left), right(right), midpoint((left + right) / 2), parent(parent) {
-		if (left != right) {
-			left_child = new node(left, midpoint, this);
-			right_child = new node(midpoint + 1, right, this);
-			count = left_child->count + right_child->count;
-		} else {
-			count = 1;
-		}
-	}
-
-	// this function deletes index'th element in the subtree and also removes
-	// one from the count
-	void del(int index) {
-		// Uncomment the following line to see how it traverses the segment tree
-		// cout << "left: " << left << " right: " << right << " count: " <<
-		// count << " ind: " << index << endl;
-		if (count < index) {
-			throw std::runtime_error("Element doesn't exist");
-		} else {
-			count--;
-			if (left == right) {
-				results.push_back(information[left]);
-			} else if (left_child->count > index) {
-				left_child->del(index);
-			} else {
-				right_child->del(index - left_child->count);
-			}
-		}
-	}
-};
+    // Remove the k-th present element; return its original 1-indexed position
+    int remove_kth(int node, int lo, int hi, int k) {
+        cnt[node]--;
+        if (lo == hi) return lo;
+        int mid = (lo + hi) / 2;
+        if (cnt[2 * node] >= k)
+            return remove_kth(2 * node, lo, mid, k);
+        else
+            return remove_kth(2 * node + 1, mid + 1, hi, k - cnt[2 * node]);
+    }
+} seg;
 
 int main() {
-	int n;
-	cin >> n;
-	information.resize(n);
-	for (auto &i : information) cin >> i;
+    cin.tie(0)->sync_with_stdio(0);
+    int n;
+    cin >> n;
 
-	node root(0, n - 1, nullptr);
-	for (int i = 0; i < n; i++) {
-		int index;
-		cin >> index;
-		index--;  // 1-indexed to 0-indexed
-		root.del(index);
-	}
+    vector<int> values(n + 1);
+    for (int i = 1; i <= n; i++) cin >> values[i];
 
-	for (int i = 0; i < n; i++) { cout << results[i] << " \n"[i == n - 1]; }
+    seg.build(1, 1, n);
+
+    for (int q = 0; q < n; q++) {
+        int query_pos;
+        cin >> query_pos;
+        int original_idx = seg.remove_kth(1, 1, n, query_pos);
+        cout << values[original_idx] << " \n"[q == n - 1];
+    }
 }
 ```
 
