@@ -17,21 +17,17 @@ At each position $i$, query $v$ is blocked(i.e. the new slime with weight $v$ ca
 If the minimum XOR is $\geq w_i$, then no remaining query is blocked at this position, so we can update $\text{curx} \mathrel{\oplus}= w_i$ and move to position $i - 1$.
 Whatever query is still in the trie after the full sweep has eaten all the $n$ slimes.
 
-**Time Complexity:** $\mathcal{O}((n + q) \log \max w)$ - each query is inserted and removed from the trie at most once.
 
 ## Implementation
 
-<LanguageSection>
+**Time Complexity:** $\mathcal{O}((n + q) \log \max w)$ - each query is inserted and removed from the trie at most once.
 
+<LanguageSection>
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-
-#define fast_io                                                                        \
-	ios::sync_with_stdio(false);                                                       \
-	cin.tie(nullptr);
 
 struct Node {
 	int child[2];
@@ -43,6 +39,7 @@ struct Node {
 	}
 };
 
+// BeginCodeSnip{Binary Trie}
 struct BinaryTrie {
 	static const int MAX_BIT = 30;
 	vector<Node> trie;
@@ -62,7 +59,9 @@ struct BinaryTrie {
 
 			int b = (val >> i) & 1;
 
-			if (trie[x].child[b] == -1) trie[x].child[b] = new_node();
+			if (trie[x].child[b] == -1) {
+				trie[x].child[b] = new_node();
+			} 
 
 			x = trie[x].child[b];
 		}
@@ -101,14 +100,14 @@ struct BinaryTrie {
 		return res;
 	}
 };
+// EndCodeSnip{}
 
 int main() {
-	fast_io;
 
-	int t;
-	cin >> t;
+	int test_num;
+	cin >> test_num;
 
-	while (t--) {
+	for (int t = 0; t < test_num; test_num++) {
 
 		int n, q;
 		cin >> n >> q;
@@ -153,8 +152,7 @@ int main() {
 		}
 
 		for (long long v : queries) {
-			if (answer.count(v)) cout << answer[v] << ' ';
-			else cout << n << ' ';
+			cout << answer.count(v) ? answer[v] : n << " ";
 		}
 
 		cout << '\n';
@@ -163,5 +161,6 @@ int main() {
 	return 0;
 }
 ```
+
 </CPPSection>
 </LanguageSection>
