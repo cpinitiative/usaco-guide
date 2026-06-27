@@ -2,28 +2,26 @@
 id: cses-1749
 source: CSES
 title: List Removals
-author: Benjamin Qi
+author: Abhinav Singh, Benjamin Qi
 ---
 
 ## Explanation
 
-Each query asks: *"Remove the element at the given position from what currently remains in the list."*
+Each query asks us to remove the element at a given position from what currently remains in the list.
 
-The naive approach would be to actually shift the elements in the
+
+The naive approach would be to shift the elements in the
 array after each removal, which costs $O(n)$ per query, which
-simply doesn't suffice here given the constraints. We need a data
+doesn't suffice here given the constraints. We need a data
 structure that supports both **k-th element queries** and
 **deletions** efficiently.
 
-All three solutions below do exactly that in $O(\log n)$ per operation, giving $O(n \log n)$ overall.
+All three solutions below process each query in $O(\log n)$ or $O(\log^2 n)$, giving $O(n \log n)$ or $O(n\log^2 n)$ overall.
+
 
 ### Solution 1 - Indexed Set
 
-Store the **original indices** of all still-present elements in an
-[indexed set](/gold/PURS#finding-the-k-th-element). Given a query
-"remove element at position $p$",  `find_by_order(p)` directly
-returns the original index of the
-$p$-th remaining element ($1$-indexed) in $O(\log n)$.
+Store the **original indices** of all still-present elements in an [indexed set](/gold/PURS#finding-the-k-th-element). Given a query "remove element at position $p$", the indexed set can directly find the original index in $O(\log n)$ (implemented in `find_by_order`).
 
 
 <LanguageSection>
@@ -70,13 +68,9 @@ int main() {
 ### Solution 2 - Binary Search on BIT
 
 We maintain a Binary Indexed Tree (BIT) where each position is initialized to `1` (present) and gets set to `0` when removed.
-The prefix sum `prefix_sum(i)` then counts how many elements are
-still present in positions $1$ through $i$.
+The prefix sum `prefix_sum(i)` then counts how many elements are still present in positions $1$ through $i$.
 
-To find the original index of the $k$-th remaining element, binary
-search for the smallest index where `prefix_sum(index) == k`. Each
-step of the binary search does a BIT query, giving $O(\log^2 n)$
-per operation.
+To find the original index of the $k$-th remaining element, binary search for the smallest index where `prefix_sum(index) == k`. Each step of the binary search does a BIT query, giving $O(\log^2 n)$ per operation.
 
 <LanguageSection>
 <CPPSection>
