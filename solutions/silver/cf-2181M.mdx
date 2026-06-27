@@ -11,31 +11,37 @@ author: John Zhou
 
 Note that $y_i$ is just the XOR of the first $i$ bits in $x$.
 By the cumulative nature of the operation, flipping bit $i$ in $x$ will flip all bits in $[i, n]$ in $y$.
-We can therefore treat a bit flip in $x'$ as flipping a trailing range in $y'$, and manipulate only $y'$ to match an expected $z$, the $y$-value produced by $x'$ as-is.
+We can therefore treat a bit flip in $x'$ as flipping a trailing range in $y'$, and manipulate only $y'$ to 
+match an expected $z$, the $y$-value produced by $x'$ as-is.
 The problem now becomes manipulating $y'$ in one of the following ways to match $z_i=\bigoplus_{j=1}^i x'_j$:
 
 1. Flipping the continuous range of digits $y'_{[i, n]}$.
 2. Flipping a single digit $y'_{i}$.
 
 For simplicity, we transform the problem into a different one so that the expected array is entirely $0$.
-We do this by letting $d=y'\oplus z$, and as only the differences between the target and source array matters, the problem is equivalent to transforming a $0$ array into $d$.
+We do this by letting $d=y'\oplus z$, and as only the differences between the target and source array matters, 
+the problem is equivalent to transforming a $0$ array into $d$.
 
 Now, we consider Operation 1.
 Since the operations are all from the end, we take inspiration from prefix sums to operate on an arbitrary range with $2$ opertaions:
 Note that it is possible to flip any range, $d_{[i, j]}$, by flipping the range $[i, n]$ and then the range $[j+1, n]$.
 This will result in a block of $1$s if the range has not been operated on before.
 This requires $2$ operations, except when $j=n$, in which only $1$ operation, flipping $[i, n]$, is needed.
-The number of operations can be treated as the number of "transitions" in $d_i$ when scanned from left to right, with an artificial $0$-th value inserted at $0$ (so that if the first value is $1$, an additional transition is considered).
+The number of operations can be treated as the number of "transitions" in $d_i$ when scanned from left to right, 
+with an artificial $0$-th value inserted at $0$ (so that if the first value is $1$, an additional transition is considered).
 
 An Operation 2 allows us to change a single digit in $d$ from a construction with only Operation 1.
-Note that when flipping at least $2$ adjacent elements, it is always more optimal to use at most $2$ Operation 1's than to flip them individually with at least $2$ Operation 2’s.
-The only optimization using Operation 2 is therefore to reduce the number of transitions from our Operation 1 strategy by flipping singular elements that are different from both of its neighbors, which combines the two adjacent transitions into $1$ flip.
+Note that when flipping at least $2$ adjacent elements, it is always more optimal to use at most $2$ Operation 1's 
+than to flip them individually with at least $2$ Operation 2’s.
+The only optimization using Operation 2 is therefore to reduce the number of transitions from our Operation 1 
+strategy by flipping singular elements that are different from both of its neighbors, which combines the two adjacent transitions into $1$ flip.
 
-We first compute $d$ and build an array of the indices of all transitions; then, if the locations of two transitions are only $1$ apart, we reduce the operation count by $1$ since we can use Operation 2 to flip the singular element to remove the transition.
+We first compute $d$ and build an array of the indices of all transitions; then, if the locations of two transitions 
+are only $1$ apart, we reduce the operation count by $1$ since we can use Operation 2 to flip the singular element to remove the transition.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(n)$
+**Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
 <CPPSection>
@@ -44,12 +50,13 @@ We first compute $d$ and build an array of the indices of all transitions; then,
 #include <iostream>
 #include <string>
 #include <vector>
+
 using namespace std;
 
 int main() {
-	int t;
-	cin >> t;
-	while (t--) {
+	int test_num;
+	cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
 		string x_prime, y_prime;
 		cin >> x_prime >> y_prime;
 		int n = x_prime.length();
