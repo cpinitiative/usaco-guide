@@ -9,18 +9,23 @@ author: Abhinav Singh
 
 ## Explanation
 
-Define **suffix XOR** values $\text{suf}[i] = w_{i+1} \oplus \cdots \oplus w_{n-1}$ with $\text{suf}[n-1] = 0$. When a new slime of weight $x$ eats $k$ slimes on its way to the left, its weight becomes $x \oplus \text{suf}[n-k-1]$.
-So it can eat the slime at position $i$ iff $x \oplus \text{suf}[i] \geq w_i$, and the score is the number of slimes eaten before this first fails.
+Suppose the added slime has initial weight $x$. If it eats the last slime $w_{n-1}$, its weight becomes $$x \oplus w_{n-1}.$$ If it also eats $w_{n-2}$, its weight becomes
+$$(x \oplus w_{n-1}) \oplus w_{n-2} = x \oplus w_{n-1} \oplus w_{n-2},$$
+since XOR is associative. Continuing this process, after eating the last $k$ slimes, its weight is
 
-To answer all $q$ queries offline, we can load every query value into a binary trie. Then we sweep $i$ down from $n-1$ to $0$, maintaining $\text{curx} = \text{suf}[i]$ (the XOR of everything to the right of position $i$).
-At each position $i$, query $v$ is blocked(i.e. the new slime with weight $v$ cannot eat the slime at position $i$) iff $v \oplus \text{curx} < w_i$. We repeatedly call `min_xor(curx)` on the trie - if the minimum XOR across all remaining queries is $< w_i$, that query is blocked here (score $= n - i - 1$), so we remove it and repeat.
-If the minimum XOR is $\geq w_i$, then no remaining query is blocked at this position, so we can update $\text{curx} \mathrel{\oplus}= w_i$ and move to position $i - 1$.
-Whatever query is still in the trie after the full sweep has eaten all the $n$ slimes.
 
+$$x \oplus w_{n-k} \oplus w_{n-k+1} \oplus \cdots \oplus w_{n-1}.$$
+
+This motivates us to definine **suffix XOR** values:
+$$\text{suf}[i] = w_{i+1} \oplus w_{i+2} \oplus \cdots \oplus w_{n-1},$$
+with $\text{suf}[n-1] = 0$. Then, after eating $k$ slimes, the slime's weight is simply $$x \oplus \text{suf}[n-k-1].$$
+Hence, when it attempts to eat the slime at position $i$, its current weight is $x \oplus \text{suf}[i]$. It succeeds if and only if $$x \oplus \text{suf}[i] \ge w_i.$$ Therefore, the answer to a query is the number of consecutive slimes it can eat from the right before this inequality first fails.
+
+We process all queries offline, inserting every query value into a binary trie before sweeping from position $n-1$ down to 0. Consider a query $v$ as "blocked to" $i$ if the added slime with weight $v$ stops eating the slime at position $i$ first. At each position $i$, a query $v$ is blocked to $i$ if and only if $v \oplus \text{suf}[i] < w_i$. We can then use the trie to find the query with the minimum XOR value with $\text{suf}[i]$, and remove that query from the trie if the XOR value is $<w_i$, as that query cannot proceed past $i$; we do this repeatedly until the query with the minimum XOR in the trie *can* proceed past $i$, then move to position $i-1$.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}((n + q) \log \max w)$, as each query is inserted and removed from the trie at most once.
+**Time Complexity:** Since queries are removed permanently, each query is extracted at most once, giving an overall time complexity of $\mathcal{O}((n + q) \log \mathcal{A})$, where $\mathcal{A}$ is the maximum value  in the array $w$.
 
 <LanguageSection>
 <CPPSection>
