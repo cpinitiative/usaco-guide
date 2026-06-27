@@ -21,7 +21,7 @@ All three solutions below do exactly that in $O(\log n)$ per operation, giving $
 
 Store the **original indices** of all still-present elements in an
 [indexed set](/gold/PURS#finding-the-k-th-element). Given a query
-"remove element at position $p$",  `find_by_order(p)` directly 
+"remove element at position $p$",  `find_by_order(p)` directly
 returns the original index of the
 $p$-th remaining element ($1$-indexed) in $O(\log n)$.
 
@@ -75,7 +75,7 @@ still present in positions $1$ through $i$.
 
 To find the original index of the $k$-th remaining element, binary
 search for the smallest index where `prefix_sum(index) == k`. Each
-step of the binary search does a BIT query, giving $O(\log^2 n)$ 
+step of the binary search does a BIT query, giving $O(\log^2 n)$
 per operation.
 
 <LanguageSection>
@@ -137,7 +137,7 @@ int main() {
 ### Solution 3 - Segment Tree
 
 Build a segment tree where each node stores the count of present
-elements in its range. To find the $k$-th remaining element, 
+elements in its range. To find the $k$-th remaining element,
 [walk down the tree](/plat/segtree-ext?lang=cpp#walking-on-a-segment-tree) as follows: if the left child
 contains $\geq k$ elements, recurse left; otherwise, subtract the
 left child's count from $k$ and recurse right.
