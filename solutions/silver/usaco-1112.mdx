@@ -20,7 +20,7 @@ Next, we sweep $j$ from $1$ to $N$, and keep track of the last index we encounte
 For an interval ending at $j$ to be picked, it must include a $0$, so the starting index must be no later than the last $0$ we encounter;
 it also must not include a $-1$, so the starting index must be later than the last $-1$ we encounter.
 Thus, any starting index in the range $(j_{-1}, j_0]$ works, provided it is not degenerate, so we simply accumulate our current value of $\max(0, j_0-j_{-1})$ while we sweep.
-We accumulate if and only if $g'(j)\neq -1$, as a value of $-1$ means we cannot end with this element.
+We accumulate at $j$ only if $g'(j)\in{0,1}$, as we cannot end with $g'(j)=-1$.
 We initialize both $j_0$ and $j_{-1}$ to $0$, so that they produce no accumulation initially, and that all possibilities of $(0, j_0]$ will be counted if a $-1$ has not occurred yet.
 
 Now, we generalize this onto two dimensions, with an $N\times N$ pasture of $G(i, j)$.
