@@ -48,51 +48,43 @@ After the $g'(j)$ update, we proceed as we would in the $1$-dimensional case.
 using namespace std;
 constexpr int MAX_N = 500;
 // G in problem
-int a[MAX_N+1][MAX_N+1];
+int a[MAX_N + 1][MAX_N + 1];
 // g' in explanation
-int g_prime[MAX_N+1];
-int main()
-{
-    int n;
-    cin >> n;
+int g_prime[MAX_N + 1];
+int main() {
+	int n;
+	cin >> n;
 
-    for (int i = 1; i <= n; i++)
-        for (int j = 1; j <= n; j++)
-            cin >> a[i][j];
+	for (int i = 1; i <= n; i++)
+		for (int j = 1; j <= n; j++) cin >> a[i][j];
 
-    long long ans = 0;
-    for (int i1 = 1; i1 <= n; i1++)
-    {
-        // Reset g'
-        for (int j = 1; j <= n; j++)
-            g_prime[j] = 1;
+	long long ans = 0;
+	for (int i1 = 1; i1 <= n; i1++) {
+		// Reset g'
+		for (int j = 1; j <= n; j++) g_prime[j] = 1;
 
-        for (int i2 = i1; i2 <= n; i2++)
-        {
-            // i_0 and i_{-1} in explanation, respectively
-            int last_zero = 0, last_neg = 0;
-            for (int j = 1; j <= n; j++)
-            {
-                // Update g'
-                if (a[i2][j] < 100)
-                    g_prime[j] = -1;
-                if (a[i2][j] == 100 && g_prime[j] != -1)
-                    g_prime[j] = 0;
-                
-                // Update last indices
-                if (g_prime[j] == 0) last_zero = j;
-                if (g_prime[j] == -1) last_neg = j;
+		for (int i2 = i1; i2 <= n; i2++) {
+			// i_0 and i_{-1} in explanation, respectively
+			int last_zero = 0, last_neg = 0;
+			for (int j = 1; j <= n; j++) {
+				// Update g'
+				if (a[i2][j] < 100) g_prime[j] = -1;
+				if (a[i2][j] == 100 && g_prime[j] != -1) g_prime[j] = 0;
 
-                // Accumulate
-                if (g_prime[j] == 0 || g_prime[j] == 1) {
-                    ans += max(0, last_zero - last_neg);
-                }
-            }
-        }
-    }
+				// Update last indices
+				if (g_prime[j] == 0) last_zero = j;
+				if (g_prime[j] == -1) last_neg = j;
 
-    cout << ans << endl;
-    return 0;
+				// Accumulate
+				if (g_prime[j] == 0 || g_prime[j] == 1) {
+					ans += max(0, last_zero - last_neg);
+				}
+			}
+		}
+	}
+
+	cout << ans << endl;
+	return 0;
 }
 ```
 
