@@ -1,0 +1,100 @@
+---
+id: usaco-1112
+source: USACO Silver 2021 February
+title: Just Green Enough
+author: John Zhou
+---
+
+[Official Analysis (C++, Java)](https://usaco.org/current/data/sol_prob3_silver_feb21.html)
+
+Firstly, let's consider solving this problem in 1D, where we pick intervals from the list $g(j)$, the values for an $1\times N$ pasture.
+
+Let $g'(j)$ be $-1$ if $g(j)<100$, $0$ if $g(j)=100$, and $1$ if $g(j)>100$.
+We must find a range of $j$'s in which there are no $-1$'s, and at least $1$ $0$.
+We precompute $g'(j)$.
+The objective is now counting the amount of intervals with no $-1$'s and at least $1$ $0$.
+
+Next, we sweep $j$ from $1$ to $N$, and keep track of the last index we encounter $0$ and $-1$'s as $j_0$ and $j_{-1}$, respectively.
+For an interval ending at $j$ to be picken, it must include a $0$, so the starting index must be no later than the last $0$ we encounter;
+it also must not include a $-1$, so the starting index must be later than the last $-1$ we encounter.
+Thus, any starting index in the range $(j_{-1}, j_0]$ works, provided it is not degenerate, so we simply accumulate our current value of $\max(0, j_0-j_{-1})$ while we sweep.
+We accumulate if and only if $g'(j)\neq -1$, as a value of $-1$ means we cannot end with this element.
+We initialize both $j_0$ and $j_{-1}$ to $0$, so that they produce no accumulation initially, and that all possibilities of $(0, j_0]$ will be counted if a $-1$ has not occured yet.
+
+Now, we generalize this onto two dimensions, with an $N\times N$ pasture of $G(i, j)$.
+First, we consider the cases where the rectangle starts at $i=1$ and ends at $i=N$.
+Selection-wise, this is essentially our $1$-dimensional case.
+However, this time, we mark $g'(j)$ as $-1$ if any $i$ has $G(i, j)<100$, as any $-1$ blocks selection.
+$g'(j)$ can be marked as $0$ if any $i$ has $G(i, j)=100$, as only $1$ $100$ is needed to select.
+Thus, $g'(j)$ will only be $1$ if all $i$'s have $G(i, j)>100$.
+
+We can now generalize onto the case where the rectangle can start at any $i=i_1$ and end at any $i=i_2\geq i_1$.
+We loop over $i_1$ in the standard fashion;
+at each $i_1$, we reset $g'(j)$ to $1$ (as having no possible $i$'s satisfies "all $i$'s have $G(i, j)>100$).
+Then, we loop over $i_2$ and $j$.
+At each $j$, we update $g'(j)$ appropriately to see if $-1$ or $0$ should be marked here due to $G(i,j)$'s value.
+After the $g'(j)$ update, we proceed as we would in the $1$-dimensional case.
+
+## Implementation
+
+**Time Complexity:** $\mathcal O(N^3)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+using namespace std;
+constexpr int MAX_N = 500;
+// G in problem
+int a[MAX_N+1][MAX_N+1];
+// g' in explanation
+int g_prime[MAX_N+1];
+int main()
+{
+    int n;
+    cin >> n;
+
+    for (int i = 1; i <= n; i++)
+        for (int j = 1; j <= n; j++)
+            cin >> a[i][j];
+
+    long long ans = 0;
+    for (int i1 = 1; i1 <= n; i1++)
+    {
+        // Reset g'
+        for (int j = 1; j <= n; j++)
+            g_prime[j] = 1;
+
+        for (int i2 = i1; i2 <= n; i2++)
+        {
+            // i_0 and i_{-1} in explanation, respectively
+            int last_zero = 0, last_neg = 0;
+            for (int j = 1; j <= n; j++)
+            {
+                // Update g'
+                if (a[i2][j] < 100)
+                    g_prime[j] = -1;
+                if (a[i2][j] == 100 && g_prime[j] != -1)
+                    g_prime[j] = 0;
+                
+                // Update last indices
+                if (g_prime[j] == 0) last_zero = j;
+                if (g_prime[j] == -1) last_neg = j;
+
+                // Accumulate
+                if (g_prime[j] == 0 || g_prime[j] == 1) {
+                    ans += max(0, last_zero - last_neg);
+                }
+            }
+        }
+    }
+
+    cout << ans << endl;
+    return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
