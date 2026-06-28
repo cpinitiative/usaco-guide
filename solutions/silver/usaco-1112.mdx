@@ -16,25 +16,22 @@ We must find a range of $j$'s in which there are no $-1$'s, and at least one $0$
 We precompute $g'(j)$.
 The objective is now counting the number of intervals with no $-1$'s and at least one $0$.
 
-Next, we sweep $j$ from $1$ to $N$, and keep track of the last index we encounter $0$ and $-1$'s as $j_0$ and $j_{-1}$, respectively.
-For an interval ending at $j$ to be picked, it must include a $0$, so the starting index must be no later than the last $0$ we encounter;
-it also must not include a $-1$, so the starting index must be later than the last $-1$ we encounter.
-Thus, any starting index in the range $(j_{-1}, j_0]$ works provided $j_{-1}<j_0$, so we simply accumulate our current value of $\max(0, j_0-j_{-1})$ while we sweep.
-We accumulate at $j$ only if $g'(j)\in{0,1}$, as we cannot end with $g'(j)=-1$.
+Next, we sweep $j$ from $1$ to $N$, and keep track of the last index at which we encounter $0$ and $-1$'s as $j_0$ and $j_{-1}$, respectively.
+For an interval to be picked, it must include a $0$, so the starting index must be no later than the last $0$ we encounter;
+the interval cannot include a $-1$, so the starting index must be later than the last $-1$ we encounter.
+Thus, any starting index in the range $(j_{-1}, j_0]$ works (provided $j_{-1}<j_0$), so we simply accumulate our current value of $\max(0, j_0-j_{-1})$ onto the answer if $g'(j)\in{0,1}$ (as we cannot end with $g'(j)=-1$) while we sweep.
 We initialize both $j_0$ and $j_{-1}$ to $0$, so that they produce no accumulation initially, and that all possibilities of $(0, j_0]$ will be counted if a $-1$ has not occurred yet.
 
 Now, we generalize this onto two dimensions, with an $N\times N$ pasture of $G(i, j)$.
-First, we consider the cases where the rectangle starts at $i=1$ and ends at $i=N$.
-Selection-wise, this is essentially our $1$-dimensional case.
-However, this time, we mark $g'(j)$ as $-1$ if any $i$ has $G(i, j)<100$, as any $-1$ blocks selection.
-$g'(j)$ can be marked as $0$ if any $i$ has $G(i, j)=100$, as only $1$ $100$ is needed to select.
-Thus, $g'(j)$ will only be $1$ if all $i$'s have $G(i, j)>100$.
+First, we consider the cases where the rectangle starts at $i=1$ and ends at $i=N$ vertically.
+This is essentially our $1$-dimensional case in terms of selection possibility.
+For $g'$, however, $g'(j)$ should be marked as $-1$ if any $i$ has $G(i, j)<100$, as any $-1$ blocks selection.
+$g'(j)$ can be marked as $0$ if any $i$ has $G(i, j)=100$, as only one $100$ is needed to select a range.
+This leaves $g'(j)$ as $1$ only if all $i$'s have $G(i, j)>100$.
 
-We can now generalize to the case where the rectangle can start at any $i=i_1$ and end at any $i=i_2\geq i_1$.
-We loop over all possible $i_1$;
-at each $i_1$, we reset $g'(j)$ to $1$ (as having no possible $i$'s satisfies "all $i$'s have $G(i, j)>100$).
-Then, we loop over $i_2$ and $j$.
-At each $j$, we update $g'(j)$ explicitly to see if $-1$ or $0$ should be marked here due to $G(i,j)$'s value.
+We now generalize to the case where the rectangle can start at any $i=i_1$ and end at any $i=i_2\geq i_1$.
+At each possible $i_1$ we enumerate, we reset $g'(j)$ to $1$ (as having no possible $i$'s satisfies "all $i$'s have $G(i, j)>100$"), before we loop over $i_2$ and $j$.
+At each $j$ in the inner loop, we update $g'(j)$ explicitly to account for $G(i_2,j)$'s, the latest addition to values at column $j$ in our selections.
 After the $g'(j)$ update, we proceed as we would in the $1$-dimensional case.
 
 ## Implementation
