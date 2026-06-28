@@ -1,12 +1,16 @@
 import { useState } from 'react';
 import {
+  useDeleteAllUserDataAction,
   useImportUserDataAction,
   useUserData,
 } from '../../context/UserDataContext/UserDataContext';
+import { useUserGroups } from '../../hooks/groups/useUserGroups';
 
 export default function UserData() {
   const userData = useUserData();
   const importUserData = useImportUserDataAction();
+  const deleteAllUserData = useDeleteAllUserDataAction();
+  const userGroups = useUserGroups();
 
   const handleExportUserData = () => {
     const dataStr = `data:text/json;charset=utf-8,${encodeURIComponent(
@@ -103,6 +107,28 @@ export default function UserData() {
           onClick={handleImportUserData}
         >
           Import User Data
+        </button>
+      </div>
+
+      <div>
+        <div className="space-y-1">
+          <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
+            Delete User Data
+          </h3>
+          <p className="max-w-2xl text-sm text-gray-500">
+            Note that this will permanently delete all settings and progress.
+            Use at your own risk!
+          </p>
+        </div>
+
+        <div className="h-4" />
+
+        <button
+          className="focus:shadow-outline-blue inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm leading-5 font-medium text-gray-700 transition duration-150 ease-in-out hover:border-red-300 hover:text-red-700 focus:border-red-300 focus:outline-hidden active:bg-red-50 active:text-red-800 disabled:cursor-not-allowed disabled:text-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:border-red-700 dark:hover:text-red-400 dark:active:bg-red-950 dark:disabled:text-gray-600"
+          disabled={userGroups.isLoading}
+          onClick={() => deleteAllUserData(userGroups.data ?? [])}
+        >
+          Delete All User Data
         </button>
       </div>
     </>
