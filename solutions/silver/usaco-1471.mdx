@@ -57,56 +57,56 @@ The final answer will be the smallest result over all such indices.
 #include <vector>
 using namespace std;
 void solve() {
-    int n, m;
-    cin >> n >> m;
-    vector<long long> a;
-    for (int i = 0; i < n; i++) {
-        long long value;
-        cin >> value;
-        value %= m;
-        a.push_back(value);
-    }
-    sort(a.begin(), a.end());
-    for (int i = 0; i < n; i++) a.push_back(a[i] + m);
-    for (int i = 0; i < n; i++) a.push_back(a[i] + 2 * m);
+	int n, m;
+	cin >> n >> m;
+	vector<long long> a;
+	for (int i = 0; i < n; i++) {
+		long long value;
+		cin >> value;
+		value %= m;
+		a.push_back(value);
+	}
+	sort(a.begin(), a.end());
+	for (int i = 0; i < n; i++) a.push_back(a[i] + m);
+	for (int i = 0; i < n; i++) a.push_back(a[i] + 2 * m);
 
-    vector<long long> prefix_sum;
-    prefix_sum.push_back(a[0]);
-    for (int i = 1; i < 3 * n; i++) prefix_sum.push_back(prefix_sum[i-1] + a[i]);
+	vector<long long> prefix_sum;
+	prefix_sum.push_back(a[0]);
+	for (int i = 1; i < 3 * n; i++) prefix_sum.push_back(prefix_sum[i - 1] + a[i]);
 
-    long long ans = 9e18;
-    for (int i = n; i < 2 * n; i++) {
+	long long ans = 9e18;
+	for (int i = n; i < 2 * n; i++) {
 		// Compute minimum total difference from each a[i] to the x.
 		// We treat "median" as the right median if n is even, and decomposite
 		// into left and right calculations (since absolute value argument sign
 		// changes)
-        long long cost = 0;
-		
-		// Compute cost for difference between all elements on the left (smaller) to the current value
-        if (n % 2 == 0) {
+		long long cost = 0;
+
+		// Compute cost for difference between all elements on the left (smaller) to the
+		// current value
+		if (n % 2 == 0) {
 			// If n is even, then sum for the next n/2 - 1 elements.
 			// This is sum of (a[j] - a[i]) from j = i-(n/2-1) to j=i-1.
 			// The a[i] gets factored out of the sum, and results in the below:
-            cost += a[i] * (n / 2 - 1) - (prefix_sum[i-1] - prefix_sum[i - n/2]);
-        }
-        else {
+			cost += a[i] * (n / 2 - 1) - (prefix_sum[i - 1] - prefix_sum[i - n / 2]);
+		} else {
 			// For n/2 elements
 			// This is sum of (a[j] - a[i]) from j = i-(n/2) to j=i-1.
-            cost += a[i] * (n / 2) - (prefix_sum[i-1] - prefix_sum[i - n/2 - 1]);
-        }
+			cost += a[i] * (n / 2) - (prefix_sum[i - 1] - prefix_sum[i - n / 2 - 1]);
+		}
 
 		// Right side of the current value (larger).  Always n/2 elements to the
 		// right. Sum of a[j] - a[i] from j=i+1 to j=i+n/2.
-        cost += (prefix_sum[i+n/2] - prefix_sum[i]) - a[i] * (n / 2);
-        ans = min(ans, cost);
-    }
-    cout << ans << endl;
+		cost += (prefix_sum[i + n / 2] - prefix_sum[i]) - a[i] * (n / 2);
+		ans = min(ans, cost);
+	}
+	cout << ans << endl;
 }
 int main() {
-    int num_cases;
-    cin >> num_cases;
-    for (int test = 0; test < num_cases; test++) solve();
-    return 0;
+	int num_cases;
+	cin >> num_cases;
+	for (int test = 0; test < num_cases; test++) solve();
+	return 0;
 }
 ```
 
