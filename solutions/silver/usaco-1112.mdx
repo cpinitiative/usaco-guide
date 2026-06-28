@@ -14,14 +14,14 @@ Firstly, let's consider solving this problem in 1D, where we pick intervals from
 Let $g'(j)$ be $-1$ if $g(j)<100$, $0$ if $g(j)=100$, and $1$ if $g(j)>100$.
 We must find a range of $j$'s in which there are no $-1$'s, and at least one $0$.
 We precompute $g'(j)$.
-The objective is now counting the amount of intervals with no $-1$'s and at least one $0$.
+The objective is now counting the number of intervals with no $-1$'s and at least one $0$.
 
 Next, we sweep $j$ from $1$ to $N$, and keep track of the last index we encounter $0$ and $-1$'s as $j_0$ and $j_{-1}$, respectively.
-For an interval ending at $j$ to be picken, it must include a $0$, so the starting index must be no later than the last $0$ we encounter;
+For an interval ending at $j$ to be picked, it must include a $0$, so the starting index must be no later than the last $0$ we encounter;
 it also must not include a $-1$, so the starting index must be later than the last $-1$ we encounter.
 Thus, any starting index in the range $(j_{-1}, j_0]$ works, provided it is not degenerate, so we simply accumulate our current value of $\max(0, j_0-j_{-1})$ while we sweep.
 We accumulate if and only if $g'(j)\neq -1$, as a value of $-1$ means we cannot end with this element.
-We initialize both $j_0$ and $j_{-1}$ to $0$, so that they produce no accumulation initially, and that all possibilities of $(0, j_0]$ will be counted if a $-1$ has not occured yet.
+We initialize both $j_0$ and $j_{-1}$ to $0$, so that they produce no accumulation initially, and that all possibilities of $(0, j_0]$ will be counted if a $-1$ has not occurred yet.
 
 Now, we generalize this onto two dimensions, with an $N\times N$ pasture of $G(i, j)$.
 First, we consider the cases where the rectangle starts at $i=1$ and ends at $i=N$.
@@ -30,7 +30,7 @@ However, this time, we mark $g'(j)$ as $-1$ if any $i$ has $G(i, j)<100$, as any
 $g'(j)$ can be marked as $0$ if any $i$ has $G(i, j)=100$, as only $1$ $100$ is needed to select.
 Thus, $g'(j)$ will only be $1$ if all $i$'s have $G(i, j)>100$.
 
-We can now generalize onto the case where the rectangle can start at any $i=i_1$ and end at any $i=i_2\geq i_1$.
+We can now generalize to the case where the rectangle can start at any $i=i_1$ and end at any $i=i_2\geq i_1$.
 We loop over $i_1$ in the standard fashion;
 at each $i_1$, we reset $g'(j)$ to $1$ (as having no possible $i$'s satisfies "all $i$'s have $G(i, j)>100$).
 Then, we loop over $i_2$ and $j$.
@@ -42,7 +42,6 @@ After the $g'(j)$ update, we proceed as we would in the $1$-dimensional case.
 **Time Complexity:** $\mathcal O(N^3)$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
