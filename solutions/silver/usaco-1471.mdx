@@ -1,0 +1,115 @@
+---
+id: usaco-1471
+source: USACO Silver 2025 January
+title: Farmer John's Favorite Operation
+author: John Zhou
+---
+
+[Official Analysis (C++, Python)](https://usaco.org/current/data/sol_prob2_silver_jan25.html)
+
+## Explanation
+
+Let $a$ be $0$-indexed.
+
+The problem asks us to optimize the total distance between each $a_i$ to a fixed number $x$ under modulus $M$.
+Thus, let us first consider this problem without the modulus.
+
+By a well-known property regarding medians, letting $x$ be the *median* of those numbers minimizes the total distance.
+In the case that $N$ is even, any number between the two numbers in the middle (inclusive) would work.
+
+<Spoiler title="Intuition on this property">
+
+Let $m_1=m_2=a_{\lfloor N/2\rfloor +1}$ if $N$ is odd;
+otherwise, let $m_1=a_{N/2}$ and $m_2=a_{N/2+1}$.
+We note that there are an equal number of indicies to the left and right of $[m_1, m_2]$, so anything in $[m_1, m_2]$ is considered an optimal median range.
+
+For the sake of condition, suppose $x$ is outside the range.  Without loss of generality, suppose $x<m_1$.
+
+If we increment $x$ by $1$, distances from all $a_i > x$ will reduce by $1$;
+on the other hand, distances from all $a_i < x$ will increase by $1$.
+Since $x$ is to the left of the median range, this means that there are more $a_i > x$ then $a_i < x$.
+Thus, moving $x$ closer to the median range decreases the total difference, which means that the median range is always optimal.
+
+</Spoiler>
+
+Now, we consider the problem when there is a modulus.
+First, we mod each number by $M$.
+Under a modulus, we note that it is possible to make *any* number a median by subtracting $M$ from an appropriate amount of largest elements, or by adding $M$ to an appropriate amount of smallest elements.
+For example, given $[1,3,7,9,13,17,19]$ under mod $24$, we can make $17$ the medium by adding $24$ to $1$ and $3$, resulting in $[7,9,13,17,19,25,27]$.
+
+We thus prepend $a_i$ subtracted by $M$ and append the $a_i$ increased by $M$ to $a$.
+The range $[n, 2n)$ in $a$ will be the original elements;
+we enumerate over them, and compute the amount of elements before and after the original element we choose to make the latter a median, and compute the total absolute difference using Prefix Sums.
+
+The final answer will be the smallest result over all such indices.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+using namespace std;
+void solve() {
+    int n, m;
+    cin >> n >> m;
+    vector<long long> a;
+    for (int i = 0; i < n; i++) {
+        long long value;
+        cin >> value;
+        value %= m;
+        a.push_back(value);
+    }
+    sort(a.begin(), a.end());
+    for (int i = 0; i < n; i++) a.push_back(a[i] + m);
+    for (int i = 0; i < n; i++) a.push_back(a[i] + 2 * m);
+
+    vector<long long> prefix_sum;
+    prefix_sum.push_back(a[0]);
+    for (int i = 1; i < 3 * n; i++) prefix_sum.push_back(prefix_sum[i-1] + a[i]);
+
+    long long ans = 9e18;
+    for (int i = n; i < 2 * n; i++) {
+		// Compute minimum total difference from each a[i] to the x.
+		// We treat "median" as the right median if n is even, and decomposite
+		// into left and right calculations (since absolute value argument sign
+		// changes)
+        long long cost = 0;
+		
+		// Compute cost for difference between all elements on the left (smaller) to the current value
+        if (n % 2 == 0) {
+			// If n is even, then sum for the next n/2 - 1 elements.
+			// This is sum of (a[j] - a[i]) from j = i-(n/2-1) to j=i-1.
+			// The a[i] gets factored out of the sum, and results in the below:
+            cost += a[i] * (n / 2 - 1) - (prefix_sum[i-1] - prefix_sum[i - n/2]);
+        }
+        else {
+			// For n/2 elements
+			// This is sum of (a[j] - a[i]) from j = i-(n/2) to j=i-1.
+            cost += a[i] * (n / 2) - (prefix_sum[i-1] - prefix_sum[i - n/2 - 1]);
+        }
+
+		// Right side of the current value (larger).  Always n/2 elements to the
+		// right. Sum of a[j] - a[i] from j=i+1 to j=i+n/2.
+        cost += (prefix_sum[i+n/2] - prefix_sum[i]) - a[i] * (n / 2);
+        ans = min(ans, cost);
+    }
+    cout << ans << endl;
+}
+int main() {
+    int num_cases;
+    cin >> num_cases;
+    for (int test = 0; test < num_cases; test++) solve();
+    return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
