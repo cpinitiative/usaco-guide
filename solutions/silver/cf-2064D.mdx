@@ -9,14 +9,12 @@ author: Abhinav Singh
 
 ## Explanation
 
-Suppose the added slime has initial weight $x$. If it eats the last slime $w_{n-1}$, its weight becomes $$x \oplus w_{n-1}.$$ If it also eats $w_{n-2}$, its weight becomes
-$$(x \oplus w_{n-1}) \oplus w_{n-2} = x \oplus w_{n-1} \oplus w_{n-2},$$
-since XOR is associative. Continuing this process, after eating the last $k$ slimes, its weight is
-
+Suppose the added slime has initial weight $x$.
+Since XOR is associative, its weight after eating $k$ slimes is
 
 $$x \oplus w_{n-k} \oplus w_{n-k+1} \oplus \cdots \oplus w_{n-1}.$$
 
-This motivates us to definine **suffix XOR** values:
+Thus, we definine **suffix XOR** values:
 $$\text{suf}[i] = w_{i+1} \oplus w_{i+2} \oplus \cdots \oplus w_{n-1},$$
 with $\text{suf}[n-1] = 0$. Then, after eating $k$ slimes, the slime's weight is simply $$x \oplus \text{suf}[n-k-1].$$
 Hence, when it attempts to eat the slime at position $i$, its current weight is $x \oplus \text{suf}[i]$. It succeeds if and only if $$x \oplus \text{suf}[i] \ge w_i.$$ Therefore, the answer to a query is the number of consecutive slimes it can eat from the right before this inequality first fails.
@@ -58,40 +56,29 @@ struct BinaryTrie {
 
 	void add(int val) {
 		int x = 0;
-
 		for (int i = MAX_BIT; i >= 0; --i) {
 			trie[x].cnt++;
-
 			int b = (val >> i) & 1;
-
 			if (trie[x].child[b] == -1) { trie[x].child[b] = new_node(); }
-
 			x = trie[x].child[b];
 		}
-
 		trie[x].cnt++;
 	}
 
 	void remove(int val) {
 		int x = 0;
-
 		for (int i = MAX_BIT; i >= 0; --i) {
 			trie[x].cnt--;
-
 			int b = (val >> i) & 1;
-
 			x = trie[x].child[b];
 		}
-
 		trie[x].cnt--;
 	}
 
 	int min_xor(int x) {
 		int node = 0, res = 0;
-
 		for (int i = MAX_BIT; i >= 0; --i) {
 			int b = (x >> i) & 1;
-
 			if (trie[node].child[b] != -1 && trie[trie[node].child[b]].cnt > 0) {
 				node = trie[node].child[b];
 			} else {
@@ -99,19 +86,16 @@ struct BinaryTrie {
 				node = trie[node].child[b ^ 1];
 			}
 		}
-
 		return res;
 	}
 };
 // EndCodeSnip{}
 
 int main() {
-
 	int test_num;
 	cin >> test_num;
 
 	for (int t = 0; t < test_num; test_num++) {
-
 		int n, q;
 		cin >> n >> q;
 
@@ -121,44 +105,32 @@ int main() {
 		vector<long long> queries(q);
 
 		BinaryTrie trie;
-
 		for (int i = 0; i < q; i++) {
 			cin >> queries[i];
 			trie.add((int)queries[i]);
 		}
 
 		map<long long, long long> answer;
-
 		long long curx = 0;
 		long long processed = 0;
-
 		for (int i = n - 1; i >= 0; --i) {
-
 			while (processed < q) {
-
 				long long best_xor_value = trie.min_xor((int)curx);
-
 				if (best_xor_value < w[i]) {
-
 					long long v = best_xor_value ^ curx;
-
 					answer[v] = n - i - 1;
-
 					trie.remove((int)v);
 					processed++;
 				} else {
 					break;
 				}
 			}
-
 			curx ^= w[i];
 		}
 
 		for (long long v : queries) { cout << answer.count(v) ? answer[v] : n << " "; }
-
 		cout << '\n';
 	}
-
 	return 0;
 }
 ```
