@@ -1,0 +1,126 @@
+---
+id: cf-1476E
+source: CF
+title: Pattern Matching
+author: Abhinav Singh
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/87356)
+
+
+## Explanation
+
+We are given patterns of length $k$ containing lowercase letters and `_`,which are just positions which can become **any** letter, and queries consisting of strings with a required pattern index. We realise a string matches a pattern if all the characters at the non-`_` indices are the same.
+We want to find an ordering of the patterns such that for each query $(s, p)$, the pattern $p$ is the **first** match for $s$ in that ordering, or every other pattern in $S$ (the set of all patterns matching $s$) must appear after $p$.
+
+For each query $(s,p)$, let $S$ be the set of all matching patterns and let $p$ be the required one. We are told to find an ordering of patterns such that for every query, $p$ appears before every other pattern in $S$. Each requirement is just a **precedence constraint**, i.e $p$ must come before $x$, that we model as a directed edge $p \to x$. 
+
+A valid ordering then corresponds to a topological sort of the resulting graph: if the constraints are consistent, any topological order works; if two constraints contradict each other (e.g. $p \to x$ and $x \to p$), a cycle forms and no valid ordering exists.
+ 
+To compute $S$, note that since $k \le 4$, each query string has at most $2^k \le 16$ wildcard variants, obtained by replacing subsets of positions with `_`.
+We store a hashmap from pattern string to index and look up each variant to collect all matching patterns efficiently.
+ 
+For each query:
+1. Generate $S$ via the $2^k$ wildcard variants.
+2. If $p \notin S$, immediately output `NO`.
+3. Otherwise, add directed edges $p \to x$ for all $x \in S$, $x \neq p$.
+After processing all queries, run a topological sort on the pattern graph. If a cycle exists, print `NO`; otherwise, output the topological order.
+
+## Implementation
+Since $k \le 4$, each query generates at most $2^k = 16$ variants, so building the graph takes $\mathcal{O}(m \cdot 2^k)$ time. The topological sort runs in
+$\mathcal{O}(n + m \cdot 2^k)$, giving an overall complexity of $\mathcal{O}(n + m \cdot 2^k)$.
+
+<LanguageSection>
+<CPPSection>
+  
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+ 
+vector<vector<int>> adj;
+vector<int> color;     // 0 = unvisited, 1 = in current DFS path, 2 = fully processed
+vector<int> topo_order;
+ 
+// Returns false if a cycle is detected
+bool dfs(int u) {
+	color[u] = 1;
+	for (int v : adj[u]) {
+		if (color[v] == 1) return false;  // back edge = cycle
+		if (color[v] == 0) {
+			bool no_cycle = dfs(v);
+			if (!no_cycle) return false;
+		}
+	}
+	color[u] = 2;
+	topo_order.push_back(u);
+	return true;
+}
+ 
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+ 
+	int n, m, k;
+	cin >> n >> m >> k;
+ 
+	// Map from pattern string to its 0-indexed position in input
+	unordered_map<string, int> pat_idx;
+	for (int i = 0; i < n; i++) {
+		string s; cin >> s;
+		pat_idx[s] = i;
+	}
+ 
+	vector<pair<string, int>> queries(m);
+	vector<vector<int>> matches(m);  // matches[i] = indices of all patterns that match query i
+ 
+	for (int i = 0; i < m; i++) {
+		cin >> queries[i].first >> queries[i].second;
+		queries[i].second--;  // convert to 0-indexed
+ 
+		int req = queries[i].second;
+		string query_str = queries[i].first;
+ 
+		// Try all 2^k subsets of positions replaced by '_' to find matching patterns
+		for (int mask = 0; mask < (1 << k); mask++) {
+			string variant = query_str;
+			for (int j = 0; j < k; j++)
+				if (mask >> j & 1) variant[j] = '_';
+			if (pat_idx.count(variant))
+				matches[i].push_back(pat_idx[variant]);
+		}
+ 
+		// The required pattern must itself match the query string
+		bool req_found = false;
+		for (int x : matches[i]) if (x == req) { req_found = true; break; }
+		if (!req_found) { cout << "NO\n"; return 0; }
+	}
+ 
+	// Build the constraint graph: an edge from req -> x means req must appear before x
+	adj.assign(n, {});
+	color.assign(n, 0);
+ 
+	for (int i = 0; i < m; i++) {
+		int req = queries[i].second;
+		for (int x : matches[i])
+			if (x != req) adj[req].push_back(x);
+	}
+ 
+	// Topological sort via DFS; cycle means constraints are contradictory
+	for (int i = 0; i < n; i++) {
+		if (color[i] == 0) {
+			bool no_cycle = dfs(i);
+			if (!no_cycle) { cout << "NO\n"; return 0; }
+		}
+	}
+ 
+	reverse(topo_order.begin(), topo_order.end());
+	cout << "YES\n";
+	for (int x : topo_order) cout << x + 1 << " ";
+	cout << "\n";
+ 
+	return 0;
+}
+```
+</CPPSection>
+</LanguageSection>
+
