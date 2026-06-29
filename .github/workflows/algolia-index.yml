@@ -1,0 +1,48 @@
+name: Algolia Index
+# Reindexes Algolia only when content changes, instead of on every Vercel build.
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'content/**'
+      - 'solutions/**'
+      - 'scripts/algolia-index.ts'
+      - 'scripts/index-content.ts'
+      - 'src/utils/algolia-queries.ts'
+      - 'src/utils/extract-searchable-text.ts'
+  workflow_dispatch:
+
+jobs:
+  algolia-index:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          corepack: true
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Cache node modules
+        uses: actions/cache@v4
+        id: cache-node-modules
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - run: yarn
+      - name: Build content database
+        run: yarn prebuild
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+      - name: Index to Algolia
+        run: yarn algolia-index
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+          ALGOLIA_APP_ID: ${{ secrets.ALGOLIA_APP_ID }}
+          ALGOLIA_API_KEY: ${{ secrets.ALGOLIA_API_KEY }}
+          NEXT_PUBLIC_ALGOLIA_INDEX_NAME: ${{ secrets.ALGOLIA_INDEX_NAME }}
