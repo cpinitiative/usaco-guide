@@ -62,23 +62,21 @@ int32_t main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(nullptr);
 
-	freopen("rental.in","r",stdin);
-	freopen("rental.out","w",stdout);
+	freopen("rental.in", "r", stdin);
+	freopen("rental.out", "w", stdout);
 
-	int n,m,r;
+	int n, m, r;
 	cin >> n >> m >> r;
 
 	vector<int> cows(n);
-	for (int i = 0; i < n; i++) {
-		cin >> cows[i];
-	}
-	sort(cows.begin(),cows.end());
+	for (int i = 0; i < n; i++) { cin >> cows[i]; }
+	sort(cows.begin(), cows.end());
 
-	vector<pair<int,int>> orders(m);
-	for (int i = 0; i < m; i++) {
-		cin >> orders[i].first >> orders[i].second;
-	}
-	sort(orders.begin(),orders.end(),[](pair<int,int> a,pair<int,int> b) {return a.second > b.second; }); // sort by p_i
+	vector<pair<int, int>> orders(m);
+	for (int i = 0; i < m; i++) { cin >> orders[i].first >> orders[i].second; }
+	sort(orders.begin(), orders.end(), [](pair<int, int> a, pair<int, int> b) {
+		return a.second > b.second;
+	});  // sort by p_i
 
 	// calculate prefix sums
 	vector<int> milk_pre(m + 1);
@@ -88,31 +86,40 @@ int32_t main() {
 		cents_pre[i + 1] = cents_pre[i] + orders[i].second * orders[i].first;
 	}
 
-	priority_queue<int> rent_orders; // only the max rent order is considered and consumed, so we can use a priority queue
+	priority_queue<int> rent_orders;  // only the max rent order is considered and
+	                                  // consumed, so we can use a priority queue
 	for (int i = 0; i < r; i++) {
-		int rent_order; cin >> rent_order;
+		int rent_order;
+		cin >> rent_order;
 		rent_orders.push(rent_order);
 	}
 
-	int rent_idx = 0,sell_idx = n - 1; // we greedily consume cows from the ends
+	int rent_idx = 0, sell_idx = n - 1;  // we greedily consume cows from the ends
 	int total_sold = 0;
 	int total_sell_money = 0;
 	int profit = 0;
 	while (rent_idx <= sell_idx) {
 		// option 1: sell all milk of most productive cow
-		int buyer_idx = distance(milk_pre.begin(),lower_bound(milk_pre.begin(),milk_pre.end(),total_sold + cows[sell_idx])) - 1; // binary search for total sold milk + current cow's milk
-		int sell_money = buyer_idx < m ? (cents_pre[buyer_idx + 1] - (milk_pre[buyer_idx + 1] - (total_sold + cows[sell_idx])) * orders[buyer_idx].second - total_sell_money):cents_pre.back() - total_sell_money;
+		int buyer_idx =
+		    distance(milk_pre.begin(), lower_bound(milk_pre.begin(), milk_pre.end(),
+		                                           total_sold + cows[sell_idx])) -
+		    1;  // binary search for total sold milk + current cow's milk
+		int sell_money =
+		    buyer_idx < m ? (cents_pre[buyer_idx + 1] -
+		                     (milk_pre[buyer_idx + 1] - (total_sold + cows[sell_idx])) *
+		                         orders[buyer_idx].second -
+		                     total_sell_money)
+		                  : cents_pre.back() - total_sell_money;
 
 		// option2: rent out least productive cow
-		int rent_money = rent_orders.empty() ? 0:rent_orders.top();
+		int rent_money = rent_orders.empty() ? 0 : rent_orders.top();
 
 		if (sell_money >= rent_money) {
 			profit += sell_money;
 			total_sold += cows[sell_idx];
 			total_sell_money += sell_money;
 			sell_idx--;
-		}
-		else {
+		} else {
 			profit += rent_money;
 			rent_idx++;
 			rent_orders.pop();
