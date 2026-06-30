@@ -21,8 +21,8 @@ All three solutions below process each query in $O(\log n)$ or $O(\log^2 n)$, gi
 
 ### Solution 1 - Indexed Set
 
-Store the **original indices** of all still-present elements in an [indexed set](/gold/PURS#finding-the-k-th-element). 
-This C++ builtin data structure can process queries of the form "remove element at position $p$", and can 
+Store the **original indices** of all still-present elements in an [indexed set](/gold/PURS#finding-the-k-th-element).
+This C++ builtin data structure can process queries of the form "remove element at position $p$", and can
 also access the original index at a position in $O(\log n)$ time using `find_by_order`.
 
 
@@ -127,7 +127,7 @@ int main() {
 	cin >> n;
 
 	vector<int> values(n + 1);
-    BIT<int> bit(n + 1);
+	BIT<int> bit(n + 1);
 
 	for (int i = 1; i <= n; i++) cin >> values[i];
 	for (int i = 1; i <= n; i++) bit.add(i, 1);
@@ -186,7 +186,7 @@ template <class T> class SumSegmentTree {
 		segtree[at] = combine(segtree[2 * at], segtree[2 * at + 1]);
 	}
 
-    int remove_kth(int at, int at_left, int at_right, int k) {
+	int remove_kth(int at, int at_left, int at_right, int k) {
 		segtree[at]--;
 		if (at_left == at_right) return at_left;
 		int mid = (at_left + at_right) / 2;
@@ -202,10 +202,7 @@ template <class T> class SumSegmentTree {
 		build(arr, 1, 1, len);
 	}
 
-    int remove_kth(int pos) {
-        return remove_kth(1, 1, len, pos);
-    }
-
+	int remove_kth(int pos) { return remove_kth(1, 1, len, pos); }
 };
 // EndCodeSnip
 
@@ -215,7 +212,7 @@ int main() {
 
 	vector<int> values(n + 1);
 	for (int i = 1; i <= n; i++) cin >> values[i];
-    SumSegmentTree<int> seg(vector<int> (n + 1, 1));
+	SumSegmentTree<int> seg(vector<int>(n + 1, 1));
 
 	for (int q = 0; q < n; q++) {
 		int query_pos;
