@@ -1,0 +1,86 @@
+---
+id: cf-412D
+source: CF
+title: Giving Awards
+author: John Zhou
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/11756)
+
+## Explanation
+
+Since there are no restrictions of both $u,v$ and $v,u$, it is always possible for $a_i$ to follow $b_i$ either directly or indirectly in each restriction; if we make this happen all the time (except in cyclic situations as described below), then we’d get a working configuration.
+
+Construct a directed graph with edges $a_i\to b_i$, where we call $b_i$ the neighbor of $a_i$ for each $i$.
+It is possible to make all nodes come after all its neighbors if there is no cycles in this graph.
+If there is, we can neglect an edge in a cycle, which still gives a viable configuration, as the cycles are at least of size $3$, meaning the two vertices associated with the edge we break will not be adjacent in the first place, so their direction does not matter.
+
+We use a flood fill DFS to traverse all the nodes; at each node, we DFS all its neighbors before outputting the current node number.
+This ensures that all neighbors of a vertex come before itself.
+In case of a cycle, we would revisit an already-visited vertex, which we can safely skip as breaking an edge is permissible.
+
+We start DFS’ing from each node of it is not already visited. 
+Note that it is possible for a non-visited node to be a neighbor of some other vertex; however, we still DFS it and mark it as visited, as the other vertex would be visited later in another DFS, where the current vertex will be skipped.
+That is still correct, as we’ve already done the DFS on that vertex now.
+
+## Implementation
+
+**Time complexity:** $\mathcal O(n+m)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <cstring>
+
+using namespace std;
+
+vector<int> graph[30005];
+bool visited[30005];
+
+void dfs(int current)
+{
+    // skip if visited
+    if (visited[current]) {
+        return;
+    }
+    visited[current] = true;
+    
+    // visit neighbors
+    for (int i = 0; i < graph[current].size(); i++) {
+        dfs(graph[current][i]);
+    }
+    
+    cout << current << ' ';
+}
+
+int main()
+{
+    int n, m;
+    cin >> n >> m;
+    
+    for (int i = 0; i < m; i++) {
+        int u, v;
+        cin >> u >> v;
+        graph[u].push_back(v);
+    }
+    
+    memset(visited, 0, sizeof(visited));
+    
+    for (int i = 1; i <= n; i++) {
+        if (!visited[i]) {
+            dfs(i);
+        }
+    }
+    
+    cout << endl;
+    return 0;
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
