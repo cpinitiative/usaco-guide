@@ -10,9 +10,10 @@ author: Abhinav Singh
 
 ## Explanation
 
-We are given patterns of length $k$ containing lowercase letters and `_`,which are just positions which can become **any** letter, and queries consisting of strings with a required pattern index. We realise a string matches a pattern if all the characters at the non-`_` indices are the same.
-Let $S$ be the set of all patterns matching $s$.
-Thus, for each query $(s, p)$, the pattern $p$ is the **first** element in $S$ in the ordering, and all further elements of $S$ must appear after $p$.
+We are given patterns of length $k$ containing lowercase letters and `_`, and queries consisting of strings with a required pattern index. For a string to match a pattern, all non-`_` indices in the pattern must match with the string.
+
+For each query $(s, p)$, let $S$ be the set of all patterns matching $s$.
+The pattern $p$ should be the **first** element in $S$ in the ordering, and all other elements of $S$ must appear after $p$.
 Each requirement is therefore a **precedence constraint**, where $p$ cannot come before any other elements in $S$.
 We model these as directed edges, $p \to x$, where $x$ is any non-$p$ element in $S$.
 
