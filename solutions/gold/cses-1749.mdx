@@ -21,7 +21,9 @@ All three solutions below process each query in $O(\log n)$ or $O(\log^2 n)$, gi
 
 ### Solution 1 - Indexed Set
 
-Store the **original indices** of all still-present elements in an [indexed set](/gold/PURS#finding-the-k-th-element). This C++ builtin data structure can process queries of the form "remove element at position $p$", and can also access the original index at a position in $O(\log n)$ time using `find_by_order`.
+Store the **original indices** of all still-present elements in an [indexed set](/gold/PURS#finding-the-k-th-element). 
+This C++ builtin data structure can process queries of the form "remove element at position $p$", and can 
+also access the original index at a position in $O(\log n)$ time using `find_by_order`.
 
 
 <LanguageSection>
@@ -70,7 +72,8 @@ int main() {
 We maintain a Binary Indexed Tree (BIT) where each position is initialized to `1` (present) and gets set to `0` when removed.
 The prefix sum `prefix_sum(i)` then counts how many elements are still present in positions $1$ through $i$.
 
-To find the original index of the $k$-th remaining element, binary search for the smallest index where `prefix_sum(index) == k`. Each step of the binary search does a BIT query, giving $O(\log^2 n)$ per operation.
+To find the original index of the $k$-th remaining element, binary search for the smallest index where
+`prefix_sum(index) == k`. Each step of the binary search does a BIT query, giving $O(\log^2 n)$ per operation.
 
 <LanguageSection>
 <CPPSection>
@@ -79,47 +82,62 @@ To find the original index of the $k$-th remaining element, binary search for th
 #include <bits/stdc++.h>
 using namespace std;
 
-const int MAXN = 2e5 + 5;
+int n;
 
-struct BIT {
-	int tree[MAXN] = {};
-	int n;
-	void update(int pos, int delta) {
-		for (; pos <= n; pos += pos & -pos) tree[pos] += delta;
+// BeginCodeSnip{BIT Code (from PURS module)}
+template <class T> class BIT {
+  private:
+	int size;
+	vector<T> bit;
+	vector<T> arr;
+
+  public:
+	BIT(int size) : size(size), bit(size + 1), arr(size) {}
+
+	void set(int ind, T val) { add(ind, val - arr[ind]); }
+
+	void add(int ind, T val) {
+		arr[ind] += val;
+		ind++;
+		for (; ind <= size; ind += ind & -ind) { bit[ind] += val; }
 	}
-	int prefix_sum(int pos) {
-		int result = 0;
-		for (; pos > 0; pos -= pos & -pos) result += tree[pos];
-		return result;
+
+	T pref_sum(int ind) {
+		ind++;
+		T total = 0;
+		for (; ind > 0; ind -= ind & -ind) { total += bit[ind]; }
+		return total;
 	}
-} presence;
+};
+// EndCodeSnip
 
 // Binary search for smallest index where prefix_sum == target
-int find_kth(int target) {
-	int lo = 1, hi = presence.n;
+int find_kth(int target, BIT<int> &bit) {
+	int lo = 1, hi = n;
 	while (lo < hi) {
 		int mid = (lo + hi) / 2;
-		if (presence.prefix_sum(mid) >= target) hi = mid;
+		if (bit.pref_sum(mid) >= target) hi = mid;
 		else lo = mid + 1;
 	}
 	return lo;
 }
 
 int main() {
-	cin.tie(0)->sync_with_stdio(0);
-	cin >> presence.n;
-	int n = presence.n;
+
+	cin >> n;
 
 	vector<int> values(n + 1);
+    BIT<int> bit(n + 1);
+
 	for (int i = 1; i <= n; i++) cin >> values[i];
-	for (int i = 1; i <= n; i++) presence.update(i, 1);
+	for (int i = 1; i <= n; i++) bit.add(i, 1);
 
 	for (int q = 0; q < n; q++) {
 		int query_pos;
 		cin >> query_pos;
-		int original_idx = find_kth(query_pos);
+		int original_idx = find_kth(query_pos, bit);
 		cout << values[original_idx] << " \n"[q == n - 1];
-		presence.update(original_idx, -1);
+		bit.add(original_idx, -1);
 	}
 }
 ```
@@ -130,7 +148,7 @@ int main() {
 
 ### Solution 3 - Segment Tree
 
-Build a segment tree where each node stores the count of present
+Build a segment tree where each node stores the count of the present
 elements in its range. To find the $k$-th remaining element,
 [walk down the tree](/plat/segtree-ext?lang=cpp#walking-on-a-segment-tree) as follows: if the left child
 contains $\geq k$ elements, recurse left; otherwise, subtract the
@@ -144,48 +162,65 @@ This finds the answer in $O(\log n)$ by descending exactly one root-to-leaf path
 
 ```cpp
 #include <bits/stdc++.h>
+
 using namespace std;
 
-const int MAXN = 2e5 + 5;
+// BeginCodeSnip{Segment Tree}
+template <class T> class SumSegmentTree {
+  private:
+	const T DEFAULT = 0;
 
-struct SegTree {
-	int cnt[4 * MAXN];
+	int len;
+	vector<T> segtree;
 
-	void build(int node, int lo, int hi) {
-		if (lo == hi) {
-			cnt[node] = 1;
+	T combine(const T &a, const T &b) { return a + b; }
+
+	void build(const vector<T> &arr, int at, int at_left, int at_right) {
+		if (at_left == at_right) {
+			segtree[at] = arr[at_left];
 			return;
 		}
-		int mid = (lo + hi) / 2;
-		build(2 * node, lo, mid);
-		build(2 * node + 1, mid + 1, hi);
-		cnt[node] = cnt[2 * node] + cnt[2 * node + 1];
+		int mid = (at_left + at_right) / 2;
+		build(arr, 2 * at, at_left, mid);
+		build(arr, 2 * at + 1, mid + 1, at_right);
+		segtree[at] = combine(segtree[2 * at], segtree[2 * at + 1]);
 	}
 
-	// Remove the k-th present element; return its original 1-indexed position
-	int remove_kth(int node, int lo, int hi, int k) {
-		cnt[node]--;
-		if (lo == hi) return lo;
-		int mid = (lo + hi) / 2;
-		if (cnt[2 * node] >= k) return remove_kth(2 * node, lo, mid, k);
-		else return remove_kth(2 * node + 1, mid + 1, hi, k - cnt[2 * node]);
+    int remove_kth(int at, int at_left, int at_right, int k) {
+		segtree[at]--;
+		if (at_left == at_right) return at_left;
+		int mid = (at_left + at_right) / 2;
+		if (segtree[2 * at] >= k) return remove_kth(2 * at, at_left, mid, k);
+		else return remove_kth(2 * at + 1, mid + 1, at_right, k - segtree[2 * at]);
 	}
-} seg;
+
+  public:
+	SumSegmentTree(int len) : len(len) { segtree = vector<T>(len * 4, DEFAULT); };
+
+	SumSegmentTree(const vector<T> &arr) : len(arr.size()) {
+		segtree = vector<T>(len * 4, DEFAULT);
+		build(arr, 1, 1, len);
+	}
+
+    int remove_kth(int pos) {
+        return remove_kth(1, 1, len, pos);
+    }
+
+};
+// EndCodeSnip
 
 int main() {
-	cin.tie(0)->sync_with_stdio(0);
 	int n;
 	cin >> n;
 
 	vector<int> values(n + 1);
 	for (int i = 1; i <= n; i++) cin >> values[i];
-
-	seg.build(1, 1, n);
+    SumSegmentTree<int> seg(vector<int> (n + 1, 1));
 
 	for (int q = 0; q < n; q++) {
 		int query_pos;
 		cin >> query_pos;
-		int original_idx = seg.remove_kth(1, 1, n, query_pos);
+		int original_idx = seg.remove_kth(query_pos);
 		cout << values[original_idx] << " \n"[q == n - 1];
 	}
 }
