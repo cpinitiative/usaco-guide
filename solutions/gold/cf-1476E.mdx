@@ -22,9 +22,11 @@ To compute $S$, note that since $k \le 4$, each query string has at most $2^k \l
 We store a hashmap from pattern string to index and look up each variant to collect all matching patterns efficiently.
 
 For each query:
-1. Generate $S$ via the $2^k$ wildcard variants.
+
+1. Generate $S$ by enumerating all $2^k$ wildcard variants.
 2. If $p \notin S$, immediately output `NO`.
 3. Otherwise, add directed edges $p \to x$ for all $x \in S$, $x \neq p$.
+
 After processing all queries, run a topological sort on the pattern graph. If a cycle exists, print `NO`; otherwise, output the topological order.
 
 ## Implementation
