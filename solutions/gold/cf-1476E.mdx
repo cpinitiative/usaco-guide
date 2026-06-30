@@ -11,9 +11,10 @@ author: Abhinav Singh
 ## Explanation
 
 We are given patterns of length $k$ containing lowercase letters and `_`,which are just positions which can become **any** letter, and queries consisting of strings with a required pattern index. We realise a string matches a pattern if all the characters at the non-`_` indices are the same.
-We want to find an ordering of the patterns such that for each query $(s, p)$, the pattern $p$ is the **first** match for $s$ in that ordering, or every other pattern in $S$ (the set of all patterns matching $s$) must appear after $p$.
-
-For each query $(s,p)$, let $S$ be the set of all matching patterns and let $p$ be the required one. We are told to find an ordering of patterns such that for every query, $p$ appears before every other pattern in $S$. Each requirement is just a **precedence constraint**, i.e $p$ must come before $x$, that we model as a directed edge $p \to x$.
+Let $S$ be the set of all patterns matching $s$.
+Thus, for each query $(s, p)$, the pattern $p$ is the **first** element in $S$ in the ordering, and all further elements of $S$ must appear after $p$.
+Each requirement is therefore a **precedence constraint**, where $p$ cannot come before any other elements in $S$.
+We model these as directed edges, $p \to x$, where $x$ is any non-$p$ element in $S$.
 
 A valid ordering then corresponds to a topological sort of the resulting graph: if the constraints are consistent, any topological order works; if two constraints contradict each other (e.g. $p \to x$ and $x \to p$), a cycle forms and no valid ordering exists.
 
