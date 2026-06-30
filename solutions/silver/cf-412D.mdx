@@ -19,7 +19,7 @@ We use a flood fill DFS to traverse all the nodes; at each node, we DFS all its 
 This ensures that all neighbors of a vertex come before itself.
 In case of a cycle, we would revisit an already-visited vertex, which we can safely skip as breaking an edge is permissible.
 
-We start DFS’ing from each node of it is not already visited. 
+We start DFS’ing from each node of it is not already visited.
 Note that it is possible for a non-visited node to be a neighbor of some other vertex; however, we still DFS it and mark it as visited, as the other vertex would be visited later in another DFS, where the current vertex will be skipped.
 That is still correct, as we’ve already done the DFS on that vertex now.
 
@@ -32,52 +32,44 @@ That is still correct, as we’ve already done the DFS on that vertex now.
 <CPPSection>
 
 ```cpp
+#include <cstring>
 #include <iostream>
 #include <vector>
-#include <cstring>
 
 using namespace std;
 
 vector<int> graph[30005];
 bool visited[30005];
 
-void dfs(int current)
-{
-    // skip if visited
-    if (visited[current]) {
-        return;
-    }
-    visited[current] = true;
-    
-    // visit neighbors
-    for (int i = 0; i < graph[current].size(); i++) {
-        dfs(graph[current][i]);
-    }
-    
-    cout << current << ' ';
+void dfs(int current) {
+	// skip if visited
+	if (visited[current]) { return; }
+	visited[current] = true;
+
+	// visit neighbors
+	for (int i = 0; i < graph[current].size(); i++) { dfs(graph[current][i]); }
+
+	cout << current << ' ';
 }
 
-int main()
-{
-    int n, m;
-    cin >> n >> m;
-    
-    for (int i = 0; i < m; i++) {
-        int u, v;
-        cin >> u >> v;
-        graph[u].push_back(v);
-    }
-    
-    memset(visited, 0, sizeof(visited));
-    
-    for (int i = 1; i <= n; i++) {
-        if (!visited[i]) {
-            dfs(i);
-        }
-    }
-    
-    cout << endl;
-    return 0;
+int main() {
+	int n, m;
+	cin >> n >> m;
+
+	for (int i = 0; i < m; i++) {
+		int u, v;
+		cin >> u >> v;
+		graph[u].push_back(v);
+	}
+
+	memset(visited, 0, sizeof(visited));
+
+	for (int i = 1; i <= n; i++) {
+		if (!visited[i]) { dfs(i); }
+	}
+
+	cout << endl;
+	return 0;
 }
 ```
 
