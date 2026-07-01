@@ -74,7 +74,7 @@ Let $t$ be $s$ with its lowest set bit (index $j$) cleared. We can compute $\tex
 ```cpp
 prod[0] = 1;
 for (int s = 1; s < full; ++s) {
-	int j = __builtin_ctz(s);      // index of lowest set bit
+	int j = __builtin_ctz(s);             // index of lowest set bit
 	long long prev = prod[s ^ (s & -s)];  // prod[s without lowest bit]
 	prod[s] = (prev > k / pw[j]) ? (k + 1) : prev * pw[j];
 }
@@ -190,8 +190,7 @@ struct vector_int_hash {
 // hash function for (uint64_t, int) pairs used as exponent hashes
 struct pair_hash {
 	size_t operator()(pair<uint64_t, int> p) const {
-		return hash<uint64_t>{}(p.first) ^
-		       ((size_t)(unsigned)p.second * 2654435761ULL);
+		return hash<uint64_t>{}(p.first) ^ ((size_t)(unsigned)p.second * 2654435761ULL);
 	}
 };
 
@@ -232,15 +231,18 @@ int main() {
 	// group judges by identical exponent vectors (same prime-power structure)
 	// keep only the m cheapest costs per pattern (others are useless for DP)
 	struct exp_group {
-		vector<long long> prime_powers;  // pw[j] = full power of target_primes[j] in a[i]
-		vector<long long> cheap_heap;    // max-heap of the m cheapest experience values seen
+		vector<long long>
+		    prime_powers;  // pw[j] = full power of target_primes[j] in a[i]
+		vector<long long>
+		    cheap_heap;  // max-heap of the m cheapest experience values seen
 	};
 
 	// optimization 1: group judges by their exponent hash
 	unordered_map<pair<uint64_t, int>, exp_group, pair_hash> exp_groups;
 	exp_groups.reserve(1 << 14);
 
-	vector<long long> prime_powers(m);  // reused each iteration for current judge's pw[]
+	vector<long long> prime_powers(
+	    m);  // reused each iteration for current judge's pw[]
 	for (int i = 0; i < n; ++i) {
 		long long val = a[i];
 		uint64_t key64 = 0;
@@ -257,7 +259,8 @@ int main() {
 			}
 			prime_powers[j] = full_power;
 			if (j < 10) key64 |= (uint64_t)exponent << (6 * j);
-			else key_last = exponent;  // 11th prime overflows 64 bits, stored separately
+			else
+				key_last = exponent;  // 11th prime overflows 64 bits, stored separately
 		}
 
 		auto key = make_pair(key64, key_last);
@@ -335,7 +338,8 @@ int main() {
 	dp[0][0] = 0;
 
 	for (auto &[opts, exp] : virtual_judges) {
-		// iterate c downward to prevent reusing the same virtual judge twice (0/1 knapsack)
+		// iterate c downward to prevent reusing the same virtual judge twice (0/1
+		// knapsack)
 		for (int c = m - 1; c >= 0; --c) {
 			for (int s = 0; s < (1 << m); ++s) {
 				if (dp[c][s] == INF) continue;
