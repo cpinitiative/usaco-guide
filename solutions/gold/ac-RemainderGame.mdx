@@ -7,13 +7,13 @@ author: Abhinav Singh
 
 ## Explanation
 
-Instead of tracking operations, let's first look at which **moduli** we use. Note that applying any modulus twice is identical to applying it only once, so we should purchase each modulus at most once. Now, a large modulus always costs more than any combination of smaller moduli, since the worst case is purchasing every smaller modulus once:
+Instead of tracking operations, let's first look at which **moduli** we use. Note that applying any modulus twice is identical to applying it only once, even when other moduli are used in between, so we should purchase each modulus at most once. Now, a large modulus always costs more than any combination of smaller moduli, since the worst case is purchasing every smaller modulus once:
 
 $$2^k > \sum_{i=1}^{k-1} 2^i.$$
 
-This means we should prioritize optimizing the largest modulus used across all transformations $a_i \to b_i$, which motivates our greedy idea: repeatedly find the largest modulus every solution is forced to buy, and buy it exactly once.
+This means we should prioritize optimizing the largest modulus used across all transformations $a_i \to b_i$, which motivates our greedy idea: repeatedly find the largest modulus we must buy, and buy it exactly once.
 
-To do this we can build a directed graph on vertices $0, \ldots, 50$ where for every value $x$ and modulus $k$, there is an edge $x \to x \bmod k$ with weight $k$. A path from $a_i$ to $b_i$ represents a sequence of operations turning $a_i$ into $b_i$, for which the moduli needed are the edge weights along the path. Define a path from $u$ to $v$'s weight, $f(u, v)$, as the minimum over all paths of the maximum edge weight on that path.
+To do this we can build a directed graph on vertices $0, \ldots, 50$ where for every value $x$ and modulus $k$, there is an edge $x \to x \bmod k$ with weight $k$. A path from $a_i$ to $b_i$ represents a sequence of operations turning $a_i$ into $b_i$, for which the moduli needed are the edge weights along the path. Define the weight of a path from $u$ to $v$, $f(u, v)$, as the minimum possible value of the maximum edge weight on such a path.
 
 Hence, when processing the transformation $a_i \to b_i$, $f(a_i, b_i)$ is the minimum threshold such that the path is feasible using only operations $\leq f(a_i,b_i)$, making $K = \max_i f(a_i, b_i)$ a forced modulus in the greedy construction.
 
@@ -28,10 +28,10 @@ iterations.
 
 ## Implementation
 
-Let $M = 50$ be the maximum value in the problem. Each Floyd–Warshall pass is $\mathcal{O}(M^3)$ on $M + 1$ vertices, repeated at most $M$ times, giving an
+Let $M = 50$ be the maximum value involved in the problem. Each Floyd–Warshall pass is $\mathcal{O}(M^3)$ on $M + 1$ vertices, repeated at most $M$ times, giving an
 overall complexity of $\mathcal{O}(M^4)$.
 
-We keep `edges_by_modulus[k]`, a list of every edge with weight $k$, so that once modulus $k$ is purchased we can mark exactly those edges as free in $\mathcal{O}(1)$ per edge, without scanning the whole matrix.
+We keep `edges_by_modulus[k]`, a list of every edge with weight $k$, so that once modulus $k$ is purchased, we can mark edges using that modulus as free in $\mathcal{O}(1)$ per edge, without scanning the whole matrix.
 
 <LanguageSection>
 <CPPSection>
