@@ -1,54 +1,37 @@
 ---
-id: ac-RemainderGame
-source: AtCoder Grand Contest 022
+id: remainder-game
+source: AtCoder
 title: Remainder Game
 author: Abhinav Singh
 ---
 
 ## Explanation
-Since modulo can never increase a value, if $a_i < b_i$ for some $i$, the answer is immediately $-1$.
 
-Instead of tracking operations, let's track which **moduli** we use. Using modulus $k$ costs $2^k$, and lets us reduce any element mod $k$
-
-Applying any modulus twice is identical to applying it only once, so we should purchase each modulus at most once.
-Now, note that a large modulus always costs more than any combination of smaller moduli, as the worst combination is to purchase each moduli only once, and we have:
+Instead of tracking operations, let's first look at which **moduli** we use. Note that applying any modulus twice is identical to applying it only once, so we should purchase each modulus at most once. Now, a large modulus always costs more than any combination of smaller moduli, since the worst case is purchasing every smaller modulus once:
 
 $$2^k > \sum_{i=1}^{k-1} 2^i.$$
 
-This means that we should prioritize optimizing the largest modulus used in all transformations $a_i \to b_i$ each time, which motivates a greedy idea:
-repeatedly finding the largest modulus every solution is forced to buy, and buying that modulus exactly once.
+This means we should prioritize optimizing the largest modulus used across all transformations $a_i \to b_i$, which motivates our greedy idea: repeatedly find the largest modulus every solution is forced to buy, and buy it exactly once.
 
-Let's build a directed graph on vertices $0, \ldots, 50$. For every value $x$ and modulus $k$, add an edge
+To do this we can build a directed graph on vertices $0, \ldots, 50$ where for every value $x$ and modulus $k$, there is an edge $x \to x \bmod k$ with weight $k$. A path from $a_i$ to $b_i$ represents a sequence of operations turning $a_i$ into $b_i$, for which the moduli needed are the edge weights along the path. Define a path from $u$ to $v$'s weight, $f(u, v)$, as the minimum over all paths of the maximum edge weight on that path.
 
-$$x \to x \bmod k$$
+Hence, when processing the transformation $a_i \to b_i$, $f(a_i, b_i)$ is the minimum threshold such that the path is feasible using only operations $\leq f(a_i,b_i)$, making $K = \max_i f(a_i, b_i)$ a forced modulus in the greedy construction.
 
-with weight $k$. A path from $a_i$ to $b_i$ represents a sequence of operations which turn $a_i$ into $b_i$, and the moduli needed are the edge weights on that path. Define a *path's* weight as its **maximum** edge weight, and let
+We compute these minimax distances with a Floyd–Warshall variant, replacing the standard relaxation with:
 
-$$f(u, v) = \min_{\text{paths } u \to v} \ \max(\text{edge weight}).$$
+$$\texttt{dist}[i][j] = \min(\texttt{dist}[i][j],\ \max(\texttt{dist}[i][k],\ \texttt{dist}[k][j])).$$
 
-Hence, when processing moduli for the path $a_i \to b_i$, $k = f(a_i, b_i)$ is the minimum threshold such that the path becomes feasible using only operations $\leq f(a_i, b_i)$, making the maximum $k$ across all paths $a_i \to b_i$ a forced contribution in the greedy construction.
+Initially, `dist` holds the direct graph edges. We run minimax Floyd–Warshall to get all $f(u, v)$ given the current edge weights, then take $K = \max_i f(a_i, b_i)$, the largest modulus some pair still requires. If any pair is unreachable, output `-1`. If $K = 0$, every necessary modulus is already purchased, so we stop. Otherwise we add $2^K$ to the answer, reset `dist` to direct edges, and set every edge of weight $K$ to $0$, marking modulus $K$ as purchased. We repeat until done.
 
-We can compute these minimax distances with a Floyd–Warshall variant:
-
-```cpp
-dist[i][j] = min(dist[i][j], max(dist[i][k], dist[k][j]));
-```
-
-Initially `dist` holds the direct graph edges, and we repeat the following until done. We run minimax Floyd–Warshall to get all $f(u, v)$ given the current edge
-weights, then take $K = \max_i f(a_i, b_i)$, which is the largest modulus some pair still requires. If any pair is unreachable, output `-1`. If $K = 0$, every necessary modulus is already purchased, so we stop. Otherwise we add $2^K$ to the answer and set every edge of weight $K$ to $0$, marking modulus $K$ as purchased and free for all future paths.
-
-Each iteration permanently uses one modulus, so there are at most $50$ iterations.
+Each iteration permanently purchases one modulus, so there are at most $50$
+iterations.
 
 ## Implementation
 
-Each Floyd–Warshall pass is $\mathcal{O}(51^3)$ on $51$ vertices, repeated at most
-$50$ times, giving an overall complexity of
+Let $M = 50$ be the maximum value in the problem. Each Floyd–Warshall pass is $\mathcal{O}(M^3)$ on $M + 1$ vertices, repeated at most $M$ times, giving an
+overall complexity of $\mathcal{O}(M^4)$.
 
-$$\mathcal{O}(50 \cdot 51^3) = \mathcal{O}(50^4).$$
-
-We keep `edges_by_modulus[k]`, a list of every edge with weight $k$, so that once
-modulus $k$ is purchased we can mark exactly those edges as free in $\mathcal{O}(1)$
-per edge, without scanning the whole adjacency matrix.
+We keep `edges_by_modulus[k]`, a list of every edge with weight $k$, so that once modulus $k$ is purchased we can mark exactly those edges as free in $\mathcal{O}(1)$ per edge, without scanning the whole matrix.
 
 <LanguageSection>
 <CPPSection>
@@ -57,8 +40,12 @@ per edge, without scanning the whole adjacency matrix.
 #include <bits/stdc++.h>
 using namespace std;
 
-const int num_values = 51;
-const int inf = 1e9;
+const int MAX_VAL = 50;
+const int NUM_NODES = MAX_VAL + 1;
+const int INF = 1e9;
+
+int dist[NUM_NODES][NUM_NODES];
+int temp_dist[NUM_NODES][NUM_NODES];
 
 int main() {
 	ios::sync_with_stdio(false);
@@ -71,17 +58,18 @@ int main() {
 	for (int &x : a) cin >> x;
 	for (int &x : b) cin >> x;
 
-	int dist[num_values][num_values];
-	vector<pair<int, int>> edges_by_modulus[num_values];
+	vector<pair<int, int>> edges_by_modulus[NUM_NODES];
 
-	for (int i = 0; i < num_values; i++) {
-		for (int j = 0; j < num_values; j++) dist[i][j] = inf;
+	for (int i = 0; i <= MAX_VAL; i++) {
+		for (int j = 0; j <= MAX_VAL; j++) {
+			dist[i][j] = INF;
+		}
 		dist[i][i] = 0;
 	}
 
-	// Add an edge x -> x % k with weight k, and store it for fast lookup later
-	for (int x = 0; x < num_values; x++) {
-		for (int k = 1; k <= 50; k++) {
+	// Add an edge x -> x % k with weight k, store for fast lookup later
+	for (int x = 0; x <= MAX_VAL; x++) {
+		for (int k = 1; k <= MAX_VAL; k++) {
 			int y = x % k;
 			dist[x][y] = min(dist[x][y], k);
 			edges_by_modulus[k].push_back({x, y});
@@ -91,19 +79,21 @@ int main() {
 	long long ans = 0;
 
 	while (true) {
-		int temp_dist[num_values][num_values];
 		memcpy(temp_dist, dist, sizeof(dist));
 
 		// Minimax Floyd-Warshall under the current (partially purchased) weights
-		for (int mid = 0; mid < num_values; mid++)
-			for (int i = 0; i < num_values; i++)
-				for (int j = 0; j < num_values; j++)
-					temp_dist[i][j] =
-					    min(temp_dist[i][j], max(temp_dist[i][mid], temp_dist[mid][j]));
+		for (int mid = 0; mid <= MAX_VAL; mid++) {
+			for (int i = 0; i <= MAX_VAL; i++) {
+				for (int j = 0; j <= MAX_VAL; j++) {
+					temp_dist[i][j] = min(temp_dist[i][j],
+					    max(temp_dist[i][mid], temp_dist[mid][j]));
+				}
+			}
+		}
 
 		int largest_required = 0;
 		for (int i = 0; i < n; i++) {
-			if (temp_dist[a[i]][b[i]] == inf) {
+			if (temp_dist[a[i]][b[i]] == INF) {
 				cout << -1 << "\n";
 				return 0;
 			}
