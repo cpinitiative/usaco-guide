@@ -25,14 +25,16 @@ We initialize both $j_0$ and $j_{-1}$ to $0$, so that they produce no accumulati
 
 Now, we generalize this onto two dimensions, where we pick subrectangles from an $N\times N$ pasture with values $G(i, j)$.
 First, we consider the cases where the rectangle's bounds include $i=1$ and  $i=N$, leaving us the choice of the interval for the left and right bounds.
-As in the 1D case, we sweep from left to right for the tight endpoint, and build a $g'$ to track feasibility of the left endpoint by column.
+As in the 1D case, we sweep from left to right for the right endpoint, and build a $g'$ to track feasibility of the left endpoint by column.
 Any $<100$ element in a column blocks selection, and any $=100& element allows selection, so $g'$ is marked $-1$ or $0$ if these conditions hold for any element in a column, and $1$ otherwise.
+We then proceed as in the 1D case frlm $g'$.
 
-We now generalize to the case where the rectangle can have arbitrary vertical bounds $i=i_1$ and $i=i_2\geq i_1$.
-At each possible $i_1$, we reset $g'(j)$ to $1$, before we loop over $i_2$ and $j$.
-Since $g'(j)$ already accounts for $G(i_1\ldots i_2-1,j)$, we update it to explicitly to account for $G(i_2,j)$, the newly added cell, at each $j$ in the inner loop.
-Finally, we proceed as we would in the $1$-dimensional case on our updated $g'(j)$ array.
-Tracking the array $g'$ cumulatively gives us $\mathcal O(N)$ time complexity for each choice of top and bottom rows, as previous $g'$ -es are reused to avoid recomputing each from scratch, which instead takes $\mathcal O(N^2)$ time.
+We now generalize to the case where the subrectangle can have arbitrary vertical bounds $i=i_1$ and $i=i_2\geq i_1$.
+Naively, we would proceed as we would in our previous case, while only using elements in $i\in[i_1,i_2]$ in each column to compute $g'$; however, recomputing $g'$ each time is too inefficient.
+Thus, we use an incremental approach:
+At each possible $i_1$, we reset $g'(j)$ to $1$s, before we loop over $i_2$ and $j$.
+At each $i_2$, $g'(j)$ accounts for $G(i_1\ldots i_2-1,j)$, so we update it to account for $G(i_2,j)$ at each $j$ before using our previous approach.
+Tracking the array $g'$ cumulatively gives us $\mathcal O(N)$ time complexity for each choice of top and bottom rows, so overall we have $\mathcal O(N^3)$.
 
 ## Implementation
 
