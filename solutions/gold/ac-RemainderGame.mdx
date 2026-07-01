@@ -10,9 +10,13 @@ Since modulo can never increase a value, if $a_i < b_i$ for some $i$, the answer
 
 Instead of tracking operations, let's track which **moduli** we use. Using modulus $k$ costs $2^k$, and lets us reduce any element mod $k$
 
-As $$2^k > \sum_{i=1}^{k-1} 2^i,$$
+Applying any modulus twice is identical to applying it only once, so we should purchase each modulus at most once.
+Now, note that a large modulus always costs more than any combination of smaller moduli, as the worst combination is to purchase each moduli only once, and we have:
 
-a single larger modulus always costs more than every smaller modulus combined. This means that for each transformation from $a_i \to b_i$, what matters isn't the total number of moduli used, but rather the largest one. We want the path that minimizes the maximum edge weight from $a_i$ to $b_i$ for each $i$ (Note that applying $k$ twice is identical to applying it once: $$(x \bmod k) \bmod k = x \bmod k,$$ so an optimal solution never needs to purchase the same modulus twice). This motivates a greedy idea: repeatedly find the largest modulus every solution is forced to buy.
+$$2^k > \sum_{i=1}^{k-1} 2^i.$$
+
+This means that we should prioritize optimizing the largest modulus used in all transformations $a_i \to b_i$ each time, which motivates a greedy idea:
+repeatedly finding the largest modulus every solution is forced to buy, and buying that modulus exactly once.
 
 Let's build a directed graph on vertices $0, \ldots, 50$. For every value $x$ and modulus $k$, add an edge
 
