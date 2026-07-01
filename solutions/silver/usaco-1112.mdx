@@ -23,14 +23,12 @@ Thus, any starting index in the range $(j_{-1}, j_0]$ works (provided $j_{-1}<j_
 We initialize both $j_0$ and $j_{-1}$ to $0$, so that they produce no accumulation initially, and that all possibilities of $(0, j_0]$ will be counted if a $-1$ has not occurred yet.
 
 Now, we generalize this onto two dimensions, where we pick subrectangles from an $N\times N$ pasture with values $G(i, j)$.
-First, we consider the cases where the rectangle starts at $i=1$ and ends at $i=N$ vertically.
-Once the top and bottom rows are fixed, the only remaining choice is the left and right columns, so the problem reduces to counting valid intervals horizontally.
-For $g'$, however, $g'(j)$ should be marked as $-1$ if any $i$ has $G(i, j)<100$, as any $-1$ blocks selection.
-$g'(j)$ can be marked as $0$ if any $i$ has $G(i, j)=100$, as only one $100$ is needed to select a range.
-This leaves $g'(j)$ as $1$ only if all $i$'s have $G(i, j)>100$.
+First, we consider the cases where the rectangle's bounds include $i=1$ and  $i=N$, leaving us the choice of the interval for the left and right bounds.
+As in the 1D case, we sweep from left to right for the tight endpoint, and build a $g'$ to track feasibility of the left endpoint by column.
+Any $<100$ element in a column blocks selection, and any $=100& element allows selection, so $g'$ is marked $-1$ or $0$ if these conditions hold for any element in a column, and $1$ otherwise.
 
-We now generalize to the case where the rectangle can start at any $i=i_1$ and end at any $i=i_2\geq i_1$.
-At each possible $i_1$ we enumerate, we reset $g'(j)$ to $1$ (as having no possible $i$'s satisfies "all $i$'s have $G(i, j)>100$"), before we loop over $i_2$ and $j$.
+We now generalize to the case where the rectangle can have arbitrary vertical bounds $i=i_1$ and $i=i_2\geq i_1$.
+At each possible $i_1$, we reset $g'(j)$ to $1$, before we loop over $i_2$ and $j$.
 Since $g'(j)$ already accounts for $G(i_1\ldots i_2-1,j)$, we update it to explicitly to account for $G(i_2,j)$, the newly added cell, at each $j$ in the inner loop.
 Finally, we proceed as we would in the $1$-dimensional case on our updated $g'(j)$ array.
 Tracking the array $g'$ cumulatively gives us $\mathcal O(N)$ time complexity for each choice of top and bottom rows, as previous $g'$ -es are reused to avoid recomputing each from scratch, which instead takes $\mathcal O(N^2)$ time.
