@@ -1,3 +1,5 @@
+import crypto from 'crypto';
+
 import { moduleIDToSectionMap } from '../../content/ordering';
 import {
   queryAllModuleFrontmatter,
@@ -13,6 +15,18 @@ import {
 } from '../models/algoliaEditorFile';
 import { AlgoliaProblemInfo } from '../models/problem';
 import extractSearchableText from './extract-searchable-text';
+
+function stableStringify(obj: unknown): string {
+  if (obj === null || typeof obj !== 'object') return JSON.stringify(obj);
+  if (Array.isArray(obj)) return `[${obj.map(stableStringify).join(',')}]`;
+  const keys = Object.keys(obj).sort();
+  return `{${keys.map(k => `${JSON.stringify(k)}:${stableStringify((obj as Record<string, unknown>)[k])}`).join(',')}}`;
+}
+
+export function computeContentHash(record: Record<string, unknown>): string {
+  const { objectID: _objectID, _contentHash, ...rest } = record;
+  return crypto.createHash('sha1').update(stableStringify(rest)).digest('hex');
+}
 
 export async function getModuleRecords() {
   const modules = await queryAllModuleFrontmatter();
@@ -177,7 +191,7 @@ export async function getAlgoliaRecords() {
     getEditorFileRecords(),
   ]);
 
-  return [
+  const groups = [
     {
       records: moduleRecords,
       indexName: indexPrefix + '_modules',
@@ -212,6 +226,15 @@ export async function getAlgoliaRecords() {
       ],
     },
   ];
+
+  for (const group of groups) {
+    group.records = group.records.map(r => ({
+      ...r,
+      _contentHash: computeContentHash(r as Record<string, unknown>),
+    }));
+  }
+
+  return groups;
 }
 
 export default getAlgoliaRecords;
