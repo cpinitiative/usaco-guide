@@ -93,6 +93,8 @@ Both `prev` and `pw[j]` can reach $10^{12}$, so their product may overflow `long
 
 ### Step 3: Maximal Achievable Masks (Pruning)
 
+There are at most $2^11=2048$ possible sets $s$, and we aim to optimize that number to make our processing of judges faster.  We note that there are many sets $s$ that are not neccessary to result in an optimal solution.
+
 For a given judge, call a subset $s$ **affordable** if $\text{prod}[s] \leq k$. Many affordable subsets are dominated. If a subset $s$ and its strict superset $s' \supset s$ for a given judge are both affordable, there's never any reason to clear just $s$: you could clear $s'$ instead for the same cost, getting strictly more coverage.
 
 So we only care about **maximal** affordable subsets: those where no affordable strict superset exists.
