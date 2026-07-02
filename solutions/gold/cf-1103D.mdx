@@ -174,7 +174,7 @@ using namespace std;
 constexpr long long INF = 1e18;
 
 long long gcd(long long a, long long b) {
-	if (b == 0) return a;
+	if (b == 0) { return a; }
 	return gcd(b, a % b);
 }
 
@@ -182,7 +182,7 @@ long long gcd(long long a, long long b) {
 struct vector_int_hash {
 	size_t operator()(const vector<int> &v) const {
 		size_t h = 0;
-		for (int x : v) h = h * 1000003 ^ (unsigned)x;
+		for (int x : v) { h = h * 1000003 ^ (unsigned)x; }
 		return h;
 	}
 };
@@ -192,6 +192,22 @@ struct pair_hash {
 	size_t operator()(pair<uint64_t, int> p) const {
 		return hash<uint64_t>{}(p.first) ^ ((size_t)(unsigned)p.second * 2654435761ULL);
 	}
+};
+
+// Used for group judges by identical exponent vectors (same prime-power structure)
+// keep only the m cheapest costs per pattern (others are useless for DP)
+struct exp_group {
+	// pw[j] = full power of target_primes[j] in a[i]
+	vector<long long> prime_powers;
+	// max-heap of the m cheapest experience values seen
+	vector<long long> cheap_heap;
+};
+
+// Used to convert opt_groups into a list of virtual judges for the DP
+// each (opts, exp) behaves like a 0/1 knapsack item
+struct virtual_judge {
+	vector<int> opts;
+	long long exp;
 };
 
 int main() {
@@ -228,21 +244,12 @@ int main() {
 	int m = (int)target_primes.size();
 	int full_mask = (1 << m) - 1;  // bitmask with all m primes set
 
-	// group judges by identical exponent vectors (same prime-power structure)
-	// keep only the m cheapest costs per pattern (others are useless for DP)
-	struct exp_group {
-		vector<long long>
-		    prime_powers;  // pw[j] = full power of target_primes[j] in a[i]
-		vector<long long>
-		    cheap_heap;  // max-heap of the m cheapest experience values seen
-	};
-
 	// optimization 1: group judges by their exponent hash
 	unordered_map<pair<uint64_t, int>, exp_group, pair_hash> exp_groups;
 	exp_groups.reserve(1 << 14);
 
-	vector<long long> prime_powers(
-	    m);  // reused each iteration for current judge's pw[]
+	// reused each iteration for current judge's pw[]
+	vector<long long> prime_powers(m);
 	for (int i = 0; i < n; ++i) {
 		long long val = a[i];
 		uint64_t key64 = 0;
@@ -318,13 +325,6 @@ int main() {
 			}
 		}
 	}
-
-	// convert opt_groups into a list of virtual judges for the DP
-	// each (opts, exp) behaves like a 0/1 knapsack item
-	struct virtual_judge {
-		vector<int> opts;
-		long long exp;
-	};
 
 	vector<virtual_judge> virtual_judges;
 	for (auto &[opts, heap] : opt_groups) {
