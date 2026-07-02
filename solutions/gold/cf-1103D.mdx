@@ -32,9 +32,7 @@ Our first key observation is that the only way that the final $\gcd$ can remain 
 This means we can ignore all the other primes: any prime not dividing $g$ already fails to divide some $a_i$, so it cannot contribute to the final $\gcd$.
 
 If $g = 1$ then, the answer is $0$ immediately as no games are needed.
-
 Otherwise, factor $g$, and let $m$ be the number of distinct prime factors of $g$. Let $\text{primes}[0], \ldots, \text{primes}[m-1]$ denote each of the $m$ prime factors.
-
 Define $\text{pw}[j]$ for judge $i$ as the **full prime power** of $\text{primes}[j]$ in $a_i$:
 
 $$
@@ -53,9 +51,8 @@ Therefore:
 
 If this product exceeds $k$, the subset $S$ is impossible for this judge in one game.
 
-First, since $m \leq 11$, represent the subsets of target primes as bitmasks (bit $j$ being toggled = $\text{primes}[j]$ is in the subset).
-
-For each judge $i$ and bitmask $s$, the minimum divisor to clear subset $s$ in one game is:
+First, since $m \leq 11$, we represent the subsets of target primes as bitmasks (bit $j$ being toggled = $\text{primes}[j]$ is in the subset).
+Then, for each judge $i$ and bitmask $s$, the minimum divisor to clear subset $s$ in one game is:
 
 $$
 \text{prod}[s] = \prod_{j \in s} \text{pw}[j]
@@ -71,6 +68,10 @@ Computing $\text{prod}[s]$ naively for each subset is $O(2^m \cdot m)$ per judge
 
 Let $t$ be $s$ with its lowest set bit (index $j$) cleared. We can compute $\text{prod}[s]$ from $\text{prod}[t]$ by multiplying by $\text{pw}[j]$: $\text{prod}[s] = \text{prod}[t] \times \text{pw}[j]$. Since we iterate $s$ upward from $1$, $t$ (being smaller than $s$) is always already computed.
 
+<LanguageSection>
+
+<CPPSection>
+
 ```cpp
 prod[0] = 1;
 for (int s = 1; s < full; ++s) {
@@ -79,6 +80,10 @@ for (int s = 1; s < full; ++s) {
 	prod[s] = (prev > k / pw[j]) ? (k + 1) : prev * pw[j];
 }
 ```
+
+</CPPSection>
+
+</LanguageSection>
 
 <Info title="Overflow Guard">
 
@@ -92,6 +97,10 @@ For a given judge, call a subset $s$ **affordable** if $\text{prod}[s] \leq k$. 
 
 So we only care about **maximal** affordable subsets: those where no affordable strict superset exists.
 
+<LanguageSection>
+
+<CPPSection>
+
 ```cpp
 vector<int> opts;
 for (int s = 1; s < full; ++s) {
@@ -104,15 +113,19 @@ for (int s = 1; s < full; ++s) {
 }
 ```
 
+</CPPSection>
+
+</LanguageSection>
+
 These are the only meaningful choices this judge offers. Note that `opts` can never have too many elements, since no subset in it can contain another - by Sperner's Theorem, at most $\binom{m}{\lfloor m/2 \rfloor} \leq \binom{11}{5} = 462$ elements.
 For more info, check out [Sperner's Theorem.](https://en.wikipedia.org/wiki/Sperner%27s_theorem)
 
 ### The DP
 
 The cost is $c \times \sum e_i$ where $c$ is the number of judges used. Sadly, we can't just track $\min(\sum e_i)$, since we also need to know $c$, as two
-solutions covering the same prime mask with different judge counts have different costs.
+solutions covering the same prime mask with different judges have different costs.
 
-**State:** $dp[c][s]$ = minimum sum of experience using **exactly** $c$ judges covering prime-mask $s$.
+**State:** $dp[c][s]$ represents minimum sum of experience using **exactly** $c$ judges covering prime-mask $s$.
 
 **Base case:** $dp[0][0] = 0$, everything else $= \infty$.
 
@@ -125,40 +138,29 @@ $$
 **Answer:** $\min_{c=1}^{m}\ c \times dp[c][\text{full}-1]$
 
 Why cap at $c = m$? Any judge that doesn't contribute at least one new prime bit is purely wasteful - both $c$ and $\sum e$ increase for zero coverage gain.
-With $m$ target primes, you never need more than $m$ judges.
+Thus, with $m$ target primes, you never need more than $m$ judges.
 
-To prevent the double-use of the same judge, iterate $c$ **downward** from $m-1$ to $0$. Reads come from $dp[c][\cdot]$ and writes go to $dp[c+1][\cdot]$.
+To prevent the double-use of the same judge, iterate $c$ **downward** from $m-1$ to $0$. In each transition, we read from $dp[c]$ and write to $dp[c+1]$.
 Since $c+1 > c$ and we iterate downward, no read ever sees a value written by the current judge's own pass.
 This is the standard 0/1 knapsack backward-iteration trick.
 
-### Issue 1: Why the Naive DP TLEs and How to Fix It
+### How to Optimize a Naive DP to Prevent TLE
 
-The naive approach runs the DP update once per judge: $O(n \cdot m \cdot 2^m \cdot |\text{opts}|)$.
-With $n = 10^6$, $m = 11$, $2^m = 2048$, $|\text{opts}| \leq 462$:
+The naive approach runs the DP update once per judge, with a time complexity of $O(n \cdot m \cdot 2^m \cdot |\text{opts}|)$.
+With $n = 10^6$, $m = 11$, $2^m = 2048$, and $|\text{opts}| \leq 462$, $10^6 \times 11 \times 2048 \times 462 \approx 10^{13}$, which is completely infeasible. Thus, we aim to optimize the number of judges.
 
-$$
-10^6 \times 11 \times 2048 \times 462 \approx 10^{13}
-$$
-
-Completely infeasible. We need to collapse $10^6$ judges to a tiny set.
-
-**Key reduction:** Two judges are completely interchangeable in the DP iff they have the same `opts` list, since the DP only cares about which transitions are available (`opts`) and the cost ($e_i$). So among judges with the same opts, only cost distinguishes them. And since we never use more than $m$ judges total, we never need more than $m$ judges of any single type: **so for each unique `opts` type, we keep only the $m$ cheapest experience values.**
+**Key reduction:** Two judges are completely interchangeable in the DP iff they have the same `opts` list, since the DP only cares about which transitions are available (`opts`) and the cost ($e_i$). So among judges with the same opts, only cost distinguishes them. And since we never use more than $m$ judges total, we never need more than $m$ judges of any single type.  So, for each unique `opts` type, we keep only the $m$ cheapest experience values.
 
 This reduction happens in two layers:
 
-**Optimization 1: Group by exponent pattern.** Two judges with identical prime-power vectors ($\text{pw}[0], \ldots, \text{pw}[m-1]$) produce identical `prod[]` tables and identical `opts`, so we encode each judge's exponent vector into a hash (6 bits per exponent, enough since the smallest prime is 2 and $2^{40} > 10^{12}$ means no exponent exceeds 39) and group judges with matching hashes together, keeping only the $m$ cheapest experience values per group in a max-heap.
 
-**Optimization 2: Group by opts vector.** Even across different exponent patterns, two groups can produce the same `opts` list. These groups are interchangeable in the DP.
+1. **Group by exponent pattern.** Two judges with identical prime-power vectors ($\text{pw}[0], \ldots, \text{pw}[m-1]$) produce identical `prod[]` tables and identical `opts`, so we encode each judge's exponent vector into a hash (6 bits per exponent, enough since the smallest prime is 2 and $2^{40} > 10^{12}$ means no exponent exceeds 39) and group judges with matching hashes together, keeping only the $m$ cheapest experience values per group in a max-heap.
+2. **Group by `opts`.** Even across different exponent patterns, two groups can produce the same `opts` list. These groups are interchangeable in the DP.
 Use `opts` itself as the second-level key, and again keep only the $m$ cheapest experience values per type, merging across all exponent groups sharing the same `opts`.
 
-**After both optimizations:** At most $\binom{11}{5} = 462$ distinct opt-types exist, each with at most $m = 11$ virtual judges - so at most $462 \times 11 \approx 5082$ judges ever touch the DP.
-The final DP is:
-
-$$
-5082 \times 11 \times 2048 \times |\text{opts}| \approx 5.7 \times 10^8
-$$
-
-Which passes within the time limit.
+After both optimizations, at most $\binom{11}{5} = 462$ distinct opt-types exist, each with at most $m = 11$ virtual judges - so at most $462 \times 11 \approx 5082$ judges ever touch the DP.
+The final DP is uses approximately $5082 \times 11 \times 2048 \times |\text{opts}| \approx 5.7 \times 10^8
+$$ operations, which passes within the time limit.
 
 ## Implementation
 
