@@ -157,7 +157,7 @@ This reduction happens in two layers:
 
 
 1. **Group by exponent pattern.** Two judges with identical prime-power vectors ($\text{pw}[0], \ldots, \text{pw}[m-1]$) produce identical `prod[]` tables and identical `opts`, so we encode each judge's exponent vector into a hash (6 bits per exponent, enough since the smallest prime is 2 and $2^{40} > 10^{12}$ means no exponent exceeds 39) and group judges with matching hashes together, keeping only the $m$ cheapest experience values per group in a max-heap.
-2. **Group by `opts`.** Even across different exponent patterns, two groups can produce the same `opts` list. These groups are interchangeable in the DP.
+2. **Group by opts.** Even across different exponent patterns, two groups can produce the same `opts` list. These groups are interchangeable in the DP.
 Use `opts` itself as the second-level key, and again keep only the $m$ cheapest experience values per type, merging across all exponent groups sharing the same `opts`.
 
 After both optimizations, at most $\binom{11}{5} = 462$ distinct opt-types exist, each with at most $m = 11$ virtual judges - so at most $462 \times 11 \approx 5082$ judges ever touch the DP.
