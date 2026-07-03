@@ -74,41 +74,37 @@ import java.io.*;
 import java.util.*;
 
 public class Kites {
-    public static void main(String[] args) throws Exception {
-        Kattio io = new Kattio();
-        int testNum = io.nextInt();
+	public static void main(String[] args) throws Exception {
+		Kattio io = new Kattio();
+		int testNum = io.nextInt();
 
-        for (int t = 0; t < testNum; t++) {
-            int n = io.nextInt();
-            int[] sticks = new int[n];
-            int[] diff = new int[n - 1];
+		for (int t = 0; t < testNum; t++) {
+			int n = io.nextInt();
+			int[] sticks = new int[n];
+			int[] diff = new int[n - 1];
 
-            for (int i = 0; i < n; i++) {
-                sticks[i] = io.nextInt();
-            }
+			for (int i = 0; i < n; i++) { sticks[i] = io.nextInt(); }
 
-            Arrays.sort(sticks);
+			Arrays.sort(sticks);
 
-            for (int i = 0; i < n - 1; i++) {
-                diff[i] = sticks[i + 1] - sticks[i];
-            }
+			for (int i = 0; i < n - 1; i++) { diff[i] = sticks[i + 1] - sticks[i]; }
 
-            int ans = Integer.MAX_VALUE;
-            int minPreviousDiff = diff[0];
+			int ans = Integer.MAX_VALUE;
+			int minPreviousDiff = diff[0];
 
 			// Loop over i_2
-            for (int i = 2; i < n - 1; i++) {
-                ans = Math.min(ans, diff[i] + minPreviousDiff);
-                // diff[i+1] can be combined with anything before diff[i].
+			for (int i = 2; i < n - 1; i++) {
+				ans = Math.min(ans, diff[i] + minPreviousDiff);
+				// diff[i+1] can be combined with anything before diff[i].
 				minPreviousDiff = Math.min(minPreviousDiff, diff[i - 1]);
-            }
+			}
 
-            io.println(ans);
-        }
-        io.close();
-    }
+			io.println(ans);
+		}
+		io.close();
+	}
 
-    // BeginCodeSnip{Kattio}
+	// BeginCodeSnip{Kattio}
 }
 ```
 
