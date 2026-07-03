@@ -31,20 +31,22 @@ export function computeContentHash(record: Record<string, unknown>): string {
 export async function getModuleRecords() {
   const modules = await queryAllModuleFrontmatter();
 
-  return Promise.all(modules
-    .filter(m => m.frontmatter.id in moduleIDToSectionMap)
-    .map(async m => {
-      const fullModule = await queryModule(m.frontmatter.id);
-      return {
-        objectID: m.frontmatter.id,
-        title: m.frontmatter.title,
-        description: m.frontmatter.description,
-        division: m.division,
-        content: fullModule?.mdast
-          ? extractSearchableText(fullModule.mdast)
-          : '',
-      };
-    }));
+  return Promise.all(
+    modules
+      .filter(m => m.frontmatter.id in moduleIDToSectionMap)
+      .map(async m => {
+        const fullModule = await queryModule(m.frontmatter.id);
+        return {
+          objectID: m.frontmatter.id,
+          title: m.frontmatter.title,
+          description: m.frontmatter.description,
+          division: m.division,
+          content: fullModule?.mdast
+            ? extractSearchableText(fullModule.mdast)
+            : '',
+        };
+      })
+  );
 }
 
 export async function getProblemRecords() {
