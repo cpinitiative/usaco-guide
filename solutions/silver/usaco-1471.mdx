@@ -124,36 +124,36 @@ int main() {
 ```py
 T = int(input())
 for _ in range(T):
-    N, M = map(int, input().split())
-    nums = list(map(int, input().split()))
-    rems = sorted([x % M for x in nums]) # only remainder matters
-    S = rems + [x + M for x in rems] # unwrap the circle
+	N, M = map(int, input().split())
+	nums = list(map(int, input().split()))
+	rems = sorted([x % M for x in nums])  # only remainder matters
+	S = rems + [x + M for x in rems]  # unwrap the circle
 
 	# prefix sums for fast lookup of operations needed
-    prefix = [0] * (len(S) + 1)
-    for i in range(len(S)):
-        prefix[i + 1] = prefix[i] + S[i]
+	prefix = [0] * (len(S) + 1)
+	for i in range(len(S)):
+		prefix[i + 1] = prefix[i] + S[i]
 
-    min_total = float('inf')
+	min_total = float("inf")
 
 	# try every way to unwrap the circle
-    for i in range(N):
-        j = i + N
-        mid = i + (N-1)//2
-        median = S[mid] # median to minimize operations
+	for i in range(N):
+		j = i + N
+		mid = i + (N - 1) // 2
+		median = S[mid]  # median to minimize operations
 
 		# ops to move smaller remainders up to median
-        left = mid - i + 1
-        left_sum = median * left - (prefix[mid + 1] - prefix[i])
+		left = mid - i + 1
+		left_sum = median * left - (prefix[mid + 1] - prefix[i])
 
 		# ops to move larger remainders down to median
-        right = j - (mid + 1)
-        right_sum = (prefix[j] - prefix[mid + 1]) - median * right
+		right = j - (mid + 1)
+		right_sum = (prefix[j] - prefix[mid + 1]) - median * right
 
-        total = left_sum + right_sum
-        min_total = min(min_total, total)
+		total = left_sum + right_sum
+		min_total = min(min_total, total)
 
-    print(min_total)
+	print(min_total)
 ```
 
 </PySection>
