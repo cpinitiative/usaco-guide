@@ -15,7 +15,7 @@ Given a planar graph (a graph with no edges crossing), we can use Euler's formul
 
 The equation is related to the theorem that for any convex polyhedron, $V - E + F = 2$ will hold true, due to the fact that every convex polyhedron may be flattened into a planar graph.
 
-This can also expanded to graphs that are not connected, to incorporate connected components, and the equation subsequently becomes $V - E + F = C + 1$, where $C$ is the number of connected components.
+This can also be expanded to graphs that are not connected, to incorporate connected components, and the equation subsequently becomes $V - E + F = C + 1$, where $C$ is the number of connected components.
 
 
 
@@ -26,7 +26,7 @@ This can also expanded to graphs that are not connected, to incorporate connecte
 		url="https://discrete.openmathbooks.org/more/mdm/sec_planar.html"
 	/>
 	<Resource
-		source="University of Illionois Urbana-Champaign"
+		source="University of Illinois Urbana-Champaign"
 		title="Planar Graphs"
 		url="https://mfleck.cs.illinois.edu/building-blocks/version-1.0/planargraphs.pdf"
 	/>
@@ -41,7 +41,7 @@ This can also expanded to graphs that are not connected, to incorporate connecte
 
 In this problem, we're asked to count the number of contiguous areas of cells on
 several flat rectangles. Such areas are separated by river segments and
-rectangle boundaries.
+rectangular boundaries.
 
 Where else do we count the number of areas on a flat surface?
 
@@ -73,7 +73,7 @@ subtract $R + 1$ from $F$ to get $A$.
 Since the whole river is a big connected component, we can just check whether
 the river touches the bounding rectangle to determine $C$.
 
-Finding $E$, $V$, and $R$ is a lot more complicated though.
+Finding $E$, $V$, and $R$ is a lot more complicated, though.
 
 ### Finding $E$, $V$, and $R$
 
@@ -224,15 +224,15 @@ $$
 
 Again, Euler’s formula states that $V - E + F = C + 1$, where $V$ is the number of vertices, $E$ is the number of edges, $F$ is the number of faces, and $C$ is the number of connected components.
 
-However, for the sake of this question, we are interested in the number of faces $(F = E - V + C + 1)$ the graph has, which is the number of regions adjacent cells with the same colors. Thus, by calculating $V, E,$ and $C$ and using these values to substitute into the formula, we obtain the answer.
+However, for the sake of this question, we are interested in the number of faces $(F = E - V + C + 1)$ the graph has, which is the number of regions of adjacent cells with the same color. Thus, by calculating $V, E,$ and $C$ and using these values to substitute into the formula, we obtain the answer.
 
 Obtaining $V$ and $E$ is the most straightforward. For $V$, simply count the total number of corners, which corresponds to the dimensions of the subrectangle. For $E$, we can maintain a 2D prefix sums array representing the number of edges, calculating both $E$ and $V$ in $O(1)$.
 
 Calculating $C$
 
-To calculate $C$, we can use an algorithm similar to [Rooms from the Romanian IOI 2017 Selection](https://csacademy.com/contest/romanian-ioi-2017-selection-1/task/rooms/statement/). For each connected component in the entire canvas, mark the top-left-most vertex as critical. Then, let’s use 2D prefix sums to count the number of critical vertices in the current sub-rectangle.
+To calculate $C$, we can use an algorithm similar to [Rooms from the Romanian IOI 2017 Selection](https://csacademy.com/contest/romanian-ioi-2017-selection-1/task/rooms/statement/). For each connected component in the entire canvas, mark the top-leftmost vertex as critical. Then, let’s use 2D prefix sums to count the number of critical vertices in the current sub-rectangle.
 
-This gives us a good estimate to the value of $C$, but we have to account for overcounting. Say some connected component’s critical vertex exists in the current subrectangle, but the entire structure does not. This means that the component will have some vertex on the border of the subrectangle, implying it is not a unique connected component.
+This gives us a good estimate of the value of $C$, but we have to account for overcounting. Say some connected component’s critical vertex exists in the current subrectangle, but the entire structure does not. This means that the component will have some vertices on the border of the subrectangle, implying it is not a unique connected component.
 
 So, to filter out such components, we can traverse the border of the subrectangle and remove all connected components that share a vertex with it. In the end, we must add $1$ back to $C$ to account for the component that contains the border.
 
@@ -300,7 +300,7 @@ int main() {
 		}
 	};
 
-	// Run DFS through the grid to find all the connected componenets and mark them
+	// Run DFS through the grid to find all the connected components and mark them
 	for (int i = 0; i < n + 1; i++) {
 		for (int j = 0; j < m + 1; j++) {
 			if (critical[i][j][0] == -1) {
@@ -382,7 +382,7 @@ int main() {
 			deleted[point[0]][point[1]] = false;
 		}
 
-		// Use Euler's formula to calculate query answer
+		// Use Euler's formula to calculate the query answer
 		cout << e - v + c + 1 << '\n';
 	}
 }
