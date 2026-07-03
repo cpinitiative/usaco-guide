@@ -2,7 +2,7 @@
 id: usaco-1471
 source: USACO Silver 2025 January
 title: Farmer John's Favorite Operation
-author: John Zhou
+author: John Zhou, Raagav Bala
 ---
 
 [Official Analysis (C++, Python)](https://usaco.org/current/data/sol_prob2_silver_jan25.html)
@@ -46,7 +46,7 @@ The final answer will be the smallest result over all such indices.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(N \log N)$
+**Time Complexity:** $\mathcal{O}(N \log N)$ per test case
 
 <LanguageSection>
 <CPPSection>
@@ -83,7 +83,7 @@ void solve() {
 	long long ans = 9e18;
 	for (int i = n; i < 2 * n; i++) {
 		// Compute minimum total difference from each a[i] to the x.
-		// We treat "median" as the right median if n is even, and decompose
+		// We treat "median" as the left median if n is even, and decompose
 		// into left and right calculations (since absolute value argument sign
 		// changes)
 		long long cost = 0;
@@ -126,27 +126,27 @@ T = int(input())
 for _ in range(T):
     N, M = map(int, input().split())
     nums = list(map(int, input().split()))
-    rems = sorted([x % M for x in nums]) #only remainder matters
-    S = rems + [x + M for x in rems] #unwrap the circle
+    rems = sorted([x % M for x in nums]) # only remainder matters
+    S = rems + [x + M for x in rems] # unwrap the circle
 
-	#prefix sums for fast lookup of operations needed
+	# prefix sums for fast lookup of operations needed
     prefix = [0] * (len(S) + 1)
     for i in range(len(S)):
         prefix[i + 1] = prefix[i] + S[i]
 
     min_total = float('inf')
 
-	#try every way to unwrap the circle
+	# try every way to unwrap the circle
     for i in range(N):
         j = i + N
 		mid = i + (N-1)//2
-        median = S[mid] #median to minimize operations
+        median = S[mid] # median to minimize operations
 
-		#ops to move smaller remainders up to median
+		# ops to move smaller remainders up to median
         left = mid - i + 1
         left_sum = median * left - (prefix[mid + 1] - prefix[i])
 
-		#ops to move larger remainders down to median
+		# ops to move larger remainders down to median
         right = j - (mid + 1)
         right_sum = (prefix[j] - prefix[mid + 1]) - median * right
 
