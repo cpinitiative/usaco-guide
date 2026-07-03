@@ -39,18 +39,18 @@ already resembles a shortest-path distance. The only difference is that instead 
 
 #include <bits/stdc++.h>
 using namespace std;
- 
+
 const long long INF = 1e18;
- 
+
 int main() {
 	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
 	freopen("dining.in", "r", stdin);
 	freopen("dining.out", "w", stdout);
- 
+
 	int n, m, k;
 	cin >> n >> m >> k;
- 
+
 	vector<vector<pair<int, int>>> adj(n + 1);
 	for (int i = 0; i < m; i++) {
 		int a, b, w;
@@ -58,19 +58,19 @@ int main() {
 		adj[a].push_back({b, w});
 		adj[b].push_back({a, w});
 	}
- 
+
 	// dist[i] = shortest time from pasture i straight home to the barn
 	vector<long long> dist(n + 1, INF);
 	priority_queue<pair<long long, int>, vector<pair<long long, int>>, greater<>> pq;
- 
+
 	dist[n] = 0;
 	pq.push({0, n});
- 
+
 	while (!pq.empty()) {
 		auto [cur_dist, node] = pq.top();
 		pq.pop();
 		if (cur_dist != dist[node]) continue;
- 
+
 		for (auto [neighbor, weight] : adj[node]) {
 			if (dist[neighbor] > cur_dist + weight) {
 				dist[neighbor] = cur_dist + weight;
@@ -78,28 +78,28 @@ int main() {
 			}
 		}
 	}
- 
+
 	// best[i] = min over haybales h of dist(i, h) + (dist[h] - yumminess[h])
 	// computed via multi-source Dijkstra, seeding every haybale at once
 	vector<long long> best(n + 1, INF);
 	priority_queue<pair<long long, int>, vector<pair<long long, int>>, greater<>> pq2;
- 
+
 	for (int i = 0; i < k; i++) {
 		int haybale, yum;
 		cin >> haybale >> yum;
- 
+
 		long long slack = dist[haybale] - yum;
 		if (best[haybale] > slack) {
 			best[haybale] = slack;
 			pq2.push({best[haybale], haybale});
 		}
 	}
- 
+
 	while (!pq2.empty()) {
 		auto [cur_dist, node] = pq2.top();
 		pq2.pop();
 		if (cur_dist != best[node]) continue;
- 
+
 		for (auto [neighbor, weight] : adj[node]) {
 			if (best[neighbor] > cur_dist + weight) {
 				best[neighbor] = cur_dist + weight;
@@ -107,13 +107,10 @@ int main() {
 			}
 		}
 	}
- 
-	// A cow at pasture i can find a worthwhile haybale iff best[i] <= dist[i]
-	for (int i = 1; i < n; i++) {
-		cout << (best[i] <= dist[i]) << "\n";
-	}
-}
 
+	// A cow at pasture i can find a worthwhile haybale iff best[i] <= dist[i]
+	for (int i = 1; i < n; i++) { cout << (best[i] <= dist[i]) << "\n"; }
+}
 ```
 </CPPSection>
 
