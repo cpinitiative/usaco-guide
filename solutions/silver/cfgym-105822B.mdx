@@ -10,16 +10,16 @@ author: John Zhou
 ## Explanation
 
 We must obtain $2$ pairs of equal numbers.
-To make two indices $i_1$ and $i_2$ contain the same value, $|a[i_1]-a[i_2]|$ operations are needed.
-Therefore, it is optimal to sort the array and make adjacent pair of numbers equal.
+To make two indices $i_1$ and $i_2$ contain the same value, $|sticks[i_1]-sticks[i_2]|$ operations are needed.
+Therefore, it is optimal to sort the array and make adjacent pairs of numbers equal.
 
-Thus, we sort the input array, and compute $d[i]=a[i+1]-a[i]$ for $0<i<n-1$.
-The problem now reduces to choosing two indices $i_1$ and $i_2$ such that $d[i_1]+d[i_2]$ is minimized.
+Thus, we sort the input array, and compute $diff[i]=sticks[i+1]-sticks[i]$ for $0<i<n-1$.
+The problem now reduces to choosing two indices $i_1$ and $i_2$ such that $diff[i_1]+diff[i_2]$ is minimized.
 However, **the two pairs cannot share any number**, so $i_1$ and $i_2$ cannot be adjacent
 to each other (if $i_2=i_1+1$, the pairs would be $i_1, i_1+1$ and $i_1+1, i_1+2$, which overlap).
 
 Without loss of generality, $i_1 < i_2$.
-We loop over $2\leq i_2<n-1$ (since $i_2=1$ is impossible). By fixing $d[i_2], i_1$ must be in $1\leq i_1<i_2-1$, and we can maintain a prefix minimum of $d[i_1]$ to obtain the best $d[i_1]$ for each $i_2$.
+We loop over $2\leq i_2<n-1$ (since $i_2=1$ is impossible). By fixing $diff[i_2], i_1$ must be in $1\leq i_1<i_2-1$, and we can maintain a prefix minimum of $diff[i_1]$ to obtain the best $diff[i_1]$ for each $i_2$.
 
 ## Implementation
 
@@ -44,16 +44,16 @@ void solve() {
 	for (int i = 0; i < n; i++) cin >> sticks[i];
 	sort(sticks.begin(), sticks.end());
 
-	vector<int> d(n);
-	for (int i = 0; i < n - 1; i++) d[i] = sticks[i + 1] - sticks[i];
+	vector<int> diff(n - 1);
+	for (int i = 0; i < n - 1; i++) diff[i] = sticks[i + 1] - sticks[i];
 
 	int ans = INT_MAX;
-	int min_previous_diff = d[0];
+	int min_previous_diff = diff[0];
 	// Loop over i_2
 	for (int i = 2; i < n - 1; i++) {
-		ans = min(ans, d[i] + min_previous_diff);
-		// d[i+1] can be combined with anything before d[i].
-		min_previous_diff = min(min_previous_diff, d[i - 1]);
+		ans = min(ans, diff[i] + min_previous_diff);
+		// diff[i+1] can be combined with anything before diff[i].
+		min_previous_diff = min(min_previous_diff, diff[i - 1]);
 	}
 	cout << ans << endl;
 }
@@ -67,4 +67,72 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Kites {
+    public static void main(String[] args) throws Exception {
+        Kattio io = new Kattio();
+        int testNum = io.nextInt();
+
+        for (int t = 0; t < testNum; t++) {
+            int n = io.nextInt();
+            int[] sticks = new int[n];
+            int[] diff = new int[n - 1];
+
+            for (int i = 0; i < n; i++) {
+                sticks[i] = io.nextInt();
+            }
+
+            Arrays.sort(sticks);
+
+            for (int i = 0; i < n - 1; i++) {
+                diff[i] = sticks[i + 1] - sticks[i]; 
+            }
+
+            int ans = Integer.MAX_VALUE;
+            int minPreviousDiff = diff[0];
+
+			// Loop over i_2
+            for (int i = 2; i < n - 1; i++) {
+                ans = Math.min(ans, diff[i] + minPreviousDiff);
+                // diff[i+1] can be combined with anything before diff[i].
+				minPreviousDiff = Math.min(minPreviousDiff, diff[i - 1]);
+            }
+
+            io.println(ans);
+        }
+        io.close();
+    }
+
+    // BeginCodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+for _ in range(int(input())):
+    n = int(input())
+    sticks = list(map(int, input().split()))
+    sticks.sort()
+    diff = [(sticks[i] - sticks[i - 1]) for i in range(1, n)]
+    ans = float('inf')
+    min_previous_diff = diff[0]
+
+	# Loop over i_2
+    for i in range(2, n - 1):
+        ans = min(ans, diff[i] + min_previous_diff)
+        # diff[i+1] can be combined with anything before diff[i].
+		min_previous_diff = min(min_previous_diff, diff[i - 1])
+
+    print(ans)
+
+```
+
+</PySection>
 </LanguageSection>
