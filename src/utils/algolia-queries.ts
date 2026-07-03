@@ -31,7 +31,7 @@ export function computeContentHash(record: Record<string, unknown>): string {
 export async function getModuleRecords() {
   const modules = await queryAllModuleFrontmatter();
 
-  return modules
+  return Promise.all(modules
     .filter(m => m.frontmatter.id in moduleIDToSectionMap)
     .map(async m => {
       const fullModule = await queryModule(m.frontmatter.id);
@@ -44,7 +44,7 @@ export async function getModuleRecords() {
           ? extractSearchableText(fullModule.mdast)
           : '',
       };
-    });
+    }));
 }
 
 export async function getProblemRecords() {
@@ -186,7 +186,7 @@ export async function getAlgoliaRecords() {
   const indexPrefix = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME ?? 'dev';
 
   const [moduleRecords, problemRecords, fileRecords] = await Promise.all([
-    Promise.all(await getModuleRecords()),
+    getModuleRecords(),
     getProblemRecords(),
     getEditorFileRecords(),
   ]);
@@ -195,35 +195,14 @@ export async function getAlgoliaRecords() {
     {
       records: moduleRecords,
       indexName: indexPrefix + '_modules',
-      matchFields: ['title', 'description', 'content', 'id', 'division'],
     },
     {
       records: problemRecords,
       indexName: indexPrefix + '_problems',
-      matchFields: [
-        'source',
-        'name',
-        'tags',
-        'url',
-        'difficulty',
-        'isStarred',
-        'tags',
-        'problemModules',
-        'solution',
-      ],
     },
     {
       records: fileRecords,
       indexName: indexPrefix + '_editorFiles',
-      matchFields: [
-        'kind',
-        'title',
-        'id',
-        'source',
-        'solutions',
-        'path',
-        'problemModules',
-      ],
     },
   ];
 
