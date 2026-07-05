@@ -64,67 +64,77 @@ short-circuits to $0$.
 #include <bits/stdc++.h>
 #define int long long
 using namespace std;
-int ps[11][11][11][11][11][11]; // prefix sum array
+int ps[11][11][11][11][11][11];  // prefix sum array
 void precompute() {
-    for (int i=0;i<6;i++) { // proprogate the value in each of the 6 dimensions
-        for (int i1=1;i1<=10;i1++) {
-            for (int i2=1;i2<=10;i2++) {
-                for (int i3=1;i3<=10;i3++) {
-                    for (int i4=1;i4<=10;i4++) {
-                        for (int i5=1;i5<=10;i5++) {
-                            for (int i6=1;i6<=10;i6++) {
-                                vector<int> tr={i1,i2,i3,i4,i5,i6};
-                                tr[i]--;
-                                ps[i1][i2][i3][i4][i5][i6]+=ps[tr[0]][tr[1]][tr[2]][tr[3]][tr[4]][tr[5]];
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+	for (int i = 0; i < 6; i++) {  // proprogate the value in each of the 6 dimensions
+		for (int i1 = 1; i1 <= 10; i1++) {
+			for (int i2 = 1; i2 <= 10; i2++) {
+				for (int i3 = 1; i3 <= 10; i3++) {
+					for (int i4 = 1; i4 <= 10; i4++) {
+						for (int i5 = 1; i5 <= 10; i5++) {
+							for (int i6 = 1; i6 <= 10; i6++) {
+								vector<int> tr = {i1, i2, i3, i4, i5, i6};
+								tr[i]--;
+								ps[i1][i2][i3][i4][i5][i6] +=
+								    ps[tr[0]][tr[1]][tr[2]][tr[3]][tr[4]][tr[5]];
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }
 signed main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(0);
-    int n; cin>>n;
-    for (int i=0;i<n;i++) {
-        string s; cin>>s;
-        vector<int> ind;
-        int x; cin>>x;
-        for (auto j:s) ind.push_back(j-'0'+1);
-        ps[ind[0]][ind[1]][ind[2]][ind[3]][ind[4]][ind[5]] = x;
-    }
-    precompute();
-    int q; cin>>q;
-    while (q--) {
-        string s1,s2; cin>>s1>>s2;
-        int f=0;
-        for (int j=0;j<6;j++) {
-            if (s1[j]>s2[j]) { // impossible to find such number
-                f = 1;
-                cout<<0<<"\n";
-                break;
-            }
-        }
-        if (f) continue;
-        int ans=0;
-        for (int i=0;i<64;i++) {
-            vector<int> query_pos;
-            int cnt=0;
-            for (int j=0;j<6;j++) {
-                if (i&(1<<j)) {
-                    query_pos.push_back(s2[j]-'0'+1);
-                    cnt++;
-                }
-                else query_pos.push_back(s1[j]-'0');
-            }
-            if (cnt&1) ans-=ps[query_pos[0]][query_pos[1]][query_pos[2]][query_pos[3]][query_pos[4]][query_pos[5]]; // odd number of "-1"s, we subtract the value
-            else ans+=ps[query_pos[0]][query_pos[1]][query_pos[2]][query_pos[3]][query_pos[4]][query_pos[5]];
-        }
-        cout<<ans<<"\n";
-    }
-    return 0;
+	ios_base::sync_with_stdio(false);
+	cin.tie(0);
+	int n;
+	cin >> n;
+	for (int i = 0; i < n; i++) {
+		string s;
+		cin >> s;
+		vector<int> ind;
+		int x;
+		cin >> x;
+		for (auto j : s) ind.push_back(j - '0' + 1);
+		ps[ind[0]][ind[1]][ind[2]][ind[3]][ind[4]][ind[5]] = x;
+	}
+	precompute();
+	int q;
+	cin >> q;
+	while (q--) {
+		string s1, s2;
+		cin >> s1 >> s2;
+		int f = 0;
+		for (int j = 0; j < 6; j++) {
+			if (s1[j] > s2[j]) {  // impossible to find such number
+				f = 1;
+				cout << 0 << "\n";
+				break;
+			}
+		}
+		if (f) continue;
+		int ans = 0;
+		for (int i = 0; i < 64; i++) {
+			vector<int> query_pos;
+			int cnt = 0;
+			for (int j = 0; j < 6; j++) {
+				if (i & (1 << j)) {
+					query_pos.push_back(s2[j] - '0' + 1);
+					cnt++;
+				} else query_pos.push_back(s1[j] - '0');
+			}
+			if (cnt & 1)
+				ans -= ps[query_pos[0]][query_pos[1]][query_pos[2]][query_pos[3]]
+				         [query_pos[4]]
+				         [query_pos[5]];  // odd number of "-1"s, we subtract the value
+			else
+				ans += ps[query_pos[0]][query_pos[1]][query_pos[2]][query_pos[3]]
+				         [query_pos[4]][query_pos[5]];
+		}
+		cout << ans << "\n";
+	}
+	return 0;
 }
 ```
 
