@@ -62,9 +62,8 @@ short-circuits to $0$.
 
 ```cpp
 #include <bits/stdc++.h>
-#define int long long
 using namespace std;
-int ps[11][11][11][11][11][11];  // prefix sum array
+long long ps[11][11][11][11][11][11];  // prefix sum array
 void precompute() {
 	for (int i = 0; i < 6; i++) {  // proprogate the value in each of the 6 dimensions
 		for (int i1 = 1; i1 <= 10; i1++) {
@@ -85,7 +84,7 @@ void precompute() {
 		}
 	}
 }
-signed main() {
+int main() {
 	ios_base::sync_with_stdio(false);
 	cin.tie(0);
 	int n;
@@ -94,7 +93,7 @@ signed main() {
 		string s;
 		cin >> s;
 		vector<int> ind;
-		int x;
+		long long x;
 		cin >> x;
 		for (auto j : s) ind.push_back(j - '0' + 1);
 		ps[ind[0]][ind[1]][ind[2]][ind[3]][ind[4]][ind[5]] = x;
@@ -114,7 +113,7 @@ signed main() {
 			}
 		}
 		if (f) continue;
-		int ans = 0;
+		long long ans = 0;
 		for (int i = 0; i < 64; i++) {
 			vector<int> query_pos;
 			int cnt = 0;
