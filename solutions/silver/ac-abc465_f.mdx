@@ -17,38 +17,44 @@ in six dimensions instead of two.
 
 ### Building the 6D prefix sum
 
-Make an array `pref[11][11][11][11][11][11]` (one slot per digit value $0$–$9$,
-plus an extra index-$0$ boundary so the prefix sum behaves at the lower edge).
-For a drink whose digits are $d_0 d_1 d_2 d_3 d_4 d_5$, add its size to
-`pref[d0][d1][d2][d3][d4][d5]`.
+The array `ps[11][11][11][11][11][11]` is the prefix sum array (declared `int`
+but widened to 64-bit by `#define int long long`). Each digit $d$ in $0$–$9$ is
+stored at index $d + 1$; index $0$ is left as a zero boundary so the prefix sum
+behaves at the lower edge. So a drink whose ID is $d_0 d_1 d_2 d_3 d_4 d_5$ is
+recorded as `ps[d0+1][d1+1]…[d5+1] = size` — the code collects these indices into
+`ind`.
 
-Then convert it into a prefix sum. In 2D you sweep right and then down; here you
-sweep once along **each** of the 6 axes. Afterward `pref[a0][a1]…[a5]` stores the
-total size of every drink whose $k$-th digit satisfies $s_k \le a_k - 1$ for all
-$k$.
+`precompute()` then turns this into a prefix sum. In 2D you sweep right and then
+down; here you sweep once along **each** of the 6 dimensions. The code does this
+compactly: for each dimension `i`, it visits every cell, steps one index back
+along axis `i` (`tr[i]--`), and adds that neighboring cell's value. After all six
+sweeps, `ps[a1][a2]…[a6]` stores the total size of every drink whose $k$-th digit
+satisfies $s_k \le a_k - 1$ for all $k$.
 
 ### Answering a query with inclusion–exclusion
 
-A query gives a range $[x_k, y_k]$ per axis. Summing over a box from a prefix-sum
-array is the inclusion–exclusion trick, generalized:
+A query gives two bound strings `s1` (lower) and `s2` (upper), i.e. a range
+$[x_k, y_k]$ per axis. Summing over a box from a prefix-sum array is the
+inclusion–exclusion trick, generalized:
 
-- a 1D range $[x, y]$ is `pref(y) − pref(x − 1)`;
-- a 2D box is `pref(y0,y1) − pref(x0−1,y1) − pref(y0,x1−1) + pref(x0−1,x1−1)`.
+- a 1D range $[x, y]$ is `ps(y) − ps(x − 1)`;
+- a 2D box is `ps(y0,y1) − ps(x0−1,y1) − ps(y0,x1−1) + ps(x0−1,x1−1)`.
 
-For 6 axes there are $2^6 = 64$ corners. For each axis pick either the upper
-endpoint $y_k$ or the position just below the lower endpoint, $x_k - 1$, look up
-the prefix value at that corner, and add or subtract it. The sign is negative
-when an **odd** number of axes use the lower position $x_k - 1$ (iterate a 6-bit
-mask over all 64 combinations). If some axis has $x_k > y_k$, the box is empty
-and the answer is $0$.
+For 6 axes there are $2^6 = 64$ corners. The code iterates a 6-bit mask; for each
+axis it picks either the upper endpoint $y_k$ (index $y_k + 1$, pushed into
+`query_pos` and counted by `cnt`) or the position just below the lower endpoint
+(index $x_k$, representing "$\le x_k - 1$"). It then reads `ps` at that corner and
+adds or subtracts it, subtracting when `cnt` is odd — equivalently, when an odd
+number of axes use the lower endpoint (the two have the same parity because there
+are 6 axes). If any axis has $x_k > y_k$ the box is empty, and the code
+short-circuits to $0$.
 
 ### Complexity
 
 - **Time:** $\mathcal{O}(10^6)$ to build the prefix sum (six sweeps over $10^6$
   cells) and $\mathcal{O}(2^6) = \mathcal{O}(1)$ per query, so
   $\mathcal{O}(10^6 + Q)$ overall.
-- **Memory:** $\mathcal{O}(10^6)$ for the prefix array — about 14 MB stored as
-  64-bit integers.
+- **Memory:** $\mathcal{O}(10^6)$ for `ps` — about 14 MB as 64-bit integers.
 
 ## Implementation
 
@@ -59,70 +65,67 @@ and the answer is $0$.
 
 ```cpp
 #include <bits/stdc++.h>
+#define int long long
 using namespace std;
-
-// 6-dimensional prefix sum. Axis k represents the k-th digit of an ID.
-// A digit d in 0..9 lives at index d + 1; index 0 is the zero boundary
-// used so that "s_k <= x_k - 1" (i.e. nothing) maps to index 0.
-long long pref[11][11][11][11][11][11];
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    int n;
-    cin >> n;
-    for (int i = 0; i < n; i++) {
-        string s;
-        long long v;
-        cin >> s >> v;
-        int p[6];
-        for (int k = 0; k < 6; k++) p[k] = (s[k] - '0') + 1; // digit -> 1..10
-        pref[p[0]][p[1]][p[2]][p[3]][p[4]][p[5]] += v;
-    }
-
-    // 2D prefix sum generalized to 6 axes: sweep once along each axis.
-#define SWEEP(prev)                                                          \
-    for (int a = 1; a <= 10; a++) for (int b = 1; b <= 10; b++)              \
-    for (int c = 1; c <= 10; c++) for (int d = 1; d <= 10; d++)              \
-    for (int e = 1; e <= 10; e++) for (int f = 1; f <= 10; f++)              \
-        pref[a][b][c][d][e][f] += prev;
-    SWEEP(pref[a][b][c][d][e][f - 1])
-    SWEEP(pref[a][b][c][d][e - 1][f])
-    SWEEP(pref[a][b][c][d - 1][e][f])
-    SWEEP(pref[a][b][c - 1][d][e][f])
-    SWEEP(pref[a][b - 1][c][d][e][f])
-    SWEEP(pref[a - 1][b][c][d][e][f])
-#undef SWEEP
-
-    int q;
-    cin >> q;
-    while (q--) {
-        string x, y;
-        cin >> x >> y;
-
-        // If any axis has an empty range [x_k, y_k], no drink can match.
-        bool empty = false;
-        for (int k = 0; k < 6; k++) empty |= (x[k] > y[k]);
-
-        long long ans = 0;
-        if (!empty) {
-            // Inclusion-exclusion over 6 axes -> 2^6 = 64 prefix lookups.
-            for (int mask = 0; mask < 64; mask++) {
-                int idx[6], lower = 0;
-                for (int k = 0; k < 6; k++) {
-                    if (mask >> k & 1) {
-                        idx[k] = (y[k] - '0') + 1; // s_k <= y_k
-                    } else {
-                        idx[k] = (x[k] - '0');     // s_k <= x_k - 1
-                        lower++;
+int ps[11][11][11][11][11][11]; // prefix sum array
+void precompute() {
+    for (int i=0;i<6;i++) { // proprogate the value in each of the 6 dimensions
+        for (int i1=1;i1<=10;i1++) {
+            for (int i2=1;i2<=10;i2++) {
+                for (int i3=1;i3<=10;i3++) {
+                    for (int i4=1;i4<=10;i4++) {
+                        for (int i5=1;i5<=10;i5++) {
+                            for (int i6=1;i6<=10;i6++) {
+                                vector<int> tr={i1,i2,i3,i4,i5,i6};
+                                tr[i]--;
+                                ps[i1][i2][i3][i4][i5][i6]+=ps[tr[0]][tr[1]][tr[2]][tr[3]][tr[4]][tr[5]];
+                            }
+                        }
                     }
                 }
-                long long term = pref[idx[0]][idx[1]][idx[2]][idx[3]][idx[4]][idx[5]];
-                ans += (lower & 1 ? -term : term);
             }
         }
-        cout << ans << '\n';
+    }
+}
+signed main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(0);
+    int n; cin>>n;
+    for (int i=0;i<n;i++) {
+        string s; cin>>s;
+        vector<int> ind;
+        int x; cin>>x;
+        for (auto j:s) ind.push_back(j-'0'+1);
+        ps[ind[0]][ind[1]][ind[2]][ind[3]][ind[4]][ind[5]] = x;
+    }
+    precompute();
+    int q; cin>>q;
+    while (q--) {
+        string s1,s2; cin>>s1>>s2;
+        int f=0;
+        for (int j=0;j<6;j++) {
+            if (s1[j]>s2[j]) { // impossible to find such number
+                f = 1;
+                cout<<0<<"\n";
+                break;
+            }
+        }
+        if (f) continue;
+        int ans=0;
+        for (int i=0;i<64;i++) {
+            vector<int> query_pos;
+            int cnt=0;
+            for (int j=0;j<6;j++) {
+                if (i&(1<<j)) {
+                    query_pos.push_back(s2[j]-'0'+1);
+                    cnt++;
+                }
+                else query_pos.push_back(s1[j]-'0');
+            }
+            if (cnt&1) ans-=ps[query_pos[0]][query_pos[1]][query_pos[2]][query_pos[3]][query_pos[4]][query_pos[5]]; // odd number of "-1"s, we subtract the value
+            else ans+=ps[query_pos[0]][query_pos[1]][query_pos[2]][query_pos[3]][query_pos[4]][query_pos[5]];
+        }
+        cout<<ans<<"\n";
     }
     return 0;
 }
