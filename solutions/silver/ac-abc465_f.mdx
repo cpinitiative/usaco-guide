@@ -17,12 +17,9 @@ in six dimensions instead of two.
 
 ### Building the 6D prefix sum
 
-The array `ps[11][11][11][11][11][11]` is the prefix sum array (declared `int`
-but widened to 64-bit by `#define int long long`). Each digit $d$ in $0$–$9$ is
-stored at index $d + 1$; index $0$ is left as a zero boundary so the prefix sum
-behaves at the lower edge. So a drink whose ID is $d_0 d_1 d_2 d_3 d_4 d_5$ is
-recorded as `ps[d0+1][d1+1]…[d5+1] = size` — the code collects these indices into
-`ind`.
+The array `ps[11][11][11][11][11][11]` is the prefix sum array. Each size is
+recorded as `ps[d0+1][d1+1]…[d5+1] = size` so that we don't have to use casework
+to deal with 0-indexed subtraction during queries.
 
 `precompute()` then turns this into a prefix sum. In 2D you sweep right and then
 down; here you sweep once along **each** of the 6 dimensions. The code does this
