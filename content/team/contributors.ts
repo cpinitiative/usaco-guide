@@ -210,7 +210,7 @@ export const RestOfMembers: Member[] = [
   {
     photo: 'david_zhou',
     name: 'David Zhou',
-    titles: [roles.videoInstructor, roles.contentAuthor],
+    titles: ['Director of Self-Study Classes', roles.videoInstructor, roles.contentAuthor],
   },
   {
     photo: 'kaylanc',
