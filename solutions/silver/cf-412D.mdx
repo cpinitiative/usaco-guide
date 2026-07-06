@@ -14,7 +14,9 @@ Since there are no restrictions of both $u,v$ and $v,u$, it is always possible f
 Construct a directed graph with edges $a_i\to b_i$, where we call $b_i$ the neighbor of $a_i$.
 It is possible to make each node follow all its neighbors if there are no cycles.
 This will lead to a valid configuration, as an element cannot follow another directly if it is before the latter element in the first place.
-If there is, we can neglect an edge in a cycle, which still gives a viable configuration, as the cycles are at least of size $3$, meaning the two vertices associated with the edge we break will not be adjacent in the first place, so their direction does not matter.
+If there is a cycle, we can neglect an edge in a cycle. This is still valid, as the cycles are at least $3$ vertices.
+
+To see why, we use an example: we require vertex A to placed before B, B to be before C, and C to be before A; from the first two requirements, A must be before C with at least $1$ element (B) in between. Since A and C are not adjacent, their order does not matter, so we may neglect the third edge.
 
 We use a post order DFS to traverse all the nodes; at each node, we DFS all its neighbors before outputting the current node number.
 This ensures that all neighbors of a vertex come before itself.
