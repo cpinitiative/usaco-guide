@@ -1,0 +1,185 @@
+---
+id: cf-1690G
+source: CF
+title: Count the Trains
+author: Abhinav Singh
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/103658)
+
+## Explanation
+
+Since carriage $i$ can never outrun anything in front of it, its true speed is the prefix minimum of speeds from the start. Since this array of speeds is non-increasing, it looks like a staircase, and each "step", or each change in value is a boundary between trains. So the answer is just the number of **distinct values** in $speed[]$.
+
+Each message lowers one engine's cap, which forces us to recompute how far that drop propagates: any carriage to the right that was already $\geq$ the new cap gets dragged down to it. If the new cap doesn't go below the carriage's current real speed, nothing changes: it was already bottlenecked by something ahead of it, so we skip the update entirely. 
+
+Otherwise, we need to apply the drop as a range assignment and update the distinct-value count without rescanning the array. Both problems are solved by maintaining the speeds in a **[segment tree with lazy propagation](https://usaco.guide/plat/RURQ?lang=cpp)** supporting range assign and point query. Since the speed array stays monotonic at all times, we can binary search on the tree to find the rightmost affected carriage.
+
+For the count itself, we keep a **set of distinct speeds** live. After the segment tree update reflects the new prefix minimums, we must sync the set. We can do this by taking the prefix min at the position right before ours ($prev$). In the set, use upper_bound to find the next larger value than the new cap -  if that value is less than prev, it's now stale (no carriage still has that speed) so we erase it, and keep walking forward erasing stale values until we hit one that's $\geq$ $prev.$
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}((N + M) \log^2 N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+vector<int> seg;
+vector<bool> lazy;
+
+void push(int v) {
+    if (!lazy[v]) return;
+
+    seg[2 * v] = seg[v];
+    seg[2 * v + 1] = seg[v];
+
+    lazy[2 * v] = true;
+    lazy[2 * v + 1] = true;
+
+    lazy[v] = false;
+}
+
+// Build the initial prefix minimum array.
+void build(int v, int tl, int tr, const vector<int>& pref_min) {
+    if (tl == tr) {
+        seg[v] = pref_min[tl];
+        return;
+    }
+
+    int tm = (tl + tr) / 2;
+    build(2 * v, tl, tm, pref_min);
+    build(2 * v + 1, tm + 1, tr, pref_min);
+}
+
+// Assign every value in [l, r] to val.
+void update(int v, int tl, int tr, int l, int r, int val) {
+    if (l > r) return;
+
+    if (tl == l && tr == r) {
+        seg[v] = val;
+        lazy[v] = true;
+        return;
+    }
+
+    push(v);
+
+    int tm = (tl + tr) / 2;
+
+    update(2 * v, tl, tm, l, min(r, tm), val);
+    update(2 * v + 1, tm + 1, tr, max(l, tm + 1), r, val);
+}
+
+// Point query.
+int query(int v, int tl, int tr, int pos) {
+    if (tl == tr){
+        return seg[v];
+    }
+
+    push(v);
+
+    int tm = (tl + tr) / 2;
+
+    if (pos <= tm){
+        return query(2 * v, tl, tm, pos);
+    }
+
+    return query(2 * v + 1, tm + 1, tr, pos);
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int t;
+    cin >> t;
+
+    while (t--) {
+        int n, q;
+        cin >> n >> q;
+
+        vector<int> a(n);
+        for (int &x : a) cin >> x;
+
+        // Compute the initial prefix minima.
+        vector<int> pref_min(n);
+        pref_min[0] = a[0];
+
+        for (int i = 1; i < n; i++){
+            pref_min[i] = min(pref_min[i - 1], a[i]);
+        }
+
+        seg.assign(4 * n + 5, 0);
+        lazy.assign(4 * n + 5, false);
+
+        build(1, 0, n - 1, pref_min);
+
+        // Store the distinct prefix minima.
+        set<int> distinct_speeds;
+        for (int i = 0; i < n; i++){
+            distinct_speeds.insert(query(1, 0, n - 1, i));
+        }
+
+        while (q--) {
+            int k, d;
+            cin >> k >> d;
+            k--;
+
+            a[k] -= d;
+
+            // Current real speed of carriage k.
+            int cur = query(1, 0, n - 1, k);
+
+            // This carriage was already limited by one before it.
+            if (cur <= a[k]) {
+                cout << distinct_speeds.size() << ' ';
+                continue;
+            }
+
+            // Binary search for the last affected position.
+            int lo = k, hi = n - 1;
+
+            while (lo < hi) {
+                int mid = lo + (hi - lo + 1) / 2;
+
+                if (query(1, 0, n - 1, mid) >= a[k])
+                    lo = mid;
+                else
+                    hi = mid - 1;
+            }
+
+            int last = lo;
+
+            // Update every affected prefix minimum.
+            update(1, 0, n - 1, k, last, a[k]);
+
+            distinct_speeds.insert(a[k]);
+
+            // Prefix minimum immediately before the updated range.
+            int prev = (k > 0) ? query(1, 0, n - 1, k - 1) : INT_MAX;
+
+            // Remove obsolete prefix minima.
+            while (true) {
+                auto it = distinct_speeds.upper_bound(a[k]);
+
+                if (it == distinct_speeds.end() || *it >= prev) break;
+
+                distinct_speeds.erase(it);
+            }
+
+            cout << distinct_speeds.size() << ' ';
+        }
+
+        cout << '\n';
+    }
+
+    return 0;
+}
+```
+ 
+</CPPSection>
+</LanguageSection>
+
