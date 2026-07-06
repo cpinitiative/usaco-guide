@@ -12,7 +12,8 @@ author: John Zhou
 Since there are no restrictions of both $u,v$ and $v,u$, it is always possible for $a_i$ to follow $b_i$ either directly or indirectly in each restriction; if we make this happen all the time (except in cyclic situations as described below), then we’d get a working configuration.
 
 Construct a directed graph with edges $a_i\to b_i$, where we call $b_i$ the neighbor of $a_i$.
-It is possible to make all nodes come after all its neighbors if there is no cycles in this graph.
+It is possible to make each node follow all its neighbors if there are no cycles.
+This will lead to a valid configuration, as an element cannot follow another directly if it is before the latter element in the first place.
 If there is, we can neglect an edge in a cycle, which still gives a viable configuration, as the cycles are at least of size $3$, meaning the two vertices associated with the edge we break will not be adjacent in the first place, so their direction does not matter.
 
 We use a post order DFS to traverse all the nodes; at each node, we DFS all its neighbors before outputting the current node number.
