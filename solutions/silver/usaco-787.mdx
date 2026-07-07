@@ -45,7 +45,9 @@ Instead, after sorting the stores, we can compute milk/money prefix sums and
 binary search (rather than linear search) for how many stores a cow goes
 through. For partial offer fulfillment, we can calculate profit using the
 lower-bound index `i` that we binary-searched for:
-`sell_profit = (milk_prefix[i + 1] - (total_milk_sold + milk_from_cur_cow)) * offers[i].p_i`
+$$
+\text{sell\_profit} = \left( \text{milk\_prefix}[i + 1] - \left( \text{total\_milk\_sold} + \text{milk\_from\_cur\_cow} \right) \right) \times \text{offers}[i].p_i
+$$
 
 ## Implementation
 
@@ -56,12 +58,8 @@ lower-bound index `i` that we binary-searched for:
 #include <bits/stdc++.h>
 using namespace std;
 
-#define int long long
-
-int32_t main() {
-	ios_base::sync_with_stdio(false);
-	cin.tie(nullptr);
-
+int main() {
+	
 	freopen("rental.in", "r", stdin);
 	freopen("rental.out", "w", stdout);
 
@@ -79,8 +77,8 @@ int32_t main() {
 	});  // sort by p_i
 
 	// calculate prefix sums
-	vector<int> milk_pre(m + 1);
-	vector<int> cents_pre(m + 1);
+	vector<long long> milk_pre(m + 1);
+	vector<long long> cents_pre(m + 1);
 	for (int i = 0; i < m; i++) {
 		milk_pre[i + 1] = milk_pre[i] + orders[i].first;
 		cents_pre[i + 1] = cents_pre[i] + orders[i].second * orders[i].first;
@@ -95,23 +93,23 @@ int32_t main() {
 	}
 
 	int rent_idx = 0, sell_idx = n - 1;  // we greedily consume cows from the ends
-	int total_sold = 0;
-	int total_sell_money = 0;
-	int profit = 0;
+	long long total_sold = 0;
+	long long total_sell_money = 0;
+	long long profit = 0;
 	while (rent_idx <= sell_idx) {
-		// option 1: sell all milk of most productive cow
+		// option 1: sell all the milk of the most productive cow
 		int buyer_idx =
 		    distance(milk_pre.begin(), lower_bound(milk_pre.begin(), milk_pre.end(),
 		                                           total_sold + cows[sell_idx])) -
 		    1;  // binary search for total sold milk + current cow's milk
-		int sell_money =
+		long long sell_money =
 		    buyer_idx < m ? (cents_pre[buyer_idx + 1] -
 		                     (milk_pre[buyer_idx + 1] - (total_sold + cows[sell_idx])) *
 		                         orders[buyer_idx].second -
 		                     total_sell_money)
 		                  : cents_pre.back() - total_sell_money;
 
-		// option2: rent out least productive cow
+		// option2: rent out the least productive cow
 		int rent_money = rent_orders.empty() ? 0 : rent_orders.top();
 
 		if (sell_money >= rent_money) {
