@@ -23,7 +23,7 @@ There are an equal number of indices to the left and right of $[m_1, m_2]$, so a
 
 For the sake of contradiction, suppose $x$ is outside the range.
 
-If we increment $x$ by $1$, its distance from all $a_i > x$ will reduce by $1$, and distances from all $a_i < x$ will increase by $1$.
+If we increment $x$ by $1$, its distance from all $a_i > x$ will decrease by $1$, and distances from all $a_i < x$ will increase by $1$.
 Since $x$ is to the left of $[m_1, m_2]$, there are more $a_i > x$ than $a_i < x$.
 Thus, moving $x$ closer to $m_1$ decreases the total difference.
 
@@ -32,11 +32,11 @@ Using similar logic for $x>m_2$ gives that the range $[m_1, m_2]$ is optimal.
 </Spoiler>
 
 Now, we consider the problem when there is a modulus, starting by modding each number by $M$.
-Under a modulus, *any* number can be made a median by subtracting $M$ from a suitable amount of largest elements or, conversely, by adding $M$ to a suitable amount of smallest elements.
+Under a modulus, *any* number can be made a median by subtracting $M$ from a suitable amount of the largest elements or, conversely, by adding $M$ to a suitable amount of the smallest elements.
 For example, given $[1,3,7,9,13,17,19]$ and $M = 24$, we can make $17$ the median by adding $M$ to $1$ and $3$, resulting in $[7,9,13,17,19,25,27]$.
 
 We prepend to $a$ a copy of $a$ with $M$ subtracted from every element, and append a copy of $a$ with $M$ added to every element.
-The range $[n, 2n)$ in $a$ will be the original elements. For each of these indices, we compute the amount of elements before and after it we need to select to make the it a median, and then compute the total absolute difference using Prefix Sums.
+The range $[n, 2n)$ in $a$ will be the original elements. For each of these indices, we compute the amount of elements before and after it we need to select to make it a median, and then compute the total absolute difference using Prefix Sums.
 
 The final answer will be the smallest result over all such indices.
 
@@ -78,19 +78,23 @@ void solve() {
 
 	long long ans = 9e18;
 	for (int i = n; i < 2 * n; i++) {
-		// Compute minimum total difference from each a[i] to the x.
-		// We treat "median" as the left median if n is even, and decompose
-		// into left and right calculations (since absolute value argument
-		// sign changes)
+		/*
+		 * Compute minimum total difference from each a[i] to the x.
+		 * We treat "median" as the left median if n is even, and decompose
+		 * into left and right calculations (since absolute value argument
+		 * sign changes)
+		 */
 		long long cost = 0;
 
-		// Compute cost for difference between all elements on the left (smaller)
-		// to the current value
+		// Compute cost for difference between all elements on 
+		// the left (smaller) to the current value
 		if (n % 2 == 0) {
-			// If n is even, then sum for the next n/2 - 1 elements.
-			// This is sum of (a[j] - a[i]) from j = i-(n/2-1) to j=i-1.
-			// The a[i] gets factored out of the sum, and results in the
-			// below:
+			/*
+			 * If n is even, then sum for the next n/2 - 1 elements.
+			 * This is sum of (a[j] - a[i]) from j = i-(n/2-1) to j=i-1.
+			 * The a[i] gets factored out of the sum, and results in the
+			 * below:
+			 */
 			cost += a[i] * (n / 2 - 1) - (prefix_sum[i - 1] - prefix_sum[i - n / 2]);
 		} else {
 			// For n/2 elements
@@ -105,19 +109,20 @@ void solve() {
 	}
 	cout << ans << endl;
 }
+
 int main() {
 	int test_num;
 	cin >> test_num;
 	for (int t = 0; t < test_num; t++) solve();
 	return 0;
 }
+
 ```
 
 </CPPSection>
 <PySection>
 
-```py
-T = int(input())
+```pyT = int(input())
 for _ in range(T):
 	N, M = map(int, input().split())
 	nums = list(map(int, input().split()))
@@ -134,19 +139,23 @@ for _ in range(T):
 	min_total = float("inf")
 
 	for i in range(N, 2 * N):
-		# Compute minimum total difference from each a[i] to the x.
-		# We treat "median" as the left median if N is even, and decompose
-		# into left and right calculations (since absolute value argument
-		# sign changes)
+        """
+		Compute minimum total difference from each a[i] to the x.
+		We treat "median" as the left median if N is even, and decompose
+		into left and right calculations (since absolute value argument
+		sign changes)
+        """
 		cost = 0
 
-		# Compute cost for difference between all elements on the left (smaller)
-		# to the current value
+		# Compute cost for difference between all elements on 
+        # the left (smaller) to the current value
 		if N % 2 == 0:
-			# If N is even, then sum for the next N//2 - 1 elements.
-			# This is sum of (S[j] - S[i]) from j = i-(N//2-1) to j=i-1.
-			# The S[i] gets factored out of the sum, and results in the
-			# below:
+            """
+			If N is even, then sum for the next N//2 - 1 elements.
+			This is sum of (S[j] - S[i]) from j = i-(N//2-1) to j=i-1.
+			The S[i] gets factored out of the sum, and results in the
+			below:
+            """
 			cost += S[i] * (N // 2 - 1) - (prefix[i - 1] - prefix[i - N // 2])
 		else:
 			# If N is odd, then do for N//2 elements:
