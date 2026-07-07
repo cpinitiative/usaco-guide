@@ -9,13 +9,13 @@ author: Abhinav Singh
 
 ## Explanation
 
-Since carriage $i$ can never outrun anything in front of it, its true speed is the prefix minimum of speeds from the start. Since this array of speeds is non-increasing, it looks like a staircase, and each "step", or each change in value is a boundary between trains. So the answer is just the number of **distinct values** in $speed[]$.
+Since carriage $i$ can never outrun anything in front of it, its true speed is the prefix minimum of speeds from the start. Since this array is non-increasing, it looks like a staircase, and each change in value is a boundary between trains. So the answer is just the number of distinct values in this prefix minimum array, $\mathtt{speed}$.
 
-Each message lowers one engine's cap, which forces us to recompute how far that drop propagates: any carriage to the right that was already $\geq$ the new cap gets dragged down to it. If the new cap doesn't go below the carriage's current real speed, nothing changes: it was already bottlenecked by something ahead of it, so we skip the update entirely.
+Each message lowers one engine's cap, and causes any carriage to the right that has a higher speed than the new cap to slow down to it. If the new cap doesn't go below the carriage's current real speed, then we skip the update entirely, as it was already bottlenecked by engines in front of it.
 
-Otherwise, we need to apply the drop as a range assignment and update the distinct-value count without rescanning the array. Both problems are solved by maintaining the speeds in a **[segment tree with lazy propagation](https://usaco.guide/plat/RURQ?lang=cpp)** supporting range assign and point query. Since the speed array stays monotonic at all times, we can binary search on the tree to find the rightmost affected carriage.
+Otherwise, we need to apply the drop as a range assignment and update the distinct-value count without rescanning the array, which is solved by maintaining the speeds in a **[segment tree with lazy propagation](https://usaco.guide/plat/RURQ?lang=cpp)** to support range assign and point query. Since the speed array stays monotonic, we binary search on it to find the rightmost affected carriage to assign the range to.
 
-For the count itself, we keep a **set of distinct speeds** live. After the segment tree update reflects the new prefix minimums, we must sync the set. We can do this by taking the prefix min at the position right before ours ($prev$). In the set, use upper_bound to find the next larger value than the new cap -  if that value is less than prev, it's now stale (no carriage still has that speed) so we erase it, and keep walking forward erasing stale values until we hit one that's $\geq$ $prev.$
+For the count, we maintain a **set of distinct speeds**. After the segment tree update, we sync the set by taking $\mathtt{prev}$, the effective speed at the position right before the change, and use `upper_bound` to find the next larger value than the new cap. If that value is less than $\mathtt{prev}$, it's now stale (as the section where the speed gradually decreases has effectively been flattened to a single value) so we erase it.  We repeat this process to remove all stale speeds until the value is larger or equal to $\textt{prev}$, and then insert the new speed.
 
 ## Implementation
 
