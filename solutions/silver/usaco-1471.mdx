@@ -9,34 +9,43 @@ author: John Zhou, Raagav Bala
 
 ## Explanation
 
-The problem asks us to minimize the sum of $|a_i - x|$ for $i\in[0\ldots n)$ and an $x$ of our choice under modulus $M$.
-Thus, let us first consider this problem without the modulus.
+The problem asks us to minimize the sum of $|a_i - x|$ for $i\in[0\ldots n)$ and
+an $x$ of our choice under modulus $M$. Thus, let us first consider this problem
+without the modulus.
 
-Letting $x$ be the *median* of those numbers minimizes the total distance.
-In the case that $N$ is even, any number between the two numbers in the middle (inclusive) would work.
+Letting $x$ be the _median_ of those numbers minimizes the total distance. In
+the case that $N$ is even, any number between the two numbers in the middle
+(inclusive) would work.
 
 <Spoiler title="Intuition on this property">
 
-Let $m_1=m_2=a_{\lfloor N/2\rfloor +1}$ if $N$ is odd;
-otherwise, let $m_1=a_{N/2}$ and $m_2=a_{N/2+1}$.
-There are an equal number of indices to the left and right of $[m_1, m_2]$, so anything in $[m_1, m_2]$ should be optimal.
+Let $m_1=m_2=a_{\lfloor N/2\rfloor +1}$ if $N$ is odd; otherwise, let
+$m_1=a_{N/2}$ and $m_2=a_{N/2+1}$. There are an equal number of indices to the
+left and right of $[m_1, m_2]$, so anything in $[m_1, m_2]$ should be optimal.
 
 For the sake of contradiction, suppose $x$ is outside the range.
 
-If we increment $x$ by $1$, its distance from all $a_i > x$ will decrease by $1$, and distances from all $a_i < x$ will increase by $1$.
-Since $x$ is to the left of $[m_1, m_2]$, there are more $a_i > x$ than $a_i < x$.
-Thus, moving $x$ closer to $m_1$ decreases the total difference.
+If we increment $x$ by $1$, its distance from all $a_i > x$ will decrease by
+$1$, and distances from all $a_i < x$ will increase by $1$. Since $x$ is to the
+left of $[m_1, m_2]$, there are more $a_i > x$ than $a_i < x$. Thus, moving $x$
+closer to $m_1$ decreases the total difference.
 
 Using similar logic for $x>m_2$ gives that the range $[m_1, m_2]$ is optimal.
 
 </Spoiler>
 
-Now, we consider the problem when there is a modulus, starting by modding each number by $M$.
-Under a modulus, *any* number can be made a median by subtracting $M$ from a suitable amount of the largest elements or, conversely, by adding $M$ to a suitable amount of the smallest elements.
-For example, given $[1,3,7,9,13,17,19]$ and $M = 24$, we can make $17$ the median by adding $M$ to $1$ and $3$, resulting in $[7,9,13,17,19,25,27]$.
+Now, we consider the problem when there is a modulus, starting by modding each
+number by $M$. Under a modulus, _any_ number can be made a median by subtracting
+$M$ from a suitable amount of the largest elements or, conversely, by adding $M$
+to a suitable amount of the smallest elements. For example, given
+$[1,3,7,9,13,17,19]$ and $M = 24$, we can make $17$ the median by adding $M$ to
+$1$ and $3$, resulting in $[7,9,13,17,19,25,27]$.
 
-We prepend to $a$ a copy of $a$ with $M$ subtracted from every element, and append a copy of $a$ with $M$ added to every element.
-The range $[n, 2n)$ in $a$ will be the original elements. For each of these indices, we compute the amount of elements before and after it we need to select to make it a median, and then compute the total absolute difference using Prefix Sums.
+We prepend to $a$ a copy of $a$ with $M$ subtracted from every element, and
+append a copy of $a$ with $M$ added to every element. The range $[n, 2n)$ in $a$
+will be the original elements. For each of these indices, we compute the amount
+of elements before and after it we need to select to make it a median, and then
+compute the total absolute difference using Prefix Sums.
 
 The final answer will be the smallest result over all such indices.
 
