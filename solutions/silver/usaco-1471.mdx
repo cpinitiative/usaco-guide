@@ -129,7 +129,7 @@ for _ in range(T):
 	# prefix sums for fast lookup of operations needed
 	prefix = [S[0]]
 	for i in range(1, len(S)):
-		prefix.append(prefix[i-1] + S[i])
+		prefix.append(prefix[i - 1] + S[i])
 
 	min_total = float("inf")
 
@@ -147,18 +147,18 @@ for _ in range(T):
 			# This is sum of (S[j] - S[i]) from j = i-(N//2-1) to j=i-1.
 			# The S[i] gets factored out of the sum, and results in the
 			# below:
-			cost += S[i] * (N // 2 - 1) - (prefix[i - 1] - prefix[i - N // 2]);
+			cost += S[i] * (N // 2 - 1) - (prefix[i - 1] - prefix[i - N // 2])
 		else:
 			# If N is odd, then do for N//2 elements:
 			# This is sum of (S[j] - S[i]) from j = i-(N//2) to j=i-1.
-			cost += S[i] * (N // 2) - (prefix[i - 1] - prefix[i - N // 2 - 1]);
+			cost += S[i] * (N // 2) - (prefix[i - 1] - prefix[i - N // 2 - 1])
 
 		# Right side of the current value (larger).  Always N//2 elements
 		# to the right. Sum of a[j] - a[i] from j=i+1 to j=i+N//2.
-		cost += (prefix[i + N // 2] - prefix[i]) - S[i] * (N // 2);
+		cost += (prefix[i + N // 2] - prefix[i]) - S[i] * (N // 2)
 
 		# Update min_total
-		min_total = min(min_total, cost);
+		min_total = min(min_total, cost)
 
 	print(min_total)
 ```
