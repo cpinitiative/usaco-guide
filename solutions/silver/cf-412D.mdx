@@ -87,4 +87,66 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class GivingAwards {
+
+    private static int MAXN = 30001;
+    private static List<List<Integer>> graph = new ArrayList<>();
+    private static boolean[] visited = new boolean[MAXN];
+    private static List<Integer> res = new ArrayList<>();
+
+    public static void main(String[] args) throws Exception {
+        
+        Kattio io = new Kattio();
+        int n = io.nextInt();
+        int m = io.nextInt();
+
+        for (int i = 0; i < MAXN; i++) {
+            graph.add(new ArrayList<>());
+        }
+
+        for (int i = 0; i < m; i++) {
+            int u = io.nextInt();
+            int v = io.nextInt();
+            graph.get(u).add(v);
+        }
+
+        for (int i = 1; i <= n; i++) {
+            if (!visited[i]) {
+                dfs(i);
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            io.print(res.get(i) + " ");
+        }
+        
+        io.close();
+    }
+
+    public static void dfs(int node) {
+        // skip if visited
+        if (visited[node]) {
+            return;
+        } 
+        visited[node] = true;
+        // visit neighbors
+        for (int next : graph.get(node)) {
+            dfs(next);
+        }
+
+        res.add(node);
+    
+    }
+
+    // BeginCodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 </LanguageSection>
