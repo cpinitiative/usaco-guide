@@ -43,8 +43,10 @@ axis it picks either the upper endpoint $y_k$ (index $y_k + 1$, pushed into
 (index $x_k$, representing "$\le x_k - 1$"). It then reads `ps` at that corner and
 adds or subtracts it, subtracting when `cnt` is odd — equivalently, when an odd
 number of axes use the lower endpoint (the two have the same parity because there
-are 6 axes). If any axis has $x_k > y_k$ the box is empty, and the code
-short-circuits to $0$.
+are 6 axes). One more case matters: if some axis has $x_k > y_k$, then no digit
+can simultaneously be $\ge x_k$ and $\le y_k$ on that axis, so the query box holds
+no drinks and the answer is $0$. The code checks this first and short-circuits,
+since inclusion–exclusion assumes valid bounds.
 
 ## Implementation
 
