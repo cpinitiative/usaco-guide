@@ -39,7 +39,7 @@ or rent the lowest-producing cow, whichever one is more lucrative.
 But how do we calculate how much profit the highest-producing cow would make if
 milked? We could do this by scanning linearly through the stores. However, in
 the case where every cow is able to fulfill every store's offer but every cow is
-rented, this would run in O(NM), which is too slow for N = 1e5, M = 1e5.
+rented, this would run in $O(NM)$, which is too slow for $N = 10^5$, $M = 10^5$.
 
 Instead, after sorting the stores, we can compute milk/money prefix sums and
 binary search (rather than linear search) for how many stores a cow goes
@@ -48,6 +48,8 @@ lower-bound index `i` that we binary-searched for:
 $$
 \text{sell\_profit} = \left( \text{milk\_prefix}[i + 1] - \left( \text{total\_milk\_sold} + \text{milk\_from\_cur\_cow} \right) \right) \times \text{offers}[i].p_i
 $$
+
+Now, the total time complexity of milk calculations is $O(NlogM)$, which is adequate for $N = 10^5$, $M = 10^5$.
 
 ## Implementation
 
