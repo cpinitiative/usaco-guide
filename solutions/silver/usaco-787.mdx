@@ -207,20 +207,20 @@ public class Rental {
 			int buyerIdx = pos - 1;
 			long soldMoney;
 			if (buyerIdx < m) {
-				soldMoney = centsPre[buyerIdx + 1]
-				            - (milkPre[buyerIdx + 1] - newTotal) * shops[buyerIdx].price
-				            - totalSellMoney;
+				soldMoney = centsPre[buyerIdx + 1] -
+				            (milkPre[buyerIdx + 1] - newTotal) * shops[buyerIdx].price -
+				            totalSellMoney;
 			} else {
 				soldMoney = centsPre[m] - totalSellMoney;
 			}
 
 			// should we rent or sell this cow?
-			if (rentAt >= r || soldMoney > rent[rentAt]) { // sell
+			if (rentAt >= r || soldMoney > rent[rentAt]) {  // sell
 				maxMoney += soldMoney;
 				totalSold = newTotal;
 				totalSellMoney += soldMoney;
 				cowAt++;
-			} else { // rent
+			} else {  // rent
 				maxMoney += rent[rentAt];
 				/*
 				 * instead of selling this cow, it's better to rent off
