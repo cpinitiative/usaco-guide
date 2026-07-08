@@ -19,23 +19,18 @@ The correctness of solution 2 is mostly easily proven using information about DF
 
 ## Explanation
 
+We consturct the directed graph with edges $a_i\to b_i$, and call each $b_i$ the neighbor of $a_i$.
 Having each $a_i$ goes after its $b_i$ in the list results in a working configuration, as $b_i$ cannot directly follow $a_i$ when it is before $a_i$ in the first place.
-This can always happen, except in situations where the graph formed by connecting each $a_i$ to $b_i$ has cycles.
-We call each $b_i$ the neighbor of $a_i$.
+This can always happen, except when the graph has cycles.
+If there is a cycle in the graph, however, we can neglect an edge in a cycle. This is still valid, as the cycles have at least $3$ vertices.
 
-Construct a directed graph with edges $a_i\to b_i$, and call $b_i$ the neighbor of $a_i$.
-It is possible to make each node follow all its neighbors if there are no cycles.
-This will lead to a valid configuration, as an element cannot follow another directly if it is before the latter element in the first place.
-If there is a cycle, we can neglect an edge in a cycle. This is still valid, as the cycles are at least $3$ vertices.
-
-To see why, we use an example: we require vertex A to placed before B, B to be before C, and C to be before A; from the first two requirements, A must be before C with at least $1$ element (B) in between. Since A and C are not adjacent, their order does not matter, so we may neglect the third edge.
+To see why, consider this example: we require vertex A to placed before B, B to be before C, and C to be before A; from the first two requirements, A must be before C with at least $1$ element (B) in between. Since A and C are not adjacent, their order does not matter, so we may neglect the third edge.
 
 We use a post order DFS to traverse all the nodes; at each node, we DFS all its neighbors before outputting the current node number.
 This ensures that all neighbors of a vertex come before itself.
 In case of a encountering a cycle while traversing, we would revisit an already-visited vertex, which we can safely skip as neglecting an edge is permissible.
 
-We start DFS’ing from each node of it is not already visited.
-Note that we may start visiting a neighbor of some other vertex we have not yet traversed; however, that other vertex would be traversed in a later DFS, so the order is still correct.  The later DFS will also skip the current neighbor, as it has already been traversed.
+Note that by DFS'ing each unvisited vertex in order, we may start visiting a neighbor of some other vertex we have not yet traversed; however, that other vertex would be traversed in a later DFS, so the order is still correct.  The later DFS will also skip the current neighbor, as it has already been traversed.
 
 ## Implementation
 
