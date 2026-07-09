@@ -14,13 +14,11 @@ When a new party is established, one of the following 2 events causes this to ha
 
 If we think of this as each party having a set of guests attending, this would mean that for (2), a new party forces a set to be split into 2. For (1), it just creates a completely new set. Splitting a set into 2 is difficult to implement, as we need to figure out precisely how to split it. However, if we were to think about processing each query in reverse, then the problem turns into figuring out which 2 sets to unite, which is easier to deal with.
 
-2. A cow changed the type of party. This is easier to implement; we only need to figure out the number of cows attending the host cow's party.
+2. A cow changed the type of party. We need to figure out the number of cows attending the host cow's party. Once we know the size, everything else is self-explanatory: for each type of party, add/subtract the amount from the number of cows attending as necessary.
 
-A Disjoint Set Union data structure allows us to unite sets together.
-In particular, once a cow decides to start hosting a party (not simply changing the type), when processed in reverse, after we've completed the query, we can simply merge that cow with their best friend to join the 2 sets together.
-Every cow in that particular party will travel to wherever the host cow goes, so we only need to merge 2 sets together.
-
-We can use a Disjoint Set Union to represent the friendships of the cows, where each cow is a node. We add edges between a cow and their best friend depending on the situation (as described earlier), and the `size()` function easily lets us figure out how many cows are attending the same party to account for case (1).
+A Disjoint Set Union data structure allows us to unite sets together and figure out the size of a particular set. 
+Each cow can be a node.
+We add edges between a cow and their best friend depending on the situation (as described earlier), and the `size()` function easily lets us figure out how many cows are attending the same party.
 
 ## Implementation
 
