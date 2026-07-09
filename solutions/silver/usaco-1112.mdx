@@ -1,0 +1,97 @@
+---
+id: usaco-1112
+source: USACO Silver 2021 February
+title: Just Green Enough
+author: John Zhou
+---
+
+[Official Analysis (C++, Java)](https://usaco.org/current/data/sol_prob3_silver_feb21.html)
+
+## Explanation
+
+Firstly, let's consider solving this problem in 1D, where we pick intervals from the list $g(j)$, the values for an $1\times N$ pasture.
+
+Let $g'(j)$ be $-1$ if $g(j)<100$, $0$ if $g(j)=100$, and $1$ if $g(j)>100$.
+We must find a range of $j$'s in which there are no $-1$'s, and at least one $0$.
+We precompute $g'(j)$.
+The objective is now counting the number of intervals with no $-1$'s and at least one $0$.
+
+Next, we sweep $j$ from $1$ to $N$, and keep track of the last index at which we encounter $0$ and $-1$'s as $j_0$ and $j_{-1}$, respectively.
+For an interval to be picked, it must include a $0$, so the starting index must be no later than the last $0$ we encounter;
+the interval cannot include a $-1$, so the starting index must be later than the last $-1$ we encounter.
+Thus, any range with a starting index in the range $(j_{-1}, j_0]$ and an ending index at $j$ works, provided $j_{-1}<j_0$ and $g'(j)\in\{0,1\}$.
+Therr are are $j_0-j_{-1}$ intervals; we accumulate those numbers if the conditions are satisfied to get our answer.
+We initialize both $j_0$ and $j_{-1}$ to $0$, so that they produce no accumulation initially, and that all possibilities of $(0, j_0]$ will be counted if a $-1$ has not occurred yet.
+
+Now, we generalize this onto two dimensions, where we pick subrectangles from an $N\times N$ pasture. We denote the values in the pasture $G(i, j)$ for $i,j\in[1,N]$.
+First, we consider the cases where the rectangle's bounds include $i=1$ and  $i=N$, leaving us the choice of the interval for the left and right bounds.
+As in the 1D case, we sweep from left to right for the right endpoint, and build a $g'$ to track feasibility of the left endpoint by column.
+Any $<100$ element in a column blocks selection, and any $=100$ element allows selection, so $g'$ is marked $-1$ or $0$ if these conditions hold for any element in a column, and $1$ otherwise.
+We then proceed as in the 1D case for $g'$.
+
+We now generalize to the case where the subrectangle can have arbitrary vertical bounds $i=i_1$ and $i=i_2\geq i_1$.
+Naively, we would proceed as we would in our previous case, while only using elements in $i\in[i_1,i_2]$ in each column to compute $g'$; however, recomputing $g'$ each time is too inefficient.
+Thus, we use an incremental approach:
+At each possible $i_1$, we reset $g'(j)$ to $1$s, before we loop over $i_2$ and $j$.
+At each $i_2$, $g'(j)$ accounts for $G(i_1\ldots i_2-1,j)$, so we update it to account for $G(i_2,j)$ at each $j$ before using our previous approach.
+Tracking the array $g'$ cumulatively gives us $\mathcal O(N)$ time complexity for each choice of top and bottom rows, so overall we have $\mathcal O(N^3)$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal O(N^3)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+constexpr int MAX_N = 500;
+
+// G in problem
+int a[MAX_N + 1][MAX_N + 1];
+
+// g' in explanation
+int g_prime[MAX_N + 1];
+
+int main() {
+	int n;
+	cin >> n;
+
+	for (int i = 1; i <= n; i++)
+		for (int j = 1; j <= n; j++) cin >> a[i][j];
+
+	long long ans = 0;
+	for (int i1 = 1; i1 <= n; i1++) {
+		// Reset g'
+		for (int j = 1; j <= n; j++) g_prime[j] = 1;
+
+		for (int i2 = i1; i2 <= n; i2++) {
+			// i_0 and i_{-1} in explanation, respectively
+			int last_zero = 0, last_neg = 0;
+			for (int j = 1; j <= n; j++) {
+				// Update g'
+				if (a[i2][j] < 100) g_prime[j] = -1;
+				if (a[i2][j] == 100 && g_prime[j] != -1) g_prime[j] = 0;
+
+				// Update last indices
+				if (g_prime[j] == 0) last_zero = j;
+				if (g_prime[j] == -1) last_neg = j;
+
+				// Accumulate
+				if (g_prime[j] == 0 || g_prime[j] == 1) {
+					ans += max(0, last_zero - last_neg);
+				}
+			}
+		}
+	}
+
+	cout << ans << endl;
+	return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
