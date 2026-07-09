@@ -9,14 +9,18 @@ author: I-Chen Chou
 
 ## Explanation
 
-When a new party is established, quite often, it is the result of taking some cows from another party. If we think of this as each party having a set of guests attending, this would mean that in many cases, a new party forces a set to be split into 2.
-Splitting a set into 2 is difficult to implement, as we need to figure out precisely how to split it. However, if we were to think about processing each query in reverse, then it turns into uniting 2 sets together, which is much easier.
+When a new party is established, one of the following 2 events causes this to happen:
+1. A cow started to host a party. The new party invites every single cow that is connected to the host cow through friendships. This either invites new cows that previously didn't attend a party (1) or takes cows that currently attend another party (2). This is entirely dependent based on whether the host cow is currently attending a party. If that is the case, then (2) happens, as the new party's guests follows wherever the host cow is going if a party is not held. Otherwise,  (1) happens, as if the host cow doesn't attend any party, then per the problem constraints, the new party's guests wouldn't have gone to any other party.
+
+If we think of this as each party having a set of guests attending, this would mean that for (2), a new party forces a set to be split into 2. For (1), it just creates a completely new set. Splitting a set into 2 is difficult to implement, as we need to figure out precisely how to split it. However, if we were to think about processing each query in reverse, then it turns into uniting 2 sets together, which is much easier to deal with.
+
+2. A cow changed the type of party. This is easier to implement; we only need to figure out the number of cows attending the host cow's party.
 
 A Disjoint Set Union data structure allows us to unite sets together.
 In particular, once a cow decides to start hosting a party (not simply changing the type), when processed in reverse, after we've completed the query, we can simply merge that cow with their best friend to join the 2 sets together.
 Every cow in that particular party will travel to wherever the host cow goes, so we only need to merge 2 sets together.
 
-We can use a Disjoint Set Union to represent the friendships of the cows, where each cow is a node. We add edges between a cow and their best friend depending on the situation (as described earlier), and the `size()` function easily lets us figure out how many cows are attending the same party.
+We can use a Disjoint Set Union to represent the friendships of the cows, where each cow is a node. We add edges between a cow and their best friend depending on the situation (as described earlier), and the `size()` function easily lets us figure out how many cows are attending the same party to account for case (1).
 
 ## Implementation
 
