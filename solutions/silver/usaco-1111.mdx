@@ -12,6 +12,62 @@ author: Melody Yu (Video), Rameez Parwez
 Note: The video solution might not be the same as other solutions. Code in C++.
 <YouTube id="MY5Ait0AcmE" />
 
+<Spoiler title = "Video Solution Code">
+<LanguageSection>
+
+```cpp 
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+int main() {
+	int n, K;
+	std::cin >> n >> K;
+	std::vector<int> cows(n);
+
+	for (int &cow : cows) {
+		std::cin >> cow;
+	}
+
+	std::sort(begin(cows), end(cows));
+
+	int k = 0, d = 12;
+	std::vector<int> floor(n);
+	std::vector<int> jumps;
+
+	floor[0] = cows[0] - (cows[0] % 12);
+	if (floor[0] != 0) {
+		k++;
+		jumps.push_back(floor[0]);
+	}
+
+	for (int i = 1; i < n; i++) {
+		floor[i] = cows[i] - (cows[i] % 12);
+		if (floor[i] - floor[i - 1] >= 24) {
+			jumps.push_back(floor[i] - floor[i - 1] - 12);
+			d += 12;
+			k++;
+		} else if (floor[i] - floor[i - 1] == 12) {
+			d += 12;
+		}
+	}
+
+	std::sort(begin(jumps), end(jumps));
+
+	int j = 0;
+	while (k >= K) {
+		k--;
+		d += jumps[j];
+		j++;
+	}
+
+	std::cout << d << '\n';
+}
+```
+
+</LanguageSection>
+</Spoiler>
+
 ## Explanation
 
 One thing that is clear from the problem statement is that for
