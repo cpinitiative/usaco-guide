@@ -8,17 +8,21 @@ author: I-Chen Chou
 [Official Analysis (C++)](https://usaco.org/current/data/sol_prob1_gold_season26contest1.html)
 
 ## Explanation
+When a new party is established, it is the result of one of these two cases:
+1) It forms a completely new group of cows where all of them previously didn't attend any party.
+2) It takes some cows from another party. If we think of this as each party having a set of guests attending, a new party forces a set to be split into two.
+Splitting a set into two is difficult to implement, as we need to figure out precisely how to split it. However, if we were to think about processing each query in reverse, then it turns into picking the correct two sets and uniting them together, which is much easier to figure out.
 
-When a new party is established, one of the following 2 events causes this to happen:
-1. A cow hosts a new party, inviting every cow connected to the host cow through friendships. This either invites new cows that a) previously didn't attend a party or b) takes cows that currently attend another party. If the host cow is currently attending a party, then b) happens and the new party's guests are those that followed the host cow if a party is not held. Otherwise,  a) happens, as if the host cow doesn't attend any party, the new party's guests wouldn't have gone to any other party.
+A data structure that allows us to pick two sets and merge them together is the Disjoint Set Union.
+In particular, once a cow decides to start hosting a party (not simply changing the type), when processed in reverse, after we've completed the query, we can simply merge that cow with their best friend to join the two sets together. 
+Every cow in that particular party will travel to wherever the host cow goes, so we only need to worry about merging.
 
-If we think of this as each party having a set of guests attending, this would mean that for b), a new party forces a set to be split into 2. For a), it just creates a completely new set. Splitting a set into 2 is difficult to implement, as we need to figure out precisely how to split it. However, if we were to think about processing queries in reverse, then the problem turns into figuring out which 2 sets to unite, which is easier.
-
-2. A cow changed the type of party. We need to figure out the number of cows attending the host cow's party. Once we know the size, everything else is self-explanatory: for each type of party, add/subtract the amount from the number of cows attending as necessary.
-
-A Disjoint Set Union data structure allows us to unite sets together and figure out the size of a particular set.
-Each cow can be a node.
-We add edges between a cow and their best friend depending on the situation (as described earlier), and the `size()` function easily lets us figure out how many cows are attending the same party.
+We can use a Disjoint Set Union to represent the friendships of the cows, where each cow is a node. 
+We start by computing how many cows attend each type of party at the last night and work backwards from there. We use an array to store this data.
+After a query is completed, we determine whether the cow had started a completely new party or only changed party type. 
+If it is the latter, we update the party type of that cow.
+Using the `size()` function, we figure out the number of cows attending that particular party. In the array storing the number of cows attending each type of party, for each element, we add or subtract the size as necessary.
+We continue until all queries are computed.
 
 ## Implementation
 
@@ -34,25 +38,38 @@ using namespace std;
 
 // BeginCodeSnip{Disjoint Set Union}
 
-struct DSU {
-	vector<int> e;
-	DSU(int N) { e = vector<int>(N + 1, -1); }
+class DisjointSets {
+  private:
+	vector<int> parents;
+	vector<int> sizes;
 
-	int get(int x) { return e[x] < 0 ? x : e[x] = get(e[x]); }
+  public:
+	DisjointSets(int size) : parents(size), sizes(size, 1) {
+		for (int i = 0; i < size; i++) { parents[i] = i; }
+	}
 
-	bool same_set(int a, int b) { return get(a) == get(b); }
+	/** @return the "representative" node in x's component */
+	int find(int x) { return parents[x] == x ? x : (parents[x] = find(parents[x])); }
 
-	int size(int x) { return -e[x]; }
-
+	/** @return whether the merge changed connectivity */
 	bool unite(int x, int y) {
-		x = get(x), y = get(y);
-		if (x == y) return false;
-		swap(x, y);
-		e[x] += e[y];
-		e[y] = x;
+		int x_root = find(x);
+		int y_root = find(y);
+		if (x_root == y_root) { return false; }
+
+		if (sizes[x_root] < sizes[y_root]) { swap(x_root, y_root); }
+		sizes[x_root] += sizes[y_root];
+		parents[y_root] = x_root;
 		return true;
 	}
+
+	/** @return whether x and y are in the same connected component */
+	bool connected(int x, int y) { return find(x) == find(y); }
+
+	/** @return the size of x's component */
+	int size(int x) { return sizes[find(x)]; } 
 };
+
 // EndCodeSnip
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
@@ -73,7 +90,7 @@ int main() {
 		hosted[cow] = type;
 	}
 	// create DSU graph of friends
-	DSU graph(n);
+	DisjointSets graph(n);
 	for (int i = 1; i <= n; i++) {
 		if (hosted[i] == '0') { graph.unite(i, frnd[i]); }
 	}
@@ -117,7 +134,7 @@ int main() {
 		    hosted[cow];  // prevParty: where the new party drew customers from
 		// prevParty = '0' means new party was created, so we find where this cow's best
 		// friend
-		if (prevParty == '0') { prevParty = hosted[graph.get(frnd[cow])]; }
+		if (prevParty == '0') { prevParty = hosted[graph.find(frnd[cow])]; }
 		// add
 		switch (prevParty) {
 		case 'C':
