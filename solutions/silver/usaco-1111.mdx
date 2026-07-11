@@ -71,4 +71,51 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java 
+import java.io.*;
+import java.util.*;
+
+public class yearOfTheCow {
+
+    public static void main(String[] args) throws Exception {
+        
+        Kattio io = new Kattio();
+        int n = io.nextInt();
+        int k = io.nextInt();
+        List<Integer> years = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+            int year = io.nextInt();
+            years.add((year + 11) / 12);
+        }
+
+        years.add(0); // adding current year
+        Collections.sort(years);
+        years = new ArrayList<>(new LinkedHashSet<>(years));
+
+        // no jumps: Bessie must visit the furthest cycle
+        int res = years.get(years.size() - 1);
+
+        // gaps between consecutive cycles (excluding endpoints)
+        List<Integer> gaps = new ArrayList<>();
+        for (int i = 1; i < years.size(); i++) {
+            gaps.add(years.get(i) - years.get(i - 1) - 1);
+        }
+
+        gaps.sort(Collections.reverseOrder());
+        for (int i = 0; i < k - 1 && i < gaps.size(); i++) {
+            res -= gaps.get(i);
+        }
+
+        io.println(res * 12);
+        io.close();
+    }
+
+    // BeginCodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 </LanguageSection>
