@@ -29,3 +29,46 @@ We will then greedily subtract these $k - 1$ largest gaps from the
 total cycle count. Finally, we multiply our result by 12 to 
 convert back into years, giving us the minimum time for Bessie to 
 visit all her ancestors and return to the present.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <algorithm>
+#include <vector>
+
+int main() {
+    int n, k;
+    std::cin >> n >> k;
+    std::vector<int> years(n);
+
+    for (int &year : years) {
+        std::cin >> year;
+        (year += 11) /= 12;
+    }
+
+    years.push_back(0); // adding current year
+    std::sort(begin(years), end(years));
+    years.erase(std::unique(begin(years), end(years)), end(years));
+
+    // no jumps: Bessie must visit the furthest cycle 
+    int res = years.back();
+
+    // gaps between consecutive cycles (excluding endpoints)
+    std::vector<int> gaps;
+    for (int i = 1; i < (int)years.size(); i++) {
+        gaps.push_back(years[i] - years[i - 1] - 1);
+    }
+
+    std::sort(rbegin(gaps), rend(gaps));
+    for (int i = 0; i < k - 1; i++) {
+        res -= gaps[i];
+    }
+
+    std::cout << res * 12 << '\n';
+}
+```
+
+</CPPSection>
+</LanguageSection>
