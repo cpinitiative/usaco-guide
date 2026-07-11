@@ -1,0 +1,62 @@
+---
+id: usaco-1205
+source: USACO Bronze 2022 February
+title: Blocks
+author: Rameez Parwez
+---
+
+[Official Editorial (C++, Java, Python)](https://usaco.org/current/data/sol_prob3_bronze_feb22.html)
+
+## Explanation
+
+For every word, we have to verify whether we can form it by taking
+at most one letter from each of the given blocks. Since we are
+unaware of which block to choose first, we will enumerate over
+their permutations, as there are only $4! = 24$ permutations of blocks. For each
+permutation, we will greedily search through the blocks in that
+order: whenever we get a match, we search for the next letter;
+otherwise, we skip it.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <functional>
+#include <iostream>
+
+int main() {
+	int n;
+	std::cin >> n;
+	std::array<std::array<int, 26>, 4> cnt{0};
+	std::string block;
+	for (int i = 0; i < 4; i++) {
+		std::cin >> block;
+		for (char c : block) { cnt[i][c - 'A']++; }
+	}
+
+	auto is_possible = [&](std::string word) {
+		std::array<int, 4> perm = {0, 1, 2, 3};
+		do {
+			for (int i = 0, j = 0; i < 4; i++) {
+				bool ok = false;
+				if (cnt[perm[i]][word[j] - 'A']) { j++; }
+				if (j == (int)word.size()) { return true; }
+			}
+		} while (std::next_permutation(begin(perm), end(perm)));
+		return false;
+	};
+
+	for (int i = 1; i <= n; i++) {
+		std::string word;
+		std::cin >> word;
+		std::cout << (is_possible(word) ? "YES" : "NO") << '\n';
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>

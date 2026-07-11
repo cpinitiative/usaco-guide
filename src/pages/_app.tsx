@@ -5,6 +5,8 @@ import 'instantsearch.css/themes/algolia.css';
 import 'katex/dist/katex.min.css';
 import type { AppProps } from 'next/app';
 import { Inter } from 'next/font/google';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import 'react-calendar-heatmap/dist/styles.css';
 import { Toaster } from 'react-hot-toast';
 import 'tippy.js/animations/scale-subtle.css';
@@ -30,6 +32,16 @@ const inter = Inter({
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? '';
 
 export default function App({ Component, pageProps }: AppProps) {
+  const router = useRouter();
+  useEffect(() => {
+    if (process.env.NEXT_PUBLIC_WATCH_RELOAD !== '1') return;
+    const es = new EventSource('http://localhost:3001');
+    es.onmessage = () =>
+      router.replace(router.asPath, undefined, { scroll: false });
+    es.onerror = () => {};
+    return () => es.close();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <div className={inter.className}>
       {GA_MEASUREMENT_ID && <GoogleAnalytics gaId={GA_MEASUREMENT_ID} />}
