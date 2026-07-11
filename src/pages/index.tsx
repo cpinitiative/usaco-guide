@@ -99,12 +99,12 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
           <div className="flex flex-1 flex-col justify-center">
             <div className="h-24"></div>
 
-            <div className="flex md:justify-center dark:hidden">
+            <div className="flex justify-center dark:hidden">
               <div className={classNames(usacoTitleClasses, 'mt-4 text-black')}>
                 USACO Guide
               </div>
             </div>
-            <div className="invisible flex h-0 md:justify-center dark:visible dark:h-auto">
+            <div className="invisible flex h-0 justify-center dark:visible dark:h-auto">
               <GlowingText
                 className={classNames(usacoTitleClasses, 'mt-4 text-white')}
               >
@@ -123,7 +123,7 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
 
             <div className="h-8 sm:h-12"></div>
 
-            <div className="flex md:justify-center">
+            <div className="flex justify-center">
               <GlowingRing>
                 <Link
                   href="/dashboard"
@@ -137,7 +137,7 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
 
           <div className="h-16 sm:h-24"></div>
 
-          <div className="flex text-gray-600 md:justify-center md:text-xl dark:text-gray-400">
+          <div className="flex text-gray-600 justify-center md:text-xl dark:text-gray-400">
             <a
               href="https://joincpi.org/"
               className="inline-flex items-center space-x-3 md:space-x-4"
