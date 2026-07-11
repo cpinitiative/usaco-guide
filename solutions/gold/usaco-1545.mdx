@@ -14,12 +14,12 @@ When a new party is established, it is the result of one of these two cases:
 Splitting a set into two is difficult to implement, as we need to figure out precisely how to split it. However, if we were to think about processing each query in reverse, then it turns into picking the correct two sets and uniting them together, which is much easier to figure out.
 
 A data structure that allows us to pick two sets and merge them together is the Disjoint Set Union.
-In particular, once a cow decides to start hosting a party (not simply changing the type), when processed in reverse, after we've completed the query, we can simply merge that cow with their best friend to join the two sets together. 
+In particular, once a cow decides to start hosting a party (not simply changing the type), when processed in reverse, after we've completed the query, we can simply merge that cow with their best friend to join the two sets together.
 Every cow in that particular party will travel to wherever the host cow goes, so we only need to worry about merging.
 
-We can use a Disjoint Set Union to represent the friendships of the cows, where each cow is a node. 
+We can use a Disjoint Set Union to represent the friendships of the cows, where each cow is a node.
 We start by computing how many cows attend each type of party at the last night and work backwards from there. We use an array to store this data.
-After a query is completed, we determine whether the cow had started a completely new party or only changed party type. 
+After a query is completed, we determine whether the cow had started a completely new party or only changed party type.
 If it is the latter, we update the party type of that cow.
 Using the `size()` function, we figure out the number of cows attending that particular party. In the array storing the number of cows attending each type of party, for each element, we add or subtract the size as necessary.
 We continue until all queries are computed.
@@ -67,7 +67,7 @@ class DisjointSets {
 	bool connected(int x, int y) { return find(x) == find(y); }
 
 	/** @return the size of x's component */
-	int size(int x) { return sizes[find(x)]; } 
+	int size(int x) { return sizes[find(x)]; }
 };
 
 // EndCodeSnip
