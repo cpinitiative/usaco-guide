@@ -10,9 +10,9 @@ author: Ananth Kashyap, Rameez Parwez
 ## Explanation
 
 We can say that a cow crossed the road if its current side is
-different from its previous side. Based on this, we will check 
-each of Farmer John's cows' current side and previous side (if any), 
-and if there is any difference we will increment our number of 
+different from its previous side. Based on this, we will check
+each of Farmer John's cows' current side and previous side (if any),
+and if there is any difference we will increment our number of
 confirmed crossings.
 
 ## Implementation
@@ -28,32 +28,32 @@ confirmed crossings.
 #include <vector>
 
 void set_up(std::string name) {
-    freopen((name + ".in").c_str(), "r", stdin);
-    freopen((name + ".out").c_str(), "w", stdout);
+	freopen((name + ".in").c_str(), "r", stdin);
+	freopen((name + ".out").c_str(), "w", stdout);
 }
 
 int main() {
-    set_up("crossroad");
-    int n;
-    std::cin >> n;
-    std::vector<int> cows(10, -1);
-    
-    int crossings = 0;
+	set_up("crossroad");
+	int n;
+	std::cin >> n;
+	std::vector<int> cows(10, -1);
 
-    for (int i = 1; i <= n; i++) {
-        int cow_id, side;
-        std::cin >> cow_id >> side;
-        cow_id--;
+	int crossings = 0;
 
-        if (cows[cow_id] == -1) {
-            cows[cow_id] = side;
-        } else if (cows[cow_id] != side) {
-            crossings++;
-            cows[cow_id] = side;
-        }
-    }
-    
-    std::cout << crossings << '\n';
+	for (int i = 1; i <= n; i++) {
+		int cow_id, side;
+		std::cin >> cow_id >> side;
+		cow_id--;
+
+		if (cows[cow_id] == -1) {
+			cows[cow_id] = side;
+		} else if (cows[cow_id] != side) {
+			crossings++;
+			cows[cow_id] = side;
+		}
+	}
+
+	std::cout << crossings << '\n';
 }
 ```
 
@@ -66,35 +66,33 @@ import java.util.*;
 
 public class USACO711 {
 
-    public static void main(String[] args) throws Exception {
-        
-        Kattio io = new Kattio("crossroad");
-        int n = io.nextInt();
+	public static void main(String[] args) throws Exception {
 
-        int[] cows = new int[10];
-        for (int i = 0; i < 10; i++) {
-            cows[i] = -1;
-        }
+		Kattio io = new Kattio("crossroad");
+		int n = io.nextInt();
 
-        int crossings = 0;
+		int[] cows = new int[10];
+		for (int i = 0; i < 10; i++) { cows[i] = -1; }
 
-        for (int i = 1; i <= n; i++) {
-            int cow_idx = io.nextInt() - 1;
-            int side = io.nextInt();
+		int crossings = 0;
 
-            if (cows[cow_idx] == -1) {
-                cows[cow_idx] = side;
-            } else if (cows[cow_idx] != side) {
-                crossings++;
-                cows[cow_idx] = side;
-            }
-        }
-        
-        io.println(crossings);
-        io.close();
-    }
+		for (int i = 1; i <= n; i++) {
+			int cow_idx = io.nextInt() - 1;
+			int side = io.nextInt();
 
-    // BeginCodeSnip{Kattio}
+			if (cows[cow_idx] == -1) {
+				cows[cow_idx] = side;
+			} else if (cows[cow_idx] != side) {
+				crossings++;
+				cows[cow_idx] = side;
+			}
+		}
+
+		io.println(crossings);
+		io.close();
+	}
+
+	// BeginCodeSnip{Kattio}
 }
 ```
 
