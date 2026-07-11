@@ -20,6 +20,44 @@ confirmed crossings.
 **Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+void set_up(std::string name) {
+    freopen((name + ".in").c_str(), "r", stdin);
+    freopen((name + ".out").c_str(), "w", stdout);
+}
+
+int main() {
+    set_up("crossroad");
+    int n;
+    std::cin >> n;
+    std::vector<int> cows(10, -1);
+    
+    int crossings = 0;
+
+    for (int i = 1; i <= n; i++) {
+        int cow_id, side;
+        std::cin >> cow_id >> side;
+        cow_id--;
+
+        if (cows[cow_id] == -1) {
+            cows[cow_id] = side;
+        } else if (cows[cow_id] != side) {
+            crossings++;
+            cows[cow_id] = side;
+        }
+    }
+    
+    std::cout << crossings << '\n';
+}
+```
+
+</CPPSection>
 <PySection>
 
 ```py
