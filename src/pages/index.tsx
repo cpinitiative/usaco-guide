@@ -137,7 +137,7 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
 
           <div className="h-16 sm:h-24"></div>
 
-          <div className="flex text-gray-600 justify-center md:text-xl dark:text-gray-400">
+          <div className="flex justify-center text-gray-600 md:text-xl dark:text-gray-400">
             <a
               href="https://joincpi.org/"
               className="inline-flex items-center space-x-3 md:space-x-4"
