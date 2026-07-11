@@ -2,7 +2,7 @@
 id: usaco-1111
 source: USACO Silver 2021 February
 title: Year of the Cow
-author: Melody Yu (Video)
+author: Melody Yu (Video), Rameez Parwez
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_prob2_silver_feb21.html)
@@ -11,3 +11,21 @@ author: Melody Yu (Video)
 
 Note: The video solution might not be the same as other solutions. Code in C++.
 <YouTube id="MY5Ait0AcmE" />
+
+## Explanation
+
+One thing that is clear from the problem statement is that for 
+Bessie to visit an ancestor, she must visit the preceding year of 
+the Ox and must wait at least $12$ years to reach them. Based on 
+this, we can convert each ancestor's year into its $12$-year cycle 
+$\lfloor{\frac{year + 11}{12}}\rfloor$. 
+
+Now, we must use one jump to travel back to the earliest cycle, 
+leaving us with $k - 1$ jumps. With these remaining jumps, it is 
+optimal to skip the $k - 1$ largest gaps between consecutive 
+cycles in the sorted array, since **skipping a larger gap saves more time**. 
+
+We will then greedily subtract these $k - 1$ largest gaps from the 
+total cycle count. Finally, we multiply our result by 12 to 
+convert back into years, giving us the minimum time for Bessie to 
+visit all her ancestors and return to the present.
