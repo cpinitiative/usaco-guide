@@ -14,20 +14,20 @@ Note: The video solution might not be the same as other solutions. Code in C++.
 
 ## Explanation
 
-One thing that is clear from the problem statement is that for 
-Bessie to visit an ancestor, she must visit the preceding year of 
-the Ox (🐂) and must wait at least $12$ years to reach them. Based on 
-this, we can convert each ancestor's year into its $12$-year cycle 
-$\lfloor{\frac{year + 11}{12}}\rfloor$. 
+One thing that is clear from the problem statement is that for
+Bessie to visit an ancestor, she must visit the preceding year of
+the Ox (🐂) and must wait at least $12$ years to reach them. Based on
+this, we can convert each ancestor's year into its $12$-year cycle
+$\lfloor{\frac{year + 11}{12}}\rfloor$.
 
-Now, we must use one jump to travel back to the earliest cycle, 
-leaving us with $k - 1$ jumps. With these remaining jumps, it is 
-optimal to skip the $k - 1$ largest gaps between consecutive 
-cycles in the sorted array, since **skipping a larger gap saves more time**. 
+Now, we must use one jump to travel back to the earliest cycle,
+leaving us with $k - 1$ jumps. With these remaining jumps, it is
+optimal to skip the $k - 1$ largest gaps between consecutive
+cycles in the sorted array, since **skipping a larger gap saves more time**.
 
-We will then greedily subtract these $k - 1$ largest gaps from the 
-total cycle count. Finally, we multiply our result by 12 to 
-convert back into years, giving us the minimum time for Bessie to 
+We will then greedily subtract these $k - 1$ largest gaps from the
+total cycle count. Finally, we multiply our result by 12 to
+convert back into years, giving us the minimum time for Bessie to
 visit all her ancestors and return to the present.
 
 ## Implementation
@@ -38,93 +38,89 @@ visit all her ancestors and return to the present.
 <CPPSection>
 
 ```cpp
-#include <iostream>
 #include <algorithm>
+#include <iostream>
 #include <vector>
 
 int main() {
-    int n, k;
-    std::cin >> n >> k;
-    std::vector<int> years(n);
+	int n, k;
+	std::cin >> n >> k;
+	std::vector<int> years(n);
 
-    for (int &year : years) {
-        std::cin >> year;
-        (year += 11) /= 12;
-    }
+	for (int &year : years) {
+		std::cin >> year;
+		(year += 11) /= 12;
+	}
 
-    years.push_back(0); // adding current year
-    std::sort(begin(years), end(years));
-    years.erase(std::unique(begin(years), end(years)), end(years));
+	years.push_back(0);  // adding current year
+	std::sort(begin(years), end(years));
+	years.erase(std::unique(begin(years), end(years)), end(years));
 
-    // no jumps: Bessie must visit the furthest cycle 
-    int res = years.back();
+	// no jumps: Bessie must visit the furthest cycle
+	int res = years.back();
 
-    // gaps between consecutive cycles (excluding endpoints)
-    std::vector<int> gaps;
-    for (int i = 1; i < (int)years.size(); i++) {
-        gaps.push_back(years[i] - years[i - 1] - 1);
-    }
+	// gaps between consecutive cycles (excluding endpoints)
+	std::vector<int> gaps;
+	for (int i = 1; i < (int)years.size(); i++) {
+		gaps.push_back(years[i] - years[i - 1] - 1);
+	}
 
-    std::sort(rbegin(gaps), rend(gaps));
-    for (int i = 0; i < k - 1; i++) {
-        res -= gaps[i];
-    }
+	std::sort(rbegin(gaps), rend(gaps));
+	for (int i = 0; i < k - 1; i++) { res -= gaps[i]; }
 
-    std::cout << res * 12 << '\n';
+	std::cout << res * 12 << '\n';
 }
 ```
 
 </CPPSection>
 <JavaSection>
 
-```java 
+```java
 import java.io.*;
 import java.util.*;
 
 public class yearOfTheCow {
 
-    public static void main(String[] args) throws Exception {
-        
-        Kattio io = new Kattio();
-        int n = io.nextInt();
-        int k = io.nextInt();
-        List<Integer> years = new ArrayList<>();
+	public static void main(String[] args) throws Exception {
 
-        for (int i = 0; i < n; i++) {
-            int year = io.nextInt();
-            years.add((year + 11) / 12);
-        }
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		int k = io.nextInt();
+		List<Integer> years = new ArrayList<>();
 
-        years.add(0); // adding current year
-        Collections.sort(years);
-        years = new ArrayList<>(new LinkedHashSet<>(years));
+		for (int i = 0; i < n; i++) {
+			int year = io.nextInt();
+			years.add((year + 11) / 12);
+		}
 
-        // no jumps: Bessie must visit the furthest cycle
-        int res = years.get(years.size() - 1);
+		years.add(0);  // adding current year
+		Collections.sort(years);
+		years = new ArrayList<>(new LinkedHashSet<>(years));
 
-        // gaps between consecutive cycles (excluding endpoints)
-        List<Integer> gaps = new ArrayList<>();
-        for (int i = 1; i < years.size(); i++) {
-            gaps.add(years.get(i) - years.get(i - 1) - 1);
-        }
+		// no jumps: Bessie must visit the furthest cycle
+		int res = years.get(years.size() - 1);
 
-        gaps.sort(Collections.reverseOrder());
-        for (int i = 0; i < k - 1 && i < gaps.size(); i++) {
-            res -= gaps.get(i);
-        }
+		// gaps between consecutive cycles (excluding endpoints)
+		List<Integer> gaps = new ArrayList<>();
+		for (int i = 1; i < years.size(); i++) {
+			gaps.add(years.get(i) - years.get(i - 1) - 1);
+		}
 
-        io.println(res * 12);
-        io.close();
-    }
+		gaps.sort(Collections.reverseOrder());
+		for (int i = 0; i < k - 1 && i < gaps.size(); i++) { res -= gaps.get(i); }
 
-    // BeginCodeSnip{Kattio}
+		io.println(res * 12);
+		io.close();
+	}
+
+	// BeginCodeSnip{Kattio}
 }
 ```
 
 </JavaSection>
 <PySection>
 
-```py 
+```py
 n, k = map(int, input().split())
 years = [(int(input()) + 11) // 12 for _ in range(n)]
 
@@ -139,7 +135,7 @@ gaps = []
 for i in range(1, len(years)):
 	gaps.append(years[i] - years[i - 1] - 1)
 
-gaps.sort(reverse = True)
+gaps.sort(reverse=True)
 
 for i in range(k - 1):
 	res -= gaps[i]
