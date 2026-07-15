@@ -8,77 +8,76 @@ author: Abhinav Singh
 ## Hints
 
 <Spoiler title="Hint 1">
-  
+
 Computing all $\mathcal{O}(n^2)$ pair sums directly is too slow to repeat $n - 1$ times. Try sorting the array: does that reveal any structure in how the pair sums compare to each other?
- 
+
 </Spoiler>
 
 <Spoiler title="Hint 2">
-  
-By fixing the left endpoint $i$ of a pair - the sums $a_i + a_{i+1}, a_i + a_{i+2}, a_i + a_{i+3}, \ldots$ come out sorted too. So you now have $n - 1$ separately sorted lists (one per left endpoint). How can we find the smallest $n - 1$ elements across several sorted lists? 
- 
+
+By fixing the left endpoint $i$ of a pair - the sums $a_i + a_{i+1}, a_i + a_{i+2}, a_i + a_{i+3}, \ldots$ come out sorted too. So you now have $n - 1$ separately sorted lists (one per left endpoint). How can we find the smallest $n - 1$ elements across several sorted lists?
+
 </Spoiler>
 
 <Spoiler title="Hint 3">
-  
+
 Applying $F$ many times on the raw values will overflow, but you can't reduce mod $p$ mid-way either, since comparisons need the true order. Can you track the array as a small, bounded part plus a separate scalar that's allowed to be reduced mod $p$?
- 
+
 </Spoiler>
 
 ## Explanation
- 
+
 Sort the array, then fix a left endpoint $i$ of a pair. The sums $a_i + a_{i+1}, a_i + a_{i+2}, a_i + a_{i+3}, \ldots$ are in increasing order, since the array is sorted. So now instead of one big set of $\mathcal{O}(n^2)$ sums, we have $n - 1$ individually sorted lists, one per left endpoint, and finding the smallest $n - 1$ elements across all of them is just a **k-way merge**.
 
 We can maintain a priority queue for holding the smallest unused element of every list, i.e. for every $i$ we initially push $(a_i + a_{i+1}, i, i+1)$. We repeatedly pop the smallest sum, append it to the output, and push the next element of that same list, $(a_i + a_{j+1}, i, j+1)$, if it exists. Since each list is individually sorted, the priority queue will always hold the smallest unused sum from each, and the merged output would be globally sorted. Each push/pop is $\mathcal{O}(\log n)$ and we do $n - 1$ of them, so one application of $F$ costs $\mathcal{O}(n \log n)$.
 
- 
+
 Sadly, we can't repeatedly apply $F$ on the raw values: we need the true relative order of elements to run the k-way merge correctly, so we can't reduce anything mod $p$ until the very end, but the values themselves grow enormously over $n - 1$ rounds. This means that we must normalise the array in some way.
 
 
-We notice that $F$ works nicely with constant shifts: if each element of an array is shifted by $c$, every pairwise sum shifts by $2c$. So instead of storing the true array directly, maintain it as $\text{cur}[i] + \text{offset}$ for a shared scalar $\text{offset}$. Applying $F$ to the true array is the same as applying it to $\text{cur}$ alone and adding $2 \cdot \text{offset}$ to the result. If we stored this new array directly, its values would still continue to grow after every application of $F$. Thus, we normalize it by subtracting its minimum value. After computing the merged array $\text{nxt}$, let $m = \text{nxt}[0]$ be its minimum, we update 
+We notice that $F$ works nicely with constant shifts: if each element of an array is shifted by $c$, every pairwise sum shifts by $2c$. So instead of storing the true array directly, maintain it as $\text{cur}[i] + \text{offset}$ for a shared scalar $\text{offset}$. Applying $F$ to the true array is the same as applying it to $\text{cur}$ alone and adding $2 \cdot \text{offset}$ to the result. If we stored this new array directly, its values would still continue to grow after every application of $F$. Thus, we normalize it by subtracting its minimum value. After computing the merged array $\text{nxt}$, let $m = \text{nxt}[0]$ be its minimum, we update
 
 $$\text{offset} \leftarrow 2 \cdot \text{offset} + m, \qquad \text{cur}[k] \leftarrow \text{nxt}[k] - m.$$
- 
+
 Since only $\text{cur}$ is used for comparisons, $\text{offset}$ can be reduced mod $p$ immediately. Meanwhile $\text{cur}$ always has minimum $0$ and its entries stay bounded by the sum of two elements, so it never overflows. The true final answer is $(\text{offset} + \text{cur}[0]) \bmod p$.
 
 
 ## Implementation
- 
+
 One application of $F$ costs $\mathcal{O}(n \log n)$, and array size shrinks by $1$ each round for $n - 1$ rounds, giving an overall complexity of $\mathcal{O}(n^2 \log n)$.
- 
+
 <LanguageSection>
 <CPPSection>
-  
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
- 
+
 const long long MOD = 1e9 + 7;
- 
+
 int main() {
 	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
- 
+
 	int n;
 	cin >> n;
- 
+
 	vector<long long> cur(n);
 	for (auto &x : cur) cin >> x;
 	sort(cur.begin(), cur.end());
- 
+
 	long long offset = 0;
- 
+
 	while (cur.size() > 1) {
 		int m = cur.size();
- 
+
 		// Min-heap of (pair sum, left endpoint, right endpoint)
 		priority_queue<tuple<long long, int, int>, vector<tuple<long long, int, int>>,
-		    greater<>> pq;
- 
-		for (int i = 0; i < m - 1; i++) {
-			pq.push({cur[i] + cur[i + 1], i, i + 1});
-		}
- 
+		               greater<>>
+		    pq;
+
+		for (int i = 0; i < m - 1; i++) { pq.push({cur[i] + cur[i + 1], i, i + 1}); }
+
 		// k-way merge: pull the smallest n-1 sums across all m-1 sorted lists
 		vector<long long> nxt;
 		while ((int)nxt.size() < m - 1) {
@@ -87,43 +86,18 @@ int main() {
 			nxt.push_back(sum);
 			if (j + 1 < m) pq.push({cur[i] + cur[j + 1], i, j + 1});
 		}
- 
+
 		// Fold the common minimum into offset (mod p) to keep cur small
 		long long min_sum = nxt[0];
 		offset = (2 * offset + min_sum) % MOD;
 		for (auto &x : nxt) x -= min_sum;
- 
+
 		cur = move(nxt);
 	}
- 
+
 	cout << (offset + cur[0]) % MOD << "\n";
 }
 ```
 
 </CPPSection>
 </LanguageSection>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
