@@ -19,15 +19,17 @@ the case that $N$ is even, any number between the two numbers in the middle
 
 We now consider the modulus. First, take each number modulo $M$. Observe that any element can be the median if we add or subtract $M$ from some elements, shifting some values to the left and right of the element. For example, given $[1,3,7,9,13,17,19]$ and $M = 24$, we can make $17$ the median by adding $M$ to elements $1$ and $3$, resulting in the array $[7,9,13,17,19,25,27]$.
 
-Thus, every element is a candidate for $x$.  We compute the cost for each $x$ after shifting, and take the best candidate.
+Thus, every element is a candidate for $x$.
+We compute the cost for each $x$ after shifting, and take the best candidate, which is the $x$ that results in the smallest sum of absolute differences.
 
-Since we never have to adjust $M$ twice to make something a median, we prepend to $a$ a copy of $a$ with $M$ subtracted from every element, and
+To compute the smallest sum of absolute differences, we note that we never have to adjust elements by $M$ twice to make something a median.
+Thus, we prepend to $a$ a copy of $a$ with $M$ subtracted from every element, and
 append a copy of $a$ with $M$ added to every element. The range $[n, 2n)$ in $a$
 will be the original elements. For each of these indices, we compute the amount
 of elements before and after it we need to select to make it a median, and then
 compute the total absolute difference using Prefix Sums.
 
-The final answer will be the smallest result over all such indices.
+The final answer will be the smallest sum of absolute differences over all such indices.
 
 ## Implementation
 
