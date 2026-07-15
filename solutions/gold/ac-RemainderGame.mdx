@@ -7,9 +7,11 @@ author: Abhinav Singh
 
 ## Explanation
 
-Instead of tracking operations, let's first look at which **moduli** we use. Note that applying any modulus twice is identical to applying it only once, even when other moduli are used in between, so we should purchase each modulus at most once. Now, a large modulus always costs more than any combination of smaller moduli, since the worst case is purchasing every smaller modulus once:
+Applying any modulus twice is identical to applying it only once, even when other moduli are used, so we should purchase each modulus at most once. Observe that a large modulus always costs more than any combination of smaller moduli, since the worst case is purchasing every smaller modulus once:
 
-$$2^k > \sum_{i=1}^{k-1} 2^i.$$
+$$
+2^k > \sum_{i=1}^{k-1} 2^i.
+$$
 
 This means we should prioritize optimizing the largest modulus used across all transformations $a_i \to b_i$, which motivates our greedy idea: repeatedly find the largest modulus we must buy, and buy it exactly once.
 
