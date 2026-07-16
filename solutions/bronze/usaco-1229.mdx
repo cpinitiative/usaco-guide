@@ -17,7 +17,98 @@ author: Rameez Parwez
 <CPPSection>
 
 ```cpp 
+#include <bits/stdc++.h>
 
+#define i23 long long
+
+const int dx[4] = {-1, 1, 0, 0};
+const int dy[4] = {0, 0, -1, 1};
+const int MOD = 1'000'000'007;
+const int INF = 1e9;
+const i23 LINF = 1e18;
+
+inline void yn(int a) {
+    std::cout << (a == 1 ? "Yes" : "No") << '\n';
+}
+
+std::mt19937 rng(std::chrono::high_resolution_clock().now().time_since_epoch().count());
+
+template<typename T>
+void Print(std::vector<T> &res, int start, int end) {
+    for (int i = start; i <= end; i++) {
+        std::cout << res[i] << " \n"[i == end];
+    }
+}
+
+void set_up(std::string name) {
+    freopen((name + ".in").c_str(), "r", stdin);
+    freopen((name + ".out").c_str(), "w", stdout);
+}
+
+/*
+*/
+
+void solve() {
+    int n;
+    std::cin >> n;
+    std::vector<int> metals(n);
+    for (int &x : metals) {
+        std::cin >> x;
+    }
+
+    int k;
+    std::cin >> k;
+    std::unordered_map<int, std::vector<int>> recipes;
+    for (int i = 1; i <= k; i++) {
+        int l, m;
+        std::cin >> l >> m;
+        for (int j = 1; j <= m; j++) {
+            int x;
+            std::cin >> x;
+            recipes[l].push_back(x);
+        }
+    }
+
+    std::function<bool(int)> possible = [&] (int metal) {
+        if (metals[metal - 1] > 0) {
+            metals[metal - 1]--;
+            return true;
+        }
+
+        if (recipes.find(metal) == end(recipes)) {
+            return false;
+        }
+
+        for (int constituent_metals : recipes[metal]) {
+            if (!possible(constituent_metals)) {
+                return false;
+            }
+        }
+        return true;
+    };
+
+    int res = 0;
+    while (possible(n)) {
+        res++;
+    }
+
+    std::cout << res << '\n';
+
+}
+
+int main() {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
+    std::cout.tie(0);
+    std::cin.exceptions(std::ios::badbit|std::ios::failbit);
+    int test = 1;
+    // std::cin >> test;
+    // seive();
+    while (test-- > 0) {
+        solve();
+    }
+    return 0;
+}
 ```
 
 </CPPSection>
