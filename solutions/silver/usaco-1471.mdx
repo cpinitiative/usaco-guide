@@ -117,50 +117,50 @@ int main() {
 ```py
 t = int(input())
 for _ in range(t):
-    n, m = map(int, input().split())
-    nums = list(map(int, input().split()))
+	n, m = map(int, input().split())
+	nums = list(map(int, input().split()))
 
-    # Mod, sort, and construct array
-    rems = sorted([x % m for x in nums])
+	# Mod, sort, and construct array
+	rems = sorted([x % m for x in nums])
 
-    # s is prepended/appended array
-    s = [x - m for x in rems] + rems + [x + m for x in rems]
+	# s is prepended/appended array
+	s = [x - m for x in rems] + rems + [x + m for x in rems]
 
-    # prefix sums for fast lookup of operations needed
-    prefix = [s[0]]
-    for i in range(1, len(s)):
-        prefix.append(prefix[i - 1] + s[i])
+	# prefix sums for fast lookup of operations needed
+	prefix = [s[0]]
+	for i in range(1, len(s)):
+		prefix.append(prefix[i - 1] + s[i])
 
-    min_total = float("inf")
+	min_total = float("inf")
 
-    for i in range(n, 2 * n):
-        # Compute minimum total difference from each s[i] to the x.
-        # We treat "median" as the left median if n is even, and decompose
-        # into left and right calculations (since absolute value argument
-        # sign changes)
-        cost = 0
+	for i in range(n, 2 * n):
+		# Compute minimum total difference from each s[i] to the x.
+		# We treat "median" as the left median if n is even, and decompose
+		# into left and right calculations (since absolute value argument
+		# sign changes)
+		cost = 0
 
-        # Compute cost for difference between all elements on
-        # the left (smaller) to the current value
-        if n % 2 == 0:
-            # If n is even, then sum for the next n//2 - 1 elements.
-            # This is sum of (s[j] - s[i]) from j = i-(n//2-1) to j=i-1.
-            # The s[i] gets factored out of the sum, and results in the
-            # below:
-            cost += s[i] * (n // 2 - 1) - (prefix[i - 1] - prefix[i - n // 2])
-        else:
-            # If n is odd, then do for n//2 elements:
-            # This is sum of (s[j] - s[i]) from j = i-(n//2) to j=i-1.
-            cost += s[i] * (n // 2) - (prefix[i - 1] - prefix[i - n // 2 - 1])
+		# Compute cost for difference between all elements on
+		# the left (smaller) to the current value
+		if n % 2 == 0:
+			# If n is even, then sum for the next n//2 - 1 elements.
+			# This is sum of (s[j] - s[i]) from j = i-(n//2-1) to j=i-1.
+			# The s[i] gets factored out of the sum, and results in the
+			# below:
+			cost += s[i] * (n // 2 - 1) - (prefix[i - 1] - prefix[i - n // 2])
+		else:
+			# If n is odd, then do for n//2 elements:
+			# This is sum of (s[j] - s[i]) from j = i-(n//2) to j=i-1.
+			cost += s[i] * (n // 2) - (prefix[i - 1] - prefix[i - n // 2 - 1])
 
-        # Right side of the current value (larger). Always n//2 elements
-        # to the right. Sum of s[j] - s[i] from j=i+1 to j=i+n//2.
-        cost += (prefix[i + n // 2] - prefix[i]) - s[i] * (n // 2)
+		# Right side of the current value (larger). Always n//2 elements
+		# to the right. Sum of s[j] - s[i] from j=i+1 to j=i+n//2.
+		cost += (prefix[i + n // 2] - prefix[i]) - s[i] * (n // 2)
 
-        # Update min_total
-        min_total = min(min_total, cost)
+		# Update min_total
+		min_total = min(min_total, cost)
 
-    print(min_total)
+	print(min_total)
 ```
 
 </PySection>
