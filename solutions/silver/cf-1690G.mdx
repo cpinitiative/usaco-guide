@@ -37,61 +37,57 @@ To track distinct values, keep a **set of distinct speeds**, synced after each u
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
- 
+
 int main() {
 	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
- 
+
 	int t;
 	cin >> t;
- 
+
 	while (t--) {
 		int n, q;
 		cin >> n >> q;
- 
+
 		vector<long long> a(n);
 		for (auto &x : a) cin >> x;
- 
+
 		// Build the initial set of train-start indices
 		vector<long long> pref_min(n);
 		pref_min[0] = a[0];
 		set<int> starts = {0};
- 
+
 		for (int i = 1; i < n; i++) {
 			pref_min[i] = min(pref_min[i - 1], a[i]);
-			if (pref_min[i] < pref_min[i - 1]){
-                starts.insert(i);
-            }
+			if (pref_min[i] < pref_min[i - 1]) { starts.insert(i); }
 		}
- 
+
 		while (q--) {
 			int k;
 			long long d;
 			cin >> k >> d;
 			k--;
- 
+
 			// Largest start index <= k governs carriage k's current true speed
 			int j = *prev(starts.upper_bound(k));
 			long long cur_speed = a[j];
- 
+
 			a[k] -= d;
- 
+
 			if (a[k] >= cur_speed) {
 				cout << starts.size() << " ";
 				continue;
 			}
- 
+
 			starts.insert(k);
- 
+
 			// Erase every later start index dominated by the new, lower speed
 			auto it = next(starts.find(k));
-			while (it != starts.end() && a[*it] >= a[k]) {
-				it = starts.erase(it);
-			}
- 
+			while (it != starts.end() && a[*it] >= a[k]) { it = starts.erase(it); }
+
 			cout << starts.size() << " ";
 		}
- 
+
 		cout << '\n';
 	}
 }
