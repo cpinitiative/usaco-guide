@@ -37,7 +37,9 @@ Sadly, we can't repeatedly apply $F$ on the raw values: we need the true relativ
 
 We notice that $F$ works nicely with constant shifts: if each element of an array is shifted by $c$, every pairwise sum shifts by $2c$. So instead of storing the true array directly, maintain it as $\text{cur}[i] + \text{offset}$ for a shared scalar $\text{offset}$. Applying $F$ to the true array is the same as applying it to $\text{cur}$ alone and adding $2 \cdot \text{offset}$ to the result. If we stored this new array directly, its values would still continue to grow after every application of $F$. Thus, we normalize it by subtracting its minimum value. After computing the merged array $\text{nxt}$, let $m = \text{nxt}[0]$ be its minimum, we update
 
-$$\text{offset} \leftarrow 2 \cdot \text{offset} + m, \qquad \text{cur}[k] \leftarrow \text{nxt}[k] - m.$$
+$$
+\text{offset} \leftarrow 2 \cdot \text{offset} + m, \qquad \text{cur}[k] \leftarrow \text{nxt}[k] - m.
+$$
 
 Since only $\text{cur}$ is used for comparisons, $\text{offset}$ can be reduced mod $p$ immediately. Meanwhile $\text{cur}$ always has minimum $0$ and its entries stay bounded by the sum of two elements, so it never overflows. The true final answer is $(\text{offset} + \text{cur}[0]) \bmod p$.
 
