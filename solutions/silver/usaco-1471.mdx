@@ -23,7 +23,7 @@ Thus, every element is a candidate for $x$.
 We compute the cost for each $x$ after shifting, and take the best candidate, which is the $x$ that results in the smallest sum of absolute differences.
 
 To implement this, we first sort $a$.
-Then, we consider every element in $a$ for a potential $x$, and compute the amount of elements before and after it that needs to be present to make it a median.
+Then, we consider each element in a as a potential $x$. For each candidate value, we compute either the number of elements before it that must be increased by $M$ or the number of elements after it that must be decreased by $M$ in order to make this value the median.
 After that, we use prefix sums to compute the total absolute difference.
 However, this requires us to access indices of $a$ that are not in the $[0, n)$ range;
 to mitigate this, we prepend to $a$ a copy of $a$ with $M$ subtracted from every element, and
