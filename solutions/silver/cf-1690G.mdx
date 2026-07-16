@@ -8,18 +8,28 @@ author: Abhinav Singh
 [Official Analysis (C++)](https://codeforces.com/blog/entry/103658)
 
 ## Explanation
+Let $a_i$ be the raw (possibly reduced) cap on carriage $i$, and $v_i$ its true speed. Since carriage $i$ can never outrun anything in front of it, $v_i$ is the prefix minimum $v_i = \min(a_1, \ldots, a_i)$. Since this array is non-increasing, it looks like a staircase, and each change in value is a boundary between trains. So the answer is just the number of distinct values in $v_i$.
 
-Since carriage $i$ can never outrun anything in front of it, its true speed is the prefix minimum of speeds from the start. Since this array is non-increasing, it looks like a staircase, and each change in value is a boundary between trains. So the answer is just the number of distinct values in this prefix minimum array, $\mathtt{speed}$.
+Instead of storing the whole prefix minimum array, maintain a set of just the **indices** where a new train starts: : index $0$, plus every index $i$ where $v_i < v_{i-1}$. A "start index" $j$ is where the prefix min drops, meaning $v_j$ itself was the new minimum, or equivalently $a_j = v_j$ . To get the true speed at any position, we can just find its governing start index $j$ and just read off of it's raw value, i.e $a_j$.
 
-Each message lowers one engine's cap, and causes any carriage to the right that has a higher speed than the new cap to slow down to it. If the new cap doesn't go below the carriage's current real speed, then we skip the update entirely, as it was already bottlenecked by engines in front of it.
+When a query lowers $a_k$, find the largest start index $j \le k$ in the set - $a_j$ is $k$'s current true speed. If the new $a_k$ is still $\ge a_j$, nothing changes, since carriage $k$ was already bottlenecked by something ahead of it. Otherwise, insert $k$ into the set as a new start, then walk forward erasing every subsequent start index $j'$ with $a_{j'} \ge a_k$, since those trains now have been swallowed a lower speed limit. The size of the set after each query is the answer.
 
-Otherwise, we need to apply the drop as a range assignment and update the distinct-value count without rescanning the array, which is solved by maintaining the speeds in a **[segment tree with lazy propagation](https://usaco.guide/plat/RURQ?lang=cpp)** to support range assign and point query. Since the speed array stays monotonic, we binary search on it to find the rightmost affected carriage to assign the range to.
 
-For the count, we maintain a **set of distinct speeds**. After the segment tree update, we sync the set by taking $\mathtt{prev}$, the effective speed at the position right before the change, and use `upper_bound` to find the next larger value than the new cap. If that value is less than $\mathtt{prev}$, it's now stale (as the section where the speed gradually decreases has effectively been flattened to a single value) so we erase it.  We repeat this process to remove all stale speeds until the value is larger or equal to $\textt{prev}$, and then insert the new speed.
+
+
+<Info title="Alternative: Segment Tree Approach">
+
+Each message lowers one engine's cap, and causes any carriage to the right that has a higher speed than the new cap to slow down to it. If the new cap doesn't go below the carriage's current real speed, then we skip the update entirely, as it was already bottlenecked by engines in front of it. Otherwise, apply the drop as a range assignment and update the distinct-value count without rescanning the array, which we can do by maintaining the speeds in a **[segment tree with lazy propagation](https://usaco.guide/plat/RURQ?lang=cpp)** to support range assign and point query. Since the speed array stays monotonic, we binary search on it to find the rightmost affected carriage to assign the range to.
+
+To track distinct values, keep a **set of distinct speeds**, synced after each update: take $\mathtt{prev}$, the speed just before the change, then use `upper_bound` to find the next larger value than the new speed and erase it if it's less than $\mathtt{prev}$ (i.e. stale, since that section just got flattened to one value). Repeat until the next value is $\ge \mathtt{prev}$, then insert the new speed.
+
+</Info>
+
 
 ## Implementation
 
-**Time Complexity:** Each query performs binary search over the speed array, with each step requiring a segment tree query, for a total of $\mathcal{O}(log^2 N)$ time. The remaining segment tree updates and set operations each take $\mathcal{O}(log N)$, while set erasures are amortized since each distinct speed is removed at most once, giving us the total time complexity of $\mathcal{O}((N + M) \log^2 N)$
+**Time Complexity:** Each index is inserted into the set at most once and erased at most once over the whole run, so the total erase work across all queries is $\mathcal{O}(n \log n)$, on top of one $\mathcal{O}(\log n)$ lookup per query.
+
 
 <LanguageSection>
 <CPPSection>
@@ -27,148 +37,64 @@ For the count, we maintain a **set of distinct speeds**. After the segment tree 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-
-vector<int> seg;
-vector<bool> lazy;
-
-void push(int v) {
-	if (!lazy[v]) return;
-
-	seg[2 * v] = seg[v];
-	seg[2 * v + 1] = seg[v];
-
-	lazy[2 * v] = true;
-	lazy[2 * v + 1] = true;
-
-	lazy[v] = false;
-}
-
-// Build the initial prefix minimum array.
-void build(int v, int tl, int tr, const vector<int> &pref_min) {
-	if (tl == tr) {
-		seg[v] = pref_min[tl];
-		return;
-	}
-
-	int tm = (tl + tr) / 2;
-	build(2 * v, tl, tm, pref_min);
-	build(2 * v + 1, tm + 1, tr, pref_min);
-}
-
-// Assign every value in [l, r] to val.
-void update(int v, int tl, int tr, int l, int r, int val) {
-	if (l > r) return;
-
-	if (tl == l && tr == r) {
-		seg[v] = val;
-		lazy[v] = true;
-		return;
-	}
-
-	push(v);
-
-	int tm = (tl + tr) / 2;
-
-	update(2 * v, tl, tm, l, min(r, tm), val);
-	update(2 * v + 1, tm + 1, tr, max(l, tm + 1), r, val);
-}
-
-// Point query.
-int query(int v, int tl, int tr, int pos) {
-	if (tl == tr) { return seg[v]; }
-
-	push(v);
-
-	int tm = (tl + tr) / 2;
-
-	if (pos <= tm) { return query(2 * v, tl, tm, pos); }
-
-	return query(2 * v + 1, tm + 1, tr, pos);
-}
-
+ 
 int main() {
 	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
-
+ 
 	int t;
 	cin >> t;
-
+ 
 	while (t--) {
 		int n, q;
 		cin >> n >> q;
-
-		vector<int> a(n);
-		for (int &x : a) cin >> x;
-
-		// Compute the initial prefix minima.
-		vector<int> pref_min(n);
+ 
+		vector<long long> a(n);
+		for (auto &x : a) cin >> x;
+ 
+		// Build the initial set of train-start indices
+		vector<long long> pref_min(n);
 		pref_min[0] = a[0];
-
-		for (int i = 1; i < n; i++) { pref_min[i] = min(pref_min[i - 1], a[i]); }
-
-		seg.assign(4 * n + 5, 0);
-		lazy.assign(4 * n + 5, false);
-
-		build(1, 0, n - 1, pref_min);
-
-		// Store the distinct prefix minima.
-		set<int> distinct_speeds;
-		for (int i = 0; i < n; i++) { distinct_speeds.insert(query(1, 0, n - 1, i)); }
-
+		set<int> starts = {0};
+ 
+		for (int i = 1; i < n; i++) {
+			pref_min[i] = min(pref_min[i - 1], a[i]);
+			if (pref_min[i] < pref_min[i - 1]){
+                starts.insert(i);
+            }
+		}
+ 
 		while (q--) {
-			int k, d;
+			int k;
+			long long d;
 			cin >> k >> d;
 			k--;
-
+ 
+			// Largest start index <= k governs carriage k's current true speed
+			int j = *prev(starts.upper_bound(k));
+			long long cur_speed = a[j];
+ 
 			a[k] -= d;
-
-			// Current real speed of carriage k.
-			int cur = query(1, 0, n - 1, k);
-
-			// This carriage was already limited by one before it.
-			if (cur <= a[k]) {
-				cout << distinct_speeds.size() << ' ';
+ 
+			if (a[k] >= cur_speed) {
+				cout << starts.size() << " ";
 				continue;
 			}
-
-			// Binary search for the last affected position.
-			int lo = k, hi = n - 1;
-
-			while (lo < hi) {
-				int mid = lo + (hi - lo + 1) / 2;
-
-				if (query(1, 0, n - 1, mid) >= a[k]) lo = mid;
-				else hi = mid - 1;
+ 
+			starts.insert(k);
+ 
+			// Erase every later start index dominated by the new, lower speed
+			auto it = next(starts.find(k));
+			while (it != starts.end() && a[*it] >= a[k]) {
+				it = starts.erase(it);
 			}
-
-			int last = lo;
-
-			// Update every affected prefix minimum.
-			update(1, 0, n - 1, k, last, a[k]);
-
-			distinct_speeds.insert(a[k]);
-
-			// Prefix minimum immediately before the updated range.
-			int prev = (k > 0) ? query(1, 0, n - 1, k - 1) : INT_MAX;
-
-			// Remove obsolete prefix minima.
-			while (true) {
-				auto it = distinct_speeds.upper_bound(a[k]);
-
-				if (it == distinct_speeds.end() || *it >= prev) break;
-
-				distinct_speeds.erase(it);
-			}
-
-			cout << distinct_speeds.size() << ' ';
+ 
+			cout << starts.size() << " ";
 		}
-
+ 
 		cout << '\n';
 	}
-
-	return 0;
 }
 ```
-
 </CPPSection>
 </LanguageSection>
