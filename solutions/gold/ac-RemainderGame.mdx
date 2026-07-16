@@ -25,15 +25,13 @@ We compute these minimax distances with a Floyd–Warshall variant, replacing th
 
 $$\texttt{dist}[i][j] = \min(\texttt{dist}[i][j],\ \max(\texttt{dist}[i][k],\ \texttt{dist}[k][j])).$$
 
-Initially, `dist` holds the direct graph edges. We run minimax Floyd–Warshall to get all $f(u, v)$ given the current edge weights, then take $K = \max_i f(a_i, b_i)$, the largest modulus some pair still requires. If any pair is unreachable, output `-1`. If $K = 0$, every necessary modulus is already purchased, so we stop. Otherwise we add $2^K$ to the answer, reset `dist` to direct edges, and set every edge of weight $K$ to $0$, marking modulus $K$ as purchased. We repeat until done.
+Repeatedly run minimax Floyd–Warshall on the current graph, take $K = \max_i f(a_i, b_i)$, and stop once $K = 0$ (or output `-1` if some pair is unreachable). Otherwise, $K$ is a forced purchase, so we add $2^K$ to the answer, and then set every edge of weight $K$ to $0$ so future rounds treat it as free, and repeat.
 
-Each iteration permanently purchases one modulus, so there are at most $50$
-iterations.
+Each iteration permanently purchases one modulus, so there are at most $50$ iterations.
 
 ## Implementation
 
-Let $M = 50$ be the maximum value involved in the problem. Each Floyd–Warshall pass is $\mathcal{O}(M^3)$ on $M + 1$ vertices, repeated at most $M$ times, giving an
-overall complexity of $\mathcal{O}(M^4)$.
+Let $M = 50$ be the maximum value involved in the problem. Each Floyd–Warshall pass is $\mathcal{O}(M^3)$ on $M + 1$ vertices, repeated at most $M$ times, giving an overall complexity of $\mathcal{O}(M^4)$.
 
 We keep `edges_by_modulus[k]`, a list of every edge with weight $k$, so that once modulus $k$ is purchased, we can mark edges using that modulus as free in $\mathcal{O}(1)$ per edge, without scanning the whole matrix.
 
