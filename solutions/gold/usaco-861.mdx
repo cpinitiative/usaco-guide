@@ -128,62 +128,99 @@ public class FineDining {
 		int n = sc.nextInt();
 		int m = sc.nextInt();
 		int k = sc.nextInt();
+
 		List<List<Edge>> adj = new ArrayList<>();
-		for (int i = 0; i < n; i++) adj.add(new ArrayList<>());
+		for (int i = 0; i < n; i++) {
+			adj.add(new ArrayList<>());
+		}
+
 		for (int i = 0; i < m; i++) {
 			int a = sc.nextInt() - 1;
 			int b = sc.nextInt() - 1;
 			int time = sc.nextInt();
+
 			adj.get(a).add(new Edge(b, time));
 			adj.get(b).add(new Edge(a, time));
 		}
-		int[] haybales = new int[n];
-		Arrays.fill(haybales, -1);
-		for (int i = 0; i < k; i++) { haybales[sc.nextInt() - 1] = sc.nextInt(); }
 
 		/*
-		 * dist[i][0] - the shortest distance from cow i to the barn given
-		 * that it doesn't eat any haybales.
-		 *
-		 * dist[i][1] - the shortest distance given that it eats one haybale.
-		 * This distance is subtracted by the yuminess of the haybale the cow
-		 * eats.
+		 * dist[i] - the shortest distance from pasture i
+		 * directly to the barn.
 		 */
-		int[][] dist = new int[n][2];
-		for (int i = 0; i < n; i++) {
-			dist[i][0] = -1;
-			dist[i][1] = -1;
-		}
+		long[] dist = new long[n];
+		Arrays.fill(dist, Long.MAX_VALUE);
 
-		// run djiskstra's to find the shortest distances
 		PriorityQueue<State> pq = new PriorityQueue<>();
-		pq.add(new State(n - 1, 0, 0));
+		pq.add(new State(n - 1, 0));
+
+		dist[n - 1] = 0;
+
+		// run Dijkstra's to find the shortest distances
 		while (!pq.isEmpty()) {
 			State state = pq.remove();
-			if (dist[state.pos][state.eaten] != -1) { continue; }
-			dist[state.pos][state.eaten] = state.time;
 
-			// add all the neighbors
-			for (Edge e : adj.get(state.pos)) {
-				pq.add(new State(e.other, state.time + e.time, state.eaten));
+			if (state.dist != dist[state.pos]) {
+				continue;
 			}
 
-			// if there's a haybale and the cow hasn't eaten any yet, eat the
-			// haybale and update the state accordingly
-			if (haybales[state.pos] != -1 && state.eaten == 0) {
-				state.time -= haybales[state.pos];
-				pq.add(new State(state.pos, state.time, 1));
+			for (Edge e : adj.get(state.pos)) {
+				if (dist[e.other] > state.dist + e.time) {
+					dist[e.other] = state.dist + e.time;
+					pq.add(new State(e.other, dist[e.other]));
+				}
+			}
+		}
+
+		/*
+		 * best[i] - minimum over all haybales h of
+		 * dist(i,h) + dist[h] - yum[h].
+		 *
+		 * We compute this by running a multi-source
+		 * Dijkstra where every haybale starts with
+		 * distance dist[h] - yum[h].
+		 */
+		long[] best = new long[n];
+		Arrays.fill(best, Long.MAX_VALUE);
+
+		PriorityQueue<State> pq2 = new PriorityQueue<>();
+
+		for (int i = 0; i < k; i++) {
+			int haybale = sc.nextInt() - 1;
+			int yum = sc.nextInt();
+
+			long slack = dist[haybale] - yum;
+
+			if (best[haybale] > slack) {
+				best[haybale] = slack;
+				pq2.add(new State(haybale, slack));
+			}
+		}
+
+		// run multi-source Dijkstra
+		while (!pq2.isEmpty()) {
+			State state = pq2.remove();
+
+			if (state.dist != best[state.pos]) {
+				continue;
+			}
+
+			for (Edge e : adj.get(state.pos)) {
+				if (best[e.other] > state.dist + e.time) {
+					best[e.other] = state.dist + e.time;
+					pq2.add(new State(e.other, best[e.other]));
+				}
 			}
 		}
 
 		for (int i = 0; i < n - 1; i++) {
-			// output 1 if it's better for cow to eat haybale along its path
-			if (dist[i][1] <= dist[i][0]) {
+			// output 1 if some haybale makes the detour worthwhile
+			if (best[i] <= dist[i]) {
 				out.println(1);
 			} else {
 				out.println(0);
 			}
 		}
+
 		out.close();
 	}
 
@@ -197,21 +234,17 @@ public class FineDining {
 	}
 
 	static class State implements Comparable<State> {
-		int pos, time;
-		int eaten;  // 1 if true, 0 if false
+		int pos;
+		long dist;
 
-		State(int pos, int time, int eaten) {
+		State(int pos, long dist) {
 			this.pos = pos;
-			this.time = time;
-			this.eaten = eaten;
+			this.dist = dist;
 		}
 
 		@Override
 		public int compareTo(State other) {
-			// we have to prioritize cows that haven't eaten yet so that we
-			// calculate all of dist[i][0] before calculating dist[i][1]
-			if (this.eaten != other.eaten) { return this.eaten - other.eaten; }
-			return this.time - other.time;
+			return Long.compare(this.dist, other.dist);
 		}
 	}
 }
