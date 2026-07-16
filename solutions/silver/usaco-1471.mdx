@@ -9,8 +9,9 @@ author: John Zhou, Raagav Bala
 
 ## Explanation
 
-The problem asks us to minimize the sum of $|a_i - x|$ for all $a_i$, using an $x$ of our choice, and taking each difference modulo $M$. Thus, let us first consider this problem
-without the modulus.
+The problem asks us to minimize the sum of $|a_i - x|$ for all $a_i$, using an $x$ of our choice, with each difference under modulo $M$
+(strictly, optimizing the sum of $\min(a_i - x \bmod M, x - a_i \bmod M)$).
+Thus, let us first consider this problem without the modulus.
 
 Letting $x$ be the _median_ of those numbers [minimizes the total distance](https://cses.fi/book/book.pdf#page=71). In
 the case that $N$ is even, any number between the two numbers in the middle
@@ -114,54 +115,52 @@ int main() {
 <PySection>
 
 ```py
-T = int(input())
-for _ in range(T):
-	N, M = map(int, input().split())
-	nums = list(map(int, input().split()))
-	# Mod, sort, and construct array
-	rems = sorted([x % M for x in nums])
-	# S is prepended/appended array
-	S = [x - M for x in rems] + rems + [x + M for x in rems]
+t = int(input())
+for _ in range(t):
+    n, m = map(int, input().split())
+    nums = list(map(int, input().split()))
 
-	# prefix sums for fast lookup of operations needed
-	prefix = [S[0]]
-	for i in range(1, len(S)):
-		prefix.append(prefix[i - 1] + S[i])
+    # Mod, sort, and construct array
+    rems = sorted([x % m for x in nums])
 
-	min_total = float("inf")
+    # s is prepended/appended array
+    s = [x - m for x in rems] + rems + [x + m for x in rems]
 
-	for i in range(N, 2 * N):
+    # prefix sums for fast lookup of operations needed
+    prefix = [s[0]]
+    for i in range(1, len(s)):
+        prefix.append(prefix[i - 1] + s[i])
 
-		# Compute minimum total difference from each a[i] to the x.
-		# We treat "median" as the left median if N is even, and decompose
-		# into left and right calculations (since absolute value argument
-		# sign changes)
+    min_total = float("inf")
 
-		cost = 0
+    for i in range(n, 2 * n):
+        # Compute minimum total difference from each s[i] to the x.
+        # We treat "median" as the left median if n is even, and decompose
+        # into left and right calculations (since absolute value argument
+        # sign changes)
+        cost = 0
 
-		# Compute cost for difference between all elements on
-		# the left (smaller) to the current value
-		if N % 2 == 0:
+        # Compute cost for difference between all elements on
+        # the left (smaller) to the current value
+        if n % 2 == 0:
+            # If n is even, then sum for the next n//2 - 1 elements.
+            # This is sum of (s[j] - s[i]) from j = i-(n//2-1) to j=i-1.
+            # The s[i] gets factored out of the sum, and results in the
+            # below:
+            cost += s[i] * (n // 2 - 1) - (prefix[i - 1] - prefix[i - n // 2])
+        else:
+            # If n is odd, then do for n//2 elements:
+            # This is sum of (s[j] - s[i]) from j = i-(n//2) to j=i-1.
+            cost += s[i] * (n // 2) - (prefix[i - 1] - prefix[i - n // 2 - 1])
 
-			# If N is even, then sum for the next N//2 - 1 elements.
-			# This is sum of (S[j] - S[i]) from j = i-(N//2-1) to j=i-1.
-			# The S[i] gets factored out of the sum, and results in the
-			# below:
+        # Right side of the current value (larger). Always n//2 elements
+        # to the right. Sum of s[j] - s[i] from j=i+1 to j=i+n//2.
+        cost += (prefix[i + n // 2] - prefix[i]) - s[i] * (n // 2)
 
-			cost += S[i] * (N // 2 - 1) - (prefix[i - 1] - prefix[i - N // 2])
-		else:
-			# If N is odd, then do for N//2 elements:
-			# This is sum of (S[j] - S[i]) from j = i-(N//2) to j=i-1.
-			cost += S[i] * (N // 2) - (prefix[i - 1] - prefix[i - N // 2 - 1])
+        # Update min_total
+        min_total = min(min_total, cost)
 
-		# Right side of the current value (larger).  Always N//2 elements
-		# to the right. Sum of a[j] - a[i] from j=i+1 to j=i+N//2.
-		cost += (prefix[i + N // 2] - prefix[i]) - S[i] * (N // 2)
-
-		# Update min_total
-		min_total = min(min_total, cost)
-
-	print(min_total)
+    print(min_total)
 ```
 
 </PySection>
