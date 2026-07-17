@@ -18,6 +18,21 @@ has enough availability we will consume one unit of it and check
 for other metal constituents. We will repeat this until we run out
 of supply for constituent metals.
 
+This recursive greedy approach works perfectly for this problem for
+the following reasons:
+
+1. Since there is only one recipe for each metal, constructing a 
+new unit of any metal is a binary choice: either we consume from 
+our existing stock, or we construct a new unit from its recipe.
+
+2. We can always delay constructing a new unit of a metal, so we
+should prioritize using our existing stock first and build new
+units of metal only if necessary.
+
+3. The ordering of recipes forms a tree-like structure, so a
+recursive approach is easier to implement than other approaches.
+
+
 ## Implementation
 
 **Time Complexity:** $$
