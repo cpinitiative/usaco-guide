@@ -17,8 +17,39 @@ author: Rameez Parwez
 <CPPSection>
 
 ```cpp 
+#include <iostream>
+#include <vector>
 
+int main() {
+	int n, m;
+	std::cin >> n >> m;
+	std::vector<long long> cow_height(n);
+	std::vector<int> candy_height(m);
 
+	for (long long &x : cow_height) {
+		std::cin >> x;
+	}
+
+	for (int &x : candy_height) {
+		std::cin >> x;
+	}
+
+	for (int i = 0; i < m; i++) {
+		int curr_candy_height = 0;
+		int j = 0;
+		while (j < n and curr_candy_height < candy_height[i]) {
+			int can_add = std::max(0, (int)std::min(cow_height[j], (long long)candy_height[i]) - curr_candy_height);
+			cow_height[j] += can_add;
+			curr_candy_height += can_add;
+			j++;
+		}
+	}
+
+	for (int i = 0; i < n; i++) {
+		std::cout << cow_height[i] << '\n';
+	}
+
+}
 ```
 
 </CPPSection>
