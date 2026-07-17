@@ -25,57 +25,48 @@ no longer possible to produce another unit.
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
-#include <unordered_map>
 #include <functional>
+#include <iostream>
+#include <unordered_map>
+#include <vector>
 
 int main() {
-    int n;
-    std::cin >> n;
-    std::vector<int> metals(n);
-    for (int &x : metals) {
-        std::cin >> x;
-    }
+	int n;
+	std::cin >> n;
+	std::vector<int> metals(n);
+	for (int &x : metals) { std::cin >> x; }
 
-    int k;
-    std::cin >> k;
-    std::unordered_map<int, std::vector<int>> recipes;
-    for (int i = 1; i <= k; i++) {
-        int l, m;
-        std::cin >> l >> m;
-        for (int j = 1; j <= m; j++) {
-            int x;
-            std::cin >> x;
-            recipes[l].push_back(x);
-        }
-    }
+	int k;
+	std::cin >> k;
+	std::unordered_map<int, std::vector<int>> recipes;
+	for (int i = 1; i <= k; i++) {
+		int l, m;
+		std::cin >> l >> m;
+		for (int j = 1; j <= m; j++) {
+			int x;
+			std::cin >> x;
+			recipes[l].push_back(x);
+		}
+	}
 
-    std::function<bool(int)> possible = [&] (int metal) -> bool {
-        if (metals[metal - 1] > 0) {
-            metals[metal - 1]--;
-            return true;
-        }
+	std::function<bool(int)> possible = [&](int metal) -> bool {
+		if (metals[metal - 1] > 0) {
+			metals[metal - 1]--;
+			return true;
+		}
 
-        if (recipes.find(metal) == end(recipes)) {
-            return false;
-        }
+		if (recipes.find(metal) == end(recipes)) { return false; }
 
-        for (int constituent_metals : recipes[metal]) {
-            if (!possible(constituent_metals)) {
-                return false;
-            }
-        }
-        return true;
-    };
+		for (int constituent_metals : recipes[metal]) {
+			if (!possible(constituent_metals)) { return false; }
+		}
+		return true;
+	};
 
-    int res = 0;
-    while (possible(n)) {
-        res++;
-    }
+	int res = 0;
+	while (possible(n)) { res++; }
 
-    std::cout << res << '\n';
-
+	std::cout << res << '\n';
 }
 ```
 
