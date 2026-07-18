@@ -152,6 +152,7 @@ function ProblemHit({ hit }: ProblemHitProps) {
                 : hit.solution.url
             }
             target="_blank"
+            rel="noreferrer"
             className="dark:text-dark-med-emphasis text-sm text-gray-500"
           >
             View Solution
