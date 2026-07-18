@@ -114,7 +114,7 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
 
             <div className="h-6 sm:h-8"></div>
 
-            <p className="text-xl leading-snug font-medium text-gray-800 sm:text-2xl md:text-center md:!leading-normal 2xl:text-3xl dark:text-gray-300">
+            <p className="text-xl leading-snug font-medium text-gray-800 sm:text-2xl text-center md:!leading-normal 2xl:text-3xl dark:text-gray-300">
               A free collection of{' '}
               <GradientText>curated, high-quality resources</GradientText>{' '}
               <br className="hidden md:block" />
