@@ -41,48 +41,59 @@ recursive approach is easier to implement than other approaches.
 <CPPSection>
 
 ```cpp
-#include <functional>
 #include <iostream>
-#include <unordered_map>
 #include <vector>
+#include <unordered_map>
+#include <functional>
 
 int main() {
-	int n;
-	std::cin >> n;
-	std::vector<int> metals(n);
-	for (int &x : metals) { std::cin >> x; }
+	
+    int n;
+    std::cin >> n;
+    std::vector<int> metals(n);
+    for (int &x : metals) {
+        std::cin >> x;
+    }
 
-	int k;
-	std::cin >> k;
-	std::unordered_map<int, std::vector<int>> recipes;
-	for (int i = 1; i <= k; i++) {
-		int l, m;
-		std::cin >> l >> m;
-		for (int j = 1; j <= m; j++) {
-			int x;
-			std::cin >> x;
-			recipes[l].push_back(x);
-		}
-	}
+    int k;
+    std::cin >> k;
+    std::vector<std::vector<int>> recipes(n);
+    
+    for (int i = 1; i <= k; i++) {
+        int l, m;
+        std::cin >> l >> m;
+        for (int j = 1; j <= m; j++) {
+            int x;
+            std::cin >> x;
+            recipes[l - 1].push_back(x - 1);
+        }
+    }
 
-	std::function<bool(int)> possible = [&](int metal) -> bool {
-		if (metals[metal - 1] > 0) {
-			metals[metal - 1]--;
-			return true;
-		}
+    std::function<bool(int)> possible = [&] (int metal) -> bool {
+        if (metals[metal] > 0) {
+            metals[metal]--;
+            return true;
+        }
 
-		if (recipes.find(metal) == end(recipes)) { return false; }
+        if (recipes[metal].size() == 0) {
+            return false;
+        }
 
-		for (int constituent_metals : recipes[metal]) {
-			if (!possible(constituent_metals)) { return false; }
-		}
-		return true;
-	};
+        for (int constituent_metals : recipes[metal]) {
+            if (!possible(constituent_metals)) {
+                return false;
+            }
+        }
+        return true;
+    };
 
-	int res = 0;
-	while (possible(n)) { res++; }
+    int res = 0;
+    while (possible(n - 1)) {
+        res++;
+    }
 
-	std::cout << res << '\n';
+    std::cout << res << '\n';
+
 }
 ```
 
