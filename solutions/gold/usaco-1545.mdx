@@ -107,15 +107,15 @@ int main() {
 	vector<int> typeC(m), typeO(m), typeW(m);
 	for (int i = 1; i <= n; i++) {
 		switch (hosted[i]) {
-			case 'C':
-				typeC[m - 1] += graph.size(i);
-				break;
-			case 'O':
-				typeO[m - 1] += graph.size(i);
-				break;
-			case 'W':
-				typeW[m - 1] += graph.size(i);
-				break;
+		case 'C':
+			typeC[m - 1] += graph.size(i);
+			break;
+		case 'O':
+			typeO[m - 1] += graph.size(i);
+			break;
+		case 'W':
+			typeW[m - 1] += graph.size(i);
+			break;
 		}
 	}
 
@@ -129,39 +129,37 @@ int main() {
 
 		// subtract
 		switch (hosted[cow]) {
-			case 'C':
-				typeC[i - 1] -= graph.size(cow);
-				break;
-			case 'O':
-				typeO[i - 1] -= graph.size(cow);
-				break;
-			case 'W':
-				typeW[i - 1] -= graph.size(cow);
-				break;
+		case 'C':
+			typeC[i - 1] -= graph.size(cow);
+			break;
+		case 'O':
+			typeO[i - 1] -= graph.size(cow);
+			break;
+		case 'W':
+			typeW[i - 1] -= graph.size(cow);
+			break;
 		}
 		hosted[cow] = party[i].second;
-		char prevParty = hosted[cow];  // prevParty: where the new party drew customers from
-		// prevParty = '0' means new party was created, so we find where this cow's best friend is
-		if (prevParty == '0') {
-			prevParty = hosted[graph.find(frnd[cow])];
-		}
+		char prevParty =
+		    hosted[cow];  // prevParty: where the new party drew customers from
+		// prevParty = '0' means new party was created, so we find where this cow's best
+		// friend is
+		if (prevParty == '0') { prevParty = hosted[graph.find(frnd[cow])]; }
 
 		// add
 		switch (prevParty) {
-			case 'C':
-				typeC[i - 1] += graph.size(cow);
-				break;
-			case 'O':
-				typeO[i - 1] += graph.size(cow);
-				break;
-			case 'W':
-				typeW[i - 1] += graph.size(cow);
-				break;
+		case 'C':
+			typeC[i - 1] += graph.size(cow);
+			break;
+		case 'O':
+			typeO[i - 1] += graph.size(cow);
+			break;
+		case 'W':
+			typeW[i - 1] += graph.size(cow);
+			break;
 		}
 		// if this cow no longer hosts a party, unite
-		if (hosted[cow] == '0') {
-			graph.unite(cow, frnd[cow]);
-		}
+		if (hosted[cow] == '0') { graph.unite(cow, frnd[cow]); }
 	}
 
 	// print out answer
