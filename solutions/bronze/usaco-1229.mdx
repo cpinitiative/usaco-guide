@@ -41,59 +41,50 @@ recursive approach is easier to implement than other approaches.
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
-#include <unordered_map>
 #include <functional>
+#include <iostream>
+#include <unordered_map>
+#include <vector>
 
 int main() {
-	
-    int n;
-    std::cin >> n;
-    std::vector<int> metals(n);
-    for (int &x : metals) {
-        std::cin >> x;
-    }
 
-    int k;
-    std::cin >> k;
-    std::vector<std::vector<int>> recipes(n);
-    
-    for (int i = 1; i <= k; i++) {
-        int l, m;
-        std::cin >> l >> m;
-        for (int j = 1; j <= m; j++) {
-            int x;
-            std::cin >> x;
-            recipes[l - 1].push_back(x - 1);
-        }
-    }
+	int n;
+	std::cin >> n;
+	std::vector<int> metals(n);
+	for (int &x : metals) { std::cin >> x; }
 
-    std::function<bool(int)> possible = [&] (int metal) -> bool {
-        if (metals[metal] > 0) {
-            metals[metal]--;
-            return true;
-        }
+	int k;
+	std::cin >> k;
+	std::vector<std::vector<int>> recipes(n);
 
-        if (recipes[metal].size() == 0) {
-            return false;
-        }
+	for (int i = 1; i <= k; i++) {
+		int l, m;
+		std::cin >> l >> m;
+		for (int j = 1; j <= m; j++) {
+			int x;
+			std::cin >> x;
+			recipes[l - 1].push_back(x - 1);
+		}
+	}
 
-        for (int constituent_metals : recipes[metal]) {
-            if (!possible(constituent_metals)) {
-                return false;
-            }
-        }
-        return true;
-    };
+	std::function<bool(int)> possible = [&](int metal) -> bool {
+		if (metals[metal] > 0) {
+			metals[metal]--;
+			return true;
+		}
 
-    int res = 0;
-    while (possible(n - 1)) {
-        res++;
-    }
+		if (recipes[metal].size() == 0) { return false; }
 
-    std::cout << res << '\n';
+		for (int constituent_metals : recipes[metal]) {
+			if (!possible(constituent_metals)) { return false; }
+		}
+		return true;
+	};
 
+	int res = 0;
+	while (possible(n - 1)) { res++; }
+
+	std::cout << res << '\n';
 }
 ```
 
