@@ -19,7 +19,14 @@ Each time a cow starts hosting a party (not simply changing type), when processe
 Every cow in that particular party will travel to wherever the host cow goes, so we only need to worry about merging.
 
 We can use a Disjoint Set Union to represent the friendships of the cows, where each cow is a node.
-We start by computing how many cows attend each type of party at the last night and work backwards from there. We use an array to store this data.
+We start by computing how many cows attend each type of party at the last night and work backwards from there.
+Starting from the beginning, we process all changes to parties hosted by the cows, whether that is a cow changing their party type or a cow starting a completely new party. 
+We use an array to keep track of the type of party each cow hosts.
+After that, since a cow without a party travels to their best friend, we find all cows without a party and merge each of them with their best friend in a DSU.
+Lastly, for each cow hosting a party, the `size()` method lets us find the number of cows attending their party. 
+Since we kept track of the type of party they are hosting, we add the amount to the appropriate array.
+
+We work backwards from here to solve each query.
 After a query is completed, we determine whether the cow had started a completely new party or only changed party type.
 If it is the latter, we update the party type of that cow.
 Using the `size()` function, we figure out the number of cows attending that particular party. In the array storing the number of cows attending each type of party, for each element, we add or subtract the size as necessary.
