@@ -43,79 +43,71 @@ We continue until all queries are computed.
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-
-// BeginCodeSnip{Disjoint Set Union}
-
-class DisjointSets {
-  private:
-	vector<int> parents;
-	vector<int> sizes;
-
-  public:
-	DisjointSets(int size) : parents(size), sizes(size, 1) {
-		for (int i = 0; i < size; i++) { parents[i] = i; }
+struct DSU {
+	vector<int> e;
+	DSU(int N) {
+		e = vector<int>(N+1, -1);
 	}
 
-	/** @return the "representative" node in x's component */
-	int find(int x) { return parents[x] == x ? x : (parents[x] = find(parents[x])); }
+	int get(int x) {
+		return e[x] < 0 ? x : e[x] = get(e[x]);
+	}
 
-	/** @return whether the merge changed connectivity */
-	bool unite(int x, int y) {
-		int x_root = find(x);
-		int y_root = find(y);
-		if (x_root == y_root) { return false; }
+	bool same_set(int a, int b) {
+		return get(a) == get(b);
+  	}
 
-		if (sizes[x_root] < sizes[y_root]) { swap(x_root, y_root); }
-		sizes[x_root] += sizes[y_root];
-		parents[y_root] = x_root;
+	int size(int x) {
+    	return -e[x];
+  	}
+
+	bool unite(int x, int y) { 
+		x = get(x), y = get(y);
+		if (x == y) return false;
+		swap(x, y);
+		e[x] += e[y];
+		e[y] = x;
 		return true;
 	}
-
-	/** @return whether x and y are in the same connected component */
-	bool connected(int x, int y) { return find(x) == find(y); }
-
-	/** @return the size of x's component */
-	int size(int x) { return sizes[find(x)]; }
 };
-
-// EndCodeSnip
 int main() {
-	cin.tie(0)->sync_with_stdio(0);
-	int n;
-	cin >> n;
-	vector<int> frnd(n + 1);          // each cow's best friend
-	vector<char> hosted(n + 1, '0');  // what party each cow is hosting
-	for (int i = 1; i <= n; i++) { cin >> frnd[i]; }
-	int m;
-	cin >> m;
+	cin.tie(0) -> sync_with_stdio(0);
+	int n; cin >> n;
+	vector<int> frnd(n + 1); 							// each cow's best friend
+	vector<char> hosted(n + 1, '0');					// what party each cow is hosting
+	for (int i = 1; i <= n; i++) {
+		cin >> frnd[i];
+	}
+	int m; cin >> m;
 	vector<pair<int, char>> party(m);
 	for (int i = 0; i < m; i++) {
-		int cow;
-		cin >> cow;
-		char type;
-		cin >> type;
+		int cow; cin >> cow;
+		char type; cin >> type;
 		party[i] = {cow, hosted[cow]};
 		hosted[cow] = type;
 	}
 
 	// create DSU graph of friends
-	DisjointSets graph(n);
+	DSU graph(n);
 	for (int i = 1; i <= n; i++) {
-		if (hosted[i] == '0') { graph.unite(i, frnd[i]); }
+		if (hosted[i] == '0') {
+			graph.unite(i, frnd[i]);
+		}
 	}
 	// first, we find out how many cows are at each type of party at the last night
+	// so we can work backwards
 	vector<int> typeC(m), typeO(m), typeW(m);
 	for (int i = 1; i <= n; i++) {
 		switch (hosted[i]) {
-		case 'C':
-			typeC[m - 1] += graph.size(i);
-			break;
-		case 'O':
-			typeO[m - 1] += graph.size(i);
-			break;
-		case 'W':
-			typeW[m - 1] += graph.size(i);
-			break;
+			case 'C':
+				typeC[m - 1] += graph.size(i);
+				break;
+			case 'O':
+				typeO[m - 1] += graph.size(i);
+				break;
+			case 'W':
+				typeW[m - 1] += graph.size(i);
+				break;
 		}
 	}
 
@@ -125,43 +117,45 @@ int main() {
 		typeC[i - 1] = typeC[i];
 		typeO[i - 1] = typeO[i];
 		typeW[i - 1] = typeW[i];
-		int cow = party[i].first;  // which cow is hosting the new party
-
+		int cow = party[i].first;	// which cow is hosting the new party
 		// subtract
 		switch (hosted[cow]) {
-		case 'C':
-			typeC[i - 1] -= graph.size(cow);
-			break;
-		case 'O':
-			typeO[i - 1] -= graph.size(cow);
-			break;
-		case 'W':
-			typeW[i - 1] -= graph.size(cow);
-			break;
+			case 'C':
+				typeC[i - 1] -= graph.size(cow);
+				break;
+			case 'O':
+				typeO[i - 1] -= graph.size(cow);
+				break;
+			case 'W':
+				typeW[i - 1] -= graph.size(cow);
+				break;
 		}
 		hosted[cow] = party[i].second;
-		char prevParty =
-		    hosted[cow];  // prevParty: where the new party drew customers from
-		// prevParty = '0' means new party was created, so we find where this cow's best
-		// friend is
-		if (prevParty == '0') { prevParty = hosted[graph.find(frnd[cow])]; }
+
+		char prevParty = hosted[cow];							// prevParty: where the new party drew customers from 
+		// prevParty = '0' means new party was created, so we find where this cow's best friend is
+		if (prevParty == '0') {
+			prevParty = hosted[graph.get(frnd[cow])];
+		}
 
 		// add
 		switch (prevParty) {
-		case 'C':
-			typeC[i - 1] += graph.size(cow);
-			break;
-		case 'O':
-			typeO[i - 1] += graph.size(cow);
-			break;
-		case 'W':
-			typeW[i - 1] += graph.size(cow);
-			break;
+			case 'C':
+				typeC[i - 1] += graph.size(cow);
+				break;
+			case 'O':
+				typeO[i - 1] += graph.size(cow);
+				break;
+			case 'W':
+				typeW[i - 1] += graph.size(cow);
+				break;
 		}
-		// if this cow no longer hosts a party, unite
-		if (hosted[cow] == '0') { graph.unite(cow, frnd[cow]); }
-	}
 
+		// if this cow no longer hosts a party, unite
+		if (hosted[cow] == '0') {
+			graph.unite(cow, frnd[cow]);
+		}
+	}
 	// print out answer
 	for (int i = 0; i < m; i++) {
 		cout << typeC[i] << ' ' << typeO[i] << ' ' << typeW[i] << '\n';
