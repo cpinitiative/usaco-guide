@@ -157,7 +157,7 @@ export default function ProblemsListItem(
       {isDivisionTable && props.modules && (
         <ListTableCell className="font-medium whitespace-nowrap">
           {problem.moduleLink ? (
-            <a href={problem.moduleLink} target="_blank">
+            <a href={problem.moduleLink} target="_blank" rel="noreferrer">
               Link
             </a>
           ) : (
