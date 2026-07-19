@@ -68,42 +68,44 @@ int main() {
 </CPPSection>
 <JavaSection>
 
-```java 
+```java
 import java.io.*;
 import java.util.*;
 
 public class CandyCaneFeast {
 
-    public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws Exception {
 
-        Kattio io = new Kattio();
+		Kattio io = new Kattio();
 
-        int n = io.nextInt();
-        int m = io.nextInt();
-        
-        long[] cowHeight = new long[n];
-        int[] candyHeight = new int[m];
+		int n = io.nextInt();
+		int m = io.nextInt();
 
-        for (int i = 0; i < n; i++) { cowHeight[i] = io.nextLong(); }
-        for (int i = 0; i < m; i++) { candyHeight[i] = io.nextInt(); }
+		long[] cowHeight = new long[n];
+		int[] candyHeight = new int[m];
 
-        for (int i = 0; i < m; i++) {
-            int currCandyHeight = 0;
-            int j = 0;
-            while (j < n && currCandyHeight < candyHeight[i]) {
-                int canAdd = Math.max(0, (int) Math.min(cowHeight[j], (long) candyHeight[i]) - currCandyHeight);
-                cowHeight[j] += canAdd;
-                currCandyHeight += canAdd;
-                j++;
-            }
-        }
+		for (int i = 0; i < n; i++) { cowHeight[i] = io.nextLong(); }
+		for (int i = 0; i < m; i++) { candyHeight[i] = io.nextInt(); }
 
-        for (int i = 0; i < n; i++) { io.println(cowHeight[i]); }
+		for (int i = 0; i < m; i++) {
+			int currCandyHeight = 0;
+			int j = 0;
+			while (j < n && currCandyHeight < candyHeight[i]) {
+				int canAdd =
+				    Math.max(0, (int)Math.min(cowHeight[j], (long)candyHeight[i]) -
+				                    currCandyHeight);
+				cowHeight[j] += canAdd;
+				currCandyHeight += canAdd;
+				j++;
+			}
+		}
 
-        io.close();
-    }
+		for (int i = 0; i < n; i++) { io.println(cowHeight[i]); }
 
-    // BeginCodeSnip{Kattio}
+		io.close();
+	}
+
+	// BeginCodeSnip{Kattio}
 }
 ```
 
