@@ -15,23 +15,23 @@ $$
 2^k > \sum_{i=1}^{k-1} 2^i.
 $$
 
-This means we should prioritize optimizing the largest modulus used across all transformations $a_i \to b_i$, which motivates our greedy idea: repeatedly find the largest modulus we must buy, and buy it exactly once.
+This means we should prioritize optimizing the largest modulus used across all transformations $a_i \to b_i$, which motivates our greedy idea: find the largest modulus we must buy, buy it exactly once, and repeat.
 
-To do this we can build a directed graph on vertices $0, \ldots, 50$ where for every value $x$ and modulus $k$, there is an edge $x \to x \bmod k$ with weight $k$. A path from $a_i$ to $b_i$ represents a sequence of operations turning $a_i$ into $b_i$, for which the moduli needed are the edge weights along the path. Define the weight of a path from $u$ to $v$, $f(u, v)$, as the minimum possible value of the maximum edge weight on such a path.
+To do this we build a directed graph on vertices $0, \ldots, 50$. For every value $x$ and modulus $k$, we build an edge $x \to x \bmod k$ with weight $k$. A path from $a_i$ to $b_i$ represents a sequence of operations to turn $a_i$ into $b_i$, and the moduli needed are the edge weights along the path. Define the weight of a path from $u$ to $v$, $f(u, v)$, as the minimum possible value of the maximum edge weight on such a path.
 
-Hence, when processing the transformation $a_i \to b_i$, $f(a_i, b_i)$ is the minimum threshold such that the path is feasible using only operations $\leq f(a_i,b_i)$, making $K = \max_i f(a_i, b_i)$ a forced modulus in the greedy construction.
+Hence, when processing a transformation $a_i \to b_i$, $f(a_i, b_i)$ is the minimum threshold such that the path is feasible using only operations $\leq f(a_i,b_i)$, so $K = \max_i f(a_i, b_i)$ must be purchased in the greedy construction.
 
 We compute these minimax distances with a Floyd–Warshall variant, replacing the standard relaxation with:
 
 $$\texttt{dist}[i][j] = \min(\texttt{dist}[i][j],\ \max(\texttt{dist}[i][k],\ \texttt{dist}[k][j])).$$
 
-Repeatedly run minimax Floyd–Warshall on the current graph, take $K = \max_i f(a_i, b_i)$, and stop once $K = 0$ (or output `-1` if some pair is unreachable). Otherwise, $K$ is a forced purchase, so we add $2^K$ to the answer, and then set every edge of weight $K$ to $0$ so future rounds treat it as free, and repeat.
+We run minimax Floyd–Warshall on the current graph, take $K = \max_i f(a_i, b_i)$, and repeat until $K = 0$ (or output `-1` if some pair is unreachable). Otherwise, we must purchase $K$ by addung $2^K$ to the answer, and then set every edge of weight $K$ to $0$ so future rounds treat it as free, and repeat.
 
 Each iteration permanently purchases one modulus, so there are at most $50$ iterations.
 
 ## Implementation
 
-Let $M = 50$ be the maximum value involved in the problem. Each Floyd–Warshall pass is $\mathcal{O}(M^3)$ on $M + 1$ vertices, repeated at most $M$ times, giving an overall complexity of $\mathcal{O}(M^4)$.
+**Time Complexity**: Let $M = 50$ be the maximum value involved in the problem. Each Floyd–Warshall pass is $\mathcal{O}(M^3)$ on $M + 1$ vertices, and it is repeated at most $M$ times, so the overall complexity it $\mathcal{O}(M^4)$.
 
 <Note>
 
