@@ -9,14 +9,14 @@ author: Abhinav Singh, Nathan Gong
 
 ## Explanation
 
-As each cow walks home, and along the way she's allowed exactly one detour to a haybale, but 
-only if the detour doesn't eat up more extra time than that haybale's yumminess is worth. 
+As each cow walks home, and along the way she's allowed exactly one detour to a haybale, but
+only if the detour doesn't eat up more extra time than that haybale's yumminess is worth.
 We need to decide, for every cow, whether *some* haybale is worth the detour.
 
-The brute-force version checks every (cow, haybale) pair: is the detour cheap enough? 
-However, that's $O(NK)$ shortest-path checks, which is infeasible. Instead of thinking 
-about which haybale each cow should choose, let us think about what makes a haybale valid. 
-Suppose a cow starts at pasture $i$ and decides to eat at haybale $h$. Since she will 
+The brute-force version checks every (cow, haybale) pair: is the detour cheap enough?
+However, that's $O(NK)$ shortest-path checks, which is infeasible. Instead of thinking
+about which haybale each cow should choose, let us think about what makes a haybale valid.
+Suppose a cow starts at pasture $i$ and decides to eat at haybale $h$. Since she will
 eventually travel from $h$ to the barn optimally, the total length of her route is going to be:
 
 $$
@@ -25,8 +25,8 @@ $$
 
 where $d_v$ represents the shortest distance from the pasture $v$ to the barn.
 
-Normally, the cow would travel to the barn in $d_i$ time. Thus, the extra distance being 
-caused by the haybale $h$ would be $dist(i,h) + d_h - d_i$. This haybale would be beneficial 
+Normally, the cow would travel to the barn in $d_i$ time. Thus, the extra distance being
+caused by the haybale $h$ would be $dist(i,h) + d_h - d_i$. This haybale would be beneficial
 only if this extra distance is at most it's yumminess, i.e  $dist(i,h) + d_h - d_i \leq y_h$.
 
 If we were to rearrange this inequality, we get $dist(i,h) + d_h - y_h \leq d_i$.  Now, notice that the left-hand side of our inequality,
@@ -35,12 +35,12 @@ $$
 dist(i,h) + d_h - y_h,
 $$
 
-already resembles a shortest-path distance. The only difference is that instead of starting with distance $0$, 
-each haybale $h$ starts with an initial distance of 0, it stars with distance $d_h - y_h$. Therefore, we can 
-initialize every haybale with distance $d_h - y_h$, insert all haybales into the priority queue, and run a 
-single **multi-source Dijkstra**. This computes $\min_h \left(dist(i,h)+d(h)-y(h)\right)$ for every pasture 
-$i$ simultaneously. Finally, for each pasture $i$, we compare the value computed by the multi-source Dijkstra 
-with $d_i$. If it is at most $d_i$, then there exists a haybale whose detour is no greater than its yumminess, 
+already resembles a shortest-path distance. The only difference is that instead of starting with distance $0$,
+each haybale $h$ starts with an initial distance of 0, it stars with distance $d_h - y_h$. Therefore, we can
+initialize every haybale with distance $d_h - y_h$, insert all haybales into the priority queue, and run a
+single **multi-source Dijkstra**. This computes $\min_h \left(dist(i,h)+d(h)-y(h)\right)$ for every pasture
+$i$ simultaneously. Finally, for each pasture $i$, we compare the value computed by the multi-source Dijkstra
+with $d_i$. If it is at most $d_i$, then there exists a haybale whose detour is no greater than its yumminess,
 so we output 1; otherwise, we output 0.
 
 ## Implementation
