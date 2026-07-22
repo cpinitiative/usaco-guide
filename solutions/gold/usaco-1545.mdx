@@ -8,18 +8,23 @@ author: I-Chen Chou
 [Official Analysis (C++)](https://usaco.org/current/data/sol_prob1_gold_season26contest1.html)
 
 ## Explanation
+
 When a new party is established, one of the following happens:
+
 1. It forms a completely new group of cows where all of them previously didn't attend any party.
 2. It takes some cows from another party. If we think of this as each party having a set of guests attending, a new party forces a set to be split into two.
 
-Efficiently splitting a set into two is difficult to implement, as we need to figure out precisely how to split it while updating counts. However, if we were to process each query in reverse, then it turns into picking the correct two sets and uniting them together, which is much easier to implement.
+Efficiently splitting a set into two is difficult to implement, as we need to figure out precisely 
+how to split it while updating counts. However, if we were to process each query in reverse, 
+then it turns into picking the correct two sets and uniting them together, which is much easier to implement.
 
 A data structure that allows us to pick two sets and merge them together is the Disjoint Set Union.
-Each time a cow starts hosting a party (not simply changing type), when processed in reverse, we merge that cow with their best friend to join the two sets together.
+Each time a cow starts hosting a party (not simply changing type), when processed in reverse, 
+we merge that cow with their best friend to join the two sets together.
 Every cow in that particular party will travel to wherever the host cow goes, so we only need to worry about merging.
 
 We can use a Disjoint Set Union to represent the friendships of the cows, where each cow is a node.
-We start by computing how many cows attend each type of party at the last night and work backwards from there.
+We start by computing how many cows attend each type of party on the last night and work backwards from there.
 Starting from the beginning, we process all changes to parties hosted by the cows, whether that is a cow changing their party type or a cow starting a completely new party.
 We use an array to keep track of the type of party each cow hosts.
 After that, since a cow without a party travels to their best friend, we find all cows without a party and merge each of them with their best friend in a DSU.
@@ -37,12 +42,12 @@ We continue until all queries are computed.
 **Time Complexity:** $\mathcal{O}((N+M) \alpha(N))$
 
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
+
 struct DSU {
 	vector<int> e;
 	DSU(int N) { e = vector<int>(N + 1, -1); }
@@ -62,6 +67,7 @@ struct DSU {
 		return true;
 	}
 };
+
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
 	int n;
@@ -154,5 +160,4 @@ int main() {
 ```
 
 </CPPSection>
-
 </LanguageSection>
