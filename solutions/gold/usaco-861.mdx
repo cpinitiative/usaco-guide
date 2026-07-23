@@ -2,10 +2,46 @@
 id: usaco-861
 source: USACO Gold 2018 December
 title: Fine Dining
-author: Nathan Gong
+author: Abhinav Singh, Nathan Gong
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_dining_gold_dec18.html)
+
+## Explanation
+
+As each cow walks home, and along the way she's allowed exactly one detour to a haybale, but
+only if the detour doesn't eat up more extra time than that haybale's yumminess is worth.
+We need to decide, for every cow, whether *some* haybale is worth the detour.
+
+The brute-force version checks every (cow, haybale) pair: is the detour cheap enough?
+However, that's $O(NK)$ shortest-path checks, which is infeasible. Instead of thinking
+about which haybale each cow should choose, let us think about what makes a haybale valid.
+Suppose a cow starts at pasture $i$ and decides to eat at haybale $h$. Since she will
+eventually travel from $h$ to the barn optimally, the total length of her route is going to be:
+
+$$
+dist(i,h) + d_h
+$$
+
+where $d_v$ represents the shortest distance from the pasture $v$ to the barn.
+
+Normally, the cow would travel to the barn in $d_i$ time. Thus, the extra distance being
+caused by the haybale $h$ would be $dist(i,h) + d_h - d_i$. This haybale would be beneficial
+only if this extra distance is at most its yumminess, i.e  $dist(i,h) + d_h - d_i \leq y_h$.
+
+If we were to rearrange this inequality, we get $dist(i,h) + d_h - y_h \leq d_i$.  Now, notice that the left-hand side of our inequality,
+
+$$
+dist(i,h) + d_h - y_h,
+$$
+
+already resembles a shortest-path distance. The only difference is that instead of starting with distance $0$,
+each haybale $h$ starts with an initial distance of $d_h - y_h$. Therefore, we can
+initialize every haybale with distance $d_h - y_h$, insert all haybales into the priority queue, and run a
+single **multi-source Dijkstra**. This computes $\min_h \left(dist(i,h)+d(h)-y(h)\right)$ for every pasture
+$i$ simultaneously. Finally, for each pasture $i$, we compare the value computed by the multi-source Dijkstra
+with $d_i$. If it is at most $d_i$, then there exists a haybale whose detour is no greater than its yumminess,
+so we output 1; otherwise, we output 0.
 
 ## Implementation
 
@@ -15,100 +51,84 @@ author: Nathan Gong
 <CPPSection>
 
 ```cpp
+
 #include <bits/stdc++.h>
 using namespace std;
 
-struct Pasture {
-	int cost;
-	int index;
-	bool had_hay;
-
-	bool operator<(const Pasture &other) const {
-		return cost > other.cost;  // For priority queue
-	}
-};
+const long long INF = 1e18;
 
 int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 	freopen("dining.in", "r", stdin);
 	freopen("dining.out", "w", stdout);
 
 	int n, m, k;
 	cin >> n >> m >> k;
-	vector<vector<pair<int, int>>> adj(n);
+
+	vector<vector<pair<int, int>>> adj(n + 1);
 	for (int i = 0; i < m; i++) {
-		int u, v, w;
-		cin >> u >> v >> w;
-		adj[--u].push_back({--v, w});
-		adj[v].push_back({u, w});
+		int a, b, w;
+		cin >> a >> b >> w;
+		adj[a].push_back({b, w});
+		adj[b].push_back({a, w});
 	}
 
-	vector<int> hay(n);
-	for (int i = 0; i < k; i++) {
-		int index, yumminess;
-		cin >> index >> yumminess;
-		index--;
-		hay[index] = max(hay[index], yumminess);
-	}
+	// dist[i] = shortest time from pasture i straight home to the barn
+	vector<long long> dist(n + 1, INF);
+	priority_queue<pair<long long, int>, vector<pair<long long, int>>, greater<>> pq;
 
-	priority_queue<Pasture> pq;
-
-	/*
-	 * dist[i][0] = shortest path from cow i to barn without stopping for haybales
-	 * dist[i][1] = shortest path from cow i to barn with stopping for a haybale
-	 */
-	vector<array<int, 2>> dist(n, {INT_MAX, INT_MAX});
-
-	dist[n - 1][0] = 0;  // Distance to barn without hay
-	pq.push({0, n - 1, false});
-
-	if (hay[n - 1] > 0) {
-		dist[n - 1][1] = 0;
-		pq.push({-hay[n - 1], n - 1, true});
-	}
+	dist[n] = 0;
+	pq.push({0, n});
 
 	while (!pq.empty()) {
-		auto pasture = pq.top();
+		auto [cur_dist, node] = pq.top();
 		pq.pop();
+		if (cur_dist != dist[node]) continue;
 
-		int cost = pasture.cost;
-		int index = pasture.index;
-		bool had_hay = pasture.had_hay;
-
-		if (dist[index][had_hay] < cost) continue;
-
-		for (auto &[next, w] : adj[index]) {
-			int new_cost = cost + w;
-
-			if (had_hay) {
-				if (dist[next][1] > new_cost) {
-					dist[next][1] = new_cost;
-					pq.push({new_cost, next, true});
-				}
-			} else {
-				if (dist[next][0] > new_cost) {
-					dist[next][0] = new_cost;
-					pq.push({new_cost, next, false});
-				}
-
-				if (hay[next] > 0 && dist[next][1] > new_cost - hay[next]) {
-					dist[next][1] = new_cost - hay[next];
-					pq.push({new_cost - hay[next], next, true});
-				}
+		for (auto [neighbor, weight] : adj[node]) {
+			if (dist[neighbor] > cur_dist + weight) {
+				dist[neighbor] = cur_dist + weight;
+				pq.push({dist[neighbor], neighbor});
 			}
 		}
 	}
 
-	for (int i = 0; i < n - 1; i++) {
-		if (dist[i][1] <= dist[i][0]) {
-			cout << 1 << '\n';
-		} else {
-			cout << 0 << '\n';
+	// best[i] = min over haybales h of dist(i, h) + (dist[h] - yumminess[h])
+	// computed via multi-source Dijkstra, seeding every haybale at once
+	vector<long long> best(n + 1, INF);
+	priority_queue<pair<long long, int>, vector<pair<long long, int>>, greater<>> pq2;
+
+	for (int i = 0; i < k; i++) {
+		int haybale, yum;
+		cin >> haybale >> yum;
+
+		long long slack = dist[haybale] - yum;
+		if (best[haybale] > slack) {
+			best[haybale] = slack;
+			pq2.push({best[haybale], haybale});
 		}
 	}
+
+	while (!pq2.empty()) {
+		auto [cur_dist, node] = pq2.top();
+		pq2.pop();
+		if (cur_dist != best[node]) continue;
+
+		for (auto [neighbor, weight] : adj[node]) {
+			if (best[neighbor] > cur_dist + weight) {
+				best[neighbor] = cur_dist + weight;
+				pq2.push({best[neighbor], neighbor});
+			}
+		}
+	}
+
+	// A cow at pasture i can find a worthwhile haybale iff best[i] <= dist[i]
+	for (int i = 1; i < n; i++) { cout << (best[i] <= dist[i]) << "\n"; }
 }
 ```
-
 </CPPSection>
+
 <JavaSection>
 
 ```java
@@ -123,62 +143,93 @@ public class FineDining {
 		int n = sc.nextInt();
 		int m = sc.nextInt();
 		int k = sc.nextInt();
+
 		List<List<Edge>> adj = new ArrayList<>();
-		for (int i = 0; i < n; i++) adj.add(new ArrayList<>());
+		for (int i = 0; i < n; i++) { adj.add(new ArrayList<>()); }
+
 		for (int i = 0; i < m; i++) {
 			int a = sc.nextInt() - 1;
 			int b = sc.nextInt() - 1;
 			int time = sc.nextInt();
+
 			adj.get(a).add(new Edge(b, time));
 			adj.get(b).add(new Edge(a, time));
 		}
-		int[] haybales = new int[n];
-		Arrays.fill(haybales, -1);
-		for (int i = 0; i < k; i++) { haybales[sc.nextInt() - 1] = sc.nextInt(); }
 
 		/*
-		 * dist[i][0] - the shortest distance from cow i to the barn given
-		 * that it doesn't eat any haybales.
-		 *
-		 * dist[i][1] - the shortest distance given that it eats one haybale.
-		 * This distance is subtracted by the yuminess of the haybale the cow
-		 * eats.
+		 * dist[i] - the shortest distance from pasture i
+		 * directly to the barn.
 		 */
-		int[][] dist = new int[n][2];
-		for (int i = 0; i < n; i++) {
-			dist[i][0] = -1;
-			dist[i][1] = -1;
-		}
+		long[] dist = new long[n];
+		Arrays.fill(dist, Long.MAX_VALUE);
 
-		// run djiskstra's to find the shortest distances
 		PriorityQueue<State> pq = new PriorityQueue<>();
-		pq.add(new State(n - 1, 0, 0));
+		pq.add(new State(n - 1, 0));
+
+		dist[n - 1] = 0;
+
+		// run Dijkstra's to find the shortest distances
 		while (!pq.isEmpty()) {
 			State state = pq.remove();
-			if (dist[state.pos][state.eaten] != -1) { continue; }
-			dist[state.pos][state.eaten] = state.time;
 
-			// add all the neighbors
+			if (state.dist != dist[state.pos]) { continue; }
+
 			for (Edge e : adj.get(state.pos)) {
-				pq.add(new State(e.other, state.time + e.time, state.eaten));
+				if (dist[e.other] > state.dist + e.time) {
+					dist[e.other] = state.dist + e.time;
+					pq.add(new State(e.other, dist[e.other]));
+				}
 			}
+		}
 
-			// if there's a haybale and the cow hasn't eaten any yet, eat the
-			// haybale and update the state accordingly
-			if (haybales[state.pos] != -1 && state.eaten == 0) {
-				state.time -= haybales[state.pos];
-				pq.add(new State(state.pos, state.time, 1));
+		/*
+		 * best[i] - minimum over all haybales h of
+		 * dist(i,h) + dist[h] - yum[h].
+		 *
+		 * We compute this by running a multi-source
+		 * Dijkstra where every haybale starts with
+		 * distance dist[h] - yum[h].
+		 */
+		long[] best = new long[n];
+		Arrays.fill(best, Long.MAX_VALUE);
+
+		PriorityQueue<State> pq2 = new PriorityQueue<>();
+
+		for (int i = 0; i < k; i++) {
+			int haybale = sc.nextInt() - 1;
+			int yum = sc.nextInt();
+
+			long slack = dist[haybale] - yum;
+
+			if (best[haybale] > slack) {
+				best[haybale] = slack;
+				pq2.add(new State(haybale, slack));
+			}
+		}
+
+		// run multi-source Dijkstra
+		while (!pq2.isEmpty()) {
+			State state = pq2.remove();
+
+			if (state.dist != best[state.pos]) { continue; }
+
+			for (Edge e : adj.get(state.pos)) {
+				if (best[e.other] > state.dist + e.time) {
+					best[e.other] = state.dist + e.time;
+					pq2.add(new State(e.other, best[e.other]));
+				}
 			}
 		}
 
 		for (int i = 0; i < n - 1; i++) {
-			// output 1 if it's better for cow to eat haybale along its path
-			if (dist[i][1] <= dist[i][0]) {
+			// output 1 if some haybale makes the detour worthwhile
+			if (best[i] <= dist[i]) {
 				out.println(1);
 			} else {
 				out.println(0);
 			}
 		}
+
 		out.close();
 	}
 
@@ -192,21 +243,17 @@ public class FineDining {
 	}
 
 	static class State implements Comparable<State> {
-		int pos, time;
-		int eaten;  // 1 if true, 0 if false
+		int pos;
+		long dist;
 
-		State(int pos, int time, int eaten) {
+		State(int pos, long dist) {
 			this.pos = pos;
-			this.time = time;
-			this.eaten = eaten;
+			this.dist = dist;
 		}
 
 		@Override
 		public int compareTo(State other) {
-			// we have to prioritize cows that haven't eaten yet so that we
-			// calculate all of dist[i][0] before calculating dist[i][1]
-			if (this.eaten != other.eaten) { return this.eaten - other.eaten; }
-			return this.time - other.time;
+			return Long.compare(this.dist, other.dist);
 		}
 	}
 }
