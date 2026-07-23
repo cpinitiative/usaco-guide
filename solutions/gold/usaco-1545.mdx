@@ -133,11 +133,12 @@ int main() {
 			typeW[i - 1] -= graph.size(cow);
 			break;
 		}
-        
+
 		hosted[cow] = party[i].second;
 
-        // prevParty: where the new party drew customers from
-		// prevParty = '0' means new party was created, so we find this cow's best friend
+		// prevParty: where the new party drew customers from
+		// prevParty = '0' means new party was created, so we find this cow's best
+		// friend
 		char prevParty = hosted[cow];
 		if (prevParty == '0') { prevParty = hosted[graph.get(frnd[cow])]; }
 
@@ -157,7 +158,7 @@ int main() {
 		// if this cow no longer hosts a party, unite
 		if (hosted[cow] == '0') { graph.unite(cow, frnd[cow]); }
 	}
-    
+
 	// print out answer
 	for (int i = 0; i < m; i++) {
 		cout << typeC[i] << ' ' << typeO[i] << ' ' << typeW[i] << '\n';
