@@ -2,17 +2,48 @@
 id: usaco-1083
 source: USACO Bronze 2021 January
 title: Uddered but not Herd
-author: Ananth Kashyap, Sofia Yang
+author: Ananth Kashyap, Sofia Yang, Rameez Parwez
 ---
 
-[Official Analysis](http://www.usaco.org/current/data/sol_prob1_bronze_jan21.html)
+[Official Analysis (C++, Python)](http://www.usaco.org/current/data/sol_prob1_bronze_jan21.html)
+
+## Explanation
+
+We know that Bessie hums the cowphabet in a fixed order. Based on
+this, we iterate over consecutive pairs of letters in Farmer
+John's word. If the current letter appears before the next letter in the cowphabet, there is no need for
+Bessie to start a new hum (i.e., a new cycle); otherwise, we
+increment the number of times we have hummed the alphabet ($\texttt{hum_times}$).
 
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(|\texttt{word}|)$
 
 <LanguageSection>
+<CPPSection>
 
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+	std::string cowphabet, word;
+	std::cin >> cowphabet >> word;
+
+	int hum_times = 1;  // There must be at least one humming sequence.
+	for (int i = 0; i < (int)word.size() - 1; i++) {
+		/*
+		 * Increment if the next letter appears at
+		 * or earlier than the current letter in the alphabet
+		 */
+		if (cowphabet.find(word[i + 1]) <= cowphabet.find(word[i])) { hum_times++; }
+	}
+
+	std::cout << hum_times << '\n';
+}
+```
+
+</CPPSection>
 <PySection>
 
 ```py
@@ -21,19 +52,19 @@ cowphabet = input()
 word = input()
 
 # For any string, we always have to look through the cowphabet at least once.
-num_times = 1
+hum_times = 1
 
 for i in range(len(word) - 1):
 	# Check if next character in string appears before previous character
 	if cowphabet.index(word[i + 1]) <= cowphabet.index(word[i]):
-		num_times += 1
+		hum_times += 1
 
-print(num_times)
+print(hum_times)
 ```
 
 </PySection>
-
 <JavaSection>
+
 ```java
 import java.io.*;
 
@@ -43,19 +74,20 @@ public class UdderedButNotHerd {
 		String cowphabet = input.readLine();
 		char[] word = input.readLine().toCharArray();
 
-		int numTimes = 1;  // There must be at least one humming sequence.
+		int humTimes = 1;  // There must be at least one humming sequence.
 		for (int i = 0; i < word.length - 1; i++) {
 			/*
 			 * Increment if the next letter appears at
 			 * or earlier than the current letter in the alphabet
 			 */
 			if (cowphabet.indexOf(word[i + 1]) <= cowphabet.indexOf(word[i])) {
-				numTimes++;
+				humTimes++;
 			}
 		}
-		System.out.println(numTimes);
+		System.out.println(humTimes);
 	}
 }
 ```
+
 </JavaSection>
 </LanguageSection>
