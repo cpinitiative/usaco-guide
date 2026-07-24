@@ -1,0 +1,96 @@
+---
+id: cf-1690G
+source: CF
+title: Count the Trains
+author: Abhinav Singh
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/103658)
+
+## Explanation
+Let $a_i$ be the raw (possibly reduced) cap on carriage $i$, and $v_i$ its true speed. Since carriage $i$ can never outrun anything in front of it, $v_i$ is the prefix minimum $v_i = \min(a_1, \ldots, a_i)$. Since this array is non-increasing, it looks like a staircase, and each change in value is a boundary between trains. So the answer is just the number of distinct values in $v_i$.
+
+Instead of storing the whole prefix minimum array, maintain a set of just the **indices** where a new train starts: : index $0$, plus every index $i$ where $v_i < v_{i-1}$. A "start index" $j$ is where the prefix min drops, meaning $v_j$ itself was the new minimum, or equivalently $a_j = v_j$ . To get the true speed at any position, we can just find its governing start index $j$ and just read off of it's raw value, i.e $a_j$.
+
+When a query lowers $a_k$, find the largest start index $j \le k$ in the set - $a_j$ is $k$'s current true speed. If the new $a_k$ is still $\ge a_j$, nothing changes, since carriage $k$ was already bottlenecked by something ahead of it. Otherwise, insert $k$ into the set as a new start, then walk forward erasing every subsequent start index $j'$ with $a_{j'} \ge a_k$, since those trains now have been swallowed a lower speed limit. The size of the set after each query is the answer.
+
+
+
+
+<Info title="Alternative: Segment Tree Approach">
+
+Each message lowers one engine's cap, and causes any carriage to the right that has a higher speed than the new cap to slow down to it. If the new cap doesn't go below the carriage's current real speed, then we skip the update entirely, as it was already bottlenecked by engines in front of it. Otherwise, apply the drop as a range assignment and update the distinct-value count without rescanning the array, which we can do by maintaining the speeds in a **[segment tree with lazy propagation](https://usaco.guide/plat/RURQ?lang=cpp)** to support range assign and point query. Since the speed array stays monotonic, we binary search on it to find the rightmost affected carriage to assign the range to.
+
+To track distinct values, keep a **set of distinct speeds**, synced after each update: take $\mathtt{prev}$, the speed just before the change, then use `upper_bound` to find the next larger value than the new speed and erase it if it's less than $\mathtt{prev}$ (i.e. stale, since that section just got flattened to one value). Repeat until the next value is $\ge \mathtt{prev}$, then insert the new speed.
+
+</Info>
+
+
+## Implementation
+
+**Time Complexity:** Each index is inserted into the set at most once and erased at most once over the whole run, so the total erase work across all queries is $\mathcal{O}(n \log n)$, on top of one $\mathcal{O}(\log n)$ lookup per query.
+
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int t;
+	cin >> t;
+
+	while (t--) {
+		int n, q;
+		cin >> n >> q;
+
+		vector<long long> a(n);
+		for (auto &x : a) cin >> x;
+
+		// Build the initial set of train-start indices
+		vector<long long> pref_min(n);
+		pref_min[0] = a[0];
+		set<int> starts = {0};
+
+		for (int i = 1; i < n; i++) {
+			pref_min[i] = min(pref_min[i - 1], a[i]);
+			if (pref_min[i] < pref_min[i - 1]) { starts.insert(i); }
+		}
+
+		while (q--) {
+			int k;
+			long long d;
+			cin >> k >> d;
+			k--;
+
+			// Largest start index <= k governs carriage k's current true speed
+			int j = *prev(starts.upper_bound(k));
+			long long cur_speed = a[j];
+
+			a[k] -= d;
+
+			if (a[k] >= cur_speed) {
+				cout << starts.size() << " ";
+				continue;
+			}
+
+			starts.insert(k);
+
+			// Erase every later start index dominated by the new, lower speed
+			auto it = next(starts.find(k));
+			while (it != starts.end() && a[*it] >= a[k]) { it = starts.erase(it); }
+
+			cout << starts.size() << " ";
+		}
+
+		cout << '\n';
+	}
+}
+```
+</CPPSection>
+</LanguageSection>
