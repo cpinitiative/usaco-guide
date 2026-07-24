@@ -1,0 +1,105 @@
+---
+id: usaco-1229
+source: USACO Bronze 2022 US Open
+title: Alchemy
+author: Rameez Parwez
+---
+
+[Official Editorial (C++, Java)](https://usaco.org/current/data/sol_prob3_bronze_open22.html)
+
+## Explanation
+
+Bessie the cow wants to maximise her units of metal $N$, for which
+she can use the recipes provided to convert other constituent
+metals into metal $N$.
+
+We can recursively check the $N$-th metal constituents, and if it
+has enough availability, we will consume one unit of it and check
+for other metal constituents. We will repeat this until we run out
+of supply for constituent metals.
+
+We recursively check if it is possible to create a unit of metal $N$.
+For the current metal, we either consume
+an existing unit of it, or we recursively construct the necessary metals in its recipe.
+We construct units of metal $N$ recursively until it is no longer possible.
+
+This recursive greedy approach works perfectly for this problem for
+the following reasons:
+
+- Since there is only one recipe for each metal, constructing a
+new unit of any metal is a binary choice: either we consume from
+our existing stock, or we construct a new unit from its recipe.
+
+- We can always delay constructing a new unit of metal, so we
+should prioritize using our existing stock first and build new
+units of metal only if necessary.
+
+The ordering of recipes forms a tree-like structure, so a
+recursive approach is easier to implement than other approaches.
+
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \cdot \sum a_i)$
+
+<Info>
+
+At first glance, the recursive code appears to be exponential. However, this is not the case due to amortization.
+
+Consider an individual unit of a metal $i$. If possible, it will eventually be used to create a unit of metal $N$, meaning that it will contribute to at most $N$ calls. Since our source of metal can only deplete, we can analyze the individual contributions of each unit of metal to analyze the complexity of the algorithm.
+
+</Info>
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <functional>
+#include <iostream>
+#include <unordered_map>
+#include <vector>
+
+int main() {
+
+	int n;
+	std::cin >> n;
+	std::vector<int> metals(n);
+	for (int &x : metals) { std::cin >> x; }
+
+	int k;
+	std::cin >> k;
+	std::vector<std::vector<int>> recipes(n);
+
+	for (int i = 1; i <= k; i++) {
+		int l, m;
+		std::cin >> l >> m;
+		for (int j = 1; j <= m; j++) {
+			int x;
+			std::cin >> x;
+			recipes[l - 1].push_back(x - 1);
+		}
+	}
+
+	std::function<bool(int)> possible = [&](int metal) -> bool {
+		if (metals[metal] > 0) {
+			metals[metal]--;
+			return true;
+		}
+
+		if (recipes[metal].size() == 0) { return false; }
+
+		for (int constituent_metals : recipes[metal]) {
+			if (!possible(constituent_metals)) { return false; }
+		}
+		return true;
+	};
+
+	int res = 0;
+	while (possible(n - 1)) { res++; }
+
+	std::cout << res << '\n';
+}
+```
+
+</CPPSection>
+</LanguageSection>
