@@ -540,54 +540,41 @@ Due to oj.uz's grading constraints for Java, this solution will TLE on the judge
 </Warning>
 
 </JavaSection>
-
 <PySection>
+
 ```py
-import sys
 from collections import deque
 
+n, m = list(map(int, input().split()))
+tracks = [input() for _ in range(n)]
 
-def solve():
-	input_data = sys.stdin.read().split()
-	if not input_data:
-		return
+depth = [[0] * m for _ in range(n)]
+q = deque([(0, 0)])
+depth[0][0] = 1
 
-	n = int(input_data[0])
-	m = int(input_data[1])
-	tracks = input_data[2:]
+max_animals = 1
+directions = ((-1, 0), (1, 0), (0, -1), (0, 1))
 
-	depth = [[0] * m for _ in range(n)]
-	q = deque([(0, 0)])
-	depth[0][0] = 1
+while q:
+	r, c = q.popleft()
+	max_animals = max(max_animals, depth[r][c])
 
-	max_animals = 1
-	directions = ((-1, 0), (1, 0), (0, -1), (0, 1))
+	for dr, dc in directions:
+		nr, nc = r + dr, c + dc
 
-	while q:
-		r, c = q.popleft()
-		max_animals = max(max_animals, depth[r][c])
+		if 0 <= nr < n and 0 <= nc < m and tracks[nr][nc] != ".":
+			if depth[nr][nc] == 0:
+				if tracks[nr][nc] == tracks[r][c]:
+					depth[nr][nc] = depth[r][c]
+					q.appendleft((nr, nc))
+				else:
+					depth[nr][nc] = depth[r][c] + 1
+					q.append((nr, nc))
 
-		for dr, dc in directions:
-			nr, nc = r + dr, c + dc
-
-			if 0 <= nr < n and 0 <= nc < m and tracks[nr][nc] != ".":
-				if depth[nr][nc] == 0:
-					if tracks[nr][nc] == tracks[r][c]:
-						depth[nr][nc] = depth[r][c]
-						q.appendleft((nr, nc))
-					else:
-						depth[nr][nc] = depth[r][c] + 1
-						q.append((nr, nc))
-
-	print(max_animals)
-
-
-if __name__ == "__main__":
-	solve()
+print(max_animals)
 ```
 
 </PySection>
-
 </LanguageSection>
 
 <!-- ### Example: What's Up With Gravity?
