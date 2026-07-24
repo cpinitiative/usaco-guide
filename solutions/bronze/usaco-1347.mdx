@@ -1,0 +1,115 @@
+---
+id: usaco-1347
+source: USACO Bronze 2023 December
+title: Candy Cane Feast
+author: Rameez Parwez
+---
+
+[Official Editorial (C++, Java, Python)](https://usaco.org/current/data/sol_prob1_bronze_dec23.html)
+
+## Explanation
+
+We can iterate over every candy cane height one by one.
+For each candy cane, we will simply calculate how much
+candy each of Farmer John's cow can eat from that particular candy
+cane and increment their height based on that value, repeating
+this process for the other candy canes.
+
+Here, we stop processing the remaining cows if there is no candy
+left in the current candy cane. Since after each new candy cane is
+hung, Farmer John's cows grow taller and thus consume more of each
+candy cane, the remaining cows have fewer chances to eat. To be exact,
+every time a cow eats from a candy cane, it eats at least as much
+as its current height, provided the candy cane is tall enough. In
+such cases, the cow's height at least doubles,meaning each cow can
+actively eat at most $\log H$ times across all candy canes, where
+$H$ is the maximum candy cane height. This gives us a total time
+complexity of $\mathcal{O}(M + N \log H)$ rather than
+$\mathcal{O}(N \cdot M)$.
+
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(M + N \log H)$, where $H$ is the maximum height of a candy cane.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int main() {
+
+	int n, m;
+	std::cin >> n >> m;
+	std::vector<long long> cow_height(n);
+	std::vector<int> candy_height(m);
+
+	for (long long &x : cow_height) { std::cin >> x; }
+
+	for (int &x : candy_height) { std::cin >> x; }
+
+	for (int i = 0; i < m; i++) {
+		int curr_candy_height = 0;
+		int j = 0;
+		while (j < n and curr_candy_height < candy_height[i]) {
+			int can_add =
+			    std::max(0, (int)std::min(cow_height[j], (long long)candy_height[i]) -
+			                    curr_candy_height);
+			cow_height[j] += can_add;
+			curr_candy_height += can_add;
+			j++;
+		}
+	}
+
+	for (int i = 0; i < n; i++) { std::cout << cow_height[i] << '\n'; }
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class CandyCaneFeast {
+
+	public static void main(String[] args) throws Exception {
+
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();
+		int m = io.nextInt();
+
+		long[] cowHeight = new long[n];
+		int[] candyHeight = new int[m];
+
+		for (int i = 0; i < n; i++) { cowHeight[i] = io.nextLong(); }
+		for (int i = 0; i < m; i++) { candyHeight[i] = io.nextInt(); }
+
+		for (int i = 0; i < m; i++) {
+			int currCandyHeight = 0;
+			int j = 0;
+			while (j < n && currCandyHeight < candyHeight[i]) {
+				int canAdd =
+				    Math.max(0, (int)Math.min(cowHeight[j], (long)candyHeight[i]) -
+				                    currCandyHeight);
+				cowHeight[j] += canAdd;
+				currCandyHeight += canAdd;
+				j++;
+			}
+		}
+
+		for (int i = 0; i < n; i++) { io.println(cowHeight[i]); }
+
+		io.close();
+	}
+
+	// BeginCodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+</LanguageSection>
