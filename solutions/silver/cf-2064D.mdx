@@ -1,0 +1,165 @@
+---
+id: cf-2064D
+source: CF
+title: Eating
+author: Abhinav Singh
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/138912)
+
+## Explanation
+
+Suppose the added slime has an initial weight of $x$.
+Since XOR is associative and commutative, after eating $k$ slimes its weight is
+
+$$
+x \oplus w_{n-k} \oplus w_{n-k+1} \oplus \cdots \oplus w_{n-1}.
+$$
+
+Thus, we define **suffix XOR** values:
+$$
+\text{suf}[i] = w_{i+1} \oplus w_{i+2} \oplus \cdots \oplus w_{n-1},
+$$
+with $\text{suf}[n-1] = 0$. Then, after eating $k$ slimes, the slime's weight is simply $$x \oplus \text{suf}[n-k-1]$$.
+
+Hence, when it attempts to eat the slime at position $i$, its
+current weight is $x \oplus \text{suf}[i]$.
+It succeeds if and only if $$x \oplus \text{suf}[i] \ge w_i.$$
+Therefore, the answer to a query is the number of consecutive
+slimes it can eat, sweeping from position $n-1$ down to $0$ before
+this inequality first fails. If it fails at position $i$, the
+slime has eaten positions $i + 1, \cdots n - 1$ for a score of $n- i - 1$.
+If it never fails, the slime eats all $n$ slimes.
+
+We process all queries offline, inserting every query value into a
+binary trie before sweeping from position $n-1$ down to $0$.
+Consider a query $v$ as "blocked at" $i$ if the added slime with
+weight $v$ stops eating the slime at position $i$ first. At each
+position $i$, a query $v$ is blocked at $i$ if and only if $v
+\oplus \text{suf}[i] < w_i$. We can then use the trie to find the
+query with the minimum XOR value with $\text{suf}[i]$, and remove
+that query from the trie if the XOR value is $<w_i$, as that query
+cannot proceed past $i$; we do this repeatedly until the query
+with the minimum XOR in the trie *can* proceed past $i$, then move
+to position $i-1$.
+
+## Implementation
+
+**Time Complexity:** Since queries are removed permanently, each query is extracted at most once,
+giving an overall time complexity of $\mathcal{O}((n + q) \log \mathcal{A})$, where $\mathcal{A}$
+is the maximum value  in the array $w$.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Node {
+	int child[2];
+	int cnt;
+
+	Node() {
+		child[0] = child[1] = -1;
+		cnt = 0;
+	}
+};
+
+// BeginCodeSnip{Binary Trie}
+struct BinaryTrie {
+	static const int MAX_BIT = 30;
+	vector<Node> trie;
+
+	BinaryTrie() { trie.resize(1); }
+
+	int new_node() {
+		trie.push_back(Node());
+		return (int)trie.size() - 1;
+	}
+
+	void add(int val) {
+		int x = 0;
+		for (int i = MAX_BIT; i >= 0; --i) {
+			trie[x].cnt++;
+			int b = (val >> i) & 1;
+			if (trie[x].child[b] == -1) { trie[x].child[b] = new_node(); }
+			x = trie[x].child[b];
+		}
+		trie[x].cnt++;
+	}
+
+	void remove(int val) {
+		int x = 0;
+		for (int i = MAX_BIT; i >= 0; --i) {
+			trie[x].cnt--;
+			int b = (val >> i) & 1;
+			x = trie[x].child[b];
+		}
+		trie[x].cnt--;
+	}
+
+	int min_xor(int x) {
+		int node = 0, res = 0;
+		for (int i = MAX_BIT; i >= 0; --i) {
+			int b = (x >> i) & 1;
+			if (trie[node].child[b] != -1 && trie[trie[node].child[b]].cnt > 0) {
+				node = trie[node].child[b];
+			} else {
+				res |= (1 << i);
+				node = trie[node].child[b ^ 1];
+			}
+		}
+		return res;
+	}
+};
+// EndCodeSnip{}
+
+int main() {
+	int test_num;
+	cin >> test_num;
+
+	for (int t = 0; t < test_num; t++) {
+		int n, q;
+		cin >> n >> q;
+
+		vector<long long> w(n);
+		for (auto &x : w) cin >> x;
+
+		vector<long long> queries(q);
+
+		BinaryTrie trie;
+		for (int i = 0; i < q; i++) {
+			cin >> queries[i];
+			trie.add((int)queries[i]);
+		}
+
+		unordered_map<long long, long long> answer;
+		long long curx = 0;
+		long long processed = 0;
+		for (int i = n - 1; i >= 0; --i) {
+			while (processed < q) {
+				long long best_xor_value = trie.min_xor((int)curx);
+				if (best_xor_value < w[i]) {
+					long long v = best_xor_value ^ curx;
+					answer[v] = n - i - 1;
+					trie.remove((int)v);
+					processed++;
+				} else {
+					break;
+				}
+			}
+			curx ^= w[i];
+		}
+
+		for (long long v : queries) {
+			cout << (answer.count(v) ? answer[v] : n) << " ";
+		}
+		cout << '\n';
+	}
+	return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
