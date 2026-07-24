@@ -63,16 +63,16 @@ int main() {
 	vector<long long> dp(x + 1);
 	dp[0] = 1;
 
-	// Process each coin once so each combination is counted only once 
+	// Process each coin once so each combination is counted only once
 	// (Order of the coins does not matter here)
 	for (int coin : coins) {
 		for (int sum = coin; sum <= x; sum++) {
 			dp[sum] += dp[sum - coin];
 			dp[sum] %= MOD;
-}
-}
+		}
+	}
 
-cout << dp[x] << '\n';
+	cout << dp[x] << '\n';
 }
 ```
 
