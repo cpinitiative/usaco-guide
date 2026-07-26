@@ -1,0 +1,234 @@
+---
+id: cfgym-104832J
+source: Asia Yokohama Regional Contest 2023
+title: Do It Yourself?
+author: Andrew Tam
+---
+
+## Explanation
+
+A laminar matroid over $E$ defines independence based on a laminar family $\mathcal{F} \subseteq 2^E$, and capacity constraints $c: \mathcal{F} \to \mathbb{N}$. In particular:
+1. For any $X, Y \in \mathcal{F}$, we have that $X \subseteq Y$, $Y \subseteq X$, or $X \cap Y = \emptyset$.
+2. $S \subseteq E$ is independent if and only if $|S \cap X| \leq c(X)$ for all $X \in \mathcal{F}$.
+
+The non-emptiness and heredity axioms hold trivially, so it remains to show the exchange axiom. The following is a sketch of the key ideas. We first construct a rooted forest $F$ corresponding to the laminar family $\mathcal{F}$. Let 
+
+$$
+\begin{equation*}
+V = \mathcal{F} \cup \{\{e\} : e \in E\}
+\end{equation*}
+$$
+
+be the vertices, and for each vertex $X \in V$, set the parent of $X$ to $Y$, the smallest set in $V$ such that $X \subseteq Y.$
+
+Now, suppose that we have independent sets $I, J \in \mathcal{I}$ such that $|I| < |J|$. Then, there exists a tree $T$ in $F$ such that its root $X$ satisfies 
+
+$$
+\begin{equation*}
+|I \cap X| < |J \cap X|
+\end{equation*}
+$$ 
+
+Similarly, there exists a child $Y$ of $X$ such that 
+
+$$
+\begin{equation*}
+|I \cap Y| < |J \cap Y|
+\end{equation*}
+$$
+
+and we walk down $T$ by repeatedly setting $X = Y$. Once we reach a leaf, $X = \{e\}$ is a singleton set, and we can extend $I$ by $e$ without violating any capacity constraints.
+
+Let $\operatorname{sub}(v)$ denote the subtree of $v$, and $L_v = \operatorname{sub}(v) \times \{1, 2, \dots, n\}$. It is not hard to see that this problem reduces to finding a minimum weight basis in a laminar matroid with
+
+$$
+\begin{gather*}
+E = V \times \{1, 2, \dots, n\} \\
+\mathcal{F} = \{L_v : v \in V\} \\
+c(L_v) = |\operatorname{sub}(v)| \text{ for } L \in \mathcal{F} \\
+w(v, i) = (i^2 - (i - 1)^2)f_v = (2i - 1)f_v
+\end{gather*}
+$$
+
+We build the basis by simulating the greedy. Observe that for a fixed $v$, the weight function $w$ is monotonically increasing in $i$. Therefore, we only care about the smallest $i$ such that $(v, i)$ is not in our basis. We store all of the $(v, i)$ pairs in a priority queue and repeatedly remove the pair with the smallest weight. If the removed pair can be added to our basis without violating the capacity constraints, we add it to our basis and replace it with $(v, i + 1)$ in the priority queue. Otherwise, it is removed forever.
+
+To maintain the capacity constraints, we use HLD. The capacity of each vertex $v$ is initialized to $|\operatorname{sub}(v)|$, and whenever a pair $(v, i)$ is added to the basis, we update the capacities along the path from $1$ to $v$ by $-1$. A pair $(v, i)$ can be added to our basis if and only if all capacities along the path from $1$ to $v$ are positive.
+
+## Implementation
+
+**Time Complexity:** $O(n\log^2{n})$, because the algorithm is bottlenecked by the HLD operations which are $O(\log^2{n})$ each.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include "bits/stdc++.h"
+
+using namespace std;
+
+// BeginCodeSnip{Lazy Segment Tree}
+template<typename Data, typename Aux>
+class LazySegmentTree {
+private:
+    int n;
+    vector<Data> t;
+    vector<Aux> lz;
+    void build(int L, int R, int v, const vector<Data> &a) {
+        if (L == R) {
+            t[v] = a[L];
+            return;
+        }
+        int M = (L + R) / 2;
+        build(L, M, 2 * v, a);
+        build(M + 1, R, 2 * v + 1, a);
+        t[v] = Data::merge(t[2 * v], t[2 * v + 1]);
+    }
+    void push(int v, int len) {
+        lz[v].apply(t[2 * v], lz[2 * v], (len + 1) / 2);
+        lz[v].apply(t[2 * v + 1], lz[2 * v + 1], len / 2);
+        lz[v] = Aux();
+    }
+    void update(int qL, int qR, const Aux &val, int L, int R, int v) {
+        if (qL <= L && R <= qR) {
+            val.apply(t[v], lz[v], R - L + 1);
+            return;
+        }
+        if (L > qR || R < qL) return;
+        push(v, R - L + 1);
+        int M = (L + R) / 2;
+        update(qL, qR, val, L, M, 2 * v);
+        update(qL, qR, val, M + 1, R, 2 * v + 1);
+        t[v] = Data::merge(t[2 * v], t[2 * v + 1]);
+    }
+    Data query(int qL, int qR, int L, int R, int v) {
+        if (qL <= L && R <= qR) return t[v];
+        if (L > qR || R < qL) return Data();
+        push(v, R - L + 1);
+        int M = (L + R) / 2;
+        return Data::merge(query(qL, qR, L, M, 2 * v), query(qL, qR, M + 1, R, 2 * v + 1));
+    }
+public:
+    LazySegmentTree(int n) : n(n) {
+        t.resize(4 * n);
+        lz.resize(4 * n);
+    }
+    LazySegmentTree(int n, const vector<Data> &a) : n(n) {
+        t.resize(4 * n);
+        lz.resize(4 * n);
+        build(1, n, 1, a);
+    }
+    void update(int qL, int qR, const Aux &val) {
+        update(qL, qR, val, 1, n, 1);
+    }
+    Data query(int qL, int qR) {
+        return query(qL, qR, 1, n, 1);
+    }
+};
+const int INF = 1e9;
+struct Data {
+    int minVal;
+    Data(int val) : minVal(val) {}
+    Data() : minVal(INF) {};
+    static Data merge(const Data &data1, const Data &data2) {
+        return Data(min(data1.minVal, data2.minVal));
+    }
+};
+struct Aux {
+    int add;
+    Aux(int add) : add(add) {}
+    Aux() : add(0) {}
+    void apply(Data &data, Aux &aux, int len) const {
+        data.minVal += add;
+        aux.add += add;
+    }
+};
+// EndCodeSnip
+
+void solve() {
+    int n;
+    cin >> n;
+    vector<int> p(n + 1);
+    vector<vector<int>> adj(n + 1);
+    for (int i = 2; i <= n; i++) {
+        cin >> p[i];
+        adj[p[i]].push_back(i);
+    }
+    vector<long long> x(n + 1);
+    for (int i = 1; i <= n; i++) {
+        cin >> x[i];
+    }
+    vector<int> sz(n + 1), hv(n + 1);
+    auto DFS = [&](auto self, int v) -> void {
+        sz[v] = 1;
+        for (int u : adj[v]) {
+            self(self, u);
+            sz[v] += sz[u];
+            if (sz[u] > sz[hv[v]]) {
+                hv[v] = u;
+            }
+        }
+    };
+    DFS(DFS, 1);
+    int timer = 0;
+    vector<int> t(n + 1), hd(n + 1);
+    auto decomp = [&](auto self, int v, int h) -> void {
+        t[v] = ++timer;
+        hd[v] = h;
+        if (hv[v]) {
+            self(self, hv[v], h);
+        }
+        for (int u : adj[v]) {
+            if (u != hv[v]) {
+                self(self, u, u);
+            }
+        }
+    };
+    decomp(decomp, 1, 1);
+    vector<Data> init(n + 1);
+    for (int i = 1; i <= n; i++) {
+        init[t[i]] = sz[i];
+    }
+    LazySegmentTree<Data, Aux> lst(n, init);
+    auto update = [&](int v) {
+        while (v) {
+            lst.update(t[hd[v]], t[v], Aux(-1));
+            v = p[hd[v]];
+        }
+    };
+    auto query = [&](int v) {
+        int ans = INF;
+        while (v) {
+            ans = min(ans, lst.query(t[hd[v]], t[v]).minVal);
+            v = p[hd[v]];
+        }
+        return ans;
+    };
+    vector<int> fre(n + 1);
+    priority_queue<pair<long long, int>, vector<pair<long long, int>>, greater<>> q;
+    for (int i = 1; i <= n; i++) {
+        q.push({x[i], i});
+    }
+    long long ans = 0;
+    while (!q.empty()) {
+        auto [w, v] = q.top();
+        q.pop();
+        if (query(v) > 0) {
+            ans += w;
+            fre[v]++;
+            update(v);
+            q.push({(2 * fre[v] + 1) * x[v], v});
+        }
+    }
+    cout << ans << '\n';
+}
+
+int main() {
+    cin.sync_with_stdio(0);
+    cin.tie(0);
+    solve();
+    return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
