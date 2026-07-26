@@ -18,7 +18,7 @@ frequency: 0
 </Resources>
 
 ## Introduction
-A matroid is a combinatorial structure that generalizes the notion of 'linear independence'. It will be useful for a couple of reasons. In this module, we will explore how its axioms allow a natural greedy algorithm to be applied to them (which generalizes Kruskal's algorithm). This allows us to find greedy strategies for problems where it would otherwise be difficult to find (or at least prove) a greedy algorithm. As our focus problem, we will study an example of how this type of matroid thinking can be used to solve a Codeforces problem.
+A matroid is a combinatorial structure that expands on the notion of independence from linear algebra. It will be useful for a couple of reasons. In this module, we will explore how its axioms allow a natural greedy algorithm to be applied to them (which generalizes Kruskal's algorithm). This allows us to find greedy strategies for problems where it would otherwise be difficult to find (or at least prove) a greedy algorithm. As our focus problem, we will study an example of how this type of matroid thinking can be used to solve a Codeforces problem.
 
 This module is a prerequisite for the next module on matroid intersection. In some problems, we want to find some largest cardinality set of elements subject to multiple constraints. If we can capture those constraints using (at most two) matroids, then it's possible to efficiently find such a set using this theory.
 
@@ -27,7 +27,7 @@ We will be following the notation from: _A First Course in Combinatorial Optimiz
 
 A matroid $M$ consists of a finite ground set $E(M)$ along with a collection of subsets $\mathcal I(M)$ that satisfy the following axioms:
 1. **Non-emptiness**: $\emptyset\in\mathcal I(M)$
-2. **Heredity**: If $X\subseteq Y\in\mathcal I(M)$, then $X\in\mathcal I(M)$
+2. **Heredity**: If $X\subseteq Y$ and $Y\in\mathcal I(M)$, then $X\in\mathcal I(M)$
 3. **Exchange**: If $X,Y\in\mathcal I(M)$ and $|X|>|Y|$, then there exists some $x\in X\setminus Y$ such that $Y+x\in\mathcal I(M)$
 
 We often call the subsets in $\mathcal I(M)$ **independent sets** and the remaining subsets **dependent sets**.
@@ -42,7 +42,7 @@ r(X) := \max\left\{|I| : I \subseteq X \text{ is independent}\right\}
 \end{equation*}
 $$
 
-Another useful concept is that of a **circuit**, which is analogous to a cycle in a graph. A dependent set $X \subseteq E$ is called a circuit if $X - e$ is independent for any $e \in X$. Observe that a set $X \subseteq E$ is independent if and only if it contains a circuit $C$. The if direction is trivial, and to show the only if direction, take $C$ to be the smallest dependent set contained in $X$.
+Another useful concept is that of a **circuit**, which is analogous to a cycle in a graph. A dependent set $X \subseteq E$ is called a circuit if $X - e$ is independent for any $e \in X$. Observe that a set $X \subseteq E$ is dependent if and only if it contains a circuit $C$. The if direction is trivial, and to show the only if direction, take $C$ to be the smallest dependent set contained in $X$.
 
 <Info title="More facts">
 See [Section 3. Matroid theory](/matroid-theory.pdf) for some more definitions and facts on matroids.
