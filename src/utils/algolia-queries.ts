@@ -185,7 +185,11 @@ export async function getEditorFileRecords() {
 }
 
 export async function getAlgoliaRecords() {
-  const indexPrefix = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME ?? 'dev';
+  const indexPrefix = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME;
+
+  if (!indexPrefix) {
+    throw new Error('NEXT_PUBLIC_ALGOLIA_INDEX_NAME is not set');
+  }
 
   const [moduleRecords, problemRecords, fileRecords] = await Promise.all([
     getModuleRecords(),
@@ -209,10 +213,10 @@ export async function getAlgoliaRecords() {
   ];
 
   for (const group of groups) {
-    group.records = group.records.map(r => ({
-      ...r,
-      _contentHash: computeContentHash(r as Record<string, unknown>),
-    }));
+    group.records = group.records.map((r) => {
+      const record = { ...r, _contentHash: computeContentHash(r as Record<string, unknown>) };
+      return record as any;
+    });
   }
 
   return groups;

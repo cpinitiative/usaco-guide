@@ -1,6 +1,7 @@
 import {
   closestCenter,
   DndContext,
+  DragEndEvent,
   KeyboardSensor,
   PointerSensor,
   useSensor,
@@ -99,18 +100,19 @@ export default function PostProblems({
     }
   }, [post.problemOrdering, problems]);
 
-  const handleDragEnd = event => {
+  const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    if (active.id !== over.id) {
-      setItems(items => {
-        const oldIndex = items.indexOf(active.id);
-        const newIndex = items.indexOf(over.id);
-
-        const newArr = arrayMove<string>(items, oldIndex, newIndex);
-        updateProblemOrdering(post.id!, newArr);
-        return newArr;
-      });
+    if (!over || active.id === over.id) {
+      return;
     }
+    setItems(items => {
+      const oldIndex = items.indexOf(String(active.id));
+      const newIndex = items.indexOf(String(over.id));
+
+      const newArr = arrayMove<string>(items, oldIndex, newIndex);
+      updateProblemOrdering(post.id!, newArr);
+      return newArr;
+    });
   };
 
   return (

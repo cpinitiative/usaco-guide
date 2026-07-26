@@ -4,7 +4,7 @@ import { DarkModeContext } from './DarkModeContext';
 import { useThemeSetting } from './UserDataContext/properties/simpleProperties';
 import { useIsUserDataLoaded } from './UserDataContext/UserDataContext';
 
-export function DarkModeProvider({ children }) {
+export function DarkModeProvider({ children }: { children: React.ReactNode }) {
   const theme = useThemeSetting();
   const isLoaded = useIsUserDataLoaded();
   const [isClient, setIsClient] = useState(false);
@@ -50,7 +50,7 @@ export function DarkModeProvider({ children }) {
 
       setDarkMode(query.matches);
 
-      const onChange = e => setDarkMode(e.matches);
+      const onChange = (e: MediaQueryListEvent) => setDarkMode(e.matches);
       // some browsers don't support addEventListener
       if (query.addEventListener) {
         query.addEventListener('change', onChange);
@@ -59,7 +59,15 @@ export function DarkModeProvider({ children }) {
     } else {
       if (theme === 'light') setDarkMode(false);
       else if (theme === 'dark') setDarkMode(true);
-      else throw new Error('Unknown theme ' + theme);
+      else {
+        // Unknown theme value (e.g. corrupted localStorage). Degrade gracefully
+        // to light mode rather than throwing — a throw here would crash the entire
+        // React subtree and show a blank screen to the user.
+        console.warn(
+          `DarkModeProvider: unrecognised theme value "${theme}", falling back to light mode.`
+        );
+        setDarkMode(false);
+      }
     }
   }, [theme, isLoaded]);
 

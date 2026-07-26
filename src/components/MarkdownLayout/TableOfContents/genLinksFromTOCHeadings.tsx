@@ -17,25 +17,27 @@ export default function genLinksFromTOCHeadings(
       indentIdx = Math.max(0, indentIdx - (curDepth - heading.depth));
     }
     curDepth = heading.depth;
+    const style: React.CSSProperties = {
+      marginLeft: indentationLevels[indentIdx],
+      marginTop:
+        indentIdx === 0 &&
+        ((idx !== 0 && headings[idx - 1].depth > heading.depth) ||
+          (idx !== headings.length - 1 &&
+            headings[idx + 1].depth > heading.depth))
+          ? '1rem'
+          : indentIdx === 0
+            ? '0.5rem'
+            : 0,
+    };
     links.push(
       <a
         key={heading.slug}
         href={'#' + heading.slug}
         className={getClasses(heading)}
-        style={{
-          marginLeft: indentationLevels[indentIdx],
-          marginTop:
-            indentIdx === 0 &&
-            ((idx !== 0 && headings[idx - 1].depth > heading.depth) ||
-              (idx !== headings.length - 1 &&
-                headings[idx + 1].depth > heading.depth))
-              ? '1rem'
-              : indentIdx === 0
-                ? '0.5rem'
-                : 0,
-        }}
-        dangerouslySetInnerHTML={{ __html: heading.value }}
-      />
+        style={style}
+      >
+        {heading.value}
+      </a>
     );
   });
   return links;

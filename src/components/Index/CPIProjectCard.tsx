@@ -35,7 +35,7 @@ export const CPIProjectCard = ({
     <a
       href={url}
       target="_blank"
-      rel="noreferrer"
+      rel="noopener noreferrer"
       className="mt-4 inline-block text-blue-600 md:text-lg dark:text-blue-300"
     >
       Learn More &rarr;
@@ -43,3 +43,4 @@ export const CPIProjectCard = ({
     </a>
   </div>
 );
+

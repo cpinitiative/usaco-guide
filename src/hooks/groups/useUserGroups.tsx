@@ -41,13 +41,17 @@ const UserGroupsProvider = ({
       }
       setIsLoading(true);
 
-      const queries = {
+      const queries: { [key: string]: null | GroupData[] } = {
         ownerIds: null,
         memberIds: null,
         adminIds: null,
       };
 
-      Object.keys(queries).forEach(key => {
+      const queryKeys = Object.keys(queries);
+      let settled = 0;
+      let hasError = false;
+
+      queryKeys.forEach(key => {
         getDocs(
           query(
             collection(
@@ -57,15 +61,29 @@ const UserGroupsProvider = ({
             where(key, 'array-contains', firebaseUser?.uid)
           )
         ).then(snap => {
+          if (hasError) return;
           queries[key] = snap.docs.map(doc => ({
             ...doc.data(),
             id: doc.id,
           }));
+          settled++;
 
-          if (Object.keys(queries).every(x => queries[x] !== null)) {
-            setGroups(Object.values(queries).flat());
+          if (settled === queryKeys.length) {
+            // F-26: deduplicate groups — a user who is both owner AND admin of a
+            // group would appear twice in the flat array without this step.
+            const allGroups = Object.values(queries).flat() as GroupData[];
+            const uniqueGroups = Array.from(
+              new Map(allGroups.map(g => [g.id, g])).values()
+            );
+            setGroups(uniqueGroups);
             setIsLoading(false);
           }
+        }).catch(() => {
+          if (hasError) return;
+          hasError = true;
+          // Surface the failure state rather than leaving isLoading stuck at true
+          setGroups(null);
+          setIsLoading(false);
         });
       });
     },

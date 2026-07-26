@@ -166,8 +166,7 @@ export default function GroupPageHeader(props: { group: GroupData }) {
                     ) {
                       leaveGroup(groupId, firebaseUser!.uid)
                         .then(() => router.push(`/groups/`))
-                        .catch(e => {
-                          console.log(e);
+                        .catch((e: any) => {
                           alert('Error: ' + e.message);
                         });
                     }

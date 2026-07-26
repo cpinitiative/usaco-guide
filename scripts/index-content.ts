@@ -4,6 +4,7 @@ import path, { join, relative } from 'path';
 import { fileURLToPath } from 'url';
 import { CONTENT_DIR, SOLUTIONS_DIR } from '../src/lib/constants';
 import { getWritableDatabase } from '../src/lib/database';
+import { moduleIDToURLMap } from '../content/ordering';
 import type { ProblemMetadata } from '../src/models/problem';
 import { MdxContent, ProblemInfo } from '../src/types/content';
 
@@ -89,6 +90,7 @@ function createSchema(db: Database.Database): void {
       file_path TEXT NOT NULL,
       frontmatter_json TEXT NOT NULL,
       body TEXT NOT NULL,
+      module_path TEXT NOT NULL,
       toc_json TEXT NOT NULL,
       mdast_json TEXT,
       cpp_oc INTEGER NOT NULL DEFAULT 0,
@@ -168,9 +170,9 @@ async function indexMdxFiles(
   const { parseMdxFile } = await import('../src/lib/parseMdxFile');
   const insertStmt = db.prepare(`
       INSERT INTO mdx_content (
-        id, type, file_path, frontmatter_json, body, toc_json,
+        id, type, file_path, frontmatter_json, body, module_path, toc_json,
         mdast_json, cpp_oc, java_oc, py_oc, division, git_author_time
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
   // Batch git commands for performance
@@ -190,6 +192,7 @@ async function indexMdxFiles(
           content.fileAbsolutePath,
           JSON.stringify(content.frontmatter),
           content.body,
+          content.modulePath,
           JSON.stringify(content.toc),
           content.mdast ? JSON.stringify(content.mdast) : null,
           content.cppOc,
@@ -215,6 +218,7 @@ async function indexMdxFiles(
       })
     );
     transaction(items);
+    await writeMdxToPublic(items);
   }
 }
 
@@ -382,7 +386,7 @@ async function indexProblems(db: Database.Database): Promise<void> {
             'Failed to create problem info for',
             parsedContent[tableId]
           );
-          throw new Error(e.toString());
+          throw new Error(String(e));
         }
       });
 
@@ -638,6 +642,49 @@ async function generateUsacoDivisionsJson(
   console.log(`USACO divisions JSON written to: ${outputPath}`);
 }
 
+async function generateSitemap(db: Database.Database): Promise<void> {
+  const { writeFile } = await import('fs/promises');
+  const { join } = await import('path');
+
+  const rows = db
+    .prepare('SELECT module_id, json_extract(frontmatter_json, "$.title") as title FROM module_frontmatter')
+    .all() as { module_id: string; title: string }[];
+
+  const baseUrl = 'https://usaco.guide';
+  const urls = rows
+    .map(row => {
+      const url = moduleIDToURLMap[row.module_id] || `/${row.module_id}`;
+      return `  <url>\n    <loc>${baseUrl}${url}</loc>\n    <lastmod>2025-07-25</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>`;
+    })
+    .join('\n');
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>`;
+
+  const publicDir = join(process.cwd(), 'public');
+  const outputPath = join(publicDir, 'sitemap.xml');
+
+  await writeFile(outputPath, xml, 'utf-8');
+  console.log(`Sitemap written to: ${outputPath}`);
+}
+
+// async: write compiled ESM modules to public/mdx/ for CSP-safe runtime loading
+async function writeMdxToPublic(items: Array<{ content: MdxContent }>): Promise<void> {
+  const { writeFile, mkdir } = await import('fs/promises');
+  const publicMdxDir = path.join(process.cwd(), 'public', 'mdx');
+
+  for (const { content } of items) {
+    try {
+      const section = content.modulePath.split('/')[0];
+      const sectionDir = path.join(publicMdxDir, section);
+      await mkdir(sectionDir, { recursive: true });
+      const filePath = path.join(sectionDir, content.frontmatter.id + '.mjs');
+      await writeFile(filePath, content.body, 'utf-8');
+    } catch (err) {
+      console.error('Failed to write public MDX for', content.modulePath, err);
+    }
+  }
+}
+
 // async: do all parsing/IO up front
 async function prepareMdxInsert(relPath: string, absPath: string) {
   const { parseMdxFile } = await import('../src/lib/parseMdxFile');
@@ -655,7 +702,7 @@ async function prepareMdxInsert(relPath: string, absPath: string) {
   const division =
     type === 'module' ? moduleIDToSectionMap[content.frontmatter.id] : null;
 
-  return { content, type, gitTime, division };
+  return { content, type, gitTime, division, modulePath: content.modulePath };
 }
 
 /**
@@ -711,15 +758,16 @@ export async function updateFiles(
 
             db.prepare(
               `INSERT OR REPLACE INTO mdx_content
-                 (id, type, file_path, frontmatter_json, body, toc_json, mdast_json,
+                 (id, type, file_path, frontmatter_json, body, module_path, toc_json, mdast_json,
                   cpp_oc, java_oc, py_oc, division, git_author_time)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
             ).run(
               content.frontmatter.id,
               type,
               content.fileAbsolutePath,
               JSON.stringify(content.frontmatter),
               content.body,
+              content.modulePath,
               JSON.stringify(content.toc),
               content.mdast ? JSON.stringify(content.mdast) : null,
               content.cppOc,
@@ -764,7 +812,11 @@ export async function updateFiles(
       db.exec('DELETE FROM problem_slugs; DELETE FROM usaco_ids;');
       await indexProblemSlugs(db);
       await indexUSACOIds(db);
-      await generateUsacoDivisionsJson(db);
+    await generateUsacoDivisionsJson(db);
+
+    // Generate sitemap
+    console.log('Generating sitemap...');
+    await generateSitemap(db);
     }
   } finally {
     db.close();

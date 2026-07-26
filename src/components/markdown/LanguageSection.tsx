@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { githubRepoUrl } from '../../config';
 import {
   Language,
   LANGUAGE_LABELS,
@@ -44,11 +45,7 @@ const useSectionFromLang = (sections: {
       >
         {/* Please choose a different default language for now.  */}
         Submitting a Pull Request on{' '}
-        <a
-          href="https://github.com/cpinitiative/usaco-guide"
-          target="_blank"
-          rel="noreferrer"
-        >
+        <a href={githubRepoUrl()} target="_blank" rel="noopener noreferrer">
           GitHub
         </a>{' '}
         to help add support for {LANGUAGE_LABELS[userLang]} would be

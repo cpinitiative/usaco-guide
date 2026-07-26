@@ -1,5 +1,4 @@
 import { CheckIcon, XIcon } from '@heroicons/react/solid';
-import { RouteComponentProps } from '@reach/router';
 import {
   collection,
   getDocs,
@@ -35,14 +34,17 @@ import EditProblemHintSection from './EditProblemHintSection';
 
 const Flatpickr = React.lazy(() => import('react-flatpickr'));
 
-type Props = RouteComponentProps<{
+interface EditProblemPageProps {
   groupId: string;
   postId: string;
   problemId: string;
-}>;
+}
 
-export default function EditProblemPage(props: Props) {
-  const { groupId, postId, problemId } = props;
+export default function EditProblemPage({
+  groupId,
+  postId,
+  problemId,
+}: EditProblemPageProps) {
   if (!groupId || !postId || !problemId) {
     throw 'Misplaced EditProblemPage component! This should be under the param URL with :groupId, :postId, and :problemId';
   }
@@ -316,7 +318,6 @@ export default function EditProblemPage(props: Props) {
                           }}
                           value={problem.solutionReleaseTimestamp?.toDate()}
                           onChange={date => {
-                            console.log(date);
                             editProblem({
                               solutionReleaseTimestamp: Timestamp.fromDate(
                                 date[0]

@@ -1,4 +1,5 @@
-export default function DashboardCard(props) {
+import * as React from 'react';
+export default function DashboardCard(props: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className="bg-white shadow-sm sm:rounded-lg dark:bg-gray-800"

@@ -1,7 +1,8 @@
-import { getAuth, onAuthStateChanged, signOut, User } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, signOut as firebaseSignOut, User } from 'firebase/auth';
 import {
   collection,
   doc,
+  getDoc,
   getDocs,
   getFirestore,
   onSnapshot,
@@ -70,16 +71,13 @@ type UserDataContextAPI = {
   firebaseUser: User | null;
   forceFirebaseUserRerender: () => void;
   isLoaded: boolean;
-  /**
-   * See properties/hooks.ts for documentation on how this function works.
-   */
   updateUserData: (
     updateFunc: (prevUserData: UserData) => {
       localStorageUpdate: Partial<UserData>;
       firebaseUpdate: object;
     }
   ) => void;
-  importUserData: (data: Partial<UserData>) => boolean;
+  importUserData: (data: Partial<UserData>) => Promise<boolean>;
   deleteAllUserData: (groups: GroupData[]) => Promise<boolean>;
   signOut: () => Promise<void>;
 };
@@ -114,15 +112,13 @@ export const assignDefaultsToUserData = (data: object): UserData => {
 export const themeKey = 'guide:userData:theme';
 
 const LOCAL_STORAGE_KEY = 'guide:userData:v100';
-
-// Todo figure out why we even need defaults
 const UserDataContext = createContext<UserDataContextAPI>({
   userData: assignDefaultsToUserData({}),
   updateUserData: _ => {},
   signOut: () => Promise.resolve(),
   firebaseUser: null,
   forceFirebaseUserRerender: () => {},
-  importUserData: _ => false,
+  importUserData: _ => Promise.resolve(false),
   deleteAllUserData: _ => Promise.resolve(false),
   isLoaded: true,
 });
@@ -164,11 +160,9 @@ export const UserDataProvider = ({
         return (ev.returnValue = '');
       }
     }
-    addEventListener('beforeunload', beforeUnloadListener, { capture: true });
+    addEventListener('beforeunload', beforeUnloadListener);
     return () => {
-      removeEventListener('beforeunload', beforeUnloadListener, {
-        capture: true,
-      });
+      removeEventListener('beforeunload', beforeUnloadListener);
     };
   }, []);
 
@@ -277,12 +271,11 @@ export const UserDataProvider = ({
   React.useEffect(() => {
     runMigration();
     initializeFromLocalStorage();
-    // todo: does this actually run before isLoaded is set to true?
   }, []);
 
   // Add debouncing to prevent excessive Firebase updates
   const debouncedSetUserData = useMemo(
-    () => debounce(data => setUserData(data), 100),
+    () => debounce((data: UserData) => setUserData(data), 100),
     []
   );
 
@@ -300,7 +293,6 @@ export const UserDataProvider = ({
      * but onAuthStateChanged doesn't rereun.
      */
     forceFirebaseUserRerender: () => {
-      // todo: test to see whether this actually works lol
       setFirebaseUser(getAuth(firebaseApp).currentUser);
     },
 
@@ -317,13 +309,21 @@ export const UserDataProvider = ({
         // In the localStorage path, this is guaranteed the latest copy of the data
         // In the firestore path, this is probably still the latest copy of the data,
         // since any time firestore updates, it writes to localStorage.
-        const latestUserData = JSON.parse(
-          // Since we write valid user data to local storage every time the page loads,
-          // just assume reading will be valid. If it isn't, the user can always reload
-          // the page to get a working version of user data.
 
-          localStorage.getItem(LOCAL_STORAGE_KEY)!
-        );
+        // F-13: localStorage.getItem() returns null when the key is absent (e.g.
+        // private/incognito mode, storage quota exceeded, or the key was cleared
+        // between the init write and this call).  JSON.parse(null) === null, so
+        // downstream property accesses would throw.  Fall back to safe defaults.
+        const rawStoredData = localStorage.getItem(LOCAL_STORAGE_KEY);
+        const latestUserData: UserData = rawStoredData
+          ? (() => {
+              try {
+                return JSON.parse(rawStoredData) as UserData;
+              } catch {
+                return assignDefaultsToUserData({});
+              }
+            })()
+          : assignDefaultsToUserData({});
 
         if (firebaseUser) {
           // user is signed in to firebase, do the firebase update path
@@ -369,17 +369,17 @@ export const UserDataProvider = ({
           debouncedSetUserData(newUserData); // Use debounced version here
         }
       },
-      [firebaseApp, setUserData, isLoaded, !!firebaseUser]
+      [firebaseApp, setUserData, isLoaded, firebaseUser?.uid ?? null]
     ),
 
     signOut: (): Promise<void> => {
-      return signOut(getAuth(firebaseApp)).then(() => {
+      return firebaseSignOut(getAuth(firebaseApp)).then(() => {
         localStorage.removeItem(LOCAL_STORAGE_KEY);
         initializeFromLocalStorage({ useURLLang: false });
       });
     },
 
-    importUserData: (data: Partial<UserData>): boolean => {
+    importUserData: async (data: Partial<UserData>): Promise<boolean> => {
       if (
         !confirm(
           'Import user data (beta)? All existing data will be lost. Make sure to back up your data before proceeding.'
@@ -388,22 +388,61 @@ export const UserDataProvider = ({
         return false;
       }
 
-      const updatedData = assignDefaultsToUserData(data);
+      // F-09: whitelist the fields that users are allowed to import.
+      // `assignDefaultsToUserData` spreads the full input object on top of
+      // defaults, so without this filter a crafted JSON could inject
+      // unexpected keys (e.g. `isAdmin`, oversized objects) directly into
+      // Firestore.  Only progress and preference fields are permitted.
+      const ALLOWED_IMPORT_KEYS: (keyof UserData)[] = [
+        'userProgressOnModules',
+        'userProgressOnModulesActivity',
+        'userProgressOnProblems',
+        'userProgressOnProblemsActivity',
+        'userProgressOnResources',
+        'lang',
+        'theme',
+        'showTags',
+        'hideDifficulty',
+        'hideModules',
+        'showIgnored',
+        'divisionTableQuery',
+      ];
+
+      const sanitized = ALLOWED_IMPORT_KEYS.reduce<Partial<UserData>>(
+        (acc, key) => {
+          if (key in data) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (acc as any)[key] = (data as any)[key];
+          }
+          return acc;
+        },
+        {}
+      );
+
+      // Merge with defaults to ensure a complete, valid UserData shape
+      // before writing to Firestore — never write arbitrary user-supplied data directly.
+      const updatedData = assignDefaultsToUserData(sanitized);
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedData));
-      debouncedSetUserData(updatedData); // Use debounced version here
+      debouncedSetUserData(updatedData);
       if (firebaseUser) {
-        // Stupid hack: if firebase user is set, userData will actually have
-        // the CREATING_ACCOUNT_FOR_FIRST_TIME property, since userData will
-        // be set from the Firebase doc.
-        const CREATING_ACCOUNT_FOR_FIRST_TIME = (userData as any)
-          .CREATING_ACCOUNT_FOR_FIRST_TIME;
-        setDoc(doc(getFirestore(firebaseApp), 'users', firebaseUser.uid), {
-          ...data,
-          CREATING_ACCOUNT_FOR_FIRST_TIME,
+        const userDocRef = doc(
+          getFirestore(firebaseApp),
+          'users',
+          firebaseUser.uid
+        );
+        const userDocSnap = await getDoc(userDocRef);
+        const existingData = userDocSnap.exists()
+          ? (userDocSnap.data() as Record<string, unknown>)
+          : {};
+        const creatingAccountForFirstTime =
+          (existingData.CREATING_ACCOUNT_FOR_FIRST_TIME as number | undefined) || serverTimestamp();
+        setDoc(userDocRef, {
+          ...updatedData,
+          CREATING_ACCOUNT_FOR_FIRST_TIME: creatingAccountForFirstTime,
         }).catch(err => {
           console.error(err);
-          alert(
-            `importUserData: Error setting firebase doc. Check console for details.`
+          toast.error(
+            'importUserData: Error setting firebase doc. Check console for details.'
           );
         });
       }
@@ -437,8 +476,7 @@ export const UserDataProvider = ({
 
           const deleteGroup = async (groupId: string) => {
             const firestore = getFirestore(firebaseApp);
-            // oops this batch should really be a transaction todo
-            const refs = [];
+            const refs: ReturnType<typeof doc>[] = [];
 
             const posts = await getDocs(
               collection(firestore, 'groups', groupId, 'posts')
@@ -536,7 +574,7 @@ export const UserDataProvider = ({
 
           await setDoc(doc(db, 'users', firebaseUser.uid), {
             ...emptyUserData,
-            CREATING_ACCOUNT_FOR_FIRST_TIME: (userData as any)
+            CREATING_ACCOUNT_FOR_FIRST_TIME: (userData as Record<string, unknown>)
               .CREATING_ACCOUNT_FOR_FIRST_TIME, // hack because this field shouldn't be changed no matter what
           });
         }

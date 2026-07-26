@@ -44,7 +44,7 @@ export default function ProblemsListItem(
     </ListTableCell>
   );
   const sourceTooltip =
-    isDivisionTable == false
+    !isDivisionTable
       ? problem?.sourceDescription ||
         (probSources[problem.source as keyof typeof probSources]?.[1] ??
           olympiads[problem.source as keyof typeof olympiads]?.[1])
@@ -63,12 +63,12 @@ export default function ProblemsListItem(
       else if (parts[1] == 'Third') index = 3;
       else if (parts[1] == 'Fourth') index = 4; // unsure of how US Open will be formatted yet, for now just use fourth + 4.
 
-      resultsUrl = `http://www.usaco.org/index.php?page=season${parts[0]}contest${index}results`;
+      resultsUrl = `https://www.usaco.org/index.php?page=season${parts[0]}contest${index}results`;
     } else {
       // dec24results
       if (parts[1] === 'US') parts[1] = 'open';
       else parts[1] = parts[1].toLowerCase().substring(0, 3);
-      resultsUrl = `http://www.usaco.org/index.php?page=${parts[1]}${parts[0]}results`;
+      resultsUrl = `https://www.usaco.org/index.php?page=${parts[1]}${parts[0]}results`;
     }
   }
   const sourceCol = isDivisionTable ? (
@@ -96,7 +96,7 @@ export default function ProblemsListItem(
   const nameCol = (
     <ListTableCell className="font-medium whitespace-nowrap">
       <div className="flex items-center">
-        {isDivisionTable == false && problem.isStarred && (
+        {!isDivisionTable && problem.isStarred && (
           <Tooltip content="We highly recommend you do all starred problems!">
             <svg
               className="h-4 w-4 text-blue-400"
@@ -110,7 +110,7 @@ export default function ProblemsListItem(
         <a
           href={problem.url}
           className={
-            (isDivisionTable == false && problem.isStarred
+            (isDivisionTable && problem.isStarred
               ? 'pl-1 sm:pl-2'
               : 'sm:pl-6') + ' problem-list-item-anchor truncate no-underline'
           }
@@ -150,14 +150,16 @@ export default function ProblemsListItem(
             className="dark:text-dark-med-emphasis text-gray-500"
           >
             <summary>Show Tags</summary>
-            <span className="text-xs">{problem.tags.sort().join(', ')}</span>
+            <span className="text-xs">
+              {[...problem.tags].sort().join(', ')}
+            </span>
           </details>
         ) : null}
       </ListTableCell>
       {isDivisionTable && props.modules && (
         <ListTableCell className="font-medium whitespace-nowrap">
           {problem.moduleLink ? (
-            <a href={problem.moduleLink} target="_blank" rel="noreferrer">
+            <a href={problem.moduleLink} target="_blank" rel="noopener noreferrer">
               Link
             </a>
           ) : (

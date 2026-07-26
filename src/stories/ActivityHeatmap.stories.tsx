@@ -39,14 +39,11 @@ const squeeze = (i: number) =>
   Math.floor(
     (5 * (i - startDate.getTime())) / (endDate.getTime() - startDate.getTime())
   );
-console.log(squeeze(startDate.getTime()));
-console.log(squeeze(endDate.getTime() - 1));
 for (
   let i = new Date(startDate);
   i.getTime() < endDate.getTime();
   i.setDate(i.getDate() + 1)
 ) {
-  console.log(i.getTime(), squeeze(i.getTime()));
   // generate ordered heatmap data
   orderedModuleActivities[i.getTime()] = Array(squeeze(i.getTime())).fill(
     dummyModule
@@ -56,7 +53,6 @@ for (
   randomModuleActivities[i.getTime()] = Array(rng()).fill(dummyModule);
   randomProblemActivities[i.getTime()] = Array(rng()).fill(dummyProblem);
 }
-console.log(startDate.getTime(), endDate.getTime());
 // Helper to generate activityCount from activities
 const getActivityCount = (
   moduleActivities: { [key: number]: any[] },

@@ -1,4 +1,4 @@
-export default function ModuleFrequencyDots({ count, color, totalCount }) {
+export default function ModuleFrequencyDots({ count, color, totalCount }: { count: number; color: string; totalCount: number }) {
   const emptyCircle = 'text-gray-300 dark:text-gray-500';
   return (
     <>

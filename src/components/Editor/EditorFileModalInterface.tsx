@@ -13,7 +13,11 @@ import {
 } from '../../models/algoliaEditorFile';
 import searchClient from '../../utils/algoliaLiteSearchClient';
 
-const indexName = `${process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME ?? 'dev'}_editorFiles`;
+const indexName = `${process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME}_editorFiles`;
+
+if (!process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME) {
+  throw new Error('NEXT_PUBLIC_ALGOLIA_INDEX_NAME is not set');
+}
 
 const FileSearch = ({
   onSelect,
@@ -91,7 +95,7 @@ const FileSearch = ({
 };
 
 const EditorFileModalInterface: React.FC<{
-  onSelect: (file: AlgoliaEditorFile) => void;
+  onSelect: (file: AlgoliaEditorFile | undefined) => void;
   openAddFile: () => void;
 }> = ({ onSelect, openAddFile }) => {
   return (

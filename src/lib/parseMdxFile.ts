@@ -3,6 +3,7 @@ import matter from 'gray-matter';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeExternalLinks from 'rehype-external-links';
 import rehypeRaw from 'rehype-raw';
+import rehypeSanitize from 'rehype-sanitize';
 import rehypeSlug from 'rehype-slug';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkGfm from 'remark-gfm';
@@ -29,7 +30,6 @@ export async function parseMdxFile(filePath: string): Promise<MdxContent> {
       .replace(/<!--/g, '{/* ')
       .replace(/-->/g, '*/}');
 
-    // Compile MDX to JSX
     compiledResult = await compile(processedContent, {
       remarkPlugins: [
         remarkGfm,
@@ -42,6 +42,7 @@ export async function parseMdxFile(filePath: string): Promise<MdxContent> {
       ],
       rehypePlugins: [
         rehypeSlug,
+        rehypeSanitize,
         [
           rehypeRaw,
           {
@@ -75,6 +76,7 @@ export async function parseMdxFile(filePath: string): Promise<MdxContent> {
       ],
       outputFormat: 'function-body',
       jsxImportSource: 'react',
+      development: process.env.NODE_ENV !== 'production',
     });
   } catch (error) {
     console.error(`Error compiling MDX for ${filePath}:`, error);
@@ -85,13 +87,11 @@ export async function parseMdxFile(filePath: string): Promise<MdxContent> {
     );
   }
 
-  // Count language section occurrences
   const langSecOc = (content.match(/<LanguageSection/g) || []).length;
   const cppOc = (content.match(/<CPPSection/g) || []).length;
   const javaOc = (content.match(/<JavaSection/g) || []).length;
   const pyOc = (content.match(/<PySection/g) || []).length;
 
-  // Validate language sections
   if (langSecOc < Math.max(cppOc, javaOc, pyOc)) {
     throw new Error(
       `${filePath}: # lang sections = ${langSecOc} < max(${cppOc},${javaOc},${pyOc})`
@@ -100,10 +100,12 @@ export async function parseMdxFile(filePath: string): Promise<MdxContent> {
 
   let division: SectionID | null = null;
   if (filePath.includes('content')) {
-    division = moduleIDToSectionMap[frontmatter.id];
+    division = moduleIDToSectionMap[(frontmatter as any).id];
   }
+
   return {
     body: String(compiledResult),
+    modulePath: (frontmatter as any).id,
     fileAbsolutePath: filePath,
     frontmatter: frontmatter as MdxFrontmatter,
     cppOc,
@@ -112,7 +114,7 @@ export async function parseMdxFile(filePath: string): Promise<MdxContent> {
     toc: tableOfContents,
     mdast: mdast.data,
     fields: {
-      division: division as SectionID,
+      division,
       gitAuthorTime: null,
     },
   };

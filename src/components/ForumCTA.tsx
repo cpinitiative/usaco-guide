@@ -16,7 +16,7 @@ const ForumCTA = (): JSX.Element => {
             <a
               href="https://forum.usaco.guide/"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="btn"
             >
               Join Forum
@@ -29,3 +29,4 @@ const ForumCTA = (): JSX.Element => {
 };
 
 export default ForumCTA;
+

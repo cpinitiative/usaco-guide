@@ -47,8 +47,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
     const { queryAllProblemIds, queryUsacoId } = await import(
       '../../../../lib/queryContent'
     );
-    const div_to_probs = await import(
-      '../../../../components/markdown/ProblemsList/DivisionList/div_to_probs.json'
+    const { default: div_to_probs } = await import(
+      '../../../../../data/div_to_probs.json'
     );
     const problemIds = await queryAllProblemIds();
     const paths = problemIds.map((id: string) => ({
@@ -58,7 +58,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     }));
     const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
     for (const division of divisions) {
-      for (const problem of div_to_probs[division]) {
+      for (const problem of (div_to_probs as any)[division]) {
         const uniqueId = 'usaco-' + problem[0];
         const exists = await queryUsacoId(uniqueId);
         if (!exists) {
@@ -79,8 +79,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async context => {
   try {
-    const div_to_probs = await import(
-      '../../../../components/markdown/ProblemsList/DivisionList/div_to_probs.json'
+    const { default: div_to_probs } = await import(
+      '../../../../../data/div_to_probs.json'
     );
     const { queryProblem, queryModuleIdAndTitleFromProblemBySolutionId } =
       await import('../../../../lib/queryContent');
@@ -90,7 +90,7 @@ export const getStaticProps: GetStaticProps = async context => {
     if (slug.startsWith('usaco-')) {
       const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
       for (const division of divisions) {
-        for (const problemEntry of div_to_probs[division]) {
+        for (const problemEntry of (div_to_probs as any)[division]) {
           const uniqueId = 'usaco-' + problemEntry[0];
           if (uniqueId === slug) {
             problem = {

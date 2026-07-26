@@ -1,6 +1,9 @@
+import { Filter } from 'bad-words';
 import * as React from 'react';
 import { useContext, useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { SECTION_LABELS } from '../../../content/ordering';
+import { githubRepoUrl } from '../../config';
 import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
 import { useUserLangSetting } from '../../context/UserDataContext/properties/simpleProperties';
 import { useFirebaseUser } from '../../context/UserDataContext/UserDataContext';
@@ -18,6 +21,12 @@ const Field = ({
   value,
   onChange,
   errorMsg = null as string | null,
+}: {
+  label: string;
+  id: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  errorMsg?: string | null;
 }) => {
   return (
     <div className="space-y-1">
@@ -65,7 +74,7 @@ const Field = ({
   );
 };
 
-export function validateEmail(email) {
+export function validateEmail(email: string) {
   const re =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(String(email).toLowerCase());
@@ -97,6 +106,7 @@ export default function ContactUsSlideover({
   const [issueLink, setIssueLink] = useState('');
   const [submitEnabled, setSubmitEnabled] = useState(true);
   const [showErrors, setShowErrors] = useState(false);
+  const filter = new Filter();
 
   const markdownContext = useContext(MarkdownLayoutContext);
   const userLang = useUserLangSetting();
@@ -134,7 +144,7 @@ export default function ContactUsSlideover({
     }
   }, [isOpen]);
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     setShowErrors(true);
@@ -147,6 +157,12 @@ export default function ContactUsSlideover({
     ) {
       return;
     }
+
+    if (filter.isProfane(name) || filter.isProfane(message)) {
+      toast.error('Please remove inappropriate language from your submission.');
+      return;
+    }
+
     setSubmitEnabled(false);
     try {
       const response = await submitForm({
@@ -156,7 +172,7 @@ export default function ContactUsSlideover({
         url: window.location.href,
         lang: userLang,
         topic,
-        message,
+        message: filter.clean(message),
       });
       setTopic('');
       setMessage('');
@@ -164,7 +180,7 @@ export default function ContactUsSlideover({
       setIssueLink(response.data as string);
     } catch (e: any) {
       setSubmitEnabled(true);
-      alert('Form submission failed: ' + e.message);
+      toast.error('Form submission failed: ' + e.message);
     } finally {
       setShowErrors(false);
     }
@@ -180,9 +196,9 @@ export default function ContactUsSlideover({
           Contact us about anything: suggestions, bugs, assistance, and more!
           This will be submitted as a public{' '}
           <a
-            href="https://github.com/cpinitiative/usaco-guide/issues"
+            href={githubRepoUrl('/issues')}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="underline"
           >
             Github issue
@@ -208,88 +224,53 @@ export default function ContactUsSlideover({
           </span>
         </>
       }
-      onSubmit={handleSubmit}
-    >
-      {/* <div className="bg-gray-50 dark:bg-gray-900 mb-4">
-        <div className="px-4 py-5 sm:p-6">
-          <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-200">
-            Ask on the USACO Forum!
-          </h3>
-          <div className="mt-2 max-w-xl text-sm leading-5 text-gray-500 dark:text-gray-400">
-            <p>
-              Get a faster response by reaching out on the USACO Forum instead.
-            </p>
-          </div>
-          <div className="mt-5">
-            <span className="inline-flex rounded-md shadow-sm">
-              <a
-                href="https://forum.usaco.guide/"
-                target="_blank"
-                rel="noreferrer"
-                className="btn"
-              >
-                Join Forum
-              </a>
-            </span>
-          </div>
-        </div>
-      </div> */}
-      <div className="mt-4 px-4 sm:px-6">
-        {showSuccess && (
-          <div className="rounded-md bg-green-50 p-4 dark:bg-green-800">
-            <div className="flex">
-              <div className="grow-0">
-                <svg
-                  className="h-5 w-5 text-green-400"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </div>
-              <div className="ml-3">
-                <h3 className="dark:text-dark-high-emphasis text-sm leading-5 font-medium text-green-800">
-                  Message received!
-                </h3>
-                <div className="dark:text-dark-high-emphasis mt-2 text-sm leading-5 text-green-700">
-                  <p>
-                    Your message has been submitted as an issue in our GitHub
-                    repository. You can track the issue here:{' '}
-                    <a
-                      href={issueLink}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="font-semibold hover:underline"
-                    >
-                      {issueLink}
-                    </a>
-                  </p>
-                  {/* <p className="pt-2">
-                    For urgent requests, please feel free to email{' '}
-                    <a
-                      href="mailto:nathan.r.wang@gmail.com"
-                      className="underline text-blue-600"
-                    >
-                      nathan.r.wang@gmail.com
-                    </a>
-                    .
-                  </p> */}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-        {!showSuccess && (
-          <div className="space-y-6 pb-5">
+       onSubmit={handleSubmit}
+     >
+       {showSuccess && (
+         <div className="rounded-md bg-green-50 p-4 dark:bg-green-800">
+           <div className="flex">
+             <div className="grow-0">
+               <svg
+                 className="h-5 w-5 text-green-400"
+                 viewBox="0 0 20 20"
+                 fill="currentColor"
+               >
+                 <path
+                   fillRule="evenodd"
+                   d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                   clipRule="evenodd"
+                 />
+               </svg>
+             </div>
+             <div className="ml-3">
+               <h3 className="dark:text-dark-high-emphasis text-sm leading-5 font-medium text-green-800">
+                 Message received!
+               </h3>
+               <div className="dark:text-dark-high-emphasis mt-2 text-sm leading-5 text-green-700">
+                 <p>
+                   Your message has been submitted as an issue in our GitHub
+                   repository. You can track the issue here:{' '}
+                   <a
+                     href={issueLink}
+                     target="_blank"
+                     rel="noopener noreferrer"
+                     className="font-semibold hover:underline"
+                   >
+                     {issueLink}
+                   </a>
+                 </p>
+               </div>
+             </div>
+           </div>
+         </div>
+       )}
+       {!showSuccess && (
+         <div className="mt-4 px-4 sm:px-6 space-y-6 pb-5">
             <Field
               label="Name (will not be shown publicly)"
               id="contact_name"
               value={name}
-              onChange={e => setName(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
               errorMsg={
                 showErrors && name === '' ? 'This field is required.' : null
               }
@@ -298,7 +279,7 @@ export default function ContactUsSlideover({
               label="Email (will not be shown publicly)"
               id="contact_email"
               value={email}
-              onChange={e => setEmail(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
               errorMsg={
                 showErrors
                   ? email === ''
@@ -313,7 +294,7 @@ export default function ContactUsSlideover({
               label="Module or Solution (if applicable)"
               id="contact_module"
               value={location}
-              onChange={e => setLocation(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLocation(e.target.value)}
             />
             <fieldset className="space-y-2">
               <legend className="dark:text-dark-high-emphasis text-sm leading-5 font-medium text-gray-900">
@@ -325,8 +306,8 @@ export default function ContactUsSlideover({
                 <a
                   className="text-blue-600 hover:underline dark:text-blue-300"
                   target="_blank"
-                  rel="noreferrer"
-                  href="http://usaco.org"
+                  rel="noopener noreferrer"
+                  href="https://usaco.org"
                 >
                   usaco.org
                 </a>{' '}
@@ -334,8 +315,8 @@ export default function ContactUsSlideover({
                 <a
                   className="text-blue-600 hover:underline dark:text-blue-300"
                   target="_blank"
-                  rel="noreferrer"
-                  href="https://github.com/cpinitiative/usaco-guide/issues/2854"
+                  rel="noopener noreferrer"
+                  href={githubRepoUrl('/issues/2854')}
                 >
                   registering for an account
                 </a>
@@ -343,7 +324,7 @@ export default function ContactUsSlideover({
                 <a
                   className="text-blue-600 hover:underline dark:text-blue-300"
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   href="mailto:bcdean@clemson.edu"
                 >
                   Brian Dean
@@ -356,7 +337,7 @@ export default function ContactUsSlideover({
                   <a
                     className="text-blue-600 hover:underline dark:text-blue-300"
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     href="https://joincpi.org/classes"
                   >
                     CPI classes
@@ -365,7 +346,7 @@ export default function ContactUsSlideover({
                   <a
                     className="text-blue-600 hover:underline dark:text-blue-300"
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     href="mailto:classes@joincpi.org"
                   >
                     classes@joincpi.org
@@ -400,8 +381,8 @@ export default function ContactUsSlideover({
                             <a
                               className="text-blue-600 hover:underline dark:text-blue-300"
                               target="_blank"
-                              rel="noreferrer"
-                              href="https://github.com/cpinitiative/usaco-guide/pulls"
+                              rel="noopener noreferrer"
+                              href={githubRepoUrl('/pulls')}
                             >
                               here
                             </a>{' '}
@@ -409,11 +390,11 @@ export default function ContactUsSlideover({
                             <a
                               className="text-blue-600 hover:underline dark:text-blue-300"
                               target="_blank"
-                              rel="noreferrer"
+                              rel="noopener noreferrer"
                               href="/general/contributing"
                             >
                               this module
-                            </a>{' '}
+                            </a>
                             for how to contribute.
                           </div>
                         )}
@@ -424,7 +405,7 @@ export default function ContactUsSlideover({
                               className="text-blue-600 hover:underline dark:text-blue-300"
                               href="https://forum.usaco.guide/"
                               target="_blank"
-                              rel="noreferrer"
+                              rel="noopener noreferrer"
                             >
                               USACO Guide forum
                             </a>{' '}
@@ -437,9 +418,11 @@ export default function ContactUsSlideover({
                             include the information listed{' '}
                             <a
                               className="text-blue-600 hover:underline dark:text-blue-300"
-                              href="https://github.com/cpinitiative/usaco-guide/issues/3396#issuecomment-1414102550"
+                              href={githubRepoUrl(
+                                '/issues/3396#issuecomment-1414102550'
+                              )}
                               target="_blank"
-                              rel="noreferrer"
+                              rel="noopener noreferrer"
                             >
                               here.
                             </a>
@@ -498,9 +481,9 @@ export default function ContactUsSlideover({
                 </p>
               )}
             </div>
-          </div>
+           </div>
         )}
-      </div>
-    </SlideoverForm>
+      </SlideoverForm>
   );
 }
+

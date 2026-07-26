@@ -49,7 +49,7 @@ export default function EditProblemHintModal({
     });
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSave(hint);
     setHint(defaultHint);

@@ -71,9 +71,9 @@ export const useUserLangSetting = createUserDataGetter(
   userData => userData.lang
 );
 export const useSetUserLangSetting = createSimpleUserDataMutation(
-  (userData, lang: Language) => {
+  (userData, lang: string) => {
     return {
-      lang,
+      lang: lang as Language,
     };
   }
 );

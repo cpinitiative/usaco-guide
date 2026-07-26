@@ -17,7 +17,7 @@ export default function ModuleFeedback({
         <a
           href="https://forum.usaco.guide/"
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
           className="text-blue-600 underline dark:text-blue-300"
         >
           USACO Forum
@@ -155,3 +155,4 @@ export default function ModuleFeedback({
     </>
   );
 }
+

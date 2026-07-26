@@ -99,13 +99,13 @@ export default function Feed(): JSX.Element {
     }
   }, [group.groupData?.postOrdering, group.posts]);
 
-  const handleDragStart = event => {
+  const handleDragStart = (event: any) => {
     const { active } = event;
 
     setActiveId(active.id);
   };
 
-  const handleDragEnd = event => {
+  const handleDragEnd = (event: any) => {
     const { active, over } = event;
 
     if (active.id !== over.id) {
@@ -114,7 +114,7 @@ export default function Feed(): JSX.Element {
         const newIndex = items.indexOf(over.id);
 
         const newArr = arrayMove(items, oldIndex, newIndex);
-        updatePostOrdering(group.activeGroupId, newArr);
+        updatePostOrdering(group.activeGroupId!, newArr);
         return newArr;
       });
     }

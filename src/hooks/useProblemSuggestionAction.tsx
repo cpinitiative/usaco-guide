@@ -18,6 +18,18 @@ export default function useProblemSuggestionAction() {
       problemListName,
       source,
       filePath,
+    }: {
+      name: string;
+      link: string;
+      difficulty: string;
+      tags: string[];
+      additionalNotes: string;
+      problemTableLink: string;
+      moduleName: string;
+      section: string;
+      problemListName: string;
+      source: string;
+      filePath: string;
     }) => {
       if (!source) {
         throw new Error(

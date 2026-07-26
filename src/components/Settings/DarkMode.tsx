@@ -2,6 +2,7 @@ import {
   useSetThemeSetting,
   useThemeSetting,
 } from '../../context/UserDataContext/properties/simpleProperties';
+import { Theme } from '../../context/UserDataContext/properties/simpleProperties';
 import RadioList from '../elements/RadioList';
 
 export default function DarkMode() {
@@ -21,7 +22,7 @@ export default function DarkMode() {
         options={['light', 'dark', 'system']}
         value={theme}
         onChange={newValue => {
-          setTheme(newValue);
+          setTheme(newValue as Theme);
         }}
         labelMap={{ light: 'Light Mode', dark: 'Dark Mode', system: 'System' }}
         descriptionMap={{}}

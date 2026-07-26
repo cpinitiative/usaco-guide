@@ -74,7 +74,7 @@ const TextTooltipTemplate: StoryFn<
       {show && (
         <TextTooltipComponent
           {...args}
-          appendTo={() => ref.current}
+          appendTo={() => ref.current!}
           showOnCreate={true}
         >
           Hover over me!

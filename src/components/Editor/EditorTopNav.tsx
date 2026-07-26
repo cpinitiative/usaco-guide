@@ -11,6 +11,7 @@ import {
   useUserLangSetting,
 } from '../../context/UserDataContext/properties/simpleProperties';
 import LogoSquare from '../LogoSquare';
+import { GITHUB_DEFAULT_BRANCH, githubRepoUrl } from '../../config';
 import { fetchFileContent } from './editorUtils';
 
 export const EditorTopNav = (): JSX.Element => {
@@ -47,43 +48,6 @@ export const EditorTopNav = (): JSX.Element => {
             </span>
           </Link>
         </div>
-        {/*<button className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-hidden transition">*/}
-        {/*  /!*<ArchiveIcon className="h-4 w-4" />*!/*/}
-        {/*  <span>History</span>*/}
-        {/*</button>*/}
-        {/*<button className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-hidden transition">*/}
-        {/*  /!*<ShareIcon className="h-4 w-4" />*!/*/}
-        {/*  <span>Share</span>*/}
-        {/*</button>*/}
-        {/*<button*/}
-        {/*  className="inline-flex items-center space-x-2 text-gray-600 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-2 font-medium text-sm rounded-md focus:outline-hidden transition"*/}
-        {/*  onClick={async () => {*/}
-        {/*    const db = getFirestore(firebaseApp);*/}
-        {/*    try {*/}
-        {/*      const docCollection = collection(*/}
-        {/*        doc(db, 'editor-documents', id),*/}
-        {/*        'edits'*/}
-        {/*      );*/}
-        {/*      // await runTransaction(*/}
-        {/*      //   getFirestore(firebaseApp),*/}
-        {/*      //   async transaction => {*/}
-        {/*      //     const v = await transaction;*/}
-        {/*      //     if (!v.exists()) {*/}
-        {/*      //       transaction.set(docRef, {});*/}
-        {/*      //     }*/}
-        {/*      //     const newPopulation = doc.data().population + 1;*/}
-        {/*      //     transaction.update(docRef, { population: newPopulation });*/}
-        {/*      //   }*/}
-        {/*      // );*/}
-        {/*      console.log('Transaction successfully committed!');*/}
-        {/*    } catch (e) {*/}
-        {/*      console.log('Transaction failed: ', e);*/}
-        {/*    }*/}
-        {/*  }}*/}
-        {/*>*/}
-        {/*  Save*/}
-        {/*</button>*/}
-
         {activeFile?.path && (
           <button
             className="inline-flex items-center space-x-2 rounded-md px-3 py-2 text-sm font-medium text-gray-500 transition hover:bg-gray-100 hover:text-gray-700 focus:outline-hidden dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-300"
@@ -94,12 +58,12 @@ export const EditorTopNav = (): JSX.Element => {
         )}
         {activeFile?.path && (
           <a
-            href={`https://github.com/cpinitiative/usaco-guide/blob/master/${encodeURI(
-              activeFile?.path
-            )}`}
+            href={githubRepoUrl(
+              `/blob/${GITHUB_DEFAULT_BRANCH}/${encodeURI(activeFile?.path)}`
+            )}
             target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center space-x-2 rounded-md px-3 py-2 text-sm font-medium text-gray-500 transition hover:bg-gray-100 hover:text-gray-700 focus:outline-hidden dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-300"
-            rel="noreferrer"
           >
             View File on GitHub &rarr;
           </a>
@@ -128,7 +92,7 @@ export const EditorTopNav = (): JSX.Element => {
         <a
           href="/general/adding-solution"
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
           className="group inline-flex items-center space-x-2 text-sm font-medium text-gray-600 transition hover:text-black dark:text-gray-400 dark:hover:text-gray-200"
         >
           <InformationCircleIcon className="h-6 w-6 text-gray-400 transition group-hover:text-gray-500 dark:group-hover:text-gray-300" />
@@ -177,3 +141,4 @@ export const EditorTopNav = (): JSX.Element => {
     </div>
   );
 };
+

@@ -17,7 +17,7 @@ const Index = () => {
     <Wrapper>
       <GroupPageWrapper groupId={id as string}>
         <PostPageWrapper postId={postId as string}>
-          <EditPostPage groupId={id as string} postId={postId as string} />
+          <EditPostPage path="" groupId={id as string} postId={postId as string} />
         </PostPageWrapper>
       </GroupPageWrapper>
     </Wrapper>

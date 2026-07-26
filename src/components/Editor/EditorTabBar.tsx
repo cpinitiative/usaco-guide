@@ -47,7 +47,7 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
   const tab = useAtomValue(tabAtom);
   const [dialogOpen, setDialogOpen] = useState(false);
   const updateFile = useCallback(
-    async file => {
+    async (file: string | null) => {
       if (!octokit || !githubInfo || !branch) return;
       setCommitState('Committing...');
       let fileSha = undefined;
@@ -64,7 +64,7 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
           })) as any
         ).data.sha;
       } catch {
-        console.log("file doesn't exist yet");
+        // file doesn't exist yet
       }
       const response = await octokit.request(
         'PUT /repos/{owner}/{repo}/contents/{path}',
@@ -81,7 +81,6 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
           },
         }
       );
-      console.log('response: ', response);
       window.open(response.data.commit.html_url, '_blank');
       setCommitState('Commit Code');
     },

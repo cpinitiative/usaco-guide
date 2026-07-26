@@ -26,19 +26,19 @@ export function validateProblemConsistency(problems: ProblemInfo[]): {
         b = problemInfo.get(problem.uniqueId);
       // Some problems with no corresponding module gets put into extraProblems.json.
       // If a problem has a module, then it should be removed from extraProblems.json.
-      if (!a.module || !b.module) {
+      if (!a.module || !b?.module) {
         throw new Error(
           `The problem ${problem.uniqueId} is in both extraProblems.json and in another module at the same time. Remove this problem from extraProblems.json.`
         );
       }
-      if (a.name !== b.name || a.url !== b.url || a.source !== b.source) {
+      if (a.name !== b!.name || a.url !== b!.url || a.source !== b!.source) {
         throw new Error(
           `The problem ${problem.uniqueId} appears in both ${
-            problem.module.frontmatter.id
-          } - ${problem.module.frontmatter.title} and ${
-            problemInfo.get(problem.uniqueId).module.frontmatter.id
+            a.module!.frontmatter.id
+          } - ${a.module!.frontmatter.title} and ${
+            b!.module!.frontmatter.id
           } - ${
-            problemInfo.get(problem.uniqueId).module.frontmatter.title
+            b!.module!.frontmatter.title
           } but has different information! They need to have the same name / url / source.`
         );
       }
@@ -120,7 +120,7 @@ export function validateSolutionRelationships(
         problemsThatAreMissingInternalSolution.forEach(problem => {
           throw new Error(
             `Problem ${problem.uniqueId} isn't linked to its corresponding internal solution in module
-             ${problem.module.frontmatter.id} - ${problem.module.frontmatter.title}`
+             ${problem.module!.frontmatter.id} - ${problem.module!.frontmatter.title}`
           );
         });
         throw new Error(

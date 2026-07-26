@@ -12,7 +12,8 @@ import Card from '../components/Dashboard/DashboardCard';
 import DashboardProgress from '../components/Dashboard/DashboardProgress';
 import WelcomeBackBanner from '../components/Dashboard/WelcomeBackBanner';
 import Layout from '../components/layout';
-import divToProbs from '../components/markdown/ProblemsList/DivisionList/div_to_probs.json';
+import divToProbs from '../../data/div_to_probs.json';
+const divToProbsMap = divToProbs as unknown as Record<string, [string, string, string][]>;
 import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
 import { CowImagesProvider } from '../context/CowImagesContext';
@@ -64,30 +65,33 @@ export default function DashboardPage({
   );
   const problemIDMap = React.useMemo(() => {
     // 1. problems in modules
-    const res = loadedProblemInfo.reduce((acc, cur) => {
-      const problem = cur;
-      // ignore problems that don't have an associated module (extraProblems.json)
-      if (problem.inModule) {
-        if (!(problem.uniqueId in acc)) {
-          acc[problem.uniqueId] = {
-            label: `${problem.source}: ${problem.name}`,
-            modules: [],
-          };
+    const res = loadedProblemInfo.reduce(
+      (
+        acc: { [key: string]: { label: string; modules: { url: string; moduleId?: string }[] } },
+        cur
+      ) => {
+        // ignore problems that don't have an associated module (extraProblems.json)
+        if (cur.inModule) {
+          if (!(cur.uniqueId in acc)) {
+            acc[cur.uniqueId] = {
+              label: `${cur.source}: ${cur.name}`,
+              modules: [],
+            };
+          }
+          acc[cur.uniqueId].modules.push({
+            url: `${moduleIDToURLMap[cur.moduleId]}/#problem-${cur.uniqueId}`,
+            moduleId: cur.moduleId,
+          });
         }
-        acc[problem.uniqueId].modules.push({
-          url: `${moduleIDToURLMap[problem.moduleId]}/#problem-${
-            problem.uniqueId
-          }`,
-          moduleId: problem.moduleId,
-        });
-      }
-      return acc;
-    }, {});
+        return acc;
+      },
+      {}
+    );
 
     // 2. problems in USACO monthly table
     const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
     for (const division of divisions) {
-      for (const probInfo of divToProbs[division]) {
+      for (const probInfo of divToProbsMap[division]) {
         const id = `usaco-${probInfo[0]}`;
         if (!(id in res)) {
           res[id] = {
@@ -165,17 +169,13 @@ export default function DashboardPage({
   const problemStatisticsIDs = React.useMemo(() => {
     return Object.keys(problemIDMap).filter(problemID =>
       problemIDMap[problemID].modules.some(
-        (module: { url: string; moduleId: string }) =>
+        (module: { url: string; moduleId?: string }) =>
+          module.moduleId !== undefined &&
           moduleIDToSectionMap[module.moduleId] === lastViewedSection
       )
     );
   }, [problemIDMap, lastViewedSection]);
   const allProblemsProgressInfo = useProblemsProgressInfo(problemStatisticsIDs);
-
-  const [finishedRendering, setFinishedRendering] = React.useState(false);
-  React.useEffect(() => {
-    setFinishedRendering(true);
-  }, []);
 
   return (
     <Layout>
@@ -184,137 +184,141 @@ export default function DashboardPage({
       <div className="dark:bg-dark-surface min-h-screen bg-gray-100">
         <TopNavigationBar linkLogoToIndex={true} redirectToDashboard={false} />
 
-        {finishedRendering && (
-          <main className="pb-12">
-            <div className="mx-auto mb-4 max-w-7xl">
-              <div className="pt-4 pb-6 lg:px-8">
-                <div className="mb-4 flex flex-wrap">
-                  <div className="w-full text-center">
-                    {firebaseUser ? (
-                      <>
-                        Signed in as <i>{firebaseUser.email}</i>.
-                      </>
-                    ) : (
-                      <span>
-                        Not signed in.{' '}
-                        <a
-                          href="#"
-                          onClick={e => {
-                            e.preventDefault();
-                            signIn();
-                          }}
-                          className="text-blue-600 underline dark:text-blue-300"
-                        >
-                          Sign in now!
-                        </a>{' '}
-                      </span>
-                    )}
+        <main className="pb-12">
+          <div className="mx-auto mb-4 max-w-7xl">
+            <div className="pt-4 pb-6 lg:px-8">
+              {/* Visually hidden page-level h1 for screen readers and heading hierarchy.
+                  The dashboard title is communicated visually by the page <title> and
+                  the signed-in status line, but assistive technology needs an h1. */}
+              <h1 className="sr-only">Dashboard</h1>
+              <div className="mb-4 flex flex-wrap">
+                <div className="w-full text-center">
+                  {firebaseUser ? (
+                    <>
+                      Signed in as <i>{firebaseUser.email}</i>.
+                    </>
+                  ) : (
+                    <span>
+                      Not signed in.{' '}
+                      <button
+                        type="button"
+                        onClick={() => signIn()}
+                        className="text-blue-600 underline dark:text-blue-300"
+                      >
+                        Sign in now!
+                      </button>{' '}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <WelcomeBackBanner
+                lastViewedModuleURL={lastViewedModuleURL}
+                lastViewedModuleLabel={moduleIDToName[lastViewedModuleID]}
+              />
+            </div>
+          </div>
+          <div className="mx-auto max-w-7xl sm:px-6 lg:grid lg:grid-cols-2 lg:gap-8 lg:px-8">
+            {activeProblems.length > 0 && (
+              <div className="mb-8">
+                <ActiveItems type="problems" items={activeProblems} />
+              </div>
+            )}
+            {activeModules.length > 0 && (
+              <div className="mb-8">
+                <ActiveItems type="modules" items={activeModules} />
+              </div>
+            )}
+          </div>
+          <header>
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+              <h2 className="dark:text-dark-high-emphasis text-3xl leading-tight font-bold text-gray-900">
+                Activity
+              </h2>
+            </div>
+          </header>
+          <div className="mx-auto mb-8 max-w-7xl">
+            <Activity />
+          </div>
+          <header>
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+              <h2 className="dark:text-dark-high-emphasis text-3xl leading-tight font-bold text-gray-900">
+                Statistics
+              </h2>
+            </div>
+          </header>
+          <div className="mx-auto mb-8 max-w-7xl">
+            <div className="space-y-8 py-4 sm:px-6 lg:grid lg:grid-cols-2 lg:gap-8 lg:space-y-0 lg:px-8">
+              <div className="space-y-8">
+                <Card>
+                  <div className="px-4 py-5 sm:p-6">
+                    <h3 className="dark:text-dark-high-emphasis text-lg leading-6 font-medium text-gray-900">
+                      Modules Progress - {SECTION_LABELS[lastViewedSection]}
+                    </h3>
+                    <div className="mt-6">
+                      <DashboardProgress
+                        {...allModulesProgressInfo}
+                        total={moduleProgressIDs.length}
+                      />
+                    </div>
                   </div>
-                </div>
-                <WelcomeBackBanner
-                  lastViewedModuleURL={lastViewedModuleURL}
-                  lastViewedModuleLabel={moduleIDToName[lastViewedModuleID]}
-                />
+                </Card>
               </div>
-            </div>
-            <div className="mx-auto max-w-7xl sm:px-6 lg:grid lg:grid-cols-2 lg:gap-8 lg:px-8">
-              {activeProblems.length > 0 && (
-                <div className="mb-8">
-                  <ActiveItems type="problems" items={activeProblems} />
-                </div>
-              )}
-              {activeModules.length > 0 && (
-                <div className="mb-8">
-                  <ActiveItems type="modules" items={activeModules} />
-                </div>
-              )}
-            </div>
-            <header>
-              <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <h1 className="dark:text-dark-high-emphasis text-3xl leading-tight font-bold text-gray-900">
-                  Activity
-                </h1>
-              </div>
-            </header>
-            <div className="mx-auto mb-8 max-w-7xl">
-              <Activity />
-            </div>
-            <header>
-              <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <h1 className="dark:text-dark-high-emphasis text-3xl leading-tight font-bold text-gray-900">
-                  Statistics
-                </h1>
-              </div>
-            </header>
-            <div className="mx-auto max-w-7xl">
-              <div className="space-y-8 py-4 sm:px-6 lg:grid lg:grid-cols-2 lg:gap-8 lg:space-y-0 lg:px-8">
-                <div className="space-y-8">
-                  <Card>
-                    <div className="px-4 py-5 sm:p-6">
-                      <h3 className="dark:text-dark-high-emphasis text-lg leading-6 font-medium text-gray-900">
-                        Modules Progress - {SECTION_LABELS[lastViewedSection]}
-                      </h3>
-                      <div className="mt-6">
-                        <DashboardProgress
-                          {...allModulesProgressInfo}
-                          total={moduleProgressIDs.length}
-                        />
-                      </div>
+              <div className="space-y-8">
+                <Card>
+                  <div className="px-4 py-5 sm:p-6">
+                    <h3 className="dark:text-dark-high-emphasis text-lg leading-6 font-medium text-gray-900">
+                      Problems Progress - {SECTION_LABELS[lastViewedSection]}
+                    </h3>
+                    <div className="mt-6">
+                      <DashboardProgress
+                        {...allProblemsProgressInfo}
+                        total={problemStatisticsIDs.length}
+                      />
                     </div>
-                  </Card>
-                </div>
-                <div className="space-y-8">
-                  <Card>
-                    <div className="px-4 py-5 sm:p-6">
-                      <h3 className="dark:text-dark-high-emphasis text-lg leading-6 font-medium text-gray-900">
-                        Problems Progress - {SECTION_LABELS[lastViewedSection]}
-                      </h3>
-                      <div className="mt-6">
-                        <DashboardProgress
-                          {...allProblemsProgressInfo}
-                          total={Object.keys(problemStatisticsIDs).length}
-                        />
-                      </div>
-                    </div>
-                  </Card>
-                </div>
-                <CowImagesProvider value={cowImages}>
-                  <DailyStreak streak={consecutiveVisits} />
-                </CowImagesProvider>
+                  </div>
+                </Card>
               </div>
+              <CowImagesProvider value={cowImages}>
+                <DailyStreak streak={consecutiveVisits} />
+              </CowImagesProvider>
             </div>
-          </main>
-        )}
+          </div>
+        </main>
       </div>
     </Layout>
   );
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  try {
-    const { loadCowImages } = await import('../lib/loadContent');
-    const { queryAllModuleIdsAndTitles, queryAllProblemDashboardInfo } =
-      await import('../lib/queryContent');
-    const loadedModuleInfo = await queryAllModuleIdsAndTitles();
-    if (!loadedModuleInfo || loadedModuleInfo.length === 0) {
-      console.error('No modules loaded or failed to load modules');
-      return { notFound: true };
-    }
-    const loadedProblemInfo = await queryAllProblemDashboardInfo();
-    if (!loadedProblemInfo || loadedProblemInfo.length === 0) {
-      console.error('No problems loaded or failed to load problems');
-      return { notFound: true };
-    }
-    const cowImages = await loadCowImages();
-    return {
-      props: {
-        loadedModuleInfo,
-        loadedProblemInfo,
-        cowImages,
-      },
-    };
-  } catch (error) {
-    console.error('Error loading dashboard data:', error);
-    return { notFound: true };
+  // F-15: throw on any data-load failure so the build fails loudly instead of
+  // silently publishing a 404 for /dashboard.  A 404 is semantically wrong
+  // ("page does not exist") and hides the real problem from operators.
+  const { loadCowImages } = await import('../lib/loadContent');
+  const { queryAllModuleIdsAndTitles, queryAllProblemDashboardInfo } =
+    await import('../lib/queryContent');
+
+  const loadedModuleInfo = await queryAllModuleIdsAndTitles();
+  if (!loadedModuleInfo || loadedModuleInfo.length === 0) {
+    throw new Error(
+      'Dashboard build failed: queryAllModuleIdsAndTitles returned no results. ' +
+      'Ensure the content database is built before running Next.js (run `yarn index-content`).'
+    );
   }
+
+  const loadedProblemInfo = await queryAllProblemDashboardInfo();
+  if (!loadedProblemInfo || loadedProblemInfo.length === 0) {
+    throw new Error(
+      'Dashboard build failed: queryAllProblemDashboardInfo returned no results.'
+    );
+  }
+
+  const cowImages = await loadCowImages();
+
+  return {
+    props: {
+      loadedModuleInfo,
+      loadedProblemInfo,
+      cowImages,
+    },
+  };
 };

@@ -13,7 +13,7 @@ export default function ModuleHeadersLinkList(props: {
               <a
                 href={link.url}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="text-black underline dark:text-blue-200"
               >
                 {link.label}
@@ -29,3 +29,4 @@ export default function ModuleHeadersLinkList(props: {
     </Info>
   );
 }
+

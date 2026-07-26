@@ -6,21 +6,25 @@ export default function useContactFormAction() {
   const firebaseApp = useFirebaseApp();
 
   return useCallback(
-    async ({ name, email, moduleName, url, lang, topic, message }) => {
-      if (!name) {
-        throw new Error('Please enter your name.');
-      }
-      if (!email) {
-        throw new Error('Please enter your email.');
-      }
-      if (!topic) {
-        throw new Error('Please select a topic');
-      }
-      if (!message) {
-        throw new Error('Please enter a message.');
-      }
+    async ({
+      name,
+      email,
+      moduleName,
+      url,
+      lang,
+      topic,
+      message,
+    }: {
+      name: string;
+      email: string;
+      moduleName: string;
+      url: string;
+      lang: string;
+      topic: string;
+      message: string;
+    }) => {
       if (!firebaseApp) {
-        throw new Error('Too fast! Please wait ten seconds and try again.');
+        throw new Error('Firebase is not initialized yet. Please try again.');
       }
       const submitProblemSuggestion = httpsCallable(
         getFunctions(firebaseApp),

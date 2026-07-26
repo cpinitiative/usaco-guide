@@ -50,24 +50,18 @@ export default function PostExportModal(props: {
     const snap = await getDocs(q);
     setProblems(snap.docs.map(doc => ({ ...doc.data(), id: doc.id })));
 
-    console.log(g.name);
     if (groupsUsedMap.has(g.id)) {
-      setGroupsUsedMap(
-        new Map(
-          groupsUsedMap.set(g.id, new MapData(!groupsUsedMap.get(g.id).used, g))
-        )
-      );
-      console.log(groupsUsedMap.get(g.id).used);
-    } else {
-      setGroupsUsedMap(new Map(groupsUsedMap.set(g.id, new MapData(true, g))));
-      console.log(groupsUsedMap.get(g.id).used);
-    }
-    console.log(groupsUsedMap.size);
+        setGroupsUsedMap(
+          new Map(
+            groupsUsedMap.set(g.id, new MapData(!groupsUsedMap.get(g.id).used, g))
+          )
+        );
+      } else {
+        setGroupsUsedMap(new Map(groupsUsedMap.set(g.id, new MapData(true, g))));
+      }
   }
 
   async function exportSelectedPosts() {
-    console.log('cont');
-    console.log(problems);
     const type = props.post.type;
     const defaultPost: Omit<PostData, 'timestamp'> = {
       name: props.post.name,
@@ -85,8 +79,6 @@ export default function PostExportModal(props: {
           }),
     };
 
-    console.log('gm ' + groupsUsedMap.size);
-    console.log('Problem load ' + problems.length);
     groupsUsedMap.forEach((value: MapData, key: string) => {
       if (value.used) {
         const firestore = getFirestore(firebaseApp);
@@ -124,7 +116,6 @@ export default function PostExportModal(props: {
               [`problemOrdering`]: arrayUnion(docRef2.id),
             }
           );
-          console.log(problem);
         });
         batch.commit();
       }

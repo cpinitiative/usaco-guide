@@ -5,7 +5,7 @@ const QuizGeneratorContext = React.createContext<{
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }>({ open: false, setOpen: () => false });
 
-const QuizGeneratorProvider = ({ children }) => {
+const QuizGeneratorProvider = ({ children }: { children: React.ReactNode }) => {
   const [open, setOpen] = React.useState(false);
   return (
     <QuizGeneratorContext.Provider value={{ open, setOpen }}>

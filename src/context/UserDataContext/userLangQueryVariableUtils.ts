@@ -1,6 +1,6 @@
 // From https://stackoverflow.com/questions/2090551/parse-query-string-in-javascript
-function getQueryVariable(query, variable): string | null {
-  const vars = query.split('&').filter(i => i);
+function getQueryVariable(query: string, variable: string): string | null {
+  const vars = query.split('&').filter((i: string) => i);
   for (let i = 0; i < vars.length; i++) {
     const pair = vars[i].split('=');
     if (decodeURIComponent(pair[0]) == variable) {
@@ -10,7 +10,7 @@ function getQueryVariable(query, variable): string | null {
   return null;
 }
 
-function replaceQueryVariable(variable, value): string {
+function replaceQueryVariable(variable: string, value: string): string {
   const query = window.location.search.slice(1);
   // https://stackoverflow.com/questions/9141951/splitting-string-by-whitespace-without-empty-elements/39184134
   const vars = query.split('&').filter(i => i);
@@ -26,7 +26,7 @@ function replaceQueryVariable(variable, value): string {
   return '?' + vars.join('&');
 }
 
-function replaceSearch(newSearch): string {
+function replaceSearch(newSearch: string): string {
   const loc = window.location;
   return `${loc.origin}${loc.pathname}${newSearch}${loc.hash}`;
 }

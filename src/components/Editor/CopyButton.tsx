@@ -1,7 +1,7 @@
 // source: https://codesandbox.io/p/sandbox/copy-to-clipboard-animation-qt8pf
 import React from 'react';
 
-export default function CopyButton({ className, onClick }) {
+export default function CopyButton({ className, onClick }: { className: string; onClick: () => void }) {
   const [copied, setCopied] = React.useState(false);
 
   React.useEffect(() => {
@@ -40,7 +40,7 @@ export default function CopyButton({ className, onClick }) {
   );
 }
 
-function Clippy(props) {
+function Clippy(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       width="16"
@@ -58,7 +58,7 @@ function Clippy(props) {
   );
 }
 
-function Check(props) {
+function Check(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       width="16"

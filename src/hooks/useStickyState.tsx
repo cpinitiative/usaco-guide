@@ -2,8 +2,11 @@ import * as React from 'react';
 import { throttle } from 'throttle-debounce';
 // source: https://joshwcomeau.com/react/persisting-react-state-in-localstorage/
 // modified to support ssr and throttling
-const saveToLocalStorage = (key: string, value: any) =>
-  window.localStorage.setItem(key, JSON.stringify(value));
+const saveToLocalStorage = (key: string, value: any) => {
+  if (typeof window !== 'undefined') {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  }
+};
 /**
  * Mimics useState, except persists across sessions via localstorage
  * @param defaultValue - default value, if no saved state is found
@@ -29,32 +32,34 @@ export default function useStickyState<S>(
   const [throttledSaveToLocalStorage] = React.useState<
     throttle<(key: string, value: any) => void>
   >(() =>
-    throttle(throttleAmt, (k, v) => {
-      console.log('throttled ', v);
+    throttle(throttleAmt ?? 0, (k, v) => {
       saveToLocalStorage(k, v);
     })
   );
 
   React.useEffect(() => {
     if (initialRender.current) {
-      const stickyValue = window.localStorage.getItem(key);
+      if (typeof window !== 'undefined') {
+        const stickyValue = window.localStorage.getItem(key);
 
-      if (stickyValue !== null) {
-        try {
-          setValue(JSON.parse(stickyValue));
-        } catch (e) {
-          console.error("Couldn't parse key", key);
+        if (stickyValue !== null) {
+          try {
+            setValue(JSON.parse(stickyValue));
+          } catch {
+            setValue(
+              defaultValue instanceof Function ? defaultValue() : defaultValue
+            );
+          }
+        } else {
+          setValue(
+            defaultValue instanceof Function ? defaultValue() : defaultValue
+          );
         }
-      } else {
-        setValue(
-          defaultValue instanceof Function ? defaultValue() : defaultValue
-        );
       }
 
       initialRender.current = false;
     } else {
       if (throttleAmt) {
-        console.log('c');
         throttledSaveToLocalStorage(key, value);
       } else {
         saveToLocalStorage(key, value);
@@ -64,6 +69,6 @@ export default function useStickyState<S>(
       saveToLocalStorage(key, value);
       throttledSaveToLocalStorage.cancel();
     };
-  }, [key, value]);
+  }, [key, value, throttledSaveToLocalStorage, defaultValue]);
   return [value, setValue];
 }

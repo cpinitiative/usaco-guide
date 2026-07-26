@@ -77,6 +77,8 @@ export default function ProblemSubmissionInterface({
   });
 
   const [submissionID, setSubmissionID] = React.useState(null);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState('');
   const submissionResult = useProblemSubmissionResult(submissionID);
 
   if (activeGroup.activeUserId !== firebaseUser?.uid) {
@@ -90,22 +92,26 @@ export default function ProblemSubmissionInterface({
     );
   }
 
-  // todo add ys?
   const cannotSubmit = !(
     problem.usacoGuideId?.startsWith('usaco') ||
     problem.usacoGuideId?.startsWith('cses')
   );
 
   if (cannotSubmit) {
-    const handleSubmitLink = async e => {
+    const handleSubmitLink = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      // prevent empty URL submission
-      if (!submissionLink.trim()) {
-        alert('Cannot submit empty URL');
+      const trimmed = submissionLink.trim();
+      if (!trimmed) {
+        setErrorMessage('Please enter a submission URL');
         return;
       }
-      await submitSubmissionLink(submissionLink, problem.postId, problem.id);
-      setSubmissionLink('');
+      setErrorMessage('');
+      try {
+        await submitSubmissionLink(trimmed, problem.postId, problem.id);
+        setSubmissionLink('');
+      } catch (error: any) {
+        setErrorMessage(error.message || 'Failed to submit URL');
+      }
     };
     return (
       <div>
@@ -118,7 +124,7 @@ export default function ProblemSubmissionInterface({
           website, then paste the submission url below. For Codeforces problems,
           you may need to make a Codeforces account first.
         </div>
-        <label htmlFor="submission-link" className="mt-4 block">
+        <label htmlFor="submission-link" className="mt-4 block text-sm font-medium text-gray-700 dark:text-gray-300">
           Submission URL
         </label>
         <form onSubmit={handleSubmitLink}>
@@ -129,6 +135,9 @@ export default function ProblemSubmissionInterface({
             value={submissionLink}
             onChange={e => setSubmissionLink(e.target.value)}
           />
+          {errorMessage && (
+            <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errorMessage}</p>
+          )}
           <button type="submit" className="btn mt-4">
             Submit
           </button>
@@ -137,8 +146,11 @@ export default function ProblemSubmissionInterface({
     );
   }
 
-  const handleSubmitSolution = async e => {
+  const handleSubmitSolution = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    setErrorMessage('');
     try {
       const submissionID = await submitSolution(
         {
@@ -156,7 +168,9 @@ export default function ProblemSubmissionInterface({
       );
       setSubmissionID(submissionID);
     } catch (error: any) {
-      alert('Failed to submit solution: ' + error.message);
+      setErrorMessage(error.message || 'Failed to submit solution');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -174,7 +188,7 @@ export default function ProblemSubmissionInterface({
           <a
             href="https://ide.usaco.guide/"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="underline"
           >
             ide.usaco.guide
@@ -183,7 +197,7 @@ export default function ProblemSubmissionInterface({
           <a
             href="mailto:classes@joincpi.org"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="underline"
           >
             classes@joincpi.org
@@ -237,9 +251,13 @@ export default function ProblemSubmissionInterface({
         </button>{' '}
         to select a file.
       </div>
-      <button type="submit" className="btn mt-4">
-        Submit Code
+      <button type="submit" className="btn mt-4" disabled={isSubmitting}>
+        {isSubmitting ? 'Submitting...' : 'Submit Code'}
       </button>
+      {errorMessage && (
+        <p className="mt-2 text-sm text-red-600 dark:text-red-400">{errorMessage}</p>
+      )}
     </form>
   );
 }
+

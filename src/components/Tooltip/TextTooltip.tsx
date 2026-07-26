@@ -1,16 +1,20 @@
 // Heavily inspired by https://joshwcomeau.com/
 
 import classNames from 'classnames';
-import Tooltip from './Tooltip';
+import Tooltip, { type TooltipProps } from './Tooltip';
+import type { ReactNode } from 'react';
+
+type TextTooltipProps = Omit<TooltipProps, 'children'> & {
+  children: ReactNode;
+  className?: string | null;
+};
 
 const TextTooltip = ({
   children,
-  className = null as string | null,
+  className,
   ...props
-}) => {
+}: TextTooltipProps) => {
   return (
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     <Tooltip {...props}>
       <span
         className={classNames(

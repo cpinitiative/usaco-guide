@@ -37,8 +37,8 @@ export const EditorOutput = (): JSX.Element => {
           problems: parsedProblems[key],
         }));
       setMarkdownProblemListsProviderValue(problemsList);
-    } catch (e) {
-      console.log(e);
+    } catch {
+      // ignore parse errors
     }
   }, [problems]);
 
@@ -54,7 +54,7 @@ export const EditorOutput = (): JSX.Element => {
     // problem with the same difficulty as the suggested problem.
     parsedOldFileData[listId] = (
       [
-        ...tableToEdit.map((el, i) => ({ index: i, data: el })),
+        ...tableToEdit.map((el: ProblemMetadata, i: number) => ({ index: i, data: el })),
         { index: tableToEdit.length, data: problemMetadata },
       ] as { index: number; data: ProblemMetadata }[]
     )

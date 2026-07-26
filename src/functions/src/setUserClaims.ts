@@ -8,24 +8,25 @@ if (admin.apps.length === 0) {
 export default functions.https.onCall(async request => {
   const { target, claims, merge } = request.data as {
     target: string;
-    // default true
     merge?: boolean;
     claims: Record<string, any>;
   };
   const callerUid = request.auth?.uid;
 
+  if (!callerUid) {
+    throw new functions.https.HttpsError(
+      'permission-denied',
+      'Not authenticated!'
+    );
+  }
+
   const caller = await admin.auth().getUser(callerUid);
-  if (
-    !caller.customClaims.isAdmin &&
-    !['BKFOe33Ym7Pc7aQuET57MiljpF03', '7G0y8xGyv4gkowb33Vmn478znod2'].includes(
-      callerUid
-    )
-  ) {
+  if (!caller.customClaims?.isAdmin) {
     throw new functions.https.HttpsError('permission-denied', 'Not an admin!');
   }
 
   let newClaims;
-  if (merge !== false) {
+  if (merge) {
     const targetUser = await admin.auth().getUser(target);
     const oldClaims = targetUser.customClaims;
     newClaims = {

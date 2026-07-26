@@ -7,7 +7,7 @@ import EditorFileModalInterface from './EditorFileModalInterface';
 export interface EditorFileModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSelect: (file: AlgoliaEditorFile) => void;
+  onSelect: (file: AlgoliaEditorFile | undefined) => void;
 }
 
 export const EditorFileModal: React.FC<EditorFileModalProps> = ({

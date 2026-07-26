@@ -7,7 +7,6 @@ import {
 } from '../models/module';
 import { SolutionInfo } from '../models/solution';
 
-// todo this should be split into ModuleInfoContext and SolutionInfoContext or something
 const MarkdownLayoutContext = createContext<{
   markdownLayoutInfo: ModuleInfo | SolutionInfo;
   sidebarLinks: MarkdownLayoutSidebarModuleLinkInfo[];

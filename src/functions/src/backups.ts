@@ -10,7 +10,7 @@ export default onSchedule(
   event => {
     const bucket = 'gs://backups.usaco.guide';
     const projectId = process.env.GCP_PROJECT || process.env.GCLOUD_PROJECT;
-    const databaseName = backupsClient.databasePath(projectId, '(default)');
+    const databaseName = backupsClient.databasePath(projectId!, '(default)');
 
     return backupsClient
       .exportDocuments({
@@ -21,7 +21,6 @@ export default onSchedule(
       })
       .then(responses => {
         const response = responses[0];
-        console.log(`Operation Name: ${response['name']}`);
       })
       .catch(err => {
         console.error(err);

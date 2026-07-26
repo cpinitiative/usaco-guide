@@ -6,7 +6,7 @@ import { MATHDIV, MATHSPAN } from './MathComponents';
 // Note: try to avoid adding inline styles here; rather, use css selectors to target them.
 // Otherwise it's really hard to override some of these styles
 
-export const OffsetAnchor = ({ id, ...props }): JSX.Element => (
+export const OffsetAnchor = ({ id, ...props }: { id?: string; [key: string]: any }): JSX.Element => (
   <span
     id={id}
     {...props}
@@ -15,7 +15,7 @@ export const OffsetAnchor = ({ id, ...props }): JSX.Element => (
   />
 );
 
-const h1 = ({ id, children, ...props }): JSX.Element => (
+const h1 = ({ id, children, ...props }: { id?: string; children: React.ReactNode; [key: string]: any }): JSX.Element => (
   <h1
     {...props}
     className="dark:text-dark-high-emphasis mt-12 mb-5 text-4xl leading-tight font-bold text-gray-700"
@@ -24,7 +24,7 @@ const h1 = ({ id, children, ...props }): JSX.Element => (
     {children}
   </h1>
 );
-const h2 = ({ id, children, ...props }): JSX.Element => (
+const h2 = ({ id, children, ...props }: { id?: string; children: React.ReactNode; [key: string]: any }): JSX.Element => (
   <h2
     className="dark:text-dark-high-emphasis mt-12 mb-5 text-3xl leading-tight font-bold text-gray-700"
     {...props}
@@ -33,30 +33,30 @@ const h2 = ({ id, children, ...props }): JSX.Element => (
     {children}
   </h2>
 );
-const h3 = ({ id, children, ...props }): JSX.Element => (
+const h3 = ({ id, children, ...props }: { id?: string; children: React.ReactNode; [key: string]: any }): JSX.Element => (
   <h3 {...props} className="mt-8 mb-4 text-2xl leading-snug font-semibold">
     <OffsetAnchor id={id} />
     {children}
   </h3>
 );
-const h4 = ({ id, children, ...props }): JSX.Element => (
+const h4 = ({ id, children, ...props }: { id?: string; children: React.ReactNode; [key: string]: any }): JSX.Element => (
   <h4 {...props} className="mt-6 mb-2 text-xl leading-none font-semibold">
     <OffsetAnchor id={id} />
     {children}
   </h4>
 );
-const p = (props): JSX.Element => <p {...props} />;
+const p = (props: { [key: string]: any }): JSX.Element => <p {...props} />;
 // Note: for the following li component, this is only really necessary for ol.li. It's not needed for anything else.
 // But XDM removed support for ol.li so this sort of works :P
-const li = ({ children, ...props }): JSX.Element => (
+const li = ({ children, ...props }: { children: React.ReactNode; [key: string]: any }): JSX.Element => (
   <li {...props}>
     <div className="flex-1">{children}</div>
   </li>
 );
-const inlineCode = (props): JSX.Element => (
+const inlineCode = (props: { [key: string]: any }): JSX.Element => (
   <code {...props} className="inline-code" />
 );
-const a = ({ children, ...props }) => (
+const a = ({ children, ...props }: { children: React.ReactNode; [key: string]: any }) => (
   <a
     target={!props.href || props.href.startsWith('#') ? undefined : '_blank'}
     {...props}
@@ -64,23 +64,20 @@ const a = ({ children, ...props }) => (
     {children}
   </a>
 );
-const pre = ({ children, copyButton = true, ...props }) => {
+const pre = ({ children, copyButton = true, ...props }: { children: React.ReactNode; copyButton?: boolean; [key: string]: any }) => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const isDarkMode = useDarkMode();
 
-  const isMATHSPAN = children.props.className?.includes('math-inline');
-  const isMATHDIV = children.props.className?.includes('math-display');
+  const child = React.isValidElement(children) ? children as React.ReactElement<{ className?: string; children?: React.ReactNode }> : null;
+  const isMATHSPAN = child?.props.className?.includes('math-inline');
+  const isMATHDIV = child?.props.className?.includes('math-display');
 
-  if (isMATHDIV) {
-    return MATHDIV({
-      ...children.props,
-    });
+  if (isMATHDIV && child) {
+    return <div className={child.props.className}>{child.props.children}</div>;
   }
 
-  if (isMATHSPAN) {
-    return MATHSPAN({
-      ...children.props,
-    });
+  if (isMATHSPAN && child) {
+    return <span className={child.props.className}>{child.props.children}</span>;
   }
 
   return (
@@ -88,8 +85,10 @@ const pre = ({ children, copyButton = true, ...props }) => {
       <CodeBlock
         copyButton={copyButton}
         isDarkMode={isDarkMode}
-        {...children.props}
-      />
+        className={child?.props.className}
+      >
+        {typeof child?.props.children === 'string' ? child.props.children : ''}
+      </CodeBlock>
     </pre>
   );
 };
@@ -123,14 +122,14 @@ const HTMLComponents = {
   pre,
   a,
   HeaderLink,
-  img: ({ src, alt, title }) => {
+  img: ({ src, alt, title }: { src?: string; alt?: string; title?: string; [key: string]: any }) => {
     const parts = (alt ?? '').split('|').map(s => s.trim());
     const numericWidth = parts.find(p => /^\d+$/.test(p));
     const centered = parts.includes('center');
     const altText = parts.find(p => !/^\d+$/.test(p) && p !== 'center');
     return (
       <MarkdownImage
-        src={src}
+        src={src ?? ''}
         alt={altText}
         title={title}
         width={numericWidth ? parseInt(numericWidth, 10) : undefined}

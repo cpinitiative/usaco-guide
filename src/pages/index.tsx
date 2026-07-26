@@ -30,6 +30,7 @@ import TrustedBy from '../components/Index/TrustedBy';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import TopNavigationBar from '../components/TopNavigationBar/TopNavigationBar';
+import { githubRepoUrl } from '../config';
 import { TeamImagesProvider } from '../context/TeamImagesContext';
 import {
   useFirebaseUser,
@@ -196,10 +197,8 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
           </div>
           <div className="h-4 sm:h-6 md:h-16"></div>
         </div>
-      </div>
-      {/* End Hero */}
+</div>
 
-      {/* Learn USACO. Efficiently. */}
       <div className="bg-white dark:bg-gray-900">
         <div className="h-12 sm:h-20 md:h-36 2xl:h-48"></div>
 
@@ -287,9 +286,9 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
                   blurDataURL={`data:image/svg+xml;base64,${Buffer.from(
                     `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'/>`
                   ).toString('base64')}`}
-                  layout="constrained"
                   width={560}
                   height={315}
+                  className="rounded-lg"
                 />
               </div>
             }
@@ -303,7 +302,7 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
             <a
               href="https://forum.usaco.guide/"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className={linkTextStyles}
             >
               View Forum &rarr;
@@ -312,13 +311,12 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
         </div>
         <div className="h-16 md:h-20 2xl:h-36"></div>
       </div>
-      {/* End Learn USACO. Efficiently. */}
 
       <div className="bg-gray-100 dark:bg-black">
         <div className="h-16 md:h-20 2xl:h-36"></div>
         <div className={containerClasses}>
           <div className="dark:hidden">
-            <h1 className={classNames(headerClasses)}>Trusted by thousands</h1>
+            <h2 className={classNames(headerClasses)}>Trusted by thousands</h2>
           </div>
           <div className="invisible h-0 dark:visible dark:h-auto">
             <GlowingText
@@ -434,7 +432,7 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
 
         <div className={containerClasses}>
           <div className="dark:hidden">
-            <h1 className={classNames(headerClasses)}>Join our Team.</h1>
+            <h2 className={classNames(headerClasses)}>Join our Team.</h2>
           </div>
           <div className="invisible h-0 dark:visible dark:h-auto">
             <GlowingText
@@ -451,7 +449,7 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
             <a
               href="https://joincpi.org/"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="underline transition hover:text-blue-400"
             >
               Competitive Programming Initiative
@@ -470,7 +468,7 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
               <a
                 href="https://docs.google.com/document/d/13QpXqdiYQwjBLnywGL1FUG7GFdh8SM_1NigIkJl-A7k/edit?usp=sharing"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className={classNames(whiteButtonClasses, 'inline-block')}
               >
                 Apply Now
@@ -481,9 +479,9 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
           <hr className="my-16 border-gray-300 md:my-20 2xl:my-24 dark:border-gray-800" />
 
           <div className="dark:hidden">
-            <h1 className={classNames(headerClasses)}>
+            <h2 className={classNames(headerClasses)}>
               Or, help us financially!
-            </h1>
+            </h2>
           </div>
           <div className="invisible h-0 dark:visible dark:h-auto">
             <GlowingText
@@ -508,7 +506,7 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
               <a
                 href="mailto:sponsorship@joincpi.org"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className={classNames(whiteButtonClasses, 'inline-block')}
               >
                 Sponsor Us
@@ -519,7 +517,7 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
               <a
                 href="https://www.paypal.com/donate?hosted_button_id=FKG88TSTN82E4"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className={linkTextStyles}
               >
                 Donate via PayPal
@@ -532,7 +530,7 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
             <a
               href="https://joincpi.org/sponsorship_prospectus.pdf"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className={linkTextStyles}
             >
               {' '}
@@ -551,10 +549,10 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
           </p>
           <div className="my-8 grid grid-cols-2 items-center gap-0.5 text-gray-600 md:grid-cols-3 lg:my-6 lg:grid-cols-4 dark:text-gray-400">
             <div className="col-span-1">
-              <a
-                href="http://non-trivial.org/"
+                <a
+                 href="https://non-trivial.org/"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
               >
                 <NonTrivial />
               </a>
@@ -568,7 +566,7 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
               <a
                 href="https://easyfuncoding.com"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
               >
                 <EasyFunCoding />
               </a>
@@ -579,7 +577,6 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
         <div className="h-16 md:h-20 xl:h-36 2xl:h-48"></div>
       </div>
 
-      {/* Begin FAQ */}
       <div className="dark:bg-dark-surface bg-white">
         <div className="mx-auto max-w-(--breakpoint-xl) px-4 pt-12 pb-16 sm:px-6 sm:pt-16 sm:pb-20 lg:px-8 lg:pt-20 lg:pb-28">
           <h2 className={classNames(headerClasses, 'dark:text-gray-100')}>
@@ -596,9 +593,9 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
                     <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
                       USACO stands for the{' '}
                       <Link
-                        href="http://www.usaco.org/"
+                        href="https://www.usaco.org/"
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                         className="text-blue-600 underline dark:text-blue-400"
                       >
                         USA Computing Olympiad
@@ -656,7 +653,7 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
                       <a
                         href="https://joincpi.org/?ref=home"
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                         className="text-blue-600 underline dark:text-blue-400"
                       >
                         Competitive Programming Initiative
@@ -689,7 +686,7 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
                       <a
                         href="https://forum.usaco.guide"
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                         className="text-blue-600 underline dark:text-blue-400"
                       >
                         USACO Forum
@@ -723,9 +720,9 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
                     <p className="text-base leading-6 text-gray-500 dark:text-gray-400">
                       Yes! Check out our{' '}
                       <a
-                        href="https://github.com/cpinitiative/usaco-guide/?ref=home"
+                        href={githubRepoUrl('/?ref=home')}
                         target="_blank"
-                        rel="noreferrer"
+                        rel="noopener noreferrer"
                         className="text-blue-600 underline dark:text-blue-400"
                       >
                         GitHub Repository
@@ -739,7 +736,6 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
           </div>
         </div>
       </div>
-      {/*End FAQ*/}
       <TeamImagesProvider value={teamImages}>
         <ContributorsSection />
       </TeamImagesProvider>
@@ -780,3 +776,4 @@ export const getStaticProps: GetStaticProps = async () => {
     };
   }
 };
+

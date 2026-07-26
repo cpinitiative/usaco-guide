@@ -35,20 +35,19 @@ import { useUserPermissions } from '../context/UserDataContext/UserPermissionsCo
 - Import / Export
  */
 
-export default function SettingsPage(props) {
+export default function SettingsPage() {
   const router = useRouter();
   const { isAdmin } = useUserPermissions();
-  const tabs = [
-    'general',
-    'profile',
-    'auth',
-    'user-data',
-    ...(isAdmin ? ['admin'] : []),
-  ];
-  const [tab, setTab] = React.useReducer((prev, next) => {
-    location.replace('#' + next);
-    return next;
-  }, 'general');
+  const baseTabs = ['general', 'profile', 'auth', 'user-data'];
+  const tabs = React.useMemo(
+    () => [...baseTabs, ...(isAdmin ? ['admin'] : [])],
+    [isAdmin]
+  );
+  const [tab, setTab] = React.useState('general');
+
+  React.useEffect(() => {
+    location.replace('#' + tab);
+  }, [tab]);
 
   React.useEffect(() => {
     const handleHashChange = () => {
@@ -60,12 +59,12 @@ export default function SettingsPage(props) {
     };
     handleHashChange();
     window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashChange', handleHashChange);
-  }, []);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, [tabs]);
 
   return (
     <Layout>
-      <SEO title="Settings" image={null} />
+      <SEO title="Settings" />
 
       <TopNavigationBar />
 
@@ -138,7 +137,7 @@ export default function SettingsPage(props) {
                       <UserData />
                     </>
                   )}
-                  {tab === 'admin' && (
+                  {tab === 'admin' && isAdmin && (
                     <>
                       <AdminSettings />
                     </>

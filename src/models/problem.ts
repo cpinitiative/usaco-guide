@@ -1,7 +1,7 @@
 import { slug } from 'github-slugger';
 import * as defaultOrdering from '../../content/ordering';
 import PGS from '../components/markdown/PGS';
-import id_to_sol from '../components/markdown/ProblemsList/DivisionList/id_to_sol.json';
+import id_to_sol from '../data/id_to_sol.json';
 import { books } from '../utils/books';
 
 export const recentUsaco = ['Bronze', 'Silver', 'Gold', 'Platinum'];
@@ -9,31 +9,31 @@ export const recentUsaco = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 // abbreviation -> [URL, description or full name, instructions to view solutions]
 export const probSources = {
   Bronze: [
-    'http://www.usaco.org/index.php?page=viewproblem2&cpid=',
+    'https://www.usaco.org/index.php?page=viewproblem2&cpid=',
     'USACO 2015-16 to present',
   ],
   Silver: [
-    'http://www.usaco.org/index.php?page=viewproblem2&cpid=',
+    'https://www.usaco.org/index.php?page=viewproblem2&cpid=',
     'USACO 2015-16 to present',
   ],
   Gold: [
-    'http://www.usaco.org/index.php?page=viewproblem2&cpid=',
+    'https://www.usaco.org/index.php?page=viewproblem2&cpid=',
     'USACO 2015-16 to present',
   ],
   Platinum: [
-    'http://www.usaco.org/index.php?page=viewproblem2&cpid=',
+    'https://www.usaco.org/index.php?page=viewproblem2&cpid=',
     'USACO 2015-16 to present',
   ],
   'Old Bronze': [
-    'http://www.usaco.org/index.php?page=viewproblem2&cpid=',
+    'https://www.usaco.org/index.php?page=viewproblem2&cpid=',
     'USACO Platinum did not exist prior to 2015-16.',
   ],
   'Old Silver': [
-    'http://www.usaco.org/index.php?page=viewproblem2&cpid=',
+    'https://www.usaco.org/index.php?page=viewproblem2&cpid=',
     'USACO Platinum did not exist prior to 2015-16.',
   ],
   'Old Gold': [
-    'http://www.usaco.org/index.php?page=viewproblem2&cpid=',
+    'https://www.usaco.org/index.php?page=viewproblem2&cpid=',
     'USACO Platinum did not exist prior to 2015-16.',
   ],
   AC: [
@@ -159,11 +159,11 @@ Ex:
       labelTooltip: string | null;
     }
   | {
-      /*
-Not recommended -- use internal solutions instead.
-Used if there's a super short solution sketch that's not a full editorial.
-Latex *is* allowed with the new implementation of problems.
-*/
+      // for focus problems, when the solution is presented in the module of the problem
+      kind: 'in-module';
+      moduleId: string;
+    }
+  | {
       kind: 'sketch';
       sketch: string;
     }
@@ -228,14 +228,10 @@ export type ProblemSolutionMetadata =
       moduleId: string;
     }
   | {
-      /**
-       * @deprecated
-       */
       kind: 'sketch';
       sketch: string;
-    };
-
-// Checks if a given source is USACO
+    }
+  | null; // null if there's no solution for this problem
 export const isUsaco = (source: string): boolean => {
   if (recentUsaco.some(x => source.includes(x))) return true;
   if (source.startsWith('20')) {
@@ -258,7 +254,6 @@ export const isUsaco = (source: string): boolean => {
 };
 
 // throws if it detects invalid USACO Metadata
-// TODO: add more checks?
 export function checkInvalidUsacoMetadata(metadata: ProblemMetadata) {
   if (!isUsaco(metadata.source)) return;
   if (metadata.url.startsWith('http://poj.org/')) return;
@@ -266,19 +261,20 @@ export function checkInvalidUsacoMetadata(metadata: ProblemMetadata) {
   if (!metadata.url.endsWith('=' + id)) {
     throw Error(`Invalid USACO Metadata: id=${id} url=${metadata.url}`);
   }
-  if (metadata.solutionMetadata.kind == 'USACO') {
-    if (metadata.solutionMetadata.usacoId !== id) {
-      throw Error(
-        `Invalid USACO Metadata: id=${id} solutionMetadata.usacoId=${metadata.solutionMetadata.usacoId}`
-      );
-    }
-  } else if (
-    !['internal', 'in-module'].includes(metadata.solutionMetadata.kind)
-  ) {
-    throw new Error(
-      `Invalid USACO Metadata: id=${id} metadata.solutionMetadata.kind=${metadata.solutionMetadata.kind}`
-    );
-  }
+if (!metadata.solutionMetadata) return;
+   if (metadata.solutionMetadata.kind == 'USACO') {
+     if (metadata.solutionMetadata.usacoId !== id) {
+       throw Error(
+         `Invalid USACO Metadata: id=${id} solutionMetadata.usacoId=${metadata.solutionMetadata.usacoId}`
+       );
+     }
+    } else if (
+      !['internal', 'in-module', 'sketch'].includes(metadata.solutionMetadata.kind)
+    ) {
+     throw new Error(
+       `Invalid USACO Metadata: id=${id} metadata.solutionMetadata.kind=${metadata.solutionMetadata.kind}`
+     );
+   }
 }
 
 export function getProblemURL(
@@ -309,7 +305,7 @@ const getTrailingCodeFromProblemURL = (url: string): number => {
 
 export const getProblemInfo = (
   metadata: ProblemMetadata,
-  ordering?: any
+  ordering?: typeof import('../../content/ordering')
 ): ProblemInfo => {
   // don't cache the ordering import, to make sure it gets re-fetched each time
   if (!ordering) {
@@ -330,8 +326,8 @@ export const getProblemInfo = (
     throw new Error('Bad problem metadata');
   }
 
-  let sol: ProblemSolutionInfo;
-  if (solutionMetadata.kind === 'none') {
+let sol: ProblemSolutionInfo;
+   if (solutionMetadata?.kind === 'none') {
     // for sites such as CF or AtCoder, automatically generate metadata even if solution is set to none
     const autogenerated = autoGenerateSolutionMetadata(
       info.source,
@@ -340,51 +336,52 @@ export const getProblemInfo = (
     );
     if (autogenerated !== null) solutionMetadata = autogenerated;
   }
-  if (solutionMetadata.kind === 'autogen-label-from-site') {
-    const site = solutionMetadata.site;
-    const key = site as keyof typeof probSources;
-    if (!probSources.hasOwnProperty(site) || probSources[key].length !== 3) {
-      // https://stackoverflow.com/questions/57086672/element-implicitly-has-an-any-type-because-expression-of-type-string-cant-b
-      console.error(metadata);
-      throw new Error(
-        "Couldn't autogenerate solution label from problem site " + site
-      );
-    }
-    sol = {
-      kind: 'label',
-      label: 'Check ' + site,
-      labelTooltip: probSources[key][2],
-    };
-  } else if (solutionMetadata.kind === 'internal') {
+if (solutionMetadata?.kind === 'autogen-label-from-site') {
+     const site = solutionMetadata.site;
+     const key = site as keyof typeof probSources;
+     if (!probSources.hasOwnProperty(site) || probSources[key].length !== 3) {
+       // https://stackoverflow.com/questions/57086672/element-implicitly-has-an-any-type-because-expression-of-type-string-cant-b
+       console.error(metadata);
+       throw new Error(
+         "Couldn't autogenerate solution label from problem site " + site
+       );
+     }
+     sol = {
+       kind: 'label',
+       label: 'Check ' + site,
+       labelTooltip: probSources[key][2],
+     };
+   } else if (solutionMetadata?.kind === 'internal') {
     sol = {
       kind: 'internal',
       ...(solutionMetadata.hasHints && { hasHints: solutionMetadata.hasHints }),
     };
-  } else if (solutionMetadata.kind === 'link') {
+  } else if (solutionMetadata?.kind === 'link') {
     sol = {
       kind: 'link',
       url: solutionMetadata.url,
       label: 'External Sol',
     };
-  } else if (solutionMetadata.kind === 'CPH') {
-    const getSec = (dictKey, book, sec) => {
+  } else if (solutionMetadata?.kind === 'CPH') {
+    const getSec = (dictKey: string, book: string, sec: string) => {
       let url = book;
       if (sec[sec.length - 1] == ',') sec = sec.substring(0, sec.length - 1);
       if (!/^\d.*$/.test(sec)) return url;
-      if (!(sec in PGS[dictKey])) {
-        throw `Could not find section ${sec} in source ${dictKey}`;
-      }
-      url += '#page=' + PGS[dictKey][sec];
+      const pgsEntry = PGS[dictKey as keyof typeof PGS] as Record<string, number>;
+      if (!(sec in pgsEntry)) {
+         throw `Could not find section ${sec} in source ${dictKey}`;
+       }
+       url += '#page=' + pgsEntry[sec];
       return url;
     };
     const source = 'CPH';
-    const cphUrl = getSec(source, books[source][0], solutionMetadata.section);
+    const cphUrl = getSec(source, books[source][0], solutionMetadata!.section);
     sol = {
       kind: 'link',
       label: 'CPH ' + solutionMetadata.section,
       url: cphUrl,
     };
-  } else if (solutionMetadata.kind === 'USACO') {
+  } else if (solutionMetadata?.kind === 'USACO') {
     if (!id_to_sol.hasOwnProperty(solutionMetadata.usacoId)) {
       throw new Error(
         "Couldn't find a corresponding USACO external solution for USACO problem ID " +
@@ -396,9 +393,9 @@ export const getProblemInfo = (
       label: 'External Sol',
       url:
         `http://www.usaco.org/current/data/` +
-        id_to_sol[solutionMetadata.usacoId],
+        (id_to_sol as Record<string, string>)[solutionMetadata!.usacoId],
     };
-  } else if (solutionMetadata.kind === 'IOI') {
+  } else if (solutionMetadata?.kind === 'IOI') {
     const year = solutionMetadata.year;
     const num = year - 1994 + 20;
     sol = {
@@ -406,10 +403,10 @@ export const getProblemInfo = (
       label: 'External Sol',
       url: `https://ioinformatics.org/page/ioi-${year}/` + num.toString(),
     };
-  } else if (solutionMetadata.kind === 'none') {
+  } else if (solutionMetadata?.kind === 'none') {
     sol = null;
-  } else if (solutionMetadata.kind === 'in-module') {
-    if (!(solutionMetadata.moduleId in ordering.moduleIDToSectionMap)) {
+  } else if (solutionMetadata?.kind === 'in-module') {
+    if (!(solutionMetadata!.moduleId in (ordering.moduleIDToSectionMap as { [key: string]: string }))) {
       throw new Error(
         `Problem ${metadata.uniqueId} - solution in nonexistent module: ${solutionMetadata.moduleId}`
       );
@@ -418,13 +415,14 @@ export const getProblemInfo = (
       kind: 'link',
       label: 'In Module',
       url: `https://usaco.guide/${
-        ordering.moduleIDToSectionMap[solutionMetadata.moduleId]
+        ordering.moduleIDToSectionMap[solutionMetadata!.moduleId as string]
       }/${solutionMetadata.moduleId}#problem-${info.uniqueId}`,
     };
-  } else if (solutionMetadata.kind === 'sketch') {
+  } else if (solutionMetadata?.kind === 'sketch') {
     sol = {
-      kind: 'sketch',
-      sketch: solutionMetadata.sketch,
+      kind: 'label',
+      label: 'Sketch',
+      labelTooltip: solutionMetadata.sketch,
     };
   } else {
     throw new Error(
@@ -461,7 +459,7 @@ export function generateProblemUniqueId(
       return `cf-${num}${char}`;
     }
   } else {
-    const camelCase = x => {
+    const camelCase = (x: string): string => {
       // In case it's something like 2018 - Problem Name
       if (x.match(/^[0-9]{4}/) !== null) {
         return `${x[2]}${x[3]}-${camelCase(x.substring(7))}`;
@@ -469,7 +467,7 @@ export function generateProblemUniqueId(
       // remove whitespace
       x = x.replace(/[^\w\s]/g, '');
       // camel case everything (first word uppercase)
-      const str = x.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
+      const str = x.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word: string) {
         return word.toUpperCase();
       });
       if (str.split(' ').length === 1) {
@@ -514,7 +512,7 @@ export function autoGenerateSolutionMetadata(
     return null;
   } else if (
     probSources.hasOwnProperty(source) &&
-    probSources[source].length === 3
+    (probSources as { [key: string]: string[] })[source].length === 3
   ) {
     return {
       kind: 'autogen-label-from-site',

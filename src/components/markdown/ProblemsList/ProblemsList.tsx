@@ -84,7 +84,7 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
     <>
       <ListTable
         id={`problemlist-${
-          props.isDivisionTable === false
+          !props.isDivisionTable
             ? props.tableName
             : 'division-' + props.division
         }`}
@@ -102,7 +102,7 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
           />
         }
       >
-        {props.isDivisionTable === true &&
+        {props.isDivisionTable &&
           props.problems!.map((problem: DivisionProblemInfo) => {
             return (
               <ProblemsListItem
@@ -120,7 +120,7 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
               />
             );
           })}
-        {props.isDivisionTable === false && (
+        {!props.isDivisionTable && (
           <>
             {props.problems.map((problem: ProblemInfo) => (
               <ProblemsListItem
@@ -200,22 +200,7 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
                     />
                   </svg>
                 </button>
-              </div>
-              {problem?.solution?.kind === 'sketch' && (
-                <div className="sm:flex sm:items-start">
-                  <div className="text-left">
-                    <h3
-                      className="text-lg leading-6 font-medium text-gray-900"
-                      id="modal-headline"
-                    >
-                      Solution Sketch: {problem?.name}
-                    </h3>
-                    <div className="mt-4">
-                      <p className="text-gray-700">{problem.solution.sketch}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
+               </div>
             </div>
           </Transition>
         </div>

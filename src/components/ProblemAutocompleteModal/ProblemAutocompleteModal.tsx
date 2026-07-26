@@ -20,6 +20,10 @@ const ProblemAutocompleteModal = ({
   onClose,
   onProblemSelect,
 }: ProblemAutocompleteModalProps): JSX.Element => {
+  if (!process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME) {
+    throw new Error('NEXT_PUBLIC_ALGOLIA_INDEX_NAME is not set');
+  }
+
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-30">
       <DialogBackdrop
@@ -84,7 +88,11 @@ const ProblemAutocompleteModal = ({
                 {/* Remount component to trigger autofocus when opening modal */}
 
                 <InstantSearch
-                  indexName={`${process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || 'dev'}_problems`}
+                  indexName={
+                    process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME
+                      ? `${process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME}_problems`
+                      : ''
+                  }
                   searchClient={searchClient}
                 >
                   <ProblemAutocomplete

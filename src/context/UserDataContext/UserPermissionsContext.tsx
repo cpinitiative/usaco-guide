@@ -27,7 +27,7 @@ const UserPermissionsContext = React.createContext<{
   permissions: { [key in UserPermissions]: boolean };
 } | null>(null);
 
-export const UserPermissionsContextProvider = ({ children }) => {
+export const UserPermissionsContextProvider = ({ children }: { children: React.ReactNode }) => {
   const defaultPermissions = {
     isAdmin: false,
     canModerate: false,
@@ -40,15 +40,18 @@ export const UserPermissionsContextProvider = ({ children }) => {
 
   React.useEffect(() => {
     if (firebaseUser?.uid) {
-      (firebaseUser.getIdTokenResult() as any).then(
-        ({ claims }: { claims: { [key in UserPermissions]: boolean } }) => {
-          setPermissions({
-            isAdmin: !!claims.isAdmin,
-            canModerate: !!claims.canModerate,
-            canCreateGroups: !!claims.canCreateGroups,
-          });
-        }
-      );
+      // F-21: remove unnecessary `as any` cast — getIdTokenResult() already
+      // returns Promise<IdTokenResult>.  We cast claims to a known shape instead
+      // of casting the entire promise, preserving TypeScript's ability to catch
+      // future SDK breaking changes.
+      firebaseUser.getIdTokenResult().then(result => {
+        const claims = result.claims as Record<UserPermissions, boolean | undefined>;
+        setPermissions({
+          isAdmin: !!claims.isAdmin,
+          canModerate: !!claims.canModerate,
+          canCreateGroups: !!claims.canCreateGroups,
+        });
+      });
     } else {
       setPermissions(defaultPermissions);
     }
@@ -71,7 +74,7 @@ export const UserPermissionsContextProvider = ({ children }) => {
 export function useUserPermissions() {
   const context = React.useContext(UserPermissionsContext);
   if (!context) {
-    throw 'useUserPermissions() must be called inside a UserPermissionsContext.';
+    throw new Error('useUserPermissions() must be called inside a UserPermissionsContext.');
   }
   return context.permissions;
 }

@@ -182,7 +182,6 @@ export function usePostActions(groupId: string) {
     },
     updateProblemOrdering: async (postId: string, ordering: string[]) => {
       const firestore = getFirestore(firebaseApp);
-      console.log('updating', ordering);
       updateDoc(doc(firestore, 'groups', groupId, 'posts', postId), {
         problemOrdering: ordering,
       });

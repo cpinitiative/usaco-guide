@@ -1,6 +1,7 @@
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import useLeaderboardData from '../../../hooks/groups/useLeaderboardData';
 import { MemberInfo } from '../../../hooks/groups/useMemberInfoForGroup';
+import Image from 'next/image';
 
 const LeaderboardListItem = ({
   place,
@@ -16,7 +17,13 @@ const LeaderboardListItem = ({
     <li className="py-3">
       <div className="flex items-center lg:space-x-4">
         <div className="hidden shrink-0 lg:block">
-          <img className="h-8 w-8 rounded-full" src={member.photoURL} alt="" />
+          <Image
+            className="h-8 w-8 rounded-full"
+            src={member.photoURL}
+            alt=""
+            width={32}
+            height={32}
+          />
         </div>
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-medium text-gray-900 dark:text-gray-100">

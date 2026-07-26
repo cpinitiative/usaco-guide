@@ -9,6 +9,7 @@ export default function MobileAppBar() {
       <button
         className="mobile-menu-button-container -mt-0.5 -ml-0.5 inline-flex h-12 w-12 shrink-0 items-center justify-center"
         aria-label="Open sidebar"
+        aria-expanded="true"
         onClick={() => setIsMobileNavOpen(true)}
       >
         <svg

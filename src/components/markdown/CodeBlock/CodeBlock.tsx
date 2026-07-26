@@ -1,4 +1,3 @@
-// todo: switch to https://github.com/react-syntax-highlighter/react-syntax-highlighter
 
 // File taken from https://github.com/FormidableLabs/prism-react-renderer/issues/54
 
@@ -123,7 +122,7 @@ class CodeBlock extends React.Component<
     copyButton: true,
   };
 
-  constructor(props) {
+  constructor(props: { children: string; className: string | undefined; isDarkMode: boolean; copyButton?: boolean }) {
     super(props);
 
     this.state = {
@@ -134,7 +133,7 @@ class CodeBlock extends React.Component<
     this.setCodeSnipShow = this.setCodeSnipShow.bind(this);
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: { children: string; className: string | undefined; isDarkMode: boolean; copyButton?: boolean }) {
     if (this.props.children !== prevProps.children) {
       this.codeSnips = [];
       const codeSnipShow = this.calculateCodeSnipShow();
@@ -180,11 +179,11 @@ class CodeBlock extends React.Component<
     return this.props.children.replace(/^[\r\n]+|[\r\n]+$/g, '');
   }
 
-  setCollapsed(_collapsed): void {
+  setCollapsed(_collapsed: boolean): void {
     this.setState({ collapsed: _collapsed });
   }
 
-  setCodeSnipShow(id, val): void {
+  setCodeSnipShow(id: number, val: boolean): void {
     this.setState(state => {
       const codeSnipShow = state.codeSnipShow;
       codeSnipShow[id] = val;
@@ -193,12 +192,12 @@ class CodeBlock extends React.Component<
   }
 
   renderTokens(
-    tokens,
-    maxLines,
-    getLineProps,
-    getTokenProps,
-    isDarkMode
-  ): JSX.Element {
+    tokens: any[][],
+    maxLines: number,
+    getLineProps: (props: any) => any,
+    getTokenProps: (props: any) => any,
+    isDarkMode: boolean
+  ): React.ReactNode[] {
     const codeSnips = this.codeSnips;
     let curSnip = 0;
     let delta = 1;
@@ -295,7 +294,7 @@ class CodeBlock extends React.Component<
         .expandCodeBlock && linesOfCode > 15;
     const isDarkMode = this.props.isDarkMode;
 
-    let language = className?.replace(/language-/, '');
+    let language = className?.replace(/language-/, '') ?? '';
     if (language == 'py') language = 'python';
     if (!['cpp', 'java', 'python'].includes(language ?? '')) {
       // no styling, just a regular pre tag
@@ -305,17 +304,6 @@ class CodeBlock extends React.Component<
         </pre>
       );
     }
-
-    // console.warn() if line length is > 80. uncomment to enable
-    // Warning: Performance will be negatively impacted! Make sure to comment out before pushing
-    // You may want to comment out pages/editor.tsx (see file for instructions) to speed up build times
-    // let tooLong = false;
-    // for (let line of children.trim().split("\n")) {
-    //   if (line.length > 80) {
-    //     tooLong = true;
-    //     console.error(line + "               ---- too long! (" + line.length + " chars)")
-    //   }
-    // }
 
     const collapsed = this.state.collapsed;
     const rightOffset = String(language!.length * 8 + 40) + 'px';

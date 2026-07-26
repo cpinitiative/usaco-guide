@@ -2,10 +2,12 @@ export default function Banner({
   text,
   action,
   link,
+  onClose,
 }: {
   text: string;
   action: string | null;
   link: string | null;
+  onClose?: () => void;
 }) {
   return (
     <div className="relative isolate flex items-center gap-x-6 overflow-hidden bg-gray-50 px-6 py-2.5 sm:px-3.5 sm:before:flex-1 dark:bg-[rgb(17_24_39)]">
@@ -60,9 +62,35 @@ export default function Banner({
           <></>
         )}
       </div>
-      <div className="flex flex-1 justify-end">
-        <span className="sr-only">Dismiss</span>
-      </div>
+      {onClose && (
+        <div className="flex flex-1 justify-end">
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-gray-900 dark:text-white"
+            aria-label="Dismiss"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              className="h-5 w-5"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+      )}
+      {!onClose && (
+        <div className="flex flex-1 justify-end">
+          <span className="sr-only">Dismiss</span>
+        </div>
+      )}
     </div>
   );
 }

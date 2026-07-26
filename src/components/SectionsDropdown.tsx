@@ -2,11 +2,11 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/solid';
 import clsx from 'clsx';
 import Link from 'next/link';
-import { SECTIONS, SECTION_LABELS } from '../../content/ordering';
+import { SECTIONS, SECTION_LABELS, SectionID } from '../../content/ordering';
 import { ClientOnly } from './ClientOnly';
 
 export default function SectionsDropdown({
-  currentSection = null as string | null,
+  currentSection = null as SectionID | null,
   sidebarNav = false,
   onSelect = null as ((section: string) => void) | null,
 }): JSX.Element {

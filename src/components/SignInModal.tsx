@@ -29,7 +29,6 @@ export const SignInModal: React.FC<SignInModalProps> = ({
   onClose,
 }) => {
   const firebaseApp = useFirebaseApp();
-  // TODO: test to see whether this actually works
   const forceFirebaseUserRerender = useForceFirebaseUserRerender();
   const [isSigningIn, setIsSigningIn] = React.useState(false);
   const [isLinking, setIsLinking] = React.useState(false);
@@ -45,7 +44,6 @@ export const SignInModal: React.FC<SignInModalProps> = ({
     setError(null);
     signInWithPopup(getAuth(firebaseApp), new GoogleAuthProvider())
       .then(() => {
-        setIsSigningIn(false);
         onClose();
       })
       .catch(e => {
@@ -111,7 +109,6 @@ export const SignInModal: React.FC<SignInModalProps> = ({
       onClose();
     } catch (e) {
       setError(e);
-      console.log(e);
     } finally {
       setIsLinking(false);
     }
@@ -216,7 +213,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
                   disabled={!firebaseApp || isSigningIn}
                 >
                   <svg
-                    xmlns="http://www.w3.org/2000/sv"
+                    xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 120 120"
                     version="1.1"
                     className="h-5 w-5"

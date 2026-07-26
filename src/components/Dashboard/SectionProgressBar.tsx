@@ -1,4 +1,4 @@
-export default function SectionProgressBar({ title }) {
+export default function SectionProgressBar({ title }: { title: string }) {
   return (
     <div className="relative">
       <div className="mb-1 flex items-center justify-between text-gray-900">

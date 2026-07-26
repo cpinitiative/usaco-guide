@@ -21,20 +21,26 @@ import TagsRefinementList from '../../components/ProblemsPage/TagsRefinementList
 import SEO from '../../components/seo';
 import { SortButton } from '../../components/SortButton';
 import TopNavigationBar from '../../components/TopNavigationBar/TopNavigationBar';
-import { useUserProgressOnProblems } from '../../context/UserDataContext/properties/userProgress';
 import searchClient from '../../utils/algoliaLiteSearchClient';
 
-const indexName = `${process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME ?? 'dev'}_problems`;
+const indexName = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME
+  ? `${process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME}_problems`
+  : '';
+
+if (!process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME) {
+  throw new Error('NEXT_PUBLIC_ALGOLIA_INDEX_NAME is not set');
+}
 
 interface ProblemsPageProps {
   problemIds: string[];
 }
 
 export default function ProblemsPage({ problemIds }: ProblemsPageProps) {
-  const userProgress = useUserProgressOnProblems();
+  const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
   const [shuffle, sendShuffle] = useState(0);
   const [random, sendRandom] = useState(0);
   const [sort, setSort] = useState('Relevance');
+
   const selectionMetadata: SelectionProps[] = [
     {
       attribute: 'difficulty',
@@ -85,26 +91,6 @@ export default function ProblemsPage({ problemIds }: ProblemsPageProps) {
         value: chapters.map(chapter => chapter.items).flat(),
       })),
     },
-    {
-      attribute: 'objectID',
-      limit: 500,
-      placeholder: 'Status',
-      searchable: false,
-      isMulti: true,
-      items: [
-        'Not Attempted',
-        'Solving',
-        'Reviewing',
-        'Skipped',
-        'Ignored',
-        'Solved',
-      ].map(label => ({
-        label,
-        value: problemIds.filter(
-          id => (userProgress[id] ?? 'Not Attempted') == label
-        ),
-      })),
-    },
   ];
   return (
     <Layout>
@@ -143,6 +129,28 @@ export default function ProblemsPage({ problemIds }: ProblemsPageProps) {
                     <Selection {...props} />
                   </div>
                 ))}
+                <div className="col-span-2 sm:col-span-3 md:col-span-1 lg:col-span-2">
+                  <Selection
+                    attribute="objectID"
+                    limit={500}
+                    placeholder="Status"
+                    searchable={false}
+                    isMulti={true}
+                    skipAlgoliaRefinement={true}
+                    onLocalFilterChange={setSelectedStatus}
+                    items={[
+                      'Not Attempted',
+                      'Solving',
+                      'Reviewing',
+                      'Skipped',
+                      'Ignored',
+                      'Solved',
+                    ].map(label => ({
+                      label,
+                      value: [label],
+                    }))}
+                  />
+                </div>
               </div>
               <div className="mb-5 flex flex-wrap justify-center gap-3">
                 <button
@@ -199,7 +207,12 @@ export default function ProblemsPage({ problemIds }: ProblemsPageProps) {
                   onChange={newSort => setSort(newSort)}
                 />
               </div>
-              <ProblemHits shuffle={shuffle} random={random} sort={sort} />
+              <ProblemHits
+                shuffle={shuffle}
+                random={random}
+                sort={sort}
+                selectedStatus={selectedStatus}
+              />
               <div className="mt-3 flex flex-wrap justify-center">
                 <Pagination showLast={true} className="pr-4" />
                 <HitsPerPage

@@ -7,6 +7,7 @@ import {
   submissionCircleBorderColor,
   submissionCircleColor,
   submissionTextColor,
+  type ExecutionVerdict,
 } from '../../../models/groups/problem';
 import { useProblemSubmissionPopupAction } from '../ProblemSubmissionPopup';
 
@@ -35,19 +36,19 @@ const SubmissionListItem = ({
         <div className="flex items-center text-sm font-medium text-gray-500 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-gray-100">
           <span
             className={`h-5 w-5 ${
-              submissionCircleBorderColor[getSubmissionStatus(submission)]
+              submissionCircleBorderColor[getSubmissionStatus(submission) as ExecutionVerdict | 'Pending']
             } flex items-center justify-center rounded-full`}
             aria-hidden="true"
           >
             <span
               className={`h-2.5 w-2.5 ${
-                submissionCircleColor[getSubmissionStatus(submission)]
+                submissionCircleColor[getSubmissionStatus(submission) as ExecutionVerdict | 'Pending']
               } rounded-full`}
             />
           </span>
           <span
             className={`mr-4 ml-2 ${
-              submissionTextColor[getSubmissionStatus(submission)]
+              submissionTextColor[getSubmissionStatus(submission) as ExecutionVerdict | 'Pending']
             }`}
           >
             {getSubmissionEarnedPoints(submission, problem)} / {problem.points}

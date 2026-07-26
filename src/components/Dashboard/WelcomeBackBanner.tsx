@@ -3,6 +3,9 @@ import Link from 'next/link';
 export default function WelcomeBackBanner({
   lastViewedModuleURL,
   lastViewedModuleLabel,
+}: {
+  lastViewedModuleURL?: string;
+  lastViewedModuleLabel?: string;
 }) {
   return (
     <div className="w-full bg-white shadow-sm lg:rounded-lg dark:bg-gray-800">

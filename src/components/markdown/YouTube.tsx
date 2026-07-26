@@ -1,4 +1,4 @@
-export default function YouTube({ id, autoplay = false }) {
+export default function YouTube({ id, autoplay = false }: { id: string; autoplay?: boolean }) {
   return (
     // 16:9 aspect ratio
     <div className="relative w-full pb-[56.25%]">

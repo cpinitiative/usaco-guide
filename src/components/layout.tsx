@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Footer from './Footer';
 import { useAnalyticsEffect } from '../hooks/useAnalyticsEffect';
 import { useUpdateStreakEffect } from '../hooks/useUpdateStreakEffect';
 
@@ -15,7 +16,12 @@ const Layout = ({
 }): JSX.Element => {
   useAnalyticsEffect();
   useUpdateStreakEffect({ setLastViewedModule });
-  return <div className="font-sans">{children}</div>;
+  return (
+    <div id="main-content" className="font-sans">
+      {children}
+      <Footer />
+    </div>
+  );
 };
 
 export default Layout;

@@ -8,3 +8,26 @@
   -webkit-animation: spin 1s linear infinite;
   animation: spin 1s linear infinite;
 }
+
+/* Accessibility: honour the user's OS-level motion preference.
+   Users with vestibular disorders or who have enabled "Reduce Motion"
+   in their OS settings should never see spinning or looping animations. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-spin {
+    -webkit-animation: none;
+    animation: none;
+  }
+
+  /* Suppress all transition/animation durations globally so that any
+     third-party components that define their own animations also comply. */
+  *,
+  ::before,
+  ::after {
+    -webkit-animation-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    -webkit-animation-iteration-count: 1 !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

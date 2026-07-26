@@ -41,7 +41,7 @@ export default onDocumentWritten(
           if (!userDoc.exists) transaction.set(userRef, {});
 
           const oldProblemScore = userDoc.data()?.[postId]?.[problemId] || 0;
-          const points = data.score * problemDoc.data().points;
+          const points = data.score * problemDoc.data()!.points;
           if (points < oldProblemScore) {
             return;
           }

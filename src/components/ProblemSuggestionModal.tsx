@@ -1,7 +1,9 @@
 import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react';
+import { Filter } from 'bad-words';
 import * as React from 'react';
 import { useContext } from 'react';
 import { SECTION_LABELS } from '../../content/ordering';
+import { githubRepoUrl } from '../config';
 import { EditorContext } from '../context/EditorContext';
 import MarkdownLayoutContext from '../context/MarkdownLayoutContext';
 import useProblemSuggestionAction from '../hooks/useProblemSuggestionAction';
@@ -38,6 +40,7 @@ export default function ProblemSuggestionModal({
   const [createdIssueLink, setCreatedIssueLink] = React.useState<string | null>(
     null
   );
+  const filter = new Filter();
 
   const submitSuggestion = useProblemSuggestionAction();
   const editorActions = useContext(EditorContext);
@@ -60,7 +63,7 @@ export default function ProblemSuggestionModal({
     }
   }, [isOpen]);
 
-  const handleSubmit = event => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (!difficulty) {
       alert('Please set the problem difficulty.');
@@ -70,22 +73,27 @@ export default function ProblemSuggestionModal({
       alert('Please set the problem source.');
       return;
     }
+    if (filter.isProfane(name) || filter.isProfane(additionalNotes)) {
+      alert('Please remove inappropriate language from your submission.');
+      return;
+    }
 
     setLoading(true);
+
+    const tagsArr = tags
+      .split(',')
+      .map(tag => tag.trim())
+      .filter(tag => tag.length > 0);
 
     // is there a better way to do this? this just identifies the table based on the permalink of the first problem of the table.
     const problemTableLink =
       window.location.href.split(/[?#]/)[0] + '#problemlist-' + listName;
 
     if (editorActions.inEditor) {
-      const tagsArr = tags
-        .split(',')
-        .map(tag => tag.trim())
-        .filter(tag => tag.length > 0);
       let generatedProblemId = '';
       try {
         generatedProblemId = generateProblemUniqueId(source, name, link);
-      } catch (e) {
+      } catch {
         alert(
           'Error generating problem ID from URL. Check console for details.'
         );
@@ -119,12 +127,12 @@ export default function ProblemSuggestionModal({
       SECTION_LABELS[(markdownLayoutInfo as ModuleInfo).section]
     } - ${markdownLayoutInfo.title}`;
 
-    const removePrefix = (a, b) => a.substring(b.length);
+    const removePrefix = (a: string, b: string) => a.substring(b.length);
     submitSuggestion({
       name,
       link,
       difficulty,
-      tags,
+      tags: tagsArr,
       additionalNotes,
       problemTableLink,
       problemListName: listName,
@@ -144,8 +152,8 @@ export default function ProblemSuggestionModal({
       })
       .finally(() => setLoading(false));
   };
-  const getLabel = source => {
-    const map = {
+  const getLabel = (source: string) => {
+    const map: Record<string, string> = {
       'Old Bronze': 'Old USACO Bronze (Before Dec 2015)',
       'Old Silver': 'Old USACO Silver (Before Dec 2015)',
       'Old Gold': 'Old USACO Gold (Before Dec 2015)',
@@ -155,7 +163,7 @@ export default function ProblemSuggestionModal({
       Platinum: 'USACO Platinum',
     };
     if (map[source]) return map[source];
-    return probSources[source][1];
+    return (probSources as Record<string, string[]>)[source][1];
   };
   const isAdditionalPractice = markdownLayoutInfo?.title.includes(
     'Additional Practice'
@@ -237,7 +245,7 @@ export default function ProblemSuggestionModal({
             <a
               href="/general/usaco-monthlies"
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="text-blue-600 underline dark:text-blue-300"
             >
               here
@@ -249,7 +257,7 @@ export default function ProblemSuggestionModal({
           <Select
             options={sourceOptions}
             value={sourceOptions.find(s => s.value == source)}
-            onChange={o => setSource(o.value)}
+            onChange={o => setSource((o as { value: string }).value)}
             className={'tw-forms-disable mt-1 block w-full text-sm'}
             isDisabled={loading}
           />
@@ -365,7 +373,7 @@ export default function ProblemSuggestionModal({
               <a
                 href={createdIssueLink ?? undefined}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="text-black underline dark:text-white"
               >
                 {createdIssueLink}
@@ -441,9 +449,9 @@ export default function ProblemSuggestionModal({
                   <br />
                   This will be submitted as a public{' '}
                   <a
-                    href="https://github.com/cpinitiative/usaco-guide/pulls"
+                    href={githubRepoUrl('/pulls')}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="text-blue-600 underline dark:text-blue-300"
                   >
                     GitHub pull request
@@ -461,3 +469,4 @@ export default function ProblemSuggestionModal({
     </Dialog>
   );
 }
+

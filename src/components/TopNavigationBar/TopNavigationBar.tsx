@@ -28,6 +28,7 @@ import {
   useIsUserDataLoaded,
   useSignOutAction,
 } from '../../context/UserDataContext/UserDataContext';
+import { SectionID } from '../../../content/ordering';
 import ContactUsSlideover from '../ContactUsSlideover/ContactUsSlideover';
 import { LoadingSpinner } from '../elements/LoadingSpinner';
 import Logo from '../Logo';
@@ -40,9 +41,15 @@ import { UserAvatarMenu } from './UserAvatarMenu';
 export default function TopNavigationBar({
   transparent = false,
   linkLogoToIndex = false,
-  currentSection = null,
+  currentSection: _currentSection = null,
   hidePromoBar = false,
   redirectToDashboard = false,
+}: {
+  transparent?: boolean;
+  linkLogoToIndex?: boolean;
+  currentSection?: string | null;
+  hidePromoBar?: boolean;
+  redirectToDashboard?: boolean;
 }) {
   const router = useRouter();
   const firebaseUser = useFirebaseUser();
@@ -52,6 +59,10 @@ export default function TopNavigationBar({
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isContactUsActive, setIsContactUsActive] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [hidePromo, setHidePromo] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return localStorage.getItem('guide:hidePromo') === 'true';
+  });
 
   const resources = [
     {
@@ -140,12 +151,16 @@ export default function TopNavigationBar({
 
   return (
     <>
-      {!hidePromoBar && (
+      {!hidePromoBar && !hidePromo && (
         <>
           <Banner
             text="Our next semester of Bronze/Silver live classes starts this month. Register here!"
             action="Register here"
             link="https://joincpi.org/classes"
+            onClose={() => {
+              setHidePromo(true);
+              localStorage.setItem('guide:hidePromo', 'true');
+            }}
           />
         </>
       )}
@@ -171,7 +186,7 @@ export default function TopNavigationBar({
                 </div>
               </Link>
               <div className={`hidden space-x-8 lg:ml-8 lg:flex`}>
-                <SectionsDropdown currentSection={currentSection} />
+                <SectionsDropdown currentSection={_currentSection as SectionID | null | undefined} />
                 <Link
                   href="/problems/"
                   className={
@@ -270,7 +285,7 @@ export default function TopNavigationBar({
                             key={item.name}
                             href={item.href}
                             target="_blank"
-                            rel="noreferrer"
+                            rel="noopener noreferrer"
                             className="-m-3 flex items-start rounded-lg p-3 transition duration-150 ease-in-out hover:bg-gray-100 dark:hover:bg-gray-700"
                           >
                             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-blue-500 text-white sm:h-12 sm:w-12">
@@ -325,7 +340,7 @@ export default function TopNavigationBar({
               <button
                 className="mobile-menu-button-container inline-flex items-center justify-center p-2"
                 aria-label="Main menu"
-                aria-expanded="false"
+                aria-expanded={isMobileNavOpen}
                 onClick={() => setIsMobileNavOpen(!isMobileNavOpen)}
               >
                 {/* Icon when menu is closed. */}
@@ -412,11 +427,6 @@ export default function TopNavigationBar({
             </div>
           </div>
         </div>
-        {/*
-        Mobile menu, toggle classes based on menu state.
-
-        Menu open: "block", Menu closed: "hidden"
-      */}
         <div className={`${isMobileNavOpen ? 'block' : 'hidden'} lg:hidden`}>
           <div className="grid grid-cols-1 divide-y divide-gray-300 pb-6 dark:divide-gray-800">
             <div className="px-4 py-5">
@@ -481,7 +491,7 @@ export default function TopNavigationBar({
                     key={item.name}
                     href={item.href}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="group -m-3 flex items-center rounded-md p-3 hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
                     <item.icon
@@ -510,8 +520,9 @@ export default function TopNavigationBar({
                     Problems
                   </span>
                 </Link>
-                <a
-                  className="group -m-3 flex cursor-pointer items-center rounded-md p-3 hover:bg-gray-100 dark:hover:bg-gray-700"
+                <button
+                  type="button"
+                  className="group -m-3 flex w-full cursor-pointer items-center rounded-md p-3 hover:bg-gray-100 dark:hover:bg-gray-700"
                   onClick={() => setIsContactUsActive(true)}
                 >
                   <ChatAltIcon
@@ -521,7 +532,7 @@ export default function TopNavigationBar({
                   <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
                     Contact Us
                   </span>
-                </a>
+                </button>
                 <Link
                   key="Settings"
                   href="/settings"
@@ -536,8 +547,9 @@ export default function TopNavigationBar({
                   </span>
                 </Link>
                 {firebaseUser ? (
-                  <a
-                    className="group -m-3 flex items-center rounded-md p-3 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  <button
+                    type="button"
+                    className="group -m-3 flex w-full items-center rounded-md p-3 hover:bg-gray-100 dark:hover:bg-gray-700"
                     onClick={() => signOut()}
                   >
                     <LogoutIcon
@@ -547,10 +559,11 @@ export default function TopNavigationBar({
                     <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
                       Sign Out
                     </span>
-                  </a>
+                  </button>
                 ) : (
-                  <a
-                    className="group -m-3 flex cursor-pointer items-center rounded-md p-3 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  <button
+                    type="button"
+                    className="group -m-3 flex w-full cursor-pointer items-center rounded-md p-3 hover:bg-gray-100 dark:hover:bg-gray-700"
                     onClick={() => signIn()}
                   >
                     <LoginIcon
@@ -560,7 +573,7 @@ export default function TopNavigationBar({
                     <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
                       Sign In
                     </span>
-                  </a>
+                  </button>
                 )}
               </nav>
             </div>

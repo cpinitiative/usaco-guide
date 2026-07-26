@@ -1,17 +1,14 @@
+import { githubRawUrl } from '../../config';
+
 export const fetchFileContent = async (
   filePath: string
 ): Promise<{ markdown: string; problems?: string }> => {
-  const githubURL = encodeURI(
-    `https://raw.githubusercontent.com/cpinitiative/usaco-guide/master/${filePath}`
-  );
+  const githubURL = encodeURI(githubRawUrl(filePath));
   const promises = [fetch(githubURL)];
   if (filePath.startsWith('content/')) {
     // module
     const githubProblemsURL = encodeURI(
-      `https://raw.githubusercontent.com/cpinitiative/usaco-guide/master/${filePath.replace(
-        /\.mdx$/,
-        '.problems.json'
-      )}`
+      githubRawUrl(filePath.replace(/\.mdx$/, '.problems.json'))
     );
     promises.push(fetch(githubProblemsURL));
   }

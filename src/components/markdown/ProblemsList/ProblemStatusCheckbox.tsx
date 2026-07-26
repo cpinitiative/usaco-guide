@@ -16,7 +16,7 @@ import {
 } from '../../../models/problem';
 import { DivisionProblemInfo } from './DivisionList/DivisionProblemInfo';
 
-const ProgressDropdown = ({ onProgressSelected, currentProgress }) => {
+const ProgressDropdown = ({ onProgressSelected, currentProgress }: { onProgressSelected: (progress: ProblemProgress) => void; currentProgress: ProblemProgress }) => {
   const [activeProgress, setActiveProgress] =
     useState<ProblemProgress>(currentProgress);
 
@@ -91,6 +91,7 @@ const ProgressDropdown = ({ onProgressSelected, currentProgress }) => {
               ? 'bg-indigo-600 text-white dark:bg-indigo-800'
               : 'dark:text-dark-med-emphasis text-gray-900'
           } relative cursor-default py-2 pr-4 pl-10 select-none`}
+          aria-selected={activeProgress === progress}
           key={progress}
           onClick={() => onProgressSelected(progress)}
           onMouseEnter={() => setActiveProgress(progress)}
@@ -176,7 +177,7 @@ export default function ProblemStatusCheckbox({
             onProgressSelected={progress => {
               tippyRef.current.hide();
               setUserProgressOnProblems(problem.uniqueId, progress);
-              const solved = x => x == 'Reviewing' || x == 'Solved';
+              const solved = (x: string) => x == 'Reviewing' || x == 'Solved';
               if (progress == 'Solving' || solved(progress)) {
                 updateModuleProgressToPracticing();
               }

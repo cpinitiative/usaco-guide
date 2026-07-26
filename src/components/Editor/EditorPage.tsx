@@ -1,14 +1,3 @@
-// import * as React from 'react';
-//
-// export default function Placeholder() {
-//   return (
-//     <div data-testid="build-placeholder">
-//       This placeholder greatly speeds up build times. Uncomment this code and
-//       comment out everything below it. Make sure to undo before pushing.
-//     </div>
-//   );
-// }
-
 import { useAtomValue, useSetAtom, WritableAtom } from 'jotai';
 import { useRouter } from 'next/router';
 import React, { lazy } from 'react';
@@ -57,12 +46,11 @@ export default function EditorPage(): JSX.Element {
 
   React.useEffect(() => {
     const code = query.code as string;
-
-    // 2. Check the lock AND the code
     if (!code || lock.current) return;
-
-    // 3. Set the lock immediately
     lock.current = true;
+
+    const controller = new AbortController();
+    const signal = controller.signal;
 
     fetch('/api/get-token', {
       method: 'POST',
@@ -70,6 +58,7 @@ export default function EditorPage(): JSX.Element {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ code }),
+      signal,
     })
       .then(res => res.json())
       .then(json => {
@@ -77,11 +66,18 @@ export default function EditorPage(): JSX.Element {
           setToken(json.token);
         }
       })
-      .catch(err => console.error('Token exchange failed', err))
+      .catch(err => {
+        if (err.name !== 'AbortError') {
+          console.error('Token exchange failed', err);
+        }
+      })
       .finally(() => {
-        // 4. Clean up the URL AFTER starting the process
         router.replace('/editor', undefined, { shallow: true });
       });
+
+    return () => {
+      controller.abort();
+    };
   }, [query.code, setToken, router]);
 
   const filesList = useAtomValue(filesListAtom);
@@ -100,17 +96,22 @@ export default function EditorPage(): JSX.Element {
 
   const isAuthenticating = !!query.code;
 
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <QuizGeneratorProvider>
       <Layout>
         <SEO title="Editor" image={undefined} />
 
-        <div className="flex h-screen min-w-[768px] flex-col">
+        <div className="flex h-screen min-w-0 flex-col">
           <LazyLoad>
             <EditorTopNav />
           </LazyLoad>
 
-          {typeof window !== 'undefined' && (
+          {mounted && (
             <Split
               className="relative h-full flex-1 overflow-hidden [&>.gutter.gutter-horizontal]:cursor-ew-resize [&>.gutter.gutter-horizontal]:bg-gray-100 dark:[&>.gutter.gutter-horizontal]:bg-gray-900 [&>div,&>.gutter.gutter-horizontal]:float-left [&>div,&>.gutter.gutter-horizontal]:h-full"
               onDrag={() => {

@@ -110,7 +110,7 @@ function ProblemSubmissionPopup() {
                             className="font-medium underline"
                             href={submission.link}
                             target="_blank"
-                            rel="noreferrer"
+                            rel="noopener noreferrer"
                           >
                             {submission.link}
                           </a>
@@ -145,7 +145,7 @@ function ProblemSubmissionPopup() {
   );
 }
 
-export function ProblemSubmissionPopupProvider({ children }) {
+export function ProblemSubmissionPopupProvider({ children }: { children: React.ReactNode }) {
   const [showPopup, setShowPopup] = React.useState(false);
   const [submission, setSubmission] = React.useState<FirebaseSubmission | null>(
     null
@@ -176,3 +176,4 @@ export function useProblemSubmissionPopupAction() {
     popupContext.setShowPopup(true);
   };
 }
+

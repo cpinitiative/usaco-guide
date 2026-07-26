@@ -22,9 +22,9 @@ export const FileListSidebar: React.FC<{
   onNewFile,
 }) => {
   const [isFileModalOpen, setIsFileModalOpen] = useState(false);
-  const handleFileSelect = (file: AlgoliaEditorFile) => {
+  const handleFileSelect = (file: AlgoliaEditorFile | undefined) => {
     setIsFileModalOpen(false);
-    onNewFile(file);
+    if (file) onNewFile(file);
   };
 
   return (

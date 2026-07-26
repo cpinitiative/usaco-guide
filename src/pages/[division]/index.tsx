@@ -66,7 +66,7 @@ const SECTION_DESCRIPTION: { [key in SectionID]: React.ReactNode } = {
       <a
         href="https://joincpi.org/bronze-video-classes"
         target="_blank"
-        rel="noreferrer"
+        rel="noopener noreferrer"
         className="underline"
       >
         self-study Bronze course.
@@ -81,7 +81,7 @@ const SECTION_DESCRIPTION: { [key in SectionID]: React.ReactNode } = {
       <a
         href="https://joincpi.org/silver-video-classes"
         target="_blank"
-        rel="noreferrer"
+        rel="noopener noreferrer"
         className="underline"
       >
         self-study Silver course.

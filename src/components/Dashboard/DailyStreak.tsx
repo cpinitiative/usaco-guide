@@ -7,14 +7,16 @@ import { useLastVisitInfo } from '../../context/UserDataContext/properties/lastV
 
 // note: cows will be unlocked in lexicographical order
 
-const ComeBackTimer = ({ tomorrowMilliseconds }) => {
+const ComeBackTimer = ({ tomorrowMilliseconds }: { tomorrowMilliseconds: number }) => {
   const [milliseconds, setMilliseconds] = React.useState(
     tomorrowMilliseconds - Date.now()
   );
+  const tomorrowRef = React.useRef(tomorrowMilliseconds);
+  tomorrowRef.current = tomorrowMilliseconds;
 
   React.useEffect(() => {
     const interval = setInterval(() => {
-      setMilliseconds(Math.max(0, tomorrowMilliseconds - Date.now()));
+      setMilliseconds(Math.max(0, tomorrowRef.current - Date.now()));
     }, 1000);
     return () => clearInterval(interval);
   }, []);
@@ -37,7 +39,7 @@ const ComeBackTimer = ({ tomorrowMilliseconds }) => {
   );
 };
 
-const PhotoCard = ({ img, day, tomorrowMilliseconds, hiddenOnDesktop }) => {
+const PhotoCard = ({ img, day, tomorrowMilliseconds, hiddenOnDesktop }: { img: { src: string }; day: number; tomorrowMilliseconds: number; hiddenOnDesktop: boolean }) => {
   return (
     <div
       className={
@@ -101,7 +103,7 @@ export default function DailyStreak({ streak }: DailyStreakProps) {
 
   let maxInd = 0;
   while (maxInd < times.length && times[maxInd] <= streak) maxInd++;
-  const getComponent = (i, hideYesNo): React.ReactElement => {
+  const getComponent = (i: number, hideYesNo: boolean): React.ReactElement => {
     if (times[i] <= streak) {
       return (
         <PhotoCard

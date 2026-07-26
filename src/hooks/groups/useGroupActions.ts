@@ -125,9 +125,8 @@ export function useGroupActions() {
       ).data as never as
         | { success: true }
         | { success: false; errorCode: string };
-      console.log(leaveResult);
       // === typeguard check
-      if (leaveResult.success === true) {
+      if (leaveResult.success) {
         invalidateData();
         return;
       }
@@ -153,7 +152,7 @@ export function useGroupActions() {
         author: firebaseUser!.uid,
       };
       const linkDoc = doc(
-        collection(getFirestore(firebaseApp), 'group-join-links')
+        collection(getFirestore(firebaseApp), 'groups', groupId, 'joinLinks')
       );
       const docId = linkDoc.id;
 
@@ -165,13 +164,15 @@ export function useGroupActions() {
       };
     },
     updateJoinLink: async (
-      id: string,
+      groupId: string,
       linkData: Partial<JoinGroupLink>
     ): Promise<void> => {
-      const { id: _, ...data } = linkData;
+      const { id: linkId, ...data } = linkData;
+      if (!linkId) {
+        throw new Error('linkId is required to update a join link');
+      }
       await updateDoc(
-        doc(getFirestore(firebaseApp), 'group-join-links', id),
-        // no clue why this throws a typescript error without it...
+        doc(getFirestore(firebaseApp), 'groups', groupId, 'joinLinks', linkId),
         data as any
       );
     },
@@ -195,7 +196,7 @@ export function useGroupActions() {
       ).data as never as
         | { success: true }
         | { success: false; errorCode: string };
-      if (removeResult.success === true) {
+      if (removeResult.success) {
         invalidateData();
         return;
       }
@@ -231,7 +232,7 @@ export function useGroupActions() {
       ).data as never as
         | { success: true }
         | { success: false; errorCode: string };
-      if (updateResult.success === true) {
+      if (updateResult.success) {
         invalidateData();
         return;
       }

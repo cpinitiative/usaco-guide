@@ -32,9 +32,9 @@ export default function SolutionTemplate({
   const markdownData = React.useMemo(() => {
     return new SolutionInfo(
       solutionForSlug.frontmatter.id,
-      solutionForSlug.frontmatter.source,
-      `${solutionForSlug.frontmatter.source} - ${solutionForSlug.frontmatter.title}`,
-      solutionForSlug.frontmatter.author,
+      solutionForSlug.frontmatter.source!,
+      `${solutionForSlug.frontmatter.source!} - ${solutionForSlug.frontmatter.title}`,
+      solutionForSlug.frontmatter.author!,
       solutionForSlug.frontmatter.contributors ?? null,
       solutionForSlug.toc,
       solutionForSlug.fileAbsolutePath
@@ -61,7 +61,7 @@ export default function SolutionTemplate({
         >
           <MarkdownLayout markdownData={markdownData} frontmatter={frontmatter}>
             <div className="py-4">
-              <Markdown body={solutionForSlug.body} />
+              <Markdown body={solutionForSlug.body} modulePath={solutionForSlug.modulePath} />
             </div>
           </MarkdownLayout>
         </ProblemSolutionContext.Provider>
@@ -107,7 +107,6 @@ export const getStaticProps: GetStaticProps = async context => {
       slug: string;
     };
 
-    // The database stores full paths like /problems/usaco-xxx, but Next.js routes pass just the slug
     const fullSlug = slug.startsWith('/problems/') ? slug : `/problems/${slug}`;
     const solutionForSlug = await querySolutionByProblemSlug(fullSlug);
     if (!solutionForSlug) {

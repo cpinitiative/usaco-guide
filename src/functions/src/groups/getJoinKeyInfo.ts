@@ -29,6 +29,6 @@ export default functions.https.onCall(async request => {
     .then(snapshot => snapshot.data());
   return {
     success: true,
-    name: groupData.name,
+    name: groupData!.name,
   };
 });

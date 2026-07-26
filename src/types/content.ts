@@ -43,6 +43,8 @@ export interface MdxContent {
 
   fileAbsolutePath: string;
 
+  modulePath: string;
+
   slug?: string;
 
   frontmatter: MdxFrontmatter;
@@ -105,7 +107,7 @@ export interface ProblemInfo {
 
   moduleId?: string;
 
-  module?: MdxContent;
+  module?: MdxContent | null;
 }
 
 export interface ModuleProblemList {

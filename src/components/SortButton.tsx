@@ -13,14 +13,14 @@ export const SortButton = ({
   dropdownAbove?: boolean;
 }) => {
   const [show, setShow] = React.useState(false);
-  const handleSelect = option => {
+  const handleSelect = (option: string) => {
     setShow(false);
     onChange(option);
   };
   const ref = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
-    const handleClick = e => {
-      if (ref.current?.contains(e.target)) return;
+    const handleClick = (e: MouseEvent) => {
+      if (ref.current?.contains(e.target as Node)) return;
       setShow(false);
     };
     document.addEventListener('mousedown', handleClick);

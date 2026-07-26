@@ -1,7 +1,6 @@
 import { BaseHit, Hit } from 'instantsearch.js';
 import Link from 'next/link';
 import * as React from 'react';
-import { useEffect } from 'react';
 import { Highlight, useHits } from 'react-instantsearch';
 import { moduleIDToSectionMap } from '../../../content/ordering';
 import { useBlindMode } from '../../context/BlindModeContext';
@@ -22,7 +21,7 @@ import {
 } from '../../models/problem';
 import DifficultyBox from '../DifficultyBox';
 import Info from '../markdown/Info';
-import divToProbs from '../markdown/ProblemsList/DivisionList/div_to_probs.json';
+import divToProbs from '../../data/div_to_probs.json';
 import ProblemStatusCheckbox from '../markdown/ProblemsList/ProblemStatusCheckbox';
 
 type AlgoliaProblemInfoHit = Hit<BaseHit> & AlgoliaProblemInfo;
@@ -34,7 +33,7 @@ function getContestDateForProblem(
   division: string,
   problemId: string
 ): string | null {
-  const divisionProblems = divToProbs[division];
+  const divisionProblems = divToProbs[division as keyof typeof divToProbs];
   if (!divisionProblems) return null;
 
   for (const [id, date] of divisionProblems) {
@@ -42,10 +41,10 @@ function getContestDateForProblem(
   }
   return null;
 }
-function getProblemDivision(problemId: string): string {
-  for (const [division, problems] of Object.entries(divToProbs)) {
+function getProblemDivision(problemId: string): string | null {
+  for (const [division, problems] of Object.entries(divToProbs as any) as [string, any][]) {
     for (const [id] of problems) {
-      if ('usaco-' + id === problemId) return division;
+      if ('usaco-' + id === problemId) return division as string;
     }
   }
   return null;
@@ -63,12 +62,12 @@ function getContestURL(source: string) {
     else if (parts[1] == 'Third') index = 3;
     else if (parts[1] == 'Fourth') index = 4; // unsure of how US Open will be formatted yet, for now just use fourth + 4.
 
-    resultsUrl = `http://www.usaco.org/index.php?page=season${parts[0]}contest${index}results`;
+    resultsUrl = `https://www.usaco.org/index.php?page=season${parts[0]}contest${index}results`;
   } else {
     // dec24results
     if (parts[1] === 'US') parts[1] = 'open';
     else parts[1] = parts[1].toLowerCase().substring(0, 3);
-    resultsUrl = `http://www.usaco.org/index.php?page=${parts[1]}${parts[0]}results`;
+    resultsUrl = `https://www.usaco.org/index.php?page=${parts[1]}${parts[0]}results`;
   }
   return resultsUrl;
 }
@@ -101,7 +100,7 @@ function ProblemHit({ hit }: ProblemHitProps) {
             <a
               href={hit.url}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="hover:underline"
             >
               <Highlight hit={hit} attribute="name" />
@@ -125,7 +124,7 @@ function ProblemHit({ hit }: ProblemHitProps) {
         <a
           href={hit.url}
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
           className="text-gray-500 dark:text-dark-med-emphasis text-sm"
         >
           View Problem Statement
@@ -152,7 +151,7 @@ function ProblemHit({ hit }: ProblemHitProps) {
                 : hit.solution.url
             }
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="dark:text-dark-med-emphasis text-sm text-gray-500"
           >
             View Solution
@@ -174,7 +173,7 @@ function ProblemHit({ hit }: ProblemHitProps) {
               problem.uniqueId.indexOf('-') + 1
             )}`}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="dark:text-dark-med-emphasis text-sm text-gray-500"
           >
             Open in IDE
@@ -196,7 +195,7 @@ function ProblemHit({ hit }: ProblemHitProps) {
                 <a
                   href={getContestURL(contestDate)}
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   className="text-sm text-blue-600 dark:text-blue-400"
                 >
                   {contestDate}
@@ -242,11 +241,28 @@ function ProblemHit({ hit }: ProblemHitProps) {
   );
 }
 
-export default function ProblemHits({ shuffle, random, sort }) {
+export default function ProblemHits({
+  shuffle,
+  random,
+  sort,
+  selectedStatus,
+}: {
+  shuffle: number;
+  random: number;
+  sort: string;
+  selectedStatus?: string[];
+}) {
   const { hits } = useHits() as { hits: AlgoliaProblemInfoHit[] };
-  const [displayHits, setDisplayHits] =
-    React.useState<AlgoliaProblemInfoHit[]>(hits);
   const userProgressOnProblems = useUserProgressOnProblems();
+
+  let displayHits = hits;
+  if (selectedStatus && selectedStatus.length > 0) {
+    displayHits = hits.filter(hit => {
+      const status: ProblemProgress =
+        userProgressOnProblems[String(hit.uniqueId)] || 'Not Attempted';
+      return selectedStatus.includes(status);
+    });
+  }
 
   const difficultySortOrder = {
     'Very Easy': 1,
@@ -267,97 +283,86 @@ export default function ProblemHits({ shuffle, random, sort }) {
   function shuffleArr(arr: AlgoliaProblemInfoHit[]) {
     const nArr = [...arr];
     let l = nArr.length;
-
     while (l > 0) {
       const i = Math.floor(Math.random() * l--);
       [nArr[l], nArr[i]] = [nArr[i], nArr[l]];
     }
-
     return nArr;
   }
+
   function sortHitsByDifficulty(
     hitsToSort: AlgoliaProblemInfoHit[],
     ascending: boolean
   ) {
-    const hasNA = [];
-    const withoutNA = [];
-
+    const hasNA: AlgoliaProblemInfoHit[] = [];
+    const withoutNA: AlgoliaProblemInfoHit[] = [];
     for (const hit of hitsToSort) {
-      if (hit.difficulty === 'N/A') {
-        hasNA.push(hit);
-      } else {
-        withoutNA.push(hit);
-      }
+      if (hit.difficulty === 'N/A') hasNA.push(hit);
+      else withoutNA.push(hit);
     }
-
     withoutNA.sort((a, b) => {
       const aDivision = getProblemDivision(a.objectID);
       const bDivision = getProblemDivision(b.objectID);
       const aOrder =
         (difficultySortOrder[a.difficulty] || 0) +
-        (aDivision ? divisionFactor[aDivision] : 0);
+        (aDivision
+          ? divisionFactor[aDivision as keyof typeof divisionFactor]
+          : 0);
       const bOrder =
         (difficultySortOrder[b.difficulty] || 0) +
-        (bDivision ? divisionFactor[bDivision] : 0);
+        (bDivision
+          ? divisionFactor[bDivision as keyof typeof divisionFactor]
+          : 0);
       return ascending ? aOrder - bOrder : bOrder - aOrder;
     });
-
     return [...withoutNA, ...hasNA];
   }
+
   function sortHitsByContest(
     hitsToSort: AlgoliaProblemInfoHit[],
     ascending: boolean
   ) {
-    const withDates = [];
-    const withoutDates = [];
-
+    const withDates: AlgoliaProblemInfoHit[] = [];
+    const withoutDates: AlgoliaProblemInfoHit[] = [];
     for (const hit of hitsToSort) {
       const id = hit.objectID;
       const date = getContestDateForProblem(hit.source, id);
-      if (date) {
-        withDates.push(hit);
-      } else {
-        withoutDates.push(hit);
-      }
+      if (date) withDates.push(hit);
+      else withoutDates.push(hit);
     }
-
     withDates.sort((a, b) => {
       const aId = a.objectID;
       const bId = b.objectID;
-      const aDate = Number(
-        getContestDateForProblem(a.source, aId).match(/\d+/)?.[0]
-      );
-      const bDate = Number(
-        getContestDateForProblem(b.source, bId).match(/\d+/)?.[0]
-      );
+      const aDateStr = getContestDateForProblem(a.source, aId);
+      const bDateStr = getContestDateForProblem(b.source, bId);
+      const aDate = aDateStr ? Number(aDateStr.match(/\d+/)?.[0]) : 0;
+      const bDate = bDateStr ? Number(bDateStr.match(/\d+/)?.[0]) : 0;
       return ascending ? aDate - bDate : bDate - aDate;
     });
-
     return [...withDates, ...withoutDates];
   }
 
-  useEffect(() => {
+  const sortedDisplayHits = React.useMemo(() => {
     if (sort.indexOf('Contest') !== -1)
-      setDisplayHits(sortHitsByContest(hits, sort.indexOf('Older') !== -1));
-    else if (sort.indexOf('Difficulty') !== -1)
-      setDisplayHits(
-        sortHitsByDifficulty(hits, sort.indexOf('Ascending') !== -1)
+      return sortHitsByContest(displayHits, sort.indexOf('Older') !== -1);
+    if (sort.indexOf('Difficulty') !== -1)
+      return sortHitsByDifficulty(
+        displayHits,
+        sort.indexOf('Ascending') !== -1
       );
-    else if (shuffle) setDisplayHits(shuffleArr(hits));
-    else setDisplayHits(hits);
-  }, [shuffle, hits, sort]);
+    if (shuffle) return shuffleArr(displayHits);
+    return displayHits;
+  }, [displayHits, sort, shuffle]);
 
-  useEffect(() => {
-    if (random) {
-      const unsolvedURLs: string[] = [];
-      for (const h of hits) {
-        const status: ProblemProgress =
-          userProgressOnProblems[String(h.uniqueId)] || 'Not Attempted';
-        if (status === 'Not Attempted') {
-          unsolvedURLs.push(h.url);
-        }
-      }
-
+  const finalHits = React.useMemo(() => {
+    if (random && sortedDisplayHits.length > 0) {
+      const unsolvedURLs = sortedDisplayHits
+        .filter(
+          hit =>
+            (userProgressOnProblems[String(hit.uniqueId)] ||
+              'Not Attempted') === 'Not Attempted'
+        )
+        .map(hit => hit.url);
       if (unsolvedURLs.length > 0) {
         window.open(
           unsolvedURLs[Math.floor(Math.random() * unsolvedURLs.length)],
@@ -365,9 +370,10 @@ export default function ProblemHits({ shuffle, random, sort }) {
         );
       }
     }
-  }, [random]);
+    return sortedDisplayHits;
+  }, [random, sortedDisplayHits, userProgressOnProblems]);
 
-  if (!hits.length || !displayHits.length) {
+  if (!hits.length || !finalHits.length) {
     return (
       <Info title="No Problems Found">
         No problems were found matching your search criteria. Try changing your
@@ -378,9 +384,10 @@ export default function ProblemHits({ shuffle, random, sort }) {
 
   return (
     <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {displayHits.map(hit => (
+      {finalHits.map(hit => (
         <ProblemHit hit={hit} key={hit.objectID} />
       ))}
     </div>
   );
 }
+

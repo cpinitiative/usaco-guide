@@ -3,11 +3,12 @@ import {
   formatRgbColor,
   mixWithBlack,
   mixWithWhite,
+  type RGBColor,
 } from './Confetti.helpers';
 
 // Creates an actual <img> element. This is needed to paint a shape into an
 // HTML canvas.
-const createImageElement = svgString => {
+const createImageElement = (svgString: string) => {
   if (typeof window === 'undefined') return null;
 
   // window.btoa creates a base64 encoded string. Combined with the data
@@ -26,7 +27,7 @@ const createImageElement = svgString => {
 // TODO (josh): See if there's a way to use React components instead, just
 // need to find a client-side way to get a string representation of a
 // component's rendered result.
-const circleShapeFactory = ({ size = 15, fill }) => `
+const circleShapeFactory = ({ size = 15, fill }: { size?: number; fill: RGBColor }) => `
     <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 10 10"
@@ -42,7 +43,7 @@ const circleShapeFactory = ({ size = 15, fill }) => `
     </svg>
 `;
 
-const triangleShapeFactory = ({ size = 16, fill }) => `
+const triangleShapeFactory = ({ size = 16, fill }: { size?: number; fill: RGBColor }) => `
     <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 10 10"
@@ -56,7 +57,7 @@ const triangleShapeFactory = ({ size = 16, fill }) => `
     </svg>
 `;
 
-const rectangleShapeFactory = ({ width = 6, height = 12, fill }) => `
+const rectangleShapeFactory = ({ width = 6, height = 12, fill }: { width?: number; height?: number; fill: RGBColor }) => `
     <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 ${width} ${height}"
@@ -73,7 +74,7 @@ const rectangleShapeFactory = ({ width = 6, height = 12, fill }) => `
     </svg>
 `;
 
-const zigZagShapeFactory = ({ size = 20, fill }) => `
+const zigZagShapeFactory = ({ size = 20, fill }: { size?: number; fill: RGBColor }) => `
     <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 23.74 92.52"

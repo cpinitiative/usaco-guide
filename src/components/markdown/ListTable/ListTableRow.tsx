@@ -23,12 +23,10 @@ export default function ListTableRow({
 
   return (
     <tr
-      className={clsx(
-        isActive && 'bg-[#fdfdea]! dark:bg-[#3c3c00]!',
-        'relative'
-      )}
+      id={id}
+      style={{ scrollMarginTop: '120px' }}
+      className={clsx(isActive && 'bg-[#fdfdea]! dark:bg-[#3c3c00]!')}
     >
-      <td id={id} className="absolute bottom-[120px] h-[2px]" />
       {children}
     </tr>
   );

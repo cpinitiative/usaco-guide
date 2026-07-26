@@ -12,7 +12,7 @@ const divisions = [
   'Platinum',
   'Advanced',
 ] as const; // hack to allow typeof divisions[number] by marking array as readonly
-export default function AddFileModal(props) {
+export default function AddFileModal(props: { isOpen: boolean; onClose: () => void }) {
   const [division, setDivision] =
     useState<(typeof divisions)[number]>('General');
   const [fileStatus, setFileStatus] = useState<
@@ -63,7 +63,7 @@ export default function AddFileModal(props) {
                   label: div,
                   value: div.toLowerCase(),
                 }))}
-                onChange={e => setDivision(e.value)}
+                onChange={(e: any) => setDivision(e?.value as (typeof divisions)[number])}
               />
             </div>
             <button

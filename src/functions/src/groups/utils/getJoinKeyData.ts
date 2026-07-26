@@ -12,28 +12,31 @@ export default async function getJoinKeyData(
     );
   }
 
-  const keyData = await admin
-    .firestore()
-    .collection('group-join-links')
+  const db = admin.firestore();
+  const keyData = await (db as any)
+    .collectionGroup('joinLinks')
     .doc(key)
     .get()
-    .then(snapshot => snapshot.data() as JoinGroupLink | null);
+    .then((snapshot: any) => snapshot.data() as JoinGroupLink | null);
+
   if (!keyData) {
     return Promise.reject({
       errorCode: 'KEY_NOT_FOUND',
       message: 'The given key does not exist.',
     });
   }
+
   if (
     keyData.revoked ||
     (keyData.maxUses && keyData.numUses >= keyData.maxUses) ||
     (keyData.expirationTime &&
-      keyData.expirationTime.toMillis() < new Date().getMilliseconds())
+      keyData.expirationTime.toMillis() < new Date().getTime())
   ) {
     return Promise.reject({
       errorCode: 'INVALID_KEY',
       message: 'The given key is no longer valid.',
     });
   }
+
   return keyData;
 }

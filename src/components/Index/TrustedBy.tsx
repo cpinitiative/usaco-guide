@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { githubRepoUrl } from '../../config';
 
 export default function TrustedBy() {
   const [numUsers, setNumUsers] = useState(-1);
@@ -15,7 +16,7 @@ export default function TrustedBy() {
       .then(numUsers => {
         setNumUsers(parseInt(numUsers));
       });
-    fetch('https://api.github.com/repos/cpinitiative/usaco-guide')
+    fetch(githubRepoUrl())
       .then(resp => resp.json())
       .then(data => {
         setNumStars(data.stargazers_count);

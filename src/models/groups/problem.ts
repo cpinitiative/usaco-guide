@@ -44,7 +44,6 @@ export type ProblemHint = {
   body: string;
 };
 
-// Temporarily taken from online-judge repo
 export interface ProblemSubmissionResult {
   timestamp: number;
   submissionID: string;

@@ -38,7 +38,7 @@ const moduleSources = {
     'https://sendtoaryansh.gitbook.io/informatics-notes/',
     'sendtoaryansh.gitbook.io',
   ],
-  AoPS: ['http://aops.com/', 'Art of Problem Solving'],
+  AoPS: ['https://aops.com/', 'Art of Problem Solving'],
   Benq: [
     'https://github.com/bqi343/USACO/blob/master/Implementations/content/',
     'github.com/bqi343/USACO',
@@ -60,7 +60,7 @@ const moduleSources = {
     'TopCoder',
   ],
   'cp-algo': ['https://cp-algorithms.com/', 'CP Algorithms'],
-  USACO: ['http://www.usaco.org/', 'USACO'],
+  USACO: ['https://www.usaco.org/', 'USACO'],
   SO: ['https://stackoverflow.com/', 'StackOverflow'],
   GFG: ['https://www.geeksforgeeks.org/', 'Geeks For Geeks'],
   CPC: [
@@ -68,7 +68,7 @@ const moduleSources = {
     'Competitive Programming Course (taught at Reykjavík University, Iceland)',
   ],
   GCC: ['https://gcc.gnu.org/onlinedocs/gcc/', 'GNU Compiler Collection'],
-  CPP: ['http://www.cplusplus.com/reference/algorithm/', 'cplusplus.com'],
+  CPP: ['https://www.cplusplus.com/reference/algorithm/', 'cplusplus.com'],
   CPPR: ['https://en.cppreference.com/w/cpp/language/', 'en.cppreference.com'],
   LCPP: ['https://www.learncpp.com/cpp-tutorial/', 'learncpp.com'],
 };
@@ -92,19 +92,19 @@ export function Resource({
   source = source ?? '';
   sourceDescription = sourceDescription ?? '';
   if (source in books) {
-    sourceDescription = books[source][1];
+    sourceDescription = books[source as keyof typeof books][1];
     if (!url) {
       // auto-gen page #
-      const getSec = (dictKey, book, title) => {
+      const getSec = (dictKey: string, book: string, title: string) => {
         const parts = title.split(' ');
         let url = book;
         let sec = parts[0];
         if (sec[sec.length - 1] == ',') sec = sec.substring(0, sec.length - 1);
         if (!/^\d.*$/.test(sec)) return url;
-        if (!(sec in PGS[dictKey])) {
+        if (!(sec in PGS[dictKey as keyof typeof PGS])) {
           throw `Could not find section ${sec} in source ${dictKey} (title ${title})`;
         }
-        url += '#page=' + PGS[dictKey][sec];
+        url += '#page=' + PGS[dictKey as keyof typeof PGS][sec as keyof typeof PGS[keyof typeof PGS]];
         return url;
       };
       if (source === 'IUSACO') {
@@ -112,18 +112,19 @@ export function Resource({
           url = getSec(
             'JAVA',
             'https://darrenyao.com/usacobook/java.pdf',
-            title
+            title ?? ''
           );
         } else {
-          url = getSec('CPP', 'https://darrenyao.com/usacobook/cpp.pdf', title);
+          url = getSec('CPP', 'https://darrenyao.com/usacobook/cpp.pdf', title ?? '');
         }
       } else if (source in PGS) {
-        url = getSec(source, books[source][0], title);
-      } else url = books[source][0];
+        url = getSec(source, books[source as keyof typeof books][0], title ?? '');
+      } else url = books[source as keyof typeof books][0];
     }
   } else if (source in moduleSources) {
-    if (!url?.startsWith('http')) url = moduleSources[source][0] + url;
-    sourceDescription = moduleSources[source][1];
+    if (!url?.startsWith('http'))
+      url = moduleSources[source as keyof typeof moduleSources][0] + url;
+    sourceDescription = moduleSources[source as keyof typeof moduleSources][1];
   } else {
     if (!url?.startsWith('http')) {
       throw `URL ${url} is not valid. Did you make a typo in the source (${source}), or in the URL? Resource name: ${title}`;

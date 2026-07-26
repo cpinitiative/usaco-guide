@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import { useEffect } from 'react';
 import useStickyState from '../../../hooks/useStickyState';
 
-export default function Accordion({ label, isActive, children }) {
+export default function Accordion({ label, isActive, children }: { label: string; isActive: boolean; children: React.ReactNode }) {
   const [expanded, setExpanded] = useStickyState(
     true,
     'guide:sidebarnav:isexpanded:' + label

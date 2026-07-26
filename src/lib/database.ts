@@ -19,8 +19,7 @@ export async function getDatabase(): Promise<Database.Database> {
 
     dbInstance = new Database(DB_FILE, { readonly: true });
 
-    // Optimize for concurrent reads
-    dbInstance.pragma('journal_mode = WAL');
+    // Optimize for concurrent reads (WAL mode is set by the writer; readers just need cache tuning)
     dbInstance.pragma('synchronous = NORMAL');
   }
 

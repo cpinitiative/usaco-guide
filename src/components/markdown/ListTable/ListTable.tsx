@@ -1,6 +1,6 @@
 // Common list table component used by resource list and problem list
 
-export function ListTable({ header, children, ...props }) {
+export function ListTable({ header, children, ...props }: { header: React.ReactNode; children: React.ReactNode; [key: string]: any }) {
   return (
     <div className="-mx-4 sm:-mx-6 md:mx-0" {...props}>
       <div className="mb-4 flex flex-col">

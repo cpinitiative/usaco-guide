@@ -85,7 +85,7 @@ export const activeFileAtom = atom(
     const activeFile = get(baseActiveFileAtom);
     return activeFile ? get(filesFamily(activeFile)) : null;
   },
-  (get, set, nextActiveFilePath: string) => {
+  (get, set, nextActiveFilePath: string | null) => {
     set(baseActiveFileAtom, nextActiveFilePath);
   }
 );
@@ -123,11 +123,8 @@ export const createNewInternalSolutionFileAtom = atom(
       path: `solutions/${division}/${file.id}.mdx`,
       markdown: `---
 id: ${file.id}
-source: ${
-        file.source
-      } (TODO -- convert to something like \`USACO Silver 2017 January\`)
-title: ${file.title}
-author: TODO -- insert your name here
+      source: ${file.source}
+      title: ${file.title}
 ---
 
 We found the following solution metadata for this problem:
@@ -202,7 +199,7 @@ $\\texttt{func(var)}$
       const updated = JSON.parse(json);
       Object.keys(updated).forEach(key => {
         if (key === 'MODULE_ID') return;
-        updated[key].forEach(obj => {
+        updated[key].forEach((obj: any) => {
           if (obj.uniqueId === file.id) {
             obj.solutionMetadata = {
               kind: 'internal',
@@ -260,10 +257,12 @@ export const closeFileAtom = atom(null, (get, set, filePath: string) => {
   filesFamily.remove(filePath);
 });
 
-const baseMonacoEditorInstanceAtom = atom({ monaco: null as any });
+const baseMonacoEditorInstanceAtom = atom<{
+  monaco: { layout(): void; focus(): void; getModel(): { updateOptions: (opts: { insertSpaces: boolean }) => void }; addAction: (action: any) => void } | null;
+}>({ monaco: null });
 export const monacoEditorInstanceAtom = atom(
   get => get(baseMonacoEditorInstanceAtom),
-  (get, _set, val: any) => {
-    get(baseMonacoEditorInstanceAtom).monaco = val;
+  (get, set, val: { layout(): void; focus(): void; getModel(): { updateOptions: (opts: { insertSpaces: boolean }) => void }; addAction: (action: any) => void }) => {
+    set(baseMonacoEditorInstanceAtom, { ...get(baseMonacoEditorInstanceAtom), monaco: val });
   }
 );

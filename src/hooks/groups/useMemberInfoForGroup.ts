@@ -42,7 +42,7 @@ export default function useMemberInfoForGroup(group: GroupData) {
         })
           .then(d => {
             if (d?.data?.length > 0) {
-              d.data.sort((a, b) =>
+              d.data.sort((a: any, b: any) =>
                 (a.displayName ?? '').localeCompare(b.displayName ?? '')
               );
               setMemberInfo(d.data);

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 // @ts-ignore
 import { Fragment, jsx, jsxs } from 'react/jsx-runtime';
 import { MarkdownProblemListsProvider } from '../../context/MarkdownProblemListsContext';
-import { compileMdxForEditor } from '../../lib/compileMdxForEditor';
+import { compileMdxForEditor, type ProblemsListEntry } from '../../lib/compileMdxForEditor';
 import { components } from '../markdown/MDXComponents';
 
 class ErrorBoundary extends React.Component<{ children?: React.ReactNode }> {
@@ -12,17 +12,17 @@ class ErrorBoundary extends React.Component<{ children?: React.ReactNode }> {
     error: null | any;
   };
 
-  constructor(props) {
+  constructor(props: { children?: React.ReactNode }) {
     super(props);
     this.state = { error: null };
   }
 
-  componentDidCatch(error, info) {
+  componentDidCatch(error: Error, info: React.ErrorInfo) {
     // Display fallback UI
     this.setState({ error });
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: { children?: React.ReactNode }) {
     if (this.props.children !== prevProps.children) {
       this.setState({ error: null });
     }
@@ -55,7 +55,7 @@ export default function DynamicMarkdownRenderer({
   const [
     markdownProblemListsProviderValue,
     setMarkdownProblemListsProviderValue,
-  ] = useState([]);
+  ] = useState<ProblemsListEntry[]>([]);
   const [error, setError] = useState<Error | null>(null);
   const compileSeqRef = useRef(0);
 

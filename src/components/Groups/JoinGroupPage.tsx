@@ -12,7 +12,7 @@ import Layout from '../layout';
 import SEO from '../seo';
 import TopNavigationBar from '../TopNavigationBar/TopNavigationBar';
 
-const getQuery = name => {
+const getQuery = (name: string) => {
   const url = window.location.href;
   name = name.replace(/[[\]]/g, '\\$&');
   const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),

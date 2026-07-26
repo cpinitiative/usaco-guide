@@ -24,7 +24,7 @@ export default function LicensePage() {
               className={
                 'text-blue-500 hover:text-blue-700 hover:underline dark:text-blue-400 dark:hover:text-blue-300'
               }
-              href="http://creativecommons.org/licenses/by-nc-sa/4.0/"
+              href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
               target={'_blank'}
             >
               Creative Commons Attribution-NonCommercial-ShareAlike 4.0
@@ -53,7 +53,7 @@ export default function LicensePage() {
               className={
                 'text-blue-500 hover:text-blue-700 hover:underline dark:text-blue-400 dark:hover:text-blue-300'
               }
-              href="http://creativecommons.org/licenses/by-nc-sa/4.0/"
+              href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
               target={'_blank'}
             >
               our license

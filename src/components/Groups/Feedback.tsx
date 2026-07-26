@@ -12,7 +12,7 @@ import toast from 'react-hot-toast';
 import { useFirebaseUser } from '../../context/UserDataContext/UserDataContext';
 import { useFirebaseApp } from '../../hooks/useFirebase';
 
-export default function Feedback({ videoId }): JSX.Element {
+export default function Feedback({ videoId }: { videoId: string }): JSX.Element {
   const firebaseApp = useFirebaseApp();
   const db = getFirestore(firebaseApp);
   const { uid } = useFirebaseUser()!;
@@ -33,20 +33,6 @@ export default function Feedback({ videoId }): JSX.Element {
       setSelected(data.data()?.rating || null);
     });
   }, [uid, db]);
-
-  // Code to log video feedback to console
-  // const group = useActiveGroup();
-  // const isUserAdmin = isUserAdminOfGroup(group.groupData, group.activeUserId);
-  // useEffect(() => {
-  //   if (!db || !videoId || !isUserAdmin) return;
-  //   // actually, only some people can view video feedback, not just any admin
-  //   // but this is good enough whatever
-  //   getDocs(collection(db, 'videos', videoId, 'feedback'))
-  //     .then(snap => {
-  //       console.log(snap.docs.map(doc => doc.data()));
-  //     })
-  //     .catch(e => {});
-  // }, [videoId, db, isUserAdmin]);
 
   return (
     <>
@@ -91,10 +77,9 @@ export default function Feedback({ videoId }): JSX.Element {
                     {
                       loading: 'Submitting...',
                       success: 'Thanks for the feedback!',
-                      error: err => {
-                        console.log(err);
-                        return 'Error submitting feedback.';
-                      },
+                    error: (err: any) => {
+                      return 'Error submitting feedback.';
+                    },
                     }
                   );
                 }
@@ -135,8 +120,7 @@ export default function Feedback({ videoId }): JSX.Element {
               {
                 loading: 'Submitting...',
                 success: 'Thanks for your comment!',
-                error: err => {
-                  console.log(err);
+                error: (err: any) => {
                   return 'Error submitting comment.';
                 },
               }

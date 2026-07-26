@@ -14,7 +14,11 @@ import { moduleIDToURLMap, SECTION_LABELS } from '../../../content/ordering';
 import { AlgoliaModuleInfoHit } from '../../models/module';
 import searchClient from '../../utils/algoliaLiteSearchClient';
 
-const indexName = `${process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME ?? 'dev'}_modules`;
+const indexName = `${process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME}_modules`;
+
+if (!process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME) {
+  throw new Error('NEXT_PUBLIC_ALGOLIA_INDEX_NAME is not set');
+}
 
 const ModuleSearch = () => {
   const { query, refine: setQuery } = useSearchBox();
@@ -25,7 +29,7 @@ const ModuleSearch = () => {
         <input
           type="search"
           placeholder="Search"
-          className="dark:bg-dark-surface flex-1 border-0 text-gray-700 focus:ring-0 focus:outline-hidden dark:text-gray-200 dark:placeholder-gray-400"
+          className="dark:bg-dark-surface flex-1 border-0 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-hidden dark:text-gray-200 dark:placeholder-gray-400"
           value={query}
           onChange={e => setQuery(e.target.value)}
           autoComplete="off"

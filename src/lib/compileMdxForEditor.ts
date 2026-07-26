@@ -1,12 +1,13 @@
 import type { compile as mdxCompile } from '@mdx-js/mdx';
 
-type ProblemsListEntry = { listId: string; problems: any };
+export type ProblemsListEntry = { listId: string; problems: any };
 
 type LoadedCompilerDeps = {
   compile: typeof mdxCompile;
   rehypeAutolinkHeadings: any;
   rehypeExternalLinks: any;
   rehypeRaw: any;
+  rehypeSanitize: any;
   rehypeSlug: any;
   remarkFrontmatter: any;
   remarkGfm: any;
@@ -28,6 +29,7 @@ async function loadCompilerDeps(): Promise<LoadedCompilerDeps> {
         { default: rehypeAutolinkHeadings },
         { default: rehypeExternalLinks },
         { default: rehypeRaw },
+        { default: rehypeSanitize },
         { default: rehypeSlug },
         { default: remarkFrontmatter },
         { default: remarkGfm },
@@ -42,6 +44,7 @@ async function loadCompilerDeps(): Promise<LoadedCompilerDeps> {
         import('rehype-autolink-headings'),
         import('rehype-external-links'),
         import('rehype-raw'),
+        import('rehype-sanitize'),
         import('rehype-slug'),
         import('remark-frontmatter'),
         import('remark-gfm'),
@@ -58,6 +61,7 @@ async function loadCompilerDeps(): Promise<LoadedCompilerDeps> {
         rehypeAutolinkHeadings,
         rehypeExternalLinks,
         rehypeRaw,
+        rehypeSanitize,
         rehypeSlug,
         remarkFrontmatter,
         remarkGfm,
@@ -110,19 +114,17 @@ export async function compileMdxForEditor({
         [deps.remarkExtractImages],
       ],
       rehypePlugins: [
+        [deps.rehypeRaw, {
+          passThrough: [
+            'mdxjsEsm',
+            'mdxFlowExpression',
+            'mdxTextExpression',
+            'mdxJsxFlowElement',
+            'mdxJsxTextElement',
+          ],
+        }],
         deps.rehypeSlug,
-        [
-          deps.rehypeRaw,
-          {
-            passThrough: [
-              'mdxjsEsm',
-              'mdxFlowExpression',
-              'mdxTextExpression',
-              'mdxJsxFlowElement',
-              'mdxJsxTextElement',
-            ],
-          },
-        ],
+        deps.rehypeSanitize,
         deps.customRehypeKatex,
         deps.rehypeSnippets,
         [deps.rehypeExternalLinks, { target: '_blank', rel: ['nofollow'] }],

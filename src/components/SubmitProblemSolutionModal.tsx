@@ -113,6 +113,7 @@ export default function SubmitProblemSolutionModal({
         </span>
         <span
           role="checkbox"
+          aria-checked={isCodePublic}
           tabIndex={0}
           onClick={() => setIsCodePublic(!isCodePublic)}
           className={className(

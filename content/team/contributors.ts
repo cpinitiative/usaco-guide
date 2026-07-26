@@ -220,7 +220,7 @@ export const RestOfMembers: Member[] = [
     photo: 'kaylanc',
     name: 'Kalyan Cherukuri',
     titles: [roles.clubCurriculum],
-    linkedin: 'http://www.linkedin.com/in/kal-che',
+    linkedin: 'https://www.linkedin.com/in/kal-che',
     website: 'https://kal-che.vercel.app/',
   },
   {
@@ -374,7 +374,7 @@ export const FormerMembers: Member[] = [
     name: 'Darren Yao',
     titles: [roles.founder, 'Board'],
     github: 'darren-yao',
-    website: 'http://darrenyao.com/',
+    website: 'https://darrenyao.com/',
     codeforces: 'darren_yao',
     email: 'darren.yao@gmail.com',
   },

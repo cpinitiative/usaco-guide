@@ -21,7 +21,7 @@ const PrefixSumInteractive = ({ demo2 = false }) => {
   );
   const [rectangles, setRectangles] = React.useState<any[]>([]);
 
-  const renderCell = (i, j, v) => {
+  const renderCell = (i: number, j: number, v: number) => {
     const classes = [
       'h-10 w-10 inline-flex items-center justify-center border-b border-r border-gray-200',
     ];
@@ -46,13 +46,13 @@ const PrefixSumInteractive = ({ demo2 = false }) => {
     return <span className={classes.join(' ')}>{v}</span>;
   };
 
-  const renderRow = (row, i) => (
+  const renderRow = (row: number[], i: number) => (
     <div>{row.map((x, j) => renderCell(i, j, x))}</div>
   );
 
-  const renderStep = (rectangle, label) => {
+  const renderStep = (rectangle: number[], label: string) => {
     const isActive = rectangles.some(x =>
-      x.every((v, i) => v === rectangle[i])
+      x.every((v: number, i: number) => v === rectangle[i])
     );
     return (
       <div
@@ -67,7 +67,7 @@ const PrefixSumInteractive = ({ demo2 = false }) => {
         onClick={() => {
           if (isActive) {
             setRectangles(
-              rectangles.filter(x => !x.every((v, i) => v === rectangle[i]))
+              rectangles.filter((x: number[]) => !x.every((v: number, i: number) => v === rectangle[i]))
             );
           } else {
             setRectangles([...rectangles, rectangle]);

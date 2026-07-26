@@ -9,29 +9,34 @@ export default function useProblemSubmissionResult(
 
   useEffect(() => {
     if (!submissionID) return;
-    const queryResult = async (curSubmission, submissionID) => {
-      const res = await fetch(
-        `https://ggzk2rm2ad.execute-api.us-west-1.amazonaws.com/Prod/submissions/${submissionID}`
-      );
-      const data = await res.json();
+    let timeoutHandle: ReturnType<typeof setTimeout>;
+    const queryResult = async (curSubmission: number, submissionID: string) => {
+      try {
+        const res = await fetch(
+          `https://ggzk2rm2ad.execute-api.us-west-1.amazonaws.com/Prod/submissions/${submissionID}`
+        );
+        const data = await res.json();
 
-      if (currentSubmission.current !== curSubmission) return;
+        if (currentSubmission.current !== curSubmission) return;
 
-      setResult(data);
+        setResult(data as ProblemSubmissionResult);
 
-      if (res.ok && data.status !== 'done') {
-        setTimeout(() => queryResult(curSubmission, submissionID), 1000);
+        if (res.ok && data.status !== 'done') {
+          timeoutHandle = setTimeout(() => queryResult(curSubmission, submissionID), 1000);
+        }
+      } catch (e) {
+        if (currentSubmission.current !== curSubmission) return;
+        setResult(null);
       }
     };
     setResult(null);
     queryResult(++currentSubmission.current, submissionID);
-  }, [submissionID]);
-
-  useEffect(() => {
     return () => {
-      if (submissionID) currentSubmission.current = -1;
+      currentSubmission.current = -1;
+      clearTimeout(timeoutHandle);
     };
   }, [submissionID]);
+
   if (!submissionID) return null;
   return result;
 }

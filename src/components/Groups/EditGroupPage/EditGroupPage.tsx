@@ -9,7 +9,7 @@ import SEO from '../../seo';
 import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Breadcrumbs from '../Breadcrumbs';
 
-export default function EditGroupPage(props) {
+export default function EditGroupPage(props: { path: string; groupId: string }) {
   const { groupId } = props as {
     path: string;
     groupId: string;

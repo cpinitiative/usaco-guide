@@ -1,6 +1,6 @@
 import Tooltip from '../Tooltip/Tooltip';
 
-const ProgressBar = ({ text, green, yellow, blue }) => {
+const ProgressBar = ({ text, green, yellow, blue }: { text: string; green: number; yellow: number; blue: number }) => {
   return (
     <div className="relative">
       <div className="flex h-4 overflow-hidden bg-gray-200 text-xs dark:bg-gray-700">
@@ -32,6 +32,12 @@ const FancyNumber = ({
   textColor,
   bgColor,
   subTextColor = null as string | null,
+}: {
+  number: number;
+  text: string;
+  textColor: string;
+  bgColor: string;
+  subTextColor?: string | null;
 }) => (
   <div className="text-center">
     <span
@@ -109,6 +115,12 @@ const ProgressBarSmall = ({
   green,
   yellow,
   blue,
+}: {
+  className?: string;
+  text: string;
+  green: number;
+  yellow: number;
+  blue: number;
 }) => {
   return (
     <div className={className}>

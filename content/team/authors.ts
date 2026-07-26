@@ -82,7 +82,7 @@ export const Authors: Author[] = [
     name: 'Darren Yao',
     title: 'Co-Founder',
     blurb: 'Darren Yao is a USACO Platinum competitor.',
-    website: 'http://darrenyao.com/',
+    website: 'https://darrenyao.com/',
     email: 'darren.yao@gmail.com',
     github: 'darren-yao',
   },

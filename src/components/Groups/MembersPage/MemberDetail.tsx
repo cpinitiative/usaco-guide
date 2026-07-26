@@ -8,6 +8,7 @@ import {
   where,
 } from 'firebase/firestore';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 import * as React from 'react';
 import toast from 'react-hot-toast';
 import { useFirebaseUser } from '../../../context/UserDataContext/UserDataContext';
@@ -27,6 +28,7 @@ import {
   submissionCircleBorderColor,
   submissionCircleColor,
   submissionTextColor,
+  type ExecutionVerdict,
 } from '../../../models/groups/problem';
 import { useProblemSubmissionPopupAction } from '../ProblemSubmissionPopup';
 
@@ -302,10 +304,12 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
         <div className="flex items-start space-x-5">
           <div className="shrink-0">
             <div className="relative">
-              <img
+              <Image
                 className="h-16 w-16 rounded-full"
                 src={member.photoURL}
                 alt={member.displayName}
+                width={64}
+                height={64}
               />
               <span
                 className="absolute inset-0 rounded-full shadow-inner"
@@ -332,23 +336,8 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
 
       {/* Tabs */}
       {/*<div className="mt-6 sm:mt-2 2xl:mt-5">*/}
-      {/*  <div className="border-b border-gray-200">*/}
-      {/*    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">*/}
-      {/*      <nav className="-mb-px flex space-x-8" aria-label="Tabs">*/}
-      {/*        /!* Current: "border-pink-500 text-indigo-600", Default: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" *!/*/}
-      {/*        <a href="/" className="border-pink-500 text-gray-900 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" aria-current="page">*/}
-      {/*          Profile*/}
-      {/*        </a>*/}
-      {/*        <a href="/" className="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">*/}
-      {/*          Calendar*/}
-      {/*        </a>*/}
-      {/*        <a href="/" className="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">*/}
-      {/*          Recognition*/}
-      {/*        </a>*/}
-      {/*      </nav>*/}
-      {/*    </div>*/}
-      {/*  </div>*/}
-      {/*</div>*/}
+      <div className="border-b border-gray-200">
+      </div>
 
       <div className="mx-auto my-6 max-w-5xl px-4 sm:px-6 lg:px-8">
         {member.uid !== userId && (
@@ -632,7 +621,7 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
                                                 submissionCircleBorderColor[
                                                   getSubmissionStatus(
                                                     submission
-                                                  )
+                                                  ) as ExecutionVerdict | 'Pending'
                                                 ]
                                               } flex items-center justify-center rounded-full`}
                                               aria-hidden="true"
@@ -642,7 +631,7 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
                                                   submissionCircleColor[
                                                     getSubmissionStatus(
                                                       submission
-                                                    )
+                                                    ) as ExecutionVerdict | 'Pending'
                                                   ]
                                                 } rounded-full`}
                                               />
@@ -652,7 +641,7 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
                                                 submissionTextColor[
                                                   getSubmissionStatus(
                                                     submission
-                                                  )
+                                                  ) as ExecutionVerdict | 'Pending'
                                                 ]
                                               }`}
                                             >

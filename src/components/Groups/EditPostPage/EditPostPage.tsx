@@ -16,7 +16,11 @@ import MarkdownEditor from '../MarkdownEditor';
 
 const Flatpickr = React.lazy(() => import('react-flatpickr'));
 
-export default function EditPostPage(props) {
+export default function EditPostPage(props: {
+  path: string;
+  groupId: string;
+  postId: string;
+}) {
   const router = useRouter();
   const { groupId, postId } = props as {
     path: string;
@@ -72,7 +76,7 @@ export default function EditPostPage(props) {
         'quote',
         {
           name: 'custom',
-          action: function customFunction(editor) {
+          action: function customFunction(editor: any) {
             const cm = editor.codemirror;
             const doc = cm.getDoc();
             const cursor = doc.getCursor();

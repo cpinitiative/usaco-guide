@@ -60,38 +60,43 @@ export default function ModuleTemplate({
     <Layout setLastViewedModule={moduleInfo.id}>
       <SEO title={`${moduleInfo.title}`} description={moduleInfo.description} />
       <Head>
-        <script type="application/ld+json">{`
-          {
-            "@context": "https://schema.org",
-            "@type": "BreadcrumbList",
-            "itemListElement": [{
-              "@type": "ListItem",
-              "position": 1,
-              "name": "Home",
-              "item": "https://usaco.guide/"
-            },{
-              "@type": "ListItem",
-              "position": 2,
-              "name": "${SECTION_LABELS[moduleInfo.section]}",
-              "item": "https://usaco.guide/${moduleInfo.section}"
-            },{
-              "@type": "ListItem",
-              "position": 3,
-              "name": "${moduleInfo.title}",
-              "item": "https://usaco.guide/${moduleInfo.section}/${
-                moduleInfo.id
-              }"
-            }]
-          }
-        `}</script>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'BreadcrumbList',
+              itemListElement: [
+                {
+                  '@type': 'ListItem',
+                  position: 1,
+                  name: 'Home',
+                  item: 'https://usaco.guide/',
+                },
+                {
+                  '@type': 'ListItem',
+                  position: 2,
+                  name: SECTION_LABELS[moduleInfo.section],
+                  item: `https://usaco.guide/${moduleInfo.section}`,
+                },
+                {
+                  '@type': 'ListItem',
+                  position: 3,
+                  name: moduleInfo.title,
+                  item: `https://usaco.guide/${moduleInfo.section}/${moduleInfo.id}`,
+                },
+              ],
+            }),
+          }}
+        />
       </Head>
       <div className="py-4">
         <ConfettiProvider>
           <MarkdownProblemListsProvider
-            value={moduleProblemLists?.problemLists}
+            value={moduleProblemLists?.problemLists ?? null}
           >
             <MarkdownLayout markdownData={moduleInfo} frontmatter={frontmatter}>
-              <Markdown body={moduleData.body} />
+              <Markdown body={moduleData.body} modulePath={moduleData.modulePath} />
             </MarkdownLayout>
           </MarkdownProblemListsProvider>
         </ConfettiProvider>
@@ -138,6 +143,14 @@ export const getStaticProps: GetStaticProps = async context => {
     const mod = await queryModule(slug);
     if (!mod) {
       console.error(`Module not found for slug: ${slug}`);
+      return { notFound: true };
+    }
+    // Validate that the division in the URL matches the module's actual division
+    // to prevent serving the same content under multiple canonical URLs
+    if (mod.fields?.division && mod.fields.division !== division) {
+      console.error(
+        `Division mismatch: URL has "${division}" but module "${slug}" belongs to "${mod.fields.division}"`
+      );
       return { notFound: true };
     }
     const frontmatterData = await queryAllModuleFrontmatter();

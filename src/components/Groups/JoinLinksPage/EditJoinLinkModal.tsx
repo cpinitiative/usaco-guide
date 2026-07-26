@@ -32,7 +32,7 @@ export default function EditJoinLinkModal({
     });
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     onSave(link);
     onClose();

@@ -12,6 +12,8 @@ export type SelectionProps = UseRefinementListProps & {
   isMulti: boolean;
   transformLabel?: (label: string) => string;
   items?: { label: string; value: string | string[] }[];
+  skipAlgoliaRefinement?: boolean;
+  onLocalFilterChange?: (values: string[]) => void;
 };
 
 export default function Selection({
@@ -22,6 +24,8 @@ export default function Selection({
   isMulti,
   transformLabel: transform,
   items,
+  skipAlgoliaRefinement = false,
+  onLocalFilterChange,
   ...props
 }: SelectionProps) {
   const { items: refineItems } = useRefinementList({
@@ -29,34 +33,68 @@ export default function Selection({
     limit,
     ...props,
   });
-  if (!items) items = refineItems;
-  for (const key in items) {
-    if (items[key].value instanceof Array) {
-      (items[key].value as string[]).push('null');
+  const resolvedItems = items ?? refineItems;
+  const preparedItems = resolvedItems.map(
+    (item: { label: string; value: string | string[] }) => {
+      if (item.value instanceof Array) {
+        return { ...item, value: [...item.value, 'null'] };
+      }
+      return item;
     }
-  }
+  );
+  const usedItems = items ? items : preparedItems;
   const [refinements, setRefinements] = useState<string[]>([]);
   const { setIndexUiState } = useInstantSearch();
   useEffect(() => {
+    if (skipAlgoliaRefinement) {
+      if (onLocalFilterChange) {
+        onLocalFilterChange(refinements);
+      }
+      return;
+    }
     setIndexUiState(prevIndexUiState => ({
       refinementList: {
         ...prevIndexUiState.refinementList,
         [attribute]: refinements,
       },
     }));
-  }, [refinements]);
+  }, [
+    refinements,
+    attribute,
+    skipAlgoliaRefinement,
+    onLocalFilterChange,
+    setIndexUiState,
+  ]);
   return (
     <Select
-      onChange={(items: any) => {
-        if (isMulti) setRefinements(items.map(item => item.value).flat());
-        else if (items) setRefinements([items.value]);
-        else setRefinements([]);
+      onChange={(
+        newValue,
+        _actionMeta
+      ) => {
+        const selectedItems = newValue as
+          | { label: string; value: string | string[] }[]
+          | { label: string; value: string | string[] }
+          | null;
+        if (isMulti)
+          setRefinements(
+            (selectedItems as { label: string; value: string | string[] }[])
+              .map(item => item.value)
+              .flat()
+          );
+        else if (selectedItems) {
+          const singleValue = (
+            selectedItems as { label: string; value: string | string[] }
+          ).value;
+          setRefinements(
+            Array.isArray(singleValue) ? singleValue : [singleValue]
+          );
+        } else setRefinements([]);
       }}
       isClearable
       placeholder={placeholder}
       isMulti={isMulti}
       isSearchable={searchable}
-      options={items.map(item => ({
+      options={usedItems.map(item => ({
         ...item,
         label: transform ? transform(item.label) : item.label,
       }))}

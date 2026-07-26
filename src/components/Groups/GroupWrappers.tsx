@@ -1,4 +1,3 @@
-import { RouteComponentProps } from '@reach/router';
 import Link from 'next/link';
 import { ReactElement, useEffect } from 'react';
 import { useSignIn } from '../../context/SignInContext';
@@ -19,12 +18,15 @@ import SEO from '../seo';
 import TopNavigationBar from '../TopNavigationBar/TopNavigationBar';
 import { ProblemSubmissionPopupProvider } from './ProblemSubmissionPopup';
 
-interface GroupPageWrapperProps extends RouteComponentProps {
+interface GroupPageWrapperProps {
   children?: React.ReactNode;
   groupId: string;
 }
 
-export function GroupPageWrapper(props: GroupPageWrapperProps): ReactElement {
+export function GroupPageWrapper(props: {
+  children?: React.ReactNode;
+  groupId: string;
+}): ReactElement {
   /* keeps track of current group id and error handling pages
      if that group cannot be accessed for whatever reason*/
 

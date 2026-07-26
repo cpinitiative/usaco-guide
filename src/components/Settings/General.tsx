@@ -12,7 +12,6 @@ import {
 import Switch from '../elements/Switch';
 
 export default function General(): JSX.Element {
-  // todo: I think we should actually just use one massive useUserSettings() hook lol
   const showIgnored = useShowIgnoredSetting();
   const setShowIgnored = useSetShowIgnoredSetting();
   const showTags = useShowTagsSetting();

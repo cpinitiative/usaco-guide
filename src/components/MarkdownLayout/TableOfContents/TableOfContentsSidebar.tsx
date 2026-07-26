@@ -14,7 +14,7 @@ const TableOfContentsSidebar = ({
   );
   const activeHash = useActiveHash(hashes, '10px 0px 0px 0px');
 
-  const getLinkStyles = heading =>
+  const getLinkStyles = (heading: TOCHeading) =>
     'block mb-1 text-sm transition ' +
     (activeHash === heading.slug
       ? 'underline text-blue-600 dark:text-dark-high-emphasis'

@@ -13,6 +13,14 @@ export default functions.https.onCall(async request => {
   const { key } = request.data as submitToProblemArgs;
   const callerUid = request.auth?.uid;
 
+  if (!callerUid) {
+    return {
+      success: false,
+      errorCode: 'NOT_AUTHENTICATED',
+      message: 'You must be signed in to join a group.',
+    };
+  }
+
   let keyData;
   try {
     keyData = await getJoinKeyData(key);

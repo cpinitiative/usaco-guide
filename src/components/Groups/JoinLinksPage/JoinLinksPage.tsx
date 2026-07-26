@@ -160,7 +160,9 @@ const JoinLinksPage = () => {
       <EditJoinLinkModal
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
-        onSave={link => link && updateJoinLink(link.id, link)}
+        onSave={link =>
+          link && updateJoinLink(activeGroup.activeGroupId!, link)
+        }
         link={curLink!}
       />
     </Layout>

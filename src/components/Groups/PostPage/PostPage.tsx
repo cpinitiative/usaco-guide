@@ -1,4 +1,3 @@
-import { RouteComponentProps } from '@reach/router';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { usePost } from '../../../hooks/groups/usePost';
 import Layout from '../../layout';
@@ -10,16 +9,12 @@ import PostHeader from './PostHeader';
 import PostProblems from './PostProblems';
 import PostSidebar from './PostSidebar';
 
-export default function PostPage(
-  props: RouteComponentProps<{
-    groupId: string;
-    postId: string;
-  }>
-) {
-  if (!props.groupId || !props.postId) {
-    throw 'Misplaced PostPage component! This should be under the param URL with :groupId and :postId';
-  }
-  const { postId } = props;
+interface PostPageProps {
+  groupId: string;
+  postId: string;
+}
+
+export default function PostPage({ groupId, postId }: PostPageProps) {
   const activeGroup = useActiveGroup();
   const post = usePost(postId);
   if (activeGroup.isLoading) {
@@ -48,7 +43,7 @@ export default function PostPage(
     <Layout>
       <SEO
         title={`${post.name} · ${activeGroup.groupData?.name}`}
-        image={null}
+        image={undefined}
       />
       <TopNavigationBar />
       <nav className="mt-6 mb-4 flex" aria-label="Breadcrumb">

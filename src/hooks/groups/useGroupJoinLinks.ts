@@ -1,11 +1,5 @@
 import type { CollectionReference } from 'firebase/firestore';
-import {
-  collection,
-  getFirestore,
-  onSnapshot,
-  query,
-  where,
-} from 'firebase/firestore';
+import { collection, getFirestore, onSnapshot } from 'firebase/firestore';
 import * as React from 'react';
 import { JoinGroupLink } from '../../models/groups/groups';
 import { useFirebaseApp } from '../useFirebase';
@@ -19,13 +13,12 @@ export default function useGroupJoinLinks(groupId: string) {
       if (!groupId) return;
 
       return onSnapshot(
-        query(
-          collection(
-            getFirestore(firebaseApp),
-            'group-join-links'
-          ) as CollectionReference<JoinGroupLink>,
-          where('groupId', '==', groupId)
-        ),
+        collection(
+          getFirestore(firebaseApp),
+          'groups',
+          groupId,
+          'joinLinks'
+        ) as CollectionReference<JoinGroupLink>,
         {
           next: snap => {
             setLinks(snap.docs.map(doc => ({ ...doc.data(), id: doc.id })));

@@ -20,7 +20,7 @@ import { PostData } from '../../models/groups/posts';
 import { useFirebaseApp } from '../useFirebase';
 
 const ActiveGroupContext = React.createContext<{
-  activeGroupId: string;
+  activeGroupId: string | undefined;
   setActiveGroupId: React.Dispatch<React.SetStateAction<string | undefined>>;
   groupData?: GroupData;
   posts: PostData[];
@@ -39,7 +39,7 @@ const ActiveGroupContext = React.createContext<{
 export function ActiveGroupProvider({ children }: { children: ReactNode }) {
   const firebaseUser = useFirebaseUser();
   const isUserLoaded = useIsUserDataLoaded();
-  const [activeGroupId, setActiveGroupId] = React.useState<string>('');
+  const [activeGroupId, setActiveGroupId] = React.useState<string | undefined>(undefined);
   const [posts, setPosts] = React.useState<PostData[]>([]);
   const [inStudentView, setInStudentView] = React.useState(false);
   const [activeUserId, setActiveUserId] = React.useState<string>();

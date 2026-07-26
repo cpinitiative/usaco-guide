@@ -92,7 +92,7 @@ export async function queryProblem(
   // Load module if module_id exists
   if (problem.moduleId) {
     const mod = await queryModule(problem.moduleId);
-    problem.module = mod || null;
+    problem.module = mod ?? null;
   }
 
   return problem;
@@ -237,29 +237,21 @@ export async function queryModuleIdAndTitleFromProblemBySolutionId(
 ): Promise<{ id: string; title: string }[]> {
   const db = await getDatabase();
 
-  // Find all modules that contain this problem by querying module_problem_lists
-  const moduleListRows = db
+  // Use json_each to search inside the problems_json array at the SQL level,
+  // avoiding a full application-side table scan.
+  const moduleRows = db
     .prepare(
       `
-      SELECT module_id, list_id, problems_json
-      FROM module_problem_lists
+      SELECT DISTINCT mpl.module_id
+      FROM module_problem_lists mpl, json_each(mpl.problems_json) je
+      WHERE json_extract(je.value, '$.uniqueId') = ?
     `
     )
-    .all() as any[];
+    .all(uniqueId) as { module_id: string }[];
 
-  const moduleIds = new Set<string>();
+  const moduleIds = new Set(moduleRows.map(r => r.module_id));
 
-  // Check each module's problem lists to see if they contain this problem
-  for (const row of moduleListRows) {
-    const problemList: ProblemInfo[] = JSON.parse(row.problems_json);
-    const hasProblem = problemList.some(p => p.uniqueId === uniqueId);
-
-    if (hasProblem) {
-      moduleIds.add(row.module_id);
-    }
-  }
-
-  // If no modules found via module_problem_lists, check if the problem has a direct module_id
+  // Fallback: check the direct module_id column on the problems table
   if (moduleIds.size === 0) {
     const problemRow = db
       .prepare(
@@ -272,8 +264,6 @@ export async function queryModuleIdAndTitleFromProblemBySolutionId(
     }
   }
 
-  // Get module IDs and titles from module_frontmatter, ensuring modules exist
-  // This filters out any modules that don't have frontmatter (matching !!problem.module check)
   if (moduleIds.size === 0) {
     return [];
   }
@@ -427,13 +417,14 @@ export async function queryUsacoDivisionProblems(): Promise<ProblemInfo[]> {
  */
 function deserializeMdxContent(row: any): MdxContent {
   return {
-    body: row.body,
-    fileAbsolutePath: row.file_path, // Note: may need to resolve to absolute
+    body: row.body || '',
+    modulePath: row.module_path || '',
+    fileAbsolutePath: row.file_path || '',
     frontmatter: JSON.parse(row.frontmatter_json),
     toc: JSON.parse(row.toc_json),
-    cppOc: row.cpp_oc,
-    javaOc: row.java_oc,
-    pyOc: row.py_oc,
+    cppOc: row.cpp_oc || 0,
+    javaOc: row.java_oc || 0,
+    pyOc: row.py_oc || 0,
     mdast: row.mdast_json ? JSON.parse(row.mdast_json) : null,
     fields: {
       division: row.division || null,
@@ -447,18 +438,22 @@ function deserializeMdxContent(row: any): MdxContent {
  * Used for listing pages where full content is not needed
  */
 function deserializeMdxContentLight(row: any): MdxContent {
-  return {
+  const result: MdxContent = {
     body: '', // Empty body for listing pages
-    fileAbsolutePath: row.file_path,
+    modulePath: row.module_path || '',
+    fileAbsolutePath: row.file_path || '',
     frontmatter: JSON.parse(row.frontmatter_json),
     toc: { cpp: [], java: [], py: [] }, // Empty TOC for listing pages
-    cppOc: row.cpp_oc,
-    javaOc: row.java_oc,
-    pyOc: row.py_oc,
-    mdast: null, // No mdast for listing pages
+    cppOc: row.cpp_oc || 0,
+    javaOc: row.java_oc || 0,
+    pyOc: row.py_oc || 0,
     fields: {
       division: row.division || null,
       gitAuthorTime: row.git_author_time || null,
     },
   };
+  if (row.mdast_json) {
+    result.mdast = JSON.parse(row.mdast_json);
+  }
+  return result;
 }

@@ -96,7 +96,7 @@ export default function ProblemSolutions({
                         <a
                           href={link.url}
                           target="_blank"
-                          rel="noreferrer"
+                          rel="noopener noreferrer"
                           className="text-black underline dark:text-gray-200"
                         >
                           {link.label}
@@ -119,7 +119,7 @@ export default function ProblemSolutions({
               <a
                 href={problem.url}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="group my-0 inline-flex items-center space-x-1.5 text-sm font-medium text-gray-800 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100"
               >
                 <span>View Problem Statement</span>
@@ -290,3 +290,4 @@ export default function ProblemSolutions({
     </div>
   );
 }
+

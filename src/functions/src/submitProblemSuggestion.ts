@@ -2,6 +2,7 @@ import axios from 'axios';
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
 import prettier from 'prettier';
+import { GITHUB_DEFAULT_BRANCH, githubApiBase } from '../../config';
 import {
   autoGenerateSolutionMetadata,
   generateProblemUniqueId,
@@ -10,7 +11,7 @@ import {
   ProblemMetadata,
 } from '../../models/problem';
 
-const problemSuggestionReviewers = {
+const problemSuggestionReviewers: Record<Section, string[]> = {
   general: [],
   bronze: [],
   silver: [],
@@ -18,6 +19,7 @@ const problemSuggestionReviewers = {
   plat: [],
   adv: [],
 };
+type Section = 'general' | 'bronze' | 'silver' | 'gold' | 'plat' | 'adv';
 
 if (admin.apps.length === 0) {
   admin.initializeApp();
@@ -30,10 +32,10 @@ const submitProblemSuggestion = functions.https.onCall(async request => {
       'You must be logged in to suggest a problem!'
     );
   }
-  const submitterName = await admin
-    .auth()
-    .getUser(request.auth.uid)
-    .then(userRecord => userRecord.displayName);
+  // const submitterName = await admin
+  //   .auth()
+  //   .getUser(request.auth.uid)
+  //   .then(userRecord => userRecord.displayName);
 
   const {
     name,
@@ -74,12 +76,40 @@ const submitProblemSuggestion = functions.https.onCall(async request => {
     );
   }
 
-  // TODO: increase validation?
   if (filePath.indexOf('..') > -1) {
     throw new functions.https.HttpsError(
       'invalid-argument',
       'The filePath argument contained an unexpected value.'
     );
+  }
+
+  // Stricter path validation: only allow alphanumeric, underscores, hyphens, slashes, dots for extension
+  if (!/^[\w\-/]+\.mdx$/.test(filePath)) {
+    throw new functions.https.HttpsError(
+      'invalid-argument',
+      'The filePath argument contained invalid characters.'
+    );
+  }
+
+  // Validate link is a proper HTTP/HTTPS URL
+  try {
+    const parsedLink = new URL(link);
+    if (parsedLink.protocol !== 'http:' && parsedLink.protocol !== 'https:') {
+      throw new Error('Only http/https URLs are allowed');
+    }
+  } catch {
+    throw new functions.https.HttpsError(
+      'invalid-argument',
+      'The link argument must be a valid HTTP/HTTPS URL.'
+    );
+  }
+
+  // Enforce field length limits
+  if (name.length > 500) {
+    throw new functions.https.HttpsError('invalid-argument', 'Problem name is too long.');
+  }
+  if (additionalNotes && additionalNotes.length > 5000) {
+    throw new functions.https.HttpsError('invalid-argument', 'Additional notes are too long (max 5,000 characters).');
   }
   const tagsArr = tags
     .split(',')
@@ -114,18 +144,32 @@ const submitProblemSuggestion = functions.https.onCall(async request => {
       : '') +
     `*This PR was automatically generated from a user-submitted problem suggestion on the USACO guide.*`;
   const key = functions.config().problemsuggestion.issueapikey;
+  if (!key) {
+    throw new functions.https.HttpsError(
+      'invalid-argument',
+      'Missing GitHub API key configuration'
+    );
+  }
   const githubAPI = axios.create({
     baseURL: 'https://api.github.com',
-    auth: {
-      username: 'maggieliu05',
-      password: key,
+    headers: {
+      Authorization: `token ${key}`,
+      Accept: 'application/vnd.github.v3+json',
     },
   });
 
   const masterRefsReq = await githubAPI.get(
-    '/repos/cpinitiative/usaco-guide/git/refs/heads'
+    `${githubApiBase()}/git/refs/heads`
   );
-  const masterRef = masterRefsReq.data.find(r => r.ref == 'refs/heads/master');
+  const masterRef = (masterRefsReq.data as any[]).find(
+    (r: any) => r.ref === 'refs/heads/' + GITHUB_DEFAULT_BRANCH
+  );
+  if (!masterRef) {
+    throw new functions.https.HttpsError(
+      'not-found',
+      `Default branch "${GITHUB_DEFAULT_BRANCH}" not found in repository refs.`
+    );
+  }
   const masterHash = masterRef.object.sha;
 
   const branchNameBase = 'problem-suggestion/' + generatedProblemId;
@@ -134,7 +178,7 @@ const submitProblemSuggestion = functions.https.onCall(async request => {
   for (increment; increment < 5; increment++) {
     try {
       await githubAPI.get(
-        `/repos/cpinitiative/usaco-guide/branches/${
+        `${githubApiBase()}/branches/${
           branchNameBase + (increment === 0 ? '' : '-' + increment)
         }`
       );
@@ -152,13 +196,13 @@ const submitProblemSuggestion = functions.https.onCall(async request => {
     );
   }
   const branchName = branchNameBase + (increment === 0 ? '' : '-' + increment);
-  await githubAPI.post('/repos/cpinitiative/usaco-guide/git/refs', {
+  await githubAPI.post(`${githubApiBase()}/git/refs`, {
     ref: 'refs/heads/' + branchName,
     sha: masterHash,
   });
 
   const oldFileDataReq = await githubAPI.get(
-    `/repos/cpinitiative/usaco-guide/contents/content/${filePath.replace(
+    `${githubApiBase()}/contents/content/${filePath.replace(
       /\.mdx$/,
       '.problems.json'
     )}?ref=${branchName}`
@@ -176,7 +220,7 @@ const submitProblemSuggestion = functions.https.onCall(async request => {
   // problem with the same difficulty as the suggested problem.
   parsedOldFileData[problemListName] = (
     [
-      ...tableToEdit.map((el, i) => ({ index: i, data: el })),
+      ...tableToEdit.map((el: any, i: number) => ({ index: i, data: el })),
       { index: tableToEdit.length, data: suggestedProblem },
     ] as { index: number; data: ProblemMetadata }[]
   )
@@ -203,7 +247,7 @@ const submitProblemSuggestion = functions.https.onCall(async request => {
   });
 
   await githubAPI.put(
-    `/repos/cpinitiative/usaco-guide/contents/content/${filePath.replace(
+    `${githubApiBase()}/contents/content/${filePath.replace(
       /\.mdx$/,
       '.problems.json'
     )}`,
@@ -216,10 +260,10 @@ const submitProblemSuggestion = functions.https.onCall(async request => {
   );
 
   const createdPullRequestReq = await githubAPI.post(
-    '/repos/cpinitiative/usaco-guide/pulls',
+    `${githubApiBase()}/pulls`,
     {
       head: branchName,
-      base: 'master',
+      base: GITHUB_DEFAULT_BRANCH,
       maintainer_can_modify: true,
       title: `Problem Suggestion: Add "${name}" to ${moduleName}`,
       body: body,
@@ -229,33 +273,33 @@ const submitProblemSuggestion = functions.https.onCall(async request => {
   const useProblemSuggestionReviewers = false;
   if (useProblemSuggestionReviewers) {
     const reviewersReq = await githubAPI.get(
-      `/repos/cpinitiative/usaco-guide/pulls/${createdPullRequestReq.data.number}/requested_reviewers`
+      `${githubApiBase()}/pulls/${createdPullRequestReq.data.number}/requested_reviewers`
     );
     const reviewersToRemove = reviewersReq.data.users
-      .map(user => user.login)
-      .filter(user => !problemSuggestionReviewers[section].includes(user));
+      .map((user: any) => user.login)
+      .filter((user: string) => !(problemSuggestionReviewers as Record<string, string[]>)[section].includes(user));
     const keptReviewers = reviewersReq.data.users
-      .map(user => user.login)
-      .filter(user => problemSuggestionReviewers[section].includes(user));
+      .map((user: any) => user.login)
+      .filter((user: string) => (problemSuggestionReviewers as Record<string, string[]>)[section].includes(user));
     await githubAPI.delete(
-      `/repos/cpinitiative/usaco-guide/pulls/${createdPullRequestReq.data.number}/requested_reviewers`,
+      `${githubApiBase()}/pulls/${createdPullRequestReq.data.number}/requested_reviewers`,
       {
         data: {
           reviewers: reviewersToRemove,
-          team_reviewers: reviewersReq.data.teams.map(team => team.slug),
+          team_reviewers: reviewersReq.data.teams.map((team: any) => team.slug),
         },
       }
     );
     if (
-      problemSuggestionReviewers[section].filter(
-        u => !keptReviewers.includes(u)
+      (problemSuggestionReviewers as Record<string, string[]>)[section].filter(
+        (u: string) => !keptReviewers.includes(u)
       ).length > 0
     ) {
       await githubAPI.post(
-        `/repos/cpinitiative/usaco-guide/pulls/${createdPullRequestReq.data.number}/requested_reviewers`,
+        `${githubApiBase()}/pulls/${createdPullRequestReq.data.number}/requested_reviewers`,
         {
-          reviewers: problemSuggestionReviewers[section].filter(
-            u => !keptReviewers.includes(u)
+          reviewers: (problemSuggestionReviewers as Record<string, string[]>)[section].filter(
+            (u: string) => !keptReviewers.includes(u)
           ),
         }
       );
@@ -264,7 +308,7 @@ const submitProblemSuggestion = functions.https.onCall(async request => {
 
   // post to /issues/ because github treats all PRs as issues, so the shared features between them (such as labels) use issue api
   await githubAPI.post(
-    `/repos/cpinitiative/usaco-guide/issues/${createdPullRequestReq.data.number}/labels`,
+    `${githubApiBase()}/issues/${createdPullRequestReq.data.number}/labels`,
     ['Problem Suggestion']
   );
 

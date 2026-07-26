@@ -16,7 +16,7 @@ export default function Profile(): JSX.Element {
     }
   }, [firebaseUser?.displayName]);
 
-  const handleSubmit = e => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     if (!firebaseUser) throw new Error('User not logged in');
     e.preventDefault();
     updateProfile(firebaseUser, { displayName: name });

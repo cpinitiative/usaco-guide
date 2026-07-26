@@ -50,7 +50,7 @@ Lists.args = {
               The{' '}
               <a
                 target="_blank"
-                href="http://www.usaco.org/"
+                href="https://www.usaco.org/"
                 rel="nofollow noopener noreferrer"
               >
                 USACO

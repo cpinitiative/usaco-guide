@@ -1,4 +1,5 @@
 import { getFunctions, httpsCallable } from 'firebase/functions';
+import Image from 'next/image';
 import React from 'react';
 import toast from 'react-hot-toast';
 import {
@@ -15,46 +16,72 @@ export default function AdminSettings() {
   const [searching, setSearching] = React.useState(false);
 
   // the type is actually auth.getUsersResult...
-  const [userData, setUserData] = React.useState<any>(null);
+  const [userData, setUserData] = React.useState<{
+    uid: string;
+    email: string | null;
+    displayName: string | null;
+    photoURL: string | null;
+    disabled: boolean;
+    customClaims?: Record<string, boolean>;
+  } | null>(null);
   const [userPermissions, setUserPermissions] = React.useState<
     { [key in UserPermissions]: boolean } | null
   >(null);
   const [isUpdating, setIsUpdating] = React.useState(false);
 
-  const editUserPermissions = updates => {
-    setUserPermissions({
-      ...(userPermissions || {}),
+  const editUserPermissions = (updates: Record<string, boolean>) => {
+    setUserPermissions(prev => ({
+      ...(prev || {
+        isAdmin: false,
+        canModerate: false,
+        canCreateGroups: false,
+      }),
       ...updates,
-    });
+    }));
   };
 
-  const handleSearch = async e => {
+  const handleSearch = async (e?: React.FormEvent) => {
     e?.preventDefault();
 
     setSearching(true);
     try {
-      const response = await (httpsCallable(
+      const result: any = await httpsCallable(
         getFunctions(firebaseApp),
         'getUsers'
-      )({
-        users: [{ email }],
-      }) as any);
-      if (response.data.users.length === 0) {
+      )({ users: [{ email }] });
+      const users = (result?.data?.users as Array<{
+        uid: string;
+        email: string | null;
+        displayName: string | null;
+        photoURL: string | null;
+        disabled: boolean;
+        customClaims?: Record<string, boolean>;
+      } | null>) ?? [];
+      if (users.length === 0 || users[0] === null) {
         toast.error('The user with email ' + email + ' could not be found.');
       } else {
-        console.log('Got user: ', response.data.users[0]);
-        setUserData(response.data.users[0]);
-        setUserPermissions(response.data.users[0].customClaims);
+        const foundUser = users[0];
+        setUserData(foundUser);
+          setUserPermissions(
+            (foundUser.customClaims as Record<string, boolean> || {
+              isAdmin: false,
+              canModerate: false,
+              canCreateGroups: false,
+            }) as { isAdmin: boolean; canModerate: boolean; canCreateGroups: boolean }
+          );
       }
-    } catch (e: any) {
-      toast.error(e.message);
+    } catch (e) {
+      const message = e instanceof Error ? e.message : 'An unknown error occurred';
+      toast.error(message);
     }
 
     setSearching(false);
   };
 
-  const handleUpdateUserPermissions = async e => {
+  const handleUpdateUserPermissions = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!userData) return;
 
     if (!userData.customClaims?.isAdmin && userPermissions?.isAdmin) {
       if (
@@ -82,9 +109,10 @@ export default function AdminSettings() {
           duration: 6000,
         }
       );
-      handleSearch(null);
-    } catch (e: any) {
-      toast.error(e.message);
+      handleSearch(undefined);
+    } catch (e) {
+      const message = e instanceof Error ? e.message : 'An unknown error occurred';
+      toast.error(message);
     }
 
     setIsUpdating(false);
@@ -152,7 +180,13 @@ export default function AdminSettings() {
           <div>
             <div className="mb-4 flex items-center">
               <div className="mr-4 shrink-0">
-                <img src={userData.photoURL} className="h-16 w-16 rounded-md" />
+                  <Image
+                     src={userData.photoURL ?? '/assets/logo-square.png'}
+                    className="h-16 w-16 rounded-md"
+                    alt="User avatar"
+                    width={64}
+                    height={64}
+                  />
               </div>
               <div>
                 <h4 className="text-lg font-bold">{userData.displayName}</h4>
@@ -177,7 +211,7 @@ export default function AdminSettings() {
             </div>
             <div className="mb-3">
               <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                This information has also been logged to the console.
+                User Lookup Result
               </div>
             </div>
           </div>
@@ -195,14 +229,32 @@ export default function AdminSettings() {
                   >
                     <div className="flex flex-col">
                       <p className="text-sm font-medium text-gray-900 dark:text-gray-200">
-                        {UserPermissionInformation[key].label}
+                        {
+                          (
+                            UserPermissionInformation as Record<
+                              string,
+                              { label: string; description: string }
+                            >
+                          )[key].label
+                        }
                       </p>
                       <span className="text-sm text-gray-500 dark:text-gray-400">
-                        {UserPermissionInformation[key].description}
+                        {
+                          (
+                            UserPermissionInformation as Record<
+                              string,
+                              { label: string; description: string }
+                            >
+                          )[key].description
+                        }
                       </span>
                     </div>
                     <Switch
-                      checked={userPermissions?.[key] || false}
+                      checked={
+                        userPermissions?.[
+                          key as keyof typeof userPermissions
+                        ] || false
+                      }
                       onChange={b => editUserPermissions({ [key]: b })}
                     />
                   </li>

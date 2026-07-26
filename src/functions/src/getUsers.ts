@@ -10,7 +10,6 @@ export default functions.https.onCall(async request => {
     users: ({ uid: string } | { email: string })[];
   };
   const callerUid = request.auth?.uid;
-  const caller = await admin.auth().getUser(callerUid);
 
   if (!callerUid || !users || users.length === 0) {
     throw new functions.https.HttpsError(
@@ -18,6 +17,8 @@ export default functions.https.onCall(async request => {
       'The function was not called with the correct data, or the caller is not logged in.'
     );
   }
+
+  const caller = await admin.auth().getUser(callerUid);
   const classesPermissions = await admin
     .firestore()
     .collection('classes')
@@ -25,7 +26,7 @@ export default functions.https.onCall(async request => {
     .get()
     .then(snapshot => snapshot.data());
   if (
-    !caller.customClaims.isAdmin &&
+    !caller.customClaims?.isAdmin &&
     !classesPermissions?.admins?.includes(callerUid) &&
     !classesPermissions?.instructors?.includes(callerUid)
   ) {

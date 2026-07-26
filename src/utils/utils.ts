@@ -1,4 +1,5 @@
 import MODULE_ORDERING from '../../content/ordering';
+import { SectionID } from '../../content/ordering';
 import { ModuleInfo } from '../models/module';
 import { MdxContent } from '../types/content';
 
@@ -26,17 +27,17 @@ export const getModulesForDivision = (
 export function graphqlToModuleInfo(mdx: MdxContent): ModuleInfo {
   return new ModuleInfo(
     mdx.frontmatter.id,
-    mdx.fields.division,
+    (mdx.fields?.division ?? 'general') as SectionID,
     mdx.frontmatter.title,
     mdx.body,
-    mdx.frontmatter.author,
-    mdx.frontmatter.contributors,
-    mdx.frontmatter.prerequisites,
-    mdx.frontmatter.description,
-    mdx.frontmatter.frequency,
+    mdx.frontmatter.author ?? '',
+    mdx.frontmatter.contributors ?? '',
+    mdx.frontmatter.prerequisites ?? [],
+    mdx.frontmatter.description ?? '',
+    mdx.frontmatter.frequency ?? 0,
     mdx.toc,
     mdx.fileAbsolutePath,
-    mdx.fields.gitAuthorTime
+    mdx.fields?.gitAuthorTime
   );
 }
 

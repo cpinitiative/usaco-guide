@@ -10,7 +10,14 @@ import {
   githubInfoAtom,
   octokitAtom,
   openOrCreateExistingFileAtom,
+  tokenAtom,
 } from '../../../atoms/editor';
+import {
+  GITHUB_DEFAULT_BRANCH,
+  GITHUB_REPO_NAME,
+  GITHUB_REPO_OWNER,
+  githubRepoUrl,
+} from '../../../config';
 import {
   AlgoliaEditorFile,
   AlgoliaEditorSolutionFile,
@@ -34,7 +41,6 @@ function GithubActions() {
   useEffect(() => {
     if (!octokit || !githubInfo) return;
     octokit.paginate('GET /user/installations', {}).then(data => {
-      console.log(data);
       setInstalled(
         !!data.find(installation => installation.account?.id === githubInfo.id)
       );
@@ -52,7 +58,7 @@ function GithubActions() {
       });
   }, [githubInfo, branch, octokit, setFork]);
   const createBranch = useCallback(
-    async branchName => {
+    async (branchName: string) => {
       if (/\s/.test(branchName)) {
         return alert('Branch name cannot contain spaces!');
       }
@@ -88,9 +94,9 @@ function GithubActions() {
         await octokit.request(
           'GET /repos/{owner}/{repo}/git/matching-refs/{ref}',
           {
-            owner: 'cpinitiative',
-            repo: 'usaco-guide',
-            ref: 'heads/master',
+            owner: GITHUB_REPO_OWNER,
+            repo: GITHUB_REPO_NAME,
+            ref: 'heads/' + GITHUB_DEFAULT_BRANCH,
             headers: {
               'X-GitHub-Api-Version': '2022-11-28',
             },
@@ -100,7 +106,7 @@ function GithubActions() {
       octokit
         .request('POST /repos/{owner}/{repo}/git/refs', {
           owner: githubInfo.login,
-          repo: 'usaco-guide',
+          repo: GITHUB_REPO_NAME,
           ref: `refs/heads/${branchName}`,
           sha: masterSha,
           headers: {
@@ -109,7 +115,7 @@ function GithubActions() {
         })
         .catch(() => {})
         .finally(() => {
-          setBranch(branchName);
+          setBranch(branchName as any);
           setBranchState('Create/Set Branch');
         });
     },
@@ -135,9 +141,9 @@ function GithubActions() {
                 <p>No fork detected.</p>
                 <a
                   className="btn mt-1"
-                  href="https://github.com/cpinitiative/usaco-guide/fork"
+                  href={githubRepoUrl('/fork')}
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                 >
                   Create Fork
                 </a>
@@ -149,7 +155,7 @@ function GithubActions() {
                 <a
                   href={fork}
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   className="text-blue-500 hover:underline"
                 >
                   Fork detected!
@@ -159,9 +165,9 @@ function GithubActions() {
                 <p>
                   Current branch:{' '}
                   <a
-                    href={`https://github.com/${githubInfo.login}/usaco-guide/tree/${branch}`}
+                    href={`https://github.com/${githubInfo.login}/${GITHUB_REPO_NAME}/tree/${branch}`}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="text-blue-500 hover:underline"
                   >
                     {branch}
@@ -173,7 +179,7 @@ function GithubActions() {
               <button
                 onClick={() =>
                   createBranch(
-                    prompt('Branch name? (leave empty for auto-generated name)')
+                    prompt('Branch name? (leave empty for auto-generated name)') || ''
                   )
                 }
                 className="btn"
@@ -183,9 +189,9 @@ function GithubActions() {
               {branch && githubInfo && (
                 <a
                   className="btn mt-4"
-                  href={`https://github.com/${githubInfo.login}/usaco-guide/pull/new/${branch}`}
+                  href={`https://github.com/${githubInfo.login}/${GITHUB_REPO_NAME}/pull/new/${branch}`}
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                 >
                   Open Pull Request
                 </a>
@@ -227,9 +233,10 @@ function GithubSidebar({ loading }: { loading: boolean }) {
   );
 }
 
-export const EditorSidebar = (props): JSX.Element => {
+export const EditorSidebar = (props: { loading: boolean; files?: any[]; className?: string }): JSX.Element => {
   const files = useAtomValue(filesListAtom);
   const [activeFile, setActiveFile] = useAtom(activeFileAtom);
+  const token = useAtomValue(tokenAtom);
   const openOrCreateExistingFile = useSetAtom(openOrCreateExistingFileAtom);
   const createNewInternalSolutionFile = useSetAtom(
     createNewInternalSolutionFileAtom
@@ -280,6 +287,7 @@ export const EditorSidebar = (props): JSX.Element => {
         onCloseFile={handleCloseFile}
         onCloseAllFiles={handleCloseAllFiles}
         onNewFile={handleNewFile}
+        token={token || ''}
       />
       <React.Suspense fallback={<p className="p-4">Loading...</p>}>
         <GithubSidebar {...props} />
@@ -287,3 +295,4 @@ export const EditorSidebar = (props): JSX.Element => {
     </div>
   );
 };
+

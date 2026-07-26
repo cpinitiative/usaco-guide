@@ -1,6 +1,6 @@
-import Select from 'react-select';
+import Select, { type SingleValue } from 'react-select';
 import { useDarkMode } from '../context/DarkModeContext';
-export default function StyledSelect(props) {
+export default function StyledSelect(props: React.ComponentProps<typeof Select>) {
   const darkMode = useDarkMode();
   return (
     <Select

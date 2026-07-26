@@ -36,7 +36,7 @@ const AnnouncementIcon = () => {
   );
 };
 
-const AssignmentIcon = ({ pointsEarned, totalPoints }) => {
+const AssignmentIcon = ({ pointsEarned, totalPoints }: { pointsEarned: number; totalPoints: number }) => {
   const fullySolved = pointsEarned === totalPoints && totalPoints > 0;
   const inProgress = !fullySolved && pointsEarned > 0;
   return (
@@ -84,8 +84,8 @@ export default function FeedItem({
   const ref = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
-    const handleClick = e => {
-      if (!ref.current || ref.current.contains(e.target)) return;
+    const handleClick = (e: MouseEvent) => {
+      if (!ref.current || ref.current.contains(e.target as Node)) return;
       setShowDropdown(false);
     };
     document.addEventListener('mousedown', handleClick);
@@ -246,7 +246,6 @@ export default function FeedItem({
                     type="button"
                     onClick={() => {
                       setShowExportModal(true);
-                      console.log('toggled');
                     }}
                     className="flex w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                     role="menuitem"

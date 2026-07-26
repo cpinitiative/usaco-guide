@@ -12,9 +12,12 @@ import {
 import { ProblemInfo } from '../../../../types/content';
 import { ProblemsList } from '../ProblemsList';
 import contestToPoints from './contest_to_points.json';
-import divToProbs from './div_to_probs.json';
+const contestToPointsMap = contestToPoints as unknown as Record<string, Record<string, number[] | null>>;
+import divToProbs from '../../../../data/div_to_probs.json';
+const divToProbsMap = divToProbs as unknown as Record<string, [string, string, string][]>;
 import { DivisionProblemInfo } from './DivisionProblemInfo';
-import idToSol from './id_to_sol.json';
+import idToSol from '../../../../data/id_to_sol.json';
+const idToSolMap = idToSol as unknown as Record<string, string>;
 
 const divisions = ['Bronze', 'Silver', 'Gold', 'Platinum'];
 const startYear = 2016;
@@ -22,7 +25,7 @@ const startYear = 2016;
 let endYear = startYear;
 
 for (const division of divisions) {
-  for (const [, contest] of divToProbs[division]) {
+  for (const [, contest] of divToProbsMap[division]) {
     let year = Number(contest.substring(0, 4));
     if (contest.includes('December')) year++;
     endYear = Math.max(endYear, year);
@@ -49,7 +52,7 @@ const color: { [key: string]: string } = {
   Platinum: 'bg-gray-200',
 };
 
-const getCircle = option => {
+const getCircle = (option: string) => {
   return (
     divisions.includes(option) && (
       <span className="inline-block h-5 w-5 p-0.5">
@@ -73,14 +76,14 @@ const DivisionButton = ({
   dropdownAbove?: boolean;
 }) => {
   const [show, setShow] = React.useState(false);
-  const handleSelect = option => {
+  const handleSelect = (option: string) => {
     setShow(false);
     onChange(option);
   };
   const ref = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
-    const handleClick = e => {
-      if (ref.current?.contains(e.target)) return;
+    const handleClick = (e: MouseEvent) => {
+      if (ref.current?.contains(e.target as Node)) return;
       setShow(false);
     };
     document.addEventListener('mousedown', handleClick);
@@ -230,10 +233,10 @@ export default function DivisionList(): JSX.Element {
   }
 
   for (const division of divisions) {
-    for (const contest of Object.keys(contestToPoints[division])) {
+    for (const contest of Object.keys(contestToPointsMap[division])) {
       contestToFraction[division][contest] = [];
-      if (contestToPoints[division][contest]) {
-        for (const num of contestToPoints[division][contest]) {
+      if (contestToPointsMap[division][contest]) {
+        for (const num of contestToPointsMap[division][contest]) {
           contestToFraction[division][contest].push(num);
         }
       }
@@ -241,7 +244,7 @@ export default function DivisionList(): JSX.Element {
   }
 
   for (const division of divisions) {
-    for (const probInfo of divToProbs[division]) {
+    for (const probInfo of divToProbsMap[division]) {
       const contest = probInfo[1];
       let fraction = 0;
       if (contest in contestToFraction[division]) {
@@ -254,7 +257,7 @@ export default function DivisionList(): JSX.Element {
         solution: probToSol[id] || {
           kind: 'link',
           label: 'External Sol',
-          url: `http://www.usaco.org/current/data/${idToSol[probInfo[0]]}`,
+          url: `https://www.usaco.org/current/data/${idToSolMap[probInfo[0]]}`,
         },
         moduleLink: probToLink[id],
         percentageSolved: fraction,
@@ -262,7 +265,7 @@ export default function DivisionList(): JSX.Element {
         difficulty: probToDifficulty[id],
         url:
           probToURL[id] ||
-          'http://www.usaco.org/index.php?page=viewproblem2&cpid=' +
+          'https://www.usaco.org/index.php?page=viewproblem2&cpid=' +
             probInfo[0], // problems not in modules won't have URLs
         source: contest,
       };

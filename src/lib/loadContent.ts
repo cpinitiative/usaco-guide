@@ -59,7 +59,6 @@ export const loadTeamImages = async () => {
     'team',
     'images'
   );
-  console.log('Loading team images from', teamImagesDir);
   const teamImages: Array<{
     name: string;
     src: string;

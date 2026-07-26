@@ -81,7 +81,7 @@ class Particles extends React.PureComponent<Props, State> {
     particles: [] as Particle[],
   };
 
-  animationFrameId: number;
+  animationFrameId!: number;
 
   componentDidUpdate(prevProps: Props, prevState: State) {
     if (prevState.particles.length === 0 && this.state.particles.length > 0) {

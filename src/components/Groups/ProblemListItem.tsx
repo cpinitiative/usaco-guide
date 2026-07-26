@@ -7,6 +7,7 @@ import {
   ProblemData,
   submissionCircleBorderColor,
   submissionCircleColor,
+  type ExecutionVerdict,
 } from '../../models/groups/problem';
 
 const ProblemListItem = ({
@@ -21,7 +22,6 @@ const ProblemListItem = ({
   dragHandle?: JSX.Element;
 }): JSX.Element => {
   const { activeUserId } = useActiveGroup();
-  // todo optimize reads...?
   const userLeaderboardData = useUserLeaderboardData(group.id, activeUserId!);
   const bestSubmission =
     userLeaderboardData?.details?.[post.id!]?.[problem.id] || null;
@@ -42,11 +42,11 @@ const ProblemListItem = ({
           <div className="min-w-0 space-y-3">
             <div className="flex items-center space-x-3">
               <span
-                className={`flex h-5 w-5 items-center justify-center rounded-full ${submissionCircleBorderColor[status]}`}
+                className={`flex h-5 w-5 items-center justify-center rounded-full ${submissionCircleBorderColor[status as ExecutionVerdict | 'Pending']}`}
                 aria-hidden="true"
               >
                 <span
-                  className={`h-2.5 w-2.5 rounded-full ${submissionCircleColor[status]}`}
+                  className={`h-2.5 w-2.5 rounded-full ${submissionCircleColor[status as ExecutionVerdict | 'Pending']}`}
                 />
               </span>
 

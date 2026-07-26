@@ -4,21 +4,15 @@ export default function MarkdownImage({
   src,
   alt,
   title,
-  style,
   width: customWidth,
   centered,
 }: {
   src: string;
   alt?: string;
   title?: string;
-  style?: React.CSSProperties;
   width?: number;
   centered?: boolean;
 }) {
-  const fallBackSvg = `data:image/svg+xml;base64,${Buffer.from(
-    `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'/>`
-  ).toString('base64')}`;
-
   const imageStyle: React.CSSProperties = customWidth
     ? {
         width: customWidth,
@@ -37,14 +31,11 @@ export default function MarkdownImage({
       src={src}
       alt={alt ?? ''}
       title={title}
-      width={0}
-      height={0}
+      width={customWidth || 1200}
+      height={800}
       className="m-0"
       style={imageStyle}
-      sizes="(max-width: 768px) 100vw, 768px"
-      placeholder="blur"
-      blurDataURL={fallBackSvg}
-      unoptimized
+      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 768px"
     />
   );
 }

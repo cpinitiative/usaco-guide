@@ -115,7 +115,7 @@ const renderers = {
   code: GroupsCodeBlock,
 };
 
-export default function SafeMarkdownRenderer({ children }) {
+export default function SafeMarkdownRenderer({ children }: { children: string }) {
   return (
     <div className="prose dark:prose-light markdown max-w-none">
       <div className="react-markdown">

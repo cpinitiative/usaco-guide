@@ -12,7 +12,7 @@ export default function RadioList({
   name: string;
   options: string[];
   value: string;
-  onChange: (string) => void;
+  onChange: (value: string) => void;
   labelMap: { [key: string]: string };
   descriptionMap: { [key: string]: string };
 }) {

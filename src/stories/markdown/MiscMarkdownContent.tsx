@@ -7,7 +7,7 @@ const MiscMarkdownContent = () => (
       <a
         href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
         target="_blank"
-        rel="noreferrer"
+        rel="noopener noreferrer"
       >
         Hello World!
       </a>
@@ -58,3 +58,4 @@ const MiscMarkdownContent = () => (
 );
 
 export default MiscMarkdownContent;
+

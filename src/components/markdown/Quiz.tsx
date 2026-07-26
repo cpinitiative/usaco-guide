@@ -43,7 +43,7 @@ const QuizAnswerExplanation = (props: { children?: React.ReactNode }) => {
 };
 QuizAnswerExplanation.displayName = 'QuizAnswerExplanation';
 // Answer choice component
-const QuizMCAnswer = props => {
+const QuizMCAnswer = (props: { number: number; correct?: boolean; children: React.ReactNode }) => {
   const store = useStore();
   const [selectedAnswer, setSelectedAnswer] = useAtom(selectedAnswerAtom, {
     store,
@@ -91,15 +91,18 @@ const QuizMCAnswer = props => {
 
       <div className={classNames('no-y-margin ml-3 flex-1')}>
         {React.Children.map(props.children, child => {
-          if (child?.type?.displayName == 'QuizAnswerExplanation') {
-            if (!child.props.children || !showVerdict) {
+          if (!React.isValidElement(child)) return child;
+          const element = child as React.ReactElement<{ children?: React.ReactNode }>;
+          const elementType = element.type as React.ComponentType<any> | undefined;
+          if (elementType?.displayName == 'QuizAnswerExplanation') {
+            if (!element.props.children || !showVerdict) {
               return null;
             }
           }
-          if (!isCorrect && child?.type?.name == 'pre') {
-            return React.cloneElement(child, { copyButton: false });
+          if (!isCorrect && elementType?.name == 'pre') {
+            return React.cloneElement(element as React.ReactElement<any>, { copyButton: false });
           }
-          return child;
+          return element;
         })}
       </div>
     </Element>
@@ -107,15 +110,17 @@ const QuizMCAnswer = props => {
 };
 QuizMCAnswer.displayName = 'QuizMCAnswer';
 
-const QuizQuestion = props => {
+const QuizQuestion = (props: { children: React.ReactNode }) => {
   const store = useStore();
   const setCorrectAnswers = useSetAtom(correctAnswersAtom, { store });
   React.useEffect(() => {
     const correctAnswers: number[] = [];
     let answerNum = 0;
     React.Children.map(props.children, child => {
-      if (child?.type?.displayName === 'QuizMCAnswer') {
-        if (child.props.correct) correctAnswers.push(answerNum);
+      if (!React.isValidElement(child)) return;
+      const elementType = child.type as React.ComponentType<any> | undefined;
+      if (elementType?.displayName === 'QuizMCAnswer') {
+        if ((child.props as { correct?: boolean }).correct) correctAnswers.push(answerNum);
         answerNum++;
       }
     });
@@ -124,8 +129,10 @@ const QuizQuestion = props => {
 
   let num = 0;
   const answerChoices = React.Children.map(props.children, child => {
-    if (child?.type?.displayName === 'QuizMCAnswer') {
-      return React.cloneElement(child, {
+    if (!React.isValidElement(child)) return child;
+    const elementType = child.type as React.ComponentType<any> | undefined;
+    if (elementType?.displayName === 'QuizMCAnswer') {
+      return React.cloneElement(child as React.ReactElement<any>, {
         number: num++,
       });
     } else {
@@ -137,7 +144,7 @@ const QuizQuestion = props => {
 QuizQuestion.displayName = 'QuizQuestion';
 
 // needed to use scoped provider
-const ActualQuiz = props => {
+const ActualQuiz = (props: { children: React.ReactNode }) => {
   const store = useStore();
   const [currentQuestion, setCurrentQuestion] = useAtom(currentQuestionAtom, {
     store,
@@ -158,18 +165,24 @@ const ActualQuiz = props => {
     setSelectedAnswer(newAnswer);
   };
 
-  const questionList: React.ReactElement[] = React.Children.map(
+  const questionList = React.Children.map(
     props.children,
     child => {
-      if (child?.type?.displayName === 'QuizQuestion') {
-        return child;
+      if (!React.isValidElement(child)) {
+        throw new Error(
+          'Children of the Quiz component can only be Quiz.Question'
+        );
+      }
+      const elementType = child.type as React.ComponentType<any> | undefined;
+      if (elementType?.displayName === 'QuizQuestion') {
+        return child as React.ReactElement;
       } else {
         throw new Error(
           'Children of the Quiz component can only be Quiz.Question'
         );
       }
     }
-  );
+  ) as React.ReactElement[];
 
   return (
     <div className="quiz">
@@ -207,7 +220,7 @@ const ActualQuiz = props => {
   );
 };
 
-const Quiz = (props): JSX.Element => {
+const Quiz = (props: { children: React.ReactNode }): JSX.Element => {
   return (
     <Provider>
       <ActualQuiz {...props} />

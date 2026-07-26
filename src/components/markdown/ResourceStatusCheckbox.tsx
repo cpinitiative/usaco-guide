@@ -93,6 +93,7 @@ const ProgressDropdown = ({
               ? 'bg-indigo-600 text-white dark:bg-indigo-800'
               : 'dark:text-dark-med-emphasis text-gray-900'
           } relative cursor-default py-2 pr-4 pl-10 select-none`}
+          aria-selected={activeProgress === progress}
           key={progress}
           onClick={() => onProgressSelected(progress)}
           onMouseEnter={() => setActiveProgress(progress)}

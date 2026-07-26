@@ -42,7 +42,7 @@ export default functions.https.onCall(async request => {
     };
   }
   const groupData = groupDataSnapshot.data() as GroupData;
-  const permissionLevel = getPermissionLevel(callerUid, groupData);
+  const permissionLevel = getPermissionLevel(callerUid!, groupData);
 
   if (permissionLevel === 'NOT_MEMBER') {
     return {

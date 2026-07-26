@@ -43,7 +43,7 @@ export default function FocusProblem({
               <a
                 href={problem.url}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="group block flex-1 py-4 no-underline transition"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
@@ -100,3 +100,4 @@ export default function FocusProblem({
     </div>
   );
 }
+

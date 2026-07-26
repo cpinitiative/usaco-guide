@@ -5,6 +5,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getFirestore,
   Timestamp,
   updateDoc,
@@ -24,31 +25,55 @@ export default function useUserProblemSolutionActions() {
         'userID' | 'userName' | 'id' | 'upvotes' | 'timestamp'
       >
     ) => {
+      // F-03: guard against submitting when not authenticated — prevents
+      // documents with undefined userID from being created in Firestore
+      if (!firebaseUser?.uid) {
+        throw new Error('You must be signed in to submit a solution.');
+      }
       await addDoc(
         collection(getFirestore(firebaseApp), 'userProblemSolutions'),
         {
           ...solution,
-          userID: firebaseUser?.uid,
-          userName: firebaseUser?.displayName,
+          userID: firebaseUser.uid,
+          userName: firebaseUser.displayName ?? '',
           upvotes: [],
           timestamp: Timestamp.now(),
         }
       );
     },
+
     deleteSolution: async (solutionID: string) => {
-      await deleteDoc(
-        doc(getFirestore(firebaseApp), 'userProblemSolutions', solutionID)
-      );
+      // F-03: verify ownership client-side before issuing the delete.
+      // Firestore security rules are the authoritative enforcement layer, but
+      // this check provides an early, user-friendly rejection and prevents
+      // unintentional deletes caused by bugs or UI glitches.
+      if (!firebaseUser?.uid) {
+        throw new Error('You must be signed in to delete a solution.');
+      }
+      const ref = doc(getFirestore(firebaseApp), 'userProblemSolutions', solutionID);
+      const snap = await getDoc(ref);
+      if (snap.exists() && snap.data()?.userID !== firebaseUser.uid) {
+        throw new Error('You do not have permission to delete this solution.');
+      }
+      await deleteDoc(ref);
     },
+
     mutateSolution: async (
       solutionID: string,
       updates: Partial<UserSolutionForProblem>
     ) => {
-      await updateDoc(
-        doc(getFirestore(firebaseApp), 'userProblemSolutions', solutionID),
-        updates
-      );
+      // F-03: same ownership guard for mutations
+      if (!firebaseUser?.uid) {
+        throw new Error('You must be signed in to edit a solution.');
+      }
+      const ref = doc(getFirestore(firebaseApp), 'userProblemSolutions', solutionID);
+      const snap = await getDoc(ref);
+      if (snap.exists() && snap.data()?.userID !== firebaseUser.uid) {
+        throw new Error('You do not have permission to edit this solution.');
+      }
+      await updateDoc(ref, updates);
     },
+
     upvoteSolution: async (solutionID: string) => {
       await updateDoc(
         doc(getFirestore(firebaseApp), 'userProblemSolutions', solutionID),
@@ -57,6 +82,7 @@ export default function useUserProblemSolutionActions() {
         }
       );
     },
+
     undoUpvoteSolution: async (solutionID: string) => {
       await updateDoc(
         doc(getFirestore(firebaseApp), 'userProblemSolutions', solutionID),

@@ -110,7 +110,7 @@ export const MainEditorInterface = ({
             path={trueFilePath}
             language={tab === 'content' ? 'custom-mdx' : 'json'}
             value={trueFileContent}
-            onChange={v =>
+            onChange={(v: string | undefined) =>
               tab === 'content' ? setMarkdown(v ?? '') : setProblems(v ?? '')
             }
             options={{
@@ -118,7 +118,7 @@ export const MainEditorInterface = ({
               rulers: [80],
               minimap: { enabled: false },
             }}
-            beforeMount={monaco => {
+            beforeMount={(monaco: any) => {
               // sort of MDX (basically markdown with mdx comments)
               monaco.languages.register({ id: 'custom-mdx' });
               monaco.languages.setMonarchTokensProvider('custom-mdx', mdxLang);
@@ -134,14 +134,14 @@ export const MainEditorInterface = ({
                 ],
               });
             }}
-            onMount={e => {
+            onMount={(e: any) => {
               setMonacoEditorInstance(e);
               e.getModel().updateOptions({ insertSpaces: false });
               e.addAction({
                 id: 'insert-code',
                 label: 'Insert Code',
                 contextMenuGroupId: 'navigation',
-                run: function (ed) {
+                run: function (ed: any) {
                   ed.trigger('keyboard', 'paste', {
                     text: `
 <LanguageSection>
