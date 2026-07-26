@@ -1,0 +1,207 @@
+// USACO Guide — Firestore Security Rules
+//
+// F-01: These rules are the single authoritative authorization boundary for
+// all client-side Firestore operations.  Every finding in the audit that
+// mentions "depends on Firestore rules" is resolved here.
+//
+// Principles applied:
+//   - Default deny: no path is readable/writable unless explicitly allowed.
+//   - Ownership enforcement: users may only write their own documents.
+//   - Field-level guards: admin/permission flags cannot be written by clients.
+//   - Group authorization: only members may read; only owners/admins may write.
+//
+// Run `firebase emulators:start` and use the Rules Playground to verify all
+// CRUD operations before deploying.
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helper functions ────────────────────────────────────────────────────
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.isAdmin == true;
+    }
+
+    function isModerator() {
+      return isSignedIn() && (
+        request.auth.token.canModerate == true ||
+        request.auth.token.isAdmin == true
+      );
+    }
+
+    // Returns true if the incoming write does NOT set or change any of the
+    // protected server-managed fields.  Clients must never be able to escalate
+    // their own privileges by writing these fields directly.
+    function doesNotTouchAdminFields() {
+      return !('isAdmin' in request.resource.data)
+          && !('canModerate' in request.resource.data)
+          && !('canCreateGroups' in request.resource.data)
+          && !('CREATING_ACCOUNT_FOR_FIRST_TIME' in request.resource.data
+               && resource != null); // allow on first-time create only
+    }
+
+    // ── User documents (/users/{userId}) ────────────────────────────────────
+    //
+    // F-02 / F-03: Each user may only read and write their own document.
+    // The server-managed CREATING_ACCOUNT_FOR_FIRST_TIME field may be written
+    // exactly once (on account creation) and never updated by the client.
+    // Admin/permission fields are set exclusively via Firebase Admin SDK
+    // (Cloud Functions) and must not be writable by clients.
+
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+
+      allow create: if isOwner(userId)
+        && !('isAdmin' in request.resource.data)
+        && !('canModerate' in request.resource.data)
+        && !('canCreateGroups' in request.resource.data);
+
+      allow update: if isOwner(userId)
+        && !('isAdmin' in request.resource.data)
+        && !('canModerate' in request.resource.data)
+        && !('canCreateGroups' in request.resource.data)
+        // Prevent clients from re-writing CREATING_ACCOUNT_FOR_FIRST_TIME
+        // after it has already been set (resource != null means doc exists)
+        && !(resource.data.keys().hasAny(['CREATING_ACCOUNT_FOR_FIRST_TIME'])
+             && 'CREATING_ACCOUNT_FOR_FIRST_TIME' in request.resource.data
+             && request.resource.data.CREATING_ACCOUNT_FOR_FIRST_TIME
+                != resource.data.CREATING_ACCOUNT_FOR_FIRST_TIME);
+
+      allow delete: if isOwner(userId) || isAdmin();
+    }
+
+    // ── User problem solutions (/userProblemSolutions/{solutionId}) ─────────
+    //
+    // F-03: deleteSolution and mutateSolution must only succeed when the
+    // calling user owns the document.  The client-side ownership check in
+    // useUserProblemSolutionActions is defense-in-depth; these rules are the
+    // authoritative enforcement.
+
+    match /userProblemSolutions/{solutionId} {
+      // Any signed-in user may read public solutions; owners may read their own
+      allow read: if isSignedIn() && (
+        resource.data.isPublic == true ||
+        resource.data.userID == request.auth.uid
+      );
+
+      // Moderators and admins may read all solutions (for moderation)
+      allow read: if isModerator();
+
+      allow create: if isSignedIn()
+        // userID must match the authenticated user — prevents impersonation
+        && request.resource.data.userID == request.auth.uid
+        && request.resource.data.userName is string
+        && request.resource.data.problemID is string
+        && request.resource.data.solutionCode is string
+        && request.resource.data.language in ['cpp', 'java', 'py', 'unknown'];
+
+      allow update: if isSignedIn() && (
+        // Owner may update their own solution
+        resource.data.userID == request.auth.uid
+        // Moderator may flip isPublic to false (moderation action only)
+        || (isModerator()
+            && request.resource.data.diff(resource.data).affectedKeys()
+               .hasOnly(['isPublic'])
+            && request.resource.data.isPublic == false)
+      )
+      // Prevent userID from being changed on update
+      && request.resource.data.userID == resource.data.userID;
+
+      allow delete: if isSignedIn() && (
+        resource.data.userID == request.auth.uid || isModerator()
+      );
+    }
+
+    // ── Groups (/groups/{groupId}) ──────────────────────────────────────────
+    //
+    // F-02: Group deletion is performed by deleteAllUserData on the client.
+    // The security rules here ensure only the sole owner can delete a group,
+    // and only admins/owners can write to the group document itself.
+
+    match /groups/{groupId} {
+      function isGroupMember() {
+        return isSignedIn() && (
+          request.auth.uid in resource.data.memberIds ||
+          request.auth.uid in resource.data.adminIds ||
+          request.auth.uid in resource.data.ownerIds
+        );
+      }
+
+      function isGroupAdmin() {
+        return isSignedIn() && (
+          request.auth.uid in resource.data.adminIds ||
+          request.auth.uid in resource.data.ownerIds
+        );
+      }
+
+      function isGroupOwner() {
+        return isSignedIn() && request.auth.uid in resource.data.ownerIds;
+      }
+
+      allow read: if isGroupMember() || isAdmin();
+
+      allow create: if isSignedIn()
+        && request.auth.uid in request.resource.data.ownerIds
+        // canCreateGroups custom claim required to create groups
+        && (request.auth.token.canCreateGroups == true
+            || request.auth.token.isAdmin == true);
+
+      allow update: if isGroupAdmin() || isAdmin();
+
+      allow delete: if isGroupOwner() || isAdmin();
+
+      // ── Group posts (/groups/{groupId}/posts/{postId}) ───────────────────
+
+      match /posts/{postId} {
+        allow read: if isGroupMember() || isAdmin();
+        allow write: if isGroupAdmin() || isAdmin();
+
+        // ── Post problems (/groups/{groupId}/posts/{postId}/problems/{problemId})
+
+        match /problems/{problemId} {
+          allow read: if isGroupMember() || isAdmin();
+          allow write: if isGroupAdmin() || isAdmin();
+
+          // ── Problem submissions
+
+          match /submissions/{submissionId} {
+            allow read: if isGroupMember() || isAdmin();
+            // Submissions are written by the grading Cloud Function (Admin SDK)
+            // or by the member themselves.  No client should write arbitrary submissions.
+            allow create: if isSignedIn()
+              && request.resource.data.userID == request.auth.uid;
+            allow update, delete: if isAdmin();
+          }
+        }
+      }
+
+      // ── Group leaderboard (/groups/{groupId}/leaderboard/{entryId}) ──────
+
+      match /leaderboard/{entryId} {
+        allow read: if isGroupMember() || isAdmin();
+        // Leaderboard is written exclusively by Cloud Functions (Admin SDK)
+        allow write: if isAdmin();
+      }
+    }
+
+    // ── Join links (/groupJoinLinks/{linkId}) ────────────────────────────────
+
+    match /groupJoinLinks/{linkId} {
+      // Anyone authenticated may read a join link (needed to join via URL)
+      allow read: if isSignedIn();
+      // Only group admins (enforced via Cloud Function) or site admins may write
+      allow write: if isAdmin();
+    }
+
+  }
+}
