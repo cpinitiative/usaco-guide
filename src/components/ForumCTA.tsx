@@ -29,4 +29,3 @@ const ForumCTA = (): JSX.Element => {
 };
 
 export default ForumCTA;
-

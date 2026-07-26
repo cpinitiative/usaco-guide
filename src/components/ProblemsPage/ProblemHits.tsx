@@ -390,4 +390,3 @@ export default function ProblemHits({
     </div>
   );
 }
-

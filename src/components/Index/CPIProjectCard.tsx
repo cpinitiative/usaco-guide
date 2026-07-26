@@ -43,4 +43,3 @@ export const CPIProjectCard = ({
     </a>
   </div>
 );
-

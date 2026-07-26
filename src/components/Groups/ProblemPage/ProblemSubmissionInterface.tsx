@@ -260,4 +260,3 @@ export default function ProblemSubmissionInterface({
     </form>
   );
 }
-

@@ -215,4 +215,3 @@ export default function ContributorsSection(): JSX.Element {
     </div>
   );
 }
-

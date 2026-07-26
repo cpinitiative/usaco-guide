@@ -295,4 +295,3 @@ export const EditorSidebar = (props: { loading: boolean; files?: any[]; classNam
     </div>
   );
 };
-

@@ -141,4 +141,3 @@ export const EditorTopNav = (): JSX.Element => {
     </div>
   );
 };
-
