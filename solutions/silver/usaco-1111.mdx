@@ -2,7 +2,7 @@
 id: usaco-1111
 source: USACO Silver 2021 February
 title: Year of the Cow
-author: Melody Yu (Video)
+author: Melody Yu (Video), Rameez Parwez
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_prob2_silver_feb21.html)
@@ -11,3 +11,198 @@ author: Melody Yu (Video)
 
 Note: The video solution might not be the same as other solutions. Code in C++.
 <YouTube id="MY5Ait0AcmE" />
+
+<Spoiler title = "Video Solution Code">
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+int main() {
+	int n, K;
+	std::cin >> n >> K;
+	std::vector<int> cows(n);
+
+	for (int &cow : cows) { std::cin >> cow; }
+
+	std::sort(begin(cows), end(cows));
+
+	int k = 0, d = 12;
+	std::vector<int> floor(n);
+	std::vector<int> jumps;
+
+	floor[0] = cows[0] - (cows[0] % 12);
+	if (floor[0] != 0) {
+		k++;
+		jumps.push_back(floor[0]);
+	}
+
+	for (int i = 1; i < n; i++) {
+		floor[i] = cows[i] - (cows[i] % 12);
+		if (floor[i] - floor[i - 1] >= 24) {
+			jumps.push_back(floor[i] - floor[i - 1] - 12);
+			d += 12;
+			k++;
+		} else if (floor[i] - floor[i - 1] == 12) {
+			d += 12;
+		}
+	}
+
+	std::sort(begin(jumps), end(jumps));
+
+	int j = 0;
+	while (k >= K) {
+		k--;
+		d += jumps[j];
+		j++;
+	}
+
+	std::cout << d << '\n';
+}
+```
+
+</CPPSection>
+</LanguageSection>
+</Spoiler>
+
+## Explanation
+
+One thing that is clear from the problem statement is that for
+Bessie to visit an ancestor, she must visit the preceding year of
+the Ox (🐂) and the next year of Ox after that, requiring her to
+spend the entire $12$-year interval in that cycle. Based
+on this, we round each ancestor's year up to the next multiple of
+$12$ using the formula `year + (12 - (year % 12))`, which gives us the
+earliest Ox year Bessie must travel to in order to visit that
+ancestor.
+
+First, we must use one jump to travel back to the earliest Ox year,
+leaving us with $K - 1$ jumps. With these remaining jumps, it is
+optimal to skip the $K - 1$ largest gaps between consecutive Ox
+years in the sorted array, since **skipping a larger gap saves
+more time**.
+
+We will then greedily subtract these $K - 1$ largest gaps from the
+total year count resulting the minimum time for Bessie to visit
+all her ancestors and return to the present.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+int main() {
+	int n, k;
+	std::cin >> n >> k;
+	std::vector<int> years(n);
+	for (int &year : years) {
+		std::cin >> year;
+		year += (12 - (year % 12));
+	}
+
+	years.push_back(0);  // adding current year
+	std::sort(begin(years), end(years));
+	years.erase(std::unique(begin(years), end(years)), end(years));
+
+	// no jumps: Bessie must visit the largest year
+	int res = years.back();
+
+	// gaps between consecutive Ox years (excluding endpoints)
+	std::vector<int> gaps;
+	for (int i = 1; i < (int)years.size(); i++) {
+		gaps.push_back(years[i] - years[i - 1] -
+		               (years[i] - years[i - 1] == 12 ? 0 : 12));
+	}
+
+	std::sort(rbegin(gaps), rend(gaps));
+	for (int i = 0; i < k - 1; i++) { res -= gaps[i]; }
+
+	std::cout << res << '\n';
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class yearOfTheCow {
+
+	public static void main(String[] args) throws Exception {
+
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		int k = io.nextInt();
+		List<Integer> years = new ArrayList<>();
+
+		for (int i = 0; i < n; i++) {
+			int year = io.nextInt();
+			years.add(year + (12 - (year % 12)));
+		}
+
+		years.add(0);  // adding current year
+		Collections.sort(years);
+		years = new ArrayList<>(new LinkedHashSet<>(years));
+
+		// no jumps: Bessie must visit the furthest cycle
+		int res = years.get(years.size() - 1);
+
+		// gaps between Ox years (excluding endpoints)
+		List<Integer> gaps = new ArrayList<>();
+		for (int i = 1; i < years.size(); i++) {
+			gaps.add(years.get(i) - years.get(i - 1) -
+			         (years[i] - years[i - 1] == 12 ? 0 : 12));
+		}
+
+		gaps.sort(Collections.reverseOrder());
+		for (int i = 0; i < k - 1 && i < gaps.size(); i++) { res -= gaps.get(i); }
+
+		io.println(res);
+		io.close();
+	}
+
+	// BeginCodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+n, k = map(int, input().split())
+years = [int(input()) for _ in range(n)]
+
+years = [year + (12 - (year % 12)) for year in years]
+
+years.append(0)  # adding current year
+years = sorted(set(years))
+
+# no jumps: Bessie must visit the largest year
+res = years[-1]
+
+# gaps between consecutive Ox years (excluding endpoints)
+gaps = []
+for i in range(1, len(years)):
+	gaps.append(years[i] - years[i - 1] - (0 if years[i] - years[i - 1] == 12 else 12))
+
+gaps.sort(reverse=True)
+for i in range(k - 1):
+	res -= gaps[i]
+
+print(res)
+```
+
+</PySection>
+</LanguageSection>
