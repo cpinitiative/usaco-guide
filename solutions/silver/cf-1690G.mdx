@@ -8,7 +8,7 @@ author: Abhinav Singh
 [Official Analysis (C++)](https://codeforces.com/blog/entry/103658)
 
 ## Explanation
-Let $a_i$ be the current cap on carriage $i$, and $v_i$ the true speed it is running at. Since carriage $i$ can never outrun anything in front of it, $v_i$ is the prefix minimum $v_i = \min(a_1, \ldots, a_i)$. Since this array is non-increasing, it looks like a staircase, and each change in value is a boundary between trains. So the answer is just the number of distinct values in $v_i$.
+Let $a_i$ be the current cap on carriage $i$, and $v_i$ the true speed it is running at. Since carriage $i$ can never outrun anything in front of it, $v_i$ is the prefix minimum $v_i = \min(a_1, \ldots, a_i)$. Since this array is non-increasing, it looks like a staircase, and each change in value is a boundary between trains. So the answer is just the number of distinct values in $v$.
 
 Instead of storing the whole prefix minimum array, maintain a set of **start indices**, or the indices where a new train starts, which are index $0$ and every index $i$ where $v_i < v_{i-1}$. Note that $a_j = v_j$ at any start index $j$, so the true speed of a position $k$ is just $a_j$ with $j$ being its the largest start index such that $j\le k$.
 
@@ -42,15 +42,15 @@ int main() {
 	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
 
-	int t;
-	cin >> t;
+	int test_num;
+	cin >> test_num;
 
-	while (t--) {
+	for(int t = 0; t < test_num; ++t) {
 		int n, q;
 		cin >> n >> q;
 
 		vector<long long> a(n);
-		for (auto &x : a) cin >> x;
+		for (auto &x : a){cin >> x;}
 
 		// Build the initial set of train-start indices
 		vector<long long> pref_min(n);
