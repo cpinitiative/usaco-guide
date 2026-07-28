@@ -10,7 +10,7 @@ author: Abhinav Singh
 ## Explanation
 Let $a_i$ be the current cap on carriage $i$, and $v_i$ the true speed it is running at. Since carriage $i$ can never outrun anything in front of it, $v_i$ is the prefix minimum $v_i = \min(a_1, \ldots, a_i)$. Since this array is non-increasing, it looks like a staircase, and each change in value is a boundary between trains. So the answer is just the number of distinct values in $v_i$.
 
-Instead of storing the whole prefix minimum array, maintain a set of just the **indices** where a new train starts: : index $0$, plus every index $i$ where $v_i < v_{i-1}$. A "start index" $j$ is where the prefix min drops, meaning $v_j$ itself was the new minimum, or equivalently $a_j = v_j$ . To get the true speed at any position, we can just find its governing start index $j$ and just read off of it's raw value, i.e $a_j$.
+Instead of storing the whole prefix minimum array, maintain a set of **start indices**, or the indices where a new train starts, which are index $0$ and every index $i$ where $v_i < v_{i-1}$. Note that $a_j = v_j$ at any start index $j$, so the true speed of a position $k$ is just $a_j$ with $j$ being its the largest start index such that $j\le k$.
 
 When a query lowers $a_k$, find the largest start index $j \le k$ in the set - $a_j$ is $k$'s current true speed. If the new $a_k$ is still $\ge a_j$, nothing changes, since carriage $k$ was already bottlenecked by something ahead of it. Otherwise, insert $k$ into the set as a new start, then walk forward erasing every subsequent start index $j'$ with $a_{j'} \ge a_k$, since those trains now have been swallowed a lower speed limit. The size of the set after each query is the answer.
 
