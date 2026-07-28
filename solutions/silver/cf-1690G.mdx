@@ -8,7 +8,7 @@ author: Abhinav Singh
 [Official Analysis (C++)](https://codeforces.com/blog/entry/103658)
 
 ## Explanation
-Let $a_i$ be the raw (possibly reduced) cap on carriage $i$, and $v_i$ its true speed. Since carriage $i$ can never outrun anything in front of it, $v_i$ is the prefix minimum $v_i = \min(a_1, \ldots, a_i)$. Since this array is non-increasing, it looks like a staircase, and each change in value is a boundary between trains. So the answer is just the number of distinct values in $v_i$.
+Let $a_i$ be the current cap on carriage $i$, and $v_i$ the true speed it is running at. Since carriage $i$ can never outrun anything in front of it, $v_i$ is the prefix minimum $v_i = \min(a_1, \ldots, a_i)$. Since this array is non-increasing, it looks like a staircase, and each change in value is a boundary between trains. So the answer is just the number of distinct values in $v_i$.
 
 Instead of storing the whole prefix minimum array, maintain a set of just the **indices** where a new train starts: : index $0$, plus every index $i$ where $v_i < v_{i-1}$. A "start index" $j$ is where the prefix min drops, meaning $v_j$ itself was the new minimum, or equivalently $a_j = v_j$ . To get the true speed at any position, we can just find its governing start index $j$ and just read off of it's raw value, i.e $a_j$.
 
