@@ -104,7 +104,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <PySection>
 
 ```py
@@ -114,8 +113,8 @@ for _ in range(int(input())):
 
 	# sort indices by weight
 	order = sorted(list(range(N)), key=lambda x: weights[x])
-	cost, count = 0, N
-	is_connected = [False] * (N - 1)
+	cost, edges_remaining  = 0, N - 1
+	is_connected = [False] * N
 
 	for ind in order:
 		# if the edge costs at least p, then connect
@@ -124,23 +123,23 @@ for _ in range(int(input())):
 			break
 
 		# try to add an edge (j, ind) while expanding left
-		j = ind - 1
-		while j >= 0 and not is_connected[j] and weights[j] % weights[ind] == 0:
+		j = ind
+		while j > 0 and not is_connected[j - 1] and weights[j - 1] % weights[ind] == 0:
 			cost += weights[ind]
-			count -= 1
-			is_connected[j] = True
+			edges_remaining  -= 1
+			is_connected[j - 1] = True
 			j -= 1
 
 		# try to add an edge (ind, j) while expanding right
-		j = ind + 1
-		while j < N and not is_connected[j - 1] and weights[j] % weights[ind] == 0:
+		j = ind
+		while j < N - 1 and not is_connected[j] and weights[j + 1] % weights[ind] == 0:
 			cost += weights[ind]
-			count -= 1
-			is_connected[j - 1] = True
+			edges_remaining  -= 1
+			is_connected[j] = True
 			j += 1
 
 	# the edges that still have to be added have the cost p
-	cost += (count - 1) * P
+	cost += edges_remaining * P
 
 	print(cost)
 ```
