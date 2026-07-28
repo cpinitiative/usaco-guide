@@ -108,43 +108,16 @@ int main() {
 <PySection>
 
 ```py
-MAXN = 2 * 10**5
-parents = [0] * MAXN
-sizes = [1] * MAXN
-
-
-def init(n):
-	for i in range(n):
-		parents[i] = i
-
-
-def find(u):
-	if u == parents[u]:
-		return u
-	parents[u] = find(parents[u])
-	return parents[u]
-
-
-def unite(u, v):
-	u = find(u)
-	v = find(v)
-	if u == v:
-		return False
-	if sizes[u] < sizes[v]:
-		u, v = v, u
-	parents[u] = v
-	sizes[u] += sizes[v]
-	return True
-
 
 for _ in range(int(input())):
 	N, P = map(int, input().split())
 	weights = list(map(int, input().split()))
-	init(N)
 
 	# sort indices by weight
 	order = sorted(list(range(N)), key=lambda x: weights[x])
 	cost, count = 0, N
+	is_connected = [False] * (N - 1)
+
 	for ind in order:
 		# if the edge costs at least p, then connect
 		# the rest with edges of type 2 which cost p
@@ -153,33 +126,26 @@ for _ in range(int(input())):
 
 		# try to add an edge (j, ind) while expanding left
 		j = ind - 1
-		while j >= 0 and weights[j] % weights[ind] == 0:
-			if find(j) == find(ind):
-				break
-			if unite(j, ind):
-				cost += weights[ind]
-				count -= 1
+		while j >= 0 and not is_connected[j] and weights[j] % weights[ind] == 0:
+			cost += weights[ind]
+			count -= 1
+			is_connected[j] = True
 			j -= 1
 
 		# try to add an edge (ind, j) while expanding right
 		j = ind + 1
-		while j < N and weights[j] % weights[ind] == 0:
-			if find(j) == find(ind):
-				break
-			if unite(j, ind):
-				cost += weights[ind]
-				count -= 1
+		while j < N and not is_connected[j - 1] and weights[j] % weights[ind] == 0:
+			cost += weights[ind]
+			count -= 1
+			is_connected[j - 1] = True
 			j += 1
 
 	# the edges that still have to be added have the cost p
-	for i in range(N - 1):
-		if count <= 1:
-			break
-		if unite(i, i + 1):
-			cost += P
-			count -= 1
+	cost += (count - 1) * P
 
 	print(cost)
+
+
 ```
 
 </PySection>
