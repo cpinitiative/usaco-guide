@@ -11,19 +11,18 @@ author: Rameez Parwez
 
 We can iterate over every candy cane height one by one.
 For each candy cane, we will simply calculate how much
-candy each of Farmer John's cows can eat from that particular candy
+candy each of Farmer John's cow can eat from that particular candy
 cane and increment their height based on that value, repeating
 this process for the other candy canes.
 
 Here, we stop processing the remaining cows if there is no candy
-left in the current candy cane. Since after each new candy cane is
-hung, Farmer John's cows grow taller and thus consume more of each
-candy cane, the remaining cows have fewer chances to eat. To be exact,
-every time a cow eats from a candy cane, it eats at least as much
-as its current height, provided the candy cane is tall enough. In
-such cases, the cow's height at least doubles, meaning each cow can
-actively eat at most $\log H$ times across all candy canes, where
-$H$ is the maximum candy cane height. This gives us a total time
+left in the current candy cane. The key observation is that for 
+each candy cane, either it gets entirely eaten by the first cow 
+and we immediately break out of the loop, or the first cow eats at 
+least its current height worth of candy, which results in doubling 
+its height for the next candy cane. With this continuing process, 
+the first cow's height can double at most $\log H$ times before 
+reaching the maximum height $H$. This gives us a total time
 complexity of $\mathcal{O}(M + N \log H)$ rather than
 $\mathcal{O}(N \cdot M)$.
 
