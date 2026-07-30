@@ -79,82 +79,84 @@ using namespace std;
 
 // BeginCodeSnip{USACO Guide DSU}
 namespace usaco_guide {
-	class DisjointSets {
-	private:
-		vector<int> parents;
-		vector<int> sizes;
+class DisjointSets {
+  private:
+	vector<int> parents;
+	vector<int> sizes;
 
-	public:
-		DisjointSets(int size) : parents(size), sizes(size, 1) {
-			for (int i = 0; i < size; i++) { parents[i] = i; }
-		}
+  public:
+	DisjointSets(int size) : parents(size), sizes(size, 1) {
+		for (int i = 0; i < size; i++) { parents[i] = i; }
+	}
 
-		/** @return the "representative" node in x's component */
-		int find(int x) { return parents[x] == x ? x : (parents[x] = find(parents[x])); }
+	/** @return the "representative" node in x's component */
+	int find(int x) { return parents[x] == x ? x : (parents[x] = find(parents[x])); }
 
-		/** @return whether the merge changed connectivity */
-		bool unite(int x, int y) {
-			int x_root = find(x);
-			int y_root = find(y);
-			if (x_root == y_root) { return false; }
+	/** @return whether the merge changed connectivity */
+	bool unite(int x, int y) {
+		int x_root = find(x);
+		int y_root = find(y);
+		if (x_root == y_root) { return false; }
 
-			if (sizes[x_root] < sizes[y_root]) { swap(x_root, y_root); }
-			sizes[x_root] += sizes[y_root];
-			parents[y_root] = x_root;
-			return true;
-		}
+		if (sizes[x_root] < sizes[y_root]) { swap(x_root, y_root); }
+		sizes[x_root] += sizes[y_root];
+		parents[y_root] = x_root;
+		return true;
+	}
 
-		/** @return whether x and y are in the same connected component */
-		bool connected(int x, int y) { return find(x) == find(y); }
-	};
+	/** @return whether x and y are in the same connected component */
+	bool connected(int x, int y) { return find(x) == find(y); }
 };
+};  // namespace usaco_guide
 // EndCodeSnip
 
 const int inf = 1e17;
 const int N = 5e4 + 1;
 const int K = 17;
 
-// merging logic to keep {maximum value, maximum value that's strictly less than our maximum value}
+// merging logic to keep {maximum value, maximum value that's strictly less than our
+// maximum value}
 pair<int, int> merge(pair<int, int> A, pair<int, int> B) {
 	pair<int, int> C = {max(A.first, B.first), -inf};
-	for(int x : {A.first, A.second, B.first, B.second})
-		if(x != C.first) C.second = max(C.second, x);
+	for (int x : {A.first, A.second, B.first, B.second})
+		if (x != C.first) C.second = max(C.second, x);
 	return C;
 }
 
 vector<int> mstadj[N];
 int par[N][K], dep[N];
-pair<int,int> wgt[N][K];
+pair<int, int> wgt[N][K];
 /* par[x][k] = node that's 2^k up from x
-   wgt[x][k] = {max weight, max weight that's < max weight} along the path from x to the node 2^k above */ 
+   wgt[x][k] = {max weight, max weight that's < max weight} along the path from x to the
+   node 2^k above */
 
 // DFS to compute the parent and depth of each node
 void dfs(int x) {
-	for(int y : mstadj[x]) if(y != par[x][0]) {
-		par[y][0] = x;
-		dep[y] = 1 + dep[x];
-		dfs(y);
-	}
+	for (int y : mstadj[x])
+		if (y != par[x][0]) {
+			par[y][0] = x;
+			dep[y] = 1 + dep[x];
+			dfs(y);
+		}
 };
 
 // calculate the lowest common ancestor of a & b using binary lifting
 int lca(int a, int b) {
-	if(dep[a] < dep[b]) swap(a, b);
+	if (dep[a] < dep[b]) swap(a, b);
 	int dt = dep[a] - dep[b];
-	for(int k = 0; k < K; k++ ) if(1 & (dt >> k)) a = par[a][k];
-	if(a == b) return a;
-	for(int k = K-1; k >= 0; k--)
-		if(par[a][k] != par[b][k])
-			a = par[a][k], b = par[b][k];
+	for (int k = 0; k < K; k++)
+		if (1 & (dt >> k)) a = par[a][k];
+	if (a == b) return a;
+	for (int k = K - 1; k >= 0; k--)
+		if (par[a][k] != par[b][k]) a = par[a][k], b = par[b][k];
 	return par[a][0];
 };
 
 // calculate {max weight, 2nd max weight} along the path from x going up h nodes
 pair<int, int> liftup(int x, int h) {
 	pair<int, int> cur = {-inf, -inf};
-	for(int k = 0; k < K; k++ ) if(1 & (h >> k))
-		cur = merge(cur, wgt[x][k]),
-		x = par[x][k];
+	for (int k = 0; k < K; k++)
+		if (1 & (h >> k)) cur = merge(cur, wgt[x][k]), x = par[x][k];
 	return cur;
 };
 
@@ -173,14 +175,14 @@ int solve() {
 	int n, m;
 	cin >> n >> m;
 	vector<array<int, 3>> edges(m), mst, other;
-	for(auto&[w, u, v] : edges) cin >> u >> v >> w;
+	for (auto &[w, u, v] : edges) cin >> u >> v >> w;
 
 	// separate the edges into 'mst' and 'other' using Kruskal's algorithm + DSU
-	usaco_guide::DisjointSets dsu(n+1);
+	usaco_guide::DisjointSets dsu(n + 1);
 	sort(edges.begin(), edges.end());
 	int mstw = 0;
-	for(auto[w, u, v] : edges) {
-		if(dsu.connected(u, v)) other.push_back({w, u, v});
+	for (auto [w, u, v] : edges) {
+		if (dsu.connected(u, v)) other.push_back({w, u, v});
 		else {
 			dsu.unite(u, v);
 			mst.push_back({w, u, v});
@@ -189,10 +191,10 @@ int solve() {
 	}
 
 	// return -1 if the graph is not connected
-	if(mst.size() < n-1) return -1;
+	if (mst.size() < n - 1) return -1;
 
 	// perform DFS on the MST we've found to calculate the parent & depth of each node
-	for(auto[w, u, v] : mst) {
+	for (auto [w, u, v] : mst) {
 		mstadj[u].push_back(v);
 		mstadj[v].push_back(u);
 	}
@@ -201,28 +203,32 @@ int solve() {
 
 	// do binary lifting on the parents and {max weight, 2nd max weight} along paths
 	par[1][0] = 1;
-	for(auto[w, u, v] : mst) {
-		if(par[u][0] == v) wgt[u][0] = {w, -inf};
+	for (auto [w, u, v] : mst) {
+		if (par[u][0] == v) wgt[u][0] = {w, -inf};
 		else wgt[v][0] = {w, -inf};
 	}
 
-	for(int k = 1; k < K; k++) for(int i = 1; i <= n; i++)
-		par[i][k] = par[par[i][k-1]][k-1],
-		wgt[i][k] = merge(wgt[i][k-1], wgt[par[i][k-1]][k-1]);
+	for (int k = 1; k < K; k++)
+		for (int i = 1; i <= n; i++)
+			par[i][k] = par[par[i][k - 1]][k - 1],
+			wgt[i][k] = merge(wgt[i][k - 1], wgt[par[i][k - 1]][k - 1]);
 
-	// iterate over all the edges not included in the MST, and try to do edge replacements with them
+	// iterate over all the edges not included in the MST, and try to do edge
+	// replacements with them
 	int best = inf;
-	for(auto[w, u, v] : other) {
+	for (auto [w, u, v] : other) {
 		auto path = calcpath(u, v);
 
-		// case 1: we can remove the heaviest edge because its weight is distinct from the weight of {u,v}
-		if(path.first < w) {
+		// case 1: we can remove the heaviest edge because its weight is distinct from
+		// the weight of {u,v}
+		if (path.first < w) {
 			best = min(best, mstw - path.first + w);
 			continue;
 		}
 
-		// case 2: we cannot, so we must remove the heaviest edge whose weight is less than the weight of the heaviest edge
-		if(path.second == -inf) continue;
+		// case 2: we cannot, so we must remove the heaviest edge whose weight is less
+		// than the weight of the heaviest edge
+		if (path.second == -inf) continue;
 		best = min(best, mstw - path.second + w);
 	}
 

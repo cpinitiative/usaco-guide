@@ -21,220 +21,211 @@ using namespace std;
 
 namespace kactl {
 // BeginCodeSnip{KACTL Templates}
-    #define all(x) begin(x), end(x)
-    #define sz(x) (int)x.size()
-    #define rep(i,a,b) for (int i = (a); i < (b); ++i)
-    using vi = vector<int>;
-    using pii = pair<int, int>;
-    /**
-     * Author: Lukas Polacek
-     * Date: 2009-10-26
-     * License: CC0
-     * Source: folklore
-     * Description: Disjoint-set data structure.
-     * Time: $O(\alpha(N))$
-     */
-    struct UF {
-        vi e;
-        UF(int n) : e(n, -1) {}
-        bool sameSet(int a, int b) { return find(a) == find(b); }
-        int size(int x) { return -e[find(x)]; }
-        int find(int x) { return e[x] < 0 ? x : e[x] = find(e[x]); }
-        bool join(int a, int b) {
-            a = find(a), b = find(b);
-            if (a == b) return false;
-            if (e[a] > e[b]) swap(a, b);
-            e[a] += e[b]; e[b] = a;
-            return true;
-        }
-    };
-    /**
-     * Author: tfg, Aeren, pajenegod, chilli
-     * Date: 2020-04-15
-     * License: CC0
-     * Source: https://codeforces.com/blog/entry/69287
-     * Description: Given two matroids, finds the largest common independent set.
-     * For the color and graph matroids, this would be the largest forest where no
-     * two edges are the same color. A matroid has 3 functions
-     *  - check(int x): returns if current matroid can add x without becoming dependent
-     *  - add(int x): adds an element to the matroid (guaranteed to never make it dependent)
-     *  - clear(): sets the matroid to the empty matroid
-     * The matroid is given an int representing the element, and is expected to
-     * convert it (e.g: the color or the endpoints)
-     * Pass the matroid with more expensive add/clear operations to M1.
-     * Time: R^2N(M2.add + M1.check + M2.check) + R^3 M1.add + R^2 M1.clear + RN M2.clear
-     * Status: Tested on SWERC 2011D, Pick Your Own Nim
-     * Usage:
-     * Details:
-     */
-    template <class M1, class M2> struct MatroidIsect {
-        int n;
-        vector<char> iset;
-        M1 m1; M2 m2;
-        MatroidIsect(M1 m1, M2 m2, int n) : n(n), iset(n + 1), m1(m1), m2(m2) {}
-        vi solve() {
-            while (augment());
-            vi ans;
-            rep(i,0,n) if (iset[i]) ans.push_back(i);
-            return ans;
-        }
-        bool augment() {
-            vector<int> frm(n, -1);
-            queue<int> q({n}); // starts at dummy node
-            auto fwdE = [&](int a) {
-                vi ans;
-                m1.clear();
-                rep(v, 0, n) if (iset[v] && v != a) m1.add(v);
-                m1.precomp();
-                rep(b, 0, n) if (!iset[b] && frm[b] == -1 && m1.check(b))
-                    ans.push_back(b), frm[b] = a;
-                return ans;
-            };
-            auto backE = [&](int b) {
-                m2.clear();
-                rep(cas, 0, 2) rep(v, 0, n)
-                    if ((v == b || iset[v]) && (frm[v] == -1) == cas) {
-                        m2.add(v);
-                    }
-                m2.solve();
-                rep(cas, 0, 2) rep(v, 0, n)
-                    if ((v == b || iset[v]) && (frm[v] == -1) == cas) {
-                        if (!m2.getAns())
-                            return cas ? q.push(v), frm[v] = b, v : -1;
-                    }
-                return n;
-            };
-            while (!q.empty()) {
-                int a = q.front(), c; q.pop();
-                for (int b : fwdE(a))
-                    while((c = backE(b)) >= 0) if (c == n) {
-                        while (b != n) iset[b] ^= 1, b = frm[b];
-                        return true;
-                    }
-            }
-            return false;
-        }
-    };
+#define all(x) begin(x), end(x)
+#define sz(x) (int)x.size()
+#define rep(i, a, b) for (int i = (a); i < (b); ++i)
+using vi = vector<int>;
+using pii = pair<int, int>;
+/**
+ * Author: Lukas Polacek
+ * Date: 2009-10-26
+ * License: CC0
+ * Source: folklore
+ * Description: Disjoint-set data structure.
+ * Time: $O(\alpha(N))$
+ */
+struct UF {
+	vi e;
+	UF(int n) : e(n, -1) {}
+	bool sameSet(int a, int b) { return find(a) == find(b); }
+	int size(int x) { return -e[find(x)]; }
+	int find(int x) { return e[x] < 0 ? x : e[x] = find(e[x]); }
+	bool join(int a, int b) {
+		a = find(a), b = find(b);
+		if (a == b) return false;
+		if (e[a] > e[b]) swap(a, b);
+		e[a] += e[b];
+		e[b] = a;
+		return true;
+	}
+};
+/**
+ * Author: tfg, Aeren, pajenegod, chilli
+ * Date: 2020-04-15
+ * License: CC0
+ * Source: https://codeforces.com/blog/entry/69287
+ * Description: Given two matroids, finds the largest common independent set.
+ * For the color and graph matroids, this would be the largest forest where no
+ * two edges are the same color. A matroid has 3 functions
+ *  - check(int x): returns if current matroid can add x without becoming dependent
+ *  - add(int x): adds an element to the matroid (guaranteed to never make it dependent)
+ *  - clear(): sets the matroid to the empty matroid
+ * The matroid is given an int representing the element, and is expected to
+ * convert it (e.g: the color or the endpoints)
+ * Pass the matroid with more expensive add/clear operations to M1.
+ * Time: R^2N(M2.add + M1.check + M2.check) + R^3 M1.add + R^2 M1.clear + RN M2.clear
+ * Status: Tested on SWERC 2011D, Pick Your Own Nim
+ * Usage:
+ * Details:
+ */
+template <class M1, class M2> struct MatroidIsect {
+	int n;
+	vector<char> iset;
+	M1 m1;
+	M2 m2;
+	MatroidIsect(M1 m1, M2 m2, int n) : n(n), iset(n + 1), m1(m1), m2(m2) {}
+	vi solve() {
+		while (augment());
+		vi ans;
+		rep(i, 0, n) if (iset[i]) ans.push_back(i);
+		return ans;
+	}
+	bool augment() {
+		vector<int> frm(n, -1);
+		queue<int> q({n});  // starts at dummy node
+		auto fwdE = [&](int a) {
+			vi ans;
+			m1.clear();
+			rep(v, 0, n) if (iset[v] && v != a) m1.add(v);
+			m1.precomp();
+			rep(b, 0, n) if (!iset[b] && frm[b] == -1 && m1.check(b)) ans.push_back(b),
+			    frm[b] = a;
+			return ans;
+		};
+		auto backE = [&](int b) {
+			m2.clear();
+			rep(cas, 0, 2)
+			    rep(v, 0, n) if ((v == b || iset[v]) && (frm[v] == -1) == cas) {
+				m2.add(v);
+			}
+			m2.solve();
+			rep(cas, 0, 2)
+			    rep(v, 0, n) if ((v == b || iset[v]) && (frm[v] == -1) == cas) {
+				if (!m2.getAns()) return cas ? q.push(v), frm[v] = b, v : -1;
+			}
+			return n;
+		};
+		while (!q.empty()) {
+			int a = q.front(), c;
+			q.pop();
+			for (int b : fwdE(a))
+				while ((c = backE(b)) >= 0)
+					if (c == n) {
+						while (b != n) iset[b] ^= 1, b = frm[b];
+						return true;
+					}
+		}
+		return false;
+	}
+};
 // EndCodeSnip
-}
+}  // namespace kactl
 using kactl::UF, kactl::MatroidIsect;
 
 struct GraphDual1 {
-    vector<int> exist;
-    vector<array<int, 2>> edges;
-    vector<vector<array<int, 2>>> adj;
-    vector<int> vis, depth, low;
-    GraphDual1(int n, int m, vector<array<int, 2>> &edges) : edges(edges) {
-        exist.resize(m, 1);
-        adj.resize(n);
-        for (int i = 0; i < m; i++) {
-            auto [u, v] = edges[i];
-            adj[u].push_back({v, i});
-            adj[v].push_back({u, i});
-        }
-        vis.resize(n);
-        depth.resize(n);
-        low.resize(n);
-    }
-    void DFS(int v, int pe) {
-        vis[v] = 1;
-        low[v] = depth[v];
-        for (auto [u, e] : adj[v]) {
-            if (!exist[e]) continue;
-            if (!vis[u]) {
-                depth[u] = depth[v] + 1;
-                DFS(u, e);
-                low[v] = min(low[v], low[u]);
-            } else if (e != pe) {
-                low[v] = min(low[v], depth[u]);
-            }
-        }
-    }
-    void add(int x) {
-        exist[x] = 0;
-    }
-    void precomp() {
-        fill(vis.begin(), vis.end(), 0);
-        DFS(0, -1);
-    }
-    int check(int x) {
-        auto [u, v] = edges[x];
-        if (depth[u] > depth[v]) {
-            swap(u, v);
-        }
-        return depth[v] - depth[u] > 1 || low[v] < depth[v];
-    }
-    void clear() {
-        fill(exist.begin(), exist.end(), 1);
-    }
+	vector<int> exist;
+	vector<array<int, 2>> edges;
+	vector<vector<array<int, 2>>> adj;
+	vector<int> vis, depth, low;
+	GraphDual1(int n, int m, vector<array<int, 2>> &edges) : edges(edges) {
+		exist.resize(m, 1);
+		adj.resize(n);
+		for (int i = 0; i < m; i++) {
+			auto [u, v] = edges[i];
+			adj[u].push_back({v, i});
+			adj[v].push_back({u, i});
+		}
+		vis.resize(n);
+		depth.resize(n);
+		low.resize(n);
+	}
+	void DFS(int v, int pe) {
+		vis[v] = 1;
+		low[v] = depth[v];
+		for (auto [u, e] : adj[v]) {
+			if (!exist[e]) continue;
+			if (!vis[u]) {
+				depth[u] = depth[v] + 1;
+				DFS(u, e);
+				low[v] = min(low[v], low[u]);
+			} else if (e != pe) {
+				low[v] = min(low[v], depth[u]);
+			}
+		}
+	}
+	void add(int x) { exist[x] = 0; }
+	void precomp() {
+		fill(vis.begin(), vis.end(), 0);
+		DFS(0, -1);
+	}
+	int check(int x) {
+		auto [u, v] = edges[x];
+		if (depth[u] > depth[v]) { swap(u, v); }
+		return depth[v] - depth[u] > 1 || low[v] < depth[v];
+	}
+	void clear() { fill(exist.begin(), exist.end(), 1); }
 };
 
 struct GraphDual2 {
-    int n, m;
-    vector<array<int, 2>> edges;
-    vector<int> queries, ans;
-    GraphDual2(int n, int m, vector<array<int, 2>> &edges) : n(n), m(m), edges(edges) {}
-    void add(int x) {
-        queries.push_back(x);
-    }
-    void solve() {
-        vector<int> exist(m, 1);
-        for (int x : queries) {
-            exist[x] = 0;
-        }
-        UF uf(n);
-        for (int i = 0; i < m; i++) {
-            if (exist[i]) {
-                auto [u, v] = edges[i];
-                uf.join(u, v);
-            }
-        }
-        for (auto x : views::reverse(queries)) {
-            auto [u, v] = edges[x];
-            ans.push_back(uf.size(0) == n);
-            uf.join(u, v);
-        }
-    }
-    int getAns() {
-        assert(!ans.empty());
-        int x = ans.back();
-        ans.pop_back();
-        return x;
-    }
-    void clear() {
-        queries.clear();
-        ans.clear();
-    }
+	int n, m;
+	vector<array<int, 2>> edges;
+	vector<int> queries, ans;
+	GraphDual2(int n, int m, vector<array<int, 2>> &edges) : n(n), m(m), edges(edges) {}
+	void add(int x) { queries.push_back(x); }
+	void solve() {
+		vector<int> exist(m, 1);
+		for (int x : queries) { exist[x] = 0; }
+		UF uf(n);
+		for (int i = 0; i < m; i++) {
+			if (exist[i]) {
+				auto [u, v] = edges[i];
+				uf.join(u, v);
+			}
+		}
+		for (auto x : views::reverse(queries)) {
+			auto [u, v] = edges[x];
+			ans.push_back(uf.size(0) == n);
+			uf.join(u, v);
+		}
+	}
+	int getAns() {
+		assert(!ans.empty());
+		int x = ans.back();
+		ans.pop_back();
+		return x;
+	}
+	void clear() {
+		queries.clear();
+		ans.clear();
+	}
 };
 
 void solve() {
-    int n, m;
-    cin >> n >> m;
-    vector<array<int, 2>> edges1(m), edges2(m);
-    for (int i = 0, u, v; i < m; i++) {
-        cin >> u >> v;
-        edges1[i] = {u - 1, v - 1};
-    }
-    for (int i = 0, u, v; i < m; i++) {
-        cin >> u >> v;
-        edges2[i] = {u - 1, v - 1};
-    }
-    GraphDual1 mat1(n, m, edges1);
-    GraphDual2 mat2(n, m, edges2);
-    MatroidIsect matIsect(mat1, mat2, m);
-    auto ans = matIsect.solve();
-    cout << m - ans.size() << '\n';
+	int n, m;
+	cin >> n >> m;
+	vector<array<int, 2>> edges1(m), edges2(m);
+	for (int i = 0, u, v; i < m; i++) {
+		cin >> u >> v;
+		edges1[i] = {u - 1, v - 1};
+	}
+	for (int i = 0, u, v; i < m; i++) {
+		cin >> u >> v;
+		edges2[i] = {u - 1, v - 1};
+	}
+	GraphDual1 mat1(n, m, edges1);
+	GraphDual2 mat2(n, m, edges2);
+	MatroidIsect matIsect(mat1, mat2, m);
+	auto ans = matIsect.solve();
+	cout << m - ans.size() << '\n';
 }
 
 int main() {
-    cin.sync_with_stdio(0);
-    cin.tie(0);
-    int numTests;
-    cin >> numTests;
-    for (int i = 1; i <= numTests; i++) {
-        solve();
-    }
-    return 0;
+	cin.sync_with_stdio(0);
+	cin.tie(0);
+	int numTests;
+	cin >> numTests;
+	for (int i = 1; i <= numTests; i++) { solve(); }
+	return 0;
 }
 ```
 

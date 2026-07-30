@@ -63,7 +63,7 @@ A more interesting example of a matroid is the colourful matroid. In this matroi
 2. Heredity is also clear because if no two elements share the same colour in $Y$, then no two elements will share the same colour in any subset of $Y$ as well.
 3. For exchange, notice that if $|X|>|Y|$ and they're both independent, then $X$ contains strictly more _colours_ than $Y$. Hence, by picking any element in $X$ that has a colour not present in $Y$, we can extend $Y$.
 
-Henceforth, we will omit proofs that our examples are indeed matroids. 
+Henceforth, we will omit proofs that our examples are indeed matroids.
 
 #### Partition Matroid
 We can generalize the colourful matroid to get the partition matroid.
@@ -123,7 +123,7 @@ Suppose for the sake of contradiction that $p_i > q_i$ for some $1 \leq i \leq k
 **Remark:** This shows that if the exchange axiom holds in an independence system
 (i.e., a system in which the non-emptiness and heredity axioms hold), the natural greedy works.
 We can further show that the greedy works *only* if the exchange axiom holds (see the attached document).
-As a result, if you ever suspect that the greedy works, it is both necessary and sufficient to prove that you have a matroid. 
+As a result, if you ever suspect that the greedy works, it is both necessary and sufficient to prove that you have a matroid.
 
 <Optional title="Greedy is equivalent to the exchange axiom">
 	See [Section 5. Appendix: Greedy Characterization](/matroid-theory.pdf).
@@ -162,24 +162,26 @@ Now, we can implement the independence checks by maintaining the right endpoints
 #include <bits/stdc++.h>
 using namespace std;
 
-long long solve(){
-	int n, k; cin >> n >> k;
+long long solve() {
+	int n, k;
+	cin >> n >> k;
 
-	vector<int> a(n+1);
-	for(int i=1; i<=n; i++) cin >> a[i];
+	vector<int> a(n + 1);
+	for (int i = 1; i <= n; i++) cin >> a[i];
 
 	vector<int> ind(n);
 	iota(ind.begin(), ind.end(), 1);
-	sort(ind.begin(), ind.end(), [&](int i, int j) { return a[i] > a[j]; } );
+	sort(ind.begin(), ind.end(), [&](int i, int j) { return a[i] > a[j]; });
 
 	set<int> bdd;
-	for(int i=1; i<=n; i++) if((n-i+1) % (k+1) == 0) bdd.insert(i);
+	for (int i = 1; i <= n; i++)
+		if ((n - i + 1) % (k + 1) == 0) bdd.insert(i);
 
 	// optimal basis algorithm
 	long long tot = 0;
-	for(int i:ind){
+	for (int i : ind) {
 		auto it = bdd.lower_bound(i);
-		if(it == bdd.end()) continue;
+		if (it == bdd.end()) continue;
 		tot += a[i];
 		bdd.erase(it);
 	}
@@ -188,8 +190,9 @@ long long solve(){
 
 int main() {
 	cin.tie(0)->sync_with_stdio(0);
-	int tc; cin >> tc;
-	while(tc--) cout << solve() << '\n';
+	int tc;
+	cin >> tc;
+	while (tc--) cout << solve() << '\n';
 }
 ```
 

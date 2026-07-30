@@ -32,7 +32,7 @@ frequency: 0
 	/>
 </Resources>
 
-## Matroid Intersection 
+## Matroid Intersection
 
 Given two matroids $M_1, M_2$ over common ground set $E$, the matroid intersection
 algorithm finds a set $X \subseteq E$ of maximum size such that
@@ -103,7 +103,7 @@ It turns out that supporting the following operations (for both matroids) is eno
 - `add(x)`: set $S := S + x$, assuming $S + x$ is independent.
 
 Recall that we need to know for each $y \in S$ and $x \in E \setminus S$ if
-$S - y + x \in \mathcal I(M_1)$ and $S - y + x \in \mathcal I(M_2)$. 
+$S - y + x \in \mathcal I(M_1)$ and $S - y + x \in \mathcal I(M_2)$.
 The trick is to batch queries by $y$. For a fixed $y$, we use `clear()` and
 `add(x)` to obtain $S - y$, then use `check(x)` to find all $x$ where
 $S - y + x$ is independent.
@@ -121,11 +121,10 @@ assuming `add(x)`, `check(x)` are $\mathcal O(1)$ and `clear()` is $\mathcal O(N
 <LanguageSection>
 <CPPSection>
 ```cpp
-template<class M1, class M2>
-vector<bool> MatroidIsect(M1 m1, M2 m2, int n) {
+template <class M1, class M2> vector<bool> MatroidIsect(M1 m1, M2 m2, int n) {
 	vector<bool> in_S(n);
 	auto augment = [&] {
-		vector<int> S, E_S; // E_S has indices of all edges not in S
+		vector<int> S, E_S;  // E_S has indices of all edges not in S
 		for (int i = 0; i < n; i++) {
 			if (in_S[i]) S.push_back(i);
 			else E_S.push_back(i);
@@ -144,23 +143,23 @@ vector<bool> MatroidIsect(M1 m1, M2 m2, int n) {
 		}
 		// identify sources and sinks for BFS
 		vector<bool> is_sink(n);
-		queue<int> q; vector<bool> vis(n);
+		queue<int> q;
+		vector<bool> vis(n);
 
 		m1.clear(), m2.clear();
 		for (int y : S) m1.add(y), m2.add(y);
 		for (int x : E_S) {
-			if (m1.check(x)) vis[x] = 1, q.push(x); // x is a source
+			if (m1.check(x)) vis[x] = 1, q.push(x);  // x is a source
 			is_sink[x] = m2.check(x);
 		}
 		// BFS to find augmenting path from source to sink
 		vector<int> prev(n, -1);
 		while (!q.empty()) {
-			int u = q.front(); q.pop();
+			int u = q.front();
+			q.pop();
 			if (is_sink[u]) {
 				// augmenting path found
-				for (int v = u; v != -1; v = prev[v]) {
-					in_S[v] = !in_S[v];
-				}
+				for (int v = u; v != -1; v = prev[v]) { in_S[v] = !in_S[v]; }
 				return true;
 			}
 			for (int v : adj[u]) {
@@ -211,139 +210,126 @@ but this is still well within the time limit.
 #include <bits/stdc++.h>
 using namespace std;
 
-//BeginCodeSnip{Union-find Data Structure}
+// BeginCodeSnip{Union-find Data Structure}
 struct DSU {
-    vector<int> dsu, sz;
-    DSU(int n) : dsu(n), sz(n) {
-        iota(begin(dsu), end(dsu), 0);
-    }
-    int find(int x) {
-        if (x == dsu[x]) return x;
-        return dsu[x] = find(dsu[x]);
-    }
-    void merge(int x, int y) {
-        x = find(x), y = find(y);
-        if (x == y) return;
-        if (sz[x] < sz[y]) swap(x, y);
-        dsu[y] = x;
-        sz[x] += sz[y];
-    }
+	vector<int> dsu, sz;
+	DSU(int n) : dsu(n), sz(n) { iota(begin(dsu), end(dsu), 0); }
+	int find(int x) {
+		if (x == dsu[x]) return x;
+		return dsu[x] = find(dsu[x]);
+	}
+	void merge(int x, int y) {
+		x = find(x), y = find(y);
+		if (x == y) return;
+		if (sz[x] < sz[y]) swap(x, y);
+		dsu[y] = x;
+		sz[x] += sz[y];
+	}
 };
-//EndCodeSnip
+// EndCodeSnip
 
 struct GraphicMatroid {
-    int n; // nodes of the graph must be in [0..n-1]
-    DSU dsu;
-    vector<pair<int, int>> edges;
-    GraphicMatroid(int n, const vector<pair<int, int>> &edges)
-        : n(n), dsu(n), edges(edges) { clear(); }
+	int n;  // nodes of the graph must be in [0..n-1]
+	DSU dsu;
+	vector<pair<int, int>> edges;
+	GraphicMatroid(int n, const vector<pair<int, int>> &edges)
+	    : n(n), dsu(n), edges(edges) {
+		clear();
+	}
 
-    void clear() {
-        dsu = DSU(n);
-    }
-    bool check(int x) {
-        return dsu.find(edges[x].first) != dsu.find(edges[x].second);
-    }
-    void add(int x) {
-        dsu.merge(edges[x].first, edges[x].second);
-    }
+	void clear() { dsu = DSU(n); }
+	bool check(int x) { return dsu.find(edges[x].first) != dsu.find(edges[x].second); }
+	void add(int x) { dsu.merge(edges[x].first, edges[x].second); }
 };
 
 struct PartitionMatroid {
-    vector<int> cap, cat, used;
-    PartitionMatroid(const vector<int> &cap, const vector<int> &cat)
-        : cap(cap), cat(cat), used(size(cap)) {}
-    void clear() {
-        fill(begin(used), end(used), 0);
-    }
-    bool check(int x) {
-        return used[cat[x]] < cap[cat[x]];
-    }
-    void add(int x) {
-        used[cat[x]]++;
-    }
+	vector<int> cap, cat, used;
+	PartitionMatroid(const vector<int> &cap, const vector<int> &cat)
+	    : cap(cap), cat(cat), used(size(cap)) {}
+	void clear() { fill(begin(used), end(used), 0); }
+	bool check(int x) { return used[cat[x]] < cap[cat[x]]; }
+	void add(int x) { used[cat[x]]++; }
 };
 
-//BeginCodeSnip{Matroid Intersection Algorithm}
-template<class M1, class M2>
-vector<bool> MatroidIsect(M1 m1, M2 m2, int n) {
-    vector<bool> in_S(n);
-    auto augment = [&] {
-        vector<int> S, E_S;
-        for (int i = 0; i < n; i++) {
-            if (in_S[i]) S.push_back(i);
-            else E_S.push_back(i);
-        }
-        // build exchange graph
-        vector<vector<int>> adj(n);
-        for (int y : S) {
-            m1.clear(), m2.clear();
-            for (int i : S) {
-                if (i != y) m1.add(i), m2.add(i);
-            }
-            for (int x : E_S) {
-                if (m1.check(x)) adj[y].push_back(x);
-                if (m2.check(x)) adj[x].push_back(y);
-            }
-        }
-        // identify sources and sinks for BFS
-        vector<bool> is_sink(n);
-        queue<int> q; vector<bool> vis(n);
+// BeginCodeSnip{Matroid Intersection Algorithm}
+template <class M1, class M2> vector<bool> MatroidIsect(M1 m1, M2 m2, int n) {
+	vector<bool> in_S(n);
+	auto augment = [&] {
+		vector<int> S, E_S;
+		for (int i = 0; i < n; i++) {
+			if (in_S[i]) S.push_back(i);
+			else E_S.push_back(i);
+		}
+		// build exchange graph
+		vector<vector<int>> adj(n);
+		for (int y : S) {
+			m1.clear(), m2.clear();
+			for (int i : S) {
+				if (i != y) m1.add(i), m2.add(i);
+			}
+			for (int x : E_S) {
+				if (m1.check(x)) adj[y].push_back(x);
+				if (m2.check(x)) adj[x].push_back(y);
+			}
+		}
+		// identify sources and sinks for BFS
+		vector<bool> is_sink(n);
+		queue<int> q;
+		vector<bool> vis(n);
 
-        m1.clear(), m2.clear();
-        for (int y : S) m1.add(y), m2.add(y);
-        for (int x : E_S) {
-            if (m1.check(x)) vis[x] = 1, q.push(x); // x is a source
-            is_sink[x] = m2.check(x);
-        }
-        // BFS to find augmenting path from source to sink
-        vector<int> prev(n, -1);
-        while (!q.empty()) {
-            int u = q.front(); q.pop();
-            if (is_sink[u]) {
-                // augmenting path found
-                for (int v = u; v != -1; v = prev[v]) {
-                    in_S[v] = !in_S[v];
-                }
-                return true;
-            }
-            for (int v : adj[u]) {
-                if (vis[v]) continue;
-                q.push(v);
-                vis[v] = 1;
-                prev[v] = u;
-            }
-        }
-        return false;
-    };
-    while (augment());
-    return in_S;
+		m1.clear(), m2.clear();
+		for (int y : S) m1.add(y), m2.add(y);
+		for (int x : E_S) {
+			if (m1.check(x)) vis[x] = 1, q.push(x);  // x is a source
+			is_sink[x] = m2.check(x);
+		}
+		// BFS to find augmenting path from source to sink
+		vector<int> prev(n, -1);
+		while (!q.empty()) {
+			int u = q.front();
+			q.pop();
+			if (is_sink[u]) {
+				// augmenting path found
+				for (int v = u; v != -1; v = prev[v]) { in_S[v] = !in_S[v]; }
+				return true;
+			}
+			for (int v : adj[u]) {
+				if (vis[v]) continue;
+				q.push(v);
+				vis[v] = 1;
+				prev[v] = u;
+			}
+		}
+		return false;
+	};
+	while (augment());
+	return in_S;
 }
 // EndCodeSnip
 
 void solve() {
-    int n, m, k; cin >> n >> m >> k;
-    vector<int> cap(k);
-    for (auto &amt : cap) cin >> amt;
+	int n, m, k;
+	cin >> n >> m >> k;
+	vector<int> cap(k);
+	for (auto &amt : cap) cin >> amt;
 
-    vector<pair<int, int>> edges(m);
-    vector<int> cat(m);
-    for (int i = 0; i < m; i++) {
-        cin >> edges[i].first >> edges[i].second >> cat[i];
-        edges[i].first--, edges[i].second--, cat[i]--;
-    }
+	vector<pair<int, int>> edges(m);
+	vector<int> cat(m);
+	for (int i = 0; i < m; i++) {
+		cin >> edges[i].first >> edges[i].second >> cat[i];
+		edges[i].first--, edges[i].second--, cat[i]--;
+	}
 
-    auto result = MatroidIsect(GraphicMatroid(n, edges),
-                                PartitionMatroid(cap, cat),
-                                m);
-    cout << count(begin(result), end(result), true) << '\n';
+	auto result = MatroidIsect(GraphicMatroid(n, edges), PartitionMatroid(cap, cat), m);
+	cout << count(begin(result), end(result), true) << '\n';
 }
 
 int main() {
-    cin.tie(0)->sync_with_stdio(0);
-    int t; cin >> t;
-    while (t--) solve();
-    return 0;
+	cin.tie(0)->sync_with_stdio(0);
+	int t;
+	cin >> t;
+	while (t--) solve();
+	return 0;
 }
 ```
 
@@ -385,7 +371,7 @@ $$
 \end{equation*}
 $$
 
-so we get 
+so we get
 
 $$
 \begin{equation*}
@@ -409,7 +395,7 @@ Suppose we have an existing matroid $M=\langle E, \mathcal I\rangle$, but there 
 elements $A \subseteq E$ we are forced to include. If $A \in \mathcal I$, we can effectively
 mod out by A with **matroid contraction**: the contraction of $M$ by $A$, written $M / A$, is
 the matroid on the ground set $E \setminus A$ where $B$ is independent in $M / A$
-if $A \cup B \in \mathcal I$. 
+if $A \cup B \in \mathcal I$.
 
 <Warning title="Independence of the empty set">
 If $A$ is not independent in $M$, then $M / A$ fails the non-emptiness axiom.
