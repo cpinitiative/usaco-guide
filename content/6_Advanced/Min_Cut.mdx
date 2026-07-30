@@ -1,10 +1,10 @@
 ---
 id: min-cut
 title: 'Minimum Cut'
-author: Benjamin Qi
+author: Benjamin Qi, Daniel Zhu
 prerequisites:
   - max-flow
-description: '?'
+description: 'Introduces minimum cut and the min-cut max-flow theorem.'
 frequency: 1
 ---
 
@@ -24,6 +24,44 @@ The resources below include many clever applications of min cut, including the
 		flow / min cut.
 	</Resource>
 </Resources>
+
+## Min-Cut Max-Flow Theorem
+
+Given a flow network with source $s$ and sink $t$, an **$s$-$t$ cut** is a
+partition of the vertices into two sets $S$ and $T$ with $s \in S$ and
+$t \in T$. Its **capacity** is the total capacity of the edges crossing from the
+source side to the sink side:
+
+$$
+\operatorname{cap}(S, T) = \sum_{e:\, S \to T} c(e).
+$$
+
+(Edges pointing the other way, from $T$ to $S$, contribute nothing.) Cutting all
+of these edges disconnects $s$ from $t$, so intuitively the capacity of a cut is
+an upper bound on how much flow can get from $s$ to $t$. Indeed, for *any* flow
+$f$ and *any* cut $(S, T)$,
+
+$$
+\operatorname{val}(f) = \sum_{e:\, S \to T} f(e) - \sum_{e:\, T \to S} f(e)
+\le \sum_{e:\, S \to T} c(e) = \operatorname{cap}(S, T),
+$$
+
+where $\operatorname{val}(f)$ is the total flow from $s$ to $t$. So every flow is
+bounded by every cut.
+
+![500|center](/content/6_Advanced/Min_Cut/cut.png)
+
+Here is an illustration of a $s-t$ cut: red nodes are in $S$, and blue nodes are in $T$. Importantly, there is no need for $S$ and $T$ to be connected: the only requirement is that $s \in S$ and $t \in T$. The capacity of this cut is the sum of the capacities underlined in green, $2 + 1 = 3$. The flow across this cut derives from the numbers underlined in yellow, $2 - 1 + 1 = 2$, which we note is equivalent to the actual $s-t$ flow, $\operatorname{val}(f)$. Also note that in this instance, the flow across the cut ($2$) is less than its capacity ($3$). However, if we instead choose $S = \{s\}$ and $T = V \setminus \{s\}$, the flow across the cut ($2$) and its capacity ($2$) will be equal.
+
+The **min-cut max-flow theorem** states that in general, we can always achieve such equality:
+
+> The maximum value of an $s$-$t$ flow equals the minimum capacity of an
+> $s$-$t$ cut.
+
+To show tightness, we just need to construct a flow $f$ and cut $(S, T)$ such that $\operatorname{val}(f) = \operatorname{cap}(S, T)$. To do this, we will let $f$ be any maximum flow, then use the fact that $f$ cannot have any remaining augmenting paths to construct a minimum capacity $(S, T)$ cut. In fact, it turns out this cut can be constructed by letting $S$ be the set of nodes reachable from $S$ in the residual graph (and $T$ be the set of all other nodes, i.e. $V - S$). To see why this is the case, consider the following diagram:
+![600|center](/content/6_Advanced/Min_Cut/mcmf.png)
+
+By definition, the red edges must be saturated to capacity, otherwise nodes in $S$ would be able to reach nodes in $T$. Similarly, the blue edges must have 0 flow. Therefore, the flow across this cut equals the capacity of this cut, as desired.
 
 ## Minimum Node Covers
 

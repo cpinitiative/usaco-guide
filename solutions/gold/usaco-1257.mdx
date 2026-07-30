@@ -1,0 +1,102 @@
+---
+id: usaco-1257
+source: USACO Gold 2022 December
+title: Bribing Friends
+author: David Xiao
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_prob1_gold_dec22.html)
+
+## Explanation
+
+The difficulty in this problem comes from the fact that we can use both moonies and ice cream cones to bribe friends. If we only had one method of bribery, this would turn into a simple 0/1 knapsack problem.
+
+To simplify, let's consider an optimal expenditure of ice cream cones and moonies. For every ice cream cone we spend on a given cow $i$, we are saving $1$ moonie every $X_i$ ice cream cones. Intuitively, we should distribute the ice cream cones across the friends with the lowest $X_i$, because this maximizes the amount of moonies we can save.
+
+This can be proven via [exchange argument](https://www.cs.cornell.edu/courses/cs482/2007su/exchange.pdf). Consider two cows $i$ and $j$, where $X_i > X_j$. If we spent ice cream cones on cow $i$ instead of cow $j$, then each moonie we saved would need $X_i - X_j$ more ice cream cones.
+
+To transition this to a 0/1 knapsack problem, let $dp[i]$ represent the maximum possible popularity achievable at state $i$.
+
+- For $0 \leq i \leq B$, $i$ represents the amount of ice cream cones used, while $0$ moonies have been used.
+
+- For $B < i \leq B + A$, $i - B$ represents the amount of moonies used after using all usable ice cream cones.
+
+Our state transition depends on the amount of moonies and ice cream cones we have left.
+
+- If $i > B$, we have already exhausted all ice cream cones, and can only use moonies to bribe friends.
+
+- Let $R = B - i$ represent the remaining amount of ice cream cones left at position $i$
+
+	- If the $R$ is enough to fully bribe the current friend, we can choose to bribe that friend and use $X_i \cdot C_i$ ice cream cones in the process.
+
+	- If the $R$ isn't enough to fully bribe the current friend, we spend $C_i - \lfloor\frac{R}{X_i}\rfloor$ moonies to bribe that friend, pushing our index to $B + C_i - \lfloor\frac{R}{X_i}\rfloor$ since all ice cream cones are considered exhausted.
+
+We sort the friends by increasing $X_i$. This gurantees that when we loop through our friends, we are using our ice creams on the friends with lower $X_i$ first, before using any moonies. At the end, we take the maximum of our DP array as our answer.
+
+## Implementation
+
+**Time Complexity**: $\mathcal{O}(N \cdot (A + B))$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct Friend {
+	int popularity, cost, discount;
+	Friend() : popularity(0), cost(0), discount(0) {}
+};
+
+bool x_sort(const Friend &f1, const Friend &f2) { return f1.discount < f2.discount; }
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int n, moonies, ice_cream;
+	cin >> n >> moonies >> ice_cream;
+	vector<Friend> friends(n);
+	for (int i = 0; i < n; i++) {
+		cin >> friends[i].popularity >> friends[i].cost >> friends[i].discount;
+	}
+
+	sort(friends.begin(), friends.end(), x_sort);  // sort by best discount
+
+	vector<int> dp(moonies + ice_cream + 1, -1);  // -1 represents unvisited
+	dp[0] = 0;
+
+	for (const Friend &f : friends) {
+		auto [popularity, cost, discount] = f;
+		for (int i = moonies + ice_cream - cost; i >= 0; i--) {
+			// skip if unvisited
+			if (dp[i] == -1) continue;
+
+			// spending only moonies
+			if (i >= ice_cream) {
+				dp[i + cost] = max(dp[i + cost], dp[i] + popularity);
+			}
+
+			// spending only ice cream cones
+			else if (ice_cream - i >= cost * discount) {
+				dp[i + cost * discount] =
+				    max(dp[i + cost * discount], dp[i] + popularity);
+			}
+
+			// spending a mixed amount of moonies and ice cream cones
+			else if (ice_cream + (cost - ((ice_cream - i) / discount)) <=
+			         moonies + ice_cream) {
+				int moonies_spent = cost - ((ice_cream - i) / discount);
+				dp[ice_cream + moonies_spent] =
+				    max(dp[ice_cream + moonies_spent], dp[i] + popularity);
+			}
+		}
+	}
+
+	cout << *max_element(dp.begin(), dp.end()) << '\n';
+}
+```
+
+</CPPSection>
+</LanguageSection>

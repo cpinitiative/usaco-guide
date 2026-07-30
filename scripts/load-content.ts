@@ -21,7 +21,8 @@ async function load() {
   console.log('Starting to load content...');
   const rebuild = await needsRebuild();
   if (rebuild) {
-    await import('./index-content');
+    const { main } = await import('./index-content');
+    await main();
   }
 }
 

@@ -1,0 +1,107 @@
+---
+id: cses-3411
+source: CSES
+title: All Manhattan Distances
+author: Mihnea Brebenel
+---
+
+## Explanation
+
+Our answer can be written as:
+$$
+\sum_{1\le i<j\le n} (|x_j-x_i|+|y_j-y_i|) = \sum_{1\le i<j\le n} |x_j-x_i|+\sum_{1\le i<j\le n}|y_j-y_i|
+$$
+The contributions from $x$ coordinates and $y$ coordinates can be treated separately. We'll keep two sorted arrays, one with the $x$ values and one with the $y$ values.
+Recall the explicit definition of absolute value:
+$$
+|A - B| = \left\{
+\begin{array}{ll}
+A - B, & A \ge B\\
+B-A, & A<B
+\end{array}
+\right.
+$$
+By traversing each array in ascending order, we know exactly that value $c$ contributes $+c$ to the
+to the distances of values before $c$, and contributes $-c$ to the distances of values after it.
+Because our arrays are sorted, we know the number of values before and after each value $c$, allowing us to directly sum these contributions
+for both the $x$ and $y$ values.
+
+<Info title="Alternate Summation">
+
+A similar process can be achieved by keeping a running sum while looping through the $x$ and $y$ value arrays. At each step, we calculate the distances to all the values less than the current value. This is equivalent to
+
+$$
+\begin{aligned}
+i x_i - \sum_{j=0}^{i} x_j \\
+i y_i - \sum_{j=0}^{i} y_j
+\end{aligned}
+$$
+
+This will calculate the sums of all Manhattan distances.
+
+</Info>
+
+## Implementation
+
+<Warning>
+
+Our answer may not fit in a 64 bit integer, since there are $\mathcal{O}(N^2)$ contributions, with each contribution being up to $10^9$. Thus, we use `__int128`, which also requires us to write our own printing method, since `std::cout` does not support `__int128`.
+
+</Warning>
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+// Data type for 128 bit integer
+void print_int128(__int128 x) {
+	if (x == 0) {
+		cout << 0;
+		return;
+	}
+
+	if (x < 0) {
+		cout << '-';
+		x = -x;
+	}
+
+	string res;
+	while (x > 0) {
+		res += (x % 10) + '0';
+		x /= 10;
+	}
+
+	reverse(res.begin(), res.end());
+	cout << res;
+}
+
+int main() {
+	int n;
+	cin >> n;
+
+	vector<long long> x(n), y(n);
+	for (int i = 0; i < n; i++) { cin >> x[i] >> y[i]; }
+
+	sort(x.begin(), x.end());
+	sort(y.begin(), y.end());
+
+	// BigInt in c++
+	__int128 sum(0);
+	for (int i = 0; i < n; i++) {
+		// (i - 1) of + sign and (n - i) of - sign
+		long long contrib = 2 * i - (n - 1);
+		sum = sum + contrib * (x[i] + y[i]);
+	}
+
+	print_int128(sum);
+}
+```
+
+</CPPSection>
+</LanguageSection>

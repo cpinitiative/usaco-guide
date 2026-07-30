@@ -1,0 +1,113 @@
+---
+id: ioi-02-BatchScheduling
+source: IOI 2002
+title: Batch Scheduling
+author: Raagav Bala
+---
+
+[Official Analysis](https://dmoj.ca/problem/ioi02p4/editorial)
+
+## Explanation
+
+Notice how, when a batch finishes, every job that hasn't finished increments the same amount for its finishing time. Say that the first batch of some suffix starts at job $i$ and ends at job $k-1$. The time spent processing this batch would be $S + (P_{k-1} - P_{i-1}),$ where $P$ is the prefix sum of processing times.
+
+Every job starting from $i$ must wait for this batch to finish, so this amount contributes to the cost of all remaining jobs. So, if $C_i$ denotes the suffix sum of cost factors, then choosing this batch will add $\bigl(S+P_{k-1}-P_{i-1}\bigr)C_i$ to the answer. So, we can construct the DP transition as
+
+$$
+\texttt{dp}[i] =  \texttt{dp}[k] + (S+P_{k-1} - P_{i-1}) C_i.
+$$
+
+Because we want to minimize our cost, taking the best choice of $k$,
+
+$$
+\texttt{dp}[i]= \min_k (\texttt{dp}[k] + (S+P_{k-1}-P_{i-1}) C_i ).
+$$
+
+However, if we were to implement the DP directly, it would be $O(N^2)$, which is too slow for the given constraints.
+
+To optimize the DP, we can expand the expression.
+
+$$
+\texttt{dp}[k] + (S + P_{k-1} - P_{i-1})C_i = (\texttt{dp}[k]+P_{k-1}C_i) + (S - P_{i-1})C_i.
+$$
+
+Notice that the second term does not depend on $k$. Thus, we only need to minimize $\texttt{dp}[k]+P_{k-1}C_i.$
+
+Now this seems like CHT transition: every state $k$ is line $y = mx+b$ with $m = P_{k-1}$ and $b = \texttt{dp}[k].$ For the current state $i$, we can query the hull at $x=C_i.$ Then $mx+b = P_{k-1}C_i+\texttt{dp}[k],$ which is exactly the value we want.
+
+Because the slopes are prefix sums, they are inserted in monotonic order, and we get a monotonic hull. Since the query value is $C_i$, processing states from $N$ down to $1$ also gives monotonic queries. Each $C_i$ is a suffix sum, so it increases as we move left.
+
+This means the best line only goes in one direction through the hull. Once a line is worse than the next line for the current query, it will never be optimal, so we can remove it from the deque. So, a deque convex hull is sufficient to solve the problem in linear time.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <deque>
+#include <iostream>
+#include <vector>
+
+int main() {
+	int n, s;
+	std::cin >> n >> s;
+	std::vector<int> t(n + 1), f(n + 1);
+	for (int i = 1; i <= n; i++) std::cin >> t[i] >> f[i];
+
+	// calculate prefix sum of times
+	std::vector<int> prefTime(n + 2);
+	for (int i = 1; i <= n; i++) { prefTime[i] = prefTime[i - 1] + t[i]; }
+
+	// calculate suffix sum of cost factors
+	std::vector<int> sufCost(n + 2);
+	for (int i = n; i >= 1; i--) { sufCost[i] = sufCost[i + 1] + f[i]; }
+
+	// dp[i] = min cost for jobs i to n
+	std::vector<int> dp(n + 2);
+
+	std::deque<int> q;   // convex hull
+	q.push_back(n + 1);  // no jobs left
+
+	for (int i = n; i >= 1; i--) {
+		// find the best transition point for current i
+		while (q.size() > 1) {
+			int first = q.back(), second = q[q.size() - 2];
+
+			// check if newer line is better earlier
+			if (sufCost[i] * (prefTime[first - 1] - prefTime[second - 1]) >=
+			    dp[second] - dp[first]) {
+				q.pop_back();
+			} else {
+				break;
+			}
+		}
+
+		// k is the best transition point, as found using CHT
+		int k = q.back();
+		dp[i] = dp[k] + (s + prefTime[k - 1] - prefTime[i - 1]) * sufCost[i];
+
+		// maintain convex hull
+		while (q.size() > 1) {
+			int first = q.front(), second = q[1];
+
+			// pop middle line if never optimal
+			if ((dp[i] - dp[first]) * (prefTime[second - 1] - prefTime[first - 1]) <=
+			    (dp[first] - dp[second]) * (prefTime[first - 1] - prefTime[i - 1])) {
+				q.pop_front();
+			} else {
+				break;
+			}
+		}
+
+		q.push_front(i);  // add the current line
+	}
+
+	std::cout << dp[1] << '\n';
+}
+```
+
+</CPPSection>
+</LanguageSection>

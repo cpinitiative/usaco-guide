@@ -1,12 +1,16 @@
 import Database from 'better-sqlite3';
 import { readdir } from 'fs/promises';
 import path, { join, relative } from 'path';
+import { fileURLToPath } from 'url';
 import { CONTENT_DIR, SOLUTIONS_DIR } from '../src/lib/constants';
 import { getWritableDatabase } from '../src/lib/database';
 import type { ProblemMetadata } from '../src/models/problem';
 import { MdxContent, ProblemInfo } from '../src/types/content';
 
-main().catch(console.error);
+// Only auto-run when executed directly (not when imported by watch-content.ts)
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main().catch(console.error);
+}
 
 export async function main() {
   console.log('Starting content indexing...');
@@ -20,16 +24,16 @@ export async function main() {
 
     // Index modules
     console.log('Indexing modules...');
-    const moduleFiles = (
-      await readdir(CONTENT_DIR, { recursive: true })
-    ).filter((f: string) => f.endsWith('.mdx'));
+    const moduleFiles = (await readdir(CONTENT_DIR, { recursive: true }))
+      .filter((f: string) => f.endsWith('.mdx'))
+      .sort();
     await indexMdxFiles(db, moduleFiles, 'module', CONTENT_DIR);
 
     // Index solutions
     console.log('Indexing solutions...');
-    const solutionFiles = (
-      await readdir(SOLUTIONS_DIR, { recursive: true })
-    ).filter((f: string) => f.endsWith('.mdx'));
+    const solutionFiles = (await readdir(SOLUTIONS_DIR, { recursive: true }))
+      .filter((f: string) => f.endsWith('.mdx'))
+      .sort();
     await indexMdxFiles(db, solutionFiles, 'solution', SOLUTIONS_DIR);
 
     // Index problems
@@ -266,11 +270,13 @@ async function indexProblems(db: Database.Database): Promise<void> {
   const freshOrdering = await import('../content/ordering');
 
   const allFiles = await readdir(CONTENT_DIR, { recursive: true });
-  const problemFiles = allFiles.filter(
-    (file): file is string =>
-      typeof file === 'string' &&
-      (file.endsWith('.problems.json') || file.endsWith('extraProblems.json'))
-  );
+  const problemFiles = allFiles
+    .filter(
+      (file): file is string =>
+        typeof file === 'string' &&
+        (file.endsWith('.problems.json') || file.endsWith('extraProblems.json'))
+    )
+    .sort();
 
   const insertProblemStmt = db.prepare(`
     INSERT OR REPLACE INTO problems (
@@ -403,15 +409,26 @@ async function indexProblems(db: Database.Database): Promise<void> {
   }
 
   // Deduplicate problems by unique_id (same problem can appear in multiple modules)
-  // Keep the first occurrence, or one with a module if available
+  // Priority: regular module > EXTRA_PROBLEMS > no module
   const problemsMap = new Map<string, ProblemInfo>();
   for (const problem of allProblems) {
     if (!problemsMap.has(problem.uniqueId)) {
       problemsMap.set(problem.uniqueId, problem);
     } else {
-      // If current problem has a module and existing one doesn't, prefer the one with module
       const existing = problemsMap.get(problem.uniqueId)!;
+      const currentIsExtra = problem.moduleId === 'EXTRA_PROBLEMS';
+      const existingIsExtra = existing.moduleId === 'EXTRA_PROBLEMS';
+
+      // Prefer regular module over EXTRA_PROBLEMS
       if (problem.inModule && !existing.inModule) {
+        problemsMap.set(problem.uniqueId, problem);
+      } else if (
+        problem.inModule &&
+        existing.inModule &&
+        !currentIsExtra &&
+        existingIsExtra
+      ) {
+        // Both have modules, but current is not EXTRA_PROBLEMS and existing is
         problemsMap.set(problem.uniqueId, problem);
       }
     }
@@ -619,4 +636,137 @@ async function generateUsacoDivisionsJson(
     JSON.stringify({ problems: usacoDivisionProblems }, null, 2)
   );
   console.log(`USACO divisions JSON written to: ${outputPath}`);
+}
+
+// async: do all parsing/IO up front
+async function prepareMdxInsert(relPath: string, absPath: string) {
+  const { parseMdxFile } = await import('../src/lib/parseMdxFile');
+  const { moduleIDToSectionMap } = await import('../content/ordering');
+
+  const content = await parseMdxFile(relPath);
+  const relToSolutions = path.relative(SOLUTIONS_DIR, absPath);
+  const type: 'module' | 'solution' = relToSolutions.startsWith('..')
+    ? 'module'
+    : 'solution';
+
+  const gitTimestamps = await getBatchGitTimestamps([absPath]);
+  const gitTime = gitTimestamps.get(path.resolve(absPath)) || null;
+
+  const division =
+    type === 'module' ? moduleIDToSectionMap[content.frontmatter.id] : null;
+
+  return { content, type, gitTime, division };
+}
+
+/**
+ * Incrementally update content.db for a set of changed files.
+ * Uses DELETE + INSERT (not DROP TABLE) so the existing Next.js readonly
+ * connection continues to work via SQLite WAL snapshot isolation.
+ */
+export async function updateFiles(
+  changes: Map<string, 'change' | 'add' | 'unlink'>
+): Promise<void> {
+  const db = await getWritableDatabase();
+  try {
+    let problemsChanged = false;
+
+    for (const [absPath, event] of changes) {
+      const relPath = path.relative(process.cwd(), absPath);
+
+      if (
+        absPath.endsWith('.problems.json') ||
+        path.basename(absPath) === 'extraProblems.json'
+      ) {
+        problemsChanged = true;
+        continue;
+      }
+
+      if (absPath.endsWith('.mdx')) {
+        let prepared = null;
+        if (event !== 'unlink') {
+          try {
+            prepared = await prepareMdxInsert(relPath, absPath);
+          } catch (err) {
+            console.error(
+              `[watch] Failed to parse ${relPath}, keeping old row:`,
+              err
+            );
+            continue; // skip DELETE entirely — preserve old content
+          }
+        }
+
+        const tx = db.transaction(() => {
+          db.prepare('DELETE FROM mdx_content WHERE file_path = ?').run(
+            relPath
+          );
+          db.prepare('DELETE FROM module_frontmatter WHERE file_path = ?').run(
+            relPath
+          );
+          db.prepare(
+            'DELETE FROM solution_frontmatter WHERE file_path = ?'
+          ).run(relPath);
+
+          if (prepared) {
+            const { content, type, gitTime, division } = prepared;
+
+            db.prepare(
+              `INSERT OR REPLACE INTO mdx_content
+                 (id, type, file_path, frontmatter_json, body, toc_json, mdast_json,
+                  cpp_oc, java_oc, py_oc, division, git_author_time)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+            ).run(
+              content.frontmatter.id,
+              type,
+              content.fileAbsolutePath,
+              JSON.stringify(content.frontmatter),
+              content.body,
+              JSON.stringify(content.toc),
+              content.mdast ? JSON.stringify(content.mdast) : null,
+              content.cppOc,
+              content.javaOc,
+              content.pyOc,
+              content.fields?.division || null,
+              gitTime
+            );
+
+            if (type === 'module') {
+              db.prepare(
+                `INSERT OR REPLACE INTO module_frontmatter
+                   (file_path, module_id, frontmatter_json, division)
+                 VALUES (?, ?, ?, ?)`
+              ).run(
+                content.fileAbsolutePath,
+                content.frontmatter.id,
+                JSON.stringify(content.frontmatter),
+                division
+              );
+            } else {
+              db.prepare(
+                `INSERT OR REPLACE INTO solution_frontmatter
+                   (file_path, solution_id, frontmatter_json)
+                 VALUES (?, ?, ?)`
+              ).run(
+                content.fileAbsolutePath,
+                content.frontmatter.id,
+                JSON.stringify(content.frontmatter)
+              );
+            }
+          }
+        });
+        tx();
+      }
+    }
+
+    if (problemsChanged) {
+      console.log('[watch] Re-indexing problems...');
+      db.exec('DELETE FROM problems; DELETE FROM module_problem_lists;');
+      await indexProblems(db);
+      db.exec('DELETE FROM problem_slugs; DELETE FROM usaco_ids;');
+      await indexProblemSlugs(db);
+      await indexUSACOIds(db);
+      await generateUsacoDivisionsJson(db);
+    }
+  } finally {
+    db.close();
+  }
 }

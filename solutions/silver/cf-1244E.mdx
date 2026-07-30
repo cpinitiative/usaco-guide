@@ -1,0 +1,143 @@
+---
+id: cf-1244E
+source: CF
+title: Minimizing Difference
+author: Abhinav Singh
+---
+
+[Official Analysis](https://codeforces.com/blog/entry/70553)
+
+## Explanation
+
+Instead of trying to directly construct a final array, we fix the maximum difference $d$ and check if it is achievable in under $k$ operations. If all elements can be moved into some interval of length $d$, then it is clear that all larger values of $d$ will work. Hence, the condition is monotonic, and we can binary search on $d$.
+
+For an array to have a maximum difference of $d$, all elements must be in the range $[L, L + d]$, where
+$L$ is any integer. This means that our operations must move values of
+$a_i < L$ into the range by increasing them to $L$, and handling values where $a_i > L + d$ similarly.
+
+If we know what $L$ is, we can quickly calculate the number
+of operations needed to fit all elements in the range $[L, L + d]$ using prefix sums and binary
+search, which we will elaborate on more later.
+
+### Choosing L
+
+Intuition tells us that setting $L$ or $L+d$ to some value of $a_i$ is optimal. This
+is true, and we can informally justify this by drawing parallels to the minimizing sums
+problem, which is explored in [CPH 6.4](https://usaco.guide/CPH.pdf#page=271). A more
+thorough explanation is in the spoiler below.
+
+<Spoiler title="Proof">
+
+The easiest way to show this is by using an exchange argument. Essentially,
+we show that any optimal solution can be transformed into the greedy construction
+without impacting the quality of the final solution.
+
+Suppose neither $L$ nor $R$ (which is equal to $L+d$) equals any value in $a$. Let $p$ be the number of elements below $L$ and $q$ the number above $R$. Shifting the window right by 1 changes the total cost by $p - q$ (elements below $L$ each need one more step, and elements above $R$ each need one fewer). Shifting left changes the cost by $q - p$ through similar reasoning.
+
+- If $p \neq q$: shifting in the cheaper direction (the direction with more elements) strictly reduces total cost by $|p - q|$ per step, so the current placement is not optimal.
+- If $p = q$: shifting in either direction leaves total cost unchanged, so we can shift freely.
+
+In both cases, we can continue shifting until $L$ or $R$ equals some $a_i$, without ever increasing cost. Therefore, any optimal solution can be transformed into one where a boundary equals some array value.
+
+</Spoiler>
+
+### Calculating the Final Answer
+
+With the knowledge that $L$ or $L+d$ must equal some value of $a_i$, we can
+iterate on each $a_i$ and try calculating the cost associated with setting it to
+a value of $L$ or $L+d$.
+
+For a range $[L, R]$, where $R=L+d$, the cost of fitting all the elements into the range is:
+
+$$
+\sum_{a_i < L} (L - a_i) + \sum_{a_i > R} (a_i - R)
+$$
+
+In other words, we sum the costs of moving values of $a_i < L$ to equal $L$,
+and the costs for moving values of $a_i > R$ to equal $R$.
+
+If we sort our array $a_i$, then a prefix and a suffix of values will need to be
+moved within range. We use binary search to find the prefix and suffix of values
+that need to be adjusted, and prefix sums to sum up the relevant values of $a_i$.
+
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N \log A)$, where $A$ is the maximum value of $a_i$.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int n;
+	ll k;
+	cin >> n >> k;
+
+	vector<int> a(n);
+	for (int &x : a) cin >> x;
+	sort(a.begin(), a.end());
+
+	// compute prefix sums, using 1 indexing for convenience
+	vector<ll> pref(n + 1);
+	for (int i = 0; i < n; i++) { pref[i + 1] = pref[i] + a[i]; }
+
+	auto check = [&](int d) -> bool {
+		for (int i = 0; i < n; ++i) {
+			// Case 1: l = a[i] (left endpoint pinned to a[i])
+			{
+				int l = a[i], r = l + d;
+
+				// use prefix sums to calculate l - a_i for all a_i < l
+				ll cost_l = 1ll * i * l - pref[i];
+
+				// use prefix sums to calculate a_i - r for all a_i > r
+				// we use upper bound to find the first index we sum from
+				int p = upper_bound(a.begin(), a.end(), r) - a.begin();
+				ll cost_r = (pref[n] - pref[p]) - 1ll * (n - p) * r;
+
+				if (cost_l + cost_r <= k) return true;
+			}
+
+			// Case 2: l = a[i] - d (right endpoint pinned to a[i])
+			{
+				int r = a[i], l = r - d;
+
+				// use prefix sums to calculate a_i - r for all a_i > r
+				ll cost_r = (pref[n] - pref[i + 1]) - 1ll * (n - i - 1) * r;
+
+				// use prefix sums to calculate l - a_i for all a_i < l
+				// we use lower bound to find the last index we sum from
+				int p = lower_bound(a.begin(), a.end(), l) - a.begin();
+				ll cost_l = 1ll * p * l - pref[p];
+
+				if (cost_l + cost_r <= k) return true;
+			}
+		}
+
+		return false;
+	};
+
+	int lo = 0, hi = a[n - 1] - a[0];
+	while (lo < hi) {
+		int mid = lo + (hi - lo) / 2;
+		if (check(mid)) {
+			hi = mid;
+		} else {
+			lo = mid + 1;
+		}
+	}
+
+	cout << lo << '\n';
+}
+```
+
+</CPPSection>
+</LanguageSection>
