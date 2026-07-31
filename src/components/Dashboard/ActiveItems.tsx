@@ -8,7 +8,7 @@ type ActiveItemStatus =
   | 'Reading' // only for modules
   | 'Practicing' // only for modules
   | 'Solving' // only for problems
-  | 'Reviewing'; // only for problems
+  | 'Reviewing';
 
 export type ActiveItem = {
   label: string;

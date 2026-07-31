@@ -72,6 +72,7 @@ export type ModuleProgress =
   | 'Practicing'
   | 'Complete'
   | 'Skipped'
+  | 'Reviewing'
   | 'Ignored';
 
 export const ModuleProgressOptions: ModuleProgress[] = [
@@ -80,6 +81,7 @@ export const ModuleProgressOptions: ModuleProgress[] = [
   'Practicing',
   'Complete',
   'Skipped',
+  'Reviewing',
   'Ignored',
 ];
 

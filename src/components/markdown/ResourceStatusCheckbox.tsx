@@ -32,6 +32,7 @@ const ProgressDropdown = ({
       Reading: 'text-yellow-300',
       Practicing: 'text-orange-500',
       Complete: 'text-green-400',
+      Reviewing: 'text-red-500',
       Skipped: 'text-blue-400',
       Ignored: 'text-purple-400',
     };
@@ -45,6 +46,13 @@ const ProgressDropdown = ({
       ),
       Complete: (
         <path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
+      ),
+      Reviewing: (
+        <path
+          fillRule="evenodd"
+          d="M15.707 15.707a1 1 0 01-1.414 0l-5-5a1 1 0 010-1.414l5-5a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 010 1.414zm-6 0a1 1 0 01-1.414 0l-5-5a1 1 0 010-1.414l5-5a1 1 0 011.414 1.414L5.414 10l4.293 4.293a1 1 0 010 1.414z"
+          clipRule="evenodd"
+        />
       ),
       Skipped: (
         <>
@@ -165,6 +173,7 @@ export default function ResourcestatusCheckbox({
     Reading: 'bg-yellow-300 dark:bg-yellow-500',
     Practicing: 'bg-orange-400 dark:bg-orange-600',
     Complete: 'bg-green-500 dark:bg-green-600',
+    Reviewing: 'bg-red-500 dark:bg-red-600',
     Skipped: 'bg-blue-300 dark:bg-blue-700',
     Ignored: 'bg-red-100 dark:bg-red-900',
   };
