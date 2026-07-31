@@ -11,6 +11,7 @@ import {
 import { GetStaticProps } from 'next';
 import SECTIONS from '../../../content/ordering';
 import BlindModeToggle from '../../components/BlindModeToggle';
+import { difficultyClasses } from '../../components/DifficultyBox';
 import Layout from '../../components/layout';
 import ProblemHits from '../../components/ProblemsPage/ProblemHits';
 import SearchBox from '../../components/ProblemsPage/SearchBox';
@@ -35,6 +36,8 @@ export default function ProblemsPage({ problemIds }: ProblemsPageProps) {
   const [shuffle, sendShuffle] = useState(0);
   const [random, sendRandom] = useState(0);
   const [sort, setSort] = useState('Relevance');
+  // keys of difficultyClasses are in increasing order of difficulty
+  const difficultyOrder = Object.keys(difficultyClasses);
   const selectionMetadata: SelectionProps[] = [
     {
       attribute: 'difficulty',
@@ -42,6 +45,8 @@ export default function ProblemsPage({ problemIds }: ProblemsPageProps) {
       placeholder: 'Difficulty',
       searchable: false,
       isMulti: true,
+      sortBy: (a, b) =>
+        difficultyOrder.indexOf(a.name) - difficultyOrder.indexOf(b.name),
     },
     {
       attribute: 'problemModules.title',
