@@ -19,9 +19,7 @@ When a query lowers $a_k$, find the largest start index $j \le k$ in the set - $
 
 <Info title="Alternative: Segment Tree Approach">
 
-Each message lowers one engine's cap, and causes any carriage to the right that has a higher speed than the new cap to slow down to it. If the new cap doesn't go below the carriage's current real speed, then we skip the update entirely, as it was already bottlenecked by engines in front of it. Otherwise, apply the drop as a range assignment and update the distinct-value count without rescanning the array, which we can do by maintaining the speeds in a **[segment tree with lazy propagation](https://usaco.guide/plat/RURQ?lang=cpp)** to support range assign and point query. Since the speed array stays monotonic, we binary search on it to find the rightmost affected carriage to assign the range to.
-
-To track distinct values, keep a **set of distinct speeds**, synced after each update: take $\mathtt{prev}$, the speed just before the change, then use `upper_bound` to find the next larger value than the new speed and erase it if it's less than $\mathtt{prev}$ (i.e. stale, since that section just got flattened to one value). Repeat until the next value is $\ge \mathtt{prev}$, then insert the new speed.
+Instead of storing train boundaries in a set, we can maintain the speeds in a **[segment tree with lazy propagation](https://usaco.guide/plat/RURQ?lang=cpp)** to support range assign and point query. Since the speed array is always non-increasing, we can binary search for the last carriage whose speed exceeds the new cap, assign that suffix to the new speed, and update the number of distinct speeds accordingly.
 
 </Info>
 
