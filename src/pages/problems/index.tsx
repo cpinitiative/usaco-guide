@@ -54,6 +54,7 @@ export default function ProblemsPage({ problemIds }: ProblemsPageProps) {
       placeholder: 'Modules',
       searchable: true,
       isMulti: true,
+      sortBy: ['name:asc'],
     },
     {
       attribute: 'source',
@@ -61,6 +62,7 @@ export default function ProblemsPage({ problemIds }: ProblemsPageProps) {
       placeholder: 'Source',
       searchable: true,
       isMulti: true,
+      sortBy: ['name:asc'],
     },
     {
       attribute: 'isStarred',
