@@ -49,13 +49,15 @@ so one application of $F$ costs $\mathcal{O}(n \log n)$.
 
 Sadly, we can't repeatedly apply $F$ on the raw values: we need the true relative order of elements to
 run the k-way merge correctly, so we can't reduce anything mod $p$ until the very end, but the values
-themselves grow enormously over $n - 1$ rounds. This means that we must normalise the array in some way.
+themselves grow enormously over $n - 1$ rounds. In fact, every application of $F$ can nearly double the largest value, so after many rounds
+the numbers quickly exceed the range of any integer. This means that we must normalise the array in some way.
 
 
 We notice that $F$ works nicely with constant shifts: if each element of an array is shifted by $c$,
 every pairwise sum shifts by $2c$. So instead of storing the true array directly, maintain it as
-$(\text{cur}[i] + \text{offset})$ for a shared scalar $\text{offset}$. Applying $F$ to the true array
-is the same as applying it to $\text{cur}$ alone and adding $(2 \cdot \text{offset})$ to the result.
+$(\text{cur}[i] + \text{offset})$, where $\text{cur}$ is a normalized array used for comparisons and
+$\text{offset}$ is a shared scalar. Applying $F$ to the true array is the same as applying it to $\text{cur}$ 
+alone and adding $(2 \cdot \text{offset})$ to the result.
 If we stored this new array directly, its values would still continue to grow after every application
 of $F$. Thus, we normalize it by subtracting its minimum value. After computing the merged
 array $\text{nxt}$, let $m = \text{nxt}[0]$ be its minimum, we update
