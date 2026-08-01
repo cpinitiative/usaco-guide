@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { useContext, useState } from 'react';
-import { useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
   moduleIDToSectionMap,
   moduleIDToURLMap,
@@ -33,13 +32,18 @@ import TableOfContentsBlock from './TableOfContents/TableOfContentsBlock';
 import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
 
 const ContentContainer = ({ children, tableOfContents, wide = false }) => {
-  const { isDesktopSidebarHidden, setIsDesktopSidebarHidden } = useMarkdownLayout();
+  const { isDesktopSidebarHidden, setIsDesktopSidebarHidden } =
+    useMarkdownLayout();
 
   useEffect(() => {
-    const toggleShortcut = (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === 's') {
+    const toggleShortcut = e => {
+      if (
+        (e.metaKey || e.ctrlKey) &&
+        e.shiftKey &&
+        e.key.toLowerCase() === 's'
+      ) {
         e.preventDefault();
-        setIsDesktopSidebarHidden((prev) => !prev);
+        setIsDesktopSidebarHidden(prev => !prev);
       }
     };
 
