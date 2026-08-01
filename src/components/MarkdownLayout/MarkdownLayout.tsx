@@ -6,7 +6,9 @@ import {
 } from '../../../content/ordering';
 import ConfettiContext from '../../context/ConfettiContext';
 import { ContactUsSlideoverProvider } from '../../context/ContactUsSlideoverContext';
-import MarkdownLayoutContext from '../../context/MarkdownLayoutContext';
+import MarkdownLayoutContext, {
+  useMarkdownLayout,
+} from '../../context/MarkdownLayoutContext';
 import { ProblemSolutionContext } from '../../context/ProblemSolutionContext';
 import { ProblemSuggestionModalProvider } from '../../context/ProblemSuggestionModalContext';
 import { useUserLangSetting } from '../../context/UserDataContext/properties/simpleProperties';
@@ -14,6 +16,7 @@ import {
   useSetProgressOnModule,
   useUserProgressOnModules,
 } from '../../context/UserDataContext/properties/userProgress';
+import useStickyState from '../../hooks/useStickyState';
 import { ModuleInfo } from '../../models/module';
 import { SolutionInfo } from '../../models/solution';
 import { MdxFrontmatter } from '../../types/content';
@@ -28,43 +31,48 @@ import NotSignedInWarning from './NotSignedInWarning';
 import TableOfContentsBlock from './TableOfContents/TableOfContentsBlock';
 import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
 
-const ContentContainer = ({ children, tableOfContents, wide = false }) => (
-  <main
-    className="relative overflow-x-hidden pt-6 focus:outline-hidden lg:pt-2"
-    tabIndex={0}
-  >
-    <div className="mx-auto">
-      <div className="flex justify-center">
-        {/* Placeholder for the sidebar */}
-        <div
-          className="order-1 hidden shrink-0 lg:block"
-          style={{ width: '20rem' }}
-        />
-        {tableOfContents.length > 1 && (
-          <div className="order-3 mt-48 mr-6 ml-6 hidden w-64 shrink-0 2xl:block">
-            <TableOfContentsSidebar tableOfContents={tableOfContents} />
-          </div>
-        )}
-        <div
-          className={`order-2 w-0 min-w-0 flex-1 overflow-x-auto px-4 sm:px-6 lg:px-8 ${
-            wide ? 'max-w-7xl' : 'max-w-4xl'
-          }`}
-        >
-          <div className="hidden lg:block">
-            <NavBar />
-            <div className="h-8" />
-          </div>
+const ContentContainer = ({ children, tableOfContents, wide = false }) => {
+  const { isDesktopSidebarHidden } = useMarkdownLayout();
+  return (
+    <main
+      className="relative overflow-x-hidden pt-6 focus:outline-hidden lg:pt-2"
+      tabIndex={0}
+    >
+      <div className="mx-auto">
+        <div className="flex justify-center">
+          {/* Placeholder for the sidebar */}
+          {!isDesktopSidebarHidden && (
+            <div
+              className="order-1 hidden shrink-0 lg:block"
+              style={{ width: '20rem' }}
+            />
+          )}
+          {tableOfContents.length > 1 && (
+            <div className="order-3 mt-48 mr-6 ml-6 hidden w-64 shrink-0 2xl:block">
+              <TableOfContentsSidebar tableOfContents={tableOfContents} />
+            </div>
+          )}
+          <div
+            className={`order-2 w-0 min-w-0 flex-1 overflow-x-auto px-4 sm:px-6 lg:px-8 ${
+              wide ? 'max-w-7xl' : 'max-w-4xl'
+            }`}
+          >
+            <div className="hidden lg:block">
+              <NavBar />
+              <div className="h-8" />
+            </div>
 
-          {children}
+            {children}
 
-          <div className="pt-4 pb-6">
-            <NavBar alignNavButtonsRight={false} />
+            <div className="pt-4 pb-6">
+              <NavBar alignNavButtonsRight={false} />
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </main>
-);
+    </main>
+  );
+};
 
 interface MarkdownLayoutProps {
   frontmatter: MdxFrontmatter[];
@@ -82,6 +90,10 @@ export default function MarkdownLayout({
   const lang = useUserLangSetting();
 
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
+  const [isDesktopSidebarHidden, setIsDesktopSidebarHidden] = useStickyState(
+    false,
+    'guide:isDesktopSidebarHidden'
+  );
   const moduleProgress =
     (userProgressOnModules && userProgressOnModules[markdownData.id]) ||
     'Not Started';
@@ -130,6 +142,8 @@ export default function MarkdownLayout({
         uniqueID: null, // legacy, remove when classes is removed
         isMobileNavOpen,
         setIsMobileNavOpen,
+        isDesktopSidebarHidden,
+        setIsDesktopSidebarHidden,
         moduleProgress,
         handleCompletionChange,
       }}
