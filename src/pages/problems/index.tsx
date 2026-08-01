@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Chapter } from '../../../content/ordering';
 
 import {
@@ -6,6 +6,7 @@ import {
   InstantSearch,
   Pagination,
   PoweredBy,
+  useInstantSearch,
 } from 'react-instantsearch';
 
 import { GetStaticProps } from 'next';
@@ -14,6 +15,10 @@ import BlindModeToggle from '../../components/BlindModeToggle';
 import { difficultyClasses } from '../../components/DifficultyBox';
 import Layout from '../../components/layout';
 import ProblemHits from '../../components/ProblemsPage/ProblemHits';
+import {
+  createRouting,
+  indexName,
+} from '../../components/ProblemsPage/routing';
 import SearchBox from '../../components/ProblemsPage/SearchBox';
 import Selection, {
   SelectionProps,
@@ -25,7 +30,65 @@ import TopNavigationBar from '../../components/TopNavigationBar/TopNavigationBar
 import { useUserProgressOnProblems } from '../../context/UserDataContext/properties/userProgress';
 import searchClient from '../../utils/algoliaLiteSearchClient';
 
-const indexName = `${process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME ?? 'dev'}_problems`;
+const SORT_OPTIONS = [
+  'Relevance',
+  'Difficulty (Ascending)',
+  'Difficulty (Descending)',
+  'Contest (Newer)',
+  'Contest (Older)',
+];
+
+const STATUS_OPTIONS = [
+  'Not Attempted',
+  'Solving',
+  'Reviewing',
+  'Skipped',
+  'Ignored',
+  'Solved',
+];
+
+/** Replaces the given query params in the URL without adding history entries. */
+function updateUrlParams(updates: Record<string, string[]>) {
+  const url = new URL(window.location.href);
+  for (const [param, values] of Object.entries(updates)) {
+    url.searchParams.delete(param);
+    for (const value of values) url.searchParams.append(param, value);
+  }
+  window.history.replaceState(window.history.state, '', url);
+}
+
+/**
+ * Applies the Status filter (a list of status labels) by expanding it into the
+ * matching problem IDs. Runs again when user progress loads / changes, since
+ * the expansion depends on it.
+ */
+function StatusFilterSync({
+  statuses,
+  problemIds,
+}: {
+  statuses: string[];
+  problemIds: string[];
+}) {
+  const userProgress = useUserProgressOnProblems();
+  const { setIndexUiState } = useInstantSearch();
+  useEffect(() => {
+    if (!statuses.length) return;
+    const ids = problemIds.filter(id =>
+      statuses.includes(userProgress[id] ?? 'Not Attempted')
+    );
+    // No matches usually means user progress hasn't loaded yet; leave the
+    // results unfiltered instead of showing zero results
+    if (!ids.length) return;
+    setIndexUiState(prevIndexUiState => ({
+      ...prevIndexUiState,
+      refinementList: {
+        ...prevIndexUiState.refinementList,
+        objectID: [...ids, 'null'],
+      },
+    }));
+  }, [statuses, problemIds, userProgress]);
+  return null;
+}
 
 interface ProblemsPageProps {
   problemIds: string[];
@@ -36,6 +99,21 @@ export default function ProblemsPage({ problemIds }: ProblemsPageProps) {
   const [shuffle, sendShuffle] = useState(0);
   const [random, sendRandom] = useState(0);
   const [sort, setSort] = useState('Relevance');
+  // Status labels selected via the URL or the Status dropdown; expanded into
+  // problem IDs by StatusFilterSync
+  const [statuses, setStatuses] = useState<string[]>([]);
+  const routing = useMemo(createRouting, []);
+  useEffect(() => {
+    // Restore the page-managed params (sort, status) from the URL;
+    // InstantSearch's routing handles the rest
+    const params = new URLSearchParams(window.location.search);
+    const sortParam = params.get('sort');
+    if (sortParam && SORT_OPTIONS.includes(sortParam)) setSort(sortParam);
+    const statusParams = params
+      .getAll('status')
+      .filter(status => STATUS_OPTIONS.includes(status));
+    if (statusParams.length) setStatuses(statusParams);
+  }, []);
   // keys of difficultyClasses are in increasing order of difficulty
   const difficultyOrder = Object.keys(difficultyClasses);
   const selectionMetadata: SelectionProps[] = [
@@ -98,14 +176,11 @@ export default function ProblemsPage({ problemIds }: ProblemsPageProps) {
       placeholder: 'Status',
       searchable: false,
       isMulti: true,
-      items: [
-        'Not Attempted',
-        'Solving',
-        'Reviewing',
-        'Skipped',
-        'Ignored',
-        'Solved',
-      ].map(label => ({
+      onRefine: labels => {
+        setStatuses(labels);
+        updateUrlParams({ status: labels });
+      },
+      items: STATUS_OPTIONS.map(label => ({
         label,
         value: problemIds.filter(
           id => (userProgress[id] ?? 'Not Attempted') == label
@@ -120,7 +195,12 @@ export default function ProblemsPage({ problemIds }: ProblemsPageProps) {
       <div className="dark:bg-dark-surface min-h-screen bg-gray-100">
         <TopNavigationBar />
 
-        <InstantSearch searchClient={searchClient} indexName={indexName}>
+        <InstantSearch
+          searchClient={searchClient}
+          indexName={indexName}
+          routing={routing}
+        >
+          <StatusFilterSync statuses={statuses} problemIds={problemIds} />
           <div className="bg-blue-600 px-5 py-16 dark:bg-blue-900">
             <div className="mx-auto mb-6 max-w-3xl">
               <h1 className="dark:text-dark-high-emphasis mb-6 text-center text-3xl font-bold text-white sm:text-5xl">
@@ -195,15 +275,14 @@ export default function ProblemsPage({ problemIds }: ProblemsPageProps) {
                   Random
                 </button>
                 <SortButton
-                  options={[
-                    'Relevance',
-                    'Difficulty (Ascending)',
-                    'Difficulty (Descending)',
-                    'Contest (Newer)',
-                    'Contest (Older)',
-                  ]}
+                  options={SORT_OPTIONS}
                   state={sort}
-                  onChange={newSort => setSort(newSort)}
+                  onChange={newSort => {
+                    setSort(newSort);
+                    updateUrlParams({
+                      sort: newSort === 'Relevance' ? [] : [newSort],
+                    });
+                  }}
                 />
               </div>
               <ProblemHits shuffle={shuffle} random={random} sort={sort} />

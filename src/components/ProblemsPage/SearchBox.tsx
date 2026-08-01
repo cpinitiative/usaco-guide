@@ -7,14 +7,16 @@ export default function SearchBox(props: UseSearchBoxProps): JSX.Element {
   // https://stackoverflow.com/questions/53314857/how-to-focus-something-on-next-render-with-react-hooks
   const { query, refine: setQuery } = useSearchBox(props);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [searchTerm, setSearchTerm] = React.useState('');
+  const [searchTerm, setSearchTerm] = React.useState(query);
+  // Don't write the (initially empty) search term to InstantSearch until the
+  // user has typed something, so we don't clobber a query restored from the URL
+  const dirty = useRef(false);
   const debouncedSearchTerm = useDebounce(searchTerm, 200);
   useEffect(() => {
-    if (debouncedSearchTerm) {
-      setQuery(searchTerm);
-    } else {
-      setQuery('');
-    }
+    if (!dirty.current) setSearchTerm(query);
+  }, [query]);
+  useEffect(() => {
+    if (dirty.current) setQuery(debouncedSearchTerm || '');
   }, [debouncedSearchTerm]);
   useEffect(() => {
     if (inputRef.current) inputRef.current.focus();
@@ -41,7 +43,10 @@ export default function SearchBox(props: UseSearchBoxProps): JSX.Element {
         type="search"
         autoComplete="off"
         value={searchTerm}
-        onChange={e => setSearchTerm(e.target.value)}
+        onChange={e => {
+          dirty.current = true;
+          setSearchTerm(e.target.value);
+        }}
         ref={inputRef}
       />
     </div>
