@@ -43,13 +43,13 @@ const ContentContainer = ({ children, tableOfContents, wide = false }) => {
         e.key.toLowerCase() === 's'
       ) {
         e.preventDefault();
-        setIsDesktopSidebarHidden(prev => !prev);
+        setIsDesktopSidebarHidden(isDesktopSidebarHidden);
       }
     };
 
     window.addEventListener('keydown', toggleShortcut);
     return () => window.removeEventListener('keydown', toggleShortcut);
-  }, [setIsDesktopSidebarHidden]);
+  }, [isDesktopSidebarHidden, setIsDesktopSidebarHidden]);
 
   return (
     <main
