@@ -12,8 +12,8 @@ export default function DesktopSidebar() {
     return (
       <button
         className="dark:bg-dark-surface fixed top-2 left-2 z-10 hidden rounded-md border border-gray-200 bg-white p-2 text-gray-400 shadow-sm transition duration-150 ease-in-out hover:text-gray-600 lg:block dark:border-gray-800 dark:hover:text-gray-300"
-        aria-label="Show sidebar"
-        title="Show sidebar"
+        aria-label="Show sidebar (Ctrl + Shift + S)"
+        title="Show sidebar (Ctrl + Shift + S)"
         onClick={() => setIsDesktopSidebarHidden(false)}
       >
         <svg
@@ -47,8 +47,8 @@ export default function DesktopSidebar() {
             </Link>
             <button
               className="rounded-md p-1 text-gray-400 transition duration-150 ease-in-out hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
-              aria-label="Hide sidebar"
-              title="Hide sidebar"
+              aria-label="Hide sidebar (Ctrl + Shift + S)"
+              title="Hide sidebar (Ctrl + Shift + S)"
               onClick={() => setIsDesktopSidebarHidden(true)}
             >
               <svg
