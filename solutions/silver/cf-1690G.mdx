@@ -12,7 +12,11 @@ Let $a_i$ be the current cap on carriage $i$, and $v_i$ the true speed it is run
 
 Instead of storing the whole prefix minimum array, maintain a set of **start indices**, or the indices where a new train starts, which are index $0$ and every index $i$ where $v_i < v_{i-1}$. Note that $a_j = v_j$ at any start index $j$, so the true speed of a position $k$ is just $a_j$ with $j$ being its the largest start index such that $j\le k$.
 
-When a query lowers $a_k$, find the largest start index $j \le k$ in the set - $a_j$ is $k$'s current true speed. If the new $a_k$ is still $\ge a_j$, nothing changes, since carriage $k$ was already bottlenecked by something ahead of it. Otherwise, insert $k$ into the set as a new start, then walk forward erasing every subsequent start index $j'$ with $a_{j'} \ge a_k$, since those trains now have been swallowed a lower speed limit. The size of the set after each query is the answer.
+When a query decreases $a_k$, one of the following happens:
+- The true speed $v_k$, as defined by a starting index, is equal to or slower than $a_k$. Thus, the set of starting indices (i.e., the number of trains) remains the same.
+- The previous true speed $v_k$ is greater than $a_k$, resulting in $k$ becoming a starting index. Note that $k$ becoming a starting index may result in some starting indices becoming obsolete. To remove these obsolete indices, we iteratively check the nearest starting index to the right of $k$, and see if its value is greater than $a_k$. If so, we erase and continue checking indices.
+
+At each point, the number of trains is equal to the number of starting indices. We have at most $\mathcal{O}(N+Q)$ starting index insertions, and thus the number of index removals is also bounded by $\mathcal{O}(N+Q)$. Thus, the overall time complexity amortizes to $\mathcal{O}((N+Q) \log N)$.
 
 
 
