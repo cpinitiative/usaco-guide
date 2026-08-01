@@ -52,9 +52,19 @@ const ContentContainer = ({ children, tableOfContents, wide = false }) => {
               <TableOfContentsSidebar tableOfContents={tableOfContents} />
             </div>
           )}
+          {/* When the sidebar is hidden, the content's max width grows by the
+              sidebar's width (20rem) so that, since the content stays centered,
+              its right edge stays in the same place as when the sidebar is
+              visible. */}
           <div
             className={`order-2 w-0 min-w-0 flex-1 overflow-x-auto px-4 sm:px-6 lg:px-8 ${
-              wide ? 'max-w-7xl' : 'max-w-4xl'
+              wide
+                ? isDesktopSidebarHidden
+                  ? 'max-w-7xl lg:max-w-[100rem]'
+                  : 'max-w-7xl'
+                : isDesktopSidebarHidden
+                  ? 'max-w-4xl lg:max-w-[76rem]'
+                  : 'max-w-4xl'
             }`}
           >
             <div className="hidden lg:block">
