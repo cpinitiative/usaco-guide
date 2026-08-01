@@ -43,7 +43,7 @@ const ContentContainer = ({ children, tableOfContents, wide = false }) => {
         e.key.toLowerCase() === 's'
       ) {
         e.preventDefault();
-        setIsDesktopSidebarHidden(isDesktopSidebarHidden);
+        setIsDesktopSidebarHidden(!isDesktopSidebarHidden);
       }
     };
 
