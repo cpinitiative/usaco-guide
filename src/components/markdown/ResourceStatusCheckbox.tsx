@@ -217,7 +217,7 @@ export default function ResourcestatusCheckbox({
           className={
             `inline-block ${
               size === 'small' ? 'h-6 w-6' : 'h-8 w-8'
-            } cursor-pointer rounded-full transition duration-100 ease-out ` +
+            } cursor-pointer rounded-md transition duration-100 ease-out ` +
             color[status]
           }
         />
