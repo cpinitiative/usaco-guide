@@ -28,7 +28,7 @@ import NotSignedInWarning from './NotSignedInWarning';
 import TableOfContentsBlock from './TableOfContents/TableOfContentsBlock';
 import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
 
-const ContentContainer = ({ children, tableOfContents }) => (
+const ContentContainer = ({ children, tableOfContents, wide = false }) => (
   <main
     className="relative overflow-x-hidden pt-6 focus:outline-hidden lg:pt-2"
     tabIndex={0}
@@ -45,7 +45,11 @@ const ContentContainer = ({ children, tableOfContents }) => (
             <TableOfContentsSidebar tableOfContents={tableOfContents} />
           </div>
         )}
-        <div className="order-2 w-0 max-w-4xl min-w-0 flex-1 overflow-x-auto px-4 sm:px-6 lg:px-8">
+        <div
+          className={`order-2 w-0 min-w-0 flex-1 overflow-x-auto px-4 sm:px-6 lg:px-8 ${
+            wide ? 'max-w-7xl' : 'max-w-4xl'
+          }`}
+        >
           <div className="hidden lg:block">
             <NavBar />
             <div className="h-8" />
@@ -138,7 +142,10 @@ export default function MarkdownLayout({
           <div className="w-full">
             <MobileAppBar />
 
-            <ContentContainer tableOfContents={tableOfContents}>
+            <ContentContainer
+              tableOfContents={tableOfContents}
+              wide={markdownData instanceof ModuleInfo && markdownData.wide}
+            >
               <NotSignedInWarning />
 
               <ModuleHeaders moduleLinks={moduleLinks} />
