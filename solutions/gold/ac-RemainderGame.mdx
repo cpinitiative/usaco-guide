@@ -53,8 +53,8 @@ const int MAX_VAL = 50;
 const int NUM_NODES = MAX_VAL + 1;
 const int INF = 1e9;
 
-int dist[NUM_NODES][NUM_NODES];
-int temp_dist[NUM_NODES][NUM_NODES];
+vector<vector<int>> dist(NUM_NODES, vector<int>(NUM_NODES, INF));
+vector<vector<int>> temp_dist(NUM_NODES, vector<int>(NUM_NODES));
 
 int main() {
 	ios::sync_with_stdio(false);
@@ -67,7 +67,7 @@ int main() {
 	for (int &x : a) cin >> x;
 	for (int &x : b) cin >> x;
 
-	vector<pair<int, int>> edges_by_modulus[NUM_NODES];
+	vector<vector<pair<int, int>>> edges_by_modulus(NUM_NODES);
 
 	for (int i = 0; i <= MAX_VAL; i++) {
 		for (int j = 0; j <= MAX_VAL; j++) { dist[i][j] = INF; }
@@ -86,7 +86,7 @@ int main() {
 	long long ans = 0;
 
 	while (true) {
-		memcpy(temp_dist, dist, sizeof(dist));
+		temp_dist = dist;
 
 		// Minimax Floyd-Warshall under the current (partially purchased) weights
 		for (int mid = 0; mid <= MAX_VAL; mid++) {
