@@ -1,8 +1,8 @@
 import type { UiState } from 'instantsearch.js';
 import { history } from 'instantsearch.js/es/lib/routers';
 import MODULE_ORDERING, {
-  SectionID,
   SECTION_LABELS,
+  SectionID,
 } from '../../../content/ordering';
 
 export const indexName = `${process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME ?? 'dev'}_problems`;
