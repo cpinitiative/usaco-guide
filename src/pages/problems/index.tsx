@@ -30,6 +30,15 @@ import TopNavigationBar from '../../components/TopNavigationBar/TopNavigationBar
 import { useUserProgressOnProblems } from '../../context/UserDataContext/properties/userProgress';
 import searchClient from '../../utils/algoliaLiteSearchClient';
 
+// keys of difficultyClasses are in increasing order of difficulty.
+// Defined at module scope so the comparator keeps a stable identity across
+// renders — react-instantsearch deep-compares hook props (functions by
+// reference) and tears down + recreates the refinement-list widget when they
+// change, which drops the active refinement.
+const difficultyOrder = Object.keys(difficultyClasses);
+const sortByDifficulty: SelectionProps['sortBy'] = (a, b) =>
+  difficultyOrder.indexOf(a.name) - difficultyOrder.indexOf(b.name);
+
 const SORT_OPTIONS = [
   'Relevance',
   'Difficulty (Ascending)',
@@ -114,8 +123,6 @@ export default function ProblemsPage({ problemIds }: ProblemsPageProps) {
       .filter(status => STATUS_OPTIONS.includes(status));
     if (statusParams.length) setStatuses(statusParams);
   }, []);
-  // keys of difficultyClasses are in increasing order of difficulty
-  const difficultyOrder = Object.keys(difficultyClasses);
   const selectionMetadata: SelectionProps[] = [
     {
       attribute: 'difficulty',
@@ -123,8 +130,7 @@ export default function ProblemsPage({ problemIds }: ProblemsPageProps) {
       placeholder: 'Difficulty',
       searchable: false,
       isMulti: true,
-      sortBy: (a, b) =>
-        difficultyOrder.indexOf(a.name) - difficultyOrder.indexOf(b.name),
+      sortBy: sortByDifficulty,
     },
     {
       attribute: 'problemModules.title',
