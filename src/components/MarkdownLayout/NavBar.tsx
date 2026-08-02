@@ -28,7 +28,10 @@ const NavBar = ({ alignNavButtonsRight = true }) => {
     [markdownLayoutInfo, sortedModuleLinks]
   ) as number;
 
-  const prevModule = !sortedModuleLinks || moduleIdx === 0 ? null : sortedModuleLinks[moduleIdx - 1];
+  const prevModule =
+    !sortedModuleLinks || moduleIdx === 0
+      ? null
+      : sortedModuleLinks[moduleIdx - 1];
   const nextModule =
     !sortedModuleLinks || moduleIdx === sortedModuleLinks.length - 1
       ? null
