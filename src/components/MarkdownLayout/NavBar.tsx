@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import * as React from 'react';
+import { useRouter } from 'next/router';
 import MODULE_ORDERING from '../../../content/ordering';
 import { useMarkdownLayout } from '../../context/MarkdownLayoutContext';
 import { MarkdownLayoutSidebarModuleLinkInfo } from '../../models/module';
@@ -8,6 +9,7 @@ import Breadcrumbs from './Breadcrumbs';
 
 const NavBar = ({ alignNavButtonsRight = true }) => {
   const moduleLayoutInfo = useMarkdownLayout();
+  const router = useRouter();
   const { markdownLayoutInfo, sidebarLinks } = moduleLayoutInfo;
 
   const sortedModuleLinks = React.useMemo(() => {
