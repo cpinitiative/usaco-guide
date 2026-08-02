@@ -96,7 +96,7 @@ const NavBar = ({ alignNavButtonsRight = true }) => {
             'inline-flex items-center rounded-md px-4 py-2 text-sm leading-5 font-medium ' +
             (prevModule === null ? disabledClasses : activeClasses)
           }
-          title="Prev (Ctrl + <-)"
+          title="Prev (Ctrl + ←)"
         >
           <svg
             className="mr-1 -ml-0.5 h-4 w-4"
@@ -122,7 +122,7 @@ const NavBar = ({ alignNavButtonsRight = true }) => {
             'inline-flex items-center rounded-md px-4 py-2 text-sm leading-5 font-medium ' +
             (nextModule === null ? disabledClasses : activeClasses)
           }
-          title="Next (Ctrl + ->)"
+          title="Next (Ctrl + →)"
         >
           Next
           <svg
