@@ -30,6 +30,30 @@ interface ProblemHitProps {
   hit: AlgoliaProblemInfoHit;
 }
 
+const difficultySortOrder = {
+  'Very Easy': 1,
+  Easy: 2,
+  Normal: 3,
+  Hard: 4,
+  'Very Hard': 5,
+  Insane: 6,
+  'N/A': 0,
+};
+const divisionFactor = {
+  Bronze: 0,
+  Silver: 10,
+  Gold: 20,
+  Platinum: 30,
+  Advanced: 40,
+};
+const sectionToDivision = {
+  bronze: 'Bronze',
+  silver: 'Silver',
+  gold: 'Gold',
+  plat: 'Platinum',
+  adv: 'Advanced',
+};
+
 function getContestDateForProblem(
   division: string,
   problemId: string
@@ -49,6 +73,24 @@ function getProblemDivision(problemId: string): string {
     }
   }
   return null;
+}
+/**
+ * The division a problem sorts under: its USACO division if it's a USACO
+ * problem, otherwise the lowest division among the modules it appears in
+ * (modules in the General section don't correspond to a division).
+ */
+function getSortDivision(hit: AlgoliaProblemInfoHit): string | null {
+  const usacoDivision = getProblemDivision(hit.objectID);
+  if (usacoDivision) return usacoDivision;
+
+  let lowest: string | null = null;
+  for (const { id: moduleID } of hit.problemModules ?? []) {
+    const division = sectionToDivision[moduleIDToSectionMap[moduleID]];
+    if (!division) continue;
+    if (lowest === null || divisionFactor[division] < divisionFactor[lowest])
+      lowest = division;
+  }
+  return lowest;
 }
 function getContestURL(source: string) {
   let resultsUrl = '';
@@ -248,22 +290,6 @@ export default function ProblemHits({ shuffle, random, sort }) {
     React.useState<AlgoliaProblemInfoHit[]>(hits);
   const userProgressOnProblems = useUserProgressOnProblems();
 
-  const difficultySortOrder = {
-    'Very Easy': 1,
-    Easy: 2,
-    Normal: 3,
-    Hard: 4,
-    'Very Hard': 5,
-    Insane: 6,
-    'N/A': 0,
-  };
-  const divisionFactor = {
-    Bronze: 0,
-    Silver: 10,
-    Gold: 20,
-    Platinum: 30,
-  };
-
   function shuffleArr(arr: AlgoliaProblemInfoHit[]) {
     const nArr = [...arr];
     let l = nArr.length;
@@ -291,8 +317,8 @@ export default function ProblemHits({ shuffle, random, sort }) {
     }
 
     withoutNA.sort((a, b) => {
-      const aDivision = getProblemDivision(a.objectID);
-      const bDivision = getProblemDivision(b.objectID);
+      const aDivision = getSortDivision(a);
+      const bDivision = getSortDivision(b);
       const aOrder =
         (difficultySortOrder[a.difficulty] || 0) +
         (aDivision ? divisionFactor[aDivision] : 0);
