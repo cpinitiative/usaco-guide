@@ -49,9 +49,9 @@ using ll=long long;
 signed main() {
     ll n,m; cin>>n>>m;
     vector<ll> pref(n+1, 0);
-    vector<ll> x(n); for (int i=0; i<n; i++)cin>>x[i];
-    sort(x.rbegin(), x.rend());
-    for (int i=0; i<n; i++){pref[i+1]=x[i]+pref[i];}
+    vector<ll> a(n); for (int i=0; i<n; i++)cin>>a[i];
+    sort(a.rbegin(), a.rend());
+    for (int i=0; i<n; i++){pref[i+1]=a[i]+pref[i];}
     int l=0, h=200000;
     ll r=0;
     while (l<=h){
@@ -59,9 +59,9 @@ signed main() {
         int k=l+(h-l)/2;
         int j=0;
         for (int i=n-1; i>=0; i--){
-            while (j<n&&x[i]+x[j]>=k)j++;
+            while (j<n&&a[i]+a[j]>=k)j++;
             count+=j;
-            benefit+=j*x[i]+pref[j];
+            benefit+=j*a[i]+pref[j];
         }
         if (count>=m){
             l=k+1; r=benefit-(count-m)*k;
