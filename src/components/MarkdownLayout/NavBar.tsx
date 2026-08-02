@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import * as React from 'react';
 import { useRouter } from 'next/router';
+import * as React from 'react';
 import MODULE_ORDERING from '../../../content/ordering';
 import { useMarkdownLayout } from '../../context/MarkdownLayoutContext';
 import { MarkdownLayoutSidebarModuleLinkInfo } from '../../models/module';
