@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import * as React from 'react';
-import { useRouter } from 'next/router';
 import MODULE_ORDERING from '../../../content/ordering';
 import { useMarkdownLayout } from '../../context/MarkdownLayoutContext';
 import { MarkdownLayoutSidebarModuleLinkInfo } from '../../models/module';
@@ -33,21 +32,23 @@ const NavBar = ({ alignNavButtonsRight = true }) => {
       ? null
       : sortedModuleLinks[moduleIdx + 1];
 
-   React.useEffect(() => {
-
+  React.useEffect(() => {
     if (!sortedModuleLinks || markdownLayoutInfo instanceof SolutionInfo) {
       return;
-    } 
+    }
 
     const navigationShortcut = (e: KeyboardEvent) => {
-      
       if (!e.ctrlKey) {
         return;
-      } 
+      }
 
       const target = e.target as HTMLElement;
       const htmlTag = target?.tagName;
-      if (htmlTag === 'INPUT' || htmlTag === 'TEXTAREA' || target?.isContentEditable) {
+      if (
+        htmlTag === 'INPUT' ||
+        htmlTag === 'TEXTAREA' ||
+        target?.isContentEditable
+      ) {
         return;
       }
 
@@ -55,12 +56,12 @@ const NavBar = ({ alignNavButtonsRight = true }) => {
         e.preventDefault();
         if (nextModule) {
           router.push(nextModule.url);
-        }    
+        }
       } else if (e.key === 'ArrowLeft') {
         e.preventDefault();
         if (prevModule) {
           router.push(prevModule.url);
-        } 
+        }
       }
     };
 
@@ -90,7 +91,7 @@ const NavBar = ({ alignNavButtonsRight = true }) => {
             'inline-flex items-center rounded-md px-4 py-2 text-sm leading-5 font-medium ' +
             (prevModule === null ? disabledClasses : activeClasses)
           }
-          title = "Prev (Ctrl + <-)"
+          title="Prev (Ctrl + <-)"
         >
           <svg
             className="mr-1 -ml-0.5 h-4 w-4"
@@ -116,7 +117,7 @@ const NavBar = ({ alignNavButtonsRight = true }) => {
             'inline-flex items-center rounded-md px-4 py-2 text-sm leading-5 font-medium ' +
             (nextModule === null ? disabledClasses : activeClasses)
           }
-          title = "Next (Ctrl + ->)"
+          title="Next (Ctrl + ->)"
         >
           Next
           <svg
