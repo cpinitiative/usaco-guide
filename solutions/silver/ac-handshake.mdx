@@ -1,0 +1,88 @@
+---
+id: ac-handshake
+source: AtCoder Beginner Contest 149
+title: Handshake
+author: Mikaela Tereshkov
+---
+
+[Official Analysis](https://img.atcoder.jp/abc149/editorial.pdf)
+
+## Explanation
+
+This problem is solved more easily when first considering a quadratic solution. To solve this problem in $\mathcal{O}(N^2\log{N})$, we can find all possible values of handshakes, sort them, and take the top $M$ values.
+
+To optimize this solution, we can use binary search. We can binary search on the value $K$ where our top $M$ handshakes have values $ \geq K$ and the remaining handshakes have values $\leq K$. 
+
+To do this, we can sort $A$ in nonincreasing order and build a prefix sum array, $\texttt{pref}$. Then, for each value of $K$ that we check with binary search, we can use a two-pointer approach to calculate the total benefit and count. For each index $i$, we can find the latest index $j$ such that $A_i + A_j \geq K$. As we decrement $i$ by $1$, we never decrement $j$, allowing for $\mathcal{O}(N)$ traversal.
+
+$$
+\texttt{benefit}=\texttt{benefit} +\texttt{pref}_j+A_i\cdot j
+$$
+$$
+\texttt{count}=\texttt{count} + j
+$$
+For optimal $K$, our result is $\texttt{benefit}-K\cdot (\texttt{count}-M)$
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log{N})$
+
+
+<LanguageSection>
+
+<CPPSection>
+```cpp
+//  E - Handshake
+//  Fatespeaker
+//  8/1/26
+
+
+#include<bits/stdc++.h>
+using namespace std;
+
+#pragma GCC target("avx2")
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
+
+using ll=long long;
+
+signed main() {
+    ll n,m; cin>>n>>m;
+    vector<ll> pref(n+1, 0);
+    vector<ll> x(n); for (int i=0; i<n; i++)cin>>x[i];
+    sort(x.rbegin(), x.rend());
+    for (int i=0; i<n; i++){pref[i+1]=x[i]+pref[i];}
+    int l=0, h=200000;
+    ll r=0;
+    while (l<=h){
+        ll count=0, benefit=0;
+        int k=l+(h-l)/2;
+        int j=0;
+        for (int i=n-1; i>=0; i--){
+            while (j<n&&x[i]+x[j]>=k)j++;
+            count+=j;
+            benefit+=j*x[i]+pref[j];
+        }
+        if (count>=m){
+            l=k+1; r=benefit-(count-m)*k;
+        }else h=k-1;
+    }
+    cout<<r<<'\n';
+    return 0;
+}
+```
+</CPPSection>
+
+<PySection>
+
+(if you have Python code)
+
+</PySection>
+
+<JavaSection>
+
+(if you have Java code)
+
+</JavaSection>
+
+</LanguageSection>
