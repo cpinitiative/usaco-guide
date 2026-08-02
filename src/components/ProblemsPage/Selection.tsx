@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import {
   useInstantSearch,
   useRefinementList,
@@ -12,6 +11,8 @@ export type SelectionProps = UseRefinementListProps & {
   isMulti: boolean;
   transformLabel?: (label: string) => string;
   items?: { label: string; value: string | string[] }[];
+  /** Called with the labels of the selected options whenever they change. */
+  onRefine?: (labels: string[]) => void;
 };
 
 export default function Selection({
@@ -22,6 +23,7 @@ export default function Selection({
   isMulti,
   transformLabel: transform,
   items,
+  onRefine,
   ...props
 }: SelectionProps) {
   const { items: refineItems } = useRefinementList({
@@ -31,35 +33,45 @@ export default function Selection({
   });
   if (!items) items = refineItems;
   for (const key in items) {
-    if (items[key].value instanceof Array) {
-      (items[key].value as string[]).push('null');
+    const value = items[key].value;
+    // 'null' matches nothing; guarantees a non-empty refinement so that
+    // selecting an option with no matches shows zero results
+    if (value instanceof Array && !value.includes('null')) {
+      value.push('null');
     }
   }
-  const [refinements, setRefinements] = useState<string[]>([]);
-  const { setIndexUiState } = useInstantSearch();
-  useEffect(() => {
-    setIndexUiState(prevIndexUiState => ({
-      refinementList: {
-        ...prevIndexUiState.refinementList,
-        [attribute]: refinements,
-      },
-    }));
-  }, [refinements]);
+  const { indexUiState, setIndexUiState } = useInstantSearch();
+  const refinements = indexUiState.refinementList?.[attribute] ?? [];
+  const options = items.map(item => ({
+    ...item,
+    label: transform ? transform(item.label) : item.label,
+  }));
+  const selected = options.filter(option =>
+    option.value instanceof Array
+      ? option.value.length > 1 &&
+        option.value.every(v => refinements.includes(v))
+      : refinements.includes(option.value)
+  );
   return (
     <Select
-      onChange={(items: any) => {
-        if (isMulti) setRefinements(items.map(item => item.value).flat());
-        else if (items) setRefinements([items.value]);
-        else setRefinements([]);
+      onChange={(selection: any) => {
+        const selectedOptions: { label: string; value: string | string[] }[] =
+          isMulti ? selection : selection ? [selection] : [];
+        setIndexUiState(prevIndexUiState => ({
+          ...prevIndexUiState,
+          refinementList: {
+            ...prevIndexUiState.refinementList,
+            [attribute]: selectedOptions.map(option => option.value).flat(),
+          },
+        }));
+        onRefine?.(selectedOptions.map(option => option.label));
       }}
+      value={isMulti ? selected : (selected[0] ?? null)}
       isClearable
       placeholder={placeholder}
       isMulti={isMulti}
       isSearchable={searchable}
-      options={items.map(item => ({
-        ...item,
-        label: transform ? transform(item.label) : item.label,
-      }))}
+      options={options}
       className="text-black dark:text-white"
       classNamePrefix="select"
     />

@@ -7,6 +7,7 @@ import {
   ChatAltIcon,
   ChevronDownIcon,
   CogIcon,
+  DocumentReportIcon,
   DocumentTextIcon,
   ExternalLinkIcon,
   LoginIcon,
@@ -244,6 +245,26 @@ export default function TopNavigationBar({
                             </p>
                           </div>
                         </Link>
+                        <Link
+                          href="https://graph-viz.usaco.guide"
+                          className="-m-3 flex items-start rounded-lg p-3 transition duration-150 ease-in-out hover:bg-gray-100 dark:hover:bg-gray-700"
+                        >
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-blue-500 text-white sm:h-12 sm:w-12">
+                            <DocumentReportIcon
+                              className="h-6 w-6"
+                              aria-hidden="true"
+                            />
+                          </div>
+                          <div className="ml-4">
+                            <p className="dark:text-dark-high-emphasis text-base font-medium text-gray-900">
+                              Graph Visualizer
+                            </p>
+                            <p className="dark:text-dark-med-emphasis mt-1 text-sm text-gray-500">
+                              A tool for visualizing graphs and graph
+                              algorithms.
+                            </p>
+                          </div>
+                        </Link>
                         {resources.map(item => (
                           <a
                             key={item.name}
@@ -441,6 +462,18 @@ export default function TopNavigationBar({
                   />
                   <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
                     Editor
+                  </span>
+                </Link>
+                <Link
+                  href="https://graph-viz.usaco.guide"
+                  className="group -m-3 flex items-center rounded-md p-3 hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  <DocumentReportIcon
+                    className="h-6 w-6 shrink-0 text-gray-600 dark:group-hover:text-gray-400"
+                    aria-hidden="true"
+                  />
+                  <span className="ml-3 text-base font-medium text-gray-700 dark:text-gray-300">
+                    Graph Visualizer
                   </span>
                 </Link>
                 {resources.map(item => (

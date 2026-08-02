@@ -98,10 +98,14 @@ export default function ModuleHeaders({
     <ClientOnly>
       <>
         {markdownData instanceof ModuleInfo &&
-          markdownData.frequency !== null && (
+          (markdownData.frequency != null || problemIDs.length > 0) && (
             <div className="px-0.5">
               <div className="mb-4 space-y-1 sm:flex sm:items-center sm:justify-between sm:space-y-0">
-                <Frequency frequency={markdownData.frequency} />
+                {markdownData.frequency != null ? (
+                  <Frequency frequency={markdownData.frequency} />
+                ) : (
+                  <div />
+                )}
                 {problemIDs.length > 0 && (
                   <DashboardProgressSmall
                     {...problemsProgressInfo}

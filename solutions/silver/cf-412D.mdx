@@ -1,0 +1,141 @@
+---
+id: cf-412D
+source: CF
+title: Giving Awards
+author: John Zhou
+---
+
+# Solution 1
+
+[Official Editorial](https://codeforces.com/blog/entry/11756)
+
+# Solution 2
+
+<Warning>
+
+The correctness of solution 2 is mostly easily proven using information about DFS trees from [this resource](/adv/BCC-2CC?lang=cpp#resource-https%3A%2F%2Fcodeforces.com%2Fblog%2Fentry%2F68138). However, this is outside the scope of USACO Silver.
+
+</Warning>
+
+## Explanation
+
+We construct the directed graph with edges $a_i\to b_i$, and call each $b_i$ the neighbor of $a_i$.
+Having each $a_i$ goes after its $b_i$ in the list results in a working configuration, as $b_i$
+cannot directly follow $a_i$ when it is before $a_i$ in the first place.
+This can always happen, except when the graph has cycles.
+If there is a cycle in the graph, however, we can neglect an edge in a cycle. This is still valid,
+as the cycles have at least $3$ vertices.
+
+To see why, consider this example: we require vertex A to be placed before B, B to be before C, and C to
+be before A; from the first two requirements, A must be before C with at least $1$ element (B) in between.
+Since A and C are not adjacent, their order does not matter, so we may neglect the third edge.
+
+We use a post-order DFS to traverse all the nodes; at each node, we DFS all its neighbors before outputting the current node number.
+This ensures that all neighbors of a vertex come before itself.
+In case of encountering a cycle while traversing, we would revisit an already-visited vertex, which we can safely skip, as neglecting an edge is permissible.
+
+Note that by DFS'ing each unvisited vertex in order, we may visit a neighbor of some other vertex we have not yet visited.
+However, this is not an issue, as that other vertex would be traversed in a later DFS, so the order is still correct.
+Its DFS will simply skip the already visited neighbor.
+
+## Implementation
+
+**Time complexity:** $\mathcal O(n+m)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+// Based on code by JuanMata on CodeForces
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+const int MAX_N = 30001;
+
+vector<int> graph[MAX_N];
+bool visited[MAX_N];
+
+void dfs(int node) {
+	// skip if visited
+	if (visited[node]) { return; }
+	visited[node] = true;
+
+	// visit neighbors
+	for (auto next : graph[node]) { dfs(next); }
+
+	cout << node << ' ';
+}
+
+int main() {
+	int n, m;
+	cin >> n >> m;
+
+	for (int i = 0; i < m; i++) {
+		int u, v;
+		cin >> u >> v;
+		graph[u].push_back(v);
+	}
+
+	for (int i = 1; i <= n; i++) {
+		if (!visited[i]) { dfs(i); }
+	}
+
+	cout << endl;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class GivingAwards {
+
+	private static int MAXN = 30001;
+	private static List<List<Integer>> graph = new ArrayList<>();
+	private static boolean[] visited = new boolean[MAXN];
+	private static List<Integer> res = new ArrayList<>();
+
+	public static void main(String[] args) throws Exception {
+
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		int m = io.nextInt();
+
+		for (int i = 0; i < MAXN; i++) { graph.add(new ArrayList<>()); }
+
+		for (int i = 0; i < m; i++) {
+			int u = io.nextInt();
+			int v = io.nextInt();
+			graph.get(u).add(v);
+		}
+
+		for (int i = 1; i <= n; i++) {
+			if (!visited[i]) { dfs(i); }
+		}
+
+		for (int i = 0; i < n; i++) { io.print(res.get(i) + " "); }
+
+		io.close();
+	}
+
+	public static void dfs(int node) {
+		// skip if visited
+		if (visited[node]) { return; }
+		visited[node] = true;
+		// visit neighbors
+		for (int next : graph.get(node)) { dfs(next); }
+
+		res.add(node);
+	}
+
+	// BeginCodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+</LanguageSection>
