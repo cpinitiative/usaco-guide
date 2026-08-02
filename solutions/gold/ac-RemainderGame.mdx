@@ -53,9 +53,6 @@ const int MAX_VAL = 50;
 const int NUM_NODES = MAX_VAL + 1;
 const int INF = 1e9;
 
-vector<vector<int>> dist(NUM_NODES, vector<int>(NUM_NODES, INF));
-vector<vector<int>> temp_dist(NUM_NODES, vector<int>(NUM_NODES));
-
 int main() {
 	ios::sync_with_stdio(false);
 	cin.tie(nullptr);
@@ -64,17 +61,18 @@ int main() {
 	cin >> n;
 
 	vector<int> a(n), b(n);
-	for (int &x : a) cin >> x;
+	for (int &x : a) cin >> x; 
 	for (int &x : b) cin >> x;
 
-	vector<vector<pair<int, int>>> edges_by_modulus(NUM_NODES);
-
+    vector<vector<int>> dist(NUM_NODES, vector<int>(NUM_NODES, INF));
 	for (int i = 0; i <= MAX_VAL; i++) {
 		for (int j = 0; j <= MAX_VAL; j++) { dist[i][j] = INF; }
 		dist[i][i] = 0;
 	}
 
+
 	// Add an edge x -> x % k with weight k, store for fast lookup later
+    vector<vector<pair<int, int>>> edges_by_modulus(NUM_NODES);
 	for (int x = 0; x <= MAX_VAL; x++) {
 		for (int k = 1; k <= MAX_VAL; k++) {
 			int y = x % k;
@@ -86,9 +84,9 @@ int main() {
 	long long ans = 0;
 
 	while (true) {
-		temp_dist = dist;
+		auto temp_dist = dist;
 
-		// Minimax Floyd-Warshall under the current (partially purchased) weights
+		// Min-of-max Floyd-Warshall under the current (partially purchased) weights
 		for (int mid = 0; mid <= MAX_VAL; mid++) {
 			for (int i = 0; i <= MAX_VAL; i++) {
 				for (int j = 0; j <= MAX_VAL; j++) {
@@ -104,6 +102,7 @@ int main() {
 				cout << -1 << "\n";
 				return 0;
 			}
+            
 			largest_required = max(largest_required, temp_dist[a[i]][b[i]]);
 		}
 
@@ -117,7 +116,7 @@ int main() {
 		}
 	}
 
-	cout << ans << "\n";
+	cout << ans << '\n';
 }
 ```
 
