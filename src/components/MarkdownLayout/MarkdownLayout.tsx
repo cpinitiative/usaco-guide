@@ -16,6 +16,7 @@ import {
   useSetProgressOnModule,
   useUserProgressOnModules,
 } from '../../context/UserDataContext/properties/userProgress';
+import { useModuleNavigationShortcut } from '../../hooks/useModuleNavigation';
 import useStickyState from '../../hooks/useStickyState';
 import { ModuleInfo } from '../../models/module';
 import { SolutionInfo } from '../../models/solution';
@@ -34,6 +35,8 @@ import TableOfContentsSidebar from './TableOfContents/TableOfContentsSidebar';
 const ContentContainer = ({ children, tableOfContents, wide = false }) => {
   const { isDesktopSidebarHidden, setIsDesktopSidebarHidden } =
     useMarkdownLayout();
+
+  useModuleNavigationShortcut();
 
   useEffect(() => {
     const toggleShortcut = e => {
