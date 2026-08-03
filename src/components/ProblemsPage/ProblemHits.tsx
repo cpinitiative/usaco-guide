@@ -114,6 +114,18 @@ function getContestURL(source: string) {
   }
   return resultsUrl;
 }
+function ExternalLinkIcon() {
+  return (
+    <svg
+      viewBox="0 0 20 20"
+      fill="currentColor"
+      className="mb-1 ml-0.5 inline h-4 w-4"
+    >
+      <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
+      <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
+    </svg>
+  );
+}
 function ProblemHit({ hit }: ProblemHitProps) {
   const hideDifficulty = useHideDifficultySetting();
   const showTags = useShowTagsSetting();
@@ -182,57 +194,51 @@ function ProblemHit({ hit }: ProblemHitProps) {
         </a>
       </div> */}
 
-      {hit.solution &&
-        (hit.solution.kind === 'internal' || hit.solution.kind === 'link') && (
-          <a
-            href={
-              hit.solution.kind === 'internal'
-                ? `${getProblemURL({
-                    ...hit,
-                    uniqueId: hit.objectID,
-                  })}/solution`
-                : hit.solution.url
-            }
-            target="_blank"
-            rel="noreferrer"
-            className="dark:text-dark-med-emphasis text-sm text-gray-500"
-          >
-            View Solution
-            <svg
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              className="mb-1 ml-0.5 inline h-4 w-4"
+      <div className="flex flex-col items-start">
+        {hit.solution &&
+          (hit.solution.kind === 'internal' ||
+            hit.solution.kind === 'link') && (
+            <a
+              href={
+                hit.solution.kind === 'internal'
+                  ? `${getProblemURL({
+                      ...hit,
+                      uniqueId: hit.objectID,
+                    })}/solution`
+                  : hit.solution.url
+              }
+              target="_blank"
+              rel="noreferrer"
+              className="dark:text-dark-med-emphasis text-sm text-gray-500"
             >
-              <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
-              <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
-            </svg>
-          </a>
-        )}
-      {isUsaco(problem.source) && (
-        <>
-          <br />
-          <a
-            href={`https://ide.usaco.guide/usaco/${problem.uniqueId.substring(
-              problem.uniqueId.indexOf('-') + 1
-            )}`}
-            target="_blank"
-            rel="noreferrer"
-            className="dark:text-dark-med-emphasis text-sm text-gray-500"
-          >
-            Open in IDE
-            <svg
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              className="mb-1 ml-0.5 inline h-4 w-4"
+              View Solution
+              <ExternalLinkIcon />
+            </a>
+          )}
+        <a
+          href={`/problems/${problem.uniqueId}/user-solutions`}
+          target="_blank"
+          rel="noreferrer"
+          className="dark:text-dark-med-emphasis text-sm text-gray-500"
+        >
+          View User Solutions
+          <ExternalLinkIcon />
+        </a>
+        {isUsaco(problem.source) && (
+          <>
+            <a
+              href={`https://ide.usaco.guide/usaco/${problem.uniqueId.substring(
+                problem.uniqueId.indexOf('-') + 1
+              )}`}
+              target="_blank"
+              rel="noreferrer"
+              className="dark:text-dark-med-emphasis text-sm text-gray-500"
             >
-              <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z" />
-              <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z" />
-            </svg>
-          </a>
+              Open in IDE
+              <ExternalLinkIcon />
+            </a>
 
-          {contestDate && (
-            <>
-              <br />
+            {contestDate && (
               <span className="dark:text-dark-med-emphasis text-sm text-gray-500">
                 Contest:{' '}
                 <a
@@ -244,10 +250,10 @@ function ProblemHit({ hit }: ProblemHitProps) {
                   {contestDate}
                 </a>
               </span>
-            </>
-          )}
-        </>
-      )}
+            )}
+          </>
+        )}
+      </div>
       {!hideModules && !isBlindMode && (
         <>
           <p className="dark:text-dark-med-emphasis mt-2 text-sm text-gray-500">
