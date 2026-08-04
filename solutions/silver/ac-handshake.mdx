@@ -44,15 +44,13 @@ const int MAXV = 200000;
 
 int main() {
 	int n;
-    ll m;
+	ll m;
 	cin >> n >> m;
 
 	vector<int> a(n);
 	vector<ll> pref(n + 1, 0);
 
-    for (int &x : a) {
-        std::cin >> x;
-    }
+	for (int &x : a) { std::cin >> x; }
 
 	sort(a.rbegin(), a.rend());
 	for (int i = 0; i < n; i++) { pref[i + 1] = a[i] + pref[i]; }
@@ -66,9 +64,7 @@ int main() {
 
 		int j = 0;
 		for (int i = n - 1; i >= 0; i--) {
-			while (j < n && a[i] + a[j] >= k) {
-                j++;
-            } 
+			while (j < n && a[i] + a[j] >= k) { j++; }
 			count += j;
 			benefit += 1LL * j * a[i] + pref[j];
 		}
@@ -76,8 +72,8 @@ int main() {
 			lo = k + 1;
 			res = benefit - (count - m) * k;
 		} else {
-            hi = k - 1;
-        } 
+			hi = k - 1;
+		}
 	}
 
 	cout << res << '\n';
@@ -94,53 +90,47 @@ import java.util.*;
 
 public class Main {
 
-    private static int MAXV = 200000;
+	private static int MAXV = 200000;
 
-    public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws Exception {
 
-        Kattio io = new Kattio();
-        int n = io.nextInt();
-        long m = io.nextLong();
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		long m = io.nextLong();
 
-        Integer[] a = new Integer[n];
-        for (int i = 0; i < n; i++) {
-            a[i] = io.nextInt();
-        } 
-        Arrays.sort(a, Collections.reverseOrder());
+		Integer[] a = new Integer[n];
+		for (int i = 0; i < n; i++) { a[i] = io.nextInt(); }
+		Arrays.sort(a, Collections.reverseOrder());
 
-        long[] pref = new long[n + 1];
-        for (int i = 0; i < n; i++) {
-            pref[i + 1] = a[i] + pref[i];
-        } 
+		long[] pref = new long[n + 1];
+		for (int i = 0; i < n; i++) { pref[i + 1] = a[i] + pref[i]; }
 
-        int lo = 0, hi = MAXV;
-        long res = 0;
+		int lo = 0, hi = MAXV;
+		long res = 0;
 
-        while (lo <= hi) {
-            long count = 0, benefit = 0;
-            int k = lo + (hi - lo) / 2;
+		while (lo <= hi) {
+			long count = 0, benefit = 0;
+			int k = lo + (hi - lo) / 2;
 
-            int j = 0;
-            for (int i = n - 1; i >= 0; i--) {
-                while (j < n && a[i] + a[j] >= k) {
-                    j++;
-                } 
-                count += j;
-                benefit += (long) j * a[i] + pref[j];
-            }
-            if (count >= m) {
-                lo = k + 1;
-                res = benefit - (count - m) * k;
-            } else {
-                hi = k - 1;
-            }
-        }
+			int j = 0;
+			for (int i = n - 1; i >= 0; i--) {
+				while (j < n && a[i] + a[j] >= k) { j++; }
+				count += j;
+				benefit += (long)j * a[i] + pref[j];
+			}
+			if (count >= m) {
+				lo = k + 1;
+				res = benefit - (count - m) * k;
+			} else {
+				hi = k - 1;
+			}
+		}
 
-        io.println(res);
-        io.close();
-    }
+		io.println(res);
+		io.close();
+	}
 
-    // BeginCodeSnip{Kattio}
+	// BeginCodeSnip{Kattio}
 }
 ```
 
