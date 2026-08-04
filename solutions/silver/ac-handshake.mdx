@@ -9,15 +9,15 @@ author: Mikaela Tereshkov
 
 ## Explanation
 
-It is easier to solve this problem by first considering a quadratic solution. To solve this problem 
+It is easier to solve this problem by first considering a quadratic solution. To solve this problem
 in $\mathcal{O}(N^2\log{N})$, we can find all possible values of handshakes, sort them, and take the top $M$ values.
 
-To optimize this solution, we can use binary search. We can binary search on the value $K$ where our top $M$ handshakes 
+To optimize this solution, we can use binary search. We can binary search on the value $K$ where our top $M$ handshakes
 have values $ \geq K$ and the remaining handshakes have values $\leq K$.
 
-To do this, we can sort $A$ in nonincreasing order and build a prefix sum array, $\texttt{pref}$. Then, for each value 
-of $K$ that we check with binary search, we can use a two-pointer approach to calculate the total benefit and count. For 
-each index $i$, we can find the latest index $j$ such that $A_i + A_j \geq K$. As we decrement $i$ by $1$, we never 
+To do this, we can sort $A$ in nonincreasing order and build a prefix sum array, $\texttt{pref}$. Then, for each value
+of $K$ that we check with binary search, we can use a two-pointer approach to calculate the total benefit and count. For
+each index $i$, we can find the latest index $j$ such that $A_i + A_j \geq K$. As we decrement $i$ by $1$, we never
 decrement $j$, allowing for $\mathcal{O}(N)$ traversal.
 
 $$
