@@ -26,7 +26,12 @@ $$
 $$
 \texttt{count}=\texttt{count} + j
 $$
-For optimal $K$, our result is $\texttt{benefit}-K\cdot (\texttt{count}-M)$
+
+Our addition to $\texttt{count}$ is obtained from the fact that if $j$ is the latest index such that $A_i + A_j \geq K$, we can pair the person at index $i$ with the first $j$ people.
+
+Our addition to $\texttt{benefit}$ is obtained from the fact that each of the $j$ handshakes, $(l, i)$, will contribute $A_l+A_i$ exactly once for all $l$ where $1 \leq l \leq j$. This gives us the formula $\texttt{benefit}=\texttt{benefit} +\sum_{l=1}^{j} (A_l+A_i)$ which is equivalent to $\texttt{benefit}=\texttt{benefit} +\sum_{l=1}^{j} A_l+A_i\cdot j$. We can use prefix sums to find $\sum_{l=1}^{j} A_l$ in $\mathcal{O}(1)$ time, resulting in our formula.
+
+For optimal $K$, our result is $\texttt{benefit}-K\cdot (\texttt{count}-M)$. This is because for our optimal result, handshakes with value exactly $K$ can be either taken or not. When we find optimal $K$, $\texttt{benefit}$ will include all handshakes of value $K$. To adjust for this overcount, we can subtract $K\cdot (\texttt{count}-M)$, as we should not take $\texttt{count}-M$ handshakes of value exactly $K$.
 
 ## Implementation
 
