@@ -17,9 +17,11 @@ x \oplus w_{n-k} \oplus w_{n-k+1} \oplus \cdots \oplus w_{n-1}.
 $$
 
 Thus, we define **suffix XOR** values:
+
 $$
 \text{suf}[i] = w_{i+1} \oplus w_{i+2} \oplus \cdots \oplus w_{n-1},
 $$
+
 with $\text{suf}[n-1] = 0$. Then, after eating $k$ slimes, the slime's weight is simply $$x \oplus \text{suf}[n-k-1]$$.
 
 Hence, when it attempts to eat the slime at position $i$, its
@@ -27,7 +29,7 @@ current weight is $x \oplus \text{suf}[i]$.
 It succeeds if and only if $$x \oplus \text{suf}[i] \ge w_i.$$
 Therefore, the answer to a query is the number of consecutive
 slimes it can eat, sweeping from position $n-1$ down to $0$ before
-this inequality first fails. If it fails at position $i$, the
+$$x \oplus \text{suf}[i] \lt w_i$$ . If it fails at position $i$, the
 slime has eaten positions $i + 1, \cdots n - 1$ for a score of $n- i - 1$.
 If it never fails, the slime eats all $n$ slimes.
 
@@ -45,8 +47,7 @@ to position $i-1$.
 
 ## Implementation
 
-**Time Complexity:** Since queries are removed permanently, each query is extracted at most once,
-giving an overall time complexity of $\mathcal{O}((n + q) \log \mathcal{A})$, where $\mathcal{A}$
+**Time Complexity:** $\mathcal{O}((n + q) \log \mathcal{A})$, where $\mathcal{A}$
 is the maximum value  in the array $w$.
 
 <LanguageSection>
