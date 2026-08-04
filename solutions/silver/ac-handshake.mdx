@@ -9,11 +9,16 @@ author: Mikaela Tereshkov
 
 ## Explanation
 
-This problem is solved more easily when first considering a quadratic solution. To solve this problem in $\mathcal{O}(N^2\log{N})$, we can find all possible values of handshakes, sort them, and take the top $M$ values.
+It is easier to solve this problem by first considering a quadratic solution. To solve this problem 
+in $\mathcal{O}(N^2\log{N})$, we can find all possible values of handshakes, sort them, and take the top $M$ values.
 
-To optimize this solution, we can use binary search. We can binary search on the value $K$ where our top $M$ handshakes have values $ \geq K$ and the remaining handshakes have values $\leq K$.
+To optimize this solution, we can use binary search. We can binary search on the value $K$ where our top $M$ handshakes 
+have values $ \geq K$ and the remaining handshakes have values $\leq K$.
 
-To do this, we can sort $A$ in nonincreasing order and build a prefix sum array, $\texttt{pref}$. Then, for each value of $K$ that we check with binary search, we can use a two-pointer approach to calculate the total benefit and count. For each index $i$, we can find the latest index $j$ such that $A_i + A_j \geq K$. As we decrement $i$ by $1$, we never decrement $j$, allowing for $\mathcal{O}(N)$ traversal.
+To do this, we can sort $A$ in nonincreasing order and build a prefix sum array, $\texttt{pref}$. Then, for each value 
+of $K$ that we check with binary search, we can use a two-pointer approach to calculate the total benefit and count. For 
+each index $i$, we can find the latest index $j$ such that $A_i + A_j \geq K$. As we decrement $i$ by $1$, we never 
+decrement $j$, allowing for $\mathcal{O}(N)$ traversal.
 
 $$
 \texttt{benefit}=\texttt{benefit} +\texttt{pref}_j+A_i\cdot j
@@ -27,10 +32,9 @@ For optimal $K$, our result is $\texttt{benefit}-K\cdot (\texttt{count}-M)$
 
 **Time Complexity:** $\mathcal{O}(N\log{N})$
 
-
 <LanguageSection>
-
 <CPPSection>
+
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
@@ -41,16 +45,21 @@ const int MAXV = 200000;
 int main() {
 	ll n, m;
 	cin >> n >> m;
+
 	vector<ll> pref(n + 1, 0);
 	vector<ll> a(n);
+
 	for (int i = 0; i < n; i++) cin >> a[i];
 	sort(a.rbegin(), a.rend());
 	for (int i = 0; i < n; i++) { pref[i + 1] = a[i] + pref[i]; }
+
 	int lo = 0, hi = MAXV;
 	ll res = 0;
+
 	while (lo <= hi) {
 		ll count = 0, benefit = 0;
 		int k = lo + (hi - lo) / 2;
+
 		int j = 0;
 		for (int i = n - 1; i >= 0; i--) {
 			while (j < n && a[i] + a[j] >= k) j++;
@@ -62,10 +71,11 @@ int main() {
 			res = benefit - (count - m) * k;
 		} else hi = k - 1;
 	}
+
 	cout << res << '\n';
 	return 0;
 }
 ```
-</CPPSection>
 
+</CPPSection>
 </LanguageSection>
