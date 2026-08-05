@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import React, { useState } from 'react';
 import { AlgoliaEditorFile } from '../../../models/algoliaEditorFile';
 import { EditorFileModal } from '../EditorFileModal';
-import { XCamp } from '../../Index/sponsor-logos';
 
 export const FileListSidebar: React.FC<{
   className?: string;
