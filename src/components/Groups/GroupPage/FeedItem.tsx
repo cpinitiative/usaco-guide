@@ -1,6 +1,6 @@
 import { Transition } from '@headlessui/react';
-import { CheckIcon, ClipboardListIcon } from '@heroicons/react/outline';
-import { BookmarkIcon } from '@heroicons/react/solid';
+import { CheckIcon, ClipboardDocumentListIcon } from '@heroicons/react/24/outline';
+import { BookmarkIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
@@ -54,7 +54,7 @@ const AssignmentIcon = ({ pointsEarned, totalPoints }) => {
         {fullySolved ? (
           <CheckIcon className="h-6 w-6 text-white" />
         ) : (
-          <ClipboardListIcon className="h-6 w-6 text-white" />
+          <ClipboardDocumentListIcon className="h-6 w-6 text-white" />
         )}
       </div>
     </Tooltip>
