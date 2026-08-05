@@ -11,7 +11,7 @@ An intuitive approach is as follows:
 
 Suppose that in the first step, we added the set of indices $S$. The edges corresponding to the remaining indices join two different components in exactly *one* of the graphs, so the total number of indices is $|S| + 2((n - 1) - |S|) = 2(n - 1) - |S|$. We can calculate $S$ via matroid intersection on the two graphic matroids.
 
-It is not hard to extend our intuitive explanation to a proof. Let $S$ be defined as above, and let $X$ be any set of indices such that the corresponding edges connect both graphs. Let $T \subseteq X$ be a maximal subset such that the edges corresponding to $T$ are acyclic in both graphs. 
+It is not hard to extend our intuitive explanation to a proof. Let $S$ be defined as above, and let $X$ be any set of indices such that the corresponding edges connect both graphs. Let $T \subseteq X$ be a maximal subset such that the edges corresponding to $T$ are acyclic in both graphs.
 
 We make two observations. Firstly, $|T| \leq |S|$ by construction. Secondly, we get $|X| \geq |T| + 2((n - 1) - |T|) = 2(n - 1) - |T|$ by following the same reasoning as above. In particular, note that after adding all of the indices in $T$, each remaining index in $X$ can join two different components in at most *one* of the graphs. The desired result follows immediately.
 
@@ -27,7 +27,7 @@ using namespace std;
 
 namespace kactl {
 // BeginCodeSnip{KACTL Templates}
-#define rep(i, a, b) for(int i = a; i < (b); ++i)
+#define rep(i, a, b) for (int i = a; i < (b); ++i)
 #define all(x) begin(x), end(x)
 #define sz(x) (int)(x).size()
 typedef long long ll;
@@ -51,7 +51,8 @@ struct UF {
 		a = find(a), b = find(b);
 		if (a == b) return false;
 		if (e[a] > e[b]) swap(a, b);
-		e[a] += e[b]; e[b] = a;
+		e[a] += e[b];
+		e[b] = a;
 		return true;
 	}
 };
@@ -77,44 +78,46 @@ struct UF {
 template <class M1, class M2> struct MatroidIsect {
 	int n;
 	vector<char> iset;
-	M1 m1; M2 m2;
+	M1 m1;
+	M2 m2;
 	MatroidIsect(M1 m1, M2 m2, int n) : n(n), iset(n + 1), m1(m1), m2(m2) {}
 	vi solve() {
-		rep(i,0,n) if (m1.check(i) && m2.check(i))
-			iset[i] = true, m1.add(i), m2.add(i);
+		rep(i, 0, n) if (m1.check(i) && m2.check(i)) iset[i] = true, m1.add(i),
+		                                             m2.add(i);
 		while (augment());
 		vi ans;
-		rep(i,0,n) if (iset[i]) ans.push_back(i);
+		rep(i, 0, n) if (iset[i]) ans.push_back(i);
 		return ans;
 	}
 	bool augment() {
 		vector<int> frm(n, -1);
-		queue<int> q({n}); // starts at dummy node
+		queue<int> q({n});  // starts at dummy node
 		auto fwdE = [&](int a) {
 			vi ans;
 			m1.clear();
 			rep(v, 0, n) if (iset[v] && v != a) m1.add(v);
-			rep(b, 0, n) if (!iset[b] && frm[b] == -1 && m1.check(b))
-				ans.push_back(b), frm[b] = a;
+			rep(b, 0, n) if (!iset[b] && frm[b] == -1 && m1.check(b)) ans.push_back(b),
+			    frm[b] = a;
 			return ans;
 		};
 		auto backE = [&](int b) {
 			m2.clear();
-			rep(cas, 0, 2) rep(v, 0, n)
-				if ((v == b || iset[v]) && (frm[v] == -1) == cas) {
-					if (!m2.check(v))
-						return cas ? q.push(v), frm[v] = b, v : -1;
-					m2.add(v);
-				}
+			rep(cas, 0, 2)
+			    rep(v, 0, n) if ((v == b || iset[v]) && (frm[v] == -1) == cas) {
+				if (!m2.check(v)) return cas ? q.push(v), frm[v] = b, v : -1;
+				m2.add(v);
+			}
 			return n;
 		};
 		while (!q.empty()) {
-			int a = q.front(), c; q.pop();
+			int a = q.front(), c;
+			q.pop();
 			for (int b : fwdE(a))
-				while((c = backE(b)) >= 0) if (c == n) {
-					while (b != n) iset[b] ^= 1, b = frm[b];
-					return true;
-				}
+				while ((c = backE(b)) >= 0)
+					if (c == n) {
+						while (b != n) iset[b] ^= 1, b = frm[b];
+						return true;
+					}
 		}
 		return false;
 	}
