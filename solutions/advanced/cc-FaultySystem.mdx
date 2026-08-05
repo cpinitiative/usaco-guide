@@ -5,9 +5,15 @@ title: Faulty System
 author: Andrew Tam
 ---
 
-Let's assume that all roads are initially open. Then, the problem becomes to maximize the number pairs of corresponding roads that we can delete while maintaining connectivity in both graphs. We calculate this via matroid intersection on the dual of graphic matroid corresponding to $A$ and the dual of the graphic matroid corresponding to $B$.
+An intuitive approach is as follows:
+1. Start by adding as many indices as possible such that both the corresponding edges join different components in their respective graphs.
+2. Then, finish connecting both graphs with the remaining indices.
 
-To improve performance, some small modifications must be made to the KACTL matroid intersection code so that the `check()` and `add()` queries can be batched and done offline.
+Suppose that in the first step, we added the set of indices $S$. The edges corresponding to the remaining indices join two different components in exactly *one* of the graphs, so the total number of indices is $|S| + 2((n - 1) - |S|) = 2(n - 1) - |S|$. We can calculate $S$ via matroid intersection on the two graphic matroids.
+
+It is not hard to extend our intuitive explanation to a proof. Let $S$ be defined as above, and let $X$ be any set of indices such that the corresponding edges connect both graphs. Let $T \subseteq X$ be a maximal subset such that the edges corresponding to $T$ are acyclic in both graphs. 
+
+We make two observations. Firstly, $|T| \leq |S|$ by construction. Secondly, we get $|X| \geq |T| + 2((n - 1) - |T|) = 2(n - 1) - |T|$ by following the same reasoning as above. In particular, note that after adding all of the indices in $T$, each remaining index in $X$ can join two different components in at most *one* of the graphs. The desired result follows immediately.
 
 **Time Complexity:** $O(M^3 \alpha(N))$
 
@@ -21,11 +27,12 @@ using namespace std;
 
 namespace kactl {
 // BeginCodeSnip{KACTL Templates}
+#define rep(i, a, b) for(int i = a; i < (b); ++i)
 #define all(x) begin(x), end(x)
-#define sz(x) (int)x.size()
-#define rep(i, a, b) for (int i = (a); i < (b); ++i)
-using vi = vector<int>;
-using pii = pair<int, int>;
+#define sz(x) (int)(x).size()
+typedef long long ll;
+typedef pair<int, int> pii;
+typedef vector<int> vi;
 /**
  * Author: Lukas Polacek
  * Date: 2009-10-26
@@ -44,8 +51,7 @@ struct UF {
 		a = find(a), b = find(b);
 		if (a == b) return false;
 		if (e[a] > e[b]) swap(a, b);
-		e[a] += e[b];
-		e[b] = a;
+		e[a] += e[b]; e[b] = a;
 		return true;
 	}
 };
@@ -71,49 +77,44 @@ struct UF {
 template <class M1, class M2> struct MatroidIsect {
 	int n;
 	vector<char> iset;
-	M1 m1;
-	M2 m2;
+	M1 m1; M2 m2;
 	MatroidIsect(M1 m1, M2 m2, int n) : n(n), iset(n + 1), m1(m1), m2(m2) {}
 	vi solve() {
+		rep(i,0,n) if (m1.check(i) && m2.check(i))
+			iset[i] = true, m1.add(i), m2.add(i);
 		while (augment());
 		vi ans;
-		rep(i, 0, n) if (iset[i]) ans.push_back(i);
+		rep(i,0,n) if (iset[i]) ans.push_back(i);
 		return ans;
 	}
 	bool augment() {
 		vector<int> frm(n, -1);
-		queue<int> q({n});  // starts at dummy node
+		queue<int> q({n}); // starts at dummy node
 		auto fwdE = [&](int a) {
 			vi ans;
 			m1.clear();
 			rep(v, 0, n) if (iset[v] && v != a) m1.add(v);
-			m1.precomp();
-			rep(b, 0, n) if (!iset[b] && frm[b] == -1 && m1.check(b)) ans.push_back(b),
-			    frm[b] = a;
+			rep(b, 0, n) if (!iset[b] && frm[b] == -1 && m1.check(b))
+				ans.push_back(b), frm[b] = a;
 			return ans;
 		};
 		auto backE = [&](int b) {
 			m2.clear();
-			rep(cas, 0, 2)
-			    rep(v, 0, n) if ((v == b || iset[v]) && (frm[v] == -1) == cas) {
-				m2.add(v);
-			}
-			m2.solve();
-			rep(cas, 0, 2)
-			    rep(v, 0, n) if ((v == b || iset[v]) && (frm[v] == -1) == cas) {
-				if (!m2.getAns()) return cas ? q.push(v), frm[v] = b, v : -1;
-			}
+			rep(cas, 0, 2) rep(v, 0, n)
+				if ((v == b || iset[v]) && (frm[v] == -1) == cas) {
+					if (!m2.check(v))
+						return cas ? q.push(v), frm[v] = b, v : -1;
+					m2.add(v);
+				}
 			return n;
 		};
 		while (!q.empty()) {
-			int a = q.front(), c;
-			q.pop();
+			int a = q.front(), c; q.pop();
 			for (int b : fwdE(a))
-				while ((c = backE(b)) >= 0)
-					if (c == n) {
-						while (b != n) iset[b] ^= 1, b = frm[b];
-						return true;
-					}
+				while((c = backE(b)) >= 0) if (c == n) {
+					while (b != n) iset[b] ^= 1, b = frm[b];
+					return true;
+				}
 		}
 		return false;
 	}
@@ -122,101 +123,32 @@ template <class M1, class M2> struct MatroidIsect {
 }  // namespace kactl
 using kactl::UF, kactl::MatroidIsect;
 
-struct GraphDual1 {
-	vector<int> exist;
-	vector<array<int, 2>> edges;
-	vector<vector<array<int, 2>>> adj;
-	vector<int> vis, depth, low;
-	GraphDual1(int n, int m, vector<array<int, 2>> &edges) : edges(edges) {
-		exist.resize(m, 1);
-		adj.resize(n);
-		for (int i = 0; i < m; i++) {
-			auto [u, v] = edges[i];
-			adj[u].push_back({v, i});
-			adj[v].push_back({u, i});
-		}
-		vis.resize(n);
-		depth.resize(n);
-		low.resize(n);
-	}
-	void DFS(int v, int pe) {
-		vis[v] = 1;
-		low[v] = depth[v];
-		for (auto [u, e] : adj[v]) {
-			if (!exist[e]) continue;
-			if (!vis[u]) {
-				depth[u] = depth[v] + 1;
-				DFS(u, e);
-				low[v] = min(low[v], low[u]);
-			} else if (e != pe) {
-				low[v] = min(low[v], depth[u]);
-			}
-		}
-	}
-	void add(int x) { exist[x] = 0; }
-	void precomp() {
-		fill(vis.begin(), vis.end(), 0);
-		DFS(0, -1);
-	}
-	int check(int x) {
-		auto [u, v] = edges[x];
-		if (depth[u] > depth[v]) { swap(u, v); }
-		return depth[v] - depth[u] > 1 || low[v] < depth[v];
-	}
-	void clear() { fill(exist.begin(), exist.end(), 1); }
-};
-
-struct GraphDual2 {
-	int n, m;
-	vector<array<int, 2>> edges;
-	vector<int> queries, ans;
-	GraphDual2(int n, int m, vector<array<int, 2>> &edges) : n(n), m(m), edges(edges) {}
-	void add(int x) { queries.push_back(x); }
-	void solve() {
-		vector<int> exist(m, 1);
-		for (int x : queries) { exist[x] = 0; }
-		UF uf(n);
-		for (int i = 0; i < m; i++) {
-			if (exist[i]) {
-				auto [u, v] = edges[i];
-				uf.join(u, v);
-			}
-		}
-		for (auto x : views::reverse(queries)) {
-			auto [u, v] = edges[x];
-			ans.push_back(uf.size(0) == n);
-			uf.join(u, v);
-		}
-	}
-	int getAns() {
-		assert(!ans.empty());
-		int x = ans.back();
-		ans.pop_back();
-		return x;
-	}
-	void clear() {
-		queries.clear();
-		ans.clear();
-	}
+struct GraphMat {
+	UF uf;
+	vector<array<int, 2>> e;
+	GraphMat(int n, vector<array<int, 2>> e) : uf(n), e(e) {}
+	bool check(int x) { return !uf.sameSet(e[x][0], e[x][1]); }
+	void add(int x) { uf.join(e[x][0], e[x][1]); }
+	void clear() { uf = UF(sz(uf.e)); }
 };
 
 void solve() {
 	int n, m;
 	cin >> n >> m;
-	vector<array<int, 2>> edges1(m), edges2(m);
+	vector<array<int, 2>> e1(m), e2(m);
 	for (int i = 0, u, v; i < m; i++) {
 		cin >> u >> v;
-		edges1[i] = {u - 1, v - 1};
+		e1[i] = {u - 1, v - 1};
 	}
 	for (int i = 0, u, v; i < m; i++) {
 		cin >> u >> v;
-		edges2[i] = {u - 1, v - 1};
+		e2[i] = {u - 1, v - 1};
 	}
-	GraphDual1 mat1(n, m, edges1);
-	GraphDual2 mat2(n, m, edges2);
+	GraphMat mat1(n, e1);
+	GraphMat mat2(n, e2);
 	MatroidIsect matIsect(mat1, mat2, m);
-	auto ans = matIsect.solve();
-	cout << m - ans.size() << '\n';
+	int res = matIsect.solve().size();
+	cout << 2 * (n - 1) - res << '\n';
 }
 
 int main() {
