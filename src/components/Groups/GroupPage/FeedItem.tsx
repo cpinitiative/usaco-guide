@@ -1,5 +1,8 @@
 import { Transition } from '@headlessui/react';
-import { CheckIcon, ClipboardDocumentListIcon } from '@heroicons/react/24/outline';
+import {
+  CheckIcon,
+  ClipboardDocumentListIcon,
+} from '@heroicons/react/24/outline';
 import { BookmarkIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
 import React, { useState } from 'react';

@@ -5,7 +5,10 @@ import {
   MenuItems,
   Transition,
 } from '@headlessui/react';
-import { ChevronDownIcon, ArrowTopRightOnSquareIcon } from '@heroicons/react/24/solid';
+import {
+  ArrowTopRightOnSquareIcon,
+  ChevronDownIcon,
+} from '@heroicons/react/24/solid';
 import classNames from 'classnames';
 import Link from 'next/link';
 import { Fragment, useContext } from 'react';

@@ -1,11 +1,11 @@
 import {
   AcademicCapIcon,
+  BoltIcon,
   ChartBarIcon,
   ChatBubbleLeftRightIcon,
+  CircleStackIcon,
   ClipboardDocumentListIcon,
   CogIcon,
-  CircleStackIcon,
-  BoltIcon,
   CommandLineIcon,
   UserGroupIcon,
 } from '@heroicons/react/24/outline';

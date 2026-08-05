@@ -1,21 +1,21 @@
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
 import {
   AcademicCapIcon,
+  ArrowRightEndOnRectangleIcon,
+  ArrowRightStartOnRectangleIcon,
+  ArrowTopRightOnSquareIcon,
   BookmarkIcon,
   ChartBarIcon,
-  ChatBubbleLeftRightIcon,
   ChatBubbleLeftIcon,
+  ChatBubbleLeftRightIcon,
   ChevronDownIcon,
   CogIcon,
+  CommandLineIcon,
   DocumentChartBarIcon,
   DocumentTextIcon,
-  ArrowTopRightOnSquareIcon,
-  ArrowRightStartOnRectangleIcon,
-  ArrowRightEndOnRectangleIcon,
+  MagnifyingGlassIcon,
   PresentationChartLineIcon,
   QuestionMarkCircleIcon,
-  MagnifyingGlassIcon,
-  CommandLineIcon,
   UserGroupIcon,
 } from '@heroicons/react/24/solid';
 import classNames from 'classnames';
