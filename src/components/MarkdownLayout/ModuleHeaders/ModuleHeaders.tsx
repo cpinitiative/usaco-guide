@@ -5,7 +5,10 @@ import {
   MenuItems,
   Transition,
 } from '@headlessui/react';
-import { ChevronDownIcon, ExternalLinkIcon } from '@heroicons/react/solid';
+import {
+  ArrowTopRightOnSquareIcon,
+  ChevronDownIcon,
+} from '@heroicons/react/24/solid';
 import classNames from 'classnames';
 import Link from 'next/link';
 import { Fragment, useContext } from 'react';
@@ -227,7 +230,7 @@ export default function ModuleHeaders({
               className="group my-0 inline-flex items-center space-x-1.5 text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
             >
               <span>Edit This Page</span>
-              <ExternalLinkIcon className="h-5 w-5 text-gray-400 group-hover:text-gray-600 dark:text-gray-500 dark:group-hover:text-gray-300" />
+              <ArrowTopRightOnSquareIcon className="h-5 w-5 text-gray-400 group-hover:text-gray-600 dark:text-gray-500 dark:group-hover:text-gray-300" />
             </Link>
           </div>
 
@@ -274,7 +277,7 @@ export default function ModuleHeaders({
                 className="group my-0 inline-flex items-center space-x-1.5 text-sm font-medium text-gray-800 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100"
               >
                 <span>View Problem Statement</span>
-                <ExternalLinkIcon className="h-5 w-5 text-gray-400 group-hover:text-gray-600 dark:text-gray-400 dark:group-hover:text-gray-300" />
+                <ArrowTopRightOnSquareIcon className="h-5 w-5 text-gray-400 group-hover:text-gray-600 dark:text-gray-400 dark:group-hover:text-gray-300" />
               </a>
             </div>
           )}
