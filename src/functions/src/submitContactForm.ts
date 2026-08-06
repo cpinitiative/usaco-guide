@@ -4,6 +4,9 @@ import * as functions from 'firebase-functions';
 
 if (admin.apps.length === 0) {
   admin.initializeApp();
+  admin.firestore().settings({
+    preferRest: true,
+  });
 }
 
 const submitContactForm = functions.https.onCall(async request => {
