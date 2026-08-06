@@ -341,16 +341,16 @@ This section covers group-related functions used by group features in the app.
 - Trigger: `functions.https.onCall`
 - Input: `{ groupId: string; targetUid: string }`
 - Output: success state.
-- Security: caller must be an admin or owner.
+- Security: only the owner can remove members.
 
 ### 7.6 submitToProblem
 
 - File: `src/functions/src/groups/submitToProblem.ts`
-- Purpose: lets a user join a group and validates the join key.
-- Trigger: `functions.https.onCall`
-- Input: `{ key: string }`
-- Output: `{ success: boolean; groupId?: string; errorCode?: string; message?: string }`
-- Notes: this is a group join endpoint tightly related to group join-links.
+- Purpose: listens for submission updates in a group problem and recalculates that user’s leaderboard entry when the score changes.
+- Trigger: Firestore event trigger (`onDocumentWritten`) on the submissions path.
+- Input: none directly; it reacts to a submission document write.
+- Output: none directly; it updates the group leaderboard document for the relevant user.
+- Notes: this is not a callable endpoint. It only recalculates leaderboard info for submissions where typeisOnline JudgewithproblemIDorsubmission-link, and only when the score changes.
 
 ### 7.7 updateMemberPermissions
 
