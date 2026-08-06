@@ -5,7 +5,8 @@ It explains each function, usage details, security assumptions, and the develope
 
 ## Overview
 
-The Firebase functions are mostly `https.onCall` callable functions and one event-driven trigger.
+The Firebase functions are mostly `https.onCall` callable functions, with additional triggers for Firestore writes, scheduled execution, and auth user creation.
+
 They are used for admin operations, group management and join logic, user data access, problem suggestion automation, contact form support, and scheduled backups.
 
 The main function exports are found in `src/functions/src/index.ts`.
@@ -302,10 +303,10 @@ This section covers group-related functions used by group features in the app.
 ### 7.1 getJoinKeyInfo
 
 - File: `src/functions/src/groups/getJoinKeyInfo.ts`
-- Purpose: verify a group join key and return group metadata.
+- Purpose: validate a group join key and return the linked group’s name.
 - Trigger: `functions.https.onCall`
 - Input: `{ key: string }`
-- Output: information about the associated group and its join state.
+- Output: `{ success: boolean; name?: string; errorCode?: string; message?: string }`
 
 ### 7.2 getMembers
 
@@ -314,7 +315,7 @@ This section covers group-related functions used by group features in the app.
 - Trigger: `functions.https.onCall`
 - Input: `{ groupId: string }`
 - Output: user profiles of members, admins, and owners.
-- Security: only members and admins can request group membership information.
+- Security: any member, admin, or owner of the group can request this information.
 
 ### 7.3 join
 
@@ -346,11 +347,11 @@ This section covers group-related functions used by group features in the app.
 ### 7.6 submitToProblem
 
 - File: `src/functions/src/groups/submitToProblem.ts`
-- Purpose: listens for submission updates in a group problem and recalculates that user’s leaderboard entry when the score changes.
+- Purpose: listen for submission updates in a group problem and recalculate leaderboard data when the score changes.
 - Trigger: Firestore event trigger (`onDocumentWritten`) on the submissions path.
 - Input: none directly; it reacts to a submission document write.
-- Output: none directly; it updates the group leaderboard document for the relevant user.
-- Notes: this is not a callable endpoint. It only recalculates leaderboard info for submissions where typeisOnline JudgewithproblemIDorsubmission-link, and only when the score changes.
+- Output: none directly; it updates the relevant group leaderboard document.
+- Notes: this is not a callable endpoint. It only processes submissions whose type is `Online Judge` with a problem ID, or `submission-link`, and only when the score changes.
 
 ### 7.7 updateMemberPermissions
 

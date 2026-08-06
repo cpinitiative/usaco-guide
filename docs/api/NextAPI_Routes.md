@@ -63,8 +63,8 @@ This route uses `@octokit/oauth-app` and creates a GitHub OAuth App instance wit
 
 ### Required environment variables
 
-- `NEXT_PUBLIC_EDITOR_CLIENT_ID`
-- `EDITOR_CLIENT_SECRET`
+- `NEXT_PUBLIC_EDITOR_CLIENT_ID` (used when provided; otherwise the code falls back to a built-in client ID)
+- `EDITOR_CLIENT_SECRET` (used when provided; otherwise an empty secret is used)
 
 ### Security considerations
 
