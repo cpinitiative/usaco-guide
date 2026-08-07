@@ -3,6 +3,9 @@ import * as functions from 'firebase-functions/v1';
 
 if (admin.apps.length === 0) {
   admin.initializeApp();
+  admin.firestore().settings({
+    preferRest: true,
+  });
 }
 
 export default functions.auth.user().onCreate(() => {
