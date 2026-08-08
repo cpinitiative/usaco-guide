@@ -1,0 +1,103 @@
+---
+id: cf-1251D
+source: CF
+title: Salary Changing
+author: Rameez Parwez
+---
+
+[Official Editorial (lang)](link)
+
+## Explanation
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(something)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+#define i23 long long
+
+const int dx[4] = {-1, 1, 0, 0};
+const int dy[4] = {0, 0, -1, 1};
+const int MOD = 1'000'000'007;
+const int INF = 1e9;
+const i23 LINF = 1e18;
+
+inline void yn(int a) { std::cout << (a == 1 ? "Yes" : "No") << '\n'; }
+
+std::mt19937 rng(std::chrono::high_resolution_clock().now().time_since_epoch().count());
+
+template <typename T> void Print(std::vector<T> &res, int start, int end) {
+	for (int i = start; i <= end; i++) { std::cout << res[i] << " \n"[i == end]; }
+}
+
+void set_up(std::string name) {
+	freopen((name + ".in").c_str(), "r", stdin);
+	freopen((name + ".out").c_str(), "w", stdout);
+}
+
+/*
+ */
+
+void solve() {
+	int n;
+	i23 s;
+	std::cin >> n >> s;
+	std::vector<std::pair<int, int>> arr(n);
+	i23 lower_sum = 0;
+
+	for (std::pair<int, int> &x : arr) {
+		std::cin >> x.first >> x.second;
+		lower_sum += x.first;
+	}
+
+	// std::sort(begin(arr), end(arr));
+
+	auto can = [&](int mid) {
+		std::vector<int> p;
+		for (int i = 0; i < n; i++) {
+			if (arr[i].second >= mid) { p.push_back(std::max(0, mid - arr[i].first)); }
+		}
+
+		std::sort(begin(p), end(p));
+		if ((int)p.size() >= (n + 1) / 2) {
+			i23 req_sum = std::accumulate(begin(p), begin(p) + (n + 1) / 2, 0LL);
+			return (req_sum + lower_sum <= s);
+		} else {
+			return false;
+		}
+	};
+
+	int lo = 0, hi = 1e9;
+
+	while (lo < hi) {
+		int mid = (lo + hi + 1) >> 1;
+		if (can(mid)) {
+			lo = mid;
+		} else {
+			hi = mid - 1;
+		}
+	}
+
+	std::cout << lo << '\n';
+}
+
+int main() {
+	std::ios_base::sync_with_stdio(false);
+	std::cin.tie(0);
+	std::cout.tie(0);
+	std::cin.exceptions(std::ios::badbit | std::ios::failbit);
+	int test = 1;
+	std::cin >> test;
+	// seive();
+	while (test-- > 0) { solve(); }
+	return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
