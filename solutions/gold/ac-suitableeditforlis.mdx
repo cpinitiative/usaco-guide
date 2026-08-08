@@ -82,25 +82,17 @@ int main() {
 	map<int, int> compressed;
 	vector<int> best(n, 0);
 
-	for (int i = 0; i < n; i++) {
-		cin >> a[i];
-	} 
+	for (int i = 0; i < n; i++) { cin >> a[i]; }
 	vector<int> val = a;
 	val.push_back(0);
 
-	for (int i = 0; i < n - 1; i++) {
-		val.push_back(val[i] + 1);
-	}
+	for (int i = 0; i < n - 1; i++) { val.push_back(val[i] + 1); }
 	sort(val.begin(), val.end());
 	val.erase(unique(val.begin(), val.end()), val.end());
 
-	for (int i = 0; i < val.size(); i++) {
-		compressed[val[i]] = i;
-	} 
-	
-	for (int i = 1; i < n; i++) {
-		best[i] = a[i - 1] + 1;
-	} 
+	for (int i = 0; i < val.size(); i++) { compressed[val[i]] = i; }
+
+	for (int i = 1; i < n; i++) { best[i] = a[i - 1] + 1; }
 
 	MaxSegTree before(2 * n);
 	MaxSegTree after(2 * n);
@@ -110,7 +102,7 @@ int main() {
 		after.set(compressed[best[i]], before.range_max(0, compressed[best[i]]) + 1);
 		before.set(compressed[a[i]], before.range_max(0, compressed[a[i]]) + 1);
 	}
-	
+
 	cout << after.range_max(0, 2 * n) << '\n';
 	return 0;
 }
