@@ -1,4 +1,4 @@
-import { CheckIcon, XIcon } from '@heroicons/react/solid';
+import { CheckIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import { useFirebaseUser } from '../../context/UserDataContext/UserDataContext';
 
 export default function Authentication() {
@@ -67,7 +67,7 @@ export default function Authentication() {
                   {linkedWithGoogle ? (
                     <CheckIcon className="h-5 w-5 text-green-500" />
                   ) : (
-                    <XIcon className="h-5 w-5 text-red-500" />
+                    <XMarkIcon className="h-5 w-5 text-red-500" />
                   )}
                 </div>
               </div>
@@ -104,7 +104,7 @@ export default function Authentication() {
                   {linkedWithGithub ? (
                     <CheckIcon className="h-5 w-5 text-green-500" />
                   ) : (
-                    <XIcon className="h-5 w-5 text-red-500" />
+                    <XMarkIcon className="h-5 w-5 text-red-500" />
                   )}
                 </div>
               </div>

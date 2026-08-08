@@ -1,4 +1,4 @@
-import { CheckIcon, XIcon } from '@heroicons/react/solid';
+import { CheckIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import { RouteComponentProps } from '@reach/router';
 import {
   collection,
@@ -209,7 +209,9 @@ export default function EditProblemPage(props: Props) {
                   </b>
                 ) : (
                   <b className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                    <XIcon className={'mr-1 inline h-4 w-4 text-gray-700'} />
+                    <XMarkIcon
+                      className={'mr-1 inline h-4 w-4 text-gray-700'}
+                    />
                     This problem is not linked to a USACO Guide Problem. To link
                     this problem to a USACO Guide Problem, import a problem from
                     above.

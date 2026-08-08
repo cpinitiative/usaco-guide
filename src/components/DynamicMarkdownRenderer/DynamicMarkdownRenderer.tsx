@@ -64,8 +64,6 @@ export default function DynamicMarkdownRenderer({
     const nextMarkdown = markdown ?? '';
     const nextProblems = problems ?? '';
 
-    setMdxContent(null);
-
     (async () => {
       try {
         const { compiledResult, problemsList } = await compileMdxForEditor({

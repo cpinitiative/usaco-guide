@@ -4,8 +4,8 @@ import {
   DialogPanel,
   DialogTitle,
 } from '@headlessui/react';
-import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/outline';
-import { XIcon } from '@heroicons/react/solid';
+import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon } from '@heroicons/react/24/solid';
 import React, { useMemo } from 'react';
 import { useDarkMode } from '../context/DarkModeContext';
 import { useQuizOpen } from '../context/QuizGeneratorContext';
@@ -161,7 +161,7 @@ export default function QuizGeneratorModal(): JSX.Element {
                 >
                   <div className={'mx-2'}>
                     <button onClick={() => deleteQuestion(idx)}>
-                      <XIcon className={'h-4 w-4'} />
+                      <XMarkIcon className={'h-4 w-4'} />
                     </button>
                   </div>
                   <div className={'grow'}>
@@ -183,7 +183,7 @@ export default function QuizGeneratorModal(): JSX.Element {
                           <div key={i} className={'flex'}>
                             <div className={'mr-1'}>
                               <button onClick={() => deleteAnswer(idx, i)}>
-                                <XIcon className={'h-4 w-4'} />
+                                <XMarkIcon className={'h-4 w-4'} />
                               </button>
                             </div>
                             <div className={'w-full'}>
