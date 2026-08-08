@@ -1,0 +1,213 @@
+---
+id: matroid
+title: 'Matroids'
+author: 'Evan Simanovskis, Andrew Tam, Robert Chung'
+description: 'A combinatorial structure that generalizes linear independence.'
+prerequisites:
+- greedy-sorting
+- mst
+- max-flow
+frequency: 0
+---
+
+<Resources>
+    <Resource
+        source="MT"
+        title="Matroid Theory"
+        starred
+    />
+</Resources>
+
+## Introduction
+A matroid is a combinatorial structure that expands on the notion of independence from linear algebra. It will be useful for a couple of reasons. In this module, we will explore how its axioms allow a natural greedy algorithm to be applied to it (which generalizes Kruskal's algorithm). This allows us to discover greedy strategies for problems where it would otherwise be difficult to find (or at least prove) a greedy algorithm. As our focus problem, we will study an example of how this type of matroid thinking can be used to solve a Codeforces problem.
+
+This module is a prerequisite for the next module on matroid intersection. In some problems, we want to find some largest cardinality set of elements subject to multiple constraints. If we can capture those constraints using (at most two) matroids, then it's possible to efficiently find such a set using this theory.
+
+### Matroid Definition
+We will be following the notation from: _A First Course in Combinatorial Optimization_.
+
+A matroid $M$ consists of a finite ground set $E(M)$ along with a collection of subsets $\mathcal I(M)$ that satisfy the following axioms:
+1. **Non-emptiness**: $\emptyset\in\mathcal I(M)$
+2. **Heredity**: If $X\subseteq Y$ and $Y\in\mathcal I(M)$, then $X\in\mathcal I(M)$
+3. **Exchange**: If $X,Y\in\mathcal I(M)$ and $|X|>|Y|$, then there exists some $x\in X\setminus Y$ such that $Y+x\in\mathcal I(M)$
+
+We often call the subsets in $\mathcal I(M)$ **independent sets** and the remaining subsets **dependent sets**.
+
+Borrowing more terminology from linear algebra, a **basis** of a matroid is any independent set that is maximal in terms of containment (meaning it's not a proper subset of any other independent set).
+
+A consequence of the exchange axiom is that all bases have the same cardinality. If we had two bases with distinct cardinalities, then one of them must be larger and then by exchange, we can add an element to it. Hence, for a matroid $M$, we may define its **rank** $r(M)$ to be the cardinality of any of its bases. The rank function can also be extended to any set $X \subseteq E$. In particular,
+
+$$
+r(X) := \max\left\{|I| : I \subseteq X \text{ is independent}\right\}
+$$
+
+Another useful concept is that of a **circuit**, which is analogous to a cycle in a graph. A dependent set $X \subseteq E$ is called a circuit if $X - e$ is independent for any $e \in X$. Observe that a set $X \subseteq E$ is dependent if and only if it contains a circuit $C$. The if direction is trivial, and to show the only if direction, take $C$ to be the smallest dependent set contained in $X$.
+
+<Info title="More facts">
+See [Section 3. Matroid theory](/matroid-theory.pdf) for some more definitions and facts on matroids.
+</Info>
+
+### Examples
+Studying some examples will make these definitions feel more inspired.
+
+#### Uniform Matroid
+A uniform matroid is a matroid $M$ such that a subset $X\subseteq E(M)$ is independent if $|X|\leq r$ for some fixed $r\geq 0$.
+
+It's pretty clear that all of the matroid axioms hold here.
+1. We have non-emptiness because $|\emptyset|=0\leq r$.
+2. Heredity holds because $|X|\leq |Y|\leq r\implies |X|\leq r$. The first inequality is because $X\subseteq Y$ and the second is because $Y\in\mathcal I(M)$.
+3. To see exchange, we may pick any $x\in X\setminus Y$ because $|Y+x|\leq |X|\leq r$. The first inequality holds because $|X|>|Y|$ and the second because $X\in\mathcal I(M)$.
+
+#### Colourful Matroid
+A more interesting example of a matroid is the colourful matroid. In this matroid, every element is assigned one of $k$ _colours_. A subset $X\subseteq E(M)$ is considered independent if no two elements in it share the same colour.
+1. Non-emptiness is clear because it's impossible to have two elements sharing the same colour in $\emptyset$.
+2. Heredity is also clear because if no two elements share the same colour in $Y$, then no two elements will share the same colour in any subset of $Y$ as well.
+3. For exchange, notice that if $|X|>|Y|$ and they're both independent, then $X$ contains strictly more _colours_ than $Y$. Hence, by picking any element in $X$ that has a colour not present in $Y$, we can extend $Y$.
+
+Henceforth, we will omit proofs that our examples are indeed matroids.
+
+#### Partition Matroid
+We can generalize the colourful matroid to get the partition matroid.
+The elements are partitioned into disjoint categories $C_1, \dots, C_k$,
+and each category has some capacity $c_i$.
+A subset $X$ is independent if for each category $C_i$,
+there are at most $c_i$ elements of that category contained in $X$.
+
+#### Graphic Matroid
+This matroid gives another perspective on Kruskal's algorithm for minimum spanning trees! The elements
+of a graphic matroid are edges in an undirected graph, and a subset of edges is independent if they don't contain a cycle.
+
+#### Linear Matroid
+The idea of linear independence naturally leads to the definition of a matroid.
+In the linear matroid, the elements are vectors in a vector space, and a subset of elements is independent
+in the matroid if they are linearly independent in the vector space.
+
+Notice that the three matroid axioms come directly from properties of linear independence.
+Most notably, the exchange property is the [Steinitz exchange lemma](https://en.wikipedia.org/wiki/Steinitz_exchange_lemma).
+
+#### Transversal Matroid
+Consider a ground set $E$, and let $\mathcal A$ be a collection of subsets of $E$. We can create a transversal matroid by defining $X=\{x_1,\dots,x_n\}\subseteq E$ to be independent iff there exist distinct subsets: $S_1,\dots,S_n\in\mathcal A$ such that: $\forall i\in[1,n]:x_i\in S_i$.
+
+We can interpret the independence condition by constructing a bipartite graph with bipartition: $(E,\mathcal A)$, and we have an edge $(e,S)$ iff $e\in S$. Then, $X\subseteq E$ is independent iff there exists a matching covering all vertices in $X$.
+
+## Minimum Weight Independent Sets
+The beauty of matroids lies in the fact that there is a very simple algorithm to find minimum weight independent sets of size $1 \leq k \leq r(M)$. The algorithm is as follows:
+
+$$
+\begin{align*}
+&\textbf{sort } E \text{ by weight increasing} \\
+&S \leftarrow \emptyset\\
+&\textbf{for } e \in E \\
+&\qquad \textbf{if } S + e \in \mathcal{I} \\
+&\qquad\qquad S \leftarrow S + e \\
+&\qquad \textbf{if } |S| = k \\
+&\qquad\qquad \textbf{return } S \\
+&\text{Return } \bot
+&\end{align*}
+$$
+
+Note that Kruskal's algorithm is a special case of this algorithm on the graphic matroid, where the independence checks are done by a DSU.
+
+To prove correctness, fix an ordering of the elements $e_1, e_2, \dots, e_n \in E$ so that $w(e_1) \leq w(e_2) \leq \dots \leq w(e_n)$. Let the elements picked by the greedy algorithm have indices $p_1 < p_2 < \dots < p_k$. We claim that for any other independent set of size $k$ with indices $q_1 < q_2 < \dots < q_k$, the following holds:
+
+$$
+\begin{gather*}
+p_1 \leq q_1 \\
+p_2 \leq q_2 \\
+\vdots \\
+p_k \leq q_k
+\end{gather*}
+$$
+
+Suppose for the sake of contradiction that $p_i > q_i$ for some $1 \leq i \leq k$. Let $A = \{e_{p_1}, e_{p_2}, \dots, e_{p_{i - 1}}\}$ and $B = \{e_{q_1}, e_{q_2}, \dots, e_{q_i}\}$. By the exchange axiom, there exists $e \in B \setminus A$ such that $A + e \in \mathcal{I}$. This is an immediate contradiction, as $e$ should have been added to $S$.
+
+**Remark:** This shows that if the exchange axiom holds in an independence system
+(i.e., a system in which the non-emptiness and heredity axioms hold), the natural greedy works.
+We can further show that the greedy works *only* if the exchange axiom holds (see the attached document).
+As a result, if you ever suspect that the greedy works, it is both necessary and sufficient to prove that you have a matroid.
+
+<Optional title="Greedy is equivalent to the exchange axiom">
+	See [Section 5. Appendix: Greedy Characterization](/matroid-theory.pdf).
+</Optional>
+
+## Focus Problem
+<FocusProblem problem="sample" />
+Let's take a look at how you might think about _matroid structure_ in an actual problem. This codeforces problem can be solved (after some reductions) with our optimal weighted basis algorithm.
+
+Let's say that we _pick_ index $i\in[1,n]$ if we decide to take sushi at this index. To uncover the matroid structure, we must understand the condition for when a subset of indices $S$ is valid (can be picked without violating the problem constraints). It's easiest to think about the necessary condition first. Notice that the maximum number of indices we can pick is $\lfloor\frac{n}{k+1}\rfloor$, so we know $|S|$ cannot be larger. Furthermore, we can see that this bound applies to all suffixes of $[1,n]$ as well. For clarity, let's define $T_i:=T\cap [i,n]$ for any set $T$. Our necessary condition is now: $\forall i\in[1,n]:|S_i|\leq\lfloor\frac{n-i+1}{k+1}\rfloor$.
+
+This condition is rather restrictive, so it's probably not a huge surprise that it's also sufficient. To see why, you can imagine trying to select the corresponding $k$ indices required to eat sushi picked at each location. For an arbitrary picked index $i\in S$, we know that $|S_i|\leq\lfloor\frac{n-i+1}{k+1}\rfloor$ by our necessary condition. Unpacking this, it means that there are (at least) $k$ unpicked indices in $[i,n]$ for every picked index in that interval. Hence, no matter how we assigned _eating_ indices for the future picked indices, there exists at least $k$ indices for $i$, so we eat at those. Therefore, by iterating the indices back-to-front, we can produce a valid assignment. It's worth noting than in some sense, we created this condition so that this argument works.
+
+We can now show that this forms a matroid whose ground set is the integers in $[1,n]$. Non-emptiness and heredity are clear. Let $|X|>|Y|$ be as in the exchange axiom. Observe that $|X_n|=|Y_n|=0$, so we can let $j:=\min\{i:|X_i|\leq|Y_i|\}$. Since $|X_1|>|Y_1|$, we know that $j-1\geq 1$. It turns out that $j-1\in X\setminus Y$ will be the element we need to show the exchange axiom. We know that $j-1\in X\setminus Y$ because $|X_{j-1}|>|Y_{j-1}|$ while $|X_j|\leq|Y_j|$. We can see that $Y+(j-1)$ is independent by examining $|(Y+(j-1))_i|$ for $i\leq j-1$ (when $i>j-1$, the cardinality doesn't change). Observe that if $i\leq j-1$, then: $|(Y+(j-1))_i|=|Y_i|+1\leq |X_i|$ where the last inequality holds because $|Y_i|<|X_i|$ for $i\leq j-1$. Finally, we use the fact that $X$ is independent, so $|X_i|$ satisfies the upper bound on the cardinality, as wanted.
+
+Now that we know we're dealing with a matroid, it's possible to solve this problem using the optimal weighted basis algorithm. The independence checks can be handled by a lazy segment tree which supports addition on ranges, and querying for the max of a range. It works by maintaining the number of elements chosen in the suffix starting at $i$ (for each $i\in[1,n]$) minus the capacity of the suffix. Then, to add $i$, we need to add $1$ to the prefix $[1,i]$. We check that the max over $[1,n]$ is $\leq0$ to see if the condition holds.
+
+This is cool, however if we take the time to recognize *which* matroid we're dealing with (out of the examples we've seen), it's possible to give a much shorter implementation. It turns out that we have a transversal matroid.
+
+<p align="center">
+    <img
+        src="/content/6_Advanced/assets/kaitenzushi-transversal.png"
+        alt="Transversal Matroid Representation"
+        style={{ width: "50%", height: "auto" }}
+    />
+</p>
+
+As in the above diagram, the sets in the transversal matroid are given by: $\mathcal A:=\{[1,i]:k+1\mid n-i+1\}$. Independent sets in the transversal matroid are independent in our original matroid because of the property that the number of sets in $\mathcal A$ covering the suffix starting at $i$ is the same as our bound: $\lfloor\frac{n-i+1}{k+1}\rfloor$ (by construction). The converse can be verified using Hall's condition. Suppose $S$ is independent in our original matroid and let $\emptyset\neq X\subseteq S$. We would like to prove that $|N(X)|\geq|X|$ (in the transversal bipartite graph). This is true because $N(X)=\{A\in\mathcal A:\min X\in A\}$ (because all sets are prefixes). Hence, $|N(X)|=\lfloor\frac{n-\min X+1}{k+1}\rfloor$. But, we know that this is greater than or equal to $|X_{\min X}|=|X|$ by heredity, as wanted.
+
+Now, we can implement the independence checks by maintaining the right endpoints of all sets in $\mathcal A$. To add $i$, we greedily take the set with the smallest right endpoint that's greater than or equal to $i$ and remove it. If such a right endpoint doesn't exist, then we can't add $i$.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+long long solve() {
+	int n, k;
+	cin >> n >> k;
+
+	vector<int> a(n + 1);
+	for (int i = 1; i <= n; i++) cin >> a[i];
+
+	vector<int> ind(n);
+	iota(ind.begin(), ind.end(), 1);
+	sort(ind.begin(), ind.end(), [&](int i, int j) { return a[i] > a[j]; });
+
+	set<int> bdd;
+	for (int i = 1; i <= n; i++)
+		if ((n - i + 1) % (k + 1) == 0) bdd.insert(i);
+
+	// optimal basis algorithm
+	long long tot = 0;
+	for (int i : ind) {
+		auto it = bdd.lower_bound(i);
+		if (it == bdd.end()) continue;
+		tot += a[i];
+		bdd.erase(it);
+	}
+	return tot;
+}
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	int tc;
+	cin >> tc;
+	while (tc--) cout << solve() << '\n';
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+## Problems
+
+<Problems problems="general" />
+
+**Problem Clarification**
+* **Distribution Channel**: The problem asks for a spanning tree whose total weight is **strictly greater** than the weight of a minimum spanning tree.
+* **Do It Yourself?**: The hyperlink to the problem statement on Codeforces is broken. The problem statement can be found under the "Contest materials" section in the bottom-right sidebar of the problem page.
+
+**Additional Problems**
+* [Almost Rainbow Tree (Easy)](https://repovive.com/contests/10000/problems/D6A): Can be solved exactly using Matroid Intersection, or via a $1/2$-approximation using greedy.
+* [Almost Rainbow Tree (Hard)](https://repovive.com/contests/10000/problems/D6B): Can be solved exactly using Matroid Intersection, or via a $2/3$-approximation using local search.

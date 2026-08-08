@@ -1,0 +1,267 @@
+---
+id: kattis-thekingsguards
+source: ICPC North America Championship 2021
+title: The King's Guards
+author: Robert Chung
+contributors: Evan Simanovskis, Andrew Tam
+---
+
+## Explanation
+
+Let $S$ be the subset of edges that we improve. The key question is: when does $S$ satisfy
+the constraints of the problem?
+
+We can model this question as a bipartite matching problem. Create a bipartite graph
+with guards on the left and villages on the right. Add edges from guard to village
+if the guard is allowed to be deployed in that village.
+
+<p align="center">
+    <img
+        src="/content/6_Advanced/assets/thekingsguards-matching-0.png"
+        alt="Initial graph"
+        style={{ width: "50%", height: "auto" }}
+    />
+</p>
+
+Now add the edges in $S$ to the village nodes. This creates components of villages
+(circled in light blue).
+
+<p align="center">
+    <img
+    src="/content/6_Advanced/assets/thekingsguards-matching-1.png"
+    alt="Graph after adding edges from $S$"
+    style={{ width: "50%", height: "auto" }}
+    />
+</p>
+
+Finally, contract the connected components of villages
+to form a new bipartite graph.
+
+<p align="center">
+    <img
+    src="/content/6_Advanced/assets/thekingsguards-matching-2.png"
+    alt="Contracted graph"
+    style={{ width: "50%", height: "auto" }}
+    />
+</p>
+
+Observe that $S$ satisfies the constraints if and only if there is a perfect matching
+from guards to components in the contracted graph with edges in $S$. We
+should also require that $S$ is acyclic, because with positive edge weights
+it is never correct to include a cycle.
+
+If we relax the perfect matching condition to only saying that every guard is matched
+(any number of villages can be unmatched), then the condition is nice enough to
+form a matroid! That allows us to greedily add edges from least to greatest weight
+and check if we achieved a perfect matching at the end.
+
+Some details on showing we have a matroid:
+
+1. The non-emptiness property is only guaranteed if
+there is a matching from guards to components before adding any edges.
+**This condition must be checked separately.**
+2. Heredity holds because when we take any subset of edges with a valid matching,
+the same matching works.
+3. The augmentation property is tricky; see below.
+
+<Spoiler title="Proof of augmentation property">
+
+Unfortunately, the [official editorial](https://www.youtube.com/watch?v=EVeyjYme-zI&t=260s)
+misses a detail! In the last bullet point, we need the unproven assumption
+that there exists an edge in $B$ with both endpoints in the same component of $\mathcal C$.
+
+We give an alternative proof using Hall's theorem. Specifically, given a subset
+of edges $S$, we can define for each subset of guards $A$ the set of neighbouring
+components of villages $N_S(A)$ in the contracted graph formed by edges in $S$.
+Hall's theorem says $S$ is independent iff $|A| \le |N_S(A)|$ for every subset
+of guards $A$.
+
+Let $X$ and $Y$ be independent sets with $|X| < |Y|$. We need to show
+that there is some $e \in Y \setminus X$ such that $X + e$ is independent.
+
+The idea is that when we pick an edge $e \notin X$ that connects two components $C_1$ and $C_2$,
+independence of $X + e$ can only fail if $|A| = |N_X(A)|$ and $C_1, C_2$ are
+contained in $N_X(A)$ for some $A$.
+
+Call a set of guards $A$ *tight* if $|A| = |N_X(A)|$. These sets behave nicely:
+if $A$ and $B$ are tight, then their union and
+intersection are tight as well (use submodularity of $A \mapsto |N_X(A)|$ and Hall's condition). In more detail:
+
+$$
+|A| + |B| = |N_X(A)| + |N_X(B)| \quad\text{$A$, $B$ are tight} \\
+\ge |N_X(A \cap B)| + |N_X(A \cup B)| \quad\text{submodularity} \\
+\ge |A \cap B| + |A \cup B| \quad\text{Hall's condition}.
+$$
+
+Since $|A| + |B| = |A \cap B| + |A \cup B|$, we get equality throughout. To conclude $A \cap B$ and $A \cup B$ are tight, apply Hall's again on $|N_X(A \cap B)| + |N_X(A \cup B)| = |A \cap B| + |A \cup B|$.
+
+So, we can take the union of all tight sets, $A^*$, which itself is tight.
+Also consider the corresponding components $N_X(A^*)$ and the villages $V$ making up those components.
+If there is any $e \in Y \setminus X$ with at least one endpoint outside of
+$V$, we are done.
+
+Otherwise, we get a contradiction - we'll show that $Y$ cannot be larger than $X$.
+By assumption, the number of edges of $Y$ with at least one endpoint outside of $V$
+is no more than the number of those edges in $X$.
+
+Let's now count the edges of $Y$ with both endpoints inside $V$. But $N_Y(A^*)$
+must only contain villages in $V$, and there are no cycles, so the number of
+these edges is at most $|V| - |N_X(A^*)|$, which also equals the number of edges
+of $X$ with both endpoints in $V$. Thus, $|Y| \le |X|$, which is impossible.
+
+</Spoiler>
+
+### Optimization
+
+Currently, our algorithm has to perform a bipartite matching check
+for every added edge. However, it suffices to only consider edges in an MST,
+because if we fix a matching from guards to villages, we can see that
+an optimal set of edges to add can be obtained via Kruskal's algorithm,
+with ties broken so that our MST's edges are preferred.
+
+## Implementation
+
+**Time Complexity:** $\mathcal O(n^{3.5})$
+
+We have $n-1$ edges in our ground set (using the optimization),
+and for each candidate edge we run an independence check via Hopcroft-Karp
+in $O(n^{2.5})$ time.
+
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include "bits/stdc++.h"
+using namespace std;
+
+// BeginCodeSnip{KACTL Hopcroft-Karp}
+using vi = vector<int>;
+#define sz(x) (int)x.size()
+#define rep(i, a, b) for (int i = (a); i < (b); ++i)
+/**
+ * Author: Adam Soltan
+ * Date: 2026-01-13
+ * License: CC0
+ * Description: Fast bipartite matching algorithm. Graph $g$ should be a list
+ * of neighbors of the left partition, and $r$ should be a vector full of
+ * $-1$'s of the same size as the right partition. Returns the size of
+ * the matching. $r[i]$ will be the match for vertex $i$ on the right side,
+ * or $-1$ if it's not matched.
+ * Time: O(E \sqrt{V})
+ * Status: stress-tested by MinimumVertexCover and tested on Library Checker
+ */
+int hopcroftKarp(vector<vi> &g, vi &r) {
+	int n = sz(g), res = 0;
+	vi l(n, -1), q(n), d(n);
+	auto dfs = [&](auto f, int u) -> bool {
+		int t = exchange(d[u], 0) + 1;
+		for (int v : g[u])
+			if (r[v] == -1 || (d[r[v]] == t && f(f, r[v])))
+				return l[u] = v, r[v] = u, 1;
+		return 0;
+	};
+	for (int t = 0, f = 0;; t = f = 0, d.assign(n, 0)) {
+		rep(i, 0, n) if (l[i] == -1) q[t++] = i, d[i] = 1;
+		rep(i, 0, t) for (int v : g[q[i]]) {
+			if (r[v] == -1) f = 1;
+			else if (!d[r[v]]) d[r[v]] = d[q[i]] + 1, q[t++] = r[v];
+		}
+		if (!f) return res;
+		rep(i, 0, n) if (l[i] == -1) res += dfs(dfs, i);
+	}
+}
+// EndCodeSnip
+
+// BeginCodeSnip{KACTL Union-Find}
+/**
+ * Author: Lukas Polacek
+ * Date: 2009-10-26
+ * License: CC0
+ * Source: folklore
+ * Description: Disjoint-set data structure.
+ * Time: $O(\alpha(N))$
+ */
+struct UF {
+	vi e;
+	UF(int n) : e(n, -1) {}
+	bool sameSet(int a, int b) { return find(a) == find(b); }
+	int size(int x) { return -e[find(x)]; }
+	int find(int x) { return e[x] < 0 ? x : e[x] = find(e[x]); }
+	bool join(int a, int b) {
+		a = find(a), b = find(b);
+		if (a == b) return false;
+		if (e[a] > e[b]) swap(a, b);
+		e[a] += e[b];
+		e[b] = a;
+		return true;
+	}
+};
+// EndCodeSnip
+
+void solve() {
+	int n, r, g;
+	cin >> n >> r >> g;
+
+	vector<array<int, 3>> edges(r);
+	for (auto &[a, b, wt] : edges) { cin >> a >> b >> wt; }
+
+	vector<vector<int>> guards(g);
+	for (auto &adj : guards) {
+		int k;
+		cin >> k;
+		adj.resize(k);
+		for (auto &x : adj) cin >> x;
+	}
+
+	sort(edges.begin(), edges.end(), [](auto a, auto b) { return a[2] < b[2]; });
+
+	vector<array<int, 3>> mst;
+	{
+		UF uf(n + 1);
+		for (auto e : edges) {
+			auto [a, b, wt] = e;
+			if (uf.join(a, b)) mst.push_back(e);
+		}
+	}
+
+	// return true iff the set of chosen edges is independent
+	auto indep = [&](const vector<array<int, 3>> &chosen) {
+		UF uf(n + 1);
+		for (auto [a, b, _] : chosen) {
+			uf.join(a, b);  // mst edges only, so no need to check acyclic
+		}
+		vector<vector<int>> graph(g);  // match guards to components
+		for (int i = 0; i < g; i++) {
+			for (int j : guards[i]) { graph[i].push_back(uf.find(j)); }
+		}
+		vector<int> right(n + 1, -1);
+		return hopcroftKarp(graph, right) == g;
+	};
+
+	vector<array<int, 3>> chosen;
+	if (!indep(chosen)) {
+		cout << "-1\n";  // special case: empty set is not independent!
+		return;
+	}
+
+	int ans = 0;
+	for (auto e : mst) {
+		chosen.push_back(e);
+		if (indep(chosen)) ans += e[2];
+		else chosen.pop_back();
+	}
+
+	if (g + size(chosen) == n) cout << ans << '\n';
+	else cout << "-1\n";
+}
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	solve();
+	return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
