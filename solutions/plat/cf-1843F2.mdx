@@ -4,7 +4,7 @@ source: Codeforces Round 881 (Div. 3)
 title: Omsk Metro (hard version)
 author: Mikaela Tereshkov
 ---
-
+[Official Analysis](https://codeforces.com/blog/entry/117468)
 
 ## Explanation
 
@@ -57,100 +57,89 @@ To handle our queries, we can use binary jumping. We can calculate our values fo
 
 <CPPSection>
 ```cpp
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
 using namespace std;
 
-struct station {
-	int fullMin, fullMax, suffixMin, suffixMax, prefixMin, prefixMax, sum;
+struct station{
+    int fullMin,fullMax,suffixMin,suffixMax,prefixMin,prefixMax,sum;
 };
 
-station add(station a, station b) {
-	station res = {0, 0};
-	res.sum = a.sum + b.sum;
+station add(station a, station b){
+   station res={0,0};
+    res.sum=a.sum+b.sum;
 
-	res.prefixMin = min(a.prefixMin, a.sum + b.prefixMin);
-	res.prefixMax = max(a.prefixMax, a.sum + b.prefixMax);
+    res.prefixMin=min(a.prefixMin, a.sum+b.prefixMin);
+    res.prefixMax=max(a.prefixMax, a.sum+b.prefixMax);
 
-	res.suffixMin = min(b.suffixMin, a.suffixMin + b.sum);
-	res.suffixMax = max(b.suffixMax, a.suffixMax + b.sum);
+    res.suffixMin=min(b.suffixMin, a.suffixMin+b.sum);
+    res.suffixMax=max(b.suffixMax, a.suffixMax+b.sum);
 
-	res.fullMin = min(res.fullMin, a.fullMin);
-	res.fullMin = min(res.fullMin, b.fullMin);
-	res.fullMin = min(res.fullMin, a.suffixMin + b.prefixMin);
+    res.fullMin=min(res.fullMin, a.fullMin);
+    res.fullMin=min(res.fullMin, b.fullMin);
+    res.fullMin=min(res.fullMin, a.suffixMin+b.prefixMin);
 
-	res.fullMax = max(res.fullMax, a.fullMax);
-	res.fullMax = max(res.fullMax, b.fullMax);
-	res.fullMax = max(res.fullMax, a.suffixMax + b.prefixMax);
-	return res;
+    res.fullMax=max(res.fullMax, a.fullMax);
+    res.fullMax=max(res.fullMax, b.fullMax);
+    res.fullMax=max(res.fullMax, a.suffixMax+b.prefixMax);
+    return res;
 }
 
-const int LOG = 19;
+const int LOG=19;
 
-int main() {
-	int t;
-	cin >> t;
-	while (t--) {
-		int n;
-		cin >> n;
-		vector<vector<int>> lift(n + 1, vector<int>(LOG, -1));
-		vector<vector<station>> dp(n + 1, vector<station>(LOG));
-		vector<int> dist(n + 1, -1);
-		dist[0] = 0;
-		dp[0][0] = {0, 1, 0, 1, 0, 1, 1};
-		int next = 1;
-		while (n--) {
-			char type;
-			cin >> type;
-			if (type == '+') {
-				int parent, value;
-				cin >> parent >> value;
-				parent--;
-				dist[next] = dist[parent] + 1;
-				lift[next][0] = parent;
-				dp[next][0] = {min(value, 0), max(value, 0), min(value, 0),
-				               max(value, 0), min(value, 0), max(value, 0),
-				               value};
-				for (int i = 1; i < LOG; i++) {
-					if (lift[next][i - 1] == -1) break;
-					lift[next][i] = lift[lift[next][i - 1]][i - 1];
-					dp[next][i] = add(dp[next][i - 1], dp[lift[next][i - 1]][i - 1]);
-				}
-				next++;
-			} else {
-				int u, v, k;
-				cin >> u >> v >> k;
-				u--;
-				v--;
-				if (dist[v] > dist[u]) swap(u, v);
-				int difference = dist[u] - dist[v];
-				station cur = {0, 0, 0, 0, 0, 0, 0}, cur2 = {0, 0, 0, 0, 0, 0, 0};
-				for (int i = LOG - 1; i >= 0; i--) {
-					if (difference < (1 << i)) continue;
-					cur = add(cur, dp[u][i]);
-					u = lift[u][i];
-					difference -= (1 << i);
-				}
-				for (int i = LOG - 1; i >= 0; i--) {
-					if (lift[u][i] == lift[v][i]) continue;
-					cur = add(cur, dp[u][i]);
-					cur2 = add(cur2, dp[v][i]);
-					u = lift[u][i];
-					v = lift[v][i];
-				}
-				cur = add(cur, dp[u][0]);
-				if (u != v) {
-					cur2 = add(cur2, dp[v][0]);
-					u = lift[u][0];
-					cur = add(cur, dp[u][0]);
-				}
-				swap(cur2.prefixMin, cur2.suffixMin);
-				swap(cur2.prefixMax, cur2.suffixMax);
-				cur = add(cur, cur2);
-				cout << (k >= cur.fullMin && k <= cur.fullMax ? "YES\n" : "NO\n");
-			}
-		}
-	}
-	return 0;
+int main(){
+    int t; cin>>t;
+    while (t--){
+        int n; cin>>n;
+        vector<vector<int>> lift(n+1, vector<int>(LOG, -1));
+        vector<vector<station>> dp(n+1, vector<station>(LOG));
+        vector<int> dist(n+1, -1); dist[0]=0;
+        dp[0][0]={0,1,0,1,0,1,1};
+        int next=1;
+        while (n--){
+            char type; cin>>type;
+            if (type=='+'){
+                int parent, value; cin>>parent>>value;
+                parent--;
+                dist[next]=dist[parent]+1;
+                lift[next][0]=parent;
+                dp[next][0]={min(value, 0), max(value, 0), min(value, 0), max(value, 0), min(value, 0), max(value, 0),value};
+                for (int i=1; i<LOG; i++){
+                    if (lift[next][i-1]==-1)break;
+                    lift[next][i]=lift[lift[next][i-1]][i-1];
+                    dp[next][i]=add(dp[next][i-1], dp[lift[next][i-1]][i-1]);
+                }
+                next++;
+            }else{
+                int u,v,k; cin>>u>>v>>k; u--; v--;
+                if (dist[v]>dist[u])swap(u,v);
+                int difference=dist[u]-dist[v];
+                station cur={0,0,0,0,0,0,0}, cur2={0,0,0,0,0,0,0};
+                for (int i=LOG-1; i>=0; i--){
+                    if (difference<(1<<i))continue;
+                    cur=add(cur, dp[u][i]);
+                    u=lift[u][i];
+                    difference-=(1<<i);
+                }
+                for (int i=LOG-1; i>=0; i--){
+                    if (lift[u][i]==lift[v][i])continue;
+                    cur=add(cur, dp[u][i]);
+                    cur2=add(cur2, dp[v][i]);
+                    u=lift[u][i]; v=lift[v][i];
+                }
+                cur=add(cur, dp[u][0]);
+                if (u!=v){
+                    cur2=add(cur2, dp[v][0]);
+                    u=lift[u][0];
+                    cur=add(cur, dp[u][0]);
+                }
+                swap(cur2.prefixMin, cur2.suffixMin);
+                swap(cur2.prefixMax, cur2.suffixMax);
+                cur=add(cur, cur2);
+                cout<<(k>=cur.fullMin&&k<=cur.fullMax ? "YES\n" : "NO\n");
+            }
+        }
+    }
+    return 0;
 }
 ```
 </CPPSection>
