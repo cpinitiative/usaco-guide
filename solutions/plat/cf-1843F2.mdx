@@ -1,0 +1,158 @@
+---
+id: cf-1843F2
+source: Codeforces Round 881 (Div. 3)
+title: Omsk Metro (hard version)
+author: Mikaela Tereshkov
+---
+[Official Analysis](https://codeforces.com/blog/entry/117468)
+
+## Explanation
+
+We can achieve sum $k_i$ on the path from $u_i$ to $v_i$ iff the maximum sum of a segment on the path is greater than or equal to $k_i$ and the minimum sum of a segment on the path is less than or equal to $k_i$. This is because all $x_i \in \{-1, 1\}$, so any adjustment from the maximum-sum segment to the minimum-sum segment will change the sum by exactly $1$. Because of this, we can obtain all values $[\texttt{fullMin}_{u_i, v_i}, \texttt{fullMax}_{u_i, v_i}]$ on path $(u_i, v_i)$ where $\texttt{fullMax}_{u_i, v_i}$ and $\texttt{fullMin}_{u_i, v_i}$ denote the maximum and minimum sums of a segment on path $(u_i, v_i)$.
+
+To find $\texttt{fullMax}_{u_i, v_i}$ and $\texttt{fullMin}_{u_i, v_i}$ for some path $(u_i, v_i)$, we can do as follows. For each subsegment of a path, we can additionally store the minimum sum of a prefix, maximum sum of a prefix, minimum sum of a suffix, maximum sum of a suffix, and total sum. Let's call these $\texttt{prefixMin}_{u_i, v_i}$, $\texttt{prefixMax}_{u_i, v_i}$, $\texttt{suffixMin}_{u_i, v_i}$, $\texttt{suffixMax}_{u_i, v_i}$, and  $\texttt{sum}_{u_i, v_i}$ for path $(u_i, v_i)$.
+
+Let's merge two paths: $(u_i, v_i)$ and $(u_j, v_j)$. Let's denote the resulting path as $(u_i, v_j)$. We can observe that $\texttt{fullMax}_{u_i, v_j}$ and $\texttt{fullMin}_{u_i, v_j}$ can be either equivalent to their values for one of the subsegments, or their value can be updated from the suffix of $(u_i, v_i)$ and prefix of $(u_j, v_j)$. This gives us the formulas:
+
+$$
+\texttt{fullMax}_{u_i, v_j} = \max(\texttt{fullMax}_{u_i, v_i},\ \texttt{fullMax}_{u_j, v_j},\ \texttt{suffixMax}_{u_i, v_i}+\texttt{prefixMax}_{u_j, v_j})
+$$
+$$
+\texttt{fullMin}_{u_i, v_j} = \min(\texttt{fullMin}_{u_i, v_i},\ \texttt{fullMin}_{u_j, v_j},\ \texttt{suffixMin}_{u_i, v_i}+\texttt{prefixMin}_{u_j, v_j})
+$$
+
+Next, our minimum and maximum prefix can either be those of path $(u_i, v_i)$ or include those of path $(u_j, v_j)$ added to $\texttt{sum}_{u_i, v_i}$. This is because to incorporate the prefix of the second segment, we must entirely take the first. This gives us the formulas:
+
+$$
+\texttt{prefixMax}_{u_i, v_j} = \max(\texttt{prefixMax}_{u_i, v_i},\ \texttt{prefixMax}_{u_j, v_j}+\texttt{sum}_{u_i, v_i})
+$$
+$$
+\texttt{prefixMin}_{u_i, v_j} = \min(\texttt{prefixMin}_{u_i, v_i},\ \texttt{prefixMin}_{u_j, v_j}+\texttt{sum}_{u_i, v_i})
+$$
+
+To find the same for the suffix, we can use a similar process. We can either take the optimal suffix of $(u_j, v_j)$ or that of $(u_i, v_i)$ added to $\texttt{sum}_{u_j, v_j}$. This gives us the formulas:
+
+$$
+\texttt{suffixMax}_{u_i, v_j} = \max(\texttt{suffixMax}_{u_j, v_j},\ \texttt{suffixMax}_{u_i, v_i}+\texttt{sum}_{u_j, v_j})
+$$
+$$
+\texttt{suffixMin}_{u_i, v_j} = \min(\texttt{suffixMin}_{u_j, v_j},\ \texttt{suffixMin}_{u_i, v_i}+\texttt{sum}_{u_j, v_j})
+$$
+
+For $\texttt{sum}_{u_i, v_j}$, we can simply add the sums of $\texttt{sum}_{u_i, v_i}$ and $\texttt{sum}_{u_j, v_j}$:
+$$
+\texttt{sum}_{u_i, v_j}=\texttt{sum}_{u_i, v_i}+\texttt{sum}_{u_j, v_j}
+$$
+
+To handle our queries, we can use binary jumping. We can calculate our values for paths $(u_i, lca(u_i, v_i))$ and $(v_i, lca(u_i, v_i))$. Then, we can merge these paths as described above and check if $\texttt{fullMin}_{u_i, v_i} \leq k_i \leq \texttt{fullMax}_{u_i, v_i}$.
+
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+
+
+<LanguageSection>
+
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct station {
+	int fullMin, fullMax, suffixMin, suffixMax, prefixMin, prefixMax, sum;
+};
+
+station add(station a, station b) {
+	station res = {0, 0};
+	res.sum = a.sum + b.sum;
+
+	res.prefixMin = min(a.prefixMin, a.sum + b.prefixMin);
+	res.prefixMax = max(a.prefixMax, a.sum + b.prefixMax);
+
+	res.suffixMin = min(b.suffixMin, a.suffixMin + b.sum);
+	res.suffixMax = max(b.suffixMax, a.suffixMax + b.sum);
+
+	res.fullMin = min(res.fullMin, a.fullMin);
+	res.fullMin = min(res.fullMin, b.fullMin);
+	res.fullMin = min(res.fullMin, a.suffixMin + b.prefixMin);
+
+	res.fullMax = max(res.fullMax, a.fullMax);
+	res.fullMax = max(res.fullMax, b.fullMax);
+	res.fullMax = max(res.fullMax, a.suffixMax + b.prefixMax);
+	return res;
+}
+
+const int LOG = 19;
+
+int main() {
+	int t;
+	cin >> t;
+	while (t--) {
+		int n;
+		cin >> n;
+		vector<vector<int>> lift(n + 1, vector<int>(LOG, -1));
+		vector<vector<station>> dp(n + 1, vector<station>(LOG));
+		vector<int> dist(n + 1, -1);
+		dist[0] = 0;
+		dp[0][0] = {0, 1, 0, 1, 0, 1, 1};
+		int next = 1;
+		while (n--) {
+			char type;
+			cin >> type;
+			if (type == '+') {
+				int parent, value;
+				cin >> parent >> value;
+				parent--;
+				dist[next] = dist[parent] + 1;
+				lift[next][0] = parent;
+				dp[next][0] = {min(value, 0), max(value, 0), min(value, 0),
+				               max(value, 0), min(value, 0), max(value, 0),
+				               value};
+				for (int i = 1; i < LOG; i++) {
+					if (lift[next][i - 1] == -1) break;
+					lift[next][i] = lift[lift[next][i - 1]][i - 1];
+					dp[next][i] = add(dp[next][i - 1], dp[lift[next][i - 1]][i - 1]);
+				}
+				next++;
+			} else {
+				int u, v, k;
+				cin >> u >> v >> k;
+				u--;
+				v--;
+				if (dist[v] > dist[u]) swap(u, v);
+				int difference = dist[u] - dist[v];
+				station cur = {0, 0, 0, 0, 0, 0, 0}, cur2 = {0, 0, 0, 0, 0, 0, 0};
+				for (int i = LOG - 1; i >= 0; i--) {
+					if (difference < (1 << i)) continue;
+					cur = add(cur, dp[u][i]);
+					u = lift[u][i];
+					difference -= (1 << i);
+				}
+				for (int i = LOG - 1; i >= 0; i--) {
+					if (lift[u][i] == lift[v][i]) continue;
+					cur = add(cur, dp[u][i]);
+					cur2 = add(cur2, dp[v][i]);
+					u = lift[u][i];
+					v = lift[v][i];
+				}
+				cur = add(cur, dp[u][0]);
+				if (u != v) {
+					cur2 = add(cur2, dp[v][0]);
+					u = lift[u][0];
+					cur = add(cur, dp[u][0]);
+				}
+				swap(cur2.prefixMin, cur2.suffixMin);
+				swap(cur2.prefixMax, cur2.suffixMax);
+				cur = add(cur, cur2);
+				cout << (k >= cur.fullMin && k <= cur.fullMax ? "YES\n" : "NO\n");
+			}
+		}
+	}
+	return 0;
+}
+```
+</CPPSection>
+
+</LanguageSection>
