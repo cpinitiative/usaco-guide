@@ -15,7 +15,7 @@ If the optimal solution contains an update to index $i$, we will update $A_i$ to
 
 For $i=1$, it is optimal to set $A_i=0$ because any larger value of $A_i$ will cause the set of possible next values in the LIS to be a subset of the set of possible next values in the LIS when $A_i=0$.
 
-We can solve this problem with $2$ segment trees. Let's denote these as $\texttt{before}$ and $\texttt{after}$. $\texttt{before}_i$ will store the LIS ending with value $i$ without any operations performed. $\texttt{after}_i$ will store the LIS ending with value $i$ after an operation is performed. Let's also denote $\texttt{best}_i$ as the best replacement for $A_i$.
+We can use $2$ segment trees. Let's denote these as $\texttt{before}$ and $\texttt{after}$. $\texttt{before}_i$ will store the LIS ending with value $i$ without any operations performed. $\texttt{after}_i$ will store the LIS ending with value $i$ after an operation is performed. Let's also denote $\texttt{best}_i$ as the best replacement for $A_i$.
 
 We can transition as follows:
 
@@ -29,7 +29,7 @@ $$
 \texttt{before}_{A_i}=\max(\texttt{before}_{A_i},\ 1+\max_{j<A_i}{\texttt{before}_j})
 $$
 
-The first and third transitions extend the LIS. The second transition is used to apply the operation.
+The first and third transitions extend the LIS. The second transition is used to apply the operation. Our final result is the maximum value in $\texttt{after}$.
 
 Note that because $A_i \leq 10^9$, we will need to use coordinate compression.
 
