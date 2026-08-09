@@ -1,13 +1,19 @@
 # Firebase Cloud Functions API
 
-This document describes the Firebase Cloud Functions exposed by the project under `src/functions/src`.
-It explains each function, usage details, security assumptions, and the developer's responsibilities when maintaining or extending the API.
+This document describes the Firebase Cloud Functions exposed by the project
+under `src/functions/src`. It explains each function, usage details, security
+assumptions, and the developer's responsibilities when maintaining or extending
+the API.
 
 ## Overview
 
-The Firebase functions are mostly `https.onCall` callable functions, with additional triggers for Firestore writes, scheduled execution, and auth user creation.
+The Firebase functions are mostly `https.onCall` callable functions, with
+additional triggers for Firestore writes, scheduled execution, and auth user
+creation.
 
-They are used for admin operations, group management and join logic, user data access, problem suggestion automation, contact form support, and scheduled backups.
+They are used for admin operations, group management and join logic, user data
+access, problem suggestion automation, contact form support, and scheduled
+backups.
 
 The main function exports are found in `src/functions/src/index.ts`.
 
@@ -38,8 +44,9 @@ The main function exports are found in `src/functions/src/index.ts`.
 
 ### Purpose
 
-Returns Firebase Authentication user records for a list of requested users.
-This is primarily used by admin or instructor-facing pages that need to inspect user details.
+Returns Firebase Authentication user records for a list of requested users. This
+is primarily used by admin or instructor-facing pages that need to inspect user
+details.
 
 ### Trigger type
 
@@ -49,14 +56,15 @@ This is primarily used by admin or instructor-facing pages that need to inspect 
 
 ```ts
 {
-  users: Array<{ uid: string } | { email: string }>
+	users: Array<{ uid: string } | { email: string }>;
 }
 ```
 
 ### Behavior
 
 - Validates request and checks that the caller is authenticated.
-- Checks whether the caller is an admin or instructor by looking at Firestore permissions.
+- Checks whether the caller is an admin or instructor by looking at Firestore
+  permissions.
 - Fetches users using `admin.auth().getUsers()` in batches of up to 100.
 - Returns a combined result object:
 
@@ -76,7 +84,8 @@ This is primarily used by admin or instructor-facing pages that need to inspect 
 ### Notes
 
 - This is not a public REST endpoint; it is callable from client SDKs.
-- The function uses `admin.auth().getUsers()` and may be rate-limited by Firebase.
+- The function uses `admin.auth().getUsers()` and may be rate-limited by
+  Firebase.
 
 ---
 
@@ -88,7 +97,8 @@ This is primarily used by admin or instructor-facing pages that need to inspect 
 
 ### Purpose
 
-Handles contact form submissions, posts them to GitHub Issues, and saves them to Firestore.
+Handles contact form submissions, posts them to GitHub Issues, and saves them to
+Firestore.
 
 ### Trigger type
 
@@ -112,9 +122,11 @@ Handles contact form submissions, posts them to GitHub Issues, and saves them to
 
 - Validates `name`, `email`, `topic`, and `message`.
 - Builds a GitHub issue title and body.
-- Uses GitHub API authentication via `functions.config().contactform.issueapikey`.
+- Uses GitHub API authentication via
+  `functions.config().contactform.issueapikey`.
 - Creates a GitHub issue in `cpinitiative/usaco-guide`.
-- Writes the submission into Firestore collection `contactFormSubmissions` with the created issue number.
+- Writes the submission into Firestore collection `contactFormSubmissions` with
+  the created issue number.
 - Returns the issue HTML URL.
 
 ### Security
@@ -126,7 +138,8 @@ Handles contact form submissions, posts them to GitHub Issues, and saves them to
 ### Notes
 
 - Topic-based issue labels are applied automatically.
-- The function is intended for website feedback, bug reports, and content suggestions.
+- The function is intended for website feedback, bug reports, and content
+  suggestions.
 
 ---
 
@@ -138,7 +151,8 @@ Handles contact form submissions, posts them to GitHub Issues, and saves them to
 
 ### Purpose
 
-Allows authenticated users to suggest new problems by creating an automatic GitHub PR with updated JSON content.
+Allows authenticated users to suggest new problems by creating an automatic
+GitHub PR with updated JSON content.
 
 ### Trigger type
 
@@ -168,7 +182,8 @@ Allows authenticated users to suggest new problems by creating an automatic GitH
 - Extracts the submitter’s display name from Firebase Auth.
 - Validates required arguments.
 - Generates a unique problem ID using `generateProblemUniqueId`.
-- Builds a suggested problem object and inserts it into the target module’s `.problems.json` content.
+- Builds a suggested problem object and inserts it into the target module’s
+  `.problems.json` content.
 - Uses the GitHub API to:
   - create a branch
   - read an existing `.problems.json` file
@@ -179,13 +194,16 @@ Allows authenticated users to suggest new problems by creating an automatic GitH
 ### Security
 
 - Must be called by an authenticated user.
-- It uses the GitHub token from `functions.config().problemsuggestion.issueapikey`.
+- It uses the GitHub token from
+  `functions.config().problemsuggestion.issueapikey`.
 
 ### Notes
 
-- If the problem source is `other`, the function inserts a warning into the PR description.
+- If the problem source is `other`, the function inserts a warning into the PR
+  description.
 - The function retries branch names until a unique one is found.
-- This function performs live GitHub operations and is therefore sensitive to API rate limits and permission issues.
+- This function performs live GitHub operations and is therefore sensitive to
+  API rate limits and permission issues.
 
 ---
 
@@ -197,7 +215,8 @@ Allows authenticated users to suggest new problems by creating an automatic GitH
 
 ### Purpose
 
-Sets custom claims on Firebase Auth users, optionally merging with existing claims.
+Sets custom claims on Firebase Auth users, optionally merging with existing
+claims.
 
 ### Trigger type
 
@@ -217,7 +236,8 @@ Sets custom claims on Firebase Auth users, optionally merging with existing clai
 
 - Validates the caller is authenticated.
 - Fetches the caller’s user record.
-- Ensures the caller is admin by checking `caller.customClaims.isAdmin` or explicit UID allowlist.
+- Ensures the caller is admin by checking `caller.customClaims.isAdmin` or
+  explicit UID allowlist.
 - Sets custom claims on the target user.
 - If `merge` is omitted or true, existing claims are merged with the new claims.
 
@@ -260,7 +280,8 @@ Keeps a running count of registered users in Realtime Database.
 ### Notes
 
 - This is a legacy style function using RTDB rather than Firestore.
-- Ensure that user creation flows converge correctly if multiple users are created in parallel.
+- Ensure that user creation flows converge correctly if multiple users are
+  created in parallel.
 
 ---
 
@@ -306,7 +327,8 @@ This section covers group-related functions used by group features in the app.
 - Purpose: validate a group join key and return the linked group’s name.
 - Trigger: `functions.https.onCall`
 - Input: `{ key: string }`
-- Output: `{ success: boolean; name?: string; errorCode?: string; message?: string }`
+- Output:
+  `{ success: boolean; name?: string; errorCode?: string; message?: string }`
 
 ### 7.2 getMembers
 
@@ -315,7 +337,8 @@ This section covers group-related functions used by group features in the app.
 - Trigger: `functions.https.onCall`
 - Input: `{ groupId: string }`
 - Output: user profiles of members, admins, and owners.
-- Security: any member, admin, or owner of the group can request this information.
+- Security: any member, admin, or owner of the group can request this
+  information.
 
 ### 7.3 join
 
@@ -347,18 +370,23 @@ This section covers group-related functions used by group features in the app.
 ### 7.6 submitToProblem
 
 - File: `src/functions/src/groups/submitToProblem.ts`
-- Purpose: listen for submission updates in a group problem and recalculate leaderboard data when the score changes.
-- Trigger: Firestore event trigger (`onDocumentWritten`) on the submissions path.
+- Purpose: listen for submission updates in a group problem and recalculate
+  leaderboard data when the score changes.
+- Trigger: Firestore event trigger (`onDocumentWritten`) on the submissions
+  path.
 - Input: none directly; it reacts to a submission document write.
 - Output: none directly; it updates the relevant group leaderboard document.
-- Notes: this is not a callable endpoint. It only processes submissions whose type is `Online Judge` with a problem ID, or `submission-link`, and only when the score changes.
+- Notes: this is not a callable endpoint. It only processes submissions whose
+  type is `Online Judge` with a problem ID, or `submission-link`, and only when
+  the score changes.
 
 ### 7.7 updateMemberPermissions
 
 - File: `src/functions/src/groups/updateMemberPermissions.ts`
 - Purpose: change a member’s group role.
 - Trigger: `functions.https.onCall`
-- Input: `{ groupId: string; targetUid: string; newPermissionLevel: 'OWNER' | 'ADMIN' | 'MEMBER' }`
+- Input:
+  `{ groupId: string; targetUid: string; newPermissionLevel: 'OWNER' | 'ADMIN' | 'MEMBER' }`
 - Output: success state or error code.
 - Security: only the owner can change permissions.
 
@@ -370,26 +398,31 @@ This section covers group-related functions used by group features in the app.
 
 - Keep business logic out of the route file when possible.
 - New callable functions should validate input strictly.
-- Prefer throwing `functions.https.HttpsError` for client-facing validation errors.
+- Prefer throwing `functions.https.HttpsError` for client-facing validation
+  errors.
 - Avoid exposing sensitive environment secrets in returned payloads.
 
 ### Deploy notes
 
-- The functions code is under `src/functions/src`; deploy from the project’s Firebase functions config.
+- The functions code is under `src/functions/src`; deploy from the project’s
+  Firebase functions config.
 - Ensure `firebase-admin` initialization uses a single app instance.
-- Confirm `functions.config().contactform.issueapikey` and `functions.config().problemsuggestion.issueapikey` are configured in Firebase.
+- Confirm `functions.config().contactform.issueapikey` and
+  `functions.config().problemsuggestion.issueapikey` are configured in Firebase.
 
 ### Security review
 
 - Review admin-only checks carefully.
-- Do not add new `https.onCall` functions without explicit auth or proper security rules.
+- Do not add new `https.onCall` functions without explicit auth or proper
+  security rules.
 - Be careful with any public-facing endpoint that writes to GitHub or Firestore.
 
 ### Logging and debugging
 
 - Most functions log errors using `console.error`.
 - For API errors or GitHub failures, inspect Firebase logs.
-- Make sure any new error handling preserves enough information for debugging without leaking user data.
+- Make sure any new error handling preserves enough information for debugging
+  without leaking user data.
 
 ## Summary
 
@@ -402,4 +435,5 @@ The Firebase functions provide the backend API for:
 - scheduled Firestore backups
 - user count tracking
 
-These are the core backend APIs for the collaboration and admin features in the app.
+These are the core backend APIs for the collaboration and admin features in the
+app.
