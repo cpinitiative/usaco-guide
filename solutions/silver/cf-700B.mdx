@@ -35,17 +35,27 @@ int main() {
         university[--x]++;
     }
 
-	std::function<void(int, int)> Dfs = [&](int curr_node, int prev_node) {
-		for (int neighbour : roads[curr_node]) {
-			if (neighbour == prev_node) { continue; }
-			Dfs(neighbour, curr_node);
-			university[curr_node] += university[neighbour];
-		}
-		res += std::min(university[curr_node], 2 * k - university[curr_node]);
-	};
+    for (int i = 0; i < n - 1; i++) {
+        int from, to;
+        std::cin >> from >> to;
+        roads[--from].push_back(--to);
+        roads[to].push_back(from);
+    }
 
-	Dfs(0, -1);
-	std::cout << res << '\n';
+    std::function<void(int, int)> Dfs = [&] (int curr_node, int prev_node) {
+        for (int neighbour : roads[curr_node]) {
+            if (neighbour == prev_node) {
+                continue;
+            }
+            Dfs(neighbour, curr_node);
+            university[curr_node] += university[neighbour];
+        }
+        res += std::min(university[curr_node], 2 * k - university[curr_node]);
+    };
+
+    Dfs(0, -1);
+    std::cout << res << '\n';
+
 }
 ```
 
