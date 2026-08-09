@@ -35,12 +35,11 @@ int main() {
         university[--x]++;
     }
 
-    for (int i = 0; i < n - 1; i++) {
-        int from, to;
-        std::cin >> from >> to;
-        roads[--from].push_back(--to);
-        roads[to].push_back(from);
-    }
+	for (int i = 0; i < 2 * k; i++) {
+		int x;
+		std::cin >> x;
+		university[--x]++;
+	}
 
     std::function<void(int, int)> Dfs = [&] (int curr_node, int prev_node) {
         for (int neighbour : roads[curr_node]) {
@@ -53,9 +52,19 @@ int main() {
         res += std::min(university[curr_node], 2 * k - university[curr_node]);
     };
 
-    Dfs(0, -1);
-    std::cout << res << '\n';
+	long long res = 0;
 
+	std::function<void(int, int)> Dfs = [&](int curr_node, int prev_node) {
+		for (int neighbour : roads[curr_node]) {
+			if (neighbour == prev_node) { continue; }
+			Dfs(neighbour, curr_node);
+			university[curr_node] += university[neighbour];
+		}
+		res += std::min(university[curr_node], 2 * k - university[curr_node]);
+	};
+
+	Dfs(0, -1);
+	std::cout << res << '\n';
 }
 ```
 
