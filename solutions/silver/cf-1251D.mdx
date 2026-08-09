@@ -17,17 +17,17 @@ author: Rameez Parwez
 <CPPSection>
 
 ```cpp
-#include <iostream>
-#include <vector>
 #include <algorithm>
+#include <iostream>
 #include <numeric>
+#include <vector>
 
 int main() {
 	int test_num;
 	std::cin >> test_num;
-	
+
 	for (int t = 0; t < test_num; t++) {
-		
+
 		int n;
 		long long s;
 		std::cin >> n >> s;
@@ -42,13 +42,16 @@ int main() {
 		auto is_possible = [&](int mid) {
 			std::vector<int> p;
 			for (int i = 0; i < n; i++) {
-				if (arr[i].second >= mid) { p.push_back(std::max(0, mid - arr[i].first)); }
+				if (arr[i].second >= mid) {
+					p.push_back(std::max(0, mid - arr[i].first));
+				}
 			}
 
 			std::sort(begin(p), end(p));
 
 			if ((int)p.size() >= (n + 1) / 2) {
-				long long req_sum = std::accumulate(begin(p), begin(p) + (n + 1) / 2, 0LL);
+				long long req_sum =
+				    std::accumulate(begin(p), begin(p) + (n + 1) / 2, 0LL);
 				return (req_sum + lower_sum <= s);
 			} else {
 				return false;
@@ -68,7 +71,6 @@ int main() {
 
 		std::cout << lo << '\n';
 	}
-	
 }
 ```
 
