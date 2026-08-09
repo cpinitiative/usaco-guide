@@ -9,6 +9,30 @@ author: Rameez Parwez
 
 ## Explanation
 
+
+We can use binary search on our answer to calculate the maximum
+median salary possible. Let's first understand that for `mid` to 
+be the median salary, we need to verify if it is possible to assign 
+`mid` dollars in salaries to at least $\lceil \frac{n}{2} \rceil$ 
+employees while also keeping the budget under $s$ dollars.
+
+Once we are clear on that, we can continue our operation further on 
+to verify `mid`. For `mid` to be attainable, we will first collect 
+all those employees who earn at least `mid` salary (note that if 
+the number of such employees is less than $\lceil \frac{n}{2} 
+\rceil$, then `mid` is not achievable since we cannot assign at 
+least `mid` salary to enough employees). For each such employee, 
+the extra cost to increase their salary to `mid` will be 
+$\max(0, mid - l_i)$. We will store these values in an array for 
+further use.
+
+Now, the extra cost values that we stored previously in an array, 
+we will sort them and greedily pick the $\lceil \frac{n}{2} \rceil$ 
+cheapest ones, since we want to maximize our median salary while 
+managing the budget under $s$ dollars. If the $\lceil \frac{n}{2} 
+\rceil$ extra cost values plus the sum of all minimum salaries stay 
+within the budget, then `mid` is achievable.
+
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(something)$
