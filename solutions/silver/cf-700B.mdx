@@ -35,25 +35,6 @@ int main() {
         university[--x]++;
     }
 
-	for (int i = 0; i < 2 * k; i++) {
-		int x;
-		std::cin >> x;
-		university[--x]++;
-	}
-
-    std::function<void(int, int)> Dfs = [&] (int curr_node, int prev_node) {
-        for (int neighbour : roads[curr_node]) {
-            if (neighbour == prev_node) {
-                continue;
-            }
-            Dfs(neighbour, curr_node);
-            university[curr_node] += university[neighbour];
-        }
-        res += std::min(university[curr_node], 2 * k - university[curr_node]);
-    };
-
-	long long res = 0;
-
 	std::function<void(int, int)> Dfs = [&](int curr_node, int prev_node) {
 		for (int neighbour : roads[curr_node]) {
 			if (neighbour == prev_node) { continue; }
