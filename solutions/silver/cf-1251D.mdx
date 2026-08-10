@@ -65,9 +65,9 @@ int main() {
 		std::vector<std::pair<int, int>> arr(n);
 		long long lower_sum = 0;
 
-		for (std::pair<int, int> &x : arr) {
-			std::cin >> x.first >> x.second;
-			lower_sum += x.first;
+		for (auto &[l, r] : arr) {
+			std::cin >> l >> r;
+			lower_sum += l;
 		}
 
 		auto is_possible = [&](int mid) {
@@ -92,7 +92,7 @@ int main() {
 		int lo = 0, hi = 1e9;
 
 		while (lo < hi) {
-			int mid = (lo + hi + 1) >> 1;
+			int mid = (lo + hi + 1) / 2;
 			if (is_possible(mid)) {
 				lo = mid;
 			} else {
