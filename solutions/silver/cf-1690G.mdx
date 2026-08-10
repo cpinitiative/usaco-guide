@@ -18,20 +18,15 @@ When a query decreases $a_k$, one of the following happens:
 
 At each point, the number of trains is equal to the number of starting indices. We have at most $\mathcal{O}(N+Q)$ starting index insertions, and thus the number of index removals is also bounded by $\mathcal{O}(N+Q)$. Thus, the overall time complexity amortizes to $\mathcal{O}((N+Q) \log N)$.
 
-
-
-
 <Info title="Alternative: Segment Tree Approach">
 
-Instead of storing train boundaries in a set, we can maintain the speeds in a **[segment tree with lazy propagation](https://usaco.guide/plat/RURQ?lang=cpp)** to support range assign and point query. Since the speed array is always non-increasing, we can binary search for the last carriage whose speed exceeds the new cap, assign that suffix to the new speed, and update the number of distinct speeds accordingly.
+Instead of storing train boundaries in a set, we can maintain the speeds in a [lazy segment tree](/plat/RURQ) to support range assign and point query. Since the speed array is always non-increasing, we can binary search for the last carriage whose speed exceeds the new cap, assign that suffix to the new speed, and update the number of distinct speeds accordingly.
 
 </Info>
 
-
 ## Implementation
 
-**Time Complexity:** As shown above, the total number of insertions and removals is $\mathcal{O}(N+Q)$, so the overall time complexity is $\mathcal{O}((N+Q)\log N)$.
-
+**Time Complexity:** $\mathcal{O}((N+Q) \log N)$
 
 <LanguageSection>
 <CPPSection>
@@ -77,7 +72,7 @@ int main() {
 			a[k] -= d;
 
 			if (a[k] >= cur_speed) {
-				cout << starts.size() << " ";
+				cout << starts.size() << ' ';
 				continue;
 			}
 
@@ -87,7 +82,7 @@ int main() {
 			auto it = next(starts.find(k));
 			while (it != starts.end() && a[*it] >= a[k]) { it = starts.erase(it); }
 
-			cout << starts.size() << " ";
+			cout << starts.size() << ' ';
 		}
 
 		cout << '\n';
