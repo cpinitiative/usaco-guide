@@ -16,9 +16,7 @@ Try sorting the array: does that reveal any structure in how the pair sums compa
 
 <Spoiler title="Hint 2">
 
-By fixing the left endpoint $i$ of a pair - the sums $a_i + a_{i+1}, a_i + a_{i+2}, a_i + a_{i+3}, \ldots$
-come out sorted too. So you now have $n - 1$ separately sorted lists (one per left endpoint).
-How can we find the smallest $n - 1$ elements across several sorted lists?
+For each left endpoint $i$, keep track of the smallest unused pair involving $i$. How can we efficiently find the smallest such pair overall and update its right endpoint?
 
 </Spoiler>
 
@@ -84,47 +82,64 @@ using namespace std;
 
 const int MOD = 1e9 + 7;
 
+struct State {
+    long long sum;
+    int left;
+    int right;
+
+    bool operator>(const State &other) const {
+        return sum > other.sum;
+    }
+};
+
 int main() {
-	ios::sync_with_stdio(false);
-	cin.tie(nullptr);
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-	int n;
-	cin >> n;
+    int n;
+    cin >> n;
 
-	vector<long long> cur(n);
-	for (auto &x : cur) cin >> x;
-	sort(cur.begin(), cur.end());
+    vector<long long> cur(n);
+    for (auto &x : cur) cin >> x;
+    sort(cur.begin(), cur.end());
 
-	long long offset = 0;
+    long long offset = 0;
 
-	while (cur.size() > 1) {
-		int m = cur.size();
+    while (cur.size() > 1) {
+        int m = cur.size();
 
-		// Min-heap of (pair sum, left endpoint, right endpoint)
-		priority_queue<tuple<long long, int, int>, vector<tuple<long long, int, int>>,
-		               greater<>>
-		    pq;
+        // For each left endpoint, keep its smallest unused pair.
+        priority_queue<State, vector<State>, greater<>> pq;
 
-		for (int i = 0; i < m - 1; i++) { pq.push({cur[i] + cur[i + 1], i, i + 1}); }
+        for (int i = 0; i < m - 1; i++) {
+            pq.push({cur[i] + cur[i + 1], i, i + 1});
+        }
 
-		// k-way merge: pull the smallest n-1 sums across all m-1 sorted lists
-		vector<long long> nxt;
-		while ((int)nxt.size() < m - 1) {
-			auto [sum, i, j] = pq.top();
-			pq.pop();
-			nxt.push_back(sum);
-			if (j + 1 < m) pq.push({cur[i] + cur[j + 1], i, j + 1});
-		}
+        // Repeatedly take the smallest available pair and advance its right endpoint.
+        vector<long long> nxt;
+        while ((int)nxt.size() < m - 1) {
+            auto [sum, i, j] = pq.top();
+            pq.pop();
+
+            nxt.push_back(sum);
+
+            if (j + 1 < m) {
+                pq.push({cur[i] + cur[j + 1], i, j + 1});
+            }
+        }
 
 		// Fold the common minimum into offset (mod p) to keep cur small
-		long long min_sum = nxt[0];
-		offset = (2 * offset + min_sum) % MOD;
-		for (auto &x : nxt) x -= min_sum;
+        long long min_sum = nxt[0];
+        offset = (2 * offset + min_sum) % MOD;
 
-		cur = move(nxt);
-	}
+        for (auto &x : nxt) {
+            x -= min_sum;
+        }
 
-	cout << (offset + cur[0]) % MOD << "\n";
+        cur = move(nxt);
+    }
+
+    cout << (offset + cur[0]) % MOD << '\n';
 }
 ```
 
