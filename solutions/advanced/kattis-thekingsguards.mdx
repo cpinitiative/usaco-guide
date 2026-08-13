@@ -114,12 +114,12 @@ of $X$ with both endpoints in $V$. Thus, $|Y| \le |X|$, which is impossible.
 ### Optimization
 
 Naively implementing this, we would perform a bipartite matching check
-for every candidate edge. We can optimize this by maintaining a maximum matching 
-from guards to connected components. Whenever we check an edge $(u, v)$, 
+for every candidate edge. We can optimize this by maintaining a maximum matching
+from guards to connected components. Whenever we check an edge $(u, v)$,
 we consider two cases based on the connected components $C, C'$ of $u, v$ respectively.
 1. If at most one of $C, C'$ is matched, we can directly connect $C$ and $C'$
 without violating our original matching.
-2. If both $C, C'$ are matched, then we unmatch $C$, and try to find an augmenting 
+2. If both $C, C'$ are matched, then we unmatch $C$, and try to find an augmenting
 path from the guard that was previously matched with it. We can connect $C, C'$ if
 and only if an augmenting path is found.
 
@@ -147,109 +147,99 @@ independence check takes $\mathcal O(n^2)$ time.
 using namespace std;
 
 void solve() {
-    int n, m, g;
-    cin >> n >> m >> g;
-    vector<array<int, 3>> edges;
-    for (int i = 1, u, v, w; i <= m; i++) {
-        cin >> u >> v >> w;
-        edges.push_back({w, u, v});
-    }
-    vector<vector<int>> adj(g + 1);
-    for (int i = 1, k; i <= g; i++) {
-        cin >> k;
-        for (int j = 1, v; j <= k; j++) {
-            cin >> v;
-            adj[i].push_back(v);
-        }
-    }
+	int n, m, g;
+	cin >> n >> m >> g;
+	vector<array<int, 3>> edges;
+	for (int i = 1, u, v, w; i <= m; i++) {
+		cin >> u >> v >> w;
+		edges.push_back({w, u, v});
+	}
+	vector<vector<int>> adj(g + 1);
+	for (int i = 1, k; i <= g; i++) {
+		cin >> k;
+		for (int j = 1, v; j <= k; j++) {
+			cin >> v;
+			adj[i].push_back(v);
+		}
+	}
 
-    // construct MST
-    vector<array<int, 3>> mst;
-    sort(edges.begin(), edges.end());
-    vector<int> comp(n + 1);
-    iota(comp.begin() + 1, comp.end(), 1);
-    auto join = [&](int u, int v) {
-        vector<int> res;
-        if (comp[u] == comp[v]) {
-            return res;
-        }
-        for (int i = 1, c = comp[v]; i <= n; i++) {
-            if (comp[i] == c) {
-                comp[i] = comp[u];
-                res.push_back(i);
-            }
-        }
-        return res;
-    };
-    for (auto [w, u, v] : edges) {
-        if (!join(u, v).empty()) {
-            mst.push_back({w, u, v});
-        }
-    }
+	// construct MST
+	vector<array<int, 3>> mst;
+	sort(edges.begin(), edges.end());
+	vector<int> comp(n + 1);
+	iota(comp.begin() + 1, comp.end(), 1);
+	auto join = [&](int u, int v) {
+		vector<int> res;
+		if (comp[u] == comp[v]) { return res; }
+		for (int i = 1, c = comp[v]; i <= n; i++) {
+			if (comp[i] == c) {
+				comp[i] = comp[u];
+				res.push_back(i);
+			}
+		}
+		return res;
+	};
+	for (auto [w, u, v] : edges) {
+		if (!join(u, v).empty()) { mst.push_back({w, u, v}); }
+	}
 
-    // back[c] = i if guard i is matched with component c
-    iota(comp.begin() + 1, comp.end(), 1);
-    vector<int> back(n + 1), vis(n + 1);
-    auto augment = [&](int s) {
-        auto DFS = [&](this auto DFS, int i) -> int {
-            for (int v : adj[i]) {
-                if (vis[comp[v]]) {
-                    continue;
-                }
-                vis[comp[v]] = 1;
-                if (!back[comp[v]] || DFS(back[comp[v]])) {
-                    back[comp[v]] = i;
-                    return 1;
-                }
-            }
-            return 0;
-        };
-        fill(vis.begin() + 1, vis.end(), 0);
-        return DFS(s);
-    };
+	// back[c] = i if guard i is matched with component c
+	iota(comp.begin() + 1, comp.end(), 1);
+	vector<int> back(n + 1), vis(n + 1);
+	auto augment = [&](int s) {
+		auto DFS = [&](this auto DFS, int i) -> int {
+			for (int v : adj[i]) {
+				if (vis[comp[v]]) { continue; }
+				vis[comp[v]] = 1;
+				if (!back[comp[v]] || DFS(back[comp[v]])) {
+					back[comp[v]] = i;
+					return 1;
+				}
+			}
+			return 0;
+		};
+		fill(vis.begin() + 1, vis.end(), 0);
+		return DFS(s);
+	};
 
-    // check initial matching
-    for (int i = 1; i <= g; i++) {
-        if (!augment(i)) {
-            cout << "-1\n";
-            return;
-        }
-    }
+	// check initial matching
+	for (int i = 1; i <= g; i++) {
+		if (!augment(i)) {
+			cout << "-1\n";
+			return;
+		}
+	}
 
-    // construct independent set
-    int sum = 0, cnt = 0;
-    for (auto [w, u, v] : mst) {
-        int a = comp[u], b = comp[v];
-        auto tmp = join(u, v);
-        if (back[a] && back[b]) {
-            if (augment(back[b])) {
-                sum += w;
-                cnt++;
-            } else {
-                for (int x : tmp) {
-                    comp[x] = b;
-                }
-            }
-        } else {
-            if (back[b]) {
-                back[a] = back[b];
-            }
-            sum += w;
-            cnt++;
-        }
-    }
-    if (n - cnt == g) {
-        cout << sum << '\n';
-    } else {
-        cout << "-1\n";
-    }
+	// construct independent set
+	int sum = 0, cnt = 0;
+	for (auto [w, u, v] : mst) {
+		int a = comp[u], b = comp[v];
+		auto tmp = join(u, v);
+		if (back[a] && back[b]) {
+			if (augment(back[b])) {
+				sum += w;
+				cnt++;
+			} else {
+				for (int x : tmp) { comp[x] = b; }
+			}
+		} else {
+			if (back[b]) { back[a] = back[b]; }
+			sum += w;
+			cnt++;
+		}
+	}
+	if (n - cnt == g) {
+		cout << sum << '\n';
+	} else {
+		cout << "-1\n";
+	}
 }
 
 int main() {
-    cin.sync_with_stdio(0);
-    cin.tie(0);
-    solve();
-    return 0;
+	cin.sync_with_stdio(0);
+	cin.tie(0);
+	solve();
+	return 0;
 }
 ```
 
