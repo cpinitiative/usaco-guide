@@ -15,7 +15,7 @@ For $n = 2$ and $n = 3$, we know that no permutation satisfies the asked conditi
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(n)$
+**Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
 <CPPSection>
@@ -63,4 +63,53 @@ int main() {
 ```
 
 </CPPSection>
+
+<PySection>
+
+<Warning>
+
+Due to tight time constraints, the following code TLEs on a few test cases.
+
+</Warning>
+
+```py
+import sys
+
+sys.setrecursionlimit(10**7)
+
+res = []
+ele = []
+
+
+def backtrack():
+
+	if not ele:  # checks if list is empty
+		for i in res:
+			print(i)
+		exit(0)
+
+	for i in range(len(ele) - 1, -1, -1):
+		x = ele[i]
+
+		if not res or abs(res[-1] - x) != 1:
+			del ele[i]
+			res.append(x)
+			backtrack()
+			res.pop()
+			ele.insert(i, x)
+
+
+n = int(input())
+
+if n == 2 or n == 3:
+	print("NO SOLUTION")
+	exit(0)
+
+for i in range(n, 0, -1):
+	ele.append(i)
+
+backtrack()
+```
+
+</PySection>
 </LanguageSection>

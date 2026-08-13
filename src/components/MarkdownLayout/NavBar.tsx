@@ -1,38 +1,21 @@
 import Link from 'next/link';
-import * as React from 'react';
-import MODULE_ORDERING from '../../../content/ordering';
 import { useMarkdownLayout } from '../../context/MarkdownLayoutContext';
-import { MarkdownLayoutSidebarModuleLinkInfo } from '../../models/module';
+import {
+  useModuleNavigation,
+  useModuleNavigationShortcutLabel,
+} from '../../hooks/useModuleNavigation';
 import { SolutionInfo } from '../../models/solution';
 import Breadcrumbs from './Breadcrumbs';
 
 const NavBar = ({ alignNavButtonsRight = true }) => {
   const moduleLayoutInfo = useMarkdownLayout();
-  const { markdownLayoutInfo, sidebarLinks } = moduleLayoutInfo;
+  const { markdownLayoutInfo } = moduleLayoutInfo;
+  const { sortedModuleLinks, prevModule, nextModule } = useModuleNavigation();
+  const shortcutLabel = useModuleNavigationShortcutLabel();
 
-  const sortedModuleLinks = React.useMemo(() => {
-    if (markdownLayoutInfo instanceof SolutionInfo) return undefined;
-    const links: MarkdownLayoutSidebarModuleLinkInfo[] = [];
-    for (const group of MODULE_ORDERING[markdownLayoutInfo.section]) {
-      for (const id of group.items) {
-        const link = sidebarLinks.find(x => x.id === id);
-        if (link) links.push(link);
-      }
-    }
-    return links;
-  }, [sidebarLinks]);
-  const moduleIdx = React.useMemo(
-    () => sortedModuleLinks?.findIndex(x => x.id === markdownLayoutInfo.id),
-    [markdownLayoutInfo, sortedModuleLinks]
-  ) as number;
   if (!sortedModuleLinks || markdownLayoutInfo instanceof SolutionInfo) {
     return null;
   }
-  const prevModule = moduleIdx === 0 ? null : sortedModuleLinks[moduleIdx - 1];
-  const nextModule =
-    moduleIdx === sortedModuleLinks.length - 1
-      ? null
-      : sortedModuleLinks[moduleIdx + 1];
 
   const disabledClasses =
     'text-gray-200 pointer-events-none dark:text-dark-disabled-emphasis';
@@ -51,6 +34,9 @@ const NavBar = ({ alignNavButtonsRight = true }) => {
           className={
             'inline-flex items-center rounded-md px-4 py-2 text-sm leading-5 font-medium ' +
             (prevModule === null ? disabledClasses : activeClasses)
+          }
+          title={
+            prevModule === null ? undefined : `Prev (${shortcutLabel.prev})`
           }
         >
           <svg
@@ -76,6 +62,9 @@ const NavBar = ({ alignNavButtonsRight = true }) => {
           className={
             'inline-flex items-center rounded-md px-4 py-2 text-sm leading-5 font-medium ' +
             (nextModule === null ? disabledClasses : activeClasses)
+          }
+          title={
+            nextModule === null ? undefined : `Next (${shortcutLabel.next})`
           }
         >
           Next
