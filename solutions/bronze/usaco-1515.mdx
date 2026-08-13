@@ -37,15 +37,15 @@ for (int i = 0; i < n; i++) {
 <PySection>
 
 ```py
-n,m = map(int,input().split())
+n, m = map(int, input().split())
 beats = [[False for i in range(n)] for j in range(n)]
 for i in range(n):
-    state = input()
-    for j in range(len(a)):
-        if state[j] == 'W':
-            beats[i][j] = True
-        elif state[j] == 'L':
-            beats[j][i] = True
+	state = input()
+	for j in range(len(a)):
+		if state[j] == "W":
+			beats[i][j] = True
+		elif state[j] == "L":
+			beats[j][i] = True
 ```
 
 </PySection>
@@ -72,9 +72,9 @@ for (int myL = 0; myL < n; myL++) {
 
 ```py
 for myL in range(n):
-    for myR in range(n):
-        if (beats[myL][l] and beats[myL][r]) or (beatsy[myR][l] and beats[myR][r]):
-            possible += 1
+	for myR in range(n):
+		if (beats[myL][l] and beats[myL][r]) or (beatsy[myR][l] and beats[myR][r]):
+			possible += 1
 ```
 
 </PySection>
@@ -108,12 +108,12 @@ for (int myL = 0; myL < n; myL++) {
 
 ```py
 for myL in range(n):
-    if beats[myL][l] and beats[myL][r]:
-        possible += n
-    else:
-        for myR in range(n):
-            if beats[myR][l] and beats[myR][r]:
-                possible += 1
+	if beats[myL][l] and beats[myL][r]:
+		possible += n
+	else:
+		for myR in range(n):
+			if beats[myR][l] and beats[myR][r]:
+				possible += 1
 ```
 
 </PySection>
@@ -214,27 +214,27 @@ int main() {
 <PySection>
 
 ```py
-n,m = map(int, input().split())
+n, m = map(int, input().split())
 beats = [[False for i in range(n)] for j in range(n)]
 
 for i in range(n):
-    state = input()
+	state = input()
 
-    for j in range(len(state)):
-        if state[j] == 'W':
-            beats[i][j] = True
-        elif state[j] == 'L':
-            beats[j][i] = True
+	for j in range(len(state)):
+		if state[j] == "W":
+			beats[i][j] = True
+		elif state[j] == "L":
+			beats[j][i] = True
 
 for _ in range(m):
-    l, r = map(int, input().split())
-    x = 0
+	l, r = map(int, input().split())
+	x = 0
 
-    for my_symbol in range(n):
-        if beats[my_symbol][l-1] and beats[my_symbol][r-1]:
-            x += 1
+	for my_symbol in range(n):
+		if beats[my_symbol][l - 1] and beats[my_symbol][r - 1]:
+			x += 1
 
-    print(2*x*n - x**2) #this is also equivalent to x*n + x*(n-x)
+	print(2 * x * n - x**2)  # this is also equivalent to x*n + x*(n-x)
 ```
 
 </PySection>
