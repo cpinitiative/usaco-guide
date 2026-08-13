@@ -9,22 +9,22 @@ author: Abhinav Singh
 
 <Spoiler title="Hint 1">
 
-Computing all $\mathcal{O}(n^2)$ pair sums directly is too slow to repeat $n - 1$ times.
-Try sorting the array: does that reveal any structure in how the pair sums compare to each other?
+Computing all $\mathcal{O}(N^2)$ pair sums directly is too slow. Try sorting the array and working out a 
+few sample cases. Do you notice any structure in the indices used in the smallest pairwise sums?
 
 </Spoiler>
 
 <Spoiler title="Hint 2">
 
-For each left endpoint $i$, keep track of the smallest unused pair involving $i$. How can we efficiently find the smallest such pair overall and update its right endpoint?
+For each left endpoint $i$, keep track of the smallest unused pair involving $i$.  Across all $i$, how can we efficiently find the smallest such pair, and update it after using a pair?
 
 </Spoiler>
 
 <Spoiler title="Hint 3">
 
-Applying $F$ many times on the raw values will overflow, but you can't reduce mod $p$ mid-way
-either, since comparisons need the true order. Can you track the array as a small,
-bounded part plus a separate scalar that's allowed to be reduced mod $p$?
+Applying $F$ directly will eventually overflow, since the smallest value in the array will always double. Additionally, we cannot take the remainder after each application of $F$, since comparisons are necessary.
+
+Try to bound the values in our array after each application of $F$, with a separate scalar to recover the true answer at the end.
 
 </Spoiler>
 
