@@ -7,7 +7,7 @@ author: Robert Chung
 
 **Official Editorial:** [Hello 2020 (Problem G)](https://codeforces.com/blog/entry/72804)
 
-## Explanation
+## Alternative Solution
 
 Create a grid graph with one vertex for each free cell $(i, j)$ and
 undirected edges between neighboring free cells.
@@ -56,6 +56,7 @@ struct PartitionMat {
 	bool check(int x) const { return cnt[part[x]] < part_lim[part[x]]; }
 	void add(int x) { cnt[part[x]]++; }
 	void clear() { ranges::fill(cnt, 0); }
+	void precomp() {}
 };
 struct DualGraphMat {
 	vector<char> is_excluded;
@@ -109,59 +110,67 @@ struct DualGraphMat {
 		lazy = true;
 		ranges::fill(is_excluded, false);
 	}
+	void precomp() {}
 };
-namespace kactl {
-// BeginCodeSnip{KACTL Matroid Intersection Template}
-using vi = vector<int>;
-#define rep(i, a, b) for (int i = (a); i < (b); ++i)
 
-template <class M1, class M2> struct MatroidIsect {
-	int n;
-	vector<char> iset;
-	M1 m1;
-	M2 m2;
-	MatroidIsect(M1 m1, M2 m2, int n) : n(n), iset(n + 1), m1(m1), m2(m2) {}
-	vi solve() {
-		while (augment());
-		vi ans;
-		rep(i, 0, n) if (iset[i]) ans.push_back(i);
-		return ans;
-	}
-	bool augment() {
-		vector<int> frm(n, -1);
-		queue<int> q({n});  // starts at dummy node
-		auto fwdE = [&](int a) {
-			vi ans;
-			m1.clear();
-			rep(v, 0, n) if (iset[v] && v != a) m1.add(v);
-			rep(b, 0, n) if (!iset[b] && frm[b] == -1 && m1.check(b)) ans.push_back(b),
-			    frm[b] = a;
-			return ans;
-		};
-		auto backE = [&](int b) {
-			m2.clear();
-			rep(cas, 0, 2)
-			    rep(v, 0, n) if ((v == b || iset[v]) && (frm[v] == -1) == cas) {
-				if (!m2.check(v)) return cas ? q.push(v), frm[v] = b, v : -1;
-				m2.add(v);
+// BeginCodeSnip{Matroid Intersection Template}
+template <class M1, class M2> vector<bool> MatroidIsect(M1 m1, M2 m2, int n) {
+	vector<bool> in_S(n);
+	auto augment = [&] {
+		vector<int> S, E_S;  // E_S has indices of all edges not in S
+		for (int i = 0; i < n; i++) {
+			if (in_S[i]) S.push_back(i);
+			else E_S.push_back(i);
+		}
+		// build exchange graph
+		vector<vector<int>> adj(n);
+		for (int y : S) {
+			m1.clear(), m2.clear();
+			for (int i : S) {
+				if (i != y) m1.add(i), m2.add(i);
 			}
-			return n;
-		};
+			// optional precomputation, can be an empty function
+			m1.precomp(), m2.precomp();
+			for (int x : E_S) {
+				if (m1.check(x)) adj[y].push_back(x);
+				if (m2.check(x)) adj[x].push_back(y);
+			}
+		}
+		// identify sources and sinks for BFS
+		vector<bool> is_sink(n);
+		queue<int> q;
+		vector<bool> vis(n);
+
+		m1.clear(), m2.clear();
+		for (int y : S) m1.add(y), m2.add(y);
+		m1.precomp(), m2.precomp();  // optional precomp
+		for (int x : E_S) {
+			if (m1.check(x)) vis[x] = 1, q.push(x);  // x is a source
+			is_sink[x] = m2.check(x);
+		}
+		// BFS to find augmenting path from source to sink
+		vector<int> prev(n, -1);
 		while (!q.empty()) {
-			int a = q.front(), c;
+			int u = q.front();
 			q.pop();
-			for (int b : fwdE(a))
-				while ((c = backE(b)) >= 0)
-					if (c == n) {
-						while (b != n) iset[b] ^= 1, b = frm[b];
-						return true;
-					}
+			if (is_sink[u]) {
+				// augmenting path found
+				for (int v = u; v != -1; v = prev[v]) { in_S[v] = !in_S[v]; }
+				return true;
+			}
+			for (int v : adj[u]) {
+				if (vis[v]) continue;
+				q.push(v);
+				vis[v] = 1;
+				prev[v] = u;
+			}
 		}
 		return false;
-	}
-};
+	};
+	while (augment());
+	return in_S;
+}
 // EndCodeSnip
-}  // namespace kactl
 
 void solve() {
 	int n, m;
@@ -194,14 +203,16 @@ void solve() {
 		return;
 	}
 
-	kactl::MatroidIsect mat(DualGraphMat(n * m, edges), PartitionMat(part, part_lim),
+	auto res = MatroidIsect(DualGraphMat(n * m, edges), PartitionMat(part, part_lim),
 	                        size(edges));
-	auto res = mat.solve();
+	vector<int> excluded_edges;
+	for (int i = 0; i < ssize(res); i++)
+		if (res[i]) excluded_edges.push_back(i);
 
 	int nodes = 0;
 	for (auto &row : g)
 		for (auto &c : row) nodes += c == 'O';
-	if (ssize(edges) - ssize(res) != nodes - 1) {
+	if (ssize(edges) - ssize(excluded_edges) != nodes - 1) {
 		cout << "NO\n";  // not a tree
 		return;
 	}
@@ -223,7 +234,7 @@ void solve() {
 		ans[i][j] = 'O';
 	}
 	// remove excluded edges
-	for (int eid : res) {
+	for (int eid : excluded_edges) {
 		auto [a, b] = edges[eid];
 		auto [i, j] = edge_location(a, b);
 		ans[i][j] = ' ';
