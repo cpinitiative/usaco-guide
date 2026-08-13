@@ -85,71 +85,6 @@ struct UF {
 	void clear() { fill(e.begin(), e.end(), -1); }
 };
 /**
- * Author: tfg, Aeren, pajenegod, chilli
- * Date: 2020-04-15
- * License: CC0
- * Source: https://codeforces.com/blog/entry/69287
- * Description: Given two matroids, finds the largest common independent set.
- * For the color and graph matroids, this would be the largest forest where no
- * two edges are the same color. A matroid has 3 functions
- *  - check(int x): returns if current matroid can add x without becoming dependent
- *  - add(int x): adds an element to the matroid (guaranteed to never make it dependent)
- *  - clear(): sets the matroid to the empty matroid
- * The matroid is given an int representing the element, and is expected to
- * convert it (e.g: the color or the endpoints)
- * Pass the matroid with more expensive add/clear operations to M1.
- * Time: R^2N(M2.add + M1.check + M2.check) + R^3 M1.add + R^2 M1.clear + RN M2.clear
- * Status: Tested on SWERC 2011D, Pick Your Own Nim
- * Usage:
- * Details:
- */
-template <class M1, class M2> struct MatroidIsect {
-	int n;
-	vector<char> iset;
-	M1 m1;
-	M2 m2;
-	MatroidIsect(M1 m1, M2 m2, int n) : n(n), iset(n + 1), m1(m1), m2(m2) {}
-	vi solve() {
-		while (augment());
-		vi ans;
-		rep(i, 0, n) if (iset[i]) ans.push_back(i);
-		return ans;
-	}
-	bool augment() {
-		vector<int> frm(n, -1);
-		queue<int> q({n});  // starts at dummy node
-		auto fwdE = [&](int a) {
-			vi ans;
-			m1.clear();
-			rep(v, 0, n) if (iset[v] && v != a) m1.add(v);
-			m1.precomp();
-			rep(b, 0, n) if (!iset[b] && frm[b] == -1 && m1.check(b)) ans.push_back(b),
-			    frm[b] = a;
-			return ans;
-		};
-		auto backE = [&](int b) {
-			m2.clear();
-			rep(cas, 0, 2)
-			    rep(v, 0, n) if ((v == b || iset[v]) && (frm[v] == -1) == cas) {
-				if (!m2.check(v)) return cas ? q.push(v), frm[v] = b, v : -1;
-				m2.add(v);
-			}
-			return n;
-		};
-		while (!q.empty()) {
-			int a = q.front(), c;
-			q.pop();
-			for (int b : fwdE(a))
-				while ((c = backE(b)) >= 0)
-					if (c == n) {
-						while (b != n) iset[b] ^= 1, b = frm[b];
-						return true;
-					}
-		}
-		return false;
-	}
-};
-/**
  * Author: Lukas Polacek, Simon Lindholm
  * Date: 2019-12-31
  * License: CC0
@@ -186,7 +121,66 @@ vector<pii> eulerWalk(vector<vector<pii>> &gr, int nedges, int src = 0) {
 }
 // EndCodeSnip
 }  // namespace kactl
-using kactl::UF, kactl::MatroidIsect, kactl::eulerWalk;
+using kactl::UF, kactl::eulerWalk;
+
+// BeginCodeSnip{MatroidIsect Template}
+template <class M1, class M2> vector<bool> MatroidIsect(M1 m1, M2 m2, int n) {
+	vector<bool> in_S(n);
+	auto augment = [&] {
+		vector<int> S, E_S;  // E_S has indices of all edges not in S
+		for (int i = 0; i < n; i++) {
+			if (in_S[i]) S.push_back(i);
+			else E_S.push_back(i);
+		}
+		// build exchange graph
+		vector<vector<int>> adj(n);
+		for (int y : S) {
+			m1.clear(), m2.clear();
+			for (int i : S) {
+				if (i != y) m1.add(i), m2.add(i);
+			}
+			// optional precomputation, can be an empty function
+			m1.precomp(), m2.precomp();
+			for (int x : E_S) {
+				if (m1.check(x)) adj[y].push_back(x);
+				if (m2.check(x)) adj[x].push_back(y);
+			}
+		}
+		// identify sources and sinks for BFS
+		vector<bool> is_sink(n);
+		queue<int> q;
+		vector<bool> vis(n);
+
+		m1.clear(), m2.clear();
+		for (int y : S) m1.add(y), m2.add(y);
+		m1.precomp(), m2.precomp(); // optional precomp
+		for (int x : E_S) {
+			if (m1.check(x)) vis[x] = 1, q.push(x);  // x is a source
+			is_sink[x] = m2.check(x);
+		}
+		// BFS to find augmenting path from source to sink
+		vector<int> prev(n, -1);
+		while (!q.empty()) {
+			int u = q.front();
+			q.pop();
+			if (is_sink[u]) {
+				// augmenting path found
+				for (int v = u; v != -1; v = prev[v]) { in_S[v] = !in_S[v]; }
+				return true;
+			}
+			for (int v : adj[u]) {
+				if (vis[v]) continue;
+				q.push(v);
+				vis[v] = 1;
+				prev[v] = u;
+			}
+		}
+		return false;
+	};
+	while (augment());
+	return in_S;
+}
+// EndCodeSnip
 
 struct GraphDual {
 	vector<int> exist;
@@ -236,8 +230,9 @@ struct GraphMatroid {
 	UF uf;
 	vector<array<int, 2>> edges;
 	GraphMatroid(int n, vector<array<int, 2>> &edges) : uf(n), edges(edges) {}
-	bool check(int x) { return !uf.sameSet(edges[x][0], edges[x][1]); }
 	void add(int x) { uf.join(edges[x][0], edges[x][1]); }
+	void precomp() {}
+	bool check(int x) { return !uf.sameSet(edges[x][0], edges[x][1]); }
 	void clear() { uf.clear(); }
 };
 
@@ -251,8 +246,13 @@ void solve() {
 	}
 	GraphDual mat1(n, m, edges);
 	GraphMatroid mat2(n, edges);
-	MatroidIsect isect(mat1, mat2, m);
-	auto treeEdges = isect.solve();
+	auto isect = MatroidIsect<GraphDual, GraphMatroid>(mat1, mat2, m);
+	vector<int> treeEdges;
+	for (int i = 0; i < m; i++) {
+		if (isect[i]) {
+			treeEdges.push_back(i);
+		}
+	}
 	vector<vector<array<int, 2>>> tree(n);
 	for (int e : treeEdges) {
 		auto [u, v] = edges[e];

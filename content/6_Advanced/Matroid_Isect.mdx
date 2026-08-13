@@ -101,22 +101,27 @@ It turns out that supporting the following operations (for both matroids) is eno
 - `clear()`: set $S := \emptyset$.
 - `check(x)`: return true if $S + x$ is independent and false otherwise.
 - `add(x)`: set $S := S + x$, assuming $S + x$ is independent.
+- `precomp()`: (optional) precomputation to speed up a batch of `check(x)` queries.
 
 Recall that we need to know for each $y \in S$ and $x \in E \setminus S$ if
 $S - y + x \in \mathcal I(M_1)$ and $S - y + x \in \mathcal I(M_2)$.
 The trick is to batch queries by $y$. For a fixed $y$, we use `clear()` and
 `add(x)` to obtain $S - y$, then use `check(x)` to find all $x$ where
-$S - y + x$ is independent.
+$S - y + x$ is independent. Before making the `check(x)` calls, we also make
+a call to `precomp()` to potentially speed up the batch of $\mathcal O(N)$
+`check(x)` calls. In case precomputation is unnecessary, `precomp()` can be
+defined as an empty function.
 
-This builds the graph with $\mathcal O(R)$ calls to `clear()` and $\mathcal O(RN)$ calls to
-`check(x)` and `add(x)`. Observe that we sidestepped the need to efficiently
-remove arbitrary elements from $S$, which would have been a big problem for
-matroids like the graphic matroid.
+This builds the graph with $\mathcal O(R)$ calls to `clear()` and `precomp()`,
+$\mathcal O(R^2)$ calls to `add(x)`, and $\mathcal O(RN)$ calls to `add(x)`. 
+Observe that we sidestepped the need to efficiently remove arbitrary elements 
+from $S$, which would have been a big problem for matroids like the graphic matroid.
 
 Also see KACTL's implementation, which only checks edges as needed rather than building the entire graph upfront.
 
-**Time Complexity:** $\mathcal O(R^2N)$,
-assuming `add(x)`, `check(x)` are $\mathcal O(1)$ and `clear()` is $\mathcal O(N)$.
+**Time Complexity:** $\mathcal O(R^2)$ calls to `clear()` and `precomp()`, 
+$\mathcal O(R^3)$ to `add(x)`, and $\mathcal O(R^2N)$ calls to `check(x)`.
+Note that in our implementation, the complexity is always dominated by these oracle calls.
 
 <LanguageSection>
 <CPPSection>
@@ -136,6 +141,8 @@ template <class M1, class M2> vector<bool> MatroidIsect(M1 m1, M2 m2, int n) {
 			for (int i : S) {
 				if (i != y) m1.add(i), m2.add(i);
 			}
+			// optional precomputation, can be an empty function
+			m1.precomp(), m2.precomp();
 			for (int x : E_S) {
 				if (m1.check(x)) adj[y].push_back(x);
 				if (m2.check(x)) adj[x].push_back(y);
@@ -148,6 +155,7 @@ template <class M1, class M2> vector<bool> MatroidIsect(M1 m1, M2 m2, int n) {
 
 		m1.clear(), m2.clear();
 		for (int y : S) m1.add(y), m2.add(y);
+		m1.precomp(), m2.precomp(); // optional precomp
 		for (int x : E_S) {
 			if (m1.check(x)) vis[x] = 1, q.push(x);  // x is a source
 			is_sink[x] = m2.check(x);
@@ -236,10 +244,10 @@ struct GraphicMatroid {
 	    : n(n), dsu(n), edges(edges) {
 		clear();
 	}
-
 	void clear() { dsu = DSU(n); }
 	bool check(int x) { return dsu.find(edges[x].first) != dsu.find(edges[x].second); }
 	void add(int x) { dsu.merge(edges[x].first, edges[x].second); }
+	void precomp() {}
 };
 
 struct PartitionMatroid {
@@ -249,13 +257,14 @@ struct PartitionMatroid {
 	void clear() { fill(begin(used), end(used), 0); }
 	bool check(int x) { return used[cat[x]] < cap[cat[x]]; }
 	void add(int x) { used[cat[x]]++; }
+	void precomp() {}
 };
 
 // BeginCodeSnip{Matroid Intersection Algorithm}
 template <class M1, class M2> vector<bool> MatroidIsect(M1 m1, M2 m2, int n) {
 	vector<bool> in_S(n);
 	auto augment = [&] {
-		vector<int> S, E_S;
+		vector<int> S, E_S;  // E_S has indices of all edges not in S
 		for (int i = 0; i < n; i++) {
 			if (in_S[i]) S.push_back(i);
 			else E_S.push_back(i);
@@ -267,6 +276,8 @@ template <class M1, class M2> vector<bool> MatroidIsect(M1 m1, M2 m2, int n) {
 			for (int i : S) {
 				if (i != y) m1.add(i), m2.add(i);
 			}
+			// optional precomputation, can be an empty function
+			m1.precomp(), m2.precomp();
 			for (int x : E_S) {
 				if (m1.check(x)) adj[y].push_back(x);
 				if (m2.check(x)) adj[x].push_back(y);
@@ -279,6 +290,7 @@ template <class M1, class M2> vector<bool> MatroidIsect(M1 m1, M2 m2, int n) {
 
 		m1.clear(), m2.clear();
 		for (int y : S) m1.add(y), m2.add(y);
+		m1.precomp(), m2.precomp(); // optional precomp
 		for (int x : E_S) {
 			if (m1.check(x)) vis[x] = 1, q.push(x);  // x is a source
 			is_sink[x] = m2.check(x);
