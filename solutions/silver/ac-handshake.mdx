@@ -1,0 +1,143 @@
+---
+id: ac-handshake
+source: AtCoder Beginner Contest 149
+title: Handshake
+author: Mikaela Tereshkov
+---
+
+[Official Analysis](https://img.atcoder.jp/abc149/editorial.pdf)
+
+## Explanation
+
+It is easier to solve this problem by first considering a quadratic solution. To solve this problem
+in $\mathcal{O}(N^2\log{N})$, we can find all possible values of handshakes, sort them, and take the top $M$ values.
+
+To optimize this solution, we can use binary search. We can binary search on the value $K$ where our top $M$ handshakes
+have values $ \geq K$ and the remaining handshakes have values $\leq K$.
+
+To do this, we can sort $A$ in nonincreasing order and build a prefix sum array, $\texttt{pref}$. Then, for each value
+of $K$ that we check with binary search, we can use a two-pointer approach to calculate the total $\texttt{benefit}$ and $\texttt{count}$. For
+each index $i$, we can find the latest index $j$ such that $A_i + A_j \geq K$. As we decrement $i$ by $1$, we never
+decrement $j$, allowing for $\mathcal{O}(N)$ traversal.
+
+$$
+\texttt{benefit}=\texttt{benefit} +\texttt{pref}_j+A_i\cdot j
+$$
+$$
+\texttt{count}=\texttt{count} + j
+$$
+
+Our addition to $\texttt{count}$ is obtained from the fact that if $j$ is the latest index such that $A_i + A_j \geq K$, we can pair the person at index $i$ with the first $j$ people.
+
+Our addition to $\texttt{benefit}$ is obtained from the fact that each of the $j$ handshakes, $(l, i)$, will contribute $A_l+A_i$ exactly once for all $l$ where $1 \leq l \leq j$. This gives us the formula $\texttt{benefit}=\texttt{benefit} +\sum_{l=1}^{j} (A_l+A_i)$ which is equivalent to $\texttt{benefit}=\texttt{benefit} +\sum_{l=1}^{j} A_l+A_i\cdot j$. We can use prefix sums to find $\sum_{l=1}^{j} A_l$ in $\mathcal{O}(1)$ time, resulting in our formula.
+
+For optimal $K$, our result is $\texttt{benefit}-K\cdot (\texttt{count}-M)$. This is because for our optimal result, handshakes with value exactly $K$ can be either taken or not. When we find optimal $K$, $\texttt{benefit}$ will include all handshakes of value $K$. To adjust for this overcount, we can subtract $K\cdot (\texttt{count}-M)$, as we should not take $\texttt{count}-M$ handshakes of value exactly $K$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log{N})$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+const int MAXV = 200000;
+
+int main() {
+	int n;
+	ll m;
+	cin >> n >> m;
+
+	vector<int> a(n);
+	vector<ll> pref(n + 1, 0);
+
+	for (int &x : a) { std::cin >> x; }
+
+	sort(a.rbegin(), a.rend());
+	for (int i = 0; i < n; i++) { pref[i + 1] = a[i] + pref[i]; }
+
+	int lo = 0, hi = MAXV;
+	ll res = 0;
+
+	while (lo <= hi) {
+		ll count = 0, benefit = 0;
+		int k = lo + (hi - lo) / 2;
+
+		int j = 0;
+		for (int i = n - 1; i >= 0; i--) {
+			while (j < n && a[i] + a[j] >= k) { j++; }
+			count += j;
+			benefit += 1LL * j * a[i] + pref[j];
+		}
+		if (count >= m) {
+			lo = k + 1;
+			res = benefit - (count - m) * k;
+		} else {
+			hi = k - 1;
+		}
+	}
+
+	cout << res << '\n';
+	return 0;
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+	private static int MAXV = 200000;
+
+	public static void main(String[] args) throws Exception {
+
+		Kattio io = new Kattio();
+		int n = io.nextInt();
+		long m = io.nextLong();
+
+		Integer[] a = new Integer[n];
+		for (int i = 0; i < n; i++) { a[i] = io.nextInt(); }
+		Arrays.sort(a, Collections.reverseOrder());
+
+		long[] pref = new long[n + 1];
+		for (int i = 0; i < n; i++) { pref[i + 1] = a[i] + pref[i]; }
+
+		int lo = 0, hi = MAXV;
+		long res = 0;
+
+		while (lo <= hi) {
+			long count = 0, benefit = 0;
+			int k = lo + (hi - lo) / 2;
+
+			int j = 0;
+			for (int i = n - 1; i >= 0; i--) {
+				while (j < n && a[i] + a[j] >= k) { j++; }
+				count += j;
+				benefit += (long)j * a[i] + pref[j];
+			}
+			if (count >= m) {
+				lo = k + 1;
+				res = benefit - (count - m) * k;
+			} else {
+				hi = k - 1;
+			}
+		}
+
+		io.println(res);
+		io.close();
+	}
+
+	// BeginCodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+</LanguageSection>

@@ -1,0 +1,142 @@
+---
+id: ac-abc465_f
+source: AC
+title: Sjeltzer?
+author: Ray Xu
+---
+
+[Official Editorial (C++)](https://atcoder.jp/contests/abc465/editorial/22567)
+
+## Explanation
+
+Each drink's ID is a 6-digit string. Treat every digit position as its own axis
+taking values $0$–$9$. Then each drink is a single point in a **6-dimensional
+grid**, and a query asks for the total size over a 6-dimensional box — one
+interval $[x_k, y_k]$ per axis. This is exactly what a prefix sum handles, just
+in six dimensions instead of two.
+
+### Building the 6D prefix sum
+
+The array `ps[11][11][11][11][11][11]` is the prefix sum array. Each size is
+recorded as `ps[d0+1][d1+1]…[d5+1] = size` so that we don't have to use casework
+to deal with 0-indexed subtraction during queries.
+
+`precompute()` then turns this into a prefix sum. In 2D you sweep right and then
+down; here you sweep once along **each** of the 6 dimensions. The code does this
+compactly: for each dimension `i`, it visits every cell, steps one index back
+along axis `i` (`tr[i]--`), and adds that neighboring cell's value. After all six
+sweeps, `ps[a1][a2]…[a6]` stores the total size of every drink whose $k$-th digit
+satisfies $s_k \le a_k - 1$ for all $k$.
+
+### Answering a query with inclusion–exclusion
+
+A query gives two bound strings `s1` (lower) and `s2` (upper), i.e. a range
+$[x_k, y_k]$ per axis. Summing over a box from a prefix-sum array is the
+inclusion–exclusion trick, generalized:
+
+- a 1D range $[x, y]$ is `ps(y) − ps(x − 1)`;
+- a 2D box is `ps(y0,y1) − ps(x0−1,y1) − ps(y0,x1−1) + ps(x0−1,x1−1)`.
+
+For 6 axes there are $2^6 = 64$ corners. The code iterates a 6-bit mask; for each
+axis it picks either the upper endpoint $y_k$ (index $y_k + 1$, pushed into
+`query_pos` and counted by `cnt`) or the position just below the lower endpoint
+(index $x_k$, representing "$\le x_k - 1$"). It then reads `ps` at that corner and
+adds or subtracts it, subtracting when `cnt` is odd — equivalently, when an odd
+number of axes use the lower endpoint (the two have the same parity because there
+are 6 axes). One more case matters: if some axis has $x_k > y_k$, then no digit
+can simultaneously be $\ge x_k$ and $\le y_k$ on that axis, so the query box holds
+no drinks and the answer is $0$. The code checks this first and short-circuits,
+since inclusion–exclusion assumes valid bounds.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(10^6 + Q)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int D = 11;                // 10 digit values (0-9) + 1 for 1-indexed prefix sums
+long long ps[D][D][D][D][D][D];  // prefix sum array
+
+void precompute() {
+	for (int i = 0; i < 6; i++) {  // proprogate the value in each of the 6 dimensions
+		for (int i1 = 1; i1 <= 10; i1++) {
+			for (int i2 = 1; i2 <= 10; i2++) {
+				for (int i3 = 1; i3 <= 10; i3++) {
+					for (int i4 = 1; i4 <= 10; i4++) {
+						for (int i5 = 1; i5 <= 10; i5++) {
+							for (int i6 = 1; i6 <= 10; i6++) {
+								vector<int> tr = {i1, i2, i3, i4, i5, i6};
+								tr[i]--;
+								ps[i1][i2][i3][i4][i5][i6] +=
+								    ps[tr[0]][tr[1]][tr[2]][tr[3]][tr[4]][tr[5]];
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+int main() {
+
+	int n;
+	cin >> n;
+	for (int i = 0; i < n; i++) {
+		string s;
+		cin >> s;
+		vector<int> ind;
+		long long x;
+		cin >> x;
+		for (auto j : s) ind.push_back(j - '0' + 1);
+		ps[ind[0]][ind[1]][ind[2]][ind[3]][ind[4]][ind[5]] = x;
+	}
+
+	precompute();
+
+	int q;
+	cin >> q;
+	while (q--) {
+		string s1, s2;
+		cin >> s1 >> s2;
+		int f = 0;
+		for (int j = 0; j < 6; j++) {
+			if (s1[j] > s2[j]) {  // lower bound exceeds upper bound on this axis ->
+				                  // empty box -> 0
+				f = 1;
+				cout << 0 << "\n";
+				break;
+			}
+		}
+		if (f) continue;
+		long long ans = 0;
+		for (int i = 0; i < 64; i++) {
+			vector<int> query_pos;
+			int cnt = 0;
+			for (int j = 0; j < 6; j++) {
+				if (i & (1 << j)) {
+					query_pos.push_back(s2[j] - '0' + 1);
+					cnt++;
+				} else query_pos.push_back(s1[j] - '0');
+			}
+			if (cnt & 1)
+				ans -= ps[query_pos[0]][query_pos[1]][query_pos[2]][query_pos[3]]
+				         [query_pos[4]]
+				         [query_pos[5]];  // odd number of "-1"s, we subtract the value
+			else
+				ans += ps[query_pos[0]][query_pos[1]][query_pos[2]][query_pos[3]]
+				         [query_pos[4]][query_pos[5]];
+		}
+		cout << ans << "\n";
+	}
+	return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>

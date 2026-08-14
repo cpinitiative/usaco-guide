@@ -15,7 +15,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { MenuIcon } from '@heroicons/react/solid';
+import { Bars3Icon } from '@heroicons/react/24/solid';
 import { useEffect, useState } from 'react';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useGroupActions } from '../../../hooks/groups/useGroupActions';
@@ -55,7 +55,7 @@ function SortableItem(props: {
             {...attributes}
             {...listeners}
           >
-            <MenuIcon className="h-5 w-5 text-gray-300" />
+            <Bars3Icon className="h-5 w-5 text-gray-300" />
           </div>
         }
       />
@@ -165,7 +165,7 @@ export default function Feed(): JSX.Element {
                   }
                   dragHandle={
                     <div className="flex items-center self-stretch px-2">
-                      <MenuIcon className="h-5 w-5 text-gray-300" />
+                      <Bars3Icon className="h-5 w-5 text-gray-300" />
                     </div>
                   }
                 />

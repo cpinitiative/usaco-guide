@@ -1,0 +1,93 @@
+---
+id: cf-1690G
+source: CF
+title: Count the Trains
+author: Abhinav Singh
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/103658)
+
+## Explanation
+Let $a_i$ be the maximum speed of carriage $i$, and $v_i$ the current speed it is running at. Since carriage $i$ can never outrun carriages in front of it, $v_i$ is the prefix minimum $v_i = \min(a_1, \ldots, a_i)$. The array $v_i$ is non-increasing, with each change in value being a boundary between trains. Thus, at any given moment, the answer is the number of distinct values in $v$.
+
+Instead of storing the whole prefix minimum array, maintain a set of *start indices*, or the indices where a new train starts, which are index $0$ and every index $i$ where $v_i < v_{i-1}$. Note that $a_j = v_j$ at any start index $j$, so the true speed of a position $k$ is $a_j$, where $j$ is the closest starting index to the left of $k$.
+
+When a query decreases $a_k$, one of the following happens:
+- The true speed $v_k$, as defined by a starting index, is equal to or slower than $a_k$. Thus, the set of starting indices (i.e., the number of trains) remains the same.
+- The previous true speed $v_k$ is greater than $a_k$, resulting in $k$ becoming a starting index. Note that $k$ becoming a starting index may result in some starting indices becoming obsolete. To remove these obsolete indices, we iteratively check the nearest starting index to the right of $k$, and see if its value is greater than $a_k$. If so, we erase and continue checking indices.
+
+At each point, the number of trains is equal to the number of starting indices. We have at most $\mathcal{O}(N+Q)$ starting index insertions, and thus the number of index removals is also bounded by $\mathcal{O}(N+Q)$. Thus, the overall time complexity amortizes to $\mathcal{O}((N+Q) \log N)$.
+
+<Info title="Alternative: Segment Tree Approach">
+
+Instead of storing train boundaries in a set, we can maintain the speeds in a [lazy segment tree](/plat/RURQ) to support range assign and point query. Since the speed array is always non-increasing, we can binary search for the last carriage whose speed exceeds the new cap, assign that suffix to the new speed, and update the number of distinct speeds accordingly.
+
+</Info>
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}((N+Q) \log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int test_num;
+	cin >> test_num;
+
+	for (int t = 0; t < test_num; ++t) {
+		int n, q;
+		cin >> n >> q;
+
+		vector<long long> a(n);
+		for (auto &x : a) { cin >> x; }
+
+		// Build the initial set of train-start indices
+		vector<long long> pref_min(n);
+		pref_min[0] = a[0];
+		set<int> starts = {0};
+
+		for (int i = 1; i < n; i++) {
+			pref_min[i] = min(pref_min[i - 1], a[i]);
+			if (pref_min[i] < pref_min[i - 1]) { starts.insert(i); }
+		}
+
+		while (q--) {
+			int k;
+			long long d;
+			cin >> k >> d;
+			k--;
+
+			// Largest start index <= k governs carriage k's current true speed
+			int j = *prev(starts.upper_bound(k));
+			long long cur_speed = a[j];
+
+			a[k] -= d;
+
+			if (a[k] >= cur_speed) {
+				cout << starts.size() << ' ';
+				continue;
+			}
+
+			starts.insert(k);
+
+			// Erase every later start index dominated by the new, lower speed
+			auto it = next(starts.find(k));
+			while (it != starts.end() && a[*it] >= a[k]) { it = starts.erase(it); }
+
+			cout << starts.size() << ' ';
+		}
+
+		cout << '\n';
+	}
+}
+```
+</CPPSection>
+</LanguageSection>
