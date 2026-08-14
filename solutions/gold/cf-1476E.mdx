@@ -15,7 +15,7 @@ We are given patterns of length $k$ containing lowercase letters and `_`, and qu
 For each query $(s, p)$, let $S$ be the set of all patterns matching $s$.
 The pattern $p$ should be the **first** element in $S$ in the ordering, and all other elements of $S$ must appear after $p$.
 Each requirement is therefore a **precedence constraint**, where $p$ must come before any other elements in $S$.
-We model these as directed edges, $p \to x$, where $x$ is any non-$p$ element in $S$.
+We model these as directed edges, $p \to x$, where $x$ is any non-$p$ element of $S$.
 
 A valid ordering then corresponds to a topological sort of the resulting graph: if the constraints are consistent, any topological order works, since every edge $p \to x$ guarantees that $p$ appears before every other pattern matching that query string, making $p$ the first matching pattern as required. If two constraints contradict each other (e.g. $p \to x$ and $x \to p$), a cycle forms and no valid ordering exists.
 
