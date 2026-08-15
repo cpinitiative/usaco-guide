@@ -7,7 +7,6 @@ author: Abhinav Singh
 
 [Official Analysis (C++)](https://codeforces.com/blog/entry/87356)
 
-
 ## Explanation
 
 We are given patterns of length $k$ containing lowercase letters and `_`, and queries
@@ -16,12 +15,12 @@ all non-`_` indices in the pattern must match with the string.
 
 For each query $(s, p)$, let $S$ be the set of all patterns matching $s$.
 The pattern $p$ should appear **before** all other patterns in $S$ in the ordering.
-Each requirement is therefore a **precedence constraint**, where $p$ must come before any other elements in $S$.
+Each requirement is therefore a *precedence constraint*, where $p$ must come before any other elements in $S$.
 We model these as directed edges, $p \to x$, where $x$ is any non-$p$ element of $S$.
 
 A valid ordering then corresponds to a topological sort of the resulting graph: if the constraints are consistent, any topological order works, since every edge $p \to x$ guarantees that $p$ appears before every other pattern matching that query string, making $p$ the first matching pattern as required. If two constraints contradict each other (e.g. $p \to x$ and $x \to p$), a cycle forms and no valid ordering exists.
 
-To compute $S$, note that since $k \le 4$, each query string has at most $2^k \le 16$ wildcard variants, obtained by replacing subsets of positions with `_`.
+To compute $S$, observe that since $k \le 4$, each query string has at most $2^k \le 16$ wildcard variants, obtained by replacing subsets of positions with `_`.
 We store a hashmap from pattern string to index and look up each variant to collect all matching patterns efficiently.
 
 For each query:
@@ -34,7 +33,7 @@ After processing all queries, run a topological sort on the pattern graph. If a 
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(n + m \cdot 2^k)$.
+**Time Complexity:** $\mathcal{O}(N + M \cdot 2^K)$
 
 <LanguageSection>
 <CPPSection>
@@ -57,6 +56,7 @@ bool dfs(int u) {
 			if (!no_cycle) return false;
 		}
 	}
+
 	color[u] = 2;
 	topo_order.push_back(u);
 	return true;
@@ -91,18 +91,24 @@ int main() {
 		// Try all 2^k subsets of positions replaced by '_' to find matching patterns
 		for (int mask = 0; mask < (1 << k); mask++) {
 			string variant = query_str;
-			for (int j = 0; j < k; j++)
+			for (int j = 0; j < k; j++) {
 				if (mask >> j & 1) variant[j] = '_';
-			if (pat_idx.count(variant)) matches[i].push_back(pat_idx[variant]);
+			}
+
+			if (pat_idx.count(variant)) {
+				matches[i].push_back(pat_idx[variant]);
+			}
 		}
 
 		// The required pattern must itself match the query string
 		bool req_found = false;
-		for (int x : matches[i])
+		for (int x : matches[i]) {
 			if (x == req) {
 				req_found = true;
 				break;
 			}
+		}
+
 		if (!req_found) {
 			cout << "NO\n";
 			return 0;
@@ -115,8 +121,9 @@ int main() {
 
 	for (int i = 0; i < m; i++) {
 		int req = queries[i].second;
-		for (int x : matches[i])
+		for (int x : matches[i]) {
 			if (x != req) adj[req].push_back(x);
+		}
 	}
 
 	// Topological sort via DFS; cycle means constraints are contradictory
