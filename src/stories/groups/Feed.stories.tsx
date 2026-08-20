@@ -3,8 +3,8 @@ import { Timestamp } from 'firebase/firestore';
 
 import Feed from '../../components/Groups/GroupPage/Feed';
 import { UserDataContext } from '../../context/UserDataContext/UserDataContext';
-import { ActiveGroupContext } from '../../hooks/groups/useActiveGroup';
 import { UserGroupsContext } from '../../hooks/groups/useUserGroups';
+import { ActiveGroupContext } from '../../hooks/groups/useActiveGroup';
 import { GroupData } from '../../models/groups/groups';
 import { PostData } from '../../models/groups/posts';
 
@@ -35,6 +35,7 @@ const assignment: PostData = {
   id: 'assignment-1',
   name: 'Dynamic Programming Assignment',
   timestamp: Timestamp.fromDate(new Date('2026-01-02')),
+  dueTimestamp: Timestamp.fromDate(new Date('2026-01-09')),
   body: 'Complete the following problems.',
   isPinned: false,
   isPublished: true,
