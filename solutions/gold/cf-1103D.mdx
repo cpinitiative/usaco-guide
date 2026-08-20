@@ -1,0 +1,380 @@
+---
+id: cf-1103D
+source: CF
+title: Professional Layer
+author: Abhinav Singh, Justin Ji
+---
+
+[Official Analysis (C++)](https://codeforces.com/blog/entry/64722)
+
+<Spoiler title="Hint 1">
+
+Let $g$ be the the GCD of array values, $\gcd(a_1, \dots, a_n)$. What is the bound
+on the number of primes in the factorization of $g$?
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+If we play a judge, we should try to eliminate a specific set of primes from their
+value of $a_i$ in a game.
+
+Let $m$ be the number of primes in the factorization of $g$. Since $m \leq 11$, we can consider bitmasking DP, and potentially an
+$\mathcal{O}(3^M)$ [merging subsets bitmask DP](/gold/dp-bitmasks#merging-subsets).
+
+</Spoiler>
+
+<Spoiler title="Hint 3">
+
+With $N \leq 10^6$, running a DP per judge is too slow. How can we compress the number of
+judges into a more manageable amount?
+
+</Spoiler>
+
+<Spoiler title="Hint 4">
+
+For each value of $a_i$, we remove all prime factors that are not in the
+factorization of $g$. With the given bounds, there are at most $12000$
+distinct values of $a_i$ in any input. Because each judge we play should remove
+at least one prime from $g$, we only consider the $m$ cheapest judges for each
+value of $a_i$.
+
+However, naively performing a merging subsets bitmask DP on each runs in
+$\mathcal{O}(MK \cdot 3^M)$, where $K$ is the number of distinct values of $a_i$.
+How can we reduce the number of DP transitions to consider?
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+## Explanation
+
+Let $g$ be the GCD of array values, $p$ be the set of primes in the
+factorization of $g$, and $m = |p|$. If $g=1$, then the answer is $0$.
+
+If we play a judge, we should eliminate a
+specific subset of primes in $p$ from its value of $a_i$.
+Since the product of the first $12$ primes already exceeds
+$10^{12}$, we have
+
+$$
+m\leq 11,
+$$
+
+which motivates a bitmasking approach.
+
+A naive bitmask DP would have
+$\text{dp}[i][\text{mask}]$ be the minimum sum of experience values to remove
+all the primes in $\text{mask}$ with $i$ judges. This would require updating our
+DP table for each judge, resulting in a time complexity of $\mathcal{O}(NM \cdot 3^M)$,
+which is much too slow to pass this problem.
+
+### Compressing Judges
+
+For each value of $a_i$, we remove all prime factors that are not in the
+factorization of $g$, since they do not affect the answer. After removing
+unnecessary primes,
+there are at most $12000$ distinct values of $a_i$ in any input.
+
+<Spoiler title="Calculating This Bound">
+
+In the worst case scenario, $g$ is equal to the product of the first
+$x$ smallest primes, where $x \leq 11$. This is because any value of $a_i$
+must share the same primes as $g$ while also being divisible by $g$. Hence,
+the exponent of each prime should always be $1$, and the primes should be minimized.
+
+To rigorously derive the bound, we must iterate on all values of $x$, and
+calculate the number of distinct values that are possible. It can be shown that
+$x=6$ and $g=30030$ maximizes the number of distinct values of $a_i$, with the exact bound
+being $11598$.
+
+For a slightly more intuitive estimation, we pretend that all primes are equivalent in value,
+though they remain distinct. We use $5$ for this example.
+
+If all primes are equivalent to $5$, then a number can be composed of at most $17$
+primes, since $5^{18} > 10^{12}$. Assuming that $g$ is composed of $k$ prime factors,
+we use stars and bars to find that there are $17 \choose k$ possible values of $a_i$.
+This is maximized when $k=8$, resulting in an estimate of $24310$.
+
+While this estimated bound isn't precise, it helps show that the number
+of judges we consider can be considerably shrunken from $10^6$.
+
+</Spoiler>
+
+Any useful judge must eliminate at least one prime factor from
+$g$, so we play at most $m$ judges. Thus, we consider at most
+$m$ judges for each unique value of $a_i$, with it always being optimal to choose
+the least experienced ones.
+
+This reduces the number of judges to at most $mK$, and the complexity of our DP to $\mathcal{O}(M^2 K \cdot 3^M)$,
+where $K$ is the number of unique values of $a_i$.
+
+<Warning>
+
+It may be tempting to think that we only need the least experienced
+judge for each value of $a_i$. This is incorrect, because we can allocate
+different masks of $p$ for the same value of $a_i$. To understand
+why, consider the following case:
+
+```
+3 5
+30 30 30
+1 2 3
+```
+
+Here, we must play all 3 judges to remove all the primes in $p$.
+
+</Warning>
+
+### Optimizing Valid Transitions
+
+To eliminate a set of primes $S$ from a value of $a_i$, we must divide out
+all relevant prime powers. If the product of these prime powers is $\leq K$, then
+removing this set of primes from $g$ is possible.
+
+Formally, let $q_j = p_j^{v_{p_j}(a_i)}$ be the full power of prime $p_j$ dividing $a_i$. We can remove a set $S$ if
+
+$$
+\prod_{j \in S} q_j \leq K,
+$$
+
+since this product is the smallest divisor of $a_i$ containing every prime in $S$.
+
+The following code efficiently calculates the cost of removing each subset
+of $p$:
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+std::vector<ll> mask_cost(1 << m, 1);
+for (int j = 1; j < (1 << m); j++) {
+	// we exclude least significant bit, and calculate contribution
+	// from that bit in our cost to remove it
+	int lsb = __builtin_ctz(j);
+	mask_cost[j] = mask_cost[j ^ (1 << lsb)];
+
+	ll val = a[i];
+	while (val % primes[lsb] == 0) {
+		// since mask_cost grows fast, overflow guard is needed!
+		if (mask_cost[j] > INF / primes[lsb]) break;
+
+		val /= primes[lsb];
+		mask_cost[j] *= primes[lsb];
+	}
+
+	if (mask_cost[j] <= k) {
+		// process this mask's transition by updating the DP table
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+Because we reduced the number of judges to consider, we can afford to
+calculate all the subset removal cost for each judge. However, the number
+of transitions is still too large.
+
+Once again, we can reduce the number of transitions with the bound on
+the max number of judges. A transition state consists of
+$(\text{mask}, \text{judge})$, which has up to $MK \cdot 2^M$ combinations.
+However, we only need the $m$ best transitions for each transition mask!
+This reduces the number of transitions to $\mathcal{O}(M \cdot 2^M)$.
+
+### Implementing the DP
+
+The overall algorithm is as follows:
+- First, remove all redundant judges, keeping the $M$ least experienced judges
+  for each distinct value of $a_i$. This results in $\mathcal{O}(MK)$ judges to
+  consider judges. Note that we remove all prime-powers not present in $p$ from
+  values of $a_i$.
+- We calculate all possible transition masks for each remaining judge. For a
+  possible transition mask, we only consider this judge if it is among the
+  $m$ least experienced judges with this mask. We calculate `inv(i)`, which
+  stores the masks where judge $i$ is among the $m$ best.
+- Since we cannot replay judges, we iterate on the judges in order, updating
+  our DP table for the transitions each judge provides.
+
+The following code demonstrates the DP transitions:
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+// dp[# of judges used][mask] = minimum sum of experiences
+std::vector dp(m + 1, std::vector<ll>(1 << m, INF));
+dp[0][0] = 0;
+for (int i = 0; i < n; i++) {
+	for (int j = m; j >= 1; j--) {
+		for (int mask : inv[i]) {
+			for (int super = mask; super < (1 << m); super = (super + 1) | mask) {
+				dp[j][super] = std::min(dp[j][super], dp[j - 1][super ^ mask] + e[i]);
+			}
+		}
+	}
+}
+```
+
+This is an implementation of [merging subsets bitmask DP](/gold/dp-bitmasks#merging-subsets).
+While an individual transition can update up to $\mathcal{O}(M \cdot 2^M)$ states,
+the overall complexity amortizes to $\mathcal{O}(M^2 \cdot 3^M)$.
+
+<Info title="Time Complexity Amortization">
+
+It may be slightly unintuitive why the time complexity of updating
+our DP table across all transitions amortizes to $\mathcal{O}(M^2 \cdot 3^M)$.
+
+In a merging subsets DP, transitions are between a supermask and a submask.
+As mentioned in the module, the number of supermasks across all submasks
+is exactly $3^n$ if there are $n$ bits. Since our transition states include
+all submasks at most $m$ times, our complexity amortizes in a similar manner.
+
+</Info>
+
+With these optimizations, we obtain a final runtime of $\mathcal{O}(MK\cdot 2^M + M^2 \cdot 3^M)$,
+which comfortably runs within the time limit if implemented efficiently.
+
+</CPPSection>
+</LanguageSection>
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(MK\cdot 2^M + M^2 \cdot 3^M)$, where
+$K$ is the number of distinct judges.
+
+<Warning>
+
+Due to tight time constraints, some constant optimizations may be required.
+For example, fast I/O is likely necessary for a solution to pass.
+
+</Warning>
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using ll = long long;
+
+constexpr ll INF = 1e18;
+
+int main() {
+	std::ios_base::sync_with_stdio(false);
+	std::cin.tie(nullptr);
+
+	int n;
+	ll k;
+	std::cin >> n >> k;
+
+	ll g = 0;
+	std::vector<ll> a(n);
+	for (int i = 0; i < n; i++) {
+		std::cin >> a[i];
+		g = std::gcd(g, a[i]);
+	}
+
+	std::vector<int> e(n);
+	for (int i = 0; i < n; i++) { std::cin >> e[i]; }
+
+	if (g == 1) {
+		// we don't need to do anything
+		std::cout << 0 << '\n';
+		return 0;
+	}
+
+	// prime factorize the GCD
+	std::vector<ll> primes;
+	ll tmp = g;
+	for (int i = 2; 1LL * i * i <= tmp; i++) {
+		if (tmp % i == 0) {
+			primes.push_back(i);
+			while (tmp % i == 0) { tmp /= i; }
+		}
+	}
+
+	if (tmp > 1) { primes.push_back(tmp); }
+
+	const int m = primes.size();
+
+	// we process items in sorted order for easier processing of
+	// 'equivalent' judges (judges who cover same transition masks)
+	std::vector<int> ord(n);
+	std::iota(ord.begin(), ord.end(), 0);
+	std::sort(ord.begin(), ord.end(),
+	          [&](int x, int y) -> bool { return e[x] < e[y]; });
+
+	std::map<ll, int> vis;
+	std::vector<int> seen_masks(1 << m);
+	std::vector<std::vector<int>> inv(n);
+	for (int i : ord) {
+		ll val = a[i];
+
+		// calculate the product of prime powers for the
+		// primes in our GCD (since only those primes matter)
+		ll cost = 1;
+		for (int j : primes) {
+			while (val % j == 0) {
+				cost *= j;
+				val /= j;
+			}
+		}
+
+		// we only use at most m equivalent judges
+		if (vis[cost] >= m) continue;
+		vis[cost]++;
+
+		// mask_cost[mask] = division value to remove primes in mask from the GCD
+		std::vector<ll> mask_cost(1 << m, 1);
+		for (int j = 1; j < (1 << m); j++) {
+			// we exclude least significant bit, and calculate contribution
+			// from that bit in our cost to remove it
+			int lsb = __builtin_ctz(j);
+			mask_cost[j] = mask_cost[j ^ (1 << lsb)];
+
+			val = a[i];
+			while (val % primes[lsb] == 0) {
+				// since mask_cost grows fast, overflow guard is needed!
+				if (mask_cost[j] > INF / primes[lsb]) break;
+
+				val /= primes[lsb];
+				mask_cost[j] *= primes[lsb];
+			}
+
+			// for a given transition (i.e. a set of primes we can 'clear'),
+			// we only care about the m cheapest judges for that transition
+			if (mask_cost[j] <= k && seen_masks[j] < m) {
+				seen_masks[j]++;
+				inv[i].push_back(j);
+			}
+		}
+	}
+
+	// dp[# of judges used][mask] = minimum sum of experiences
+	std::vector dp(m + 1, std::vector<ll>(1 << m, INF));
+	dp[0][0] = 0;
+	for (int i = 0; i < n; i++) {
+		for (int j = m; j >= 1; j--) {
+			for (int mask : inv[i]) {
+				for (int super = mask; super < (1 << m); super = (super + 1) | mask) {
+					dp[j][super] =
+					    std::min(dp[j][super], dp[j - 1][super ^ mask] + e[i]);
+				}
+			}
+		}
+	}
+
+	ll res = INF;
+	for (int i = 0; i <= m; i++) {
+		if (dp[i][(1 << m) - 1] < INF) { res = std::min(res, dp[i][(1 << m) - 1] * i); }
+	}
+
+	std::cout << (res < INF ? res : -1) << '\n';
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>

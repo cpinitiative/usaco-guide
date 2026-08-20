@@ -2,7 +2,7 @@
 id: cf-1513D
 source: CF
 title: GCD and MST
-author: Chuyang Wang
+author: Chuyang Wang, Raagav Bala
 ---
 
 [Official Editorial (C++)](https://codeforces.com/blog/entry/89550)
@@ -104,4 +104,45 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+for _ in range(int(input())):
+	N, P = map(int, input().split())
+	weights = list(map(int, input().split()))
+
+	# sort indices by weight
+	order = sorted(list(range(N)), key=lambda x: weights[x])
+	cost, edges_remaining = 0, N - 1
+	is_connected = [False] * N
+
+	for ind in order:
+		# if the edge costs at least p, then connect
+		# the rest with edges of type 2 which cost p
+		if weights[ind] >= P:
+			break
+
+		# try to add an edge (j, ind) while expanding left
+		j = ind
+		while j > 0 and not is_connected[j - 1] and weights[j - 1] % weights[ind] == 0:
+			cost += weights[ind]
+			edges_remaining -= 1
+			is_connected[j - 1] = True
+			j -= 1
+
+		# try to add an edge (ind, j) while expanding right
+		j = ind
+		while j < N - 1 and not is_connected[j] and weights[j + 1] % weights[ind] == 0:
+			cost += weights[ind]
+			edges_remaining -= 1
+			is_connected[j] = True
+			j += 1
+
+	# the edges that still have to be added have the cost p
+	cost += edges_remaining * P
+
+	print(cost)
+```
+
+</PySection>
 </LanguageSection>

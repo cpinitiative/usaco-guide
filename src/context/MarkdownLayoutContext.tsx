@@ -17,6 +17,8 @@ const MarkdownLayoutContext = createContext<{
   uniqueID: string | null;
   isMobileNavOpen: boolean;
   setIsMobileNavOpen: (x: boolean) => void;
+  isDesktopSidebarHidden: boolean;
+  setIsDesktopSidebarHidden: (x: boolean) => void;
   moduleProgress: ModuleProgress;
   handleCompletionChange: (x: ModuleProgress) => void;
 } | null>(null);

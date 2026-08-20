@@ -18,13 +18,13 @@ const nextConfig: NextConfig = {
     try {
       const path = await import('path');
       const fs = await import('fs');
-      // Path assumes redirects.txt is in the root of your project
+      // Path assumes redirects.txt is in the src directory
       const filePath = path.resolve(process.cwd(), 'src/redirects.txt');
       const redirectsData = fs.readFileSync(filePath, 'utf8');
 
       return redirectsData
         .split('\n')
-        .filter(line => line.trim() !== '' && !line.startsWith('#'))
+        .filter(line => line && line.trim() !== '' && !line.startsWith('#'))
         .map(line => {
           const [from, to] = line.split('\t');
           return {

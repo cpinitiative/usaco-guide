@@ -1,0 +1,254 @@
+---
+id: usaco-1275
+source: USACO Bronze 2023 January
+title: Leaders
+author: Rameez Parwez
+---
+
+[Official Editorial (C++, Python)](https://usaco.org/current/data/sol_prob1_bronze_jan23.html)
+
+## Explanation
+
+For a cow to be a leader of its breed, it must cover all of its
+breed's cows or the other breed's leader. Based on this intuition,
+the leader of the Guernseys must be the earliest Guernsey, or the
+leader of the Holsteins must be the earliest Holstein (or both).
+
+Once we confirm that the earliest Guernsey is the leader of the
+Guernseys by checking if it visited every other Guernsey, we search
+over all Holsteins that appear before the earliest Guernsey. A
+Holstein at position $i$ is a valid co-leader if it visits the
+Guernsey leader.
+
+Similarly, we perform the same operation with the earliest Holstein
+as leader, searching over all Guernseys that appear before it.
+
+Finally, we individually check whether the earliest Guernsey and the
+earliest Holstein can both be valid leaders simultaneously. This
+case requires careful handling to avoid double-counting this pair
+in the two passes above.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int main() {
+	int n;
+	std::string breeds;
+	std::cin >> n >> breeds;
+	std::vector<int> cows(n);
+
+	int first_guernsey = n, last_guernsey = 0;
+	int first_holstein = n, last_holstein = 0;
+	int res = 0;
+
+	for (int i = 0; i < n; i++) {
+		std::cin >> cows[i];
+		cows[i]--;
+
+		if (breeds[i] == 'G') {
+			first_guernsey = std::min(first_guernsey, i);
+			last_guernsey = std::max(last_guernsey, i);
+		} else {
+			first_holstein = std::min(first_holstein, i);
+			last_holstein = std::max(last_holstein, i);
+		}
+	}
+
+	// check whether first_guernsey is the leader or not
+	if (cows[first_guernsey] >= last_guernsey) {
+
+		/*
+		 * with first_guernsey as the leader,
+		 * check which holstein (other than first_holstein) is a valid
+		 * co-leader by visiting guernsey's leader
+		 */
+		for (int i = 0; i < first_guernsey; i++) {
+			if (i != first_holstein && breeds[i] == 'H' && cows[i] >= first_guernsey) {
+				res++;
+			}
+		}
+	}
+
+	// check whether first_holstein is the leader or not
+	if (cows[first_holstein] >= last_holstein) {
+
+		/*
+		 * with first_holstein as the leader,
+		 * check which guernsey (other than first_guernsey) is a valid
+		 * co-leader by visiting holstein's leader
+		 */
+		for (int i = 0; i < first_holstein; i++) {
+			if (i != first_guernsey && breeds[i] == 'G' && cows[i] >= first_holstein) {
+				res++;
+			}
+		}
+	}
+
+	// check whether the earliest Guernsey and the
+	// earliest Holstein can both be valid leaders simultaneously
+	if ((cows[first_guernsey] >= last_guernsey ||
+	     (first_guernsey <= first_holstein &&
+	      cows[first_guernsey] >= first_holstein)) &&
+	    (cows[first_holstein] >= last_holstein ||
+	     (first_holstein <= first_guernsey &&
+	      cows[first_holstein] >= first_guernsey))) {
+		res++;
+	}
+
+	std::cout << res << '\n';
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Leaders {
+	public static void main(String[] args) throws Exception {
+		Kattio io = new Kattio();
+
+		int n = io.nextInt();
+		String breeds = io.next();
+		int[] cows = new int[n];
+
+		int firstGuernsey = n, lastGuernsey = 0;
+		int firstHolstein = n, lastHolstein = 0;
+		int res = 0;
+
+		for (int i = 0; i < n; i++) {
+			cows[i] = io.nextInt() - 1;
+
+			if (breeds.charAt(i) == 'G') {
+				firstGuernsey = Math.min(firstGuernsey, i);
+				lastGuernsey = Math.max(lastGuernsey, i);
+			} else {
+				firstHolstein = Math.min(firstHolstein, i);
+				lastHolstein = Math.max(lastHolstein, i);
+			}
+		}
+
+		// check whether first_guernsey is the leader or not
+		if (cows[firstGuernsey] >= lastGuernsey) {
+
+			/*
+			 * with first_guernsey as the leader,
+			 * check which holstein (other than first_holstein) is a valid
+			 * co-leader by visiting guernsey's leader
+			 */
+			for (int i = 0; i < firstGuernsey; i++) {
+				if (i != firstHolstein && breeds.charAt(i) == 'H' &&
+				    cows[i] >= firstGuernsey) {
+					res++;
+				}
+			}
+		}
+
+		// check whether first_holstein is the leader or not
+		if (cows[firstHolstein] >= lastHolstein) {
+
+			/*
+			 * with first_holstein as the leader,
+			 * check which guernsey (other than first_guernsey) is a valid
+			 * co-leader by visiting holstein's leader
+			 */
+			for (int i = 0; i < firstHolstein; i++) {
+				if (i != firstGuernsey && breeds.charAt(i) == 'G' &&
+				    cows[i] >= firstHolstein) {
+					res++;
+				}
+			}
+		}
+
+		// check whether the earliest Guernsey and the
+		// earliest Holstein can both be valid leaders simultaneously
+		if ((cows[firstGuernsey] >= lastGuernsey ||
+		     (firstGuernsey <= firstHolstein &&
+		      cows[firstGuernsey] >= firstHolstein)) &&
+		    (cows[firstHolstein] >= lastHolstein ||
+		     (firstHolstein <= firstGuernsey &&
+		      cows[firstHolstein] >= firstGuernsey))) {
+
+			res++;
+		}
+
+		io.println(res);
+		io.close();
+	}
+
+	// BeginCodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+n = int(input())
+breeds = input()
+cows = [x - 1 for x in map(int, input().split())]
+
+first_guernsey = n
+last_guernsey = 0
+first_holstein = n
+last_holstein = 0
+res = 0
+
+for i in range(n):
+	if breeds[i] == "G":
+		first_guernsey = min(first_guernsey, i)
+		last_guernsey = max(last_guernsey, i)
+	else:
+		first_holstein = min(first_holstein, i)
+		last_holstein = max(last_holstein, i)
+
+# check whether first_guernsey is the leader or not
+if cows[first_guernsey] >= last_guernsey:
+
+	"""
+	with first_guernsey as the leader,
+	check which holstein (other than first_holstein) is a valid
+	co-leader by visiting guernsey's leader
+	"""
+	for i in range(first_guernsey):
+		if i != first_holstein and breeds[i] == "H" and cows[i] >= first_guernsey:
+			res += 1
+
+# check whether first_holstein is the leader or not
+if cows[first_holstein] >= last_holstein:
+
+	"""
+	with first_holstein as the leader,
+	check which guernsey (other than first_guernsey) is a valid
+	co-leader by visiting holstein's leader
+	"""
+	for i in range(first_holstein):
+		if i != first_guernsey and breeds[i] == "G" and cows[i] >= first_holstein:
+			res += 1
+
+# check whether the earliest Guernsey and the
+# earliest Holstein can both be valid leaders simultaneously
+if (
+	cows[first_guernsey] >= last_guernsey
+	or (first_guernsey <= first_holstein and cows[first_guernsey] >= first_holstein)
+) and (
+	cows[first_holstein] >= last_holstein
+	or (first_holstein <= first_guernsey and cows[first_holstein] >= first_guernsey)
+):
+	res += 1
+
+print(res)
+```
+
+</PySection>
+</LanguageSection>
