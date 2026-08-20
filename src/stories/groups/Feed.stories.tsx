@@ -3,8 +3,8 @@ import { Timestamp } from 'firebase/firestore';
 
 import Feed from '../../components/Groups/GroupPage/Feed';
 import { UserDataContext } from '../../context/UserDataContext/UserDataContext';
-import { UserGroupsContext } from '../../hooks/groups/useUserGroups';
 import { ActiveGroupContext } from '../../hooks/groups/useActiveGroup';
+import { UserGroupsContext } from '../../hooks/groups/useUserGroups';
 import { GroupData } from '../../models/groups/groups';
 import { PostData } from '../../models/groups/posts';
 
