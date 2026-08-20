@@ -26,7 +26,7 @@ To prove this, we will use the following result (introduced in the *Matroid Theo
 
 > **Strong Basis Exchange Lemma:** For any two bases $B_1, B_2$ of a matroid and any element $x \in B_1 \setminus B_2$, there exists an element $y \in B_2 \setminus B_1$ such that both $B_1 - x + y$ and $B_2 - y + x$ are bases.
 
-Let $B'$ be a second-min weight basis. We will inductively modify $B'$ until we find a second-min weight basis that's one element exchange away from $B$. To do this, order the elements of the ground set in non-decreasing weight: $\{e_1,e_2,\dots,e_n\}$. Note that $B\neq B'$ but they have the same cardinality, so there must exist some smallest $i\in[1,n]$ such that $e_i\in B \iff e_i\notin B'$.
+Let $B'$ be a second-min weight basis. We will inductively modify $B'$ until we find a second-min weight basis that's one element exchange away from $B$. To do this, order the elements of the ground set in non-decreasing weight: $\{e_1,e_2,\dots,e_n\}$. Note that $B\neq B'$ but they have the same cardinality, so there must exist some smallest $i\in[1,n]$ such that $e_i$ belongs to exactly one of $B$ and $B'$.
 
 First, consider the case where $e_i\in B'\setminus B$. Let $e_j\in B\setminus B'$ be as in the strong basis exchange lemma when using $e_i\in B'\setminus B$. Observe that $i<j$ because by minimality of $i$, both $B$ and $B'$ agree before the $i$th element. So, $w(e_i)\leq w(e_j)$. On the other hand, by construction we have that $B-e_j+e_i$ is a basis. So:
 $$
@@ -52,18 +52,18 @@ $$
 \end{split}
 \end{equation*}
 $$
-But, $B'$ has the second-lowest weight. Therefore, as we decrease it by modifying $B'\to B'-e_j+e_i$ (which is also a basis), it must be the case that $w(B'-e_i+e_j)=w(B)$ because $B$ is a min weight basis. Hence:
+But, $B'$ has the second-lowest weight. Therefore, as we decrease it by modifying $B'\to B'-e_j+e_i$ (which is also a basis), it must be the case that $w(B'-e_j+e_i)=w(B)$ because $B$ is a min weight basis. Hence:
 $$
 \begin{equation*}
 \begin{split}
-    &w(B'-e_i+e_j)=w(B)\text{ from before}\\
-    \implies&w(B')-w(e_i)+w(e_j)=w(B)\\
-    \implies&w(B')=w(B)-w(e_j)+w(e_i)\\
-    \implies&w(B')=w(B-e_j+e_i)
+    &w(B'-e_j+e_i)=w(B)\text{ from before}\\
+    \implies&w(B')-w(e_j)+w(e_i)=w(B)\\
+    \implies&w(B')=w(B)+w(e_j)-w(e_i)\\
+    \implies&w(B')=w(B-e_i+e_j)
 \end{split}
 \end{equation*}
 $$
-Therefore, $B-e_j+e_i$ is a second-min weight basis which is what we wanted to construct. So, we terminate the algorithm when this happens.
+Therefore, $B-e_i+e_j$ is a second-min weight basis which is what we wanted to construct. So, we terminate the algorithm when this happens.
 
 To conclude the argument, suppose for contradiction that the algorithm iterates over all the elements of the ground set and doesn't find the above case. In that event, we would've modified $B'$ to exactly equal $B$. But, that's impossible since each modification doesn't change the weight, and we assume that $w(B)<w(B')$.
 </Spoiler>
