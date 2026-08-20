@@ -1,23 +1,23 @@
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
 import {
   AcademicCapIcon,
+  ArrowRightEndOnRectangleIcon,
+  ArrowRightStartOnRectangleIcon,
+  ArrowTopRightOnSquareIcon,
   BookmarkIcon,
   ChartBarIcon,
-  ChatAlt2Icon,
-  ChatAltIcon,
+  ChatBubbleLeftIcon,
+  ChatBubbleLeftRightIcon,
   ChevronDownIcon,
   CogIcon,
-  DocumentReportIcon,
+  CommandLineIcon,
+  DocumentChartBarIcon,
   DocumentTextIcon,
-  ExternalLinkIcon,
-  LoginIcon,
-  LogoutIcon,
+  MagnifyingGlassIcon,
   PresentationChartLineIcon,
   QuestionMarkCircleIcon,
-  SearchIcon,
-  TerminalIcon,
   UserGroupIcon,
-} from '@heroicons/react/solid';
+} from '@heroicons/react/24/solid';
 import classNames from 'classnames';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -58,14 +58,14 @@ export default function TopNavigationBar({
       name: 'USACO Forum',
       description: 'An unofficial Q&A forum for USACO contestants.',
       href: 'https://forum.usaco.guide/',
-      icon: ChatAlt2Icon,
+      icon: ChatBubbleLeftRightIcon,
     },
     {
       name: 'USACO IDE',
       description:
         'A realtime collaborative online IDE designed for competitive programming and USACO.',
       href: 'https://ide.usaco.guide/',
-      icon: TerminalIcon,
+      icon: CommandLineIcon,
     },
     {
       name: 'Classes',
@@ -250,7 +250,7 @@ export default function TopNavigationBar({
                           className="-m-3 flex items-start rounded-lg p-3 transition duration-150 ease-in-out hover:bg-gray-100 dark:hover:bg-gray-700"
                         >
                           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-blue-500 text-white sm:h-12 sm:w-12">
-                            <DocumentReportIcon
+                            <DocumentChartBarIcon
                               className="h-6 w-6"
                               aria-hidden="true"
                             />
@@ -283,7 +283,7 @@ export default function TopNavigationBar({
                               <div className="dark:text-dark-high-emphasis flex text-base font-medium text-gray-900">
                                 {item.name}{' '}
                                 <span className="mt-0.5 ml-2 h-5 w-5 text-gray-400">
-                                  <ExternalLinkIcon />
+                                  <ArrowTopRightOnSquareIcon />
                                 </span>
                               </div>
                               <p className="dark:text-dark-med-emphasis mt-1 text-sm text-gray-500">
@@ -312,7 +312,7 @@ export default function TopNavigationBar({
                 className="dark:text-dark-high-emphasis inline-flex items-center rounded-md border border-transparent px-2 py-1 text-gray-500 hover:text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-hidden"
                 onClick={() => setIsSearchOpen(true)}
               >
-                <SearchIcon
+                <MagnifyingGlassIcon
                   className="h-5 w-5 text-gray-400 dark:text-gray-300"
                   aria-hidden="true"
                 />
@@ -468,7 +468,7 @@ export default function TopNavigationBar({
                   href="https://graph-viz.usaco.guide"
                   className="group -m-3 flex items-center rounded-md p-3 hover:bg-gray-100 dark:hover:bg-gray-700"
                 >
-                  <DocumentReportIcon
+                  <DocumentChartBarIcon
                     className="h-6 w-6 shrink-0 text-gray-600 dark:group-hover:text-gray-400"
                     aria-hidden="true"
                   />
@@ -514,7 +514,7 @@ export default function TopNavigationBar({
                   className="group -m-3 flex cursor-pointer items-center rounded-md p-3 hover:bg-gray-100 dark:hover:bg-gray-700"
                   onClick={() => setIsContactUsActive(true)}
                 >
-                  <ChatAltIcon
+                  <ChatBubbleLeftIcon
                     className="float-left h-6 w-6 text-gray-600 dark:group-hover:text-gray-400"
                     aria-hidden="true"
                   />
@@ -540,7 +540,7 @@ export default function TopNavigationBar({
                     className="group -m-3 flex items-center rounded-md p-3 hover:bg-gray-100 dark:hover:bg-gray-700"
                     onClick={() => signOut()}
                   >
-                    <LogoutIcon
+                    <ArrowRightEndOnRectangleIcon
                       className="float-left h-6 w-6 text-gray-600 dark:group-hover:text-gray-400"
                       aria-hidden="true"
                     />
@@ -553,7 +553,7 @@ export default function TopNavigationBar({
                     className="group -m-3 flex cursor-pointer items-center rounded-md p-3 hover:bg-gray-100 dark:hover:bg-gray-700"
                     onClick={() => signIn()}
                   >
-                    <LoginIcon
+                    <ArrowRightStartOnRectangleIcon
                       className="float-left h-6 w-6 text-gray-600 dark:group-hover:text-gray-400"
                       aria-hidden="true"
                     />

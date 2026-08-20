@@ -5,7 +5,7 @@ import {
   MenuItems,
   Transition,
 } from '@headlessui/react';
-import { ChevronDownIcon } from '@heroicons/react/solid';
+import { ChevronDownIcon } from '@heroicons/react/24/solid';
 import classNames from 'classnames';
 import { Fragment, useId } from 'react';
 import { ModuleProgress, ModuleProgressOptions } from '../../models/module';

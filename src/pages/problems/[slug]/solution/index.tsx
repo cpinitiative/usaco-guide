@@ -20,7 +20,7 @@ interface SolutionTemplateProps {
     title: string;
   }[];
   problemInfo: ProblemInfo;
-  frontmatter: MdxFrontmatter[];
+  frontmatter: Pick<MdxFrontmatter, 'id' | 'title'>[];
 }
 
 export default function SolutionTemplate({
@@ -150,7 +150,10 @@ export const getStaticProps: GetStaticProps = async context => {
         solutionForSlug,
         modulesThatHaveProblem,
         problemInfo,
-        frontmatter: loadedModuleFrontmatter.map(module => module.frontmatter),
+        frontmatter: loadedModuleFrontmatter.map(module => ({
+          id: module.frontmatter.id,
+          title: module.frontmatter.title,
+        })),
       },
     };
   } catch (error) {

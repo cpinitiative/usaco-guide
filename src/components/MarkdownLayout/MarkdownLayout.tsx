@@ -106,7 +106,7 @@ const ContentContainer = ({ children, tableOfContents, wide = false }) => {
 };
 
 interface MarkdownLayoutProps {
-  frontmatter: MdxFrontmatter[];
+  frontmatter: Pick<MdxFrontmatter, 'id' | 'title'>[];
   children: React.ReactNode;
   markdownData: ModuleInfo | SolutionInfo;
 }

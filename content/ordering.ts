@@ -271,6 +271,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
         'game-theory',
         'prefix-sums-nt-1',
         'prefix-sums-nt-2',
+        'matroid',
         'matroid-isect',
         'random',
         'interactive',
