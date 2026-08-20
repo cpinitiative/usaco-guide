@@ -1,7 +1,7 @@
 ---
 id: eulers-formula
 title: "Euler's Formula"
-author: Benjamin Qi, Arnav Gokhale, Andi Qu
+author: Benjamin Qi, Arnav Gokhale
 description: A formula for finding the number of faces in a planar graph.
 prerequisites:
   - dsu
@@ -37,359 +37,74 @@ This can also be expanded to graphs that are not connected, to incorporate conne
 
 <Problems problems="e1" />
 
-### Intuition
+Firstly, notice that the fence will create a planar graph, where every closed-off region (including the region that consists of everything outside the fences) counts as a face. Every time we combine two faces by adding a gate, the number of faces will decrease by $1$. Thus, the answer will just be the number of faces in the graph minus one.
 
-In this problem, we're asked to count the number of contiguous areas of cells on
-several flat rectangles. Such areas are separated by river segments and
-rectangular boundaries.
+As a reminder, Euler's Formula states that $f=e−v+2$. To count the number of edges, we only need to count the number of unique unit-length segments Farmer John places. Likewise, to count the number of vertices, we just need to count the number of unique positions Farmer John visited. This can easily be achieved using sets.
 
-Where else do we count the number of areas on a flat surface?
-
-That's right - we use Euler's formula to count the number of faces of a
-[planar graph](http://discrete.openmathbooks.org/more/mdm/sec_planar.html). This
-suggests that we should turn our rectangles into planar graphs.
-
-### Making the Planar Graph
-
-We can turn a rectangle into a planar graph as so:
-
-- Put temporary river segments outside the border of the rectangle.
-- For each river segment, we insert its 4 corners into a set of nodes and its 4
-  sides into a set of edges.
-
-Notice how the resulting graph is planar, so we can apply Euler's formula.
-
-### Applying Euler's Formula
-
-For a planar graph, Euler's formula is given as $F = E - V + 1 + C$, where $F$
-is the number of faces (including the background face), $E$ is the number of
-edges, $V$ is the number of vertices, and $C$ is the number of connected
-components.
-
-Notice how $F$ in our planar graph is equal to $1 + R + A$, where $R$ is the
-number of river segments and $A$ is the answer to the query. This means we must
-subtract $R + 1$ from $F$ to get $A$.
-
-Since the whole river is a big connected component, we can just check whether
-the river touches the bounding rectangle to determine $C$.
-
-Finding $E$, $V$, and $R$ is a lot more complicated, though.
-
-### Finding $E$, $V$, and $R$
-
-To find $E$, $V$, and $R$, we can use a data structure that can handle 2D range
-queries efficiently.
-
-However, the coordinates of the grid can get very large, so a simple 2D BIT or
-segment tree won't work here.
-
-To work around this, we can either use a 2D BIT with coordinate compression or a
-persistent segment tree. See the sections on
-[offline 2D sum queries](/plat/2DRQ#2d-offline-sum-queries) or
-[persistent segment trees](/adv/persistent) for more details.
-
-The following code runs in $\mathcal{O}(N \log N)$, with a memory complexity of $\mathcal{O}(N \log N)$.
+Once we calculate these values, we can simply plug them back into the equation and get our answer.
 
 <LanguageSection>
+
 <CPPSection>
 
-```cpp
-#include "rainbow.h"
+```
 #include <bits/stdc++.h>
-#define FOR(i, x, y) for (int i = x; i < y; i++)
 using namespace std;
+#define int long long
 
-const int MAXN = 2e5, MAXSEG = (6e5 + 9) * 19 + 1;
+void solve() {
+    freopen("gates.in", "r", stdin);
+    freopen("gates.out", "w", stdout);
 
-int cnt = 1, segtree[MAXSEG], left_c[MAXSEG], right_c[MAXSEG];
+    int n; cin >> n;
+    string s; cin >> s;
 
-struct Segtree {
-	set<int> data[MAXN + 1];
-	int roots[MAXN + 2];
+    int x = 0, y = 0;
 
-	void add(int x, int y) { data[x].insert(y); }
+    set<array<int,2>> vertices;
+    set<array<int,4>> edges;
 
-	void build() {
-		FOR(i, 1, MAXN + 1) {
-			roots[i + 1] = roots[i];
-			for (int j : data[i]) update(j, roots[i + 1]);
-		}
-	}
+    vertices.insert({x, y});
 
-	void update(int pos, int &node, int l = 1, int r = MAXN) {
-		segtree[cnt] = segtree[node] + 1;
-		left_c[cnt] = left_c[node];
-		right_c[cnt] = right_c[node];
-		node = cnt++;
+    for (int i = 0; i < n; i++) {
+        array<int,2> dir;
 
-		if (l == r) return;
-		int mid = (l + r) / 2;
-		if (pos > mid) update(pos, right_c[node], mid + 1, r);
-		else update(pos, left_c[node], l, mid);
-	}
+        if (s[i] == 'N') dir = {0, 1};
+        else if (s[i] == 'S') dir = {0, -1};
+        else if (s[i] == 'W') dir = {-1, 0};
+        else dir = {1, 0};
 
-	int query(int l1, int r1, int l2, int r2) {
-		if (l2 > r2) return 0;
-		return query(l2, r2, roots[r1 + 1], 1, MAXN) -
-		       query(l2, r2, roots[l1], 1, MAXN);
-	}
-	int query(int a, int b, int node, int l, int r) {
-		if (a > r || b < l) return 0;
-		if (a <= l && b >= r) return segtree[node];
-		int mid = (l + r) / 2;
-		return query(a, b, left_c[node], l, mid) +
-		       query(a, b, right_c[node], mid + 1, r);
-	}
-} vertices, edges_horiz, edges_vert, rivers;
+        int nx = x + dir[0];
+        int ny = y + dir[1];
 
-int mx_r, mn_r, mx_c, mn_c;
+        array<int,2> u = {x, y};
+        array<int,2> v = {nx, ny};
 
-void add_river(int x, int y) {
-	vertices.add(x, y);
-	vertices.add(x + 1, y);
-	vertices.add(x, y + 1);
-	vertices.add(x + 1, y + 1);
-	edges_horiz.add(x, y);
-	edges_horiz.add(x + 1, y);
-	edges_vert.add(x, y);
-	edges_vert.add(x, y + 1);
-	rivers.add(x, y);
+        if (u > v) swap(u, v);
+
+        edges.insert({u[0], u[1], v[0], v[1]});
+        vertices.insert({nx, ny});
+
+        x = nx;
+        y = ny;
+    }
+
+    cout << edges.size() - vertices.size() + 1 << '\n';
 }
 
-void init(int R, int C, int sr, int sc, int M, char *S) {
-	add_river(sr, sc);
-	mx_r = mn_r = sr;
-	mx_c = mn_c = sc;
-	FOR(i, 0, M) {
-		if (S[i] == 'N') sr--;
-		if (S[i] == 'E') sc++;
-		if (S[i] == 'S') sr++;
-		if (S[i] == 'W') sc--;
-		add_river(sr, sc);
-		mx_r = max(mx_r, sr);
-		mn_r = min(mn_r, sr);
-		mx_c = max(mx_c, sc);
-		mn_c = min(mn_c, sc);
-	}
-	vertices.build();
-	edges_horiz.build();
-	edges_vert.build();
-	rivers.build();
-}
+signed main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-int colour(int ar, int ac, int br, int bc) {
-	int E =
-	    edges_horiz.query(ar + 1, br, ac, bc) + edges_vert.query(ar, br, ac + 1, bc);
-	int V = vertices.query(ar + 1, br, ac + 1, bc);
-	int R = rivers.query(ar, br, ac, bc);
-	int C = (ar >= mn_r || br <= mx_r || ac >= mn_c || bc <= mx_c ? 1 : 2);
-	return E - V + C - R;
+    solve();
 }
 ```
 
-</CPPSection>
-</LanguageSection>
-
-## Example 2
-
-<Problems problems="e2" />
-
-For a queried subrectangle, we can treat it as a planar graph where the vertices are the cell corners, and an edge exists between two vertices if the two corresponding cells that the edge borders have different colors.
-
-For example, the subrectangle
-$$
-\begin{matrix}
-\text{A} & \text{A} & \text{B} \\
-\text{B} & \text{B} & \text{A} \\
-\text{B} & \text{B} & \text{B}
-\end{matrix}
-$$
-
-would subsequently be transformed into the planar graph:
-
-$$
-\begin{matrix}
-\bullet & \text{—} & \bullet & \text{—} & \bullet & \text{—} & \bullet \\
-| &A& &A& | &B& | &\\
-\bullet & \text{—} & \bullet & \text{—} & \bullet & \text{—} & \bullet \\
-| &B& &B& | &A& | &\\
-\bullet & \text{ } & \bullet & \text{ } & \bullet & \text{—} & \bullet \\
-| &B& &B&  &B& | &\\
-\bullet & \text{—} & \bullet & \text{—} & \bullet & \text{—} & \bullet
-\end{matrix}
-$$
-
-
-### Applying Euler's Formula
-
-Again, Euler’s formula states that $V - E + F = C + 1$, where $V$ is the number of vertices, $E$ is the number of edges, $F$ is the number of faces, and $C$ is the number of connected components.
-
-However, for the sake of this question, we are interested in the number of faces $(F = E - V + C + 1)$ the graph has, which is the number of regions of adjacent cells with the same color. Thus, by calculating $V, E,$ and $C$ and using these values to substitute into the formula, we obtain the answer.
-
-Obtaining $V$ and $E$ is the most straightforward. For $V$, simply count the total number of corners, which corresponds to the dimensions of the subrectangle. For $E$, we can maintain a 2D prefix sums array representing the number of edges, calculating both $E$ and $V$ in $O(1)$.
-
-Calculating $C$
-
-To calculate $C$, we can use an algorithm similar to [Rooms from the Romanian IOI 2017 Selection](https://csacademy.com/contest/romanian-ioi-2017-selection-1/task/rooms/statement/). For each connected component in the entire canvas, mark the top-leftmost vertex as critical. Then, let’s use 2D prefix sums to count the number of critical vertices in the current sub-rectangle.
-
-This gives us a good estimate of the value of $C$, but we have to account for overcounting. Say some connected component’s critical vertex exists in the current subrectangle, but the entire structure does not. This means that the component will have some vertices on the border of the subrectangle, implying it is not a unique connected component.
-
-So, to filter out such components, we can traverse the border of the subrectangle and remove all connected components that share a vertex with it. In the end, we must add $1$ back to $C$ to account for the component that contains the border.
-
-Calculating the Answer
-
-In our example, $V = 16,\ E = 18,$ and $C = 2$. By plugging these values into our formula, we get $F = 18 - 16 + 2 + 1 = 5$.
-
-But wait, how did we get $5$ if it only takes $4$ brushstrokes to paint these regions, and looking at the graph, there are only $4$ faces? This is because the formula also accounts for the fact that it consists of everything outside the subrectangle. So the final answer would be $E - V + C$, and for our sample, that gives $4$, as expected.
-
-<LanguageSection>
-<CPPSection>
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-
-vector<array<int, 2>> dir = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
-
-int main() {
-	ios_base::sync_with_stdio(false);
-	cin.tie(nullptr);
-
-	int n, m, q;
-	cin >> n >> m >> q;
-
-	vector<vector<int>> grid(n + 2, vector<int>(m + 2)),
-	    pvert(n + 2, vector<int>(m + 2)), phorz(n + 2, vector<int>(m + 2)),
-	    pcrit(n + 2, vector<int>(m + 2));
-
-	for (int i = 0; i < n; i++) {
-		string s;
-		cin >> s;
-		for (int j = 0; j < m; j++) { grid[i][j] = s[j] - '0'; }
-	}
-
-	vector<vector<array<int, 2>>> critical(n + 2,
-	                                       vector<array<int, 2>>(m + 2, {-1, -1}));
-
-	// Transitions from vertex (i, j) to neighboring vertices
-	auto dfs = [&](auto &&self, int i, int j) -> void {
-		for (int d = 0; d < 4; d++) {
-
-			int ni = i + dir[d][0], nj = j + dir[d][1];
-			bool edge = false;
-			if (ni >= 0 and nj >= 0 and ni <= n and nj <= m) {
-
-				if (i + 1 == ni) edge = (j == 0 or grid[i][j] != grid[i][j - 1]);
-				else if (i - 1 == ni) edge = (j == 0 or grid[ni][j] != grid[ni][j - 1]);
-				else if (j + 1 == nj) edge = (i == 0 or grid[i][j] != grid[i - 1][j]);
-				else if (j - 1 == nj) edge = (i == 0 or grid[i][nj] != grid[i - 1][nj]);
-
-				// If there does exist an edge to (ni, nj)
-				if (edge) {
-					if (ni == i + 1 and j != 0) pvert[ni][j] = 1;
-					if (ni == i - 1 and j != 0) pvert[i][j] = 1;
-					if (nj == j + 1 and i != 0) phorz[i][nj] = 1;
-					if (nj == j - 1 and i != 0) phorz[i][j] = 1;
-
-					if (critical[ni][nj][0] == -1) {
-						critical[ni][nj] = critical[i][j];
-						self(self, ni, nj);
-					}
-				}
-			}
-		}
-	};
-
-	// Run DFS through the grid to find all the connected components and mark them
-	for (int i = 0; i < n + 1; i++) {
-		for (int j = 0; j < m + 1; j++) {
-			if (critical[i][j][0] == -1) {
-				critical[i][j] = {i, j};
-				pcrit[i][j] = 1;
-				dfs(dfs, i, j);
-			}
-		}
-	}
-
-	// Set up prefix arrays for edges and special vertices
-	for (int i = 0; i < n + 1; i++) {
-		for (int j = 0; j < m + 1; j++) {
-			pcrit[i][j] += ((i < 1) ? 0 : pcrit[i - 1][j]) +
-			               ((j < 1) ? 0 : pcrit[i][j - 1]) -
-			               ((i < 1 or j < 1) ? 0 : pcrit[i - 1][j - 1]);
-			pvert[i][j] += ((i < 1) ? 0 : pvert[i - 1][j]) +
-			               ((j < 1) ? 0 : pvert[i][j - 1]) -
-			               ((i < 1 or j < 1) ? 0 : pvert[i - 1][j - 1]);
-			phorz[i][j] += ((i < 1) ? 0 : phorz[i - 1][j]) +
-			               ((j < 1) ? 0 : phorz[i][j - 1]) -
-			               ((i < 1 or j < 1) ? 0 : phorz[i - 1][j - 1]);
-		}
-	}
-
-	vector<vector<bool>> deleted(n + 5, vector<bool>(m + 5));
-	queue<array<int, 2>> to_add;
-
-	auto calc_region = [&](vector<vector<int>> &v, int x1, int x2, int y1,
-	                       int y2) -> int {
-		return v[x2][y2] - ((y1 >= 0) ? v[x2][y1] : 0) - ((x1 >= 0) ? v[x1][y2] : 0) +
-		       ((x1 >= 0 and y1 >= 0) ? v[x1][y1] : 0);
-	};
-
-	// Checks whether the critical vert. is in the region
-	// and removes it from the answer if possible
-	auto check_vertice = [&](int x, int y, int x1, int x2, int y1, int y2) -> bool {
-		int crit_x = critical[x][y][0];
-		int crit_y = critical[x][y][1];
-		if (crit_x >= x1 and crit_x <= x2 and crit_y >= y1 and crit_y <= y2 and
-		    !deleted[crit_x][crit_y]) {
-			deleted[crit_x][crit_y] = true;
-			to_add.push({crit_x, crit_y});
-			return true;
-		}
-		return false;
-	};
-
-	while (q--) {
-		int x1, y1, x2, y2;
-		cin >> x1 >> y1 >> x2 >> y2;
-		if (x1 > x2) swap(x1, x2);
-		if (y1 > y2) swap(y1, y2);
-		x1--, y1--;
-
-		// Calculating E and V
-		int v = (x2 - x1 + 1) * (y2 - y1 + 1);
-		int e = calc_region(pvert, x1, x2, y1, y2 - 1) +
-		        calc_region(phorz, x1, x2 - 1, y1, y2);
-		e += 2 * (x2 - x1) + 2 * (y2 - y1);
-
-		// Calculating C
-
-		int c = calc_region(pcrit, x1 - 1, x2, y1 - 1, y2);
-
-		for (int i = x1; i <= x2; i++) {
-			c -= check_vertice(i, y1, x1, x2, y1, y2);
-			c -= check_vertice(i, y2, x1, x2, y1, y2);
-		}
-
-		for (int j = y1; j <= y2; j++) {
-			c -= check_vertice(x1, j, x1, x2, y1, y2);
-			c -= check_vertice(x2, j, x1, x2, y1, y2);
-		}
-
-		while (!to_add.empty()) {
-			auto point = to_add.front();
-			to_add.pop();
-			deleted[point[0]][point[1]] = false;
-		}
-
-		// Use Euler's formula to calculate the query answer
-		cout << e - v + c + 1 << '\n';
-	}
-}
-```
 
 </CPPSection>
+
 </LanguageSection>
+
 
 ## Problems
 
