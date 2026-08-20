@@ -2,10 +2,12 @@ import { Meta, StoryFn } from '@storybook/react';
 import { Timestamp } from 'firebase/firestore';
 
 import FeedItem from '../../components/Groups/GroupPage/FeedItem';
+import {
+  assignDefaultsToUserData,
+  UserDataContext,
+} from '../../context/UserDataContext/UserDataContext';
 import { ActiveGroupContext } from '../../hooks/groups/useActiveGroup';
-import { UserDataContext } from '../../context/UserDataContext/UserDataContext';
 import { UserGroupsContext } from '../../hooks/groups/useUserGroups';
-import { assignDefaultsToUserData } from '../../context/UserDataContext/UserDataContext';
 import { GroupData } from '../../models/groups/groups';
 import { PostData } from '../../models/groups/posts';
 
@@ -79,7 +81,7 @@ const Template: StoryFn<StoryArgs> = args => {
         isLoaded: true,
       }}
     >
-    <UserGroupsContext.Provider
+      <UserGroupsContext.Provider
         value={{
           isLoading: false,
           isSuccess: true,
@@ -87,30 +89,29 @@ const Template: StoryFn<StoryArgs> = args => {
           invalidateData: () => {},
         }}
       >
-
-      <ActiveGroupContext.Provider
-        value={{
-          activeGroupId: args.group.id,
-          setActiveGroupId: () => {},
-          groupData: args.group,
-          posts: [args.post],
-          isLoading: false,
-          showAdminView: args.isAdmin,
-          setInStudentView: () => {},
-          activeUserId: 'student-1',
-          setActiveUserId: () => {},
-        }}
-      >
-        <div className="max-w-3xl">
-          <FeedItem
-            group={args.group}
-            post={args.post}
-            userPoints={args.userPoints}
-            isBeingDragged={args.isBeingDragged}
-            dragHandle={args.dragHandle}
-          />
-        </div>
-      </ActiveGroupContext.Provider>
+        <ActiveGroupContext.Provider
+          value={{
+            activeGroupId: args.group.id,
+            setActiveGroupId: () => {},
+            groupData: args.group,
+            posts: [args.post],
+            isLoading: false,
+            showAdminView: args.isAdmin,
+            setInStudentView: () => {},
+            activeUserId: 'student-1',
+            setActiveUserId: () => {},
+          }}
+        >
+          <div className="max-w-3xl">
+            <FeedItem
+              group={args.group}
+              post={args.post}
+              userPoints={args.userPoints}
+              isBeingDragged={args.isBeingDragged}
+              dragHandle={args.dragHandle}
+            />
+          </div>
+        </ActiveGroupContext.Provider>
       </UserGroupsContext.Provider>
     </UserDataContext.Provider>
   );

@@ -126,12 +126,12 @@ export default function Feed({
     setActiveId(null);
   };
 
-const fetchedLeaderboardData = useUserLeaderboardData(
-  group.activeGroupId!,
-  group.activeUserId!
-);
+  const fetchedLeaderboardData = useUserLeaderboardData(
+    group.activeGroupId!,
+    group.activeUserId!
+  );
 
-const userLeaderboardData = leaderboardData ?? fetchedLeaderboardData;
+  const userLeaderboardData = leaderboardData ?? fetchedLeaderboardData;
 
   return (
     <div>
