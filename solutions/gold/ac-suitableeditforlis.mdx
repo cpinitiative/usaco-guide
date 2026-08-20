@@ -1,0 +1,112 @@
+---
+id: ac-suitableeditforlis
+source: AtCoder Beginner Contest 360
+title:  Suitable Edit for LIS
+author: Mikaela Tereshkov
+---
+
+[Official Analysis](https://atcoder.jp/contests/abc360/editorial/10433)
+
+## Explanation
+
+We can solve this problem with the segment tree LIS technique.
+
+If the optimal solution contains an update to index $i$, we will update $A_i$ to $A_{i-1}+1$ if $i>1$ and to $0$ otherwise. If we have some increasing subsequence containing value $A_{i-1}$ and we want to add a new element directly after $A_{i-1}$, it is optimal to choose $A_{i-1}+1$. This is because it maximizes the number of options for the next element while still being $>A_{i-1}$. It is always optimal to update $A_i$ to $A_{i-1}+1$ because if $A_{i-1}+1$ will directly follow $A_{i-1}$, we must not take any indices in between the index of $A_{i-1}$ and $A_{i-1}+1$. Updating the value at index $i$ to $A_{i-1}+1$ causes the original $A_i$ to be the only value we cannot take. If we update the value at a later index, we will not be able to take a larger set of values that still includes $A_i$.
+
+For $i=1$, it is optimal to set $A_i=0$ because any larger value of $A_i$ will cause the set of possible next values in the LIS to be a subset of the set of possible next values in the LIS when $A_i=0$.
+
+We can use $2$ segment trees. Let's denote these as $\texttt{before}$ and $\texttt{after}$. $\texttt{before}_i$ will store the LIS ending with value $i$ without any operations performed. $\texttt{after}_i$ will store the LIS ending with value $i$ after an operation is performed. Let's also denote $\texttt{best}_i$ as the best replacement for $A_i$.
+
+We can transition as follows:
+
+$$
+\texttt{after}_{A_i}=\max(\texttt{after}_{A_i},\ 1+\max_{j<A_i}{\texttt{after}_j})
+$$
+$$
+\texttt{after}_{\texttt{best}_i}=\max(\texttt{after}_{\texttt{best}_i},\ 1+\max_{j<\texttt{best}_i}{\texttt{before}_j})
+$$
+$$
+\texttt{before}_{A_i}=\max(\texttt{before}_{A_i},\ 1+\max_{j<A_i}{\texttt{before}_j})
+$$
+
+The first and third transitions extend the LIS. The second transition is used to apply the operation. Our final result is the maximum value in $\texttt{after}$.
+
+Note that because $A_i \leq 10^9$, we will need to use coordinate compression.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// BeginCodeSnip{Range Maximum Segment Tree}
+
+class MaxSegTree {
+  private:
+	int len;
+	vector<int> segtree;
+
+  public:
+	MaxSegTree(int len) : len(len), segtree(2 * len) {}
+
+	void set(int ind, int val) {
+		ind += len;
+		for (segtree[ind] = max(segtree[ind], val); ind > 1; ind >>= 1) {
+			segtree[ind >> 1] = max(segtree[ind], segtree[ind ^ 1]);
+		}
+	}
+
+	int range_max(int from, int to) {
+		int max_ = 0;
+		for (from += len, to += len; from < to; from >>= 1, to >>= 1) {
+			if ((from & 1) != 0) { max_ = max(max_, segtree[from++]); }
+			if ((to & 1) != 0) { max_ = max(max_, segtree[--to]); }
+		}
+		return max_;
+	}
+};
+
+// EndCodeSnip
+
+int main() {
+	int n;
+	cin >> n;
+
+	vector<int> a(n);
+	map<int, int> compressed;
+	vector<int> best(n, 0);
+
+	for (int i = 0; i < n; i++) { cin >> a[i]; }
+	vector<int> val = a;
+	val.push_back(0);
+
+	for (int i = 0; i < n - 1; i++) { val.push_back(val[i] + 1); }
+	sort(val.begin(), val.end());
+	val.erase(unique(val.begin(), val.end()), val.end());
+
+	for (int i = 0; i < val.size(); i++) { compressed[val[i]] = i; }
+
+	for (int i = 1; i < n; i++) { best[i] = a[i - 1] + 1; }
+
+	MaxSegTree before(2 * n);
+	MaxSegTree after(2 * n);
+
+	for (int i = 0; i < n; i++) {
+		after.set(compressed[a[i]], after.range_max(0, compressed[a[i]]) + 1);
+		after.set(compressed[best[i]], before.range_max(0, compressed[best[i]]) + 1);
+		before.set(compressed[a[i]], before.range_max(0, compressed[a[i]]) + 1);
+	}
+
+	cout << after.range_max(0, 2 * n) << '\n';
+	return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>

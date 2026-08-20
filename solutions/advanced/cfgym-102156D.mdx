@@ -1,0 +1,175 @@
+---
+id: cfgym-102156D
+source: 2019 Petrozavodsk Winter Camp, Yandex Cup
+title: Pick Your Own Nim
+author: Robert Chung
+---
+
+## Explanation
+
+Interpret the heap sizes as vectors in $$\mathbb{F}_2^{60}$$ (refer to the [XOR basis](/adv/xor-basis) page for more details).
+
+We are given $A$, the set of vectors that Alice has chosen. To win the game, we must choose
+a set of vectors $B$, one from each of the $m$ boxes, such that no nonempty subset of $A \cup B$
+has an XOR-sum of zero.
+
+Let's represent this with matroid intersection. Let $H$ be the set of all possible vectors that Bob can pick (this will be
+our ground set). Then, we want a set of vectors $B$ of maximum size where:
+1. at most one vector is chosen from each box,
+2. $A \cup B$ is linearly independent.
+
+Bob can win iff we can achieve a set $B$ of size $m$.
+
+We can easily handle the first condition with a **colorful matroid**.
+For the second condition, we use a **contracted linear matroid** where $A$
+is the set of vectors we are forced to include.
+
+Note that to actually get a matroid in the second condition, we need $A$ to be linearly independent
+(otherwise we violate independence of $B = \emptyset$).
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(d^3 \sum k_i)$, where $d \le 60$ is the maximum dimension.
+
+The extra factor of $O(d)$ comes from the cost of check/add in LinearMat.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include "bits/stdc++.h"
+using namespace std;
+
+using u64 = uint64_t;
+struct LinearMat {
+	vector<u64> H;
+	vector<u64> A, A_union_B;
+	LinearMat(vector<u64> alice, vector<u64> H) : H(H) {
+		for (u64 x : alice) {
+			x = reduce(A, x);
+			if (x) A.push_back(x);
+		}
+		clear();
+	}
+	u64 reduce(const vector<u64> &basis, u64 x) {
+		for (u64 y : basis) x = min(x, x ^ y);
+		return x;
+	}
+	bool check(int i) { return reduce(A_union_B, H[i]) != 0; }
+	void add(int i) { A_union_B.push_back(reduce(A_union_B, H[i])); }
+	void clear() { A_union_B = A; }
+	void precomp() {}
+};
+struct ColorMat {
+	vector<int> cnt, clr;  // colors from [0, n)
+	ColorMat(int n, vector<int> clr) : cnt(n), clr(clr) {}
+	bool check(int x) { return !cnt[clr[x]]; }
+	void add(int x) { cnt[clr[x]]++; }
+	void clear() { fill(begin(cnt), end(cnt), 0); }
+	void precomp() {}
+};
+template <class M1, class M2> vector<bool> MatroidIsect(M1 m1, M2 m2, int n) {
+	vector<bool> in_S(n);
+	auto augment = [&] {
+		vector<int> S, E_S;  // E_S has indices of all edges not in S
+		for (int i = 0; i < n; i++) {
+			if (in_S[i]) S.push_back(i);
+			else E_S.push_back(i);
+		}
+		// build exchange graph
+		vector<vector<int>> adj(n);
+		for (int y : S) {
+			m1.clear(), m2.clear();
+			for (int i : S) {
+				if (i != y) m1.add(i), m2.add(i);
+			}
+			// optional precomputation, can be an empty function
+			m1.precomp(), m2.precomp();
+			for (int x : E_S) {
+				if (m1.check(x)) adj[y].push_back(x);
+				if (m2.check(x)) adj[x].push_back(y);
+			}
+		}
+		// identify sources and sinks for BFS
+		vector<bool> is_sink(n);
+		queue<int> q;
+		vector<bool> vis(n);
+
+		m1.clear(), m2.clear();
+		for (int y : S) m1.add(y), m2.add(y);
+		m1.precomp(), m2.precomp();  // optional precomp
+		for (int x : E_S) {
+			if (m1.check(x)) vis[x] = 1, q.push(x);  // x is a source
+			is_sink[x] = m2.check(x);
+		}
+		// BFS to find augmenting path from source to sink
+		vector<int> prev(n, -1);
+		while (!q.empty()) {
+			int u = q.front();
+			q.pop();
+			if (is_sink[u]) {
+				// augmenting path found
+				for (int v = u; v != -1; v = prev[v]) { in_S[v] = !in_S[v]; }
+				return true;
+			}
+			for (int v : adj[u]) {
+				if (vis[v]) continue;
+				q.push(v);
+				vis[v] = 1;
+				prev[v] = u;
+			}
+		}
+		return false;
+	};
+	while (augment());
+	return in_S;
+}
+
+void solve() {
+	int n;
+	cin >> n;
+	vector<u64> alice(n);
+	for (auto &x : alice) cin >> x;
+	int m;
+	cin >> m;
+
+	vector<int> color;
+	vector<u64> H;
+	for (int i = 0; i < m; i++) {
+		int k;
+		cin >> k;
+		while (k--) {
+			u64 x;
+			cin >> x;
+			color.push_back(i);
+			H.push_back(x);
+		}
+	}
+
+	auto m1 = LinearMat(alice, H);
+	auto m2 = ColorMat(m, color);
+
+	if (m1.A.size() < alice.size()) {
+		cout << "-1\n";  // A is not linearly independent
+		return;
+	}
+
+	auto res = MatroidIsect(m1, m2, H.size());
+	vector<int> chosen_indices;
+	for (int i = 0; i < res.size(); i++)
+		if (res[i]) chosen_indices.push_back(i);
+	if (chosen_indices.size() < m) cout << "-1\n";
+	else {
+		for (int i : chosen_indices) cout << H[i] << '\n';
+	}
+}
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	solve();
+	return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
