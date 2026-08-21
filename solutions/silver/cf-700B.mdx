@@ -69,16 +69,16 @@ int main() {
 
 	long long res = 0;
 
-	auto Dfs = [&](int curr_node, int prev_node, auto &&Dfs) -> void {
+	auto dfs = [&](int curr_node, int prev_node, auto &&self) -> void {
 		for (int neighbour : roads[curr_node]) {
 			if (neighbour == prev_node) { continue; }
-			Dfs(neighbour, curr_node, Dfs);
+			self(neighbour, curr_node, self);
 			university[curr_node] += university[neighbour];
 		}
 		res += std::min(university[curr_node], 2 * k - university[curr_node]);
 	};
 
-	Dfs(0, -1, Dfs);
+	dfs(0, -1, dfs);
 	std::cout << res << '\n';
 }
 ```
