@@ -1,6 +1,9 @@
 import { Component, createRef, type CanvasHTMLAttributes } from 'react';
 
-type CanvasProps = Omit<CanvasHTMLAttributes<HTMLCanvasElement>, 'width' | 'height'> & {
+type CanvasProps = Omit<
+  CanvasHTMLAttributes<HTMLCanvasElement>,
+  'width' | 'height'
+> & {
   width: number;
   height: number;
   draw: (ctx: CanvasRenderingContext2D) => void;
@@ -64,6 +67,5 @@ class Canvas extends Component<CanvasProps> {
     );
   }
 }
-
 
 export default Canvas;
