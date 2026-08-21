@@ -1,0 +1,100 @@
+---
+id: cf-1251D
+source: CF
+title: Salary Changing
+author: Rameez Parwez
+---
+
+[Official Editorial (C++)](https://codeforces.com/blog/entry/70860)
+
+## Explanation
+
+We can binary search on the answer to calculate the maximum
+median salary possible. For `mid` to be the median salary, we
+need to verify if it is possible to have at
+least $\lceil \frac{n}{2} \rceil$ employees' salaries to at least `mid`
+dollars while keeping the total cost under $s$ dollars.
+
+We prioritize employees whose salary $l_i$ is already close to `mid`,
+since they will require less extra cost to reach `mid`. Among all employees
+who are capable of earning at least `mid` (i.e. $r_i \geq$ `mid`), we will
+greedily pick the $\lceil \frac{n}{2} \rceil$ cheapest ones to
+ensure they earn at least `mid`. For each such employee, the extra cost
+to increase their salary to at least `mid` will be $\max(0, mid - l_i)$.
+We will store these values in an array for further use.
+
+Now, we will sort the extra cost values that we stored previously
+and greedily pick the $\lceil \frac{n}{2} \rceil$ cheapest values,
+since we want to maximize our median salary while managing the
+budget under $s$ dollars. If the $\lceil \frac{n}{2} \rceil$ extra
+cost values plus the sum of all minimum salaries stay within the
+budget, then `mid` is achievable.
+
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N \log (\max r_i))$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <numeric>
+#include <vector>
+
+int main() {
+	int test_num;
+	std::cin >> test_num;
+
+	for (int t = 0; t < test_num; t++) {
+
+		int n;
+		long long s;
+		std::cin >> n >> s;
+		std::vector<std::pair<int, int>> arr(n);
+		long long lower_sum = 0;
+
+		for (auto &[l, r] : arr) {
+			std::cin >> l >> r;
+			lower_sum += l;
+		}
+
+		auto is_possible = [&](int mid) {
+			std::vector<int> p;
+			for (int i = 0; i < n; i++) {
+				if (arr[i].second >= mid) {
+					p.push_back(std::max(0, mid - arr[i].first));
+				}
+			}
+
+			std::sort(begin(p), end(p));
+
+			if ((int)p.size() >= (n + 1) / 2) {
+				long long req_sum =
+				    std::accumulate(begin(p), begin(p) + (n + 1) / 2, 0LL);
+				return req_sum + lower_sum <= s;
+			} else {
+				return false;
+			}
+		};
+
+		int lo = 0, hi = 1e9;
+
+		while (lo < hi) {
+			int mid = (lo + hi + 1) / 2;
+			if (is_possible(mid)) {
+				lo = mid;
+			} else {
+				hi = mid - 1;
+			}
+		}
+
+		std::cout << lo << '\n';
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
