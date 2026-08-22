@@ -11,8 +11,6 @@ export type SelectionProps = UseRefinementListProps & {
   isMulti: boolean;
   transformLabel?: (label: string) => string;
   items?: { label: string; value: string | string[] }[];
-  /** Called with the labels of the selected options whenever they change. */
-  onRefine?: (labels: string[]) => void;
 };
 
 export default function Selection({
@@ -23,7 +21,6 @@ export default function Selection({
   isMulti,
   transformLabel: transform,
   items,
-  onRefine,
   ...props
 }: SelectionProps) {
   const { items: refineItems } = useRefinementList({
@@ -64,7 +61,6 @@ export default function Selection({
             [attribute]: selectedOptions.map(option => option.value).flat(),
           },
         }));
-        onRefine?.(selectedOptions.map(option => option.label));
       }}
       value={isMulti ? selected : (selected[0] ?? null)}
       isClearable
