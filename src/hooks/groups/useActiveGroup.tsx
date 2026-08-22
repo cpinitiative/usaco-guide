@@ -19,7 +19,7 @@ import { GroupData, isUserAdminOfGroup } from '../../models/groups/groups';
 import { PostData } from '../../models/groups/posts';
 import { useFirebaseApp } from '../useFirebase';
 
-const ActiveGroupContext = React.createContext<{
+export const ActiveGroupContext = React.createContext<{
   activeGroupId: string;
   setActiveGroupId: React.Dispatch<React.SetStateAction<string | undefined>>;
   groupData?: GroupData;
