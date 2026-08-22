@@ -52,50 +52,52 @@ Once we calculate these values, we can simply plug them back into the equation a
 using namespace std;
 
 void solve() {
-    freopen("gates.in", "r", stdin);
-    freopen("gates.out", "w", stdout);
+	freopen("gates.in", "r", stdin);
+	freopen("gates.out", "w", stdout);
 
-    int n; cin >> n;
-    string s; cin >> s;
+	int n;
+	cin >> n;
+	string s;
+	cin >> s;
 
-    int x = 0, y = 0;
+	int x = 0, y = 0;
 
-    set<array<int,2>> vertices;
-    set<array<int,4>> edges;
+	set<array<int, 2>> vertices;
+	set<array<int, 4>> edges;
 
-    vertices.insert({x, y});
+	vertices.insert({x, y});
 
-    for (int i = 0; i < n; i++) {
-        array<int,2> dir;
+	for (int i = 0; i < n; i++) {
+		array<int, 2> dir;
 
-        if (s[i] == 'N') dir = {0, 1};
-        else if (s[i] == 'S') dir = {0, -1};
-        else if (s[i] == 'W') dir = {-1, 0};
-        else dir = {1, 0};
+		if (s[i] == 'N') dir = {0, 1};
+		else if (s[i] == 'S') dir = {0, -1};
+		else if (s[i] == 'W') dir = {-1, 0};
+		else dir = {1, 0};
 
-        int nx = x + dir[0];
-        int ny = y + dir[1];
+		int nx = x + dir[0];
+		int ny = y + dir[1];
 
-        array<int,2> u = {x, y};
-        array<int,2> v = {nx, ny};
+		array<int, 2> u = {x, y};
+		array<int, 2> v = {nx, ny};
 
-        if (u > v) swap(u, v);
+		if (u > v) swap(u, v);
 
-        edges.insert({u[0], u[1], v[0], v[1]});
-        vertices.insert({nx, ny});
+		edges.insert({u[0], u[1], v[0], v[1]});
+		vertices.insert({nx, ny});
 
-        x = nx;
-        y = ny;
-    }
+		x = nx;
+		y = ny;
+	}
 
-    cout << edges.size() - vertices.size() + 1 << '\n';
+	cout << edges.size() - vertices.size() + 1 << '\n';
 }
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    solve();
+	solve();
 }
 ```
 
