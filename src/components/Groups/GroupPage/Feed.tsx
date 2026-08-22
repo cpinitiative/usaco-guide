@@ -63,7 +63,11 @@ function SortableItem(props: {
   );
 }
 
-export default function Feed(): JSX.Element {
+export default function Feed({
+  leaderboardData,
+}: {
+  leaderboardData?: Record<string, { totalPoints: number }>;
+}): JSX.Element {
   const group = useActiveGroup();
   const { updatePostOrdering } = useGroupActions();
 
@@ -122,10 +126,12 @@ export default function Feed(): JSX.Element {
     setActiveId(null);
   };
 
-  const userLeaderboardData = useUserLeaderboardData(
+  const fetchedLeaderboardData = useUserLeaderboardData(
     group.activeGroupId!,
     group.activeUserId!
   );
+
+  const userLeaderboardData = leaderboardData ?? fetchedLeaderboardData;
 
   return (
     <div>
