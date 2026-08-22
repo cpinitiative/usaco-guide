@@ -218,11 +218,101 @@ async function indexMdxFiles(
   }
 }
 
+/**
+ * Vercel checks the repository out with a shallow clone (`--depth=10`), which
+ * makes every file look like it was added by the shallow boundary commit. That
+ * gives every module the same, very recent "Last Updated" timestamp instead of
+ * the time it was actually last edited. Deepen the clone before reading any
+ * timestamps; `--filter=blob:none` keeps it cheap since we only need commits
+ * and trees, not the contents of every historical revision.
+ *
+ * Memoized: the fetch only needs to happen once per process.
+ */
+let fullGitHistory: Promise<boolean> | null = null;
+
+function ensureFullGitHistory(): Promise<boolean> {
+  fullGitHistory ??= fetchFullGitHistory();
+  return fullGitHistory;
+}
+
+async function fetchFullGitHistory(): Promise<boolean> {
+  const { execFileSync } = await import('child_process');
+  const git = (args: string[]) =>
+    execFileSync('git', args, {
+      encoding: 'utf-8',
+      // Fail instead of hanging on a credential prompt for a private repo.
+      env: { ...process.env, GIT_TERMINAL_PROMPT: '0' },
+      stdio: ['ignore', 'pipe', 'pipe'],
+      timeout: 5 * 60 * 1000,
+    }).trim();
+
+  let isShallow: string;
+  try {
+    isShallow = git(['rev-parse', '--is-shallow-repository']);
+  } catch (error) {
+    console.warn('Not a git repository; skipping module timestamps:', error);
+    return false;
+  }
+  if (isShallow !== 'true') return true;
+
+  const remote = getGitRemoteUrl(git);
+  if (!remote) {
+    console.warn(
+      'Shallow git repository with no known remote; skipping module timestamps.'
+    );
+    return false;
+  }
+
+  console.log(
+    `Shallow git repository detected, fetching history from ${remote}...`
+  );
+  try {
+    git(['fetch', '--filter=blob:none', '--unshallow', remote]);
+  } catch (error) {
+    console.warn('Failed to fetch full git history:', error);
+    return false;
+  }
+
+  if (git(['rev-parse', '--is-shallow-repository']) === 'true') {
+    console.warn('Repository is still shallow; skipping module timestamps.');
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Vercel clones without configuring a remote, so fall back to reconstructing
+ * the repository URL from the environment it exposes to builds.
+ */
+function getGitRemoteUrl(git: (args: string[]) => string): string | null {
+  try {
+    const origin = git(['remote', 'get-url', 'origin']);
+    if (origin) return origin;
+  } catch {
+    // No origin remote; fall through to the Vercel environment variables.
+  }
+
+  const host = {
+    github: 'github.com',
+    gitlab: 'gitlab.com',
+    bitbucket: 'bitbucket.org',
+  }[process.env.VERCEL_GIT_PROVIDER ?? ''];
+  const owner = process.env.VERCEL_GIT_REPO_OWNER;
+  const slug = process.env.VERCEL_GIT_REPO_SLUG;
+  if (!host || !owner || !slug) return null;
+
+  return `https://${host}/${owner}/${slug}.git`;
+}
+
 async function getBatchGitTimestamps(
   filePaths: string[]
 ): Promise<Map<string, string>> {
   const { execSync } = await import('child_process');
   const timestamps = new Map<string, string>();
+
+  // Without the full history git reports the shallow boundary commit for every
+  // file, so leave the timestamps empty rather than showing a wrong date.
+  if (!(await ensureFullGitHistory())) return timestamps;
 
   // Batch files to avoid Windows command line length limit (~8191 chars)
   const BATCH_SIZE = 50;
