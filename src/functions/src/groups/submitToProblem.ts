@@ -4,6 +4,9 @@ import { FirebaseSubmission as Submission } from '../../../models/groups/problem
 
 if (admin.apps.length === 0) {
   admin.initializeApp();
+  admin.firestore().settings({
+    preferRest: true,
+  });
 }
 
 export default onDocumentWritten(

@@ -4,6 +4,9 @@ import { GroupData } from '../../../models/groups/groups';
 
 if (admin.apps.length === 0) {
   admin.initializeApp();
+  admin.firestore().settings({
+    preferRest: true,
+  });
 }
 
 export default functions.https.onCall(async request => {

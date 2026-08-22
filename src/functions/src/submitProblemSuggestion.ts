@@ -21,6 +21,9 @@ const problemSuggestionReviewers = {
 
 if (admin.apps.length === 0) {
   admin.initializeApp();
+  admin.firestore().settings({
+    preferRest: true,
+  });
 }
 
 const submitProblemSuggestion = functions.https.onCall(async request => {
