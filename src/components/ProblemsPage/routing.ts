@@ -18,9 +18,9 @@ const REFINEMENT_PARAMS: [param: string, attribute: string][] = [
   ['starred', 'isStarred'],
 ];
 
-// `sort` and `status` are managed by the problems page outside of
-// InstantSearch; preserve them when InstantSearch writes the URL.
-const EXTERNAL_PARAMS = ['sort', 'status'];
+// `sort`, `status` and the contest year bounds are managed by the problems page
+// outside of InstantSearch; preserve them when InstantSearch writes the URL.
+const EXTERNAL_PARAMS = ['sort', 'status', 'yearFrom', 'yearTo'];
 
 // Section label -> module IDs, matching the Section filter options
 const sectionModules: Record<string, string[]> = Object.fromEntries(
