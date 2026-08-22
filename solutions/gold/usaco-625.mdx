@@ -1,0 +1,103 @@
+---
+id: usaco-625
+source: USACO Platinum 2016 February
+title: Fenced In
+author: Raagav Bala
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_fencedin_platinum_feb16.html)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n \log n + m \log m)$
+
+<LanguageSection>
+
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	freopen("fencedin.in", "r", stdin);
+	freopen("fencedin.out", "w", stdout);
+
+	int A, B, n, m;
+	cin >> A >> B >> n >> m;
+
+	// convert coords into widths/heights
+	vector<int> a(n + 1), b(m + 1);
+	for (int i = 0; i < n; i++) cin >> a[i];
+	for (int i = 0; i < m; i++) cin >> b[i];
+	a[n] = A;
+	b[m] = B;
+	sort(a.begin(), a.end());
+	sort(b.begin(), b.end());
+
+	for (int i = n; i > 0; i--) a[i] -= a[i - 1];
+	for (int i = m; i > 0; i--) b[i] -= b[i - 1];
+	sort(a.begin(), a.end());
+	sort(b.begin(), b.end());
+
+	// process in increasing order
+	long long min_length = 1LL * a[0] * m + 1LL * b[0] * n;
+	int i = 1, j = 1;
+	int cntA = n, cntB = m;  // number of connections still needed in either direction
+
+	while (i <= n || j <= m) {
+		// take the next smallest gap
+		// add it once for each perpendicular strip not already connected
+		if (i > n || (j <= m && a[i] > b[j])) {
+			min_length += 1LL * b[j] * cntA;
+			j++;
+			cntB--;
+		} else {
+			min_length += 1LL * a[i] * cntB;
+			i++;
+			cntA--;
+		}
+	}
+
+	cout << min_length;
+}
+```
+</CPPSection>
+
+<PySection>
+```py
+import sys
+
+sys.stdin = open("fencedin.in")
+sys.stdout = open("fencedin.out", "w")
+
+A, B, n, m = map(int, input().split())
+
+# convert coords into widths/heights
+a = sorted([int(input()) for _ in range(n)] + [A])
+b = sorted([int(input()) for _ in range(m)] + [B])
+a = sorted([a[0]] + [a[i] - a[i - 1] for i in range(1, n + 1)])
+b = sorted([b[0]] + [b[i] - b[i - 1] for i in range(1, m + 1)])
+
+# process in increasing order
+min_length = a[0] * m + b[0] * n
+i, j = 1, 1
+cntA, cntB = n, m  # number of connections still needed in either direction
+
+while i <= n or j <= m:
+	# take the next smallest gap
+	# add it once for each perpendicular strip not already connected.
+	if i > n or (j <= m and a[i] > b[j]):
+		min_length += b[j] * cntA
+		j += 1
+		cntB -= 1
+	else:
+		min_length += a[i] * cntB
+		i += 1
+		cntA -= 1
+
+print(min_length)
+```
+
+</PySection>
+
+</LanguageSection>
