@@ -9,17 +9,35 @@ The following is written for individuals without front-end development
 experience.
 
 1. Set up your development environment.
-   - Install [node.js](https://nodejs.org/en/)
-   - Install [yarn 1](https://classic.yarnpkg.com/en/)
-     - `npm install -g yarn`? might work
+   - Install [node.js](https://nodejs.org/en/) (Next.js requires 20.9 or newer)
+   - Enable [Yarn](https://yarnpkg.com/) via Corepack: `corepack enable`
+     - The repo pins its Yarn version with the `packageManager` field in
+       `package.json`, so you don't need to install a specific Yarn release
+       yourself.
 2. Clone repo
    - `git clone https://github.com/cpinitiative/usaco-guide.git`
 3. Install Dependencies
    - `yarn install`
 4. Run development server
-   - `yarn dev`
+   - `yarn dev`, or `yarn dev:watch` if you're editing content (see below)
 5. Test UI Components
    - `yarn storybook`
+
+## Editing Content
+
+Content isn't read from `content/` at request time: `yarn dev` compiles every
+MDX file into a SQLite database at `data/content.db` and serves the site from
+that. The database is only built when it's missing, so **editing an MDX file
+while `yarn dev` is running has no effect on the page you see.** (Changes under
+`src/` hot reload as usual -- this only affects `content/` and `solutions/`.)
+
+Use `yarn dev:watch` instead while writing content. It runs the same dev server,
+but also watches `content/` and `solutions/`, re-indexes just the files you
+touched, and pushes a reload to the browser over SSE (port 3001).
+
+If you ever need to rebuild the database from scratch (for example after
+changing how content is parsed), delete `data/content.db` and restart, or run
+`yarn tsx scripts/index-content.ts`.
 
 ## Link Checker
 

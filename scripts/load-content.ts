@@ -8,7 +8,8 @@ async function needsRebuild(): Promise<boolean> {
     // Check if both cache files exist
     await access(DB_FILE);
     console.log(
-      'Using cached content. Run with NODE_ENV=production to force rebuild.'
+      'Using cached content. Run `yarn dev:watch` to pick up content edits, ' +
+        'or delete data/content.db to force a rebuild.'
     );
     return false;
   } catch (error) {
