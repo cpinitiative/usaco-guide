@@ -343,6 +343,10 @@ combination of a stack and a queue, in that it supports $\mathcal{O}(1)$
 insertions and deletions from both the front and the back of the deque. Not very
 common in Bronze / Silver.
 
+In C++ and Java, a queue is almost always enough for BFS; you rarely need a
+deque in its place. We introduce deques mainly for consistency across
+languages, since in Python `collections.deque()` is what you use as a queue.
+
 <LanguageSection>
 <CPPSection>
 
@@ -554,7 +558,6 @@ in a line.
 <CPPSection>
 
 ```cpp
-#include <deque>
 #include <iostream>
 #include <vector>
 
@@ -774,8 +777,8 @@ To resolve this, we can implement a BFS solution, as shown below.
 <CPPSection>
 
 ```cpp
-#include <deque>
 #include <iostream>
+#include <queue>
 #include <vector>
 
 using namespace std;
@@ -799,14 +802,15 @@ int main() {
 
 		visited[i] = true;
 		city_reps.push_back(i);
-		deque<int> todo{i};
+		queue<int> todo;
+		todo.push(i);
 		while (!todo.empty()) {
 			int curr = todo.front();
-			todo.pop_front();
+			todo.pop();
 			for (int next : adj[curr]) {
 				if (!visited[next]) {
 					visited[next] = true;
-					todo.push_back(next);
+					todo.push(next);
 				}
 			}
 		}
@@ -848,7 +852,7 @@ public class BuildingRoads {
 
 			visited[i] = true;
 			cityReps.add(i);
-			ArrayDeque<Integer> todo = new ArrayDeque<>();
+			Queue<Integer> todo = new LinkedList<>();
 			todo.add(i);
 			while (!todo.isEmpty()) {
 				int curr = todo.poll();
@@ -1140,8 +1144,8 @@ do them in an iterative rather than recursive fashion.
 <CPPSection>
 
 ```cpp
-#include <deque>
 #include <iostream>
+#include <queue>
 #include <vector>
 
 using namespace std;
@@ -1164,10 +1168,11 @@ int main() {
 		if (assigned[i] != 0) { continue; }
 
 		assigned[i] = 1;
-		deque<int> todo{i};
+		queue<int> todo;
+		todo.push(i);
 		while (!todo.empty()) {
 			int curr = todo.front();
-			todo.pop_front();
+			todo.pop();
 			int n_color = assigned[curr] == 1 ? 2 : 1;
 			for (int next : adj[curr]) {
 				if (assigned[next] != 0) {
@@ -1177,7 +1182,7 @@ int main() {
 					}
 				} else {
 					assigned[next] = n_color;
-					todo.push_back(next);
+					todo.push(next);
 				}
 			}
 		}
@@ -1221,7 +1226,7 @@ public class BuildingTeams {
 			if (assigned[i] != 0) { continue; }
 
 			assigned[i] = 1;
-			ArrayDeque<Integer> todo = new ArrayDeque<>();
+			Queue<Integer> todo = new LinkedList<>();
 			todo.add(i);
 			while (!todo.isEmpty()) {
 				int curr = todo.poll();
@@ -1234,7 +1239,7 @@ public class BuildingTeams {
 						}
 					} else {
 						assigned[next] = nColor;
-						todo.push(next);
+						todo.add(next);
 					}
 				}
 			}
