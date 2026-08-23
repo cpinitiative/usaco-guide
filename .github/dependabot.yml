@@ -1,0 +1,33 @@
+# Dependabot configuration.
+#
+# `open-pull-requests-limit: 0` disables *version* update PRs, preserving the
+# repo's current security-alerts-only behaviour. The `groups` block applies to
+# security updates so that one advisory spanning several major lines of a
+# package (e.g. brace-expansion 1.x/2.x/5.x) is fixed by a single PR instead of
+# one PR per version range.
+#
+# src/functions has its own npm lockfile and is deliberately not configured
+# here.
+version: 2
+updates:
+  # Next.js app (Yarn 4 workspace at the repo root).
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
+    groups:
+      npm-security:
+        applies-to: security-updates
+        patterns:
+          - '*'
+
+  # Keep the GitHub Actions used by CI patched.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns:
+          - '*'

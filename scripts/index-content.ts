@@ -174,15 +174,21 @@ async function indexMdxFiles(
     `);
 
   // Batch git commands for performance
-  const gitTimestamps = await getBatchGitTimestamps(
-    files.map(f => path.join(baseDir, f))
-  );
+  const mdxPaths = files.map(f => path.join(baseDir, f));
+  const gitTimestamps = await getGitTimestamps([
+    ...mdxPaths,
+    // Solutions don't have problem lists.
+    ...(type === 'module' ? mdxPaths.map(problemsJsonPath) : []),
+  ]);
 
   const transaction = db.transaction(
     (items: Array<{ content: MdxContent }>) => {
       for (const { content } of items) {
-        const gitTime =
-          gitTimestamps.get(path.resolve(content.fileAbsolutePath)) || null;
+        const gitTime = getLastUpdated(
+          gitTimestamps,
+          content.fileAbsolutePath,
+          type
+        );
 
         insertStmt.run(
           content.frontmatter.id,
@@ -218,45 +224,173 @@ async function indexMdxFiles(
   }
 }
 
-async function getBatchGitTimestamps(
+/**
+ * A module's problem list lives in a sibling `<name>.problems.json`, so editing
+ * that file changes what the module renders just like editing the .mdx does.
+ * Both count towards the module's "Last Updated" timestamp.
+ *
+ * Not every module has one (a few General modules have no problems), and
+ * `git log` simply reports nothing for a path that was never committed, so a
+ * missing file needs no special handling.
+ */
+function problemsJsonPath(mdxPath: string): string {
+  return mdxPath.replace(/\.mdx$/, '.problems.json');
+}
+
+function getLastUpdated(
+  timestamps: Map<string, string>,
+  mdxPath: string,
+  type: 'module' | 'solution'
+): string | null {
+  const resolved = path.resolve(mdxPath);
+  const mdxTime = timestamps.get(resolved);
+  if (type === 'solution') return mdxTime ?? null;
+
+  const problemsTime = timestamps.get(problemsJsonPath(resolved));
+  if (!mdxTime) return problemsTime ?? null;
+  if (!problemsTime) return mdxTime;
+  // ISO-8601 UTC strings sort chronologically.
+  return problemsTime > mdxTime ? problemsTime : mdxTime;
+}
+
+/**
+ * Vercel checks the repository out with a shallow clone (`--depth=10`), which
+ * makes every file look like it was added by the shallow boundary commit. That
+ * gives every module the same, very recent "Last Updated" timestamp instead of
+ * the time it was actually last edited. Deepen the clone before reading any
+ * timestamps; `--filter=blob:none` keeps it cheap since we only need commits
+ * and trees, not the contents of every historical revision.
+ *
+ * Memoized: the fetch only needs to happen once per process.
+ */
+let fullGitHistory: Promise<boolean> | null = null;
+
+function ensureFullGitHistory(): Promise<boolean> {
+  fullGitHistory ??= fetchFullGitHistory();
+  return fullGitHistory;
+}
+
+async function fetchFullGitHistory(): Promise<boolean> {
+  const { execFileSync } = await import('child_process');
+  const git = (args: string[]) =>
+    execFileSync('git', args, {
+      encoding: 'utf-8',
+      // Fail instead of hanging on a credential prompt for a private repo.
+      env: { ...process.env, GIT_TERMINAL_PROMPT: '0' },
+      stdio: ['ignore', 'pipe', 'pipe'],
+      timeout: 5 * 60 * 1000,
+    }).trim();
+
+  let isShallow: string;
+  try {
+    isShallow = git(['rev-parse', '--is-shallow-repository']);
+  } catch (error) {
+    console.warn('Not a git repository; skipping module timestamps:', error);
+    return false;
+  }
+  if (isShallow !== 'true') return true;
+
+  const remote = getGitRemoteUrl(git);
+  if (!remote) {
+    console.warn(
+      'Shallow git repository with no known remote; skipping module timestamps.'
+    );
+    return false;
+  }
+
+  console.log(
+    `Shallow git repository detected, fetching history from ${remote}...`
+  );
+  try {
+    git(['fetch', '--filter=blob:none', '--unshallow', remote]);
+  } catch (error) {
+    console.warn('Failed to fetch full git history:', error);
+    return false;
+  }
+
+  if (git(['rev-parse', '--is-shallow-repository']) === 'true') {
+    console.warn('Repository is still shallow; skipping module timestamps.');
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Vercel clones without configuring a remote, so fall back to reconstructing
+ * the repository URL from the environment it exposes to builds.
+ */
+function getGitRemoteUrl(git: (args: string[]) => string): string | null {
+  try {
+    const origin = git(['remote', 'get-url', 'origin']);
+    if (origin) return origin;
+  } catch {
+    // No origin remote; fall through to the Vercel environment variables.
+  }
+
+  const host = {
+    github: 'github.com',
+    gitlab: 'gitlab.com',
+    bitbucket: 'bitbucket.org',
+  }[process.env.VERCEL_GIT_PROVIDER ?? ''];
+  const owner = process.env.VERCEL_GIT_REPO_OWNER;
+  const slug = process.env.VERCEL_GIT_REPO_SLUG;
+  if (!host || !owner || !slug) return null;
+
+  return `https://${host}/${owner}/${slug}.git`;
+}
+
+/**
+ * Maps each path to the ISO time of the last commit that touched it.
+ *
+ * Deliberately one `git log` per file: handing several pathspecs to a single
+ * `git log` evaluates history simplification against the union of them, which
+ * silently changes the answer for individual files (it moved ~15% of the
+ * content files here, mostly onto the date of a repo-wide reformat that left
+ * their content untouched). Running one process per file is also *faster*,
+ * since `-1` lets git stop at the first matching commit instead of walking the
+ * whole history once per batch.
+ */
+async function getGitTimestamps(
   filePaths: string[]
 ): Promise<Map<string, string>> {
-  const { execSync } = await import('child_process');
   const timestamps = new Map<string, string>();
 
-  // Batch files to avoid Windows command line length limit (~8191 chars)
-  const BATCH_SIZE = 50;
+  // Without the full history git reports the shallow boundary commit for every
+  // file, so leave the timestamps empty rather than showing a wrong date.
+  if (!(await ensureFullGitHistory())) return timestamps;
 
-  for (let i = 0; i < filePaths.length; i += BATCH_SIZE) {
-    const batch = filePaths.slice(i, i + BATCH_SIZE);
+  const { execFile } = await import('child_process');
+  const { promisify } = await import('util');
+  const run = promisify(execFile);
 
-    try {
-      const result = execSync(
-        `git log --format="%ct|%H" --name-only -- ${batch.map(f => `"${f}"`).join(' ')}`,
-        { encoding: 'utf-8', maxBuffer: 10 * 1024 * 1024 }
-      );
-
-      const lines = result.split('\n');
-      let currentTimestamp: string | null = null;
-
-      for (const line of lines) {
-        if (line.includes('|')) {
-          const [timestamp] = line.split('|');
-          currentTimestamp = new Date(parseInt(timestamp) * 1000).toISOString();
-        } else if (line.trim() && currentTimestamp) {
-          const resolvedPath = path.resolve(line.trim());
-          if (!timestamps.has(resolvedPath)) {
-            timestamps.set(resolvedPath, currentTimestamp);
+  const CONCURRENCY = 16;
+  let next = 0;
+  await Promise.all(
+    Array.from({ length: CONCURRENCY }, async () => {
+      while (next < filePaths.length) {
+        const filePath = filePaths[next++];
+        try {
+          const { stdout } = await run('git', [
+            'log',
+            '-1',
+            '--format=%ct',
+            '--',
+            filePath,
+          ]);
+          // Empty for a path that was never committed.
+          const seconds = parseInt(stdout.trim(), 10);
+          if (!isNaN(seconds)) {
+            timestamps.set(
+              path.resolve(filePath),
+              new Date(seconds * 1000).toISOString()
+            );
           }
+        } catch (error) {
+          console.warn(`Failed to get git timestamp for ${filePath}:`, error);
         }
       }
-    } catch (error) {
-      console.warn(
-        `Failed to get git timestamps for batch ${Math.floor(i / BATCH_SIZE) + 1}:`,
-        error
-      );
-    }
-  }
+    })
+  );
 
   return timestamps;
 }
@@ -649,8 +783,10 @@ async function prepareMdxInsert(relPath: string, absPath: string) {
     ? 'module'
     : 'solution';
 
-  const gitTimestamps = await getBatchGitTimestamps([absPath]);
-  const gitTime = gitTimestamps.get(path.resolve(absPath)) || null;
+  const gitTimestamps = await getGitTimestamps(
+    type === 'module' ? [absPath, problemsJsonPath(absPath)] : [absPath]
+  );
+  const gitTime = getLastUpdated(gitTimestamps, absPath, type);
 
   const division =
     type === 'module' ? moduleIDToSectionMap[content.frontmatter.id] : null;

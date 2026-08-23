@@ -123,7 +123,7 @@ export const Authors: Author[] = [
     blurb:
       'Bing-Dong Liu is a USACO Platinum competitor who creates video editorials for USACO Training problems.',
     codeforces: 'lunchbox',
-    github: 'dongliu0426',
+    github: 'dongliu07',
     email: 'dongliu0426@gmail.com',
     youtube: 'https://www.youtube.com/channel/UC6je-w-ygZqxRsG76HtMceQ',
   },

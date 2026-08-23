@@ -1,0 +1,162 @@
+---
+id: cc-FaultySystem
+source: CC
+title: Faulty System
+author: Andrew Tam
+---
+
+An intuitive approach is as follows:
+1. Start by adding as many indices as possible such that both the corresponding edges join different components in their respective graphs.
+2. Then, finish connecting both graphs with the remaining indices.
+
+Suppose that in the first step, we added the set of indices $S$. The edges corresponding to the remaining indices join two different components in exactly *one* of the graphs, so the total number of indices is $|S| + 2((n - 1) - |S|) = 2(n - 1) - |S|$. We can calculate $S$ via matroid intersection on the two graphic matroids.
+
+It is not hard to extend our intuitive explanation to a proof. Let $S$ be defined as above, and let $X$ be any set of indices such that the corresponding edges connect both graphs. Let $T \subseteq X$ be a maximal subset such that the edges corresponding to $T$ are acyclic in both graphs.
+
+We make two observations. Firstly, $|T| \leq |S|$ by construction. Secondly, we get $|X| \geq |T| + 2((n - 1) - |T|) = 2(n - 1) - |T|$ by following the same reasoning as above. In particular, note that after adding all of the indices in $T$, each remaining index in $X$ can join two different components in at most *one* of the graphs. The desired result follows immediately.
+
+**Time Complexity:** $O(N^2M \alpha(N))$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include "bits/stdc++.h"
+
+using namespace std;
+
+namespace kactl {
+// BeginCodeSnip{KACTL Templates}
+#define rep(i, a, b) for (int i = a; i < (b); ++i)
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+typedef long long ll;
+typedef pair<int, int> pii;
+typedef vector<int> vi;
+/**
+ * Author: Lukas Polacek
+ * Date: 2009-10-26
+ * License: CC0
+ * Source: folklore
+ * Description: Disjoint-set data structure.
+ * Time: $O(\alpha(N))$
+ */
+struct UF {
+	vi e;
+	UF(int n) : e(n, -1) {}
+	bool sameSet(int a, int b) { return find(a) == find(b); }
+	int size(int x) { return -e[find(x)]; }
+	int find(int x) { return e[x] < 0 ? x : e[x] = find(e[x]); }
+	bool join(int a, int b) {
+		a = find(a), b = find(b);
+		if (a == b) return false;
+		if (e[a] > e[b]) swap(a, b);
+		e[a] += e[b];
+		e[b] = a;
+		return true;
+	}
+};
+// EndCodeSnip
+}  // namespace kactl
+using kactl::UF;
+
+// BeginCodeSnip{MatroidIsect Template}
+template <class M1, class M2> vector<bool> MatroidIsect(M1 m1, M2 m2, int n) {
+	vector<bool> in_S(n);
+	auto augment = [&] {
+		vector<int> S, E_S;  // E_S has indices of all edges not in S
+		for (int i = 0; i < n; i++) {
+			if (in_S[i]) S.push_back(i);
+			else E_S.push_back(i);
+		}
+		// build exchange graph
+		vector<vector<int>> adj(n);
+		for (int y : S) {
+			m1.clear(), m2.clear();
+			for (int i : S) {
+				if (i != y) m1.add(i), m2.add(i);
+			}
+			// optional precomputation, can be an empty function
+			m1.precomp(), m2.precomp();
+			for (int x : E_S) {
+				if (m1.check(x)) adj[y].push_back(x);
+				if (m2.check(x)) adj[x].push_back(y);
+			}
+		}
+		// identify sources and sinks for BFS
+		vector<bool> is_sink(n);
+		queue<int> q;
+		vector<bool> vis(n);
+
+		m1.clear(), m2.clear();
+		for (int y : S) m1.add(y), m2.add(y);
+		m1.precomp(), m2.precomp();  // optional precomp
+		for (int x : E_S) {
+			if (m1.check(x)) vis[x] = 1, q.push(x);  // x is a source
+			is_sink[x] = m2.check(x);
+		}
+		// BFS to find augmenting path from source to sink
+		vector<int> prev(n, -1);
+		while (!q.empty()) {
+			int u = q.front();
+			q.pop();
+			if (is_sink[u]) {
+				// augmenting path found
+				for (int v = u; v != -1; v = prev[v]) { in_S[v] = !in_S[v]; }
+				return true;
+			}
+			for (int v : adj[u]) {
+				if (vis[v]) continue;
+				q.push(v);
+				vis[v] = 1;
+				prev[v] = u;
+			}
+		}
+		return false;
+	};
+	while (augment());
+	return in_S;
+}
+// EndCodeSnip
+
+struct GraphMat {
+	UF uf;
+	vector<array<int, 2>> e;
+	GraphMat(int n, vector<array<int, 2>> e) : uf(n), e(e) {}
+	void add(int x) { uf.join(e[x][0], e[x][1]); }
+	void precomp() {}
+	bool check(int x) { return !uf.sameSet(e[x][0], e[x][1]); }
+	void clear() { uf = UF(sz(uf.e)); }
+};
+
+void solve() {
+	int n, m;
+	cin >> n >> m;
+	vector<array<int, 2>> e1(m), e2(m);
+	for (int i = 0, u, v; i < m; i++) {
+		cin >> u >> v;
+		e1[i] = {u - 1, v - 1};
+	}
+	for (int i = 0, u, v; i < m; i++) {
+		cin >> u >> v;
+		e2[i] = {u - 1, v - 1};
+	}
+	GraphMat mat1(n, e1);
+	GraphMat mat2(n, e2);
+	auto isect = MatroidIsect(mat1, mat2, m);
+	int res = count(isect.begin(), isect.end(), 1);
+	cout << 2 * (n - 1) - res << '\n';
+}
+
+int main() {
+	cin.sync_with_stdio(0);
+	cin.tie(0);
+	int numTests;
+	cin >> numTests;
+	for (int i = 1; i <= numTests; i++) { solve(); }
+	return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>

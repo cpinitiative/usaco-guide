@@ -116,7 +116,7 @@ export const themeKey = 'guide:userData:theme';
 const LOCAL_STORAGE_KEY = 'guide:userData:v100';
 
 // Todo figure out why we even need defaults
-const UserDataContext = createContext<UserDataContextAPI>({
+export const UserDataContext = createContext<UserDataContextAPI>({
   userData: assignDefaultsToUserData({}),
   updateUserData: _ => {},
   signOut: () => Promise.resolve(),

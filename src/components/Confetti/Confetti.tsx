@@ -1,12 +1,40 @@
 import PropTypes from 'prop-types';
-import { Component } from 'react';
+import { Component, createRef, type MouseEvent } from 'react';
 
 import { createCircle, createTriangle, createZigZag } from './confetti-shapes';
 import { getDiameter, random, range, sample } from './Confetti.helpers';
 
 import Canvas from './Canvas';
 
-class Confetti extends Component {
+type ConfettiProps = {
+  width: number;
+  height: number;
+  shapes?: Array<{
+    front: HTMLImageElement;
+    back: HTMLImageElement;
+  }>;
+  makeItRainOn?: 'click' | 'mount' | 'other';
+  numParticles?: number;
+  emitDuration?: number;
+  gravity?: number;
+  spin?: number;
+  twist?: number;
+  minSpeed?: number;
+  maxSpeed?: number;
+  minScale?: number;
+  maxScale?: number;
+  onComplete?: () => void;
+  onClick?: (event: MouseEvent<HTMLCanvasElement>) => void;
+};
+
+type ConfettiState = {
+  particles: any[];
+};
+
+class Confetti extends Component<ConfettiProps, ConfettiState> {
+  private animationFrameId = 0;
+  private canvasRef = createRef<Canvas>();
+
   static propTypes = {
     // The width of the HTML canvas.
     width: PropTypes.number.isRequired,
@@ -291,7 +319,7 @@ class Confetti extends Component {
         width={width}
         height={height}
         draw={this.draw}
-        ref={node => (this.canvas = node)}
+        ref={this.canvasRef}
         onClick={ev => {
           if (makeItRainOn === 'click') {
             this.generateParticles();
