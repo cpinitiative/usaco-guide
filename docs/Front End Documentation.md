@@ -39,6 +39,10 @@ If you ever need to rebuild the database from scratch (for example after
 changing how content is parsed), delete `data/content.db` and restart, or run
 `yarn tsx scripts/index-content.ts`.
 
+`public/usaco-divisions.json` is generated the same way and is gitignored, since
+every build regenerates it. Both dev servers rewrite it on startup if it is
+missing, so a fresh clone or a `rm` of `public/` needs no extra step.
+
 ## Link Checker
 
 `build-tests` CI checks every _internal_ link on every push and PR, and fails
