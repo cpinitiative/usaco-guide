@@ -8,3 +8,12 @@
 # enough to drown out genuine findings. The images themselves still ship
 # from public/, they just aren't reachable as plain URLs to crawl.
 /_next/image\?
+
+# Hosts that answer HEAD with 403 (bot protection). linkcheck only retries as
+# GET on a 405, so every link to these would be reported broken. Measured with
+# `curl -I`: codeforces 403, dmoj 403, spoj 403, stackoverflow 403.
+# usaco.org is fine (200/301) and is deliberately NOT skipped.
+//codeforces\.com/
+//dmoj\.ca/
+//www\.spoj\.com/
+//stackoverflow\.com/
