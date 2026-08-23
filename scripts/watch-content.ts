@@ -47,6 +47,10 @@ async function watchContent() {
     await main();
   } else {
     console.log('[watch] Using cached content.db. Watching for changes...');
+    const { ensureUsacoDivisionsJson } = await import('./index-content');
+    if (await ensureUsacoDivisionsJson()) {
+      console.log('[watch] Regenerated public/usaco-divisions.json.');
+    }
   }
 
   // Start Next.js dev server as a child process. `--webpack` must match the

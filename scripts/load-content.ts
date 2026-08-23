@@ -24,6 +24,13 @@ async function load() {
   if (rebuild) {
     const { main } = await import('./index-content');
     await main();
+  } else {
+    // public/usaco-divisions.json is gitignored and only rewritten when a
+    // .problems.json changes, so it can be missing next to a valid cache.
+    const { ensureUsacoDivisionsJson } = await import('./index-content');
+    if (await ensureUsacoDivisionsJson()) {
+      console.log('Regenerated public/usaco-divisions.json.');
+    }
   }
 }
 
