@@ -306,7 +306,6 @@ export const FormerMembers: Member[] = [
   {
     photo: 'daniel',
     name: 'Daniel Guan',
-    github: 'DGuan64',
     titles: [roles.founder, 'Director of Classes', 'Finalist'],
   },
   {
