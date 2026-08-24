@@ -7,6 +7,12 @@ import { getWritableDatabase } from '../src/lib/database';
 import type { ProblemMetadata } from '../src/models/problem';
 import { MdxContent, ProblemInfo } from '../src/types/content';
 
+const USACO_DIVISIONS_JSON = join(
+  process.cwd(),
+  'public',
+  'usaco-divisions.json'
+);
+
 // Only auto-run when executed directly (not when imported by watch-content.ts)
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   main().catch(console.error);
@@ -762,14 +768,35 @@ async function generateUsacoDivisionsJson(
   );
 
   // Write to public directory
-  const publicDir = join(process.cwd(), 'public');
-  const outputPath = join(publicDir, 'usaco-divisions.json');
-
   await writeFile(
-    outputPath,
+    USACO_DIVISIONS_JSON,
     JSON.stringify({ problems: usacoDivisionProblems }, null, 2)
   );
-  console.log(`USACO divisions JSON written to: ${outputPath}`);
+  console.log(`USACO divisions JSON written to: ${USACO_DIVISIONS_JSON}`);
+}
+
+/**
+ * Regenerates public/usaco-divisions.json if it is missing.
+ *
+ * It is gitignored and only rewritten when a .problems.json changes, so a
+ * clone (or a pull across the commit that untracked it) can have an up-to-date
+ * content.db and no JSON, leaving DivisionList to 404 on it. Both dev entry
+ * points call this on startup. Returns whether it had to write the file.
+ */
+export async function ensureUsacoDivisionsJson(): Promise<boolean> {
+  const { access } = await import('fs/promises');
+  try {
+    await access(USACO_DIVISIONS_JSON);
+    return false;
+  } catch {
+    const db = await getWritableDatabase();
+    try {
+      await generateUsacoDivisionsJson(db);
+    } finally {
+      db.close();
+    }
+    return true;
+  }
 }
 
 // async: do all parsing/IO up front

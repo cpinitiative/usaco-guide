@@ -6,10 +6,11 @@ author: Ryan Chou, Ryan Kim
 ---
 
 ## Explanation
-We can use the games to construct a directed graph. If $a$ wins against $b$ then we can construct an edge from $b$ to $a$. Since the bounds of $N$ and $M$ are small, we can start a DFS from every vertex. If we reach that vertex again, then we can mark that vertex as “cyclic” and count said vertex in the result.
+We can use the games to construct a directed graph. If $a$ wins against $b$ then we can construct an edge from $b$ to $a$. Since the bounds of $N$ and $K$ are small, we can start a DFS from every vertex. If we reach that vertex again, then we can mark that vertex as “cyclic” and count said vertex in the result.
 
 ## Implementation
-$\mathcal{O}(N^2 + M)$ time
+
+**Time Complexity:** $\mathcal{O}(N(N + K))$
 
 <LanguageSection>
 <CPPSection>
@@ -75,7 +76,7 @@ int main() {
 <PySection>
 
 ```py
-n, m = map(int, input().split())
+n, k = map(int, input().split())
 
 adj = [[] for _ in range(n)]
 vis, cyclic = [False for _ in range(n)], [False for _ in range(n)]
@@ -98,7 +99,7 @@ def dfs(node):
 
 
 # process directed graph
-for i in range(m):
+for i in range(k):
 	a, b, sa, sb = map(int, input().split())
 
 	if sa > sb:
