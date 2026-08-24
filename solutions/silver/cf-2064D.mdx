@@ -4,51 +4,51 @@ source: CF
 title: Eating
 author: Abhinav Singh
 ---
-
 [Official Analysis (C++)](https://codeforces.com/blog/entry/138912)
 
 ## Explanation
 
-Suppose the added slime has an initial weight of $x$.
-Since XOR is associative and commutative, after eating $k$ slimes its weight is
-
-$$
-x \oplus w_{n-k} \oplus w_{n-k+1} \oplus \cdots \oplus w_{n-1}.
-$$
-
-Thus, we define **suffix XOR** values:
+Suppose the added slime has an initial weight of $x$. Since we process the slimes from right to left, define the suffix XOR array
 
 $$
 \text{suf}[i] = w_{i+1} \oplus w_{i+2} \oplus \cdots \oplus w_{n-1},
 $$
 
-with $\text{suf}[n-1] = 0$. Then, after eating $k$ slimes, the slime's weight is simply $$x \oplus \text{suf}[n-k-1]$$.
+with $\text{suf}[n-1] = 0$. Then, after eating $k$ slimes, the slime's weight is simply $x \oplus \text{suf}[n-k-1].$
 
-Hence, when it attempts to eat the slime at position $i$, its
-current weight is $x \oplus \text{suf}[i]$.
-It succeeds if and only if $$x \oplus \text{suf}[i] \ge w_i.$$
-Therefore, the answer to a query is the number of consecutive
-slimes it can eat, sweeping from position $n-1$ down to $0$ before
-$$x \oplus \text{suf}[i] \lt w_i$$ . If it fails at position $i$, the
-slime has eaten positions $i + 1, \cdots n - 1$ for a score of $n- i - 1$.
-If it never fails, the slime eats all $n$ slimes.
+Hence, when it attempts to eat the slime at position $i$, its current weight is $x \oplus \text{suf}[i]$. It succeeds if and only if $x \oplus \text{suf}[i] \ge w_i.$
 
-We process all queries offline, inserting every query value into a
+Now, consider the most significant bit (MSB) of the current weight $x \oplus \text{suf}[i]$. If $\text{msb}(w_i) \lt \text{msb}(x \oplus \text{suf}[i])$, then $x \oplus \text{suf}[i] \ge w_i$, i.e., we can always eat that slime.
+
+Let's consider what happens to our MSB when we eat that slime.
+- If $\text{msb}(w_i) < \text{msb}(x \oplus \text{suf}[i])$, then, since XORing with a smaller value can't flip the leading bit, the MSB never decreases.
+- If $\text{msb}(w_i) = \text{msb}(x \oplus \text{suf}[i])$, then the XOR cancels the leading bit, thus our MSB strictly decreases if we are able to eat the slime. Otherwise, we stop.
+
+So we can greedily eat all the slimes from right to left whose MSB $\lt$ our current weight's MSB. Since XOR is associative, the XOR of this entire block can be obtained in O(1) using our precomputed suffix XOR values. Then, the next slime we hit has MSB $\ge$ the current weight's MSB. Either we fail there, or we eat it and the MSB strictly decreases. Since every weight is less than $2^{30}$, the MSB can only decrease at most 30 $(log(2^{30}))$ times. 
+
+Now, to find the first position to the left whose MSB is **at least** ours, we maintain a prefix array $last$. For each position (i) and bit position (j), define $last[i][j]$ as the rightmost position at or before $i$ whose slime has MSB at least $j$. We can compute it as
+
+$$
+\text{last}[i][j] =
+\begin{cases}
+i & \text{if } msb(w_i) \ge j,\\
+\text{last}[i-1][j] & \text{otherwise}.
+\end{cases}
+$$
+
+<Optional title="Offline Approach">
+
+We can insert every query value into a
 binary trie before sweeping from position $n-1$ down to $0$.
-Consider a query $v$ as "blocked at" $i$ if the added slime with
-weight $v$ stops eating the slime at position $i$ first. At each
-position $i$, a query $v$ is blocked at $i$ if and only if $v
-\oplus \text{suf}[i] < w_i$. We can then use the trie to find the
-query with the minimum XOR value with $\text{suf}[i]$, and remove
-that query from the trie if the XOR value is $<w_i$, as that query
-cannot proceed past $i$; we do this repeatedly until the query
-with the minimum XOR in the trie *can* proceed past $i$, then move
-to position $i-1$.
+At each position $i$, repeatedly find the query $v$ minimizing $v \oplus \text{suf}[i]$. If that minimum XOR is $< w_i$, the query is blocked here, so we record answer $n - i - 1$ and remove $v$ from the trie. Repeat this until the minimum XOR is $\ge w_i$, then move left. Also $O((n + q) \log \mathcal{A})$ but requires offline processing and a binary trie.
+
+</Optional>
+
 
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}((n + q) \log \mathcal{A})$, where $\mathcal{A}$
-is the maximum value  in the array $w$.
+is the maximum value in the array $w$.
 
 <LanguageSection>
 <CPPSection>
@@ -57,108 +57,69 @@ is the maximum value  in the array $w$.
 #include <bits/stdc++.h>
 using namespace std;
 
-struct Node {
-	int child[2];
-	int cnt;
-
-	Node() {
-		child[0] = child[1] = -1;
-		cnt = 0;
-	}
-};
-
-// BeginCodeSnip{Binary Trie}
-struct BinaryTrie {
-	static const int MAX_BIT = 30;
-	vector<Node> trie;
-
-	BinaryTrie() { trie.resize(1); }
-
-	int new_node() {
-		trie.push_back(Node());
-		return (int)trie.size() - 1;
-	}
-
-	void add(int val) {
-		int x = 0;
-		for (int i = MAX_BIT; i >= 0; --i) {
-			trie[x].cnt++;
-			int b = (val >> i) & 1;
-			if (trie[x].child[b] == -1) { trie[x].child[b] = new_node(); }
-			x = trie[x].child[b];
-		}
-		trie[x].cnt++;
-	}
-
-	void remove(int val) {
-		int x = 0;
-		for (int i = MAX_BIT; i >= 0; --i) {
-			trie[x].cnt--;
-			int b = (val >> i) & 1;
-			x = trie[x].child[b];
-		}
-		trie[x].cnt--;
-	}
-
-	int min_xor(int x) {
-		int node = 0, res = 0;
-		for (int i = MAX_BIT; i >= 0; --i) {
-			int b = (x >> i) & 1;
-			if (trie[node].child[b] != -1 && trie[trie[node].child[b]].cnt > 0) {
-				node = trie[node].child[b];
-			} else {
-				res |= (1 << i);
-				node = trie[node].child[b ^ 1];
-			}
-		}
-		return res;
-	}
-};
-// EndCodeSnip{}
-
 int main() {
-	int test_num;
-	cin >> test_num;
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-	for (int t = 0; t < test_num; t++) {
-		int n, q;
-		cin >> n >> q;
+    int test_num;
+    cin >> test_num;
 
-		vector<long long> w(n);
-		for (auto &x : w) cin >> x;
+    for (int t = 0; t < test_num; t++) {
+        int n, q;
+        cin >> n >> q;
 
-		vector<long long> queries(q);
+        vector<int> w(n + 1);
+        for (int i = 1; i <= n; i++){
+            cin >> w[i];
+        }
 
-		BinaryTrie trie;
-		for (int i = 0; i < q; i++) {
-			cin >> queries[i];
-			trie.add((int)queries[i]);
-		}
+        vector<int> suf(n + 1);
+        for (int i = n - 1; i >= 0; i--){
+            suf[i] = suf[i + 1] ^ w[i + 1];
+        }
 
-		unordered_map<long long, long long> answer;
-		long long curx = 0;
-		long long processed = 0;
-		for (int i = n - 1; i >= 0; --i) {
-			while (processed < q) {
-				long long best_xor_value = trie.min_xor((int)curx);
-				if (best_xor_value < w[i]) {
-					long long v = best_xor_value ^ curx;
-					answer[v] = n - i - 1;
-					trie.remove((int)v);
-					processed++;
-				} else {
-					break;
-				}
-			}
-			curx ^= w[i];
-		}
+        vector<array<int, 30>> last(n + 1);
 
-		for (long long v : queries) {
-			cout << (answer.count(v) ? answer[v] : n) << " ";
-		}
-		cout << '\n';
-	}
-	return 0;
+        for (int j = 0; j < 30; j++) {
+            last[0][j] = 0;
+
+            for (int i = 1; i <= n; i++) {
+                int b = 31 - __builtin_clz(w[i]);
+                last[i][j] = (b >= j ? i : last[i - 1][j]);
+            }
+        }
+
+        while (q--) {
+            int slime;
+            cin >> slime;
+
+            int pos = n, eaten = 0;
+
+            while (pos > 0) {
+                int cur = slime ^ suf[pos];
+
+                if (cur == 0) break;
+
+                int b = 31 - __builtin_clz(cur);
+                int final = last[pos][b];
+
+                if (final < pos) {
+                    cur ^= suf[final] ^ suf[pos];
+                    eaten += pos - final;
+                    pos = final;
+                }
+
+                if (pos == 0 || cur < w[pos]) break;
+
+                pos--;
+                eaten++;
+            }
+
+            cout << eaten << ' ';
+        }
+
+        cout << '\n';
+    }
 }
 ```
 
