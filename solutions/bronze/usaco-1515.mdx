@@ -2,7 +2,7 @@
 id: usaco-1515
 source: 2025 US Open Bronze
 title: Hoof Paper Scissors Minus One
-author: Aarav Sethi
+author: Aarav Sethi, James Li
 ---
 
 [Official Analysis (Python)](https://usaco.org/current/data/sol_prob1_bronze_open25.html)
@@ -34,6 +34,21 @@ for (int i = 0; i < n; i++) {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+n, m = map(int, input().split())
+beats = [[False for i in range(n)] for j in range(n)]
+for i in range(n):
+	state = input()
+	for j in range(len(a)):
+		if state[j] == "W":
+			beats[i][j] = True
+		elif state[j] == "L":
+			beats[j][i] = True
+```
+
+</PySection>
 </LanguageSection>
 
 
@@ -53,6 +68,16 @@ for (int myL = 0; myL < n; myL++) {
 ```
 
 </CPPSection>
+<PySection>
+
+```py
+for myL in range(n):
+	for myR in range(n):
+		if (beats[myL][l] and beats[myL][r]) or (beatsy[myR][l] and beats[myR][r]):
+			possible += 1
+```
+
+</PySection>
 </LanguageSection>
 
 ### Testcases 7 to 12
@@ -79,6 +104,20 @@ for (int myL = 0; myL < n; myL++) {
 ```
 
 </CPPSection>
+
+<PySection>
+
+```py
+for myL in range(n):
+	if beats[myL][l] and beats[myL][r]:
+		possible += n
+	else:
+		for myR in range(n):
+			if beats[myR][l] and beats[myR][r]:
+				possible += 1
+```
+
+</PySection>
 </LanguageSection>
 
 #### Optimization 2:
@@ -95,6 +134,7 @@ for (int myL = 0; myL < n; myL++) {
 
 </CPPSection>
 </LanguageSection>
+
 is equivalent to
 
 ```
@@ -109,6 +149,24 @@ possible += x * (n - x)
 
 With this, we can derive that the formula for winning pairs is $xn + x(n-x)$. Directly implementing
 this formula allows us to solve each game in $\mathcal{O}(N)$ time.
+
+Note that you can derive an equivalent counting-based formula:
+
+```
+2 * x * n - x ** 2
+```
+
+<Info title="Alternate Formula Reasoning">
+
+If $x$ is the number of gestures that can beat both of Elsie's gestures (call these our *valid* symbols), then
+the total amount of combinations is equal to $2 \cdot x \cdot n$.
+
+For each valid symbol, there are $n$ symbols
+to pair it with, and 2 ways to decide which is left/right. However, we double-count the
+cases where both symbols are among the $x$ valid gestures. Hence, there are $x \cdot x$ such combinations
+we must subtract to account for overcounting.
+
+</Info>
 
 ## Implementation
 
@@ -160,5 +218,31 @@ int main() {
 ```
 
 </CPPSection>
+<PySection>
 
+```py
+n, m = map(int, input().split())
+beats = [[False for i in range(n)] for j in range(n)]
+
+for i in range(n):
+	state = input()
+
+	for j in range(len(state)):
+		if state[j] == "W":
+			beats[i][j] = True
+		elif state[j] == "L":
+			beats[j][i] = True
+
+for _ in range(m):
+	l, r = map(int, input().split())
+	x = 0
+
+	for my_symbol in range(n):
+		if beats[my_symbol][l - 1] and beats[my_symbol][r - 1]:
+			x += 1
+
+	print(2 * x * n - x**2)  # this is also equivalent to x*n + x*(n-x)
+```
+
+</PySection>
 </LanguageSection>

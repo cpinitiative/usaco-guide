@@ -8,7 +8,8 @@ async function needsRebuild(): Promise<boolean> {
     // Check if both cache files exist
     await access(DB_FILE);
     console.log(
-      'Using cached content. Run with NODE_ENV=production to force rebuild.'
+      'Using cached content. Run `yarn dev:watch` to pick up content edits, ' +
+        'or delete data/content.db to force a rebuild.'
     );
     return false;
   } catch (error) {
@@ -23,6 +24,13 @@ async function load() {
   if (rebuild) {
     const { main } = await import('./index-content');
     await main();
+  } else {
+    // public/usaco-divisions.json is gitignored and only rewritten when a
+    // .problems.json changes, so it can be missing next to a valid cache.
+    const { ensureUsacoDivisionsJson } = await import('./index-content');
+    if (await ensureUsacoDivisionsJson()) {
+      console.log('Regenerated public/usaco-divisions.json.');
+    }
   }
 }
 
