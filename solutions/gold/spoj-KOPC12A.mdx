@@ -45,50 +45,46 @@ heights to find the minimum cost.
 
 int main() {
 
-    int test_num;
-    std::cin >> test_num;
-    for (int t = 0; t < test_num; t++) {
-        
-        int n;
-        std::cin >> n;
-        std::vector<int> heights(n);
-        std::vector<int> costs(n);
+	int test_num;
+	std::cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
 
-        for (int &x : heights) {
-            std::cin >> x;
-        }
+		int n;
+		std::cin >> n;
+		std::vector<int> heights(n);
+		std::vector<int> costs(n);
 
-        for (int &x : costs) {
-            std::cin >> x;
-        }
+		for (int &x : heights) { std::cin >> x; }
 
-        /** @return total reconstruction cost at height x*/
-        const auto is_possible = [&] (int mid) -> long long {
-            long long res = 0;
-            for (int i = 0; i < n; i++) {
-                res += std::abs(mid - heights[i]) * costs[i];
-            }
-            return res;
-        };
+		for (int &x : costs) { std::cin >> x; }
 
-        int lo = 0, hi = 10000;
-        while (hi - lo > 3) {
-            int mid1 = lo + (hi - lo) / 3;
-            int mid2 = hi - (hi - lo) / 3;
-            if (is_possible(mid1) > is_possible(mid2)) {
-                lo = mid1;
-            } else {
-                hi = mid2;
-            }
-        }
+		/** @return total reconstruction cost at height x*/
+		const auto is_possible = [&](int mid) -> long long {
+			long long res = 0;
+			for (int i = 0; i < n; i++) {
+				res += std::abs(mid - heights[i]) * costs[i];
+			}
+			return res;
+		};
 
-        long long min_cost = is_possible(lo);
-        for (int i = lo + 1; i <= hi; i++) {
-            min_cost = std::min(min_cost, is_possible(i));
-        }
+		int lo = 0, hi = 10000;
+		while (hi - lo > 3) {
+			int mid1 = lo + (hi - lo) / 3;
+			int mid2 = hi - (hi - lo) / 3;
+			if (is_possible(mid1) > is_possible(mid2)) {
+				lo = mid1;
+			} else {
+				hi = mid2;
+			}
+		}
 
-        std::cout << min_cost << '\n';
-    }
+		long long min_cost = is_possible(lo);
+		for (int i = lo + 1; i <= hi; i++) {
+			min_cost = std::min(min_cost, is_possible(i));
+		}
+
+		std::cout << min_cost << '\n';
+	}
 }
 ```
 
