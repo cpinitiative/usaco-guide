@@ -1,0 +1,123 @@
+---
+id: usaco-1518
+source: USACO Silver 2025 US Open
+title: Sequence Construction
+author: Abhinav Singh
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_prob1_silver_open25.html)
+
+## Explanation
+
+If we want
+$\text{popcount}(a_1)\oplus\text{popcount}(a_2) \oplus\cdots\oplus\text{popcount}(a_N)=K$,
+then for every set bit $i$ of $K$, we need the XOR to contain $2^i$. The
+smallest number we can use is one whose popcount is exactly $2^i$, since $2^i$
+has only its $i$-th bit set. To minimize this number, we should put all the
+$2^i$ set bits as far to the right as possible, giving us
+
+$$
+2^{2^i}-1,
+$$
+
+whose binary representation consists of $2^i$ consecutive $1s$. Therefore, for
+every set bit $i$ in $K$, we can add $2^{2^i}-1$ to our sequence. This
+construction produces a sequence with our desired XOR, while minimising the total sum, which may
+be smaller than $M$. If so, we need a way to increase the sum, while maintaining
+our XOR. The easiest way to do this is by adding 2 copies of the same number,
+since we know $\text{popcount}(x)\oplus\text{popcount}(x)=0.$
+
+In particular, adding two copies of $2^{b-1}$ increases the sum by $2^b$ without
+changing the XOR. Thus, we can construct any even remaining sum by considering
+its set bits.
+
+If the remaining sum is odd, and at least $3$, then we can instead add $1$ and
+$2$. Their sum is $3$, while their popcount XOR contribution is $0$. 
+This leaves only the case where our remaining sum is $1$. Note that if $K$ was
+odd, our initial construction would have added a $1$ to the sequence, which we
+can replace with a $2$: the popcount remains the same, while the sum increases
+by $1$. Otherwise, no solution exists.
+
+### Implementation
+**Time Complexity:** We iterate over the bits in $K$, so each test case takes $\mathcal{O}(\log K)$ time.
+
+<LanguageSection>
+<CPPSection>
+
+  ```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int test_cases;
+    cin >> test_cases;
+
+    for (int tc = 0; tc < test_cases; tc++) {
+        int m, k;
+        cin >> m >> k;
+
+        vector<int> ans;
+        int minimum_sum = 0;
+
+        for (int i = 0; i < 31; i++) {
+            if (k & (1 << i)) {
+                int popcount = 1 << i;
+                int x = (1 << popcount) - 1;
+
+                ans.push_back(x);
+                minimum_sum += x;
+            }
+        }
+
+        if (minimum_sum > m) {
+            cout << -1 << '\n';
+            continue;
+        }
+
+        int remaining = m - minimum_sum;
+
+        if (remaining % 2 == 1) {
+            if (remaining >= 3) {
+                ans.push_back(1);
+                ans.push_back(2);
+                remaining -= 3;
+            } else if (k & 1) {
+                for (int &x : ans) {
+                    if (x == 1) {
+                        x = 2;
+                        break;
+                    }
+                }
+                remaining--;
+            } else {
+                cout << -1 << '\n';
+                continue;
+            }
+        }
+
+        for (int b = 1; b < 31; b++) {
+            if (remaining & (1 << b)) {
+                int x = 1 << (b - 1);
+                ans.push_back(x);
+                ans.push_back(x);
+            }
+        }
+
+        cout << ans.size() << '\n';
+        for (int x : ans) {
+            cout << x << ' ';
+        }
+        cout << '\n';
+    }
+
+    return 0;
+}
+```
+</CPPSection>
+</LanguageSection>
+
+
+
