@@ -25,76 +25,63 @@ const int MOD = 1'000'000'007;
 const int INF = 1e9;
 const i23 LINF = 1e18;
 
-inline void yn(int a) {
-    std::cout << (a == 1 ? "Yes" : "No") << '\n';
-}
+inline void yn(int a) { std::cout << (a == 1 ? "Yes" : "No") << '\n'; }
 
 std::mt19937 rng(std::chrono::high_resolution_clock().now().time_since_epoch().count());
 
-template<typename T>
-void Print(std::vector<T> &res, int start, int end) {
-    for (int i = start; i <= end; i++) {
-        std::cout << res[i] << " \n"[i == end];
-    }
+template <typename T> void Print(std::vector<T> &res, int start, int end) {
+	for (int i = start; i <= end; i++) { std::cout << res[i] << " \n"[i == end]; }
 }
 
 void set_up(std::string name) {
-    freopen((name + ".in").c_str(), "r", stdin);
-    freopen((name + ".out").c_str(), "w", stdout);
+	freopen((name + ".in").c_str(), "r", stdin);
+	freopen((name + ".out").c_str(), "w", stdout);
 }
 
 void solve() {
-    int n;
-    std::cin >> n;
-    std::vector<int> heights(n), costs(n);
+	int n;
+	std::cin >> n;
+	std::vector<int> heights(n), costs(n);
 
-    for (int &x : heights) {
-        std::cin >> x;
-    }
+	for (int &x : heights) { std::cin >> x; }
 
-    for (int &x : costs) {
-        std::cin >> x;
-    }
+	for (int &x : costs) { std::cin >> x; }
 
-    auto is_possible = [&] (int mid) {
-        long long res = 0;
-        for (int i = 0; i < n; i++) {
-            res += std::abs(mid - heights[i]) * costs[i];
-        }
-        return res;
-    };
+	auto is_possible = [&](int mid) {
+		long long res = 0;
+		for (int i = 0; i < n; i++) { res += std::abs(mid - heights[i]) * costs[i]; }
+		return res;
+	};
 
-    int lo = 0, hi = 10000;
-    while (hi - lo > 3) {
-        int mid1 = lo + (hi - lo) / 3;
-        int mid2 = hi - (hi - lo) / 3;
-        if (is_possible(mid1) > is_possible(mid2)) {
-            lo = mid1;
-        } else {
-            hi = mid2;
-        }
-    }
+	int lo = 0, hi = 10000;
+	while (hi - lo > 3) {
+		int mid1 = lo + (hi - lo) / 3;
+		int mid2 = hi - (hi - lo) / 3;
+		if (is_possible(mid1) > is_possible(mid2)) {
+			lo = mid1;
+		} else {
+			hi = mid2;
+		}
+	}
 
-    long long min_cost = is_possible(lo);
-    for (int i = lo + 1; i <= hi; i++) {
-        min_cost = std::min(min_cost, is_possible(i));
-    }
+	long long min_cost = is_possible(lo);
+	for (int i = lo + 1; i <= hi; i++) {
+		min_cost = std::min(min_cost, is_possible(i));
+	}
 
-    std::cout << min_cost << '\n';
-}   
+	std::cout << min_cost << '\n';
+}
 
 int main() {
-    std::ios_base::sync_with_stdio(false);
-    std::cin.tie(0);
-    std::cout.tie(0);
-    std::cin.exceptions(std::ios::badbit|std::ios::failbit);
-    int test = 1;
-    std::cin >> test;
-    // seive();
-    while (test-- > 0) {
-        solve();
-    }
-    return 0;
+	std::ios_base::sync_with_stdio(false);
+	std::cin.tie(0);
+	std::cout.tie(0);
+	std::cin.exceptions(std::ios::badbit | std::ios::failbit);
+	int test = 1;
+	std::cin >> test;
+	// seive();
+	while (test-- > 0) { solve(); }
+	return 0;
 }
 ```
 
