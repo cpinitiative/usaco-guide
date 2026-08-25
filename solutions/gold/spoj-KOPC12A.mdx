@@ -7,9 +7,34 @@ author: Rameez Parwez
 
 ## Explanation
 
+Let's define a function $f(x)$ as the total cost required to make 
+all buildings have height $x$. For the $i^{th}$ building to obtain 
+height $x$, the cost contributed by it will be:
+
+$$
+g_i(x) = |x - h_i| \cdot c_i
+$$
+
+Therefore, the total reconstruction cost is:
+$$
+f(x) = \sum_{i=1}^{n} g_i(x) = \sum_{i=1}^{n} |x - h_i| \cdot c_i
+$$
+
+Our final goal is to find the value $x$ which minimises $f(x)$.
+
+We know that $g_i(x)$ is a convex function of $x$, and for a 
+fact we also know that the sum of convex functions is also convex, 
+which means $f(x)$ will eventually be convex.
+
+This means $f(x)$ is unimodal (i.e., the function strictly decreases 
+first, then reaches a minimum, then strictly increases). This 
+allows us to apply ternary search over the range of possible 
+heights to find the minimum cost.
+
+
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(something)$
+**Time Complexity:** $\mathcal{O}(N \log (max\_height))$
 
 <LanguageSection>
 <CPPSection>
