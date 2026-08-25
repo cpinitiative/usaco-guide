@@ -16,18 +16,18 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0 # Required to retrieve git history of Chromatic
       - name: Use Node.js 20.x
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 20.x
           corepack: true
       - name: Enable Corepack
         run: corepack enable
       - name: Cache node modules
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         id: cache-node-modules
         with:
           path: node_modules
@@ -43,7 +43,7 @@ jobs:
         run: yarn eslint --quiet
 
       - name: Run chromatic
-        uses: chromaui/action@v1
+        uses: chromaui/action@v18
         with:
           projectToken: 6f3c58ad349c
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -53,9 +53,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Use Node.js 20.x
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 20.x
           corepack: true
@@ -63,7 +63,7 @@ jobs:
         run: corepack enable
 
       - name: Cache node modules
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         id: cache-node-modules
         with:
           path: node_modules

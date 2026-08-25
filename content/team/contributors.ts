@@ -66,7 +66,7 @@ export const OrderedFirstMembers: Member[] = [
     photo: 'Dong',
     name: 'Bing-Dong Liu',
     titles: ['Content Manager', roles.liveInstructor],
-    github: 'dongliu0426',
+    github: 'dongliu07',
     codeforces: 'lunchbox',
     email: 'dongliu0426@gmail.com',
     youtube: 'https://www.youtube.com/channel/UC6je-w-ygZqxRsG76HtMceQ',
@@ -95,7 +95,7 @@ export const OrderedFirstMembers: Member[] = [
       roles.contentAuthor,
       roles.liveInstructor,
     ],
-    github: 'TheGamingMousse',
+    github: 'eysbutno',
   },
   {
     photo: 'david_guo',
@@ -221,7 +221,6 @@ export const RestOfMembers: Member[] = [
     name: 'Kalyan Cherukuri',
     titles: [roles.clubCurriculum],
     linkedin: 'http://www.linkedin.com/in/kal-che',
-    website: 'https://kal-che.vercel.app/',
   },
   {
     photo: 'ruben',
@@ -307,7 +306,6 @@ export const FormerMembers: Member[] = [
   {
     photo: 'daniel',
     name: 'Daniel Guan',
-    github: 'DGuan64',
     titles: [roles.founder, 'Director of Classes', 'Finalist'],
   },
   {
@@ -409,7 +407,7 @@ export const FormerMembers: Member[] = [
     photo: 'dustin',
     name: 'Dustin Miao',
     titles: [roles.liveInstructor, roles.contentAuthor],
-    github: 'dutinmeow',
+    github: 'dmiao623',
     email: 'dutin20.meow@gmail.com',
     codeforces: 'dutinmeow',
   },
@@ -519,7 +517,7 @@ export const FormerMembers: Member[] = [
     photo: 'pranav',
     name: 'Pranav Jadhav',
     titles: ['Director of Clubs', roles.clubCurriculum],
-    github: 'pranavgithub1',
+    github: 'pranavjad',
     email: 'pra168109@gmail.com',
   },
   {
@@ -560,7 +558,7 @@ export const FormerMembers: Member[] = [
     name: 'Amogha Pokkulandra',
     titles: [roles.liveInstructor, roles.videoInstructor],
     email: 'amogha.pokkulandra@gmail.com',
-    github: 'x3n0coder',
+    github: 'apc0der',
   },
   {
     photo: 'albertz',
@@ -644,7 +642,7 @@ export const FormerMembers: Member[] = [
     name: 'Adham Ibrahim',
     titles: [roles.liveInstructor],
     email: 'adhamibrahim719@gmail.com',
-    github: 'adham-ibrahim7',
+    github: 'adhamsi',
   },
   {
     photo: 'alex_chen',

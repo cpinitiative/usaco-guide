@@ -1,0 +1,87 @@
+---
+id: cf-700B
+source: CF
+title: Connecting Universities
+author: Mikaela Tereshkov, Rameez Parwez
+---
+
+[Official Editorial](https://codeforces.com/blog/entry/46283)
+
+## Explanation
+
+Let's root the tree at an arbitrary node and observe what happens at each edge. If we have edge $(u, v)$ and the number of universities in the subtree rooted at $v$ is $\texttt{sub}_v$, then the number of universities on the other side of the edge is $2\cdot k - \texttt{sub}_v$.
+
+Each edge $(u, v)$ will be used $\min(2\cdot k - \texttt{sub}_v,\ \texttt{sub}_v) $ times. We can prove this with an exchange argument. This is clearly an upper bound because an edge cannot be used more times than the number of universities on one side. Additionally, if some edge $(u, v)$ is used less than $\min(2\cdot k - \texttt{sub}_v,\ \texttt{sub}_v) $ times, this requires there to be at least one pair of connected universities on either side.
+
+Let's denote these $(w, x)$ and $(y, z)$ where $w$ and $x$ are on the side of $v$ and $y$ and $z$ are on the side of $u$. Let's also consider the tree rooted at $u$ for simplicity. With this pairing, our total benefit from this pairing will be:
+
+$$
+\begin{aligned}
+&\text{dist}(w, \text{lca}(w, x))+\text{dist}(x, \text{lca}(w, x)) \\
+&+\text{dist}(y, \text{lca}(y, z))+\text{dist}(z, \text{lca}(y, z))
+\end{aligned}
+$$
+
+If we instead transform our pairs to be $(w, z)$ and $(y, x)$, our total benefit from this pairing will be:
+
+$$
+\begin{aligned}
+&\text{dist}(w, \text{lca}(w, x)) + \text{dist}(x, \text{lca}(w, x)) \\
+&+ \text{dist}(y, \text{lca}(y, z)) + \text{dist}(z, \text{lca}(y, z)) \\
+&+ 2 \cdot \text{dist}(\text{lca}(w, x), \text{lca}(y, z))
+\end{aligned}
+$$
+
+which is always more optimal.
+
+We can use DFS to calculate $\texttt{sub}_v$ for all $v$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int main() {
+
+	int n, k;
+	std::cin >> n >> k;
+	std::vector<int> university(n);
+	std::vector<std::vector<int>> roads(n);
+
+	for (int i = 0; i < 2 * k; i++) {
+		int x;
+		std::cin >> x;
+		university[--x]++;
+	}
+
+	for (int i = 0; i < n - 1; i++) {
+		int from, to;
+		std::cin >> from >> to;
+		roads[--from].push_back(--to);
+		roads[to].push_back(from);
+	}
+
+	long long res = 0;
+
+	auto dfs = [&](int curr_node, int prev_node, auto &&self) -> void {
+		for (int neighbour : roads[curr_node]) {
+			if (neighbour == prev_node) { continue; }
+			self(neighbour, curr_node, self);
+			university[curr_node] += university[neighbour];
+		}
+		res += std::min(university[curr_node], 2 * k - university[curr_node]);
+	};
+
+	dfs(0, -1, dfs);
+	std::cout << res << '\n';
+}
+```
+
+</CPPSection>
+</LanguageSection>

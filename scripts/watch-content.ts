@@ -47,10 +47,16 @@ async function watchContent() {
     await main();
   } else {
     console.log('[watch] Using cached content.db. Watching for changes...');
+    const { ensureUsacoDivisionsJson } = await import('./index-content');
+    if (await ensureUsacoDivisionsJson()) {
+      console.log('[watch] Regenerated public/usaco-divisions.json.');
+    }
   }
 
-  // Start Next.js dev server as a child process
-  const nextProc = spawn('npx', ['next', 'dev'], {
+  // Start Next.js dev server as a child process. `--webpack` must match the
+  // `dev` script: Next 16 defaults to Turbopack, which errors out on the
+  // webpack config in next.config.ts.
+  const nextProc = spawn('npx', ['next', 'dev', '--webpack'], {
     stdio: 'inherit',
     env: { ...process.env, NEXT_PUBLIC_WATCH_RELOAD: '1' },
     shell: process.platform === 'win32',
