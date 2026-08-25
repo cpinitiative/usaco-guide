@@ -4,6 +4,10 @@ import React, { useLayoutEffect } from 'react';
 
 import GroupLeaderboardPage from '../../components/Groups/GroupLeaderboardPage/GroupLeaderboardPage';
 import LeaderboardList from '../../components/Groups/LeaderboardList/LeaderboardList';
+import {
+  LeaderboardTable,
+  LeaderboardTableProps,
+} from '../../components/Groups/LeaderboardTable/LeaderboardTable';
 import PostLeaderboardPage from '../../components/Groups/PostLeaderboardPage/PostLeaderboardPage';
 import { ProblemSubmissionPopupProvider } from '../../components/Groups/ProblemSubmissionPopup';
 import { SignInContext } from '../../context/SignInContext';
@@ -16,10 +20,6 @@ import { ActivePostProblemsProvider } from '../../hooks/groups/useActivePostProb
 import { UserGroupsContext } from '../../hooks/groups/useUserGroups';
 import { GroupData } from '../../models/groups/groups';
 import { PostData } from '../../models/groups/posts';
-import {
-  LeaderboardTable,
-  LeaderboardTableProps,
-} from '../../components/Groups/LeaderboardTable/LeaderboardTable';
 
 const userId = 'storybook-user';
 const groupId = 'storybook-group';
