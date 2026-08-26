@@ -23,7 +23,7 @@ $$
 whose binary representation consists of $2^i$ consecutive $1s$. Therefore, for
 every set bit $i$ in $K$, we can add $2^{2^i}-1$ to our sequence. This
 construction produces a sequence with our desired XOR, while minimising the total sum, which may
-be smaller than $M$. 
+be smaller than $M$.
 
 If so, we need a way to increase the sum while maintaining
 our XOR. The easiest way to do this is by adding 2 copies of the same number,
@@ -31,7 +31,7 @@ since $\text{popcount}(x)\oplus\text{popcount}(x)=0.$ In particular, adding two 
 changing the XOR. Thus, if the remaining sum is even, we add $2^{i-1}$ to our sequence for each set bit $i$ in it.
 
 If the remaining sum is odd and at least $3$, then we instead add $1$ and
-$2$. Their sum is $3$, while their popcount XOR contribution is $0$. 
+$2$. Their sum is $3$, while their popcount XOR contribution is $0$.
 This leaves only the case where our remaining sum is $1$. Observe that if $K$ is
 odd, our initial construction adds a $1$ to the sequence, which we
 can replace with a $2$: the popcount remains the same, while the sum increases
@@ -48,75 +48,70 @@ by $1$. Otherwise, no solution exists.
 using namespace std;
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    int test_cases;
-    cin >> test_cases;
+	int test_cases;
+	cin >> test_cases;
 
-    for (int tc = 0; tc < test_cases; tc++) {
-        int m, k;
-        cin >> m >> k;
+	for (int tc = 0; tc < test_cases; tc++) {
+		int m, k;
+		cin >> m >> k;
 
-        vector<int> ans;
-        int minimum_sum = 0;
+		vector<int> ans;
+		int minimum_sum = 0;
 
-        for (int i = 0; i < 31; i++) {
-            if (k & (1 << i)) {
-                int popcount = 1 << i;
-                int x = (1 << popcount) - 1;
+		for (int i = 0; i < 31; i++) {
+			if (k & (1 << i)) {
+				int popcount = 1 << i;
+				int x = (1 << popcount) - 1;
 
-                ans.push_back(x);
-                minimum_sum += x;
-            }
-        }
+				ans.push_back(x);
+				minimum_sum += x;
+			}
+		}
 
-        if (minimum_sum > m) {
-            cout << -1 << '\n';
-            continue;
-        }
+		if (minimum_sum > m) {
+			cout << -1 << '\n';
+			continue;
+		}
 
-        int remaining = m - minimum_sum;
+		int remaining = m - minimum_sum;
 
-        if (remaining % 2 == 1) {
-            if (remaining >= 3) {
-                ans.push_back(1);
-                ans.push_back(2);
-                remaining -= 3;
-            } else if (k & 1) {
-                for (int &x : ans) {
-                    if (x == 1) {
-                        x = 2;
-                        break;
-                    }
-                }
-                remaining--;
-            } else {
-                cout << -1 << '\n';
-                continue;
-            }
-        }
+		if (remaining % 2 == 1) {
+			if (remaining >= 3) {
+				ans.push_back(1);
+				ans.push_back(2);
+				remaining -= 3;
+			} else if (k & 1) {
+				for (int &x : ans) {
+					if (x == 1) {
+						x = 2;
+						break;
+					}
+				}
+				remaining--;
+			} else {
+				cout << -1 << '\n';
+				continue;
+			}
+		}
 
-        for (int b = 1; b < 31; b++) {
-            if (remaining & (1 << b)) {
-                int x = 1 << (b - 1);
-                ans.push_back(x);
-                ans.push_back(x);
-            }
-        }
+		for (int b = 1; b < 31; b++) {
+			if (remaining & (1 << b)) {
+				int x = 1 << (b - 1);
+				ans.push_back(x);
+				ans.push_back(x);
+			}
+		}
 
-        cout << ans.size() << '\n';
-        for (int x : ans) {
-            cout << x << ' ';
-        }
-        cout << '\n';
-    }
+		cout << ans.size() << '\n';
+		for (int x : ans) { cout << x << ' '; }
+		cout << '\n';
+	}
 
-    return 0;
+	return 0;
 }
 ```
 </CPPSection>
 </LanguageSection>
-
-
-
