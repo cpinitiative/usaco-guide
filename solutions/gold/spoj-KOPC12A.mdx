@@ -39,6 +39,8 @@ A convex function is also unimodal; hence, $f(x)$ is unimodal (i.e., it strictly
 #include <iostream>
 #include <vector>
 
+const int MAX_H = 10000;
+
 int main() {
 
 	int test_num;
@@ -55,7 +57,7 @@ int main() {
 		for (int &x : costs) { std::cin >> x; }
 
 		/** @return total reconstruction cost at height x*/
-		const auto is_possible = [&](int mid) -> long long {
+		const auto get_cost = [&](int mid) -> long long {
 			long long res = 0;
 			for (int i = 0; i < n; i++) {
 				res += std::abs(mid - heights[i]) * costs[i];
@@ -63,20 +65,20 @@ int main() {
 			return res;
 		};
 
-		int lo = 0, hi = 10000;
+		int lo = 0, hi = MAX_H;
 		while (hi - lo > 3) {
 			int mid1 = lo + (hi - lo) / 3;
 			int mid2 = hi - (hi - lo) / 3;
-			if (is_possible(mid1) > is_possible(mid2)) {
+			if (get_cost(mid1) > get_cost(mid2)) {
 				lo = mid1;
 			} else {
 				hi = mid2;
 			}
 		}
 
-		long long min_cost = is_possible(lo);
+		long long min_cost = get_cost(lo);
 		for (int i = lo + 1; i <= hi; i++) {
-			min_cost = std::min(min_cost, is_possible(i));
+			min_cost = std::min(min_cost, get_cost(i));
 		}
 
 		std::cout << min_cost << '\n';
