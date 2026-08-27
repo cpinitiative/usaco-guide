@@ -1,8 +1,11 @@
 import * as React from 'react';
 import ReactMarkdown from 'react-markdown';
 import gfm from 'remark-gfm';
+import remarkMath from 'remark-math';
 import { useDarkMode } from '../../context/DarkModeContext';
+import customRehypeKatex from '../../mdx-plugins/rehype-math';
 import CodeBlock from '../markdown/CodeBlock/CodeBlock';
+import { MATHDIV, MATHSPAN } from '../markdown/MathComponents';
 import YouTube from '../markdown/YouTube';
 import Feedback from './Feedback';
 
@@ -113,6 +116,8 @@ const GroupsCodeBlock = ({
 
 const renderers = {
   code: GroupsCodeBlock,
+  MATHDIV,
+  MATHSPAN,
 };
 
 export default function SafeMarkdownRenderer({ children }) {
@@ -121,7 +126,8 @@ export default function SafeMarkdownRenderer({ children }) {
       <div className="react-markdown">
         <ReactMarkdown
           components={renderers as any}
-          remarkPlugins={[gfm as any]}
+          remarkPlugins={[gfm as any, remarkMath as any]}
+          rehypePlugins={[customRehypeKatex as any]}
         >
           {children}
         </ReactMarkdown>
