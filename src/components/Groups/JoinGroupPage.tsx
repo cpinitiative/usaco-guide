@@ -11,6 +11,7 @@ import { useFirebaseApp } from '../../hooks/useFirebase';
 import Layout from '../layout';
 import SEO from '../seo';
 import TopNavigationBar from '../TopNavigationBar/TopNavigationBar';
+import toast from "react-hot-toast";
 
 const getQuery = name => {
   const url = window.location.href;
@@ -141,14 +142,11 @@ const JoinGroupPage = () => {
                           if (data.errorCode === 'ALREADY_IN_GROUP') {
                             router.push(`/groups/${data.groupId}`);
                           }
-                          setError({
-                            errorCode: data.errorCode,
-                            message: data.message,
-                          });
+                          toast.error(data.message ?? 'Failed to join group.');
                         }
                       })
                       .catch(e => {
-                        setError(e);
+                        toast.error(e instanceof Error ? e.message : String(e));
                       })
                       .finally(() => setIsJoining(false));
                   }}
