@@ -1,6 +1,7 @@
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { useRouter } from 'next/router';
 import * as React from 'react';
+import toast from 'react-hot-toast';
 import { useSignIn } from '../../context/SignInContext';
 import {
   useFirebaseUser,
@@ -11,7 +12,6 @@ import { useFirebaseApp } from '../../hooks/useFirebase';
 import Layout from '../layout';
 import SEO from '../seo';
 import TopNavigationBar from '../TopNavigationBar/TopNavigationBar';
-import toast from "react-hot-toast";
 
 const getQuery = name => {
   const url = window.location.href;
