@@ -28,7 +28,7 @@ const Template: StoryFn<ComponentProps<typeof Tooltip>> = args => {
     <div className="my-8" ref={ref}>
       {show && (
         <Tooltip {...args} appendTo={() => ref.current!} showOnCreate={true}>
-          <span className="bg-gray-100 p-2 dark:bg-gray-700">
+          <span className="bg-gray-100 p-2 dark:bg-gray-700 dark:text-gray-100">
             Hover over me!
           </span>
         </Tooltip>
