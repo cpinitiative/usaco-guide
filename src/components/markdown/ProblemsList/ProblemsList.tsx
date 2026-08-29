@@ -3,8 +3,11 @@ import { usePathname } from 'next/navigation';
 import * as React from 'react';
 import { Fragment } from 'react';
 import { useMarkdownProblemLists } from '../../../context/MarkdownProblemListsContext';
+import { useIsUserDataLoaded } from '../../../context/UserDataContext/UserDataContext';
 import {
   useHideDifficultySetting,
+  useProblemListPages,
+  useSetProblemListPage,
   useShowTagsSetting,
 } from '../../../context/UserDataContext/properties/simpleProperties';
 import { ProblemInfo } from '../../../models/problem';
@@ -110,6 +113,29 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
   const problemsRef = React.useRef(props.problems);
   problemsRef.current = props.problems;
 
+  // The list id alone isn't unique across the site -- every conclusion module
+  // names its list "problems" -- so scope the remembered page to the module.
+  const pageKey = `${path}|${
+    props.isDivisionTable === false ? props.tableName : ''
+  }`;
+  const storedPages = useProblemListPages();
+  const setStoredPage = useSetProblemListPage();
+  const isUserDataLoaded = useIsUserDataLoaded();
+  // Restoring only happens once, so that a slow write doesn't bounce the user
+  // back to the page they just navigated away from.
+  const hasSetPageRef = React.useRef(false);
+
+  // User data isn't available on the first render, so the remembered page gets
+  // restored once it loads.
+  React.useEffect(() => {
+    if (!isPaginated || hasSetPageRef.current) return;
+    const storedPage = storedPages?.[pageKey];
+    if (storedPage === undefined) return;
+    hasSetPageRef.current = true;
+    // The list may have shrunk since the page was remembered.
+    setPage(Math.min(Math.max(storedPage, 0), numPages - 1));
+  }, [isPaginated, storedPages, pageKey, numPages]);
+
   // Links to a specific problem (`#problem-<uniqueId>`) may point at a problem
   // that isn't on the first page, so switch to the page containing it. The
   // browser can't scroll to it on its own since it isn't rendered yet.
@@ -124,6 +150,8 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
         problem => problem.uniqueId === uniqueId
       );
       if (index === -1) return;
+      // A deep link is more specific than the remembered page, so it wins.
+      hasSetPageRef.current = true;
       setPage(Math.floor(index / pageSize!));
       setPendingHashScroll(`problem-${uniqueId}`);
     };
@@ -150,8 +178,11 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
   }, [pendingScrollToTable, tableId]);
 
   const handlePageChange = (newPage: number) => {
+    hasSetPageRef.current = true;
     setPage(newPage);
     setPendingScrollToTable(true);
+    // updateUserData() throws if it's called before user data finishes loading.
+    if (isUserDataLoaded) setStoredPage(pageKey, newPage);
   };
 
   const shownProblems = isPaginated
