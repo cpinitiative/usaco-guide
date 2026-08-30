@@ -149,6 +149,7 @@ export function useGroupActions() {
         numUses: 0,
         maxUses: null,
         expirationTime: null,
+        allowedEmails: null,
         usedBy: [],
         author: firebaseUser!.uid,
       };

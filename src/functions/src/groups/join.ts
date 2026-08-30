@@ -48,6 +48,20 @@ export default functions.https.onCall(async request => {
       groupId: keyData.groupId,
     };
   }
+  if (keyData.allowedEmails != null) {
+    const callerEmail = request.auth?.token.email?.toLowerCase();
+    const allowedEmails = keyData.allowedEmails.map(email =>
+      email.trim().toLowerCase()
+    );
+
+    if (!callerEmail || !allowedEmails.includes(callerEmail)) {
+      return {
+        success: false,
+        errorCode: 'EMAIL_NOT_ALLOWED',
+        message: 'Your email address is not allowed to use this join link.',
+      };
+    }
+  }
   await Promise.all([
     admin
       .firestore()
