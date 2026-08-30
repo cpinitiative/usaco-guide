@@ -1,0 +1,121 @@
+---
+id: usaco-625
+source: USACO Platinum 2016 February
+title: Fenced In
+author: Raagav Bala
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_fencedin_platinum_feb16.html)
+
+## Explanation
+
+We can view each region as a node and a fence segment as an edge whose weight is the length of that fence segment. We want to remove the minimum total length of fence while making all regions reachable from each other, which is the MST of this graph.
+
+A naive approach would be to create all $(n+1) \times (m+1)$ regions as graph nodes and run [Kruskal's algorithm](https://usaco.guide/gold/mst?lang=cpp#kruskals) on all possible fence removals. But this isn't feasible because the number of regions can be up to roughly $25000^2$ vertical and horizontal fences.
+
+The key observation is that many edges in this grid graph have the same weight. After taking differences between consecutive fence coordinates, we get the widths of the $(n+1)$ columns and the heights of the $(m+1)$ rows. Every horizontal fence segment inside a particular column has length equal to that column's width, while every vertical fence segment inside a particular row has length equal to that row's height. Thus, instead of processing every edge individually, we can process these groups of equal-weight edges together.
+
+To do this, we first convert the fence coordinates into the lengths of the strips by taking differences between consecutive coordinates. These strip lengths represent the possible edge weights in the MST. After sorting these lengths, we can process the corresponding groups of edges of equal weight in increasing order.
+
+Specifically, when a column width is processed, it is used once for each row connection that still needs to be made, so its contribution is the $\texttt{column width} \cdot \texttt{cntB}$, a counter for the number of remaining row connections. Afterward, $\texttt{cntA}$, a counter for the number of remaining column connections, decreases by one. Likewise, processing a row height contributes the $\texttt{row height} \cdot \texttt{cntA}$, after which $\texttt{cntB}$ decreases by one. Any additional edges corresponding to that column or row would only connect regions that are already connected, so Kruskal would skip them.
+
+So, we only need the sorted column widths and row heights instead of the entire grid graph. The two sorted lists are merged in increasing order, adding each width or height's contribution using [Kruskal's algorithm](/gold/mst#kruskals).
+
+
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n \log n + m \log m)$
+
+<LanguageSection>
+
+<CPPSection>
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	freopen("fencedin.in", "r", stdin);
+	freopen("fencedin.out", "w", stdout);
+
+	int A, B, n, m;
+	cin >> A >> B >> n >> m;
+
+	// convert coords into widths/heights
+	vector<int> a(n + 1), b(m + 1);
+	for (int i = 0; i < n; i++) cin >> a[i];
+	for (int i = 0; i < m; i++) cin >> b[i];
+	a[n] = A;
+	b[m] = B;
+	sort(a.begin(), a.end());
+	sort(b.begin(), b.end());
+
+	for (int i = n; i > 0; i--) a[i] -= a[i - 1];
+	for (int i = m; i > 0; i--) b[i] -= b[i - 1];
+	sort(a.begin(), a.end());
+	sort(b.begin(), b.end());
+
+	// process in increasing order
+	long long min_length = 1LL * a[0] * m + 1LL * b[0] * n;
+	int i = 1, j = 1;
+	int cntA = n, cntB = m;  // number of connections still needed in either direction
+
+	while (i <= n || j <= m) {
+		// take the next smallest gap
+		// add it once for each perpendicular strip not already connected
+		if (i > n || (j <= m && a[i] > b[j])) {
+			min_length += 1LL * b[j] * cntA;
+			j++;
+			cntB--;
+		} else {
+			min_length += 1LL * a[i] * cntB;
+			i++;
+			cntA--;
+		}
+	}
+
+	cout << min_length;
+}
+```
+
+</CPPSection>
+
+<PySection>
+
+```py
+import sys
+
+sys.stdin = open("fencedin.in")
+sys.stdout = open("fencedin.out", "w")
+
+A, B, n, m = map(int, input().split())
+
+# convert coords into widths/heights
+a = sorted([int(input()) for _ in range(n)] + [A])
+b = sorted([int(input()) for _ in range(m)] + [B])
+a = sorted([a[0]] + [a[i] - a[i - 1] for i in range(1, n + 1)])
+b = sorted([b[0]] + [b[i] - b[i - 1] for i in range(1, m + 1)])
+
+# process in increasing order
+min_length = a[0] * m + b[0] * n
+i, j = 1, 1
+cntA, cntB = n, m  # number of connections still needed in either direction
+
+while i <= n or j <= m:
+	# take the next smallest gap
+	# add it once for each perpendicular strip not already connected.
+	if i > n or (j <= m and a[i] > b[j]):
+		min_length += b[j] * cntA
+		j += 1
+		cntB -= 1
+	else:
+		min_length += a[i] * cntB
+		i += 1
+		cntA -= 1
+
+print(min_length)
+```
+
+</PySection>
+
+</LanguageSection>
