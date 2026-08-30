@@ -34,7 +34,13 @@ zero element.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(n \cdot 2^{\lceil \log_2(\text{MAXA}) \rceil})$
+**Time Complexity:** $\mathcal{O}((n + 2^{\lceil \log_2(\text{MAXA}) \rceil}) \cdot 2^{\lceil \log_2(\text{MAXA}) \rceil})$
+
+The two nested loops account for the first term. The inner `while` loop is
+amortized: it only ever writes cells that were still false, and each of the
+$2^{\lceil \log_2(\text{MAXA}) \rceil} \times 2^{\lceil \log_2(\text{MAXA})
+\rceil}$ cells of $dp$ is set at most once over the whole run, which accounts
+for the second.
 
 <LanguageSection>
 <CPPSection>
