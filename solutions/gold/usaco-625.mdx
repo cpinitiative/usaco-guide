@@ -13,14 +13,13 @@ We can view each region as a node and a fence segment as an edge whose weight is
 
 A naive approach would be to create all $(n+1) \times (m+1)$ regions as graph nodes and run [Kruskal's algorithm](https://usaco.guide/gold/mst?lang=cpp#kruskals) on all possible fence removals. But this isn't feasible because the number of regions can be up to roughly $25000^2$ vertical and horizontal fences.
 
-The key observation is that many edges in this graph have the same weight. Every segment of a particular vertical fence has the same length. So, instead of processing every individual edge like we do in naive Kruskal's, we can process an entire fence line at once.
+The key observation is that many edges in this grid graph have the same weight. After taking differences between consecutive fence coordinates, we get the widths of the $(n+1)$ columns and the heights of the $(m+1)$ rows. Every horizontal fence segment inside a particular column has length equal to that column's width, while every vertical fence segment inside a particular row has length equal to that row's height. Thus, instead of processing every edge individually, we can process these groups of equal-weight edges together.
 
-To do this, we first convert the fence coordinates into the lengths of the strips they create by taking differences between consecutive coordinates. These strip lengths represent the possible edge weights in the MST. After sorting these lengths, we can process the fence lines in order of increasing width.
+To do this, we first convert the fence coordinates into the lengths of the strips by taking differences between consecutive coordinates. These strip lengths represent the possible edge weights in the MST. After sorting these lengths, we can process the corresponding groups of edges of equal weight in increasing order.
 
-Specifically, when a vertical gap is chosen, it connects two adjacent columns, so its contribution to the answer is the width of that column multiplied by the number of horizontal connections that still need to be made. Likewise, choosing a horizontal gap contributes the width of the row multiplied by the number of remaining vertical connections. Each time a gap is processed, the corresponding count decreases because one more set of regions becomes connected.
+Specifically, when a column width is processed, it counts for one row connection that still needs to be made, so its contribution is the $\texttt{column width} \cdot \texttt{cntB}$, a counter for the number of remaining row connections. Afterward, $\texttt{cntA}$, a counter for the number of remaining column connections, decreases by one. Likewise, processing a row height contributes the $\texttt{row height} \cdot \texttt{cntA}$, after which $\texttt{cntB}$ decreases by one. Any additional edges with that same column width or row height would only connect regions that are already connected, so Kruskal would skip them.
 
-So, we only need the sorted vertical and horizontal gap lengths instead of the entire grid graph. The two sorted lists are merged in increasing order, adding each gap's contribution using [Kruskal's algorithm](/gold/mst#kruskals).
-
+So, we only need the sorted column widths and row heights instead of the entire grid graph. The two sorted lists are merged in increasing order, adding each gap's contribution using [Kruskal's algorithm](/gold/mst#kruskals).
 
 
 
