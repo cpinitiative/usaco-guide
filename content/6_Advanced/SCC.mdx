@@ -303,68 +303,68 @@ using std::vector;
 /** Takes in an adjacency list and calculates the SCCs of the graph. */
 class TarjanSolver {
   private:
-    int timer = 0;
-    int num_scc = 0;
-    vector<int> ids, low, comp, st;
-    vector<bool> on_stack;
+	int timer = 0;
+	int num_scc = 0;
+	vector<int> ids, low, comp, st;
+	vector<bool> on_stack;
 
-    void dfs(int at) {
-        ids[at] = low[at] = timer++;
-        st.push_back(at);
-        on_stack[at] = true;
+	void dfs(int at) {
+		ids[at] = low[at] = timer++;
+		st.push_back(at);
+		on_stack[at] = true;
 
-        for (int n : adj[at]) {
-            if (ids[n] == -1) {
-                dfs(n);
-                low[at] = min(low[at], low[n]);
-            } else if (on_stack[n]) {
-                low[at] = min(low[at], ids[n]);
-            }
-        }
+		for (int n : adj[at]) {
+			if (ids[n] == -1) {
+				dfs(n);
+				low[at] = min(low[at], low[n]);
+			} else if (on_stack[n]) {
+				low[at] = min(low[at], ids[n]);
+			}
+		}
 
-        if (low[at] == ids[at]) {
-            while (true) {
-                int node = st.back();
-                st.pop_back();
-                on_stack[node] = false;
-                comp[node] = num_scc;
-                if (node == at) { break; }
-            }
-            num_scc++;
-        }
-    }
+		if (low[at] == ids[at]) {
+			while (true) {
+				int node = st.back();
+				st.pop_back();
+				on_stack[node] = false;
+				comp[node] = num_scc;
+				if (node == at) { break; }
+			}
+			num_scc++;
+		}
+	}
 
   public:
-    const vector<vector<int>> &adj;
+	const vector<vector<int>> &adj;
 
-    TarjanSolver(const vector<vector<int>> &adj)
-        : adj(adj), ids(adj.size(), -1), low(adj.size()), comp(adj.size()),
-          on_stack(adj.size(), false) {
-        for (int n = 0; n < adj.size(); n++) {
-            if (ids[n] == -1) { dfs(n); }
-        }
-    }
+	TarjanSolver(const vector<vector<int>> &adj)
+	    : adj(adj), ids(adj.size(), -1), low(adj.size()), comp(adj.size()),
+	      on_stack(adj.size(), false) {
+		for (int n = 0; n < adj.size(); n++) {
+			if (ids[n] == -1) { dfs(n); }
+		}
+	}
 
-    int comp_num() const { return num_scc; }
+	int comp_num() const { return num_scc; }
 
-    int get_comp(int n) const { return comp[n]; }
+	int get_comp(int n) const { return comp[n]; }
 };
 
 int main() {
-    int planet_num;
-    int tele_num;
-    std::cin >> planet_num >> tele_num;
-    vector<vector<int>> adj(planet_num);
-    for (int t = 0; t < tele_num; t++) {
-        int from, to;
-        std::cin >> from >> to;
-        adj[--from].push_back(--to);
-    }
+	int planet_num;
+	int tele_num;
+	std::cin >> planet_num >> tele_num;
+	vector<vector<int>> adj(planet_num);
+	for (int t = 0; t < tele_num; t++) {
+		int from, to;
+		std::cin >> from >> to;
+		adj[--from].push_back(--to);
+	}
 
-    TarjanSolver scc(adj);
-    cout << scc.comp_num() << '\n';
-    for (int p = 0; p < planet_num - 1; p++) { cout << scc.get_comp(p) + 1 << ' '; }
-    cout << scc.get_comp(planet_num - 1) + 1 << endl;
+	TarjanSolver scc(adj);
+	cout << scc.comp_num() << '\n';
+	for (int p = 0; p < planet_num - 1; p++) { cout << scc.get_comp(p) + 1 << ' '; }
+	cout << scc.get_comp(planet_num - 1) + 1 << endl;
 }
 ```
 
