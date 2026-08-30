@@ -268,12 +268,20 @@ print(*comp_id)
 	<Resource source="Wikipedia" title="Tarjan's SCC Algorithm" url="https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm" />
 </Resources>
 
-<IncompleteSection>
 
-link to dpv in resources and just tell them to look at that, no way we're
-beating that explanation
+## Explanation
 
-</IncompleteSection>
+In Tarjan's algorithm, a single depth-first search (DFS) is performed on the original graph to determine the discovery times and the lowest reachable nodes (`low` values) for each vertex; that is, the node that is discovered first in a cycle acts as the anchor. As each vertex is visited for the first time, it is pushed onto a stack. In this single phase, nodes are processed and kept on the stack as long as they are part of the current active search path. This stack will be used to extract the components.
+
+During this DFS, the algorithm explores all outgoing edges from the current vertex, updating its `low` value to track the lowest discovery time reachable. The DFS processes nodes according to the edges defined by the original graph. By tracking discovery times and following this specific order, the DFS run can identify all vertices of one SCC before extracting them and moving on to the next.
+
+We know that identifying cycles using discovery times will find the exact same strongly connected components (SCCs) because tracking lowest reachable nodes perfectly maps the reachability within the components. Since each SCC is both maximal and disjoint. This means that within an SCC, every pair of vertices is mutually reachable; you can get from any vertex $u$ to any other vertex $v$, and vice versa. The term "maximal" indicates that you can't add any more vertices to an SCC without losing its strongly connected property. Furthermore, SCCs are disjoint, which means that no vertex can belong to more than one SCC. If a vertex were part of two SCCs, those SCCs would actually merge into a single, larger SCC. Therefore, ignoring cross-edges to nodes already removed from the stack doesn't affect the valid connections in the current graph.
+
+After fully exploring all neighbors of a vertex, we check if the vertex's `low` value still exactly matches its original discovery identifier. This ensures that we identify the node that was discovered first in the current cycle, which is guaranteed to be part of an SCC with no paths looping back to earlier discovered SCCs — essentially making it a root in the DFS spanning tree.
+
+By processing the vertices in this specific order, we fully explore all vertices within the current SCC before extracting it. SCCs are maximal subgraphs where every vertex can reach every other vertex within the same subgraph, so the DFS will traverse through all nodes in an SCC, stacking them consecutively above the root. Once the entire SCC is processed and the root is identified, we pop nodes off the stack until the root is removed, ensuring that each SCC is handled independently and thoroughly, so no vertices from another SCC will be mistakenly included in the current one.
+
+
 
 ## Implementation
 
