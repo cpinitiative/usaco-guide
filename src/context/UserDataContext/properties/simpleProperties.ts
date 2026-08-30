@@ -89,6 +89,20 @@ export const useSetDivisionTableQuery = createSimpleUserDataMutation(
   }
 );
 
+export const useProblemListPages = createUserDataGetter(
+  userData => userData.problemListPages
+);
+export const useSetProblemListPage = createSimpleUserDataMutation(
+  (userData, listKey: string, page: number) => {
+    return {
+      problemListPages: {
+        ...userData.problemListPages,
+        [listKey]: page,
+      },
+    };
+  }
+);
+
 // last viewed module is set in useUpdateStreakEffect
 // we have a limitation of one update per second (firebase rate limit),
 // so we combine the two updates

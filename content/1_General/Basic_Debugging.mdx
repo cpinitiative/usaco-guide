@@ -368,35 +368,40 @@ you can use the script below to find an input on which the correct and
 incorrect programs differ. If you want to learn how to write these scripts
 yourself, see [this module](/general/cpp-command#linux).
 
-<LanguageSection>
-<CPPSection>
-
 <Spoiler title="Scripts">
 
-Here is the script that was mentioned in the video:
+Here is the script that was mentioned in the video. Set the commands at the top
+based on how each program is run:
 
 ```
-# A and B are executables you want to compare, gen takes int
+# A and B are solutions you want to compare, gen takes int
 # as command line arg. Usage: 'sh stress.sh'
+GEN="./gen"
+A="./A"
+B="./B"
+
 for ((i = 1; ; ++i)); do  # if they are same then will loop forever
     echo $i
-    ./gen $i > int
-    ./A < int > out1
-    ./B < int > out2
+    $GEN $i > int
+    $A < int > out1
+    $B < int > out2
     diff -w out1 out2 || break
-    # diff -w <(./A < int) <(./B < int) || break
+    # diff -w <($A < int) <($B < int) || break
 done
 ```
+
+For example, after compiling a Java program, you can use `A="java A"`. For a
+Python program, you can use `A="python3 A.py"`.
 
 We can modify this to work for other situations. For example, if you have
 input and output files (e.g., `1.in`, `1.out`, `2.in`, `2.out`, ..., `10.out` for
 old USACO problems) then you can use the following:
 
 ```
-# A is the executable you want to test
+# A is the command for the solution you want to test
 for ((i = 1; i <= 10; ++i)); do
     echo $i
-    ./A < $i.in > out
+    $A < $i.in > out
     diff -w out $i.out || break
 done
 echo "ALL TESTS PASSED"
@@ -408,8 +413,8 @@ file is empty.
 ```
 for((i = 1; ; ++i)); do
 	echo $i
-	./gen $i > int
-	./A < int > out
+	$GEN $i > int
+	$A < int > out
 	if ! [[ -s "out" ]] ; then
 		echo "no output"
 		break
@@ -436,74 +441,6 @@ test
 </Warning>
 
 </Spoiler>
-
-</CPPSection>
-<JavaSection>
-
-Here is an script to test a Java program with input and output files. You will
-need to put the `.java`, this script, and the input and output files (`1.in`,
-`1.out`, etc.) in the same directory:
-
-<Spoiler title="Java testing script">
-
-```
-#!/bin/bash
-RED="\033[0;31m"
-GREEN="\033[0;32m"
-NC="\033[0m"
-
-wrong=0
-
-fileName=$(ls | grep java)
-
-IFS="."
-read -ra fileArr <<< $fileName
-
-className=${fileArr[0]}
-
-loop=true
-testCase=1
-
-while $loop; do
-	# Does this test case exist?
-	if [[ ! -e "$testCase.in" || ! -e "$testCase.out" ]]; then
-		# If not, then stop.
-		break;
-	fi
-
-	# If so, then test.
-	echo "Testing: $testCase"
-	cp $testCase.in $className.in
-	java $className.java < $className.in > $className.out
-
-	diffOut=$(diff -w $testCase.out $className.out 2>&1)
-
-	if [[ $diffOut == "" ]]; then
-		echo -e "$GREEN** PASSED **$NC\n"
-	else
-		echo -e "$RED** FAILED **$NC"
-		echo -e "$diffOut\n"
-		wrong=$((wrong += 1))
-	fi
-
-	testCase=$((testCase += 1))
-done
-
-# Check if any wrong.
-if [[ wrong -gt 0 ]]; then
-	if [[ $wrong == 1 ]]; then
-		echo -e "$RED*** $wrong/$testCase TEST CASE FAILED ***$NC"
-	else
-		echo -e "$RED*** $wrong/$((testCase - 1)) TEST CASES FAILED ***$NC"
-	fi
-else
-	echo -e "$GREEN*** ALL TEST CASES PASSED ***$NC"
-fi
-```
-
-</Spoiler>
-</JavaSection>
-</LanguageSection>
 
 ## Debuggers
 
