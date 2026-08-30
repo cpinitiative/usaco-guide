@@ -15,6 +15,7 @@ import {
   probSources,
 } from '../models/problem';
 import ButtonGroup from './ButtonGroup';
+import ProblemTagsInput from './ProblemTagsInput';
 import Select from './Select';
 
 export default function ProblemSuggestionModal({
@@ -81,7 +82,8 @@ export default function ProblemSuggestionModal({
       const tagsArr = tags
         .split(',')
         .map(tag => tag.trim())
-        .filter(tag => tag.length > 0);
+        .filter(tag => tag.length > 0)
+        .sort();
       let generatedProblemId = '';
       try {
         generatedProblemId = generateProblemUniqueId(source, name, link);
@@ -124,7 +126,12 @@ export default function ProblemSuggestionModal({
       name,
       link,
       difficulty,
-      tags,
+      tags: tags
+        .split(',')
+        .map(tag => tag.trim())
+        .filter(tag => tag.length > 0)
+        .sort()
+        .join(', '),
       additionalNotes,
       problemTableLink,
       problemListName: listName,
@@ -275,13 +282,11 @@ export default function ProblemSuggestionModal({
         <label className="block font-medium text-gray-700 dark:text-gray-200">
           {!inEditor && 'Suggested '}Tags (separated with comma and space)
         </label>
-        <div className="relative mt-2 rounded-md shadow-sm">
-          <input
-            type="text"
-            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:border-gray-700 dark:bg-gray-900"
-            placeholder="DP, Dijkstra"
+        <div className="mt-2">
+          <ProblemTagsInput
+            id="problem-suggestion-tags"
             value={tags}
-            onChange={e => setTags(e.target.value)}
+            onChange={setTags}
             disabled={loading}
           />
         </div>
