@@ -271,7 +271,7 @@ print(*comp_id)
 
 ## Explanation
 
-In Tarjan's algorithm, a single depth-first search (DFS) is performed on the original graph to determine the discovery times and the lowest reachable nodes (`low` values) for each vertex; that is, the node that is discovered first in a cycle acts as the anchor. As each vertex is visited for the first time, it is pushed onto a stack. In this single phase, nodes are processed and kept on the stack as long as they are part of the current active search path. This stack will be used to extract the components.
+In Tarjan's algorithm, a single depth-first search (DFS) is performed on the original graph to determine the discovery times and the lowest reachable nodes (`low` values) for each vertex; that is, the node that is discovered first in a cycle acts as the anchor. As each vertex is visited for the first time, it is pushed onto a stack. An important stack invariant maintained during this process is that each vertex in the stack has a path to the following vertex in the stack. In this single phase, nodes are processed and kept on the stack as long as they are part of the current active search path. This stack will be used to extract the components.
 
 During this DFS, the algorithm explores all outgoing edges from the current vertex, updating its `low` value to track the lowest discovery time reachable among ancestors of the current vertex in the DFS tree (i.e., nodes still active on the stack). The DFS processes nodes according to the edges defined by the original graph. By tracking discovery times and following this specific order, the DFS run can identify all vertices of one SCC before extracting them and moving on to the next.
 
