@@ -6,7 +6,7 @@ author: Abhinav Singh
 ---
 
 ## Explanation
-We know if indices $i$ and $j$ match with each other, then every matched pair whose endpoints lie between $i$ and $j$ have to be completely contained within it, while the ones outside must be completely outside it. This is what motivates our range dp. Let's define $dp[i][j]$ to be the maximum possible value we can obtain if we use some subset of brackets in the interval $[i,j]$. 
+We know if indices $i$ and $j$ match with each other, then every matched pair whose endpoints lie between $i$ and $j$ have to be completely contained within it, while the ones outside must be completely outside it. This is what motivates our range dp. Let's define $dp[i][j]$ to be the maximum possible value we can obtain if we use some subset of brackets in the interval $[i,j]$.
 
 Now consider the leftmost position $i$ in the interval. There are two possibilities: either we don't use it, or we match it with some position $k$. If we dont use it in our final subset, then the answer is simply $dp[i+1][j$]. Otherwise, $i$ must be an opening bracket. Let's say it matches with some index $k$. Then, everything we choose between $i$ and $k$ must be its own independent well-bracketed sequence, and the remainder from $k+1$ to $j$ must be similarly well bracketed. Therefore, combining this with the previous case gives us
 
@@ -19,7 +19,7 @@ dp[i][j] =
         V[i] + V[k] + dp[i+1][k-1] + dp[k+1][j]
     \right)
 \right)
-$$ 
+$$
 
 ## Implementation
 **Time Complexity**: $\mathcal{O}(N^3)$
@@ -33,46 +33,44 @@ $$
 using namespace std;
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    int n, k;
-    cin >> n >> k;
+	int n, k;
+	cin >> n >> k;
 
-    vector<int> values(n);
-    for (int i = 0; i < n; ++i) {
-        cin >> values[i];
-    }
+	vector<int> values(n);
+	for (int i = 0; i < n; ++i) { cin >> values[i]; }
 
-    vector<int> b(n);
-    for (int i = 0; i < n; ++i) {
-        cin >> b[i];
-    }
+	vector<int> b(n);
+	for (int i = 0; i < n; ++i) { cin >> b[i]; }
 
-    vector<vector<int>> dp(n + 1, vector<int>(n + 1));
+	vector<vector<int>> dp(n + 1, vector<int>(n + 1));
 
-    for (int length = 2; length <= n; ++length) {
-        for (int l = 0; l + length <= n; ++l) {
-            int r = l + length - 1;
+	for (int length = 2; length <= n; ++length) {
+		for (int l = 0; l + length <= n; ++l) {
+			int r = l + length - 1;
 
-            // Don't use the bracket at l.
-            dp[l][r] = dp[l + 1][r];
+			// Don't use the bracket at l.
+			dp[l][r] = dp[l + 1][r];
 
-            // Use the bracket at l as an opening bracket.
-            if (b[l] <= k) {
-                for (int match = l + 1; match <= r; ++match) {
-                    // Match l with 'match'.
-                    if (b[match] == b[l] + k) {
-                        dp[l][r] = max(dp[l][r], values[l] + values[match] + dp[l + 1][match - 1] + dp[match + 1][r]);
-                    }
-                }
-            }
-        }
-    }
+			// Use the bracket at l as an opening bracket.
+			if (b[l] <= k) {
+				for (int match = l + 1; match <= r; ++match) {
+					// Match l with 'match'.
+					if (b[match] == b[l] + k) {
+						dp[l][r] =
+						    max(dp[l][r], values[l] + values[match] +
+						                      dp[l + 1][match - 1] + dp[match + 1][r]);
+					}
+				}
+			}
+		}
+	}
 
-    cout << dp[0][n - 1] << '\n';
+	cout << dp[0][n - 1] << '\n';
 
-    return 0;
+	return 0;
 }
 ```
 
