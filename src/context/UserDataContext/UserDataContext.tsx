@@ -41,6 +41,11 @@ export type UserData = {
     division: string;
     season: string;
   };
+  /**
+   * Which page of a paginated problems table the user last had open,
+   * mapping `<module path>|<problem list id>` to a zero-indexed page number.
+   */
+  problemListPages: Record<string, number>;
   lang: Language;
   lastViewedModule: string;
   lastVisitDate: number; // timestamp
@@ -95,6 +100,7 @@ export const assignDefaultsToUserData = (data: object): UserData => {
       division: '',
       season: '',
     },
+    problemListPages: {},
     lang: 'cpp',
     lastViewedModule: '',
     lastVisitDate: new Date().getTime(),

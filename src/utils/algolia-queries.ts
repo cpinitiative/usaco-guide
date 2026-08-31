@@ -7,6 +7,7 @@ import {
   queryModule,
   queryModuleIdAndTitleFromProblemBySolutionId,
   queryProblem,
+  queryProblemTagUnions,
   querySolution,
 } from '../lib/queryContent';
 import {
@@ -52,6 +53,10 @@ export async function getModuleRecords() {
 export async function getProblemRecords() {
   const problems = await queryAllProblemDashboardInfo();
   const modules = await queryAllModuleFrontmatter();
+  // Tags are per module; search shows the union across every module a problem
+  // appears in. The `problems` table collapses those copies, so read them from
+  // module_problem_lists instead.
+  const tagUnions = await queryProblemTagUnions();
   const moduleFiles = modules.map(m => ({
     title: m.frontmatter.title,
     id: m.frontmatter.id,
@@ -79,10 +84,6 @@ export async function getProblemRecords() {
     });
 
     if (existingProblem) {
-      existingProblem.tags = [
-        ...new Set([...existingProblem.tags, ...(fullProblem.tags || [])]),
-      ];
-
       problemModulesWithPath.forEach(module => {
         if (!existingProblem.problemModules.find(m => m.id === module.id)) {
           existingProblem.problemModules.push(module);
@@ -93,7 +94,7 @@ export async function getProblemRecords() {
         objectID: fullProblem.uniqueId,
         name: fullProblem.name,
         source: fullProblem.source,
-        tags: fullProblem.tags || [],
+        tags: tagUnions.get(fullProblem.uniqueId) || fullProblem.tags || [],
         url: fullProblem.url,
         difficulty: fullProblem.difficulty,
         isStarred: fullProblem.isStarred || false,
