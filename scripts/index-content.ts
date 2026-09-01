@@ -13,6 +13,8 @@ const USACO_DIVISIONS_JSON = join(
   'usaco-divisions.json'
 );
 
+const PROBLEM_TAGS_JSON = join(process.cwd(), 'public', 'problem-tags.json');
+
 // Only auto-run when executed directly (not when imported by watch-content.ts)
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   main().catch(console.error);
@@ -59,6 +61,10 @@ export async function main() {
     // Generate USACO divisions JSON file
     console.log('Generating USACO divisions JSON...');
     await generateUsacoDivisionsJson(db);
+
+    // Generate the tag vocabulary used to autocomplete problem suggestions
+    console.log('Generating problem tags JSON...');
+    await generateProblemTagsJson(db);
 
     // Vacuum database
     console.log('Optimizing database...');
@@ -776,6 +782,36 @@ async function generateUsacoDivisionsJson(
 }
 
 /**
+ * Writes the union of every tag used by any problem, sorted, to
+ * public/problem-tags.json. ProblemSuggestionModal fetches it to autocomplete
+ * the tags field, so suggestions reuse existing tag names instead of coining
+ * near-duplicates ("Trees" for "Tree", "Maths" for "Math").
+ */
+export async function generateProblemTagsJson(db: Database.Database) {
+  const { writeFile } = await import('fs/promises');
+
+  const rows = db.prepare('SELECT tags_json FROM problems').all() as Array<{
+    tags_json: string;
+  }>;
+
+  const tags = new Set<string>();
+  for (const row of rows) {
+    for (const tag of JSON.parse(row.tags_json || '[]') as string[]) {
+      if (tag) tags.add(tag);
+    }
+  }
+
+  const sorted = [...tags].sort((a, b) =>
+    a.localeCompare(b, 'en', { sensitivity: 'base' })
+  );
+
+  await writeFile(PROBLEM_TAGS_JSON, JSON.stringify({ tags: sorted }, null, 2));
+  console.log(
+    `Problem tags JSON written to: ${PROBLEM_TAGS_JSON} (${sorted.length} tags)`
+  );
+}
+
+/**
  * Regenerates public/usaco-divisions.json if it is missing.
  *
  * It is gitignored and only rewritten when a .problems.json changes, so a
@@ -787,11 +823,13 @@ export async function ensureUsacoDivisionsJson(): Promise<boolean> {
   const { access } = await import('fs/promises');
   try {
     await access(USACO_DIVISIONS_JSON);
+    await access(PROBLEM_TAGS_JSON);
     return false;
   } catch {
     const db = await getWritableDatabase();
     try {
       await generateUsacoDivisionsJson(db);
+      await generateProblemTagsJson(db);
     } finally {
       db.close();
     }
