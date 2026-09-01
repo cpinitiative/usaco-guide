@@ -87,4 +87,97 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java 
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+    static int[] heights, costs;
+    static int n;
+
+	/** @return total reconstruction cost at height x*/
+    static long getCost(int mid) {
+        long res = 0;
+        for (int i = 0; i < n; i++) {
+            res += (long) Math.abs(mid - heights[i]) * costs[i];
+        }
+        return res;
+    }
+
+    public static void main(String[] args) throws Exception {
+        Kattio io = new Kattio();
+
+        int testNum = io.nextInt();
+        final int MAX_H = 10000;
+
+        for (int t = 0; t < testNum; t++) {
+            n = io.nextInt();
+            heights = new int[n];
+            costs = new int[n];
+
+            for (int i = 0; i < n; i++) { heights[i] = io.nextInt(); }
+            for (int i = 0; i < n; i++) { costs[i] = io.nextInt(); }
+
+            int lo = 0, hi = MAX_H;
+            while (hi - lo > 3) {
+                int mid1 = lo + (hi - lo) / 3;
+                int mid2 = hi - (hi - lo) / 3;
+                if (getCost(mid1) > getCost(mid2)) {
+                    lo = mid1;
+                } else {
+                    hi = mid2;
+                }
+            }
+
+            long minCost = getCost(lo);
+            for (int i = lo + 1; i <= hi; i++) {
+                minCost = Math.min(minCost, getCost(i));
+            }
+
+            io.println(minCost);
+        }
+
+        io.close();
+    }
+
+    // BeginCodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+
+<PySection>
+
+```py 
+MAX_H = 10000
+
+for _ in range(int(input())):
+    n = int(input())
+    heights = list(map(int, input().split()))
+    costs = list(map(int, input().split()))
+
+	# return total reconstruction cost at height x
+    def get_cost(mid):
+        return sum(abs(mid - heights[i]) * costs[i] for i in range(n))
+
+    lo, hi = 0, MAX_H
+    while hi - lo > 3:
+        mid1 = lo + (hi - lo) // 3
+        mid2 = hi - (hi - lo) // 3
+        if get_cost(mid1) > get_cost(mid2):
+            lo = mid1
+        else:
+            hi = mid2
+
+    min_cost = get_cost(lo)
+    for i in range(lo + 1, hi + 1):
+        min_cost = min(min_cost, get_cost(i))
+
+    print(min_cost)
+```
+
+</PySection>
 </LanguageSection>
