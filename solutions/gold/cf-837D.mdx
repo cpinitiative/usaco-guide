@@ -1,0 +1,113 @@
+---
+id: cf-837D
+source: CF
+title: Round Subset
+author: Sachet Abeysinghe
+---
+
+## Explanation
+
+The roundness of a number is the number of tens we can factor out of the number. This is equal to the minimum of the number of twos and number of fives in the prime factorization of the number. Let's precompute the number of two and five factors in each number.
+
+Let $dp[i][j][z]$ represent the maximum number of total two factors we can achieve by choosing a subset of exactly $j$ numbers with exactly $z$ total five factors from the first $i$ elements. Since $z$ is at most $\lfloor\log_5(10^{18})\rfloor \cdot 200 = 5000$, the total number of states is $200,000,000$, which is feasible.
+
+Our base case is $dp[0][0][0] = 0$ and our transitions are:
+- Exclude the $i$th element: $dp[i][j][z] = dp[i - 1][j][z]$
+- Include the $i$th element: $dp[i][j][z] = \max(dp[i][j][z], twos[i] + dp[i - 1][j - 1][z - fives[i])$
+
+The answer is then the maximum value of $\min(z, dp[N][k][z])$ over all $z \le 5000$. We can optimize space to 2D by iterating $j$ backwards and dropping the $i$ dimension.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^3 \cdot \log_5(10^{18}))$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+const int INF = 1e9;
+const int MAX_FIVES = 5000;
+
+int main() {
+	int n, k;
+	cin >> n >> k;
+
+	vector<int> twos(n);
+	vector<int> fives(n);
+
+	for (int i = 0; i < n; ++i) {
+		long long x;
+		cin >> x;
+		while (x % 2 == 0) {
+			twos[i]++;
+			x /= 2;
+		}
+		while (x % 5 == 0) {
+			fives[i]++;
+			x /= 5;
+		}
+	}
+
+	vector<vector<int>> dp(n + 1, vector<int>(MAX_FIVES + 1, -INF));
+	dp[0][0] = 0;
+	for (int i = 1; i <= n; ++i) {
+		for (int j = i; j > 0; --j) {
+			for (int z = fives[i - 1]; z <= MAX_FIVES; ++z) {
+				dp[j][z] = max(dp[j][z], twos[i - 1] + dp[j - 1][z - fives[i - 1]]);
+			}
+		}
+	}
+
+	int ans = 0;
+	for (int z = 0; z <= MAX_FIVES; ++z) { ans = max(ans, min(z, dp[k][z])); }
+
+	cout << ans << "\n";
+}
+```
+
+</CPPSection>
+
+<PySection>
+
+```py
+N, K = map(int, input().split())
+a = [int(x) for x in input().split()]
+
+twos = []
+fives = []
+for i in range(N):
+	x = a[i]
+	two_count = 0
+	five_count = 0
+	while x % 2 == 0:
+		two_count += 1
+		x //= 2
+	while x % 5 == 0:
+		five_count += 1
+		x //= 5
+	twos.append(two_count)
+	fives.append(five_count)
+
+dp = [[float("-inf")] * 5001 for j in range(N + 1)]
+dp[0][0] = 0
+for i in range(1, N + 1):
+	for j in range(i, 0, -1):
+		for z in range(fives[i - 1], 5001):
+			dp[j][z] = max(dp[j][z], twos[i - 1] + dp[j - 1][z - fives[i - 1]])
+
+ans = 0
+for z in range(5001):
+	ans = max(ans, min(z, dp[K][z]))
+print(ans)
+```
+
+</PySection>
+
+</LanguageSection>
