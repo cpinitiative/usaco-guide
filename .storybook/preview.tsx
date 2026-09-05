@@ -1,7 +1,4 @@
 import type { Preview } from '@storybook/react';
-import 'tippy.js/animations/scale-subtle.css';
-import 'tippy.js/dist/tippy.css';
-import 'tippy.js/themes/material.css';
 import { DarkModeContext } from '../src/context/DarkModeContext';
 import '../src/styles/main.css';
 import './storybook.css';
