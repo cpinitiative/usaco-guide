@@ -1,0 +1,109 @@
+---
+id: cf-1355E
+source: CF
+title: Restorer Distance
+author: Rameez Parwez
+---
+
+## Explanation
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}()$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+#define i23 long long
+
+const int dx[4] = {-1, 1, 0, 0};
+const int dy[4] = {0, 0, -1, 1};
+const int MOD = 1'000'000'007;
+const int INF = 1e9;
+const i23 LINF = 1e18;
+
+inline void yn(int a) {
+    std::cout << (a == 1 ? "Yes" : "No") << '\n';
+}
+
+std::mt19937 rng(std::chrono::high_resolution_clock().now().time_since_epoch().count());
+
+template<typename T>
+void Print(std::vector<T> &res, int start, int end) {
+    for (int i = start; i <= end; i++) {
+        std::cout << res[i] << " \n"[i == end];
+    }
+}
+
+void set_up(std::string name) {
+    freopen((name + ".in").c_str(), "r", stdin);
+    freopen((name + ".out").c_str(), "w", stdout);
+}
+
+void solve() {
+    int n, add, remove, move;
+    std::cin >> n >> add >> remove >> move;
+    std::vector<int> pillars(n);
+    for (int &x : pillars) {
+        std::cin >> x;
+    }
+
+    auto get_cost = [&] (int mid) -> i23 {
+        i23 to_add = 0, to_remove = 0;
+        for (int p : pillars) {
+            if (p < mid) {
+                to_add += mid - p;
+            } else {
+                to_remove += p - mid;
+            }
+        }
+
+        i23 res = 1LL * add * (to_add - std::min(to_add, to_remove)) +
+                    1LL * remove * (to_remove - std::min(to_add, to_remove)) +
+                    1LL * move * std::min(to_add, to_remove);
+
+        res = std::min(res, 1LL * add * to_add + 1LL * remove * to_remove);
+
+        return res;
+
+    }; 
+
+    int lo = 0, hi = 1e9;
+    while (hi - lo > 3) {
+        int mid1 = lo + (hi - lo) / 3;
+        int mid2 = hi - (hi - lo) / 3;
+        if (get_cost(mid1) > get_cost(mid2)) {
+            lo = mid1;
+        } else {
+            hi = mid2;
+        }
+    }
+
+    i23 min_cost = get_cost(lo);
+    for (int i = lo + 1; i <= hi; i++) {
+        min_cost = std::min(min_cost, get_cost(i));
+    }
+
+    std::cout << min_cost << '\n';
+}   
+
+int main() {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(0);
+    std::cout.tie(0);
+    std::cin.exceptions(std::ios::badbit|std::ios::failbit);
+    int test = 1;
+    // std::cin >> test;
+    // seive();
+    while (test-- > 0) {
+        solve();
+    }
+    return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
