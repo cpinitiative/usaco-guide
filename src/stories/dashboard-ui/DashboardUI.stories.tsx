@@ -4,7 +4,6 @@ import React from 'react';
 import ActiveItems, {
   ActiveItem,
 } from '../../components/Dashboard/ActiveItems';
-import Activity from '../../components/Dashboard/Activity';
 import DailyStreak from '../../components/Dashboard/DailyStreak';
 import DashboardCard from '../../components/Dashboard/DashboardCard';
 import DashboardProgress, {
@@ -26,6 +25,7 @@ const userData = {
   lastVisitDate: Date.now() - 1000 * 60 * 60 * 12,
   numPageviews: 32,
   pageviewsPerDay: {},
+  problemListPages: {},
   theme: 'system' as const,
   userProgressOnModules: {},
   userProgressOnModulesActivity: [
@@ -188,11 +188,5 @@ export const DailyStreakStory: StoryFn<typeof DailyStreak> = () => (
     <CowImagesProvider value={cows}>
       <DailyStreak streak={8} />
     </CowImagesProvider>
-  </UserDataProvider>
-);
-
-export const ActivityStory: StoryFn<typeof Activity> = () => (
-  <UserDataProvider>
-    <Activity />
   </UserDataProvider>
 );
