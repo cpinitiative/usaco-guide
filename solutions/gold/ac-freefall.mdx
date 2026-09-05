@@ -1,0 +1,82 @@
+---
+id: ac-freefall
+source: AC
+title: Freefall
+author: Rameez Parwez
+---
+
+## Explanation
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}()$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+#define i23 long long
+
+const int dx[4] = {-1, 1, 0, 0};
+const int dy[4] = {0, 0, -1, 1};
+const int MOD = 1'000'000'007;
+const int INF = 1e9;
+const i23 LINF = 1e18;
+
+inline void yn(int a) { std::cout << (a == 1 ? "Yes" : "No") << '\n'; }
+
+std::mt19937 rng(std::chrono::high_resolution_clock().now().time_since_epoch().count());
+
+template <typename T> void Print(std::vector<T> &res, int start, int end) {
+	for (int i = start; i <= end; i++) { std::cout << res[i] << " \n"[i == end]; }
+}
+
+void set_up(std::string name) {
+	freopen((name + ".in").c_str(), "r", stdin);
+	freopen((name + ".out").c_str(), "w", stdout);
+}
+
+void solve() {
+	i23 a, b;
+	std::cin >> a >> b;
+
+	auto get_time = [&](i23 mid) -> long double {
+		long double res = (long double)mid * b + (a / sqrtl(mid + 1));
+		return res;
+	};
+
+	i23 lo = 0, hi = 1e18;
+	while (hi - lo > 3) {
+		i23 mid1 = lo + (hi - lo) / 3;
+		i23 mid2 = hi - (hi - lo) / 3;
+
+		if (get_time(mid1) > get_time(mid2)) {
+			lo = mid1;
+		} else {
+			hi = mid2;
+		}
+	}
+
+	long double min_time = get_time(lo);
+	for (i23 i = lo + 1; i <= hi; i++) { min_time = std::min(min_time, get_time(i)); }
+
+	std::cout << std::fixed << std::setprecision(8) << min_time << '\n';
+}
+
+int main() {
+	std::ios_base::sync_with_stdio(false);
+	std::cin.tie(0);
+	std::cout.tie(0);
+	std::cin.exceptions(std::ios::badbit | std::ios::failbit);
+	int test = 1;
+	// std::cin >> test;
+	// seive();
+	while (test-- > 0) { solve(); }
+	return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
