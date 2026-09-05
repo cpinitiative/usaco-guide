@@ -6,8 +6,13 @@
 # package (e.g. brace-expansion 1.x/2.x/5.x) is fixed by a single PR instead of
 # one PR per version range.
 #
-# src/functions has its own npm lockfile and is deliberately not configured
-# here.
+# src/functions has its own npm lockfile. Security updates are on by default for
+# every manifest in the dependency graph, so leaving it unconfigured does *not*
+# opt it out -- Dependabot kept opening (and failing) update jobs for it. The
+# entry below opts it out explicitly: `open-pull-requests-limit: 0` stops
+# version updates, and the ignore-all rule stops security ones, since
+# `open-pull-requests-limit` does not apply to security PRs. Alerts for
+# src/functions still show up under Security; only the PRs stop.
 version: 2
 updates:
   # Next.js app (Yarn 4 workspace at the repo root).
@@ -21,6 +26,16 @@ updates:
         applies-to: security-updates
         patterns:
           - '*'
+
+  # Firebase Cloud Functions (npm lockfile of its own). Not maintained by
+  # Dependabot -- see the note above.
+  - package-ecosystem: npm
+    directory: /src/functions
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
+    ignore:
+      - dependency-name: '*'
 
   # Keep the GitHub Actions used by CI patched.
   - package-ecosystem: github-actions
