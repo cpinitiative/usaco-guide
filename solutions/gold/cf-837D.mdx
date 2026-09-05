@@ -26,9 +26,9 @@ The answer is then the maximum value of $\min(z, dp[N][k][z])$ over all $z \le 5
 <CPPSection>
 
 ```cpp
+#include <algorithm>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
 using namespace std;
 
@@ -36,43 +36,40 @@ const int INF = 1e9;
 const int MAX_FIVES = 5000;
 
 int main() {
-    int n, k;
-    cin >> n >> k;
+	int n, k;
+	cin >> n >> k;
 
-    vector<int> twos(n);
-    vector<int> fives(n);
+	vector<int> twos(n);
+	vector<int> fives(n);
 
-    for (int i = 0; i < n; ++i) {
-        long long x;
-        cin >> x;
-        while (x % 2 == 0) {
-            twos[i]++;
-            x /= 2;
-        }
-        while (x % 5 == 0) {
-            fives[i]++;
-            x /= 5;
-        }
-    }
+	for (int i = 0; i < n; ++i) {
+		long long x;
+		cin >> x;
+		while (x % 2 == 0) {
+			twos[i]++;
+			x /= 2;
+		}
+		while (x % 5 == 0) {
+			fives[i]++;
+			x /= 5;
+		}
+	}
 
-    vector<vector<int>> dp(n + 1, vector<int>(MAX_FIVES + 1, -INF));
-    dp[0][0] = 0;
-    for (int i = 1; i <= n; ++i) {
-        for (int j = i; j > 0; --j) {
-            for (int z = fives[i - 1]; z <= MAX_FIVES; ++z) {
-                dp[j][z] = max(dp[j][z], twos[i - 1] + dp[j - 1][z - fives[i - 1]]);
-            }
-        }
-    }
+	vector<vector<int>> dp(n + 1, vector<int>(MAX_FIVES + 1, -INF));
+	dp[0][0] = 0;
+	for (int i = 1; i <= n; ++i) {
+		for (int j = i; j > 0; --j) {
+			for (int z = fives[i - 1]; z <= MAX_FIVES; ++z) {
+				dp[j][z] = max(dp[j][z], twos[i - 1] + dp[j - 1][z - fives[i - 1]]);
+			}
+		}
+	}
 
-    int ans = 0;
-    for (int z = 0; z <= MAX_FIVES; ++z) {
-        ans = max(ans, min(z, dp[k][z]));
-    }
+	int ans = 0;
+	for (int z = 0; z <= MAX_FIVES; ++z) { ans = max(ans, min(z, dp[k][z])); }
 
-    cout << ans << "\n";
+	cout << ans << "\n";
 }
-
 ```
 
 </CPPSection>
@@ -86,28 +83,28 @@ a = [int(x) for x in input().split()]
 twos = []
 fives = []
 for i in range(N):
-    x = a[i]
-    twonum = 0
-    fivenum = 0
-    while x % 2 == 0:
-        twonum += 1
-        x //= 2
-    while x % 5 == 0:
-        fivenum += 1
-        x //= 5
-    twos.append(twonum)
-    fives.append(fivenum)
+	x = a[i]
+	twonum = 0
+	fivenum = 0
+	while x % 2 == 0:
+		twonum += 1
+		x //= 2
+	while x % 5 == 0:
+		fivenum += 1
+		x //= 5
+	twos.append(twonum)
+	fives.append(fivenum)
 
 dp = [[float("-inf")] * 5001 for j in range(N + 1)]
 dp[0][0] = 0
 for i in range(1, N + 1):
-    for j in range(i, 0, -1):
-        for z in range(fives[i - 1], 5001):
-            dp[j][z] = max(dp[j][z], twos[i - 1] + dp[j - 1][z - fives[i - 1]])
+	for j in range(i, 0, -1):
+		for z in range(fives[i - 1], 5001):
+			dp[j][z] = max(dp[j][z], twos[i - 1] + dp[j - 1][z - fives[i - 1]])
 
 ans = 0
 for z in range(5001):
-    ans = max(ans, min(z, dp[K][z]))
+	ans = max(ans, min(z, dp[K][z]))
 print(ans)
 ```
 
