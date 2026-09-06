@@ -75,8 +75,7 @@ void go2(int node, int parent, vector<int> transfer) {
 		if (adj[node][i] == parent) neighbors.push_back(transfer);
 		else neighbors.push_back(dp1[adj[node][i]]);
 	}
-	vector<vector<int>> pref(neighbors.size() + 1),
-	    suf(neighbors.size() + 1);
+	vector<vector<int>> pref(neighbors.size() + 1), suf(neighbors.size() + 1);
 	for (int i = 0; i < pref.size() - 1; i++) {
 		pref[i + 1] = neighbors[i];
 		basis(pref[i + 1], pref[i]);
@@ -86,7 +85,7 @@ void go2(int node, int parent, vector<int> transfer) {
 		basis(suf[i], suf[i + 1]);
 	}
 	for (int i = 0; i < neighbors.size(); i++) {
-		int nbr=adj[node][i];
+		int nbr = adj[node][i];
 		if (nbr == parent) continue;
 		vector<int> cur = pref[i];
 		basis(cur, suf[i + 1]);
@@ -176,8 +175,7 @@ int main() {
 			finalBasis = dp2[tempR];
 		complete:
 			int maxXOR = 0;
-			for (int val : finalBasis)
-				maxXOR = max(maxXOR, maxXOR ^ val);
+			for (int val : finalBasis) maxXOR = max(maxXOR, maxXOR ^ val);
 			cout << maxXOR << '\n';
 		}
 	}
