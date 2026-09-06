@@ -8,7 +8,7 @@ author: Abhinav Singh
 [Official Analysis (C++)](https://codeforces.com/blog/entry/103658)
 
 ## Explanation
-Let $a_i$ be the maximum speed of carriage $i$, and $v_i$ the current speed it is running at. Since carriage $i$ can never outrun carriages in front of it, $v_i$ is the prefix minimum $v_i = \min(a_1, \ldots, a_i)$. The array $v_i$ is non-increasing, with each change in value being a boundary between trains. Thus, at any given moment, the answer is the number of distinct values in $v$.
+Let $a_i$ be the maximum speed of carriage $i$, and $v_i$ the current speed it is running at. Since carriage $i$ can never outrun carriages in front of it, $v_i$ is the prefix minimum $v_i = \min(a_1, \dots, a_i)$. The array $v_i$ is non-increasing, with each change in value being a boundary between trains. Thus, at any given moment, the answer is the number of distinct values in $v$.
 
 Instead of storing the whole prefix minimum array, maintain a set of *start indices*, or the indices where a new train starts, which are index $0$ and every index $i$ where $v_i < v_{i-1}$. Note that $a_j = v_j$ at any start index $j$, so the true speed of a position $k$ is $a_j$, where $j$ is the closest starting index to the left of $k$.
 
