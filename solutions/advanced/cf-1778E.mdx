@@ -17,7 +17,7 @@ Then, to find the maximum XOR we can form from the basis, we can initialize $\te
 
 Let's define function $\texttt{MSB}(x)$ for some integer $x$ as the most significant bit of $x$.
 
-This procedure works because of how the reduction causes $\texttt{MSB}(\texttt{basis}_i)$ to not be set in any $\texttt{basis}_j$ where $j>i$. When we process some $\texttt{basis}_i$, it is important to consider that $\texttt{MSB}(\texttt{basis}_i)$ will affect the answer more than any other bit or combination of bits not including $\texttt{MSB}(\texttt{basis}_i)$. As no later items in the basis have $\texttt{MSB}(\texttt{basis}_i)$ set, step $i$ essentially ensures that this bit will be set in the final result. If $\texttt{MSB}(\texttt{basis}_i)$ is set to $0$ in $\texttt{maxXOR}$, it is always optimal to take $\texttt{basis}_i$. Otherwise, it is always optimal to not take it. It is not difficult to see that in the end, every $\texttt{MSB}(\texttt{basis}_i)$ will be set in the $\texttt{maxXOR}$.
+This procedure works because of how the reduction causes $\texttt{MSB}(\texttt{basis}_i)$ to not be set in any $\texttt{basis}_j$ where $j>i$. When we process some $\texttt{basis}_i$, it is important to consider that regardless of our choices involving later indices, ensuring $\texttt{MSB}(\texttt{basis}_i)$ is set at step $i$ is always optimal. As no later items in the basis have $\texttt{MSB}(\texttt{basis}_i)$ set, step $i$ ensures that this bit will be set in the final result. If $\texttt{MSB}(\texttt{basis}_i)$ is set to $0$ in $\texttt{maxXOR}$, it is always optimal to take $\texttt{basis}_i$. Otherwise, it is always optimal to not take it. It is not difficult to see that in the end, every $\texttt{MSB}(\texttt{basis}_i)$ will be set in the $\texttt{maxXOR}$.
 
 As each $\texttt{basis}_i$ ensures its MSB is set in $\texttt{maxXOR}$, making a different choice to ensure a different bit is set will sacrifice $\texttt{MSB}(\texttt{basis}_i)$ for a less significant bit.
 
@@ -55,10 +55,9 @@ vector<vector<int>> dp1, dp2;
 const int LOG = 21;
 
 void basis(vector<int> &x, const vector<int> &y) {
-	for (int i = 0; i < y.size(); i++) {
-		int c = y[i];
-		for (int j = 0; j < x.size(); j++) { c = min(c, (c) ^ (x[j])); }
-		if (c) x.push_back(c);
+	for (int val : y) {
+		for (int j = 0; j < x.size(); j++) { val = min(val, val ^ x[j]); }
+		if (val) x.push_back(val);
 	}
 }
 
@@ -76,23 +75,24 @@ void go2(int node, int parent, vector<int> transfer) {
 		if (adj[node][i] == parent) neighbors.push_back(transfer);
 		else neighbors.push_back(dp1[adj[node][i]]);
 	}
-	vector<vector<int>> pref(neighbors.size() + 1, vector<int>({})),
-	    suf(neighbors.size() + 1, vector<int>({}));
+	vector<vector<int>> pref(neighbors.size() + 1),
+	    suf(neighbors.size() + 1);
 	for (int i = 0; i < pref.size() - 1; i++) {
 		pref[i + 1] = neighbors[i];
 		basis(pref[i + 1], pref[i]);
 	}
-	for (int i = suf.size() - 2; i >= 0; i--) {
+	for (int i = int(suf.size()) - 2; i >= 0; i--) {
 		suf[i] = neighbors[i];
 		basis(suf[i], suf[i + 1]);
 	}
 	for (int i = 0; i < neighbors.size(); i++) {
-		if (adj[node][i] == parent) continue;
+		int nbr=adj[node][i];
+		if (nbr == parent) continue;
 		vector<int> cur = pref[i];
 		basis(cur, suf[i + 1]);
 		basis(cur, vector<int>(1, a[node]));
-		dp2[adj[node][i]] = cur;
-		go2(adj[node][i], node, cur);
+		dp2[nbr] = cur;
+		go2(nbr, node, cur);
 	}
 }
 
@@ -101,8 +101,8 @@ int main() {
 	cin >> T;
 	while (T--) {
 		cin >> n;
-		dp1 = vector<vector<int>>(n, vector<int>({}));
-		dp2 = vector<vector<int>>(n, vector<int>({}));
+		dp1 = vector<vector<int>>(n);
+		dp2 = vector<vector<int>>(n);
 		a = vector<int>(n);
 		for (int i = 0; i < n; i++) {
 			cin >> a[i];
@@ -127,11 +127,11 @@ int main() {
 		while (!q.empty()) {
 			int cur = q.front();
 			q.pop();
-			for (int i = 0; i < adj[cur].size(); i++) {
-				if (dist[adj[cur][i]] + 1) continue;
-				lift[adj[cur][i]][0] = cur;
-				dist[adj[cur][i]] = dist[cur] + 1;
-				q.push(adj[cur][i]);
+			for (int nbr : adj[cur]) {
+				if (~dist[nbr]) continue;
+				lift[nbr][0] = cur;
+				dist[nbr] = dist[cur] + 1;
+				q.push(nbr);
 			}
 		}
 		for (int i = 1; i < LOG; i++) {
@@ -176,8 +176,8 @@ int main() {
 			finalBasis = dp2[tempR];
 		complete:
 			int maxXOR = 0;
-			for (int i = 0; i < finalBasis.size(); i++)
-				maxXOR = max(maxXOR, maxXOR ^ finalBasis[i]);
+			for (int val : finalBasis)
+				maxXOR = max(maxXOR, maxXOR ^ val);
 			cout << maxXOR << '\n';
 		}
 	}
