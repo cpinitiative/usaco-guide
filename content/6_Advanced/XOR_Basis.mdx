@@ -150,7 +150,7 @@ First construct any spanning tree, and then compute the XOR along the path from 
 
 We will use the technique to find the basis that was used in the first problem.
 
-Then, to find the maximum XOR we can form from the basis, we can initialize $\texttt{maxXOR}$ as $0$ and for each item $\texttt{basis}_i$ in order of $i=1\dots m$ where $m$ is the size of the basis, set $\texttt{maxXOR}=\max(\texttt{maxXOR},\ \texttt{maxXOR}\oplus \texttt{basis}_i)$.
+Then, to find the maximum XOR we can form from the basis, we can initialize $\texttt{ans}$ as $0$ and for each item $\texttt{basis}_i$ in order of $i=1\dots m$ where $m$ is the size of the basis, set $\texttt{ans}=\max(\texttt{ans},\ \texttt{ans}\oplus \texttt{basis}_i)$.
 
 <LanguageSection>
 
@@ -213,9 +213,9 @@ int main() {
 
 Let's define function $\texttt{MSB}(x)$ for some integer $x$ as the most significant bit of $x$.
 
-This procedure works because of how the reduction causes $\texttt{MSB}(\texttt{basis}_i)$ to not be set in any $\texttt{basis}_j$ where $j>i$. When we process some $\texttt{basis}_i$, it is important to consider that regardless of our choices involving later indices, ensuring $\texttt{MSB}(\texttt{basis}_i)$ is set at step $i$ is always optimal. As no later items in the basis have $\texttt{MSB}(\texttt{basis}_i)$ set, step $i$ ensures that this bit will be set in the final result. If $\texttt{MSB}(\texttt{basis}_i)$ is set to $0$ in $\texttt{maxXOR}$, it is always optimal to take $\texttt{basis}_i$. Otherwise, it is always optimal to not take it. It is not difficult to see that in the end, every $\texttt{MSB}(\texttt{basis}_i)$ will be set in the $\texttt{maxXOR}$.
+This procedure works because of how the reduction causes $\texttt{MSB}(\texttt{basis}_i)$ to not be set in any $\texttt{basis}_j$ where $j>i$. When we process some $\texttt{basis}_i$, it is important to consider that regardless of our choices involving later indices, ensuring $\texttt{MSB}(\texttt{basis}_i)$ is set at step $i$ is always optimal. As no later items in the basis have $\texttt{MSB}(\texttt{basis}_i)$ set, step $i$ ensures that this bit will be set in the final result. If $\texttt{MSB}(\texttt{basis}_i)$ is set to $0$ in $\texttt{ans}$, it is always optimal to take $\texttt{basis}_i$. Otherwise, it is always optimal to not take it. It is not difficult to see that in the end, every $\texttt{MSB}(\texttt{basis}_i)$ will be set in the $\texttt{ans}$.
 
-As each $\texttt{basis}_i$ ensures its MSB is set in $\texttt{maxXOR}$, making a different choice to ensure a different bit is set will sacrifice $\texttt{MSB}(\texttt{basis}_i)$ for a less significant bit.
+As each $\texttt{basis}_i$ ensures its MSB is set in $\texttt{ans}$, making a different choice to ensure a different bit is set will sacrifice $\texttt{MSB}(\texttt{basis}_i)$ for a less significant bit.
 
 </Spoiler>
 
