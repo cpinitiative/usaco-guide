@@ -19,25 +19,28 @@ experience.
 3. Install Dependencies
    - `yarn install`
 4. Run development server
-   - `yarn dev`, or `yarn dev:watch` if you're editing content (see below)
+   - `yarn dev`
 5. Test UI Components
    - `yarn storybook`
 
 ## Editing Content
 
-Content isn't read from `content/` at request time: `yarn dev` compiles every
-MDX file into a SQLite database at `data/content.db` and serves the site from
-that. The database is only built when it's missing, so **editing an MDX file
-while `yarn dev` is running has no effect on the page you see.** (Changes under
-`src/` hot reload as usual -- this only affects `content/` and `solutions/`.)
+Content isn't read from `content/` at request time: it is compiled into a SQLite
+database at `data/content.db`, and the site is served from that.
 
-Use `yarn dev:watch` instead while writing content. It runs the same dev server,
-but also watches `content/` and `solutions/`, re-indexes just the files you
-touched, and pushes a reload to the browser over SSE (port 3001).
+`yarn dev` watches `content/` and `solutions/`, re-indexes just the files you
+touch, and pushes a reload to the browser over SSE (port 3001), so content edits
+show up the same way `src/` edits do.
 
-If you ever need to rebuild the database from scratch (for example after
-changing how content is parsed), delete `data/content.db` and restart, or run
-`yarn tsx scripts/index-content.ts`.
+`yarn dev:no-watch` skips the watcher and only builds the database when it is
+missing. It starts marginally faster, but **editing an MDX file while it is
+running has no effect on the page you see**, so only use it when you aren't
+touching content. (`yarn dev:watch` remains as an alias for `yarn dev`.)
+
+The watcher only re-indexes files that change while it is running, and it
+reuses an existing `data/content.db` on startup. If you edited content while no
+dev server was running -- or you changed how content is parsed -- delete
+`data/content.db` and restart, or run `yarn tsx scripts/index-content.ts`.
 
 `public/usaco-divisions.json` is generated the same way and is gitignored, since
 every build regenerates it. Both dev servers rewrite it on startup if it is
