@@ -11,9 +11,9 @@ author: Mikaela Tereshkov
 
 Let's first solve this problem without the changing of the root. We can calculate the XOR basis for all nodes in each subtree. Let's calculate it through the following method of reduction:
 
-To add an element $x$ to the basis, for each item $\texttt{basis}_i$ in order of $i=1..m$ where $m$ is the size of the basis, set $x=\min(x,\ x\oplus \texttt{basis}_i)$. If $x$ is nonzero, append it to the basis. 
+To add an element $x$ to the basis, for each item $\texttt{basis}_i$ in order of $i=1..m$ where $m$ is the size of the basis, set $x=\min(x,\ x\oplus \texttt{basis}_i)$. If $x$ is nonzero, append it to the basis.
 
-Then, to find the maximum XOR we can form from the basis, we can initialize $\texttt{maxXOR}$ as $0$ and for each item $\texttt{basis}_i$ in order of $i=1..m$ where $m$ is the size of the basis, set $\texttt{maxXOR}=\max(\texttt{maxXOR},\ \texttt{maxXOR}\oplus \texttt{basis}_i)$. 
+Then, to find the maximum XOR we can form from the basis, we can initialize $\texttt{maxXOR}$ as $0$ and for each item $\texttt{basis}_i$ in order of $i=1..m$ where $m$ is the size of the basis, set $\texttt{maxXOR}=\max(\texttt{maxXOR},\ \texttt{maxXOR}\oplus \texttt{basis}_i)$.
 
 Let's define function $\texttt{MSB}(x)$ for some integer $x$ as the most significant bit of $x$.
 
@@ -29,7 +29,7 @@ If $r$ is not in the subtree of $v$ when the tree is rooted at $0$, we can calcu
 
 Otherwise, we can calculate $\texttt{maxXOR}$ from the basis of all of the nodes that are not in the subtree of the neighbor of $v$ that is on the path from $v$ to $r$ when the tree is rooted at $0$. We can use the rerooting technique to accomplish this.
 
-To check the position of $v$ relative to $r$, we can use binary lifting or Euler tour. 
+To check the position of $v$ relative to $r$, we can use binary lifting or Euler tour.
 
 To execute our rerooting, we can simply calculate prefix and suffix bases for all neighbors of each node. If we define $\texttt{dp2}_i$ for node $i$ as the basis of the nodes not in the subtree of $i$ and state that node $i$ is the $j$th neighbor of $\texttt{parent}_i$, we can find that $\texttt{dp2}_i=\text{basis}(\texttt{prefix}_{\texttt{parent}_i,\ j-1},\ \texttt{suffix}_{\texttt{parent}_i,\ j+1}, a_{\texttt{parent}_i})$.
 
@@ -43,7 +43,7 @@ To execute our rerooting, we can simply calculate prefix and suffix bases for al
 <CPPSection>
 
 ```cpp
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -52,123 +52,136 @@ int n;
 vector<int> a;
 vector<vector<int>> dp1, dp2;
 
-const int LOG=21;
+const int LOG = 21;
 
-void basis(vector<int>& x, const vector<int>& y){
-    for (int i=0; i<y.size(); i++){
-        int c=y[i];
-        for(int j=0; j<x.size(); j++){
-            c=min(c, (c)^(x[j]));
-        }
-        if (c)x.push_back(c);
-    }
+void basis(vector<int> &x, const vector<int> &y) {
+	for (int i = 0; i < y.size(); i++) {
+		int c = y[i];
+		for (int j = 0; j < x.size(); j++) { c = min(c, (c) ^ (x[j])); }
+		if (c) x.push_back(c);
+	}
 }
 
-void go1(int x, int p){
-    for(int i=0; i<adj[x].size(); i++){
-        if (adj[x][i]==p)continue;
-        go1(adj[x][i], x);
-        basis(dp1[x], dp1[adj[x][i]]);
-    }
+void go1(int x, int p) {
+	for (int i = 0; i < adj[x].size(); i++) {
+		if (adj[x][i] == p) continue;
+		go1(adj[x][i], x);
+		basis(dp1[x], dp1[adj[x][i]]);
+	}
 }
 
-void go2(int node, int parent, vector<int> transfer){
-    vector<vector<int>> neighbors;
-    for(int i=0; i<adj[node].size(); i++){
-        if (adj[node][i]==parent)neighbors.push_back(transfer);
-        else neighbors.push_back(dp1[adj[node][i]]);
-    }
-    vector<vector<int>> pref(neighbors.size()+1, vector<int>({})),
-    suf(neighbors.size()+1, vector<int>({}));
-    for(int i=0; i<pref.size()-1; i++){
-        pref[i+1]=neighbors[i];
-        basis(pref[i+1], pref[i]);
-    }
-    for(int i=suf.size()-2; i>=0; i--) {
-        suf[i]=neighbors[i];
-        basis(suf[i], suf[i+1]);
-    }
-    for(int i=0; i<neighbors.size(); i++){
-        if (adj[node][i]==parent)continue;
-        vector<int> cur=pref[i];
-        basis(cur, suf[i+1]);
-        basis(cur, vector<int>(1, a[node]));
-        dp2[adj[node][i]]=cur;
-        go2(adj[node][i], node, cur);
-    }
+void go2(int node, int parent, vector<int> transfer) {
+	vector<vector<int>> neighbors;
+	for (int i = 0; i < adj[node].size(); i++) {
+		if (adj[node][i] == parent) neighbors.push_back(transfer);
+		else neighbors.push_back(dp1[adj[node][i]]);
+	}
+	vector<vector<int>> pref(neighbors.size() + 1, vector<int>({})),
+	    suf(neighbors.size() + 1, vector<int>({}));
+	for (int i = 0; i < pref.size() - 1; i++) {
+		pref[i + 1] = neighbors[i];
+		basis(pref[i + 1], pref[i]);
+	}
+	for (int i = suf.size() - 2; i >= 0; i--) {
+		suf[i] = neighbors[i];
+		basis(suf[i], suf[i + 1]);
+	}
+	for (int i = 0; i < neighbors.size(); i++) {
+		if (adj[node][i] == parent) continue;
+		vector<int> cur = pref[i];
+		basis(cur, suf[i + 1]);
+		basis(cur, vector<int>(1, a[node]));
+		dp2[adj[node][i]] = cur;
+		go2(adj[node][i], node, cur);
+	}
 }
 
 int main() {
-    int T; cin>>T;
-    while (T--){
-        cin>>n;
-        dp1=vector<vector<int>>(n, vector<int>({}));
-        dp2=vector<vector<int>>(n, vector<int>({}));
-        a=vector<int>(n);
-        for(int i=0; i<n; i++){
-            cin>>a[i]; dp1[i].push_back(a[i]);
-        }
-        adj=vector<vector<int>>(n);
-        for(int i=0; i<n-1; i++){
-            int u,v; cin>>u>>v; u--; v--;
-            adj[u].push_back(v);
-            adj[v].push_back(u);
-        }
-        go1(0, 0);
-        go2(0, 0, {});
-        vector<vector<int>> lift(n, vector<int>(LOG, -1));
-        queue<int> q; q.push(0);
-        vector<int> dist(n, -1); dist[0]=0;
-        while (!q.empty()){
-            int cur=q.front(); q.pop();
-            for (int i=0; i<adj[cur].size(); i++){
-                if (dist[adj[cur][i]]+1)continue;
-                lift[adj[cur][i]][0]=cur;
-                dist[adj[cur][i]]=dist[cur]+1;
-                q.push(adj[cur][i]);
-            }
-        }
-        for (int i=1; i<LOG; i++){
-            for (int j=1; j<n; j++){
-                if (lift[j][i-1]==-1)continue;
-                lift[j][i]=lift[lift[j][i-1]][i-1];
-            }
-        }
-        int Q; cin>>Q;
-        while (Q--){
-            int r,v; cin>>r>>v; r--; v--;
-            vector<int> finalBasis;
-            int tempR=r, tempV=v;
-            if (dist[tempR]<dist[tempV])swap(tempR, tempV);
-            if (r==v){finalBasis=dp1[0]; goto complete;}
-            for(int i=LOG-1; i>=0; i--){
-                if(lift[tempR][i]==-1)continue;
-                if(dist[lift[tempR][i]]>=dist[tempV]){
-                    tempR=lift[tempR][i];
-                }
-            }
-            for(int i=LOG-1; i>=0; i--){
-                if(lift[tempR][i]!=lift[tempV][i]){
-                    tempR=lift[tempR][i]; tempV=lift[tempV][i];
-                }
-            }
-            if(tempR!=tempV){
-                tempR=lift[tempR][0];
-            }
-            if (tempR!=v){finalBasis=dp1[v]; goto complete;}
-            tempR=r;
-            for(int i=0; i<LOG; i++){
-                if ((1<<i)&(dist[r]-dist[v]-1))tempR=lift[tempR][i];
-            }
-            finalBasis=dp2[tempR];
-            complete:
-            int maxXOR=0;
-            for(int i=0; i<finalBasis.size(); i++)maxXOR=max(maxXOR, maxXOR^finalBasis[i]);
-            cout<<maxXOR<<'\n';
-        }
-
-    }
-    return 0;
+	int T;
+	cin >> T;
+	while (T--) {
+		cin >> n;
+		dp1 = vector<vector<int>>(n, vector<int>({}));
+		dp2 = vector<vector<int>>(n, vector<int>({}));
+		a = vector<int>(n);
+		for (int i = 0; i < n; i++) {
+			cin >> a[i];
+			dp1[i].push_back(a[i]);
+		}
+		adj = vector<vector<int>>(n);
+		for (int i = 0; i < n - 1; i++) {
+			int u, v;
+			cin >> u >> v;
+			u--;
+			v--;
+			adj[u].push_back(v);
+			adj[v].push_back(u);
+		}
+		go1(0, 0);
+		go2(0, 0, {});
+		vector<vector<int>> lift(n, vector<int>(LOG, -1));
+		queue<int> q;
+		q.push(0);
+		vector<int> dist(n, -1);
+		dist[0] = 0;
+		while (!q.empty()) {
+			int cur = q.front();
+			q.pop();
+			for (int i = 0; i < adj[cur].size(); i++) {
+				if (dist[adj[cur][i]] + 1) continue;
+				lift[adj[cur][i]][0] = cur;
+				dist[adj[cur][i]] = dist[cur] + 1;
+				q.push(adj[cur][i]);
+			}
+		}
+		for (int i = 1; i < LOG; i++) {
+			for (int j = 1; j < n; j++) {
+				if (lift[j][i - 1] == -1) continue;
+				lift[j][i] = lift[lift[j][i - 1]][i - 1];
+			}
+		}
+		int Q;
+		cin >> Q;
+		while (Q--) {
+			int r, v;
+			cin >> r >> v;
+			r--;
+			v--;
+			vector<int> finalBasis;
+			int tempR = r, tempV = v;
+			if (dist[tempR] < dist[tempV]) swap(tempR, tempV);
+			if (r == v) {
+				finalBasis = dp1[0];
+				goto complete;
+			}
+			for (int i = LOG - 1; i >= 0; i--) {
+				if (lift[tempR][i] == -1) continue;
+				if (dist[lift[tempR][i]] >= dist[tempV]) { tempR = lift[tempR][i]; }
+			}
+			for (int i = LOG - 1; i >= 0; i--) {
+				if (lift[tempR][i] != lift[tempV][i]) {
+					tempR = lift[tempR][i];
+					tempV = lift[tempV][i];
+				}
+			}
+			if (tempR != tempV) { tempR = lift[tempR][0]; }
+			if (tempR != v) {
+				finalBasis = dp1[v];
+				goto complete;
+			}
+			tempR = r;
+			for (int i = 0; i < LOG; i++) {
+				if ((1 << i) & (dist[r] - dist[v] - 1)) tempR = lift[tempR][i];
+			}
+			finalBasis = dp2[tempR];
+		complete:
+			int maxXOR = 0;
+			for (int i = 0; i < finalBasis.size(); i++)
+				maxXOR = max(maxXOR, maxXOR ^ finalBasis[i]);
+			cout << maxXOR << '\n';
+		}
+	}
+	return 0;
 }
 ```
 
