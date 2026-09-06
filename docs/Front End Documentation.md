@@ -37,9 +37,9 @@ missing. It starts marginally faster, but **editing an MDX file while it is
 running has no effect on the page you see**, so only use it when you aren't
 touching content. (`yarn dev:watch` remains as an alias for `yarn dev`.)
 
-The watcher only re-indexes files that change while it is running, and it
-reuses an existing `data/content.db` on startup. If you edited content while no
-dev server was running -- or you changed how content is parsed -- delete
+The watcher only re-indexes files that change while it is running, and it reuses
+an existing `data/content.db` on startup. If you edited content while no dev
+server was running -- or you changed how content is parsed -- delete
 `data/content.db` and restart, or run `yarn tsx scripts/index-content.ts`.
 
 `public/usaco-divisions.json` is generated the same way and is gitignored, since
