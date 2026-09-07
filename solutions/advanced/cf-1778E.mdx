@@ -49,25 +49,25 @@ vector<vector<int>> dp1, dp2;
 const int LOG = 21;
 
 void basis(vector<int> &x, const vector<int> &y) {
-	for (int val : y) {
-		for (int j = 0; j < x.size(); j++) { val = min(val, val ^ x[j]); }
-		if (val) x.push_back(val);
+	for (int newv : y) {
+		for (int val : x) { newv = min(newv, newv ^ val); }
+		if (newv) x.push_back(newv);
 	}
 }
 
 void go1(int x, int p) {
-	for (int i = 0; i < adj[x].size(); i++) {
-		if (adj[x][i] == p) continue;
-		go1(adj[x][i], x);
-		basis(dp1[x], dp1[adj[x][i]]);
+	for (int nbr : adj[x]) {
+		if (nbr == p) continue;
+		go1(nbr, x);
+		basis(dp1[x], dp1[nbr]);
 	}
 }
 
 void go2(int node, int parent, vector<int> transfer) {
 	vector<vector<int>> neighbors;
-	for (int i = 0; i < adj[node].size(); i++) {
-		if (adj[node][i] == parent) neighbors.push_back(transfer);
-		else neighbors.push_back(dp1[adj[node][i]]);
+	for (int nbr : adj[node]) {
+		if (nbr == parent) neighbors.push_back(transfer);
+		else neighbors.push_back(dp1[nbr]);
 	}
 	vector<vector<int>> pref(neighbors.size() + 1), suf(neighbors.size() + 1);
 	for (int i = 0; i < pref.size() - 1; i++) {
