@@ -1,9 +1,6 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
 import * as React from 'react';
-import {
-  moduleIDToSectionMap,
-  SECTIONS,
-} from '../../../../../content/ordering';
+import { moduleIDToRankMap } from '../../../../../content/ordering';
 import MarkdownLayout from '../../../../components/MarkdownLayout/MarkdownLayout';
 import Layout from '../../../../components/layout';
 import Markdown from '../../../../components/markdown/Markdown';
@@ -132,15 +129,11 @@ export const getStaticProps: GetStaticProps = async context => {
         notFound: true,
       };
     }
-    // Order the "Appears In" modules by section, from General to Advanced.
-    // Modules within the same section keep their existing relative order.
-    const sectionOrder = (moduleID: string) => {
-      const index = SECTIONS.indexOf(moduleIDToSectionMap[moduleID]);
-      return index === -1 ? SECTIONS.length : index;
-    };
-    modulesThatHaveProblem.sort(
-      (a, b) => sectionOrder(a.id) - sectionOrder(b.id)
-    );
+    // Order the "Appears In" modules by where they sit in the guide: General
+    // through Advanced, then by module order within a section.
+    const rank = (moduleID: string) =>
+      moduleIDToRankMap[moduleID] ?? Number.MAX_SAFE_INTEGER;
+    modulesThatHaveProblem.sort((a, b) => rank(a.id) - rank(b.id));
 
     const problemInfo = await queryProblem(solutionForSlug.frontmatter.id);
     if (!problemInfo) {
