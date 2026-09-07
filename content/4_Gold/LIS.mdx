@@ -1,6 +1,6 @@
 ---
 id: lis
-title: 'Longest Increasing Subsequence'
+title: '(Optional) Longest Increasing Subsequence'
 author: Michael Cao, Benjamin Qi, Andi Qu, Andrew Wang
 contributors: Dong Liu, Siyong Huang, Aryansh Shrivastava, Kevin Sheng, Katja Frantzen
 prerequisites:
@@ -219,16 +219,16 @@ def find_lis(arr: List[int]) -> int:
 </PySection>
 </LanguageSection>
 
-### Fast Solution (RMQ Data Structures)
+<Optional title="Fast Solution with RMQ Data Structures">
 
 **Time Complexity**: $\mathcal O(N \log N)$, but perhaps a constant factor
 slower than the previous solution.
 
 Note that the following solution assumes knowledge of a basic PURQ data
 structure for RMQ (range max query). Suitable implementations include a segment
-tree or a modified Fenwick tree, but both of these are generally considered
-Platinum level topics. However, this solution has the advantage of being more
-intuitive if you're deriving LIS on the spot.
+tree or a modified Fenwick tree, both of which are covered in the later Gold
+module [Point Update Range Sum](/gold/PURS). However, this solution has the
+advantage of being more intuitive if you're deriving LIS on the spot.
 
 Let $\texttt{dp}[k]$ be the length of the LIS of $a$ that ends with the element
 $k \in a$. Our base case is obviously $\texttt{dp}[a[0]] = 1$ (we have an LIS
@@ -256,6 +256,8 @@ technique: it suffices to collect the array elements and sort them to coordinate
 compress, creating $\texttt{dp}$ with those compressed IDs instead.
 
 The implementation follows:
+
+<Spoiler title="Implementation">
 
 <LanguageSection>
 <CPPSection>
@@ -448,6 +450,10 @@ def find_lis(a: List[int]) -> int:
 
 </PySection>
 </LanguageSection>
+
+</Spoiler>
+
+</Optional>
 
 ## Example - PCB
 
