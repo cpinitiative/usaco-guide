@@ -9,9 +9,9 @@ if (admin.apps.length === 0) {
   admin.initializeApp();
 }
 
-export default functions.https.onCall(async request => {
-  const { key } = request.data as submitToProblemArgs;
-  const callerUid = request.auth?.uid;
+export default functions.https.onCall(async (data, context) => {
+  const { key } = data as submitToProblemArgs;
+  const callerUid = context.auth?.uid;
 
   let keyData;
   try {
@@ -49,7 +49,7 @@ export default functions.https.onCall(async request => {
     };
   }
   if (keyData.allowedEmails != null) {
-    const callerEmail = request.auth?.token.email?.toLowerCase();
+    const callerEmail = context.auth?.token.email?.toLowerCase();
     const allowedEmails = keyData.allowedEmails.map(email =>
       email.trim().toLowerCase()
     );
