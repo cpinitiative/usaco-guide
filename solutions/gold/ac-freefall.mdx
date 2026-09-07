@@ -82,4 +82,48 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java 
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static long a, b;
+
+    public static void main(String[] args) throws Exception {
+        Kattio io = new Kattio();
+
+        a = io.nextLong();
+        b = io.nextLong();
+
+        long lo = 0, hi = (long) 1e18;
+        while (hi - lo > 3) {
+            long mid1 = lo + (hi - lo) / 3;
+            long mid2 = hi - (hi - lo) / 3;
+            if (getTime(mid1) > getTime(mid2)) {
+                lo = mid1;
+            } else {
+                hi = mid2;
+            }
+        }
+
+        double minTime = getTime(lo);
+        for (long i = lo + 1; i <= hi; i++) {
+            minTime = Math.min(minTime, getTime(i));
+        }
+
+        io.printf("%.8f%n", minTime);
+        io.close();
+    }
+
+	static double getTime(long mid) {
+        return (double) mid * b + (double) a / Math.sqrt(mid + 1);
+    }
+
+    // BeginCodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 </LanguageSection>
