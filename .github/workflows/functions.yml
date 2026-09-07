@@ -1,0 +1,41 @@
+# src/functions has its own npm lockfile and is not covered by any other
+# workflow. Without this, breakage there is invisible until someone tries to
+# deploy: firebase-functions sat at v3 while the source moved to v2 APIs, and
+# an ESLint bump silently disabled the lint script, for months.
+name: Cloud Functions
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'src/functions/**'
+      - 'src/models/**'
+      - '.github/workflows/functions.yml'
+  pull_request:
+    branches:
+      - master
+    paths:
+      - 'src/functions/**'
+      - 'src/models/**'
+      - '.github/workflows/functions.yml'
+jobs:
+  functions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: src/functions
+    steps:
+      - uses: actions/checkout@v7
+      # Must match the runtime in src/functions/package.json "engines".
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22.x
+          cache: npm
+          cache-dependency-path: src/functions/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      # tsc pulls in src/models and everything it imports, so this also catches
+      # a change to the app's shared code that breaks the functions build.
+      - run: npm run build
