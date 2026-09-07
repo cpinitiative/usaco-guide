@@ -26,7 +26,7 @@ import { fileURLToPath } from 'url';
  * (against origin/master, or BASE_REF when set).
  */
 
-const STANDARD = process.env.CXX_STANDARD ?? 'c++17';
+const STANDARD = process.env.CXX_STANDARD ?? 'c++20';
 const PYTHON = process.env.PYTHON ?? 'python3';
 
 /** Reports a syntax error as `file:line:col: message`, without a traceback. */
@@ -58,6 +58,9 @@ const CANDIDATES = process.env.CXX
  * where it matters, taking the compiling from around eleven minutes to three.
  */
 const PCH_WORTH_IT_ABOVE = 8;
+
+/** How a C++ snippet's entry point may be spelled. */
+const MAIN = /^\s*(?:int|signed|int32_t|auto)\s+main\s*\(/m;
 
 type Lang = 'cpp' | 'py';
 
@@ -192,8 +195,9 @@ export function extractSnippets(file: string, source: string): Snippet[] {
     i = end;
 
     if (lang === 'cpp') {
-      // A whole program, not a fragment illustrating one function.
-      if (!code.includes('#include') || !code.includes('int main(')) continue;
+      // A whole program, not a fragment illustrating one function. Solutions
+      // spell the entry point `int main`, `signed main` or `int32_t main`.
+      if (!code.includes('#include') || !MAIN.test(code)) continue;
       // Needs a header that ships with the problem, e.g. grader.h.
       if (/^\s*#include\s*"/m.test(code)) continue;
     } else {
