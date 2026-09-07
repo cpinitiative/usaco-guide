@@ -55,7 +55,9 @@ export default options => {
       let found = false;
       for (const key of Object.keys(replacements)) {
         const results = line.match(
-          new RegExp(`^(\\s*).*?(CodeSnip\\{${key}\\})`)
+          // The lookbehinds keep an already-expanded block's own
+          // BeginCodeSnip{...} marker from being expanded a second time.
+          new RegExp(`^(\\s*).*?((?<!Begin)(?<!End)CodeSnip\\{${key}\\})`)
         );
         if (results) {
           for (const snippetLine of replacements[key].split('\n')) {
