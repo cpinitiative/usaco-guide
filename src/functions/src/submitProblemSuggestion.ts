@@ -23,8 +23,8 @@ if (admin.apps.length === 0) {
   admin.initializeApp();
 }
 
-const submitProblemSuggestion = functions.https.onCall(async request => {
-  if (!request.auth?.uid) {
+const submitProblemSuggestion = functions.https.onCall(async (data, context) => {
+  if (!context.auth?.uid) {
     throw new functions.https.HttpsError(
       'permission-denied',
       'You must be logged in to suggest a problem!'
@@ -32,7 +32,7 @@ const submitProblemSuggestion = functions.https.onCall(async request => {
   }
   const submitterName = await admin
     .auth()
-    .getUser(request.auth.uid)
+    .getUser(context.auth.uid)
     .then(userRecord => userRecord.displayName);
 
   const {
@@ -47,7 +47,7 @@ const submitProblemSuggestion = functions.https.onCall(async request => {
     problemListName,
     source,
     filePath,
-  } = request.data as {
+  } = data as {
     name: string;
     moduleName: string;
     link: string;
@@ -100,7 +100,7 @@ const submitProblemSuggestion = functions.https.onCall(async request => {
   };
 
   const body =
-    `User \`${request.auth?.uid}\` suggested adding the problem [${name}](${link}) ` +
+    `User \`${context.auth?.uid}\` suggested adding the problem [${name}](${link}) ` +
     `to the \`${problemListName}\` table of the module [${moduleName}](${problemTableLink}).\n\n` +
     `**Automatically Generated JSON:**\n` +
     '```json\n' +
