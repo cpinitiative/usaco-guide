@@ -126,4 +126,32 @@ public class Main {
 ```
 
 </JavaSection>
+<PySection>
+
+```py
+import math
+
+a, b = map(int, input().split())
+
+def get_time(mid):
+    return mid * b + a / math.sqrt(mid + 1)
+
+lo, hi = 0, 10**18
+
+while hi - lo > 3:
+    mid1 = lo + (hi - lo) // 3
+    mid2 = hi - (hi - lo) // 3
+    if get_time(mid1) > get_time(mid2):
+        lo = mid1
+    else:
+        hi = mid2
+
+min_time = get_time(lo)
+for i in range(lo + 1, hi + 1):
+    min_time = min(min_time, get_time(i))
+
+print(f"{min_time:.8f}")
+```
+
+</PySection>
 </LanguageSection>
