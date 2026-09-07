@@ -323,7 +323,7 @@ SECTIONS.forEach(section => {
   });
 });
 
-export { moduleIDToSectionMap, moduleIDToURLMap };
+export { moduleIDToRankMap, moduleIDToSectionMap, moduleIDToURLMap };
 
 const moduleIDToURLMap: { [key: string]: string } = {};
 
@@ -331,6 +331,20 @@ SECTIONS.forEach(section => {
   MODULE_ORDERING[section].forEach(category => {
     category.items.forEach(moduleID => {
       moduleIDToURLMap[moduleID] = `/${section}/${moduleID}`;
+    });
+  });
+});
+
+// The position of each module in the guide: sections in order from General to
+// Advanced, and within a section, chapters and modules in the order they are
+// listed above.
+const moduleIDToRankMap: { [key: string]: number } = {};
+
+let moduleRank = 0;
+SECTIONS.forEach(section => {
+  MODULE_ORDERING[section].forEach(category => {
+    category.items.forEach(moduleID => {
+      moduleIDToRankMap[moduleID] = moduleRank++;
     });
   });
 });
