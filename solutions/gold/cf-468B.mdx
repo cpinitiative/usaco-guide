@@ -48,8 +48,8 @@ class DSU {
 	int get(int x) { return parents[x] == x ? x : (parents[x] = get(parents[x])); }
 
 	bool unite(int x, int y) {
-		int x_root = find(x);
-		int y_root = find(y);
+		int x_root = get(x);
+		int y_root = get(y);
 		if (x_root == y_root) { return false; }
 
 		if (sizes[x_root] < sizes[y_root]) { swap(x_root, y_root); }
