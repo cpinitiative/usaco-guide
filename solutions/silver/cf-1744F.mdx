@@ -21,7 +21,7 @@ We will iterate $\texttt{mex}$ from $1$ to $n-1$, finding all valid subsegments 
 
 Let $l$ and $r$ represent the highest left bound and the lowest right bound, respectively, of a subsegment that satisfies a given $\texttt{mex}$, and $\texttt{pos}$ represent the index of $\texttt{mex}$. If we know $l$, $r$, and $\texttt{pos}$, we can quickly count the subsegments for a given $\texttt{mex}$.
 
-We need to find all subsegments of length $\leq 2 \cdot \texttt{mex}$ that contains $l \ldots r$ and omit $\texttt{pos}$. First, let's solve for $\texttt{pos}>r$. Let's iterate $r$ to $\texttt{pos}-1$, finding all bounds of $l$ that satisfy the constraints for each $r$. This is not a time concern as long as we can find all possible values of $l$ in $\mathcal{O}(1)$, since each time we iterate we are increasing the size of the subsegment by $1$.
+We need to find all subsegments of length $\leq 2 \cdot \texttt{mex}$ that contains $l \dots r$ and omit $\texttt{pos}$. First, let's solve for $\texttt{pos}>r$. Let's iterate $r$ to $\texttt{pos}-1$, finding all bounds of $l$ that satisfy the constraints for each $r$. This is not a time concern as long as we can find all possible values of $l$ in $\mathcal{O}(1)$, since each time we iterate we are increasing the size of the subsegment by $1$.
 
 Considering this new bound of $r$, we can find the number of possible values of $l$ that form a valid subsegment by finding the number of positions $\leq l$ such that $r-l+1 \leq \texttt{mex} \cdot 2$. The lower
 bound of our smallest value of $l$ is $r-\texttt{mex} \cdot 2 + 1$, which we can find by rearranging the previous inequality.

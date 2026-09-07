@@ -74,37 +74,47 @@ async function watchContent() {
   let debounceTimer: ReturnType<typeof setTimeout> | null = null;
   const pending = new Map<string, 'change' | 'add' | 'unlink'>();
 
+  const runRebuild = async (
+    changes: Map<string, 'change' | 'add' | 'unlink'>
+  ) => {
+    const labels = [...changes.keys()].map(f =>
+      path.relative(process.cwd(), f)
+    );
+    console.log(`\n[watch] Content changed: ${labels.join(', ')}`);
+
+    try {
+      const { updateFiles, main } = await import('./index-content');
+      try {
+        await updateFiles(changes);
+        console.log('[watch] Content updated.');
+      } catch (incrementalErr) {
+        console.error('[watch] Incremental update failed:', incrementalErr);
+        console.log('[watch] Falling back to full rebuild...');
+        await main();
+        console.log('[watch] Full rebuild complete.');
+      }
+      broadcastReload();
+    } catch (err) {
+      console.error('[watch] Rebuild failed:', err);
+    }
+  };
+
+  // Rebuilds run one at a time. `main()` drops and recreates every table, so
+  // two overlapping runs insert the same rows into one freshly created table
+  // and the second fails with `UNIQUE constraint failed: mdx_content.id`.
+  let rebuildQueue: Promise<void> = Promise.resolve();
+
   const scheduleRebuild = (
     event: 'change' | 'add' | 'unlink',
     filePath: string
   ) => {
     pending.set(filePath, event);
     if (debounceTimer) clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(async () => {
+    debounceTimer = setTimeout(() => {
       debounceTimer = null;
       const changes = new Map(pending);
       pending.clear();
-
-      const labels = [...changes.keys()].map(f =>
-        path.relative(process.cwd(), f)
-      );
-      console.log(`\n[watch] Content changed: ${labels.join(', ')}`);
-
-      try {
-        const { updateFiles, main } = await import('./index-content');
-        try {
-          await updateFiles(changes);
-          console.log('[watch] Content updated.');
-        } catch (incrementalErr) {
-          console.error('[watch] Incremental update failed:', incrementalErr);
-          console.log('[watch] Falling back to full rebuild...');
-          await main();
-          console.log('[watch] Full rebuild complete.');
-        }
-        broadcastReload();
-      } catch (err) {
-        console.error('[watch] Rebuild failed:', err);
-      }
+      rebuildQueue = rebuildQueue.then(() => runRebuild(changes));
     }, 500);
   };
 
