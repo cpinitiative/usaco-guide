@@ -1,4 +1,4 @@
-name: C++ Snippets
+name: Code Snippets
 
 on:
   pull_request:
@@ -7,10 +7,10 @@ on:
     paths:
       - 'content/**/*.mdx'
       - 'solutions/**/*.mdx'
-      - 'scripts/check-cpp-snippets.ts'
+      - 'scripts/check-code-snippets.ts'
 
 jobs:
-  cpp-snippets:
+  code-snippets:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -29,7 +29,7 @@ jobs:
 
       # Only the snippets in files this PR touches, so existing breakage
       # elsewhere doesn't block unrelated work.
-      - name: Compile C++ snippets in changed files
+      - name: Check code snippets in changed files
         env:
           BASE_REF: origin/${{ github.base_ref }}
-        run: yarn check-cpp-snippets
+        run: yarn check-code-snippets
