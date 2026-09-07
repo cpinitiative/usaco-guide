@@ -59,6 +59,9 @@ const CANDIDATES = process.env.CXX
  */
 const PCH_WORTH_IT_ABOVE = 8;
 
+/** Snippets that only build on x86, for the intrinsics or the target pragma. */
+const X86_ONLY = /immintrin\.h|target\s*\(\s*"[^"]*(avx|sse|bmi|popcnt)/i;
+
 /** How a C++ snippet's entry point may be spelled. */
 const MAIN = /^\s*(?:int|signed|int32_t|auto)\s+main\s*\(/m;
 
@@ -116,6 +119,19 @@ async function main() {
           `${cxx} has no <bits/stdc++.h>, so ${skipped} snippet${skipped === 1 ? '' : 's'} ` +
             `using it ${skipped === 1 ? 'was' : 'were'} skipped. Install GCC to check ` +
             `${skipped === 1 ? 'it' : 'them'} locally.`
+        );
+      }
+    }
+
+    // Nothing to learn from compiling x86 intrinsics on Apple Silicon; CI runs
+    // on x86 and judges them there.
+    if (process.arch !== 'x64' && process.arch !== 'ia32') {
+      const before = snippets.length;
+      snippets = snippets.filter(s => !X86_ONLY.test(s.code));
+      const skipped = before - snippets.length;
+      if (skipped > 0) {
+        console.warn(
+          `Skipped ${skipped} x86-only snippet${skipped === 1 ? '' : 's'} on ${process.arch}.`
         );
       }
     }
