@@ -166,7 +166,7 @@ const MODULE_ORDERING: { [key in SectionID]: Chapter[] } = {
     },
     {
       name: 'Trees',
-      items: ['tree-euler', 'dp-trees', 'all-roots'],
+      items: ['dp-trees', 'all-roots', 'tree-euler', 'lca-euler'],
     },
     {
       name: 'Additional Topics',
