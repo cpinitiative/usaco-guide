@@ -1,5 +1,11 @@
-import { execFileSync } from 'child_process';
-import { mkdtempSync, rmSync, writeFileSync } from 'fs';
+import { execFileSync, spawnSync } from 'child_process';
+import {
+  copyFileSync,
+  mkdirSync,
+  mkdtempSync,
+  rmSync,
+  writeFileSync,
+} from 'fs';
 import { readFile } from 'fs/promises';
 import { tmpdir } from 'os';
 import path, { join, relative } from 'path';
@@ -44,6 +50,14 @@ except SyntaxError as err:
 const CANDIDATES = process.env.CXX
   ? [process.env.CXX]
   : ['g++', 'g++-15', 'g++-14', 'g++-13', 'g++-12'];
+
+/**
+ * Precompiling <bits/stdc++.h> takes a compile from ~0.7s to ~0.15s, but costs
+ * ~1.8s to build, so it only pays off past a handful of snippets. A pull
+ * request usually touches one or two files; a sweep over the whole guide is
+ * where it matters, taking the compiling from around eleven minutes to three.
+ */
+const PCH_WORTH_IT_ABOVE = 8;
 
 type Lang = 'cpp' | 'py';
 
@@ -111,12 +125,14 @@ async function main() {
         `in ${mdx.length} file${mdx.length === 1 ? '' : 's'}...`
     );
 
+    const include = precompileStdcxx(cxx, dir, snippets);
+
     for (const [i, snippet] of snippets.entries()) {
       const source = join(dir, `snippet${i}.${snippet.lang}`);
       writeFileSync(source, snippet.code);
       const [command, args] =
         snippet.lang === 'cpp'
-          ? [cxx, [`-std=${STANDARD}`, '-fsyntax-only', source]]
+          ? [cxx, [`-std=${STANDARD}`, ...include, '-fsyntax-only', source]]
           : [PYTHON, ['-c', PARSE_PYTHON, source]];
       try {
         execFileSync(command, args, { stdio: 'pipe' });
@@ -210,6 +226,62 @@ function pickCompiler(dir: string): string {
     throw new Error(`No C++ compiler found (tried ${CANDIDATES.join(', ')}).`);
   }
   return installed.find(cxx => hasBitsStdcxx(cxx, dir)) ?? installed[0];
+}
+
+/**
+ * Builds a precompiled <bits/stdc++.h> when enough snippets need it, and
+ * returns the flags to compile against it. Best effort: on any failure the
+ * snippets are compiled the slow way instead, and a stale or mismatched .gch
+ * is ignored by GCC rather than trusted, so this cannot change a verdict.
+ */
+function precompileStdcxx(
+  cxx: string,
+  dir: string,
+  snippets: Snippet[]
+): string[] {
+  const needed = snippets.filter(s => s.code.includes('bits/stdc++.h')).length;
+  if (needed <= PCH_WORTH_IT_ABOVE) return [];
+
+  try {
+    const header = locateStdcxxHeader(cxx);
+    if (header === null) return [];
+
+    const pchDir = join(dir, 'pch');
+    const copy = join(pchDir, 'bits', 'stdc++.h');
+    mkdirSync(join(pchDir, 'bits'), { recursive: true });
+    copyFileSync(header, copy);
+
+    // Same compiler and same -std as the snippets, or GCC ignores the result.
+    execFileSync(
+      cxx,
+      [`-std=${STANDARD}`, '-x', 'c++-header', copy, '-o', `${copy}.gch`],
+      {
+        stdio: 'pipe',
+      }
+    );
+    console.log(`Precompiled <bits/stdc++.h> for ${needed} snippets.`);
+    return ['-I', pchDir];
+  } catch {
+    // An optimization; compiling the slow way is always correct.
+    return [];
+  }
+}
+
+/** The path to the compiler's own <bits/stdc++.h>, or null if it has none. */
+function locateStdcxxHeader(cxx: string): string | null {
+  // -H traces every header it opens to stderr, the outermost one first.
+  const trace = spawnSync(
+    cxx,
+    [`-std=${STANDARD}`, '-E', '-H', '-x', 'c++', '-'],
+    {
+      input: '#include <bits/stdc++.h>\n',
+      encoding: 'utf8',
+    }
+  );
+  const line = (trace.stderr ?? '')
+    .split('\n')
+    .find(l => /^\.+ .*[/\\]bits[/\\]stdc\+\+\.h$/.test(l));
+  return line === undefined ? null : line.replace(/^\.+ /, '');
 }
 
 /** Whether this compiler ships the GCC catch-all header the snippets use. */
