@@ -102,8 +102,8 @@ We can reduce the number of states stored in the segment tree to just two:
 Note that it will always be optimal to take the lesser side of the last side given that we can take both. This, in turn, prepares the current interval with the next merging step, if applicable.
 
 Let's denote the array of cards as $A$, where $A.FF$ is the front side and $A.SS$ is the back side. Without loss of generality, assume that $A[i].FF \leq A[i].SS$ for all $i \in [1, n]$. We consider merging interval $u$ and $v$ to create interval $w$, where $w$ corresponds to the array elements $[l, r]$. Note that this implies $u$ corresponds to $[l, m]$ and $v$ corresponds to $[m + 1, r]$, where $m = \lfloor \frac {l + r} 2 \rfloor$
-- $$w.FF = \begin{cases} v.FF & u.FF \leq A[m + 1].FF \\ v.SS & A[tm + 1].FF < u.FF \leq A[tm + 1].SS \\ \infty & \text{otherwise}\end{cases}$$
-- $$w.SS = \begin{cases} v.FF & u.SS \leq A[m + 1].FF \\ v.SS & A[tm + 1].FF < u.SS \leq A[tm + 1].SS \\ \infty & \text{otherwise}\end{cases}$$
+- $w.FF = \begin{cases} v.FF & u.FF \leq A[m + 1].FF \\ v.SS & A[tm + 1].FF < u.FF \leq A[tm + 1].SS \\ \infty & \text{otherwise}\end{cases}$
+- $w.SS = \begin{cases} v.FF & u.SS \leq A[m + 1].FF \\ v.SS & A[tm + 1].FF < u.SS \leq A[tm + 1].SS \\ \infty & \text{otherwise}\end{cases}$
 
 Note that we choose $\infty$ to be the default value, because under our merge conditions, infinity conveniently overrides all other operators. This means that if any point of the array is discontinuous (or unable to be made into a non-decreasing sequence), node $1$ in the segment tree, which corresponds to the entire array, will also have $w.FF = w.SS = \infty$.
 

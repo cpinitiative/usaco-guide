@@ -9,9 +9,9 @@ if (admin.apps.length === 0) {
   admin.initializeApp();
 }
 
-export default functions.https.onCall(async request => {
-  const { key } = request.data as submitToProblemArgs;
-  const callerUid = request.auth?.uid;
+export default functions.https.onCall(async (data, context) => {
+  const { key } = data as submitToProblemArgs;
+  const callerUid = context.auth?.uid;
 
   let keyData;
   try {
@@ -47,6 +47,20 @@ export default functions.https.onCall(async request => {
       message: "You're already in this group, so you can't join it again.",
       groupId: keyData.groupId,
     };
+  }
+  if (keyData.allowedEmails != null) {
+    const callerEmail = context.auth?.token.email?.toLowerCase();
+    const allowedEmails = keyData.allowedEmails.map(email =>
+      email.trim().toLowerCase()
+    );
+
+    if (!callerEmail || !allowedEmails.includes(callerEmail)) {
+      return {
+        success: false,
+        errorCode: 'EMAIL_NOT_ALLOWED',
+        message: 'Your email address is not allowed to use this join link.',
+      };
+    }
   }
   await Promise.all([
     admin

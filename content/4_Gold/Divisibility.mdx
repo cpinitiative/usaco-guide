@@ -489,7 +489,7 @@ $$
 
 <Warning>
 
-Coding $\text{lcm}$ as `a * b / gcd(a, b)` might cause integer overflow if the
+Coding $\operatorname{lcm}$ as `a * b / gcd(a, b)` might cause integer overflow if the
 value of `a * b` is greater than the max size of the data type of `a * b` (e.g.
 the max size of `int` in C++ and Java is around 2 billion).
 Dividng `a` by `gcd(a, b)` first, then multiplying it by `b` will prevent
@@ -530,7 +530,7 @@ $$
 ### Properties
 
 Euler's totient function - written using phi $\phi(n)$ -  counts the number of positive integers in the interval $[1,n]$ which are coprime to $n$. Two numbers $a$ and $b$
-are coprime if their greatest common divisor is equal to 1 i.e. $gcd(a,b)=1$.
+are coprime if their greatest common divisor is equal to 1 i.e. $\gcd(a,b)=1$.
 
 Here are the values of $\phi(n)$ for the first 20 numbers:
 
@@ -542,19 +542,19 @@ Here are the values of $\phi(n)$ for the first 20 numbers:
 
 </center>
 
-The totient function is **multiplicative** meaning that $\phi(nm)=\phi(n) \cdot \phi(m)$, where $n$ and $m$ are coprime - $gcd(n, m)=1$. For example $\phi(15)=\phi(3 \cdot 5)=\phi(3) \cdot \phi(5) = 2 \cdot 4 = 8$.
+The totient function is **multiplicative** meaning that $\phi(nm)=\phi(n) \cdot \phi(m)$, where $n$ and $m$ are coprime - $\gcd(n, m)=1$. For example $\phi(15)=\phi(3 \cdot 5)=\phi(3) \cdot \phi(5) = 2 \cdot 4 = 8$.
 
 Let's take a look at some edge cases for $\phi(n)$:
-- If n is a prime number then $\phi(n)=n-1$ because $gcd(n, x)=1$ for all $1 \leq x < n$
+- If n is a prime number then $\phi(n)=n-1$ because $\gcd(n, x)=1$ for all $1 \leq x < n$
 - If n is a power of a prime number, $n=p^q$ where p is a prime number and $1 \leq q$ then\
   there are exactly $p^{q-1}$ numbers divisible by $p$, so
   $\phi(p^q)=p^{q} - p^{q-1} = p^{q-1}(p - 1)$
 
 Using the multiplicative property and the last edge case we can compute the value of $\phi(n)$ from the factorization of number $n$.
-Let the factorization be $n=p_1^{q_1} \cdot p_2^{q_2} \cdot \ldots \cdot p_k^{q_k}$ where $p_i$ is a prime factor of $n$, then:
+Let the factorization be $n=p_1^{q_1} \cdot p_2^{q_2} \cdot \dots \cdot p_k^{q_k}$ where $p_i$ is a prime factor of $n$, then:
 
 $$
-\phi(n)=\phi(p_1^{q_1}) \cdot \phi(p_2^{q_2}) \cdot \ldots \cdot \phi(p_k^{q_k}) = p_1^{q_1-1}(p_1 - 1) \cdot p_2^{q_2-1}(p_2 - 1) \cdot \ldots \cdot p_k^{q_k-1}(q_k - 1)
+\phi(n)=\phi(p_1^{q_1}) \cdot \phi(p_2^{q_2}) \cdot \dots \cdot \phi(p_k^{q_k}) = p_1^{q_1-1}(p_1 - 1) \cdot p_2^{q_2-1}(p_2 - 1) \cdot \dots \cdot p_k^{q_k-1}(q_k - 1)
 $$
 
 Below is an implementation for factorization in $\mathcal{O}(\sqrt{n})$. It can be a little bit tricky to understand why we subtract $ans/p$ from $ans$. For example

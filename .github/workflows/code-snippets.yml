@@ -1,0 +1,92 @@
+name: Code Snippets
+
+on:
+  # Sweeps every snippet in the guide, not just the ones a pull request touches.
+  # Reach for this after changing the checker, or to find breakage that landed
+  # while nothing in its file was being edited.
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - 'content/**/*.mdx'
+      - 'solutions/**/*.mdx'
+      - 'scripts/check-code-snippets.ts'
+      - '.github/workflows/code-snippets.yml'
+
+# A new push supersedes whatever the previous one was still checking. Cancelling
+# is scoped to pull requests: a run on master is validating what actually ships,
+# so let it finish.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  code-snippets:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      CPLUS_INCLUDE_PATH: ${{ github.workspace }}/.ac-library
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # need the base branch to diff against
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v7
+        with:
+          node-version: 20.x
+      # package.json pins yarn@4.9.2, which only Corepack can provide -- and
+      # which it otherwise re-downloads on every run, node_modules cache or not.
+      # Cache it where Corepack already puts it: pointing COREPACK_HOME into the
+      # workspace instead makes Node read yarn.js under our "type": "module"
+      # package.json and fail to load that CommonJS bundle.
+      - name: Cache Corepack
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/node/corepack
+          key: corepack-${{ hashFiles('package.json') }}
+      - name: Enable Corepack
+        run: corepack enable
+
+      # Several Gold and Advanced snippets teach the AtCoder Library. It is
+      # header-only, so a shallow clone on the include path is enough -- 180K
+      # and under a second. Without it those snippets are only ever compiled by
+      # people who happen to have ACL checked out, which is how eight of them
+      # sat broken here unnoticed.
+      - name: Fetch the AtCoder Library
+        run: git clone --depth 1 -q https://github.com/atcoder/ac-library.git .ac-library
+
+      # The checker itself imports nothing outside Node's standard library; the
+      # install is only here to provide tsx, so a cache hit skips almost all of it.
+      - name: Cache node modules
+        uses: actions/cache@v6
+        id: node-modules
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('**/yarn.lock') }}
+
+      # The key is the lockfile hash, so a hit means the tree already matches it
+      # and `yarn` would only spend half a minute confirming that. `yarn run`
+      # needs no install of its own -- Corepack provides the yarn binary.
+      - name: Install dependencies
+        if: steps.node-modules.outputs.cache-hit != 'true'
+        run: yarn
+
+      # A pull request checks only the files it touches, so breakage elsewhere
+      # does not block unrelated work. Two cases sweep the whole guide instead:
+      # a manual run, and a pull request that changes the checker itself --
+      # no .mdx diff exercises that, so it would otherwise check nothing at all.
+      - name: Check code snippets
+        env:
+          BASE_REF: origin/${{ github.base_ref }}
+        run: |
+          if [ '${{ github.event_name }}' = 'workflow_dispatch' ]; then
+            echo 'Manual run; sweeping every snippet.'
+            yarn check-code-snippets --all
+          elif git diff --name-only "$BASE_REF...HEAD" | grep -qxE \
+              'scripts/check-code-snippets\.ts|\.github/workflows/code-snippets\.yml'; then
+            echo 'The checker changed; sweeping every snippet.'
+            yarn check-code-snippets --all
+          else
+            yarn check-code-snippets
+          fi

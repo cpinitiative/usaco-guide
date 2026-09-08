@@ -4,14 +4,16 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "yarn tsx scripts/load-content.ts && next dev --webpack",
-    "dev:watch": "WATCH_RELOAD=1 yarn tsx scripts/watch-content.ts",
+    "dev": "yarn tsx scripts/watch-content.ts",
+    "dev:watch": "yarn dev",
+    "dev:no-watch": "yarn tsx scripts/load-content.ts && next dev --webpack",
     "prebuild": "yarn clean && yarn tsx scripts/index-content.ts",
     "build": "next build --webpack && yarn tsx scripts/algolia-index.ts",
     "start": "next start",
     "lint": "next lint",
-    "clean": "rimraf dist .next data public/usaco-divisions.json",
+    "clean": "rimraf dist .next data public/usaco-divisions.json public/problem-tags.json",
     "check-ts-errors": "tsc --noEmit",
+    "check-code-snippets": "yarn tsx scripts/check-code-snippets.ts",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "chromatic": "chromatic --project-token 6f3c58ad349c --exit-zero-on-changes",
@@ -127,6 +129,7 @@
   "resolutions": {
     "postcss": "^8.5.24",
     "cacache/glob": "^10.5.0",
+    "remark-mdx-frontmatter/toml": "^4.1.2",
     "remark-mdx-frontmatter/yaml": "^2.8.3"
   },
   "packageManager": "yarn@4.9.2"

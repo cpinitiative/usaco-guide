@@ -462,3 +462,48 @@ function deserializeMdxContentLight(row: any): MdxContent {
     },
   };
 }
+
+/**
+ * Maps each problem's uniqueId to the union of the tags it carries across every
+ * module it appears in.
+ *
+ * A problem listed in several modules is tagged per module, with each copy
+ * naming the technique that module teaches. The `problems` table is keyed by
+ * `unique_id` and written with INSERT OR REPLACE, so those copies collapse to a
+ * single row and all but the last-indexed module's tags are lost.
+ * `module_problem_lists` retains every occurrence, so the union is built there.
+ */
+export async function queryProblemTagUnions(): Promise<Map<string, string[]>> {
+  const db = await getDatabase();
+  const unions = new Map<string, Set<string>>();
+
+  const add = (uniqueId: string, tags: unknown) => {
+    if (!uniqueId || !Array.isArray(tags)) return;
+    let set = unions.get(uniqueId);
+    if (!set) {
+      set = new Set<string>();
+      unions.set(uniqueId, set);
+    }
+    for (const tag of tags) {
+      if (typeof tag === 'string' && tag) set.add(tag);
+    }
+  };
+
+  const lists = db
+    .prepare('SELECT problems_json FROM module_problem_lists')
+    .all() as Array<{ problems_json: string }>;
+  for (const row of lists) {
+    const problems = JSON.parse(row.problems_json || '[]') as ProblemInfo[];
+    for (const problem of problems) add(problem.uniqueId, problem.tags);
+  }
+
+  // Problems outside any module list (extraProblems) only exist in `problems`.
+  const rows = db
+    .prepare('SELECT unique_id, tags_json FROM problems')
+    .all() as Array<{ unique_id: string; tags_json: string }>;
+  for (const row of rows) {
+    add(row.unique_id, JSON.parse(row.tags_json || '[]'));
+  }
+
+  return new Map([...unions].map(([id, tags]) => [id, [...tags]]));
+}
