@@ -18,5 +18,12 @@
     "outDir": "./dist" // Output directory for compiled files
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.d.ts"],
-  "exclude": ["node_modules"]
+  // src/functions has its own tsconfig and its own npm tree, pinned to
+  // firebase-functions v5 (whose root export is the v1 API). The root tree is
+  // on v6, whose root export is v2 -- so typechecking those files here graded
+  // them against a different major with an incompatible callable signature.
+  // That is how the v2-shaped handlers in #6592 passed this build for months
+  // while being wrong for the runtime they deploy to. The Cloud Functions
+  // workflow typechecks them against their own tsconfig instead.
+  "exclude": ["node_modules", "src/functions"]
 }

@@ -142,7 +142,7 @@ independence check takes $\mathcal O(n^2)$ time.
 <CPPSection>
 
 ```cpp
-#include "bits/stdc++.h"
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -187,11 +187,11 @@ void solve() {
 	iota(comp.begin() + 1, comp.end(), 1);
 	vector<int> back(n + 1), vis(n + 1);
 	auto augment = [&](int s) {
-		auto DFS = [&](this auto DFS, int i) -> int {
+		auto DFS = [&](auto &&self, int i) -> int {
 			for (int v : adj[i]) {
 				if (vis[comp[v]]) { continue; }
 				vis[comp[v]] = 1;
-				if (!back[comp[v]] || DFS(back[comp[v]])) {
+				if (!back[comp[v]] || self(self, back[comp[v]])) {
 					back[comp[v]] = i;
 					return 1;
 				}
@@ -199,7 +199,7 @@ void solve() {
 			return 0;
 		};
 		fill(vis.begin() + 1, vis.end(), 0);
-		return DFS(s);
+		return DFS(DFS, s);
 	};
 
 	// check initial matching
