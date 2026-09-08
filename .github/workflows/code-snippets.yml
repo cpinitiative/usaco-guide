@@ -32,12 +32,21 @@ jobs:
         run: yarn
 
       # Only the snippets in files this PR touches, so existing breakage
-      # elsewhere doesn't block unrelated work.
+      # elsewhere doesn't block unrelated work -- except when the checker itself
+      # is what changed, since no .mdx diff exercises that. Sweeping everything
+      # is the only way such a pull request checks anything at all.
       - name: Check code snippets in changed files
         if: github.event_name == 'pull_request'
         env:
           BASE_REF: origin/${{ github.base_ref }}
-        run: yarn check-code-snippets
+        run: |
+          if git diff --name-only "origin/${{ github.base_ref }}...HEAD" |
+              grep -qx 'scripts/check-code-snippets.ts'; then
+            echo 'The checker changed; sweeping every snippet.'
+            yarn check-code-snippets --all
+          else
+            yarn check-code-snippets
+          fi
 
       - name: Check every code snippet
         if: github.event_name == 'workflow_dispatch'
