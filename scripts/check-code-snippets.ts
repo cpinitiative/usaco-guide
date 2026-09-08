@@ -17,7 +17,7 @@ import { promisify } from 'util';
  * -fsyntax-only, Python is parsed.
  *
  * Only C++ snippets that look like a whole program are compiled — the block
- * has to contain both an #include and an int main(. Fragments illustrating one
+ * has to contain both an #include and a main (see MAIN). Fragments illustrating one
  * function, and snippets including a header that ships with the problem such
  * as grader.h, are skipped; neither is meant to compile alone. Python is
  * parsed rather than run, so fragments are fine as long as they stand on their
@@ -33,6 +33,29 @@ import { promisify } from 'util';
 const execFileAsync = promisify(execFile);
 
 const STANDARD = process.env.CXX_STANDARD ?? 'c++20';
+
+/**
+ * Diagnostics promoted to errors. Deliberately a short list: g++ has plenty
+ * more to say about this corpus, but almost all of it is noise here. Of the 76
+ * warnings the wider set produced, 46 were not defects -- every -Wparentheses
+ * hit was code that already means what it looks like (`1 << j - 1` really is
+ * `1 << (j-1)`), every -Wreorder hit initialised from a constructor parameter
+ * rather than another member, and -Wshift-count-overflow fired on the module
+ * that exists to demonstrate that `1 << 32` overflows.
+ *
+ * These two are not like that:
+ *
+ *   -Wvla          Adding_Solution.mdx bans variable-length arrays outright,
+ *                  and reviewers were still catching them by hand.
+ *   -Wreturn-type  Falling off the end of a non-void function is undefined
+ *                  behaviour, whatever the caller does with the result.
+ *
+ * Both were clean at zero remaining occurrences when this was introduced, so a
+ * new hit is a new defect. The checker only compiles snippets that contain both
+ * an #include and a main, which is why the deliberate VLA in Intro_DS.mdx -- a
+ * bare fragment, shown precisely to say not to write one -- needs no opt-out.
+ */
+const ERRORS = ['-Werror=vla', '-Werror=return-type'];
 /** Each check is its own process, so the pool can be as wide as the machine. */
 const JOBS = Number(process.env.JOBS) || availableParallelism();
 const PYTHON = process.env.PYTHON ?? 'python3';
@@ -70,8 +93,17 @@ const PCH_WORTH_IT_ABOVE = 8;
 /** Snippets that only build on x86, for the intrinsics or the target pragma. */
 const X86_ONLY = /immintrin\.h|target\s*\(\s*"[^"]*(avx|sse|bmi|popcnt)/i;
 
-/** How a C++ snippet's entry point may be spelled. */
-const MAIN = /^\s*(?:int|signed|int32_t|auto)\s+main\s*\(/m;
+/**
+ * How a C++ snippet's entry point may be spelled. The return type is optional
+ * and may run to several words, so this takes any run of type keywords: plain
+ * `int main()`, the `signed main()` that `#define int long long` forces,
+ * `long long main()`, a fixed-width `int32_t main()`, and a bare `main()`.
+ *
+ * A bare `main()` is not valid C++ -- implicit int is long gone -- which is a
+ * reason to compile the snippet and say so, not to quietly skip it.
+ */
+const MAIN =
+  /^\s*(?:(?:signed|unsigned|int|long|short|void|auto|int32_t|int64_t)\s+)+main\s*\(|^\s*main\s*\([^;)]*\)\s*\{/m;
 
 type Lang = 'cpp' | 'py';
 
@@ -175,7 +207,16 @@ async function main() {
           const { snippet, source } = jobs[at];
           const [command, args] =
             snippet.lang === 'cpp'
-              ? [cxx, [`-std=${STANDARD}`, ...include, '-fsyntax-only', source]]
+              ? [
+                  cxx,
+                  [
+                    `-std=${STANDARD}`,
+                    ...include,
+                    ...ERRORS,
+                    '-fsyntax-only',
+                    source,
+                  ],
+                ]
               : [PYTHON, ['-c', PARSE_PYTHON, source]];
           try {
             await execFileAsync(command, args, { maxBuffer: 32 << 20 });
@@ -250,8 +291,8 @@ export function extractSnippets(file: string, source: string): Snippet[] {
     i = end;
 
     if (lang === 'cpp') {
-      // A whole program, not a fragment illustrating one function. Solutions
-      // spell the entry point `int main`, `signed main` or `int32_t main`.
+      // A whole program, not a fragment illustrating one function. See MAIN
+      // for the entry-point spellings that count.
       if (!code.includes('#include') || !MAIN.test(code)) continue;
       // Needs a header that ships with the problem, e.g. grader.h. Quoting
       // the GCC catch-all is just a style, not a missing header -- seven whole
