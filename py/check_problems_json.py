@@ -20,6 +20,12 @@ reasonably verify by reading a diff:
    a mistyped id. Repointing the url at the id would send the reader to a
    different problem, so check the name against the judge before "fixing" either.
 
+   Those four are listed in ``problems_mismatched_id.txt`` rather than corrected,
+   because ``uniqueId`` is what Firebase keys user progress and
+   ``userProblemSolutions`` on: renaming one orphans progress people genuinely
+   earned. That list only shrinks -- a new mismatch fails, and an entry on it
+   that no longer mismatches must be removed.
+
 3. Copies of one problem in several modules agree on the fields that cannot
    legitimately differ. Only three qualify. ``difficulty`` is documented as
    "relative to the module it is in" and ``isStarred`` as "starred in the module
@@ -44,6 +50,9 @@ from collections import defaultdict
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+# Ids that disagree with their url and cannot be corrected until the Firebase
+# progress and userProblemSolutions keyed on them move too. Only shrinks.
+MISMATCHED_ID_LIST = Path(__file__).resolve().parent / "problems_mismatched_id.txt"
 DIV_TO_PROBS = (
 	ROOT / "src/components/markdown/ProblemsList/DivisionList/div_to_probs.json"
 )
@@ -181,9 +190,15 @@ def main() -> int:
 	parser.parse_args()
 
 	official = load_official_names()
+	id_backlog = {
+		line.strip()
+		for line in MISMATCHED_ID_LIST.read_text().splitlines()
+		if line.strip() and not line.startswith("#")
+	}
 	texts: dict[Path, str] = {}
 	copies: dict[str, list[tuple[Path, dict]]] = defaultdict(list)
 	findings: list[tuple[Path, str, str]] = []  # path, uniqueId, message
+	mismatched_ids: set[str] = set()
 
 	for path in problem_files():
 		texts[path] = path.read_text()
@@ -191,10 +206,27 @@ def main() -> int:
 			if not isinstance(entries, list):
 				continue
 			for problem in entries:
-				copies[problem["uniqueId"]].append((path, problem))
-				for message in (check_name(problem, official), check_url(problem)):
-					if message:
-						findings.append((path, problem["uniqueId"], message))
+				unique_id = problem["uniqueId"]
+				copies[unique_id].append((path, problem))
+
+				name_error = check_name(problem, official)
+				if name_error:
+					findings.append((path, unique_id, name_error))
+
+				url_error = check_url(problem)
+				if url_error:
+					mismatched_ids.add(unique_id)
+					# The backlog holds ids that are known-wrong but cannot be
+					# renamed until the Firebase progress keyed on them moves.
+					if unique_id not in id_backlog:
+						findings.append((path, unique_id, url_error))
+
+	stale_backlog = sorted(id_backlog - mismatched_ids)
+	for stale in stale_backlog:
+		print(
+			f"{MISMATCHED_ID_LIST.name}: `{stale}` no longer disagrees with its url; "
+			"remove it"
+		)
 
 	for unique_id, listed in sorted(copies.items()):
 		if len(listed) < 2:
@@ -212,7 +244,7 @@ def main() -> int:
 
 	if findings:
 		print(f"\n{len(findings)} problem entr(ies) need fixing.", file=sys.stderr)
-	return 1 if findings else 0
+	return 1 if findings or stale_backlog else 0
 
 
 if __name__ == "__main__":
