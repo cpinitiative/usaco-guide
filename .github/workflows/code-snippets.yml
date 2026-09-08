@@ -45,23 +45,21 @@ jobs:
         if: steps.node-modules.outputs.cache-hit != 'true'
         run: yarn
 
-      # Only the snippets in files this PR touches, so existing breakage
-      # elsewhere doesn't block unrelated work -- except when the checker itself
-      # is what changed, since no .mdx diff exercises that. Sweeping everything
-      # is the only way such a pull request checks anything at all.
-      - name: Check code snippets in changed files
-        if: github.event_name == 'pull_request'
+      # A pull request checks only the files it touches, so breakage elsewhere
+      # does not block unrelated work. Two cases sweep the whole guide instead:
+      # a manual run, and a pull request that changes the checker itself --
+      # no .mdx diff exercises that, so it would otherwise check nothing at all.
+      - name: Check code snippets
         env:
           BASE_REF: origin/${{ github.base_ref }}
         run: |
-          if git diff --name-only "origin/${{ github.base_ref }}...HEAD" |
+          if [ '${{ github.event_name }}' = 'workflow_dispatch' ]; then
+            echo 'Manual run; sweeping every snippet.'
+            yarn check-code-snippets --all
+          elif git diff --name-only "$BASE_REF...HEAD" |
               grep -qx 'scripts/check-code-snippets.ts'; then
             echo 'The checker changed; sweeping every snippet.'
             yarn check-code-snippets --all
           else
             yarn check-code-snippets
           fi
-
-      - name: Check every code snippet
-        if: github.event_name == 'workflow_dispatch'
-        run: yarn check-code-snippets --all
