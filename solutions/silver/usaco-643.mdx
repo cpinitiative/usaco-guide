@@ -28,20 +28,21 @@ Finally, we combine the two groups to determine the maximum total number of diam
 #include <algorithm>
 #include <fstream>
 #include <iostream>
+#include <vector>
 
 int main() {
 	std::ifstream cin("diamond.in");
 
 	int n, k;
 	cin >> n >> k;
-	int arr[n];
+	std::vector<int> arr(n);
 	for (int i = 0; i < n; i++) { cin >> arr[i]; }
 
-	std::sort(arr, arr + n);
+	std::sort(arr.begin(), arr.end());
 
 	// how many diamonds we can take
 	// assuming i is the leftmost diamond
-	int can_take_left[n];
+	std::vector<int> can_take_left(n);
 	int l = 0, r = 0;
 	for (; l < n; l++) {
 		while (r < n && arr[r] - arr[l] <= k) r++;
@@ -49,7 +50,7 @@ int main() {
 	}
 
 	// max_val_after_i[i] = max value of can_take_left[x] for some x >= i.
-	int max_val_after_i[n + 1];
+	std::vector<int> max_val_after_i(n + 1);
 	max_val_after_i[n] = 0;
 	for (int i = n - 1; i >= 0; i--) {
 		max_val_after_i[i] = std::max(max_val_after_i[i + 1], can_take_left[i]);
