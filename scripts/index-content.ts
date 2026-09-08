@@ -15,9 +15,46 @@ const USACO_DIVISIONS_JSON = join(
 
 const PROBLEM_TAGS_JSON = join(process.cwd(), 'public', 'problem-tags.json');
 
+/** How long to wait for another process to finish writing content.db. */
+const WRITE_LOCK_TIMEOUT_MS = Number(
+  process.env.CONTENT_DB_LOCK_TIMEOUT_MS ?? 120_000
+);
+
 // Only auto-run when executed directly (not when imported by watch-content.ts)
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   main().catch(console.error);
+}
+
+/**
+ * Runs `fn` as the database's single writer, blocking any other process that
+ * tries to write until it finishes.
+ *
+ * A rebuild spans hundreds of statements and `createSchema` drops every table
+ * first, so two overlapping runs insert into a table the other is still
+ * filling, or one that has just been dropped from under them. watch-content.ts
+ * serializes its own rebuilds through a queue, which covers two rebuilds inside
+ * the dev server but not `yarn tsx scripts/index-content.ts` run alongside it.
+ *
+ * Holding one transaction for the whole rebuild leaves that to SQLite: BEGIN
+ * IMMEDIATE takes the write lock, `busy_timeout` waits for it rather than
+ * failing, and a crash rolls back instead of leaving the tables half dropped.
+ * Readers are unaffected — the database is in WAL mode, so pages render the
+ * previous content until the commit lands.
+ */
+async function asSoleWriter<T>(
+  db: Database.Database,
+  fn: () => Promise<T>
+): Promise<T> {
+  db.pragma(`busy_timeout = ${WRITE_LOCK_TIMEOUT_MS}`);
+  db.exec('BEGIN IMMEDIATE');
+  try {
+    const result = await fn();
+    db.exec('COMMIT');
+    return result;
+  } catch (err) {
+    db.exec('ROLLBACK');
+    throw err;
+  }
 }
 
 export async function main() {
@@ -27,46 +64,48 @@ export async function main() {
   const db = await getWritableDatabase();
 
   try {
-    // Create schema
-    createSchema(db);
+    await asSoleWriter(db, async () => {
+      // Create schema
+      createSchema(db);
 
-    // Index modules
-    console.log('Indexing modules...');
-    const moduleFiles = (await readdir(CONTENT_DIR, { recursive: true }))
-      .filter((f: string) => f.endsWith('.mdx'))
-      .sort();
-    await indexMdxFiles(db, moduleFiles, 'module', CONTENT_DIR);
+      // Index modules
+      console.log('Indexing modules...');
+      const moduleFiles = (await readdir(CONTENT_DIR, { recursive: true }))
+        .filter((f: string) => f.endsWith('.mdx'))
+        .sort();
+      await indexMdxFiles(db, moduleFiles, 'module', CONTENT_DIR);
 
-    // Index solutions
-    console.log('Indexing solutions...');
-    const solutionFiles = (await readdir(SOLUTIONS_DIR, { recursive: true }))
-      .filter((f: string) => f.endsWith('.mdx'))
-      .sort();
-    await indexMdxFiles(db, solutionFiles, 'solution', SOLUTIONS_DIR);
+      // Index solutions
+      console.log('Indexing solutions...');
+      const solutionFiles = (await readdir(SOLUTIONS_DIR, { recursive: true }))
+        .filter((f: string) => f.endsWith('.mdx'))
+        .sort();
+      await indexMdxFiles(db, solutionFiles, 'solution', SOLUTIONS_DIR);
 
-    // Index problems
-    console.log('Indexing problems...');
-    await indexProblems(db);
+      // Index problems
+      console.log('Indexing problems...');
+      await indexProblems(db);
 
-    // Index frontmatter
-    console.log('Indexing frontmatter...');
-    await indexModuleFrontmatter(db);
-    await indexSolutionFrontmatter(db);
+      // Index frontmatter
+      console.log('Indexing frontmatter...');
+      await indexModuleFrontmatter(db);
+      await indexSolutionFrontmatter(db);
 
-    // Create problem slugs and USACO IDs
-    console.log('Creating problem slugs...');
-    await indexProblemSlugs(db);
-    await indexUSACOIds(db);
+      // Create problem slugs and USACO IDs
+      console.log('Creating problem slugs...');
+      await indexProblemSlugs(db);
+      await indexUSACOIds(db);
 
-    // Generate USACO divisions JSON file
-    console.log('Generating USACO divisions JSON...');
-    await generateUsacoDivisionsJson(db);
+      // Generate USACO divisions JSON file
+      console.log('Generating USACO divisions JSON...');
+      await generateUsacoDivisionsJson(db);
 
-    // Generate the tag vocabulary used to autocomplete problem suggestions
-    console.log('Generating problem tags JSON...');
-    await generateProblemTagsJson(db);
+      // Generate the tag vocabulary used to autocomplete problem suggestions
+      console.log('Generating problem tags JSON...');
+      await generateProblemTagsJson(db);
+    });
 
-    // Vacuum database
+    // Vacuum database, which cannot run inside a transaction
     console.log('Optimizing database...');
     db.exec('VACUUM');
 
@@ -869,104 +908,106 @@ export async function updateFiles(
 ): Promise<void> {
   const db = await getWritableDatabase();
   try {
-    let problemsChanged = false;
+    await asSoleWriter(db, async () => {
+      let problemsChanged = false;
 
-    for (const [absPath, event] of changes) {
-      const relPath = path.relative(process.cwd(), absPath);
+      for (const [absPath, event] of changes) {
+        const relPath = path.relative(process.cwd(), absPath);
 
-      if (
-        absPath.endsWith('.problems.json') ||
-        path.basename(absPath) === 'extraProblems.json'
-      ) {
-        problemsChanged = true;
-        continue;
-      }
-
-      if (absPath.endsWith('.mdx')) {
-        let prepared = null;
-        if (event !== 'unlink') {
-          try {
-            prepared = await prepareMdxInsert(relPath, absPath);
-          } catch (err) {
-            console.error(
-              `[watch] Failed to parse ${relPath}, keeping old row:`,
-              err
-            );
-            continue; // skip DELETE entirely — preserve old content
-          }
+        if (
+          absPath.endsWith('.problems.json') ||
+          path.basename(absPath) === 'extraProblems.json'
+        ) {
+          problemsChanged = true;
+          continue;
         }
 
-        const tx = db.transaction(() => {
-          db.prepare('DELETE FROM mdx_content WHERE file_path = ?').run(
-            relPath
-          );
-          db.prepare('DELETE FROM module_frontmatter WHERE file_path = ?').run(
-            relPath
-          );
-          db.prepare(
-            'DELETE FROM solution_frontmatter WHERE file_path = ?'
-          ).run(relPath);
+        if (absPath.endsWith('.mdx')) {
+          let prepared = null;
+          if (event !== 'unlink') {
+            try {
+              prepared = await prepareMdxInsert(relPath, absPath);
+            } catch (err) {
+              console.error(
+                `[watch] Failed to parse ${relPath}, keeping old row:`,
+                err
+              );
+              continue; // skip DELETE entirely — preserve old content
+            }
+          }
 
-          if (prepared) {
-            const { content, type, gitTime, division } = prepared;
-
+          const tx = db.transaction(() => {
+            db.prepare('DELETE FROM mdx_content WHERE file_path = ?').run(
+              relPath
+            );
             db.prepare(
-              `INSERT OR REPLACE INTO mdx_content
+              'DELETE FROM module_frontmatter WHERE file_path = ?'
+            ).run(relPath);
+            db.prepare(
+              'DELETE FROM solution_frontmatter WHERE file_path = ?'
+            ).run(relPath);
+
+            if (prepared) {
+              const { content, type, gitTime, division } = prepared;
+
+              db.prepare(
+                `INSERT OR REPLACE INTO mdx_content
                  (id, type, file_path, frontmatter_json, body, toc_json, mdast_json,
                   cpp_oc, java_oc, py_oc, division, git_author_time)
                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-            ).run(
-              content.frontmatter.id,
-              type,
-              content.fileAbsolutePath,
-              JSON.stringify(content.frontmatter),
-              content.body,
-              JSON.stringify(content.toc),
-              content.mdast ? JSON.stringify(content.mdast) : null,
-              content.cppOc,
-              content.javaOc,
-              content.pyOc,
-              content.fields?.division || null,
-              gitTime
-            );
+              ).run(
+                content.frontmatter.id,
+                type,
+                content.fileAbsolutePath,
+                JSON.stringify(content.frontmatter),
+                content.body,
+                JSON.stringify(content.toc),
+                content.mdast ? JSON.stringify(content.mdast) : null,
+                content.cppOc,
+                content.javaOc,
+                content.pyOc,
+                content.fields?.division || null,
+                gitTime
+              );
 
-            if (type === 'module') {
-              db.prepare(
-                `INSERT OR REPLACE INTO module_frontmatter
+              if (type === 'module') {
+                db.prepare(
+                  `INSERT OR REPLACE INTO module_frontmatter
                    (file_path, module_id, frontmatter_json, division)
                  VALUES (?, ?, ?, ?)`
-              ).run(
-                content.fileAbsolutePath,
-                content.frontmatter.id,
-                JSON.stringify(content.frontmatter),
-                division
-              );
-            } else {
-              db.prepare(
-                `INSERT OR REPLACE INTO solution_frontmatter
+                ).run(
+                  content.fileAbsolutePath,
+                  content.frontmatter.id,
+                  JSON.stringify(content.frontmatter),
+                  division
+                );
+              } else {
+                db.prepare(
+                  `INSERT OR REPLACE INTO solution_frontmatter
                    (file_path, solution_id, frontmatter_json)
                  VALUES (?, ?, ?)`
-              ).run(
-                content.fileAbsolutePath,
-                content.frontmatter.id,
-                JSON.stringify(content.frontmatter)
-              );
+                ).run(
+                  content.fileAbsolutePath,
+                  content.frontmatter.id,
+                  JSON.stringify(content.frontmatter)
+                );
+              }
             }
-          }
-        });
-        tx();
+          });
+          tx();
+        }
       }
-    }
 
-    if (problemsChanged) {
-      console.log('[watch] Re-indexing problems...');
-      db.exec('DELETE FROM problems; DELETE FROM module_problem_lists;');
-      await indexProblems(db);
-      db.exec('DELETE FROM problem_slugs; DELETE FROM usaco_ids;');
-      await indexProblemSlugs(db);
-      await indexUSACOIds(db);
-      await generateUsacoDivisionsJson(db);
-    }
+      if (problemsChanged) {
+        console.log('[watch] Re-indexing problems...');
+        db.exec('DELETE FROM problems; DELETE FROM module_problem_lists;');
+        await indexProblems(db);
+        db.exec('DELETE FROM problem_slugs; DELETE FROM usaco_ids;');
+        await indexProblemSlugs(db);
+        await indexUSACOIds(db);
+        await generateUsacoDivisionsJson(db);
+      }
+    });
   } finally {
     db.close();
   }

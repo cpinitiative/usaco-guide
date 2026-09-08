@@ -403,19 +403,19 @@ template <int SZ> struct LCA {
 
 LCA<MX> L;
 Centroid<MX> C;
-int close[MX];
+int closest[MX];
 int N, K;
 
 void dfs1(int x, int p = 0) {
 	trav(t, adj[x]) if (t != p) {
 		dfs1(t, x);
-		ckmin(close[x], close[t] + 1);
+		ckmin(closest[x], closest[t] + 1);
 	}
 }
 
 void dfs2(int x, int p = 0) {
 	trav(t, adj[x]) if (t != p) {
-		ckmin(close[t], close[x] + 1);
+		ckmin(closest[t], closest[x] + 1);
 		dfs2(t, x);
 	}
 }
@@ -430,10 +430,10 @@ void init() {
 	}
 	L.init(N);
 	C.init(N);
-	FOR(i, 1, N + 1) close[i] = MOD;
+	FOR(i, 1, N + 1) closest[i] = MOD;
 	vi a(K);
 	re(a);
-	trav(t, a) close[t] = 0;
+	trav(t, a) closest[t] = 0;
 	dfs1(1);
 	dfs2(1);
 }
@@ -444,10 +444,10 @@ int main() {
 		int f, p;
 		re(f, p);
 		int d = L.dist(i, f);
-		if (d <= close[i] + p) {
+		if (d <= closest[i] + p) {
 			C.upd(i, d - p - 1);
 		} else {
-			C.upd(i, close[i]);
+			C.upd(i, closest[i]);
 		}
 	}
 	C.propAll();

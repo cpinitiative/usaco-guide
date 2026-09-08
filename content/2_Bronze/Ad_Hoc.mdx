@@ -38,6 +38,103 @@ appear to be ad hoc.
 In the end, the best way to get better at ad hoc problems (or any type of
 problem) is to do a lot of them.
 
+## Example - Photoshoot 2
+
+<FocusProblem problem = "photoshoot2"/>
+
+<Spoiler title = "Solution">
+
+### Explanation
+
+<IncompleteSection>
+
+- missing the observation the matching loop rests on: relabel the cows so that
+  the target order is $1 \dots N$, and then cow $a_j$ must be moved exactly when
+  some earlier $a_i$ has $a_i > a_j$, so the answer counts the elements that are
+  not a prefix maximum
+- missing a proof that no cow outside that count needs to be moved
+
+</IncompleteSection>
+
+If the element is at the target position, we simply move forward to the next one.
+Otherwise, if it's not currently available at the target position, we handle it by
+marking the element as moved and incrementing our answer.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int main() {
+	int n;
+	std::cin >> n;
+	std::vector<int> moved(n);
+	std::vector<int> a(n), b(n);
+
+	for (int i = 0; i < n; i++) {
+		std::cin >> a[i];
+		a[i]--;
+	}
+
+	for (int i = 0; i < n; i++) {
+		std::cin >> b[i];
+		b[i]--;
+	}
+
+	int res = 0;
+	int j = 0;
+
+	for (int i = 0; i < n; i++) {
+		while (j < n && moved[a[j]]) { j++; }
+
+		if (a[j] == b[i]) {
+			j++;
+		} else {
+			res++;
+			moved[b[i]] = 1;
+		}
+	}
+
+	std::cout << res << '\n';
+}
+```
+
+</CPPSection>
+<PySection>
+
+```py
+n = int(input())
+a = [int(x) - 1 for x in input().split()]
+b = [int(x) - 1 for x in input().split()]
+
+moved = [0] * n
+j = res = 0
+
+
+for i in range(n):
+	while j < n and moved[a[j]]:
+		j += 1
+
+	if a[j] == b[i]:
+		j += 1
+	else:
+		res += 1
+		moved[b[i]] = 1
+
+
+print(res)
+```
+
+</PySection>
+</LanguageSection>
+</Spoiler>
+
 ## Problems
 
 <Problems problems="general" />

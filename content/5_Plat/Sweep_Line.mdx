@@ -364,6 +364,14 @@ struct Point {
 		return x == other.x ? y < other.y : x < other.x;
 	}
 };
+int sign(long long x) {
+	if (x == 0) {
+		return 0;
+	} else {
+		return x < 0 ? -1 : +1;
+	}
+}
+
 int operator*(Point p1, Point p2) { return sign(p1.x * p2.y - p1.y * p2.x); }
 
 Point operator-(Point p1, Point p2) {
@@ -379,25 +387,17 @@ struct Segment {
 	long long idx;
 };
 
+double coordinate(Segment a) {
+	if (a.a == a.x) { return a.b; }
+	return a.b + (a.y - a.b) * (sweep_line_x - a.a) / (a.x - a.a);
+}
+
 bool operator<(Segment a, Segment b) {
 	return a.idx != b.idx && coordinate(a) <= coordinate(b);
 }
 
 bool operator==(Segment a, Segment b) { return a.idx == b.idx; }
 // EndCodeSnip
-
-int sign(long long x) {
-	if (x == 0) {
-		return 0;
-	} else {
-		return x < 0 ? -1 : +1;
-	}
-}
-
-double coordinate(Segment a) {
-	if (a.a == a.x) { return a.b; }
-	return a.b + (a.y - a.b) * (sweep_line_x - a.a) / (a.x - a.a);
-}
 
 /*
  * To check if two segments intersect we will use the
