@@ -1,4 +1,4 @@
-import { ExternalLinkIcon } from '@heroicons/react/solid';
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/solid';
 import * as React from 'react';
 import { useMarkdownProblemLists } from '../../context/MarkdownProblemListsContext';
 import { getProblemURL, ProblemInfo } from '../../models/problem';
@@ -92,7 +92,7 @@ export default function FocusProblem({
               className="mb-0! inline-flex px-4 py-3 text-xs font-normal! text-gray-400! italic no-underline sm:px-6"
             >
               <span className="mr-1">View Internal Solution</span>
-              <ExternalLinkIcon className="h-4 w-4" />
+              <ArrowTopRightOnSquareIcon className="h-4 w-4" />
             </a>
           )}
         </div>

@@ -4,7 +4,7 @@ import {
   DialogPanel,
   DialogTitle,
 } from '@headlessui/react';
-import { XIcon } from '@heroicons/react/solid';
+import { XMarkIcon } from '@heroicons/react/24/solid';
 import {
   AuthCredential,
   getAuth,
@@ -149,7 +149,7 @@ export const SignInModal: React.FC<SignInModalProps> = ({
                 className="dark:bg-dark-surface dark:focus:ring-offset-dark-surface rounded-md bg-white text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-hidden dark:text-gray-500 dark:hover:text-gray-400"
               >
                 <span className="sr-only">Close</span>
-                <XIcon aria-hidden="true" className="size-6" />
+                <XMarkIcon aria-hidden="true" className="size-6" />
               </button>
             </div>
 

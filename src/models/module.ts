@@ -60,7 +60,8 @@ export class ModuleInfo extends ModuleLinkInfo {
     public frequency: ModuleFrequency,
     public toc: TableOfContents,
     public fileRelativePath: string,
-    public gitAuthorTime: any
+    public gitAuthorTime: any,
+    public wide: boolean = false
   ) {
     super(id, section, title);
   }
@@ -72,6 +73,7 @@ export type ModuleProgress =
   | 'Practicing'
   | 'Complete'
   | 'Skipped'
+  | 'Reviewing'
   | 'Ignored';
 
 export const ModuleProgressOptions: ModuleProgress[] = [
@@ -80,6 +82,7 @@ export const ModuleProgressOptions: ModuleProgress[] = [
   'Practicing',
   'Complete',
   'Skipped',
+  'Reviewing',
   'Ignored',
 ];
 

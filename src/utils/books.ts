@@ -14,4 +14,5 @@ export const books = {
     'https://link.springer.com/book/10.1007/978-3-319-72547-5',
     'Guide to Competitive Programming (Antti Laaksonen)',
   ],
+  MT: ['/matroid-theory.pdf', 'Matroid Theory (Evan Simanoskis, Andrew Tam)'],
 };

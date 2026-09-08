@@ -119,6 +119,7 @@ export default function DashboardPage({
           (userProgressOnModules[x] === 'Reading' ||
             userProgressOnModules[x] === 'Practicing' ||
             userProgressOnModules[x] === 'Skipped' ||
+            userProgressOnModules[x] === 'Reviewing' ||
             (showIgnored && userProgressOnModules[x] === 'Ignored')) &&
           moduleIDToSectionMap.hasOwnProperty(x)
       )
@@ -131,7 +132,8 @@ export default function DashboardPage({
           | 'Skipped'
           | 'Reading'
           | 'Practicing'
-          | 'Ignored',
+          | 'Ignored'
+          | 'Reviewing',
       }));
   }, [userProgressOnModules, showIgnored]);
   const activeProblems: ActiveItem[] = React.useMemo(() => {

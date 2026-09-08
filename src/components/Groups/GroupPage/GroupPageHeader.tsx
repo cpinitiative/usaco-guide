@@ -31,6 +31,20 @@ export default function GroupPageHeader(props: { group: GroupData }) {
     <header className="bg-linear-to-r from-sky-800 to-cyan-600 py-6 sm:py-12">
       <div className="mx-auto max-w-7xl px-4 sm:px-8 md:flex md:items-center md:justify-between">
         <div className="min-w-0 flex-1">
+          <Link
+            href="/groups"
+            className="mb-2 inline-flex items-center justify-center rounded bg-white/20 p-2 text-white shadow-xs backdrop-blur-xs transition hover:bg-white/30 focus:ring-2 focus:ring-white focus:outline-hidden"
+            aria-label="Home"
+          >
+            <svg
+              className="h-5 w-5"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+            </svg>
+          </Link>
           <h1 className="text-xl font-bold text-white sm:text-3xl">
             {props.group?.name ?? 'Loading...'}
           </h1>

@@ -2,19 +2,21 @@
 id: usaco-787
 source: USACO Silver 2018 January
 title: Rental Service
-author: Óscar Garries, Kevin Sheng, Rishabh Agarwal
+author: Óscar Garries, Kevin Sheng, Rishabh Agarwal, Roger Wang
 ---
 
 <Spoiler title="Hint 1">
 
-Is there any reason for Farmer John to milk a cow that produces less milk over a cow that produces more?
-On a similar note, is there any reason for him to rent a cow that produces more milk over a cow that produces less milk?
+Is there any reason for Farmer John to milk a cow that produces less milk over a
+cow that produces more? On a similar note, is there any reason for him to rent a
+cow that produces more milk over a cow that produces less milk?
 
 </Spoiler>
 
 <Spoiler title="Answer to Hint 1">
 
-There isn't! It's *always* optimal to milk the cow that produces the most milk or rent the cow that produces the least milk.
+There isn't! It's _always_ optimal to milk the cow that produces the most milk
+or rent the cow that produces the least milk.
 
 </Spoiler>
 
@@ -24,14 +26,32 @@ There isn't! It's *always* optimal to milk the cow that produces the most milk o
 
 ## Explanation
 
-Notice that we should always compare the highest-producing cow and the store offering the most money with the farmer offering the most money.
+Notice that we should always compare the highest-producing cow and the store
+offering the most money with the farmer offering the most money.
 
-To do this, we can make 3 lists containing the stores, farmers, and cows.
-Then, we sort the stores and farmers by the prices offered, and sort the cows by their milk production.
+To do this, we can make 3 lists containing the stores, farmers, and cows. Then,
+we sort the stores and farmers by the prices offered, and sort the cows by their
+milk production.
 
-Then, when we go through the list, we'll either milk the highest-producing cow or rent the lowest-producing cow, whichever one is more lucrative.
+Then, when we go through the list, we'll either milk the highest-producing cow
+or rent the lowest-producing cow, whichever one is more lucrative.
+
+But how do we calculate how much profit the highest-producing cow would make if
+milked? We could do this by scanning linearly through the stores. However, in
+the case where every cow is able to fulfill every store's offer but every cow is
+rented, this would run in $O(NM)$, which is too slow for $N = 10^5$, $M = 10^5$.
+
+Instead, after sorting the stores, we can compute milk/money prefix sums and
+binary search (rather than linear search) for how many stores a cow goes
+through. For partial offer fulfillment, we can calculate profit using the
+lower-bound index `i` that we binary-searched for:
+$$
+\text{sell\_profit} = \left( \text{milk\_prefix}[i + 1] - \left( \text{total\_milk\_sold} + \text{milk\_from\_cur\_cow} \right) \right) \times \text{offers}[i].p_i
+$$
 
 ## Implementation
+
+**Time Complexity:** $\mathcal{O}((N + M + R) \log (N + M + R))$
 
 <LanguageSection>
 <CPPSection>
@@ -41,70 +61,71 @@ Then, when we go through the list, we'll either milk the highest-producing cow o
 using namespace std;
 
 int main() {
+
 	freopen("rental.in", "r", stdin);
+	freopen("rental.out", "w", stdout);
+
 	int n, m, r;
 	cin >> n >> m >> r;
 
-	vector<int> milk_amt(n);
-	for (int i = 0; i < n; i++) { cin >> milk_amt[i]; }
+	vector<int> cows(n);
+	for (int i = 0; i < n; i++) { cin >> cows[i]; }
+	sort(cows.begin(), cows.end());
 
-	vector<pair<int, int>> shops(m);
-	for (int i = 0; i < m; i++) { cin >> shops[i].second >> shops[i].first; }
+	vector<pair<int, int>> orders(m);
+	for (int i = 0; i < m; i++) { cin >> orders[i].first >> orders[i].second; }
+	sort(orders.begin(), orders.end(), [](pair<int, int> a, pair<int, int> b) {
+		return a.second > b.second;
+	});  // sort by p_i
 
-	vector<int> rent(r);
-	for (int i = 0; i < r; i++) { cin >> rent[i]; }
-
-	// sort cows by milk production in descending order
-	sort(milk_amt.begin(), milk_amt.end(), greater<int>());
-	// sort shops by selling price in descending order
-	sort(shops.begin(), shops.end(), greater<pair<int, int>>());
-	// sort rent in descending order
-	sort(rent.begin(), rent.end(), greater<int>());
-
-	int shop_at = 0;  // the index of the shop which we've bought up to
-	int rent_at = 0;  // the index of the farmer we've rented up to
-	int cow_at = 0;
-	long long max_money = 0;
-	while (cow_at < n) {
-		int amt = milk_amt[cow_at];
-		int sold_money = 0;  // how much we can make from selling the milk
-		int curr_shop = shop_at;
-		int last = 0;
-
-		// calculate how much money this cow can make if we sell its milk
-		while (curr_shop < m) {
-			int sold = min(amt, shops[curr_shop].second);
-			sold_money += shops[curr_shop].first * sold;
-			amt -= sold;
-
-			if (amt == 0) {
-				last = sold;
-				break;
-			} else {
-				curr_shop++;
-			}
-		}
-
-		// should we rent or sell this cow?
-		if (rent_at >= r || sold_money > rent[rent_at]) {
-			max_money += sold_money;
-			shop_at = curr_shop;
-			if (shop_at < m) { shops[shop_at].second -= last; }
-			cow_at++;
-		} else {
-			max_money += rent[rent_at];
-			/*
-			 * instead of renting this cow, it's better to rent off
-			 * the cow that makes the least amount of milk
-			 * (we don't process the cow at the end of the list)
-			 */
-			n--;
-			rent_at++;
-		}
+	// calculate prefix sums
+	vector<long long> milk_pre(m + 1);
+	vector<long long> cents_pre(m + 1);
+	for (int i = 0; i < m; i++) {
+		milk_pre[i + 1] = milk_pre[i] + orders[i].first;
+		cents_pre[i + 1] = cents_pre[i] + orders[i].second * orders[i].first;
 	}
 
-	freopen("rental.out", "w", stdout);
-	cout << max_money << endl;
+	priority_queue<int> rent_orders;  // only the max rent order is considered and
+	                                  // consumed, so we can use a priority queue
+	for (int i = 0; i < r; i++) {
+		int rent_order;
+		cin >> rent_order;
+		rent_orders.push(rent_order);
+	}
+
+	int rent_idx = 0, sell_idx = n - 1;  // we greedily consume cows from the ends
+	long long total_sold = 0;
+	long long total_sell_money = 0;
+	long long profit = 0;
+	while (rent_idx <= sell_idx) {
+		// option 1: sell all the milk of the most productive cow
+		int buyer_idx =
+		    distance(milk_pre.begin(), lower_bound(milk_pre.begin(), milk_pre.end(),
+		                                           total_sold + cows[sell_idx])) -
+		    1;  // binary search for total sold milk + current cow's milk
+		long long sell_money =
+		    buyer_idx < m ? (cents_pre[buyer_idx + 1] -
+		                     (milk_pre[buyer_idx + 1] - (total_sold + cows[sell_idx])) *
+		                         orders[buyer_idx].second -
+		                     total_sell_money)
+		                  : cents_pre.back() - total_sell_money;
+
+		// option2: rent out the least productive cow
+		int rent_money = rent_orders.empty() ? 0 : rent_orders.top();
+
+		if (sell_money >= rent_money) {
+			profit += sell_money;
+			total_sold += cows[sell_idx];
+			total_sell_money += sell_money;
+			sell_idx--;
+		} else {
+			profit += rent_money;
+			rent_idx++;
+			rent_orders.pop();
+		}
+	}
+	cout << profit;
 }
 ```
 
@@ -159,6 +180,13 @@ public class Rental {
 		// sort shops by selling price in descending order
 		Arrays.sort(shops, Comparator.comparingInt(s -> - s.price));
 
+		long[] milkPre = new long[m + 1];
+		long[] centsPre = new long[m + 1];
+		for (int i = 0; i < m; i++) {
+			milkPre[i + 1] = milkPre[i] + shops[i].amt;
+			centsPre[i + 1] = centsPre[i] + (long)shops[i].price * shops[i].amt;
+		}
+
 		// sort rent in descending order
 		Arrays.sort(rent);
 		for (int i = 0; i < r / 2; i++) {
@@ -167,40 +195,37 @@ public class Rental {
 			rent[rent.length - i - 1] = temp;
 		}
 
-		int shopAt = 0;  // the index of the shop which we've bought up to
 		int rentAt = 0;  // the index of the farmer we've rented up to
 		int cowAt = 0;
+		long totalSold = 0;
+		long totalSellMoney = 0;
 		long maxMoney = 0;
 		while (cowAt < n) {
-			int amt = milkAmt[cowAt];
-			int soldMoney = 0;  // how much we can make from selling the milk
-			int currShop = shopAt;
-			int last = 0;
-
 			// calculate how much money this cow can make if we sell its milk
-			while (currShop < m) {
-				int sold = Math.min(amt, shops[currShop].amt);
-				soldMoney += shops[currShop].price * sold;
-				amt -= sold;
-
-				if (amt == 0) {
-					last = sold;
-					break;
-				} else {
-					currShop++;
-				}
+			int amt = milkAmt[cowAt];
+			long newTotal = totalSold + amt;
+			int pos = Arrays.binarySearch(milkPre, newTotal);
+			if (pos < 0) { pos = -pos - 1; }
+			int buyerIdx = pos - 1;
+			long soldMoney;
+			if (buyerIdx < m) {
+				soldMoney = centsPre[buyerIdx + 1] -
+				            (milkPre[buyerIdx + 1] - newTotal) * shops[buyerIdx].price -
+				            totalSellMoney;
+			} else {
+				soldMoney = centsPre[m] - totalSellMoney;
 			}
 
 			// should we rent or sell this cow?
-			if (rentAt >= r || soldMoney > rent[rentAt]) {
+			if (rentAt >= r || soldMoney > rent[rentAt]) {  // sell
 				maxMoney += soldMoney;
-				shopAt = currShop;
-				if (shopAt < m) { shops[shopAt].amt -= last; }
+				totalSold = newTotal;
+				totalSellMoney += soldMoney;
 				cowAt++;
-			} else {
+			} else {  // rent
 				maxMoney += rent[rentAt];
 				/*
-				 * instead of renting this cow, it's better to rent off
+				 * instead of selling this cow, it's better to rent off
 				 * the cow that makes the least amount of milk
 				 * (we don't process the cow at the end of the list)
 				 */
@@ -220,6 +245,8 @@ public class Rental {
 <PySection>
 
 ```py
+import bisect
+
 with open("rental.in") as read:
 	n, m, r = [int(i) for i in read.readline().split()]
 
@@ -231,42 +258,44 @@ with open("rental.in") as read:
 milk_amt.sort(reverse=True)
 # sort shops by selling price in descending order
 shops.sort(reverse=True, key=lambda s: s[1])
+milk_pre = [0]
+cents_pre = [0]
+for qty, price in shops:
+	milk_pre.append(milk_pre[-1] + qty)
+	cents_pre.append(cents_pre[-1] + price * qty)
 # sort rent in descending order
 rent.sort(reverse=True)
 
-shop_at = 0  # the index of the shop which we've bought up to
 rent_at = 0  # the index of the farmer we've rented up to
 cow_at = 0
+total_sold = 0
+total_sell_money = 0
 max_money = 0
 while cow_at < n:
-	amt = milk_amt[cow_at]
-	sold_money = 0  # how much we can make from selling the milk
-	curr_shop = shop_at
-	last = 0
 
 	# calculate how much money this cow can make if we sell its milk
-	while curr_shop < m:
-		sold = min(amt, shops[curr_shop][0])
-		sold_money += shops[curr_shop][1] * sold
-		amt -= sold
-
-		if amt == 0:
-			last = sold
-			break
-		else:
-			curr_shop += 1
+	amt = milk_amt[cow_at]
+	new_total = total_sold + amt
+	buyer_idx = bisect.bisect_left(milk_pre, new_total) - 1
+	if buyer_idx < m:
+		sold_money = (
+			cents_pre[buyer_idx + 1]
+			- (milk_pre[buyer_idx + 1] - new_total) * shops[buyer_idx][1]
+			- total_sell_money
+		)
+	else:
+		sold_money = cents_pre[m] - total_sell_money
 
 	# should we rent or sell this cow?
 	if rent_at >= r or sold_money > rent[rent_at]:
 		max_money += sold_money
-		shop_at = curr_shop
-		if shop_at < m:
-			shops[shop_at][0] -= last
+		total_sold = new_total
+		total_sell_money += sold_money
 		cow_at += 1
 	else:
 		max_money += rent[rent_at]
 		"""
-		instead of renting this cow, it's better to rent off
+		instead of selling this cow, it's better to rent off
 		the cow that makes the least amount of milk
 		(we don't process the cow at the end of the list)
 		"""

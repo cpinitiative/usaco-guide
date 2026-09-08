@@ -1,0 +1,35 @@
+# URLs for linkcheck to ignore. One regular expression per line; lines
+# starting with a hash are comments.
+# https://github.com/filiph/linkcheck#the---skip-file-option
+
+# Next.js image optimizer. Every /_next/image URL comes back without a
+# content-type linkcheck recognises, so it reports all of them as
+# "server reported no mime type" -- 216 lines in the first real run,
+# enough to drown out genuine findings. The images themselves still ship
+# from public/, they just aren't reachable as plain URLs to crawl.
+/_next/image\?
+
+# Hosts that answer HEAD with 403 (bot protection). linkcheck only retries as
+# GET on a 405, so every link to these would be reported broken. Measured with
+# `curl -I`: codeforces 403, dmoj 403, spoj 403, stackoverflow 403.
+# usaco.org is fine (200/301) and is deliberately NOT skipped.
+//codeforces\.com/
+//dmoj\.ca/
+//www\.spoj\.com/
+//stackoverflow\.com/
+
+# The entries below only matter if -e (external links) is turned on, which it
+# is NOT on push/PR -- external checking is a manual exercise. They record what
+# a one-off external run on 2026-08-23 found unusable from a CI runner, so it
+# doesn't have to be rediscovered:
+#   403 to a CI IP: topcoder (16), en.cppreference (12), hackerearth (7),
+#                   artofproblemsolving (4), w3schools (3), leetcode (3)
+#   429 rate limit: qoj.ac (24), atcoder.jp (4)
+# Left commented -- enable alongside -e if you ever wire up a scheduled run.
+#//www\.topcoder\.com/
+#//en\.cppreference\.com/
+#//www\.hackerearth\.com/
+#//artofproblemsolving\.com/
+#//www\.w3schools\.com/
+#//leetcode\.com/
+#//qoj\.ac/

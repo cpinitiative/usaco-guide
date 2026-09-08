@@ -7,9 +7,54 @@ import { getWritableDatabase } from '../src/lib/database';
 import type { ProblemMetadata } from '../src/models/problem';
 import { MdxContent, ProblemInfo } from '../src/types/content';
 
+const USACO_DIVISIONS_JSON = join(
+  process.cwd(),
+  'public',
+  'usaco-divisions.json'
+);
+
+const PROBLEM_TAGS_JSON = join(process.cwd(), 'public', 'problem-tags.json');
+
+/** How long to wait for another process to finish writing content.db. */
+const WRITE_LOCK_TIMEOUT_MS = Number(
+  process.env.CONTENT_DB_LOCK_TIMEOUT_MS ?? 120_000
+);
+
 // Only auto-run when executed directly (not when imported by watch-content.ts)
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   main().catch(console.error);
+}
+
+/**
+ * Runs `fn` as the database's single writer, blocking any other process that
+ * tries to write until it finishes.
+ *
+ * A rebuild spans hundreds of statements and `createSchema` drops every table
+ * first, so two overlapping runs insert into a table the other is still
+ * filling, or one that has just been dropped from under them. watch-content.ts
+ * serializes its own rebuilds through a queue, which covers two rebuilds inside
+ * the dev server but not `yarn tsx scripts/index-content.ts` run alongside it.
+ *
+ * Holding one transaction for the whole rebuild leaves that to SQLite: BEGIN
+ * IMMEDIATE takes the write lock, `busy_timeout` waits for it rather than
+ * failing, and a crash rolls back instead of leaving the tables half dropped.
+ * Readers are unaffected — the database is in WAL mode, so pages render the
+ * previous content until the commit lands.
+ */
+async function asSoleWriter<T>(
+  db: Database.Database,
+  fn: () => Promise<T>
+): Promise<T> {
+  db.pragma(`busy_timeout = ${WRITE_LOCK_TIMEOUT_MS}`);
+  db.exec('BEGIN IMMEDIATE');
+  try {
+    const result = await fn();
+    db.exec('COMMIT');
+    return result;
+  } catch (err) {
+    db.exec('ROLLBACK');
+    throw err;
+  }
 }
 
 export async function main() {
@@ -19,42 +64,48 @@ export async function main() {
   const db = await getWritableDatabase();
 
   try {
-    // Create schema
-    createSchema(db);
+    await asSoleWriter(db, async () => {
+      // Create schema
+      createSchema(db);
 
-    // Index modules
-    console.log('Indexing modules...');
-    const moduleFiles = (await readdir(CONTENT_DIR, { recursive: true }))
-      .filter((f: string) => f.endsWith('.mdx'))
-      .sort();
-    await indexMdxFiles(db, moduleFiles, 'module', CONTENT_DIR);
+      // Index modules
+      console.log('Indexing modules...');
+      const moduleFiles = (await readdir(CONTENT_DIR, { recursive: true }))
+        .filter((f: string) => f.endsWith('.mdx'))
+        .sort();
+      await indexMdxFiles(db, moduleFiles, 'module', CONTENT_DIR);
 
-    // Index solutions
-    console.log('Indexing solutions...');
-    const solutionFiles = (await readdir(SOLUTIONS_DIR, { recursive: true }))
-      .filter((f: string) => f.endsWith('.mdx'))
-      .sort();
-    await indexMdxFiles(db, solutionFiles, 'solution', SOLUTIONS_DIR);
+      // Index solutions
+      console.log('Indexing solutions...');
+      const solutionFiles = (await readdir(SOLUTIONS_DIR, { recursive: true }))
+        .filter((f: string) => f.endsWith('.mdx'))
+        .sort();
+      await indexMdxFiles(db, solutionFiles, 'solution', SOLUTIONS_DIR);
 
-    // Index problems
-    console.log('Indexing problems...');
-    await indexProblems(db);
+      // Index problems
+      console.log('Indexing problems...');
+      await indexProblems(db);
 
-    // Index frontmatter
-    console.log('Indexing frontmatter...');
-    await indexModuleFrontmatter(db);
-    await indexSolutionFrontmatter(db);
+      // Index frontmatter
+      console.log('Indexing frontmatter...');
+      await indexModuleFrontmatter(db);
+      await indexSolutionFrontmatter(db);
 
-    // Create problem slugs and USACO IDs
-    console.log('Creating problem slugs...');
-    await indexProblemSlugs(db);
-    await indexUSACOIds(db);
+      // Create problem slugs and USACO IDs
+      console.log('Creating problem slugs...');
+      await indexProblemSlugs(db);
+      await indexUSACOIds(db);
 
-    // Generate USACO divisions JSON file
-    console.log('Generating USACO divisions JSON...');
-    await generateUsacoDivisionsJson(db);
+      // Generate USACO divisions JSON file
+      console.log('Generating USACO divisions JSON...');
+      await generateUsacoDivisionsJson(db);
 
-    // Vacuum database
+      // Generate the tag vocabulary used to autocomplete problem suggestions
+      console.log('Generating problem tags JSON...');
+      await generateProblemTagsJson(db);
+    });
+
+    // Vacuum database, which cannot run inside a transaction
     console.log('Optimizing database...');
     db.exec('VACUUM');
 
@@ -174,15 +225,21 @@ async function indexMdxFiles(
     `);
 
   // Batch git commands for performance
-  const gitTimestamps = await getBatchGitTimestamps(
-    files.map(f => path.join(baseDir, f))
-  );
+  const mdxPaths = files.map(f => path.join(baseDir, f));
+  const gitTimestamps = await getGitTimestamps([
+    ...mdxPaths,
+    // Solutions don't have problem lists.
+    ...(type === 'module' ? mdxPaths.map(problemsJsonPath) : []),
+  ]);
 
   const transaction = db.transaction(
     (items: Array<{ content: MdxContent }>) => {
       for (const { content } of items) {
-        const gitTime =
-          gitTimestamps.get(path.resolve(content.fileAbsolutePath)) || null;
+        const gitTime = getLastUpdated(
+          gitTimestamps,
+          content.fileAbsolutePath,
+          type
+        );
 
         insertStmt.run(
           content.frontmatter.id,
@@ -218,45 +275,173 @@ async function indexMdxFiles(
   }
 }
 
-async function getBatchGitTimestamps(
+/**
+ * A module's problem list lives in a sibling `<name>.problems.json`, so editing
+ * that file changes what the module renders just like editing the .mdx does.
+ * Both count towards the module's "Last Updated" timestamp.
+ *
+ * Not every module has one (a few General modules have no problems), and
+ * `git log` simply reports nothing for a path that was never committed, so a
+ * missing file needs no special handling.
+ */
+function problemsJsonPath(mdxPath: string): string {
+  return mdxPath.replace(/\.mdx$/, '.problems.json');
+}
+
+function getLastUpdated(
+  timestamps: Map<string, string>,
+  mdxPath: string,
+  type: 'module' | 'solution'
+): string | null {
+  const resolved = path.resolve(mdxPath);
+  const mdxTime = timestamps.get(resolved);
+  if (type === 'solution') return mdxTime ?? null;
+
+  const problemsTime = timestamps.get(problemsJsonPath(resolved));
+  if (!mdxTime) return problemsTime ?? null;
+  if (!problemsTime) return mdxTime;
+  // ISO-8601 UTC strings sort chronologically.
+  return problemsTime > mdxTime ? problemsTime : mdxTime;
+}
+
+/**
+ * Vercel checks the repository out with a shallow clone (`--depth=10`), which
+ * makes every file look like it was added by the shallow boundary commit. That
+ * gives every module the same, very recent "Last Updated" timestamp instead of
+ * the time it was actually last edited. Deepen the clone before reading any
+ * timestamps; `--filter=blob:none` keeps it cheap since we only need commits
+ * and trees, not the contents of every historical revision.
+ *
+ * Memoized: the fetch only needs to happen once per process.
+ */
+let fullGitHistory: Promise<boolean> | null = null;
+
+function ensureFullGitHistory(): Promise<boolean> {
+  fullGitHistory ??= fetchFullGitHistory();
+  return fullGitHistory;
+}
+
+async function fetchFullGitHistory(): Promise<boolean> {
+  const { execFileSync } = await import('child_process');
+  const git = (args: string[]) =>
+    execFileSync('git', args, {
+      encoding: 'utf-8',
+      // Fail instead of hanging on a credential prompt for a private repo.
+      env: { ...process.env, GIT_TERMINAL_PROMPT: '0' },
+      stdio: ['ignore', 'pipe', 'pipe'],
+      timeout: 5 * 60 * 1000,
+    }).trim();
+
+  let isShallow: string;
+  try {
+    isShallow = git(['rev-parse', '--is-shallow-repository']);
+  } catch (error) {
+    console.warn('Not a git repository; skipping module timestamps:', error);
+    return false;
+  }
+  if (isShallow !== 'true') return true;
+
+  const remote = getGitRemoteUrl(git);
+  if (!remote) {
+    console.warn(
+      'Shallow git repository with no known remote; skipping module timestamps.'
+    );
+    return false;
+  }
+
+  console.log(
+    `Shallow git repository detected, fetching history from ${remote}...`
+  );
+  try {
+    git(['fetch', '--filter=blob:none', '--unshallow', remote]);
+  } catch (error) {
+    console.warn('Failed to fetch full git history:', error);
+    return false;
+  }
+
+  if (git(['rev-parse', '--is-shallow-repository']) === 'true') {
+    console.warn('Repository is still shallow; skipping module timestamps.');
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Vercel clones without configuring a remote, so fall back to reconstructing
+ * the repository URL from the environment it exposes to builds.
+ */
+function getGitRemoteUrl(git: (args: string[]) => string): string | null {
+  try {
+    const origin = git(['remote', 'get-url', 'origin']);
+    if (origin) return origin;
+  } catch {
+    // No origin remote; fall through to the Vercel environment variables.
+  }
+
+  const host = {
+    github: 'github.com',
+    gitlab: 'gitlab.com',
+    bitbucket: 'bitbucket.org',
+  }[process.env.VERCEL_GIT_PROVIDER ?? ''];
+  const owner = process.env.VERCEL_GIT_REPO_OWNER;
+  const slug = process.env.VERCEL_GIT_REPO_SLUG;
+  if (!host || !owner || !slug) return null;
+
+  return `https://${host}/${owner}/${slug}.git`;
+}
+
+/**
+ * Maps each path to the ISO time of the last commit that touched it.
+ *
+ * Deliberately one `git log` per file: handing several pathspecs to a single
+ * `git log` evaluates history simplification against the union of them, which
+ * silently changes the answer for individual files (it moved ~15% of the
+ * content files here, mostly onto the date of a repo-wide reformat that left
+ * their content untouched). Running one process per file is also *faster*,
+ * since `-1` lets git stop at the first matching commit instead of walking the
+ * whole history once per batch.
+ */
+async function getGitTimestamps(
   filePaths: string[]
 ): Promise<Map<string, string>> {
-  const { execSync } = await import('child_process');
   const timestamps = new Map<string, string>();
 
-  // Batch files to avoid Windows command line length limit (~8191 chars)
-  const BATCH_SIZE = 50;
+  // Without the full history git reports the shallow boundary commit for every
+  // file, so leave the timestamps empty rather than showing a wrong date.
+  if (!(await ensureFullGitHistory())) return timestamps;
 
-  for (let i = 0; i < filePaths.length; i += BATCH_SIZE) {
-    const batch = filePaths.slice(i, i + BATCH_SIZE);
+  const { execFile } = await import('child_process');
+  const { promisify } = await import('util');
+  const run = promisify(execFile);
 
-    try {
-      const result = execSync(
-        `git log --format="%ct|%H" --name-only -- ${batch.map(f => `"${f}"`).join(' ')}`,
-        { encoding: 'utf-8', maxBuffer: 10 * 1024 * 1024 }
-      );
-
-      const lines = result.split('\n');
-      let currentTimestamp: string | null = null;
-
-      for (const line of lines) {
-        if (line.includes('|')) {
-          const [timestamp] = line.split('|');
-          currentTimestamp = new Date(parseInt(timestamp) * 1000).toISOString();
-        } else if (line.trim() && currentTimestamp) {
-          const resolvedPath = path.resolve(line.trim());
-          if (!timestamps.has(resolvedPath)) {
-            timestamps.set(resolvedPath, currentTimestamp);
+  const CONCURRENCY = 16;
+  let next = 0;
+  await Promise.all(
+    Array.from({ length: CONCURRENCY }, async () => {
+      while (next < filePaths.length) {
+        const filePath = filePaths[next++];
+        try {
+          const { stdout } = await run('git', [
+            'log',
+            '-1',
+            '--format=%ct',
+            '--',
+            filePath,
+          ]);
+          // Empty for a path that was never committed.
+          const seconds = parseInt(stdout.trim(), 10);
+          if (!isNaN(seconds)) {
+            timestamps.set(
+              path.resolve(filePath),
+              new Date(seconds * 1000).toISOString()
+            );
           }
+        } catch (error) {
+          console.warn(`Failed to get git timestamp for ${filePath}:`, error);
         }
       }
-    } catch (error) {
-      console.warn(
-        `Failed to get git timestamps for batch ${Math.floor(i / BATCH_SIZE) + 1}:`,
-        error
-      );
-    }
-  }
+    })
+  );
 
   return timestamps;
 }
@@ -628,14 +813,67 @@ async function generateUsacoDivisionsJson(
   );
 
   // Write to public directory
-  const publicDir = join(process.cwd(), 'public');
-  const outputPath = join(publicDir, 'usaco-divisions.json');
-
   await writeFile(
-    outputPath,
+    USACO_DIVISIONS_JSON,
     JSON.stringify({ problems: usacoDivisionProblems }, null, 2)
   );
-  console.log(`USACO divisions JSON written to: ${outputPath}`);
+  console.log(`USACO divisions JSON written to: ${USACO_DIVISIONS_JSON}`);
+}
+
+/**
+ * Writes the union of every tag used by any problem, sorted, to
+ * public/problem-tags.json. ProblemSuggestionModal fetches it to autocomplete
+ * the tags field, so suggestions reuse existing tag names instead of coining
+ * near-duplicates ("Trees" for "Tree", "Maths" for "Math").
+ */
+export async function generateProblemTagsJson(db: Database.Database) {
+  const { writeFile } = await import('fs/promises');
+
+  const rows = db.prepare('SELECT tags_json FROM problems').all() as Array<{
+    tags_json: string;
+  }>;
+
+  const tags = new Set<string>();
+  for (const row of rows) {
+    for (const tag of JSON.parse(row.tags_json || '[]') as string[]) {
+      if (tag) tags.add(tag);
+    }
+  }
+
+  const sorted = [...tags].sort((a, b) =>
+    a.localeCompare(b, 'en', { sensitivity: 'base' })
+  );
+
+  await writeFile(PROBLEM_TAGS_JSON, JSON.stringify({ tags: sorted }, null, 2));
+  console.log(
+    `Problem tags JSON written to: ${PROBLEM_TAGS_JSON} (${sorted.length} tags)`
+  );
+}
+
+/**
+ * Regenerates public/usaco-divisions.json if it is missing.
+ *
+ * It is gitignored and only rewritten when a .problems.json changes, so a
+ * clone (or a pull across the commit that untracked it) can have an up-to-date
+ * content.db and no JSON, leaving DivisionList to 404 on it. Both dev entry
+ * points call this on startup. Returns whether it had to write the file.
+ */
+export async function ensureUsacoDivisionsJson(): Promise<boolean> {
+  const { access } = await import('fs/promises');
+  try {
+    await access(USACO_DIVISIONS_JSON);
+    await access(PROBLEM_TAGS_JSON);
+    return false;
+  } catch {
+    const db = await getWritableDatabase();
+    try {
+      await generateUsacoDivisionsJson(db);
+      await generateProblemTagsJson(db);
+    } finally {
+      db.close();
+    }
+    return true;
+  }
 }
 
 // async: do all parsing/IO up front
@@ -649,8 +887,10 @@ async function prepareMdxInsert(relPath: string, absPath: string) {
     ? 'module'
     : 'solution';
 
-  const gitTimestamps = await getBatchGitTimestamps([absPath]);
-  const gitTime = gitTimestamps.get(path.resolve(absPath)) || null;
+  const gitTimestamps = await getGitTimestamps(
+    type === 'module' ? [absPath, problemsJsonPath(absPath)] : [absPath]
+  );
+  const gitTime = getLastUpdated(gitTimestamps, absPath, type);
 
   const division =
     type === 'module' ? moduleIDToSectionMap[content.frontmatter.id] : null;
@@ -668,104 +908,106 @@ export async function updateFiles(
 ): Promise<void> {
   const db = await getWritableDatabase();
   try {
-    let problemsChanged = false;
+    await asSoleWriter(db, async () => {
+      let problemsChanged = false;
 
-    for (const [absPath, event] of changes) {
-      const relPath = path.relative(process.cwd(), absPath);
+      for (const [absPath, event] of changes) {
+        const relPath = path.relative(process.cwd(), absPath);
 
-      if (
-        absPath.endsWith('.problems.json') ||
-        path.basename(absPath) === 'extraProblems.json'
-      ) {
-        problemsChanged = true;
-        continue;
-      }
-
-      if (absPath.endsWith('.mdx')) {
-        let prepared = null;
-        if (event !== 'unlink') {
-          try {
-            prepared = await prepareMdxInsert(relPath, absPath);
-          } catch (err) {
-            console.error(
-              `[watch] Failed to parse ${relPath}, keeping old row:`,
-              err
-            );
-            continue; // skip DELETE entirely — preserve old content
-          }
+        if (
+          absPath.endsWith('.problems.json') ||
+          path.basename(absPath) === 'extraProblems.json'
+        ) {
+          problemsChanged = true;
+          continue;
         }
 
-        const tx = db.transaction(() => {
-          db.prepare('DELETE FROM mdx_content WHERE file_path = ?').run(
-            relPath
-          );
-          db.prepare('DELETE FROM module_frontmatter WHERE file_path = ?').run(
-            relPath
-          );
-          db.prepare(
-            'DELETE FROM solution_frontmatter WHERE file_path = ?'
-          ).run(relPath);
+        if (absPath.endsWith('.mdx')) {
+          let prepared = null;
+          if (event !== 'unlink') {
+            try {
+              prepared = await prepareMdxInsert(relPath, absPath);
+            } catch (err) {
+              console.error(
+                `[watch] Failed to parse ${relPath}, keeping old row:`,
+                err
+              );
+              continue; // skip DELETE entirely — preserve old content
+            }
+          }
 
-          if (prepared) {
-            const { content, type, gitTime, division } = prepared;
-
+          const tx = db.transaction(() => {
+            db.prepare('DELETE FROM mdx_content WHERE file_path = ?').run(
+              relPath
+            );
             db.prepare(
-              `INSERT OR REPLACE INTO mdx_content
+              'DELETE FROM module_frontmatter WHERE file_path = ?'
+            ).run(relPath);
+            db.prepare(
+              'DELETE FROM solution_frontmatter WHERE file_path = ?'
+            ).run(relPath);
+
+            if (prepared) {
+              const { content, type, gitTime, division } = prepared;
+
+              db.prepare(
+                `INSERT OR REPLACE INTO mdx_content
                  (id, type, file_path, frontmatter_json, body, toc_json, mdast_json,
                   cpp_oc, java_oc, py_oc, division, git_author_time)
                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-            ).run(
-              content.frontmatter.id,
-              type,
-              content.fileAbsolutePath,
-              JSON.stringify(content.frontmatter),
-              content.body,
-              JSON.stringify(content.toc),
-              content.mdast ? JSON.stringify(content.mdast) : null,
-              content.cppOc,
-              content.javaOc,
-              content.pyOc,
-              content.fields?.division || null,
-              gitTime
-            );
+              ).run(
+                content.frontmatter.id,
+                type,
+                content.fileAbsolutePath,
+                JSON.stringify(content.frontmatter),
+                content.body,
+                JSON.stringify(content.toc),
+                content.mdast ? JSON.stringify(content.mdast) : null,
+                content.cppOc,
+                content.javaOc,
+                content.pyOc,
+                content.fields?.division || null,
+                gitTime
+              );
 
-            if (type === 'module') {
-              db.prepare(
-                `INSERT OR REPLACE INTO module_frontmatter
+              if (type === 'module') {
+                db.prepare(
+                  `INSERT OR REPLACE INTO module_frontmatter
                    (file_path, module_id, frontmatter_json, division)
                  VALUES (?, ?, ?, ?)`
-              ).run(
-                content.fileAbsolutePath,
-                content.frontmatter.id,
-                JSON.stringify(content.frontmatter),
-                division
-              );
-            } else {
-              db.prepare(
-                `INSERT OR REPLACE INTO solution_frontmatter
+                ).run(
+                  content.fileAbsolutePath,
+                  content.frontmatter.id,
+                  JSON.stringify(content.frontmatter),
+                  division
+                );
+              } else {
+                db.prepare(
+                  `INSERT OR REPLACE INTO solution_frontmatter
                    (file_path, solution_id, frontmatter_json)
                  VALUES (?, ?, ?)`
-              ).run(
-                content.fileAbsolutePath,
-                content.frontmatter.id,
-                JSON.stringify(content.frontmatter)
-              );
+                ).run(
+                  content.fileAbsolutePath,
+                  content.frontmatter.id,
+                  JSON.stringify(content.frontmatter)
+                );
+              }
             }
-          }
-        });
-        tx();
+          });
+          tx();
+        }
       }
-    }
 
-    if (problemsChanged) {
-      console.log('[watch] Re-indexing problems...');
-      db.exec('DELETE FROM problems; DELETE FROM module_problem_lists;');
-      await indexProblems(db);
-      db.exec('DELETE FROM problem_slugs; DELETE FROM usaco_ids;');
-      await indexProblemSlugs(db);
-      await indexUSACOIds(db);
-      await generateUsacoDivisionsJson(db);
-    }
+      if (problemsChanged) {
+        console.log('[watch] Re-indexing problems...');
+        db.exec('DELETE FROM problems; DELETE FROM module_problem_lists;');
+        await indexProblems(db);
+        db.exec('DELETE FROM problem_slugs; DELETE FROM usaco_ids;');
+        await indexProblemSlugs(db);
+        await indexUSACOIds(db);
+        await generateUsacoDivisionsJson(db);
+      }
+    });
   } finally {
     db.close();
   }

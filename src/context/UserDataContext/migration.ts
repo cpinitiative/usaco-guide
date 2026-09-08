@@ -30,6 +30,8 @@ export default function runMigration() {
       hideModules: getLegacy('hideModules')!,
       showIgnored: getLegacy('showIgnored')!,
       divisionTableQuery: getLegacy('divisionTableQuery')!,
+      // didn't exist in the legacy schema
+      problemListPages: {},
       lang: getLegacy('lang')!,
       lastViewedModule: getLegacy('lastViewedModule')!,
       lastVisitDate: getLegacy('lastVisitDate')!,

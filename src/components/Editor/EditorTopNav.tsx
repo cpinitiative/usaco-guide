@@ -1,4 +1,4 @@
-import { InformationCircleIcon } from '@heroicons/react/outline';
+import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import classNames from 'classnames';
 import { useAtomValue, useSetAtom } from 'jotai';
 import Link from 'next/link';

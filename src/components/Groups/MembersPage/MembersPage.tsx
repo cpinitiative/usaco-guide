@@ -18,6 +18,7 @@ export default function MembersPage(): JSX.Element {
   const [activeMemberId, setActiveMemberId] = React.useState<string | null>(
     null
   );
+  const activeMember = memberInfo?.find(x => x?.uid === activeMemberId);
 
   React.useEffect(() => {
     const handler = () => {
@@ -59,9 +60,15 @@ export default function MembersPage(): JSX.Element {
           >
             {activeMemberId ? (
               memberInfo ? (
-                <MemberDetail
-                  member={memberInfo.find(x => x?.uid === activeMemberId)!}
-                />
+                activeMember ? (
+                  <MemberDetail member={activeMember} />
+                ) : (
+                  <div>
+                    <p className="mt-8 text-center text-xl">
+                      Select a member to begin!
+                    </p>
+                  </div>
+                )
               ) : (
                 <div>
                   <p className="mt-8 text-center text-xl">Loading...</p>

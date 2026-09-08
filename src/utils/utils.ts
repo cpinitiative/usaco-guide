@@ -36,7 +36,8 @@ export function graphqlToModuleInfo(mdx: MdxContent): ModuleInfo {
     mdx.frontmatter.frequency,
     mdx.toc,
     mdx.fileAbsolutePath,
-    mdx.fields.gitAuthorTime
+    mdx.fields.gitAuthorTime,
+    mdx.frontmatter.wide ?? false
   );
 }
 

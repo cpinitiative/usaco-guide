@@ -30,6 +30,11 @@ export interface MdxFrontmatter {
   isIncomplete?: boolean;
   lastUpdated?: string;
   division?: SectionID;
+  /**
+   * Widens the content column for modules whose content (ex. the USACO
+   * monthlies table) doesn't fit in the default width.
+   */
+  wide?: boolean;
   // Problem-specific fields
   source?: string;
   difficulty?: string;
