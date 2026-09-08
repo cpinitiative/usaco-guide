@@ -5,16 +5,15 @@
 # and, just as importantly, which fields are deliberately left alone.
 name: Problem Data
 
+# No `paths` filter. These are required status checks, and a required check that
+# never runs leaves a pull request waiting on a status that will not arrive -- so
+# it has to report on every pull request, not only the ones touching content.
+# Nothing is lost by that: py/check_problems_json.py compares a problem against its copies elsewhere,
+# so it does the same work whatever the diff contains, in a few seconds.
 on:
   pull_request:
     branches:
       - master
-    paths:
-      - 'content/**/*.problems.json'
-      - 'content/extraProblems.json'
-      - 'src/components/markdown/ProblemsList/DivisionList/div_to_probs.json'
-      - 'py/check_problems_json.py'
-      - '.github/workflows/problem-data.yml'
 
 # A new push supersedes whatever the previous one was still checking. Cancelling
 # is scoped to pull requests: a run on master is validating what actually ships,
