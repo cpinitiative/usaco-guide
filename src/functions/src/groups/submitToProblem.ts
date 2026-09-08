@@ -9,12 +9,7 @@ if (admin.apps.length === 0) {
 export default onDocumentWritten(
   'groups/{groupId}/posts/{postId}/problems/{problemId}/submissions/{submissionId}',
   async event => {
-    const { groupId, postId, problemId, submissionId } = event.params as {
-      groupId: string;
-      postId: string;
-      problemId: string;
-      submissionId: string;
-    };
+    const { groupId, postId, problemId, submissionId } = event.params;
 
     const recalculateLeaderboard = async (data: Submission) => {
       const uid = data.userID;
