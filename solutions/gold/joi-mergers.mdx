@@ -95,16 +95,17 @@ int main() {
 	int leaves = 0;
 	// implementation of merge(tree, root)
 	// returns [degree of C, XOR of C] where C is potentially incomplete root component
-	[&](this auto dfs, int x, int p) -> array<int, 2> {
+	auto dfs = [&](auto &&self, int x, int p) -> array<int, 2> {
 		int deg = 0, cur = val[x];
 		for (int y : g[x])
 			if (y != p) {
-				auto [d, sm] = dfs(y, x);
+				auto [d, sm] = self(self, y, x);
 				deg += d, cur ^= sm;
 			}
 		if (!cur && deg + (p > 0) == 1) ++leaves;
 		return {cur ? deg : 1, cur};
-	}(1, 0);
+	};
+	dfs(dfs, 1, 0);
 	cout << (leaves + 1) / 2 << "\n";
 }
 ```

@@ -11,6 +11,13 @@ on:
       - 'src/components/markdown/ProblemsList/DivisionList/*.json'
       - '.github/workflows/solutions.yml'
 
+# A new push supersedes whatever the previous one was still checking. Cancelling
+# is scoped to pull requests: a run on master is validating what actually ships,
+# so let it finish.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   check-solutions:
     runs-on: ubuntu-latest
