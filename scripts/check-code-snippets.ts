@@ -33,6 +33,30 @@ import { promisify } from 'util';
 const execFileAsync = promisify(execFile);
 
 const STANDARD = process.env.CXX_STANDARD ?? 'c++20';
+
+/**
+ * Diagnostics promoted to errors. Deliberately a short list: g++ has plenty
+ * more to say about this corpus, but almost all of it is noise here. Of the 76
+ * warnings the wider set produced, 46 were not defects -- every -Wparentheses
+ * hit was code that already means what it looks like (`1 << j - 1` really is
+ * `1 << (j-1)`), every -Wreorder hit initialised from a constructor parameter
+ * rather than another member, and -Wshift-count-overflow fired on the module
+ * that exists to demonstrate that `1 << 32` overflows.
+ *
+ * These two are not like that:
+ *
+ *   -Wvla          Adding_Solution.mdx bans variable-length arrays outright,
+ *                  and reviewers were still catching them by hand.
+ *   -Wreturn-type  Falling off the end of a non-void function is undefined
+ *                  behaviour, whatever the caller does with the result.
+ *
+ * Both were clean at zero remaining occurrences when this was introduced, so a
+ * new hit is a new defect. The checker only compiles snippets that contain both
+ * an #include and an int main(, which is why the deliberate VLA in
+ * Intro_DS.mdx -- a bare fragment, shown precisely to say not to write one --
+ * needs no opt-out.
+ */
+const ERRORS = ['-Werror=vla', '-Werror=return-type'];
 /** Each check is its own process, so the pool can be as wide as the machine. */
 const JOBS = Number(process.env.JOBS) || availableParallelism();
 const PYTHON = process.env.PYTHON ?? 'python3';
@@ -175,7 +199,16 @@ async function main() {
           const { snippet, source } = jobs[at];
           const [command, args] =
             snippet.lang === 'cpp'
-              ? [cxx, [`-std=${STANDARD}`, ...include, '-fsyntax-only', source]]
+              ? [
+                  cxx,
+                  [
+                    `-std=${STANDARD}`,
+                    ...include,
+                    ...ERRORS,
+                    '-fsyntax-only',
+                    source,
+                  ],
+                ]
               : [PYTHON, ['-c', PARSE_PYTHON, source]];
           try {
             await execFileAsync(command, args, { maxBuffer: 32 << 20 });
