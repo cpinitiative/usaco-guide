@@ -92,7 +92,7 @@ constexpr int msk2(int x) { return p2(x) - 1; }
 ll cdiv(ll a, ll b) {
 	return a / b + ((a ^ b) > 0 && a % b);
 }  // divide a by b rounded up
-ll fdiv(ll a, ll b) {
+ll floor_div(ll a, ll b) {
 	return a / b - ((a ^ b) < 0 && a % b);
 }  // divide a by b rounded down
 
@@ -276,8 +276,8 @@ void setIO(str s = "") {
  * Source: Own
  */
 
-using T = ll;                          // ll or db
-db fdiv(db a, db b) { return a / b; }  // for doubles just divide normally
+using T = ll;                               // ll or db
+db floor_div(db a, db b) { return a / b; }  // for doubles just divide normally
 // for lls do floored division
 
 const T inf = LLONG_MAX;
@@ -289,7 +289,7 @@ struct Line {             // a and b -> slope and y-intercept
 	bool operator<(const Line &y) const { return _Q ? lst < y.lst : a < y.a; }
 	T bet(const Line &y) const {
 		assert(a <= y.a);
-		return a == y.a ? (b >= y.b ? inf : -inf) : fdiv(b - y.b, y.a - a);
+		return a == y.a ? (b >= y.b ? inf : -inf) : floor_div(b - y.b, y.a - a);
 	}
 };
 
