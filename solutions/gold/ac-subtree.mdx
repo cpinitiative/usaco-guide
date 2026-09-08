@@ -138,7 +138,7 @@ tcT > int lwb(V<T> &a, const T &b) { return int(lb(all(a), b) - bg(a)); }
 #define rep(a) F0R(_, a)
 #define each(a, x) for (auto &a : x)
 
-const int MOD = 1e9 + 7;  // 998244353;
+int MOD = 1e9 + 7;  // 998244353;
 const int MX = 2e5 + 5;
 const ll INF = 1e18;  // not too close to LLONG_MAX
 const db PI = acos((db)-1);
@@ -149,8 +149,8 @@ template <class T> using pqg = priority_queue<T, vector<T>, greater<T>>;
 // bitwise ops
 // also see https://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html
 constexpr int pct(int x) { return __builtin_popcount(x); }  // # of bits set
-constexpr int
-bits(int x) {  // assert(x >= 0); // make C++11 compatible until USACO updates ...
+constexpr int bits(int x) {  // assert(x >= 0); // make C++11 compatible until
+	                         // USACO updates ...
 	return x == 0 ? 0 : 31 - __builtin_clz(x);
 }  // floor(log2(x))
 constexpr int p2(int x) { return 1 << x; }
@@ -453,7 +453,7 @@ template <int SZ> struct SubtreeDP {
 	};
 	T up[SZ], down[SZ];
 	void dfs(int x) {
-		trav(t, adj[x]) if (t != par[x]) {
+		each(t, adj[x]) if (t != par[x]) {
 			par[t] = x;
 			dfs(t);
 			down[x] += down[t];
@@ -494,7 +494,7 @@ template <int SZ> struct SubtreeDP {
 		dfs2(1);
 		FOR(i, 1, n + 1) ps((down[i].v - 1) * up[i].v);
 		// FOR(i,1,n+1) { alternative method
-		//     T p = T(); trav(t,adj[i]) p += getSub(t,i);
+		//     T p = T(); each(t,adj[i]) p += getSub(t,i);
 		//     ps(p.v);
 		// }
 	}
