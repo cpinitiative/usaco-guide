@@ -253,8 +253,10 @@ export function extractSnippets(file: string, source: string): Snippet[] {
       // A whole program, not a fragment illustrating one function. Solutions
       // spell the entry point `int main`, `signed main` or `int32_t main`.
       if (!code.includes('#include') || !MAIN.test(code)) continue;
-      // Needs a header that ships with the problem, e.g. grader.h.
-      if (/^\s*#include\s*"/m.test(code)) continue;
+      // Needs a header that ships with the problem, e.g. grader.h. Quoting
+      // the GCC catch-all is just a style, not a missing header -- seven whole
+      // programs were being skipped over that.
+      if (/^\s*#include\s*"(?!bits\/stdc\+\+\.h")/m.test(code)) continue;
     } else {
       // An excerpt lifted out of a function, which will not parse alone.
       const first = code.split('\n').find(l => l.trim() !== '');
