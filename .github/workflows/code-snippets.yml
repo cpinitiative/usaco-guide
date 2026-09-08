@@ -25,8 +25,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      # Somewhere cacheable, rather than Corepack's default under ~/.cache.
-      COREPACK_HOME: ${{ github.workspace }}/.corepack
+      # Somewhere cacheable -- but outside the repo, or yarn.js inherits
+      # "type": "module" from our package.json and fails to load as CommonJS.
+      COREPACK_HOME: ${{ runner.temp }}/corepack
       CPLUS_INCLUDE_PATH: ${{ github.workspace }}/.ac-library
     steps:
       - uses: actions/checkout@v7
@@ -41,7 +42,7 @@ jobs:
       - name: Cache Corepack
         uses: actions/cache@v6
         with:
-          path: .corepack
+          path: ${{ runner.temp }}/corepack
           key: corepack-${{ hashFiles('package.json') }}
       - name: Enable Corepack
         run: corepack enable
