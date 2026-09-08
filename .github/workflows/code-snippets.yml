@@ -33,11 +33,16 @@ jobs:
       # install is only here to provide tsx, so a cache hit skips almost all of it.
       - name: Cache node modules
         uses: actions/cache@v6
+        id: node-modules
         with:
           path: node_modules
           key: node-modules-${{ hashFiles('**/yarn.lock') }}
 
+      # The key is the lockfile hash, so a hit means the tree already matches it
+      # and `yarn` would only spend half a minute confirming that. `yarn run`
+      # needs no install of its own -- Corepack provides the yarn binary.
       - name: Install dependencies
+        if: steps.node-modules.outputs.cache-hit != 'true'
         run: yarn
 
       # Only the snippets in files this PR touches, so existing breakage
