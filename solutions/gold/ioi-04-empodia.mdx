@@ -9,12 +9,12 @@ author: Benjamin Qi
 
 ## Explanation
 
-Let $v[0],v[1],\ldots,v[n-1]$ denote the input sequence. An interval
-$[i\ldots j]$ is framed if all three of the following conditions hold:
+Let $v[0],v[1],\dots,v[n-1]$ denote the input sequence. An interval
+$[i\dots j]$ is framed if all three of the following conditions hold:
 
 - $v[i]-i=v[j]-j$
-- $v[i]=\min(v[i\ldots j])$
-- $v[j]=\max(v[i\ldots j])$
+- $v[i]=\min(v[i\dots j])$
+- $v[j]=\max(v[i\dots j])$
 
 Our approach will be to iterate over all $j=[0,n)$ and check whether $j$
 contributes a new empodio with right endpoint $j$.
@@ -25,14 +25,14 @@ contributes a new empodio with right endpoint $j$.
   $v[i]>v[j]$. Then add $j$ to $mn$.
 - To check whether $j$ is part of an empodio, find the maximum $i\in mn$ such
   that $v[i]-i=v[j]-j$. If $i$ is to the right of the rightmost left endpoint of
-  any empodio found so far and $v[j]=\max(v[i\ldots j])$, then we have found a
+  any empodio found so far and $v[j]=\max(v[i\dots j])$, then we have found a
   new empodio.
 
-To check whether $v[j]=\max(v[i\ldots j])$, we can maintain a separate stack
-$mx$ that stores all indices $i$ such that $v[i]=\max(v[i\ldots j])$.
+To check whether $v[j]=\max(v[i\dots j])$, we can maintain a separate stack
+$mx$ that stores all indices $i$ such that $v[i]=\max(v[i\dots j])$.
 
 **Note:** The test data on Yandex has sequences of length greater than $1100000$
-$\ldots$
+$\dots$
 
 ## Implementation
 

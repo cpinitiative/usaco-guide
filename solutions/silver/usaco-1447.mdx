@@ -28,7 +28,6 @@ It can be shown that this strategy is optimal. If we instead chose to cut down a
 <CPPSection>
 
 ```cpp
-
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -41,15 +40,15 @@ void solve() {
 	sort(x.begin(), x.end());
 
 	vector<array<int, 4>> critical_points;
-	// Process intervals and insert them into the critical points list, using their
-	// right and left bounds, and the amount of trees in the interval minus the
-	// restriction
+	// Process intervals and insert them into the critical points list, using
+	// their right and left bounds, and the amount of trees in the interval
+	// minus the restriction
 	for (int i = 0; i < k; i++) {
 		int left, right, t;
 		cin >> left >> right >> t;
 		auto right_amt = upper_bound(x.begin(), x.end(), right);
 		auto left_amt = lower_bound(x.begin(), x.end(), left);
-		critical_points.push_back({l, 0, r, (right_amt - left_amt) - t});
+		critical_points.push_back({left, 0, right, (right_amt - left_amt) - t});
 	}
 
 	// Add trees to the critical points list using their position
