@@ -1,6 +1,7 @@
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { useRouter } from 'next/router';
 import * as React from 'react';
+import toast from 'react-hot-toast';
 import { useSignIn } from '../../context/SignInContext';
 import {
   useFirebaseUser,
@@ -141,14 +142,11 @@ const JoinGroupPage = () => {
                           if (data.errorCode === 'ALREADY_IN_GROUP') {
                             router.push(`/groups/${data.groupId}`);
                           }
-                          setError({
-                            errorCode: data.errorCode,
-                            message: data.message,
-                          });
+                          toast.error(data.message ?? 'Failed to join group.');
                         }
                       })
                       .catch(e => {
-                        setError(e);
+                        toast.error(e instanceof Error ? e.message : String(e));
                       })
                       .finally(() => setIsJoining(false));
                   }}

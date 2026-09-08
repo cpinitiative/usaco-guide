@@ -3,8 +3,11 @@ import { usePathname } from 'next/navigation';
 import * as React from 'react';
 import { Fragment } from 'react';
 import { useMarkdownProblemLists } from '../../../context/MarkdownProblemListsContext';
+import { useIsUserDataLoaded } from '../../../context/UserDataContext/UserDataContext';
 import {
   useHideDifficultySetting,
+  useProblemListPages,
+  useSetProblemListPage,
   useShowTagsSetting,
 } from '../../../context/UserDataContext/properties/simpleProperties';
 import { ProblemInfo } from '../../../models/problem';
@@ -12,6 +15,7 @@ import { ListTable } from '../ListTable/ListTable';
 import { DivisionProblemInfo } from './DivisionList/DivisionProblemInfo';
 import ProblemsListHeader from './ProblemsListHeader';
 import ProblemsListItem from './ProblemsListItem';
+import ProblemsListPagination from './ProblemsListPagination';
 import SuggestProblemRow from './SuggestProblemRow';
 
 type ProblemsListProps =
@@ -20,6 +24,11 @@ type ProblemsListProps =
       children?: React.ReactNode;
       problems?: string;
       hideSuggestProblemButton?: boolean;
+      /**
+       * If set, the table is split into pages of this many problems. Problem
+       * order is unchanged. Only supported for non-division tables.
+       */
+      pageSize?: number;
     }
   | {
       title?: string;
@@ -36,6 +45,7 @@ type AnnotatedProblemsListProps =
       children?: React.ReactNode;
       problems: ProblemInfo[];
       hideSuggestProblemButton?: boolean;
+      pageSize?: number;
     }
   | {
       isDivisionTable: true;
@@ -80,14 +90,109 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
 
   const path = usePathname();
 
+  const tableId = `problemlist-${
+    props.isDivisionTable === false
+      ? props.tableName
+      : 'division-' + props.division
+  }`;
+
+  // Pagination is opt-in via the `pageSize` prop, and only for non-division
+  // tables (division tables are already filtered by division & season).
+  const pageSize = props.isDivisionTable === false ? props.pageSize : undefined;
+  const isPaginated = !!pageSize && props.problems!.length > pageSize;
+  const numPages = isPaginated
+    ? Math.ceil(props.problems!.length / pageSize!)
+    : 1;
+  const [page, setPage] = React.useState(0);
+  // Set once we've jumped to the page containing the problem linked to by the
+  // URL hash, so that we can scroll to it after that page has rendered.
+  const [pendingHashScroll, setPendingHashScroll] = React.useState<
+    string | null
+  >(null);
+
+  const problemsRef = React.useRef(props.problems);
+  problemsRef.current = props.problems;
+
+  // The list id alone isn't unique across the site -- every conclusion module
+  // names its list "problems" -- so scope the remembered page to the module.
+  const pageKey = `${path}|${
+    props.isDivisionTable === false ? props.tableName : ''
+  }`;
+  const storedPages = useProblemListPages();
+  const setStoredPage = useSetProblemListPage();
+  const isUserDataLoaded = useIsUserDataLoaded();
+  // Restoring only happens once, so that a slow write doesn't bounce the user
+  // back to the page they just navigated away from.
+  const hasSetPageRef = React.useRef(false);
+
+  // User data isn't available on the first render, so the remembered page gets
+  // restored once it loads.
+  React.useEffect(() => {
+    if (!isPaginated || hasSetPageRef.current) return;
+    const storedPage = storedPages?.[pageKey];
+    if (storedPage === undefined) return;
+    hasSetPageRef.current = true;
+    // The list may have shrunk since the page was remembered.
+    setPage(Math.min(Math.max(storedPage, 0), numPages - 1));
+  }, [isPaginated, storedPages, pageKey, numPages]);
+
+  // Links to a specific problem (`#problem-<uniqueId>`) may point at a problem
+  // that isn't on the first page, so switch to the page containing it. The
+  // browser can't scroll to it on its own since it isn't rendered yet.
+  React.useEffect(() => {
+    if (!isPaginated) return;
+    const goToHashedProblem = () => {
+      const prefix = '#problem-';
+      const hash = decodeURIComponent(window.location.hash);
+      if (!hash.startsWith(prefix)) return;
+      const uniqueId = hash.substring(prefix.length);
+      const index = (problemsRef.current as ProblemInfo[]).findIndex(
+        problem => problem.uniqueId === uniqueId
+      );
+      if (index === -1) return;
+      // A deep link is more specific than the remembered page, so it wins.
+      hasSetPageRef.current = true;
+      setPage(Math.floor(index / pageSize!));
+      setPendingHashScroll(`problem-${uniqueId}`);
+    };
+    goToHashedProblem();
+    window.addEventListener('hashchange', goToHashedProblem);
+    return () => window.removeEventListener('hashchange', goToHashedProblem);
+  }, [isPaginated, pageSize]);
+
+  React.useEffect(() => {
+    if (!pendingHashScroll) return;
+    document.getElementById(pendingHashScroll)?.scrollIntoView();
+    setPendingHashScroll(null);
+  }, [pendingHashScroll]);
+
+  // Scrolling has to happen after the new page has been committed to the DOM,
+  // otherwise a shorter page shifts the layout out from under us.
+  const [pendingScrollToTable, setPendingScrollToTable] = React.useState(false);
+  React.useEffect(() => {
+    if (!pendingScrollToTable) return;
+    document
+      .getElementById(tableId)
+      ?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    setPendingScrollToTable(false);
+  }, [pendingScrollToTable, tableId]);
+
+  const handlePageChange = (newPage: number) => {
+    hasSetPageRef.current = true;
+    setPage(newPage);
+    setPendingScrollToTable(true);
+    // updateUserData() throws if it's called before user data finishes loading.
+    if (isUserDataLoaded) setStoredPage(pageKey, newPage);
+  };
+
+  const shownProblems = isPaginated
+    ? props.problems!.slice(page * pageSize!, (page + 1) * pageSize!)
+    : props.problems!;
+
   return (
     <>
       <ListTable
-        id={`problemlist-${
-          props.isDivisionTable === false
-            ? props.tableName
-            : 'division-' + props.division
-        }`}
+        id={tableId}
         header={
           <ProblemsListHeader
             showTags={showTags}
@@ -122,7 +227,7 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
           })}
         {props.isDivisionTable === false && (
           <>
-            {props.problems.map((problem: ProblemInfo) => (
+            {(shownProblems as ProblemInfo[]).map((problem: ProblemInfo) => (
               <ProblemsListItem
                 key={problem.uniqueId}
                 problem={problem}
@@ -136,12 +241,24 @@ export function ProblemsList(unannotatedProps: ProblemsListProps): JSX.Element {
                 showPercent={shouldShowSolvePercentage}
               />
             ))}
-            {!props.hideSuggestProblemButton && path.includes('conclusion') && (
-              <SuggestProblemRow listName={props.tableName!} />
-            )}
+            {!props.hideSuggestProblemButton &&
+              path.includes('conclusion') &&
+              page === numPages - 1 && (
+                <SuggestProblemRow listName={props.tableName!} />
+              )}
           </>
         )}
       </ListTable>
+
+      {isPaginated && (
+        <ProblemsListPagination
+          page={page}
+          numPages={numPages}
+          numProblems={props.problems!.length}
+          pageSize={pageSize!}
+          onChange={handlePageChange}
+        />
+      )}
 
       <Transition show={showModal} as={Fragment}>
         <div className="fixed inset-x-0 bottom-0 z-10 px-4 pb-6 sm:inset-0 sm:flex sm:items-center sm:justify-center sm:p-0">

@@ -28,7 +28,7 @@ strongly connected component. We can compute these components using either
 	url="https://www.topcoder.com/thrive/articles/kosarajus-algorithm-for-strongly-connected-components"/>
 </Resources>
 
-## Explanation
+### Explanation
 
 In the first phase, the algorithm performs a depth-first search (DFS) on the original graph to determine the exit times of vertices; that is, the node that is processed last will be at the top of the stack (reverse topological sort). As each vertex finishes processing, it is pushed onto a stack. In the next phase, nodes are processed off the stack in the order of their decreasing finish times. This ordering will be used in the second phase.
 
@@ -46,7 +46,7 @@ For visualization, refer to the TopCoder resource mentioned [here](https://www.t
 A node is considered a sink in a graph if it has out-degree of 0 (except for the source node).
 </Info>
 
-## Implementation
+### Implementation
 
 **Time Complexity:** $\mathcal{O}(N+M)$
 
@@ -268,14 +268,22 @@ print(*comp_id)
 	<Resource source="Wikipedia" title="Tarjan's SCC Algorithm" url="https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm" />
 </Resources>
 
-<IncompleteSection>
 
-link to dpv in resources and just tell them to look at that, no way we're
-beating that explanation
+### Explanation
 
-</IncompleteSection>
+In Tarjan's algorithm, a single depth-first search (DFS) is performed on the original graph to determine the discovery times and the lowest reachable nodes (`low` values) for each vertex; that is, the node that is discovered first in a cycle acts as the anchor. As each vertex is visited for the first time, it is pushed onto a stack. An important stack invariant maintained during this process is that each vertex in the stack has a path to the following vertex in the stack. In this single phase, nodes are processed and kept on the stack as long as they are part of the current active search path. This stack will be used to extract the components.
 
-## Implementation
+During this DFS, the algorithm explores all outgoing edges from the current vertex, updating its `low` value to track the lowest discovery time reachable specifically among nodes that are still active on the stack. The DFS processes nodes according to the edges defined by the original graph. By tracking discovery times and following this specific order, the DFS run can identify all vertices of one SCC before extracting them and moving on to the next.
+
+We know that identifying cycles using discovery times will find the exact same strongly connected components (SCCs) because tracking lowest reachable nodes perfectly maps the reachability within the components. Each SCC is both maximal and disjoint. This means that within an SCC, every pair of vertices is mutually reachable; you can get from any vertex $u$ to any other vertex $v$, and vice versa. The term "maximal" indicates that you can't add any more vertices to an SCC without losing its strongly connected property. Furthermore, SCCs are disjoint, which means that no vertex can belong to more than one SCC. If a vertex were part of two SCCs, those SCCs would actually merge into a single, larger SCC. Therefore, ignoring cross-edges to nodes already removed from the stack doesn't affect the valid connections in the current graph.
+
+After fully exploring all neighbors of a vertex, we check if the vertex's `low` value still exactly matches its original discovery identifier. This ensures that we identify the node that was discovered first in the current cycle, which is guaranteed to be part of an SCC with no paths looping back to earlier discovered SCCs — essentially making it a root in the DFS spanning tree.
+
+By processing the vertices in this specific order, we fully explore all vertices within the current SCC before extracting it. SCCs are maximal subgraphs where every vertex can reach every other vertex within the same subgraph, so the DFS will traverse through all nodes in an SCC, stacking them consecutively above the root. Once the entire SCC is processed and the root is identified, we pop nodes off the stack until the root is removed, ensuring that each SCC is handled independently and thoroughly, so no vertices from another SCC will be mistakenly included in the current one.
+
+
+
+### Implementation
 
 **Time Complexity:** $\mathcal{O}(N+M)$
 
@@ -289,32 +297,40 @@ beating that explanation
 
 using std::cout;
 using std::endl;
+using std::min;
 using std::vector;
 
 /** Takes in an adjacency list and calculates the SCCs of the graph. */
 class TarjanSolver {
   private:
-	vector<vector<int>> rev_adj;
-	vector<int> post;
-	vector<int> comp;
-
-	vector<bool> visited;
 	int timer = 0;
-	int id = 0;
+	int num_scc = 0;
+	vector<int> ids, low, comp, st;
+	vector<bool> on_stack;
 
-	void fill_post(int at) {
-		visited[at] = true;
-		for (int n : rev_adj[at]) {
-			if (!visited[n]) { fill_post(n); }
-		}
-		post[at] = timer++;
-	}
+	void dfs(int at) {
+		ids[at] = low[at] = timer++;
+		st.push_back(at);
+		on_stack[at] = true;
 
-	void find_comp(int at) {
-		visited[at] = true;
-		comp[at] = id;
 		for (int n : adj[at]) {
-			if (!visited[n]) { find_comp(n); }
+			if (ids[n] == -1) {
+				dfs(n);
+				low[at] = min(low[at], low[n]);
+			} else if (on_stack[n]) {
+				low[at] = min(low[at], ids[n]);
+			}
+		}
+
+		if (low[at] == ids[at]) {
+			while (true) {
+				int node = st.back();
+				st.pop_back();
+				on_stack[node] = false;
+				comp[node] = num_scc;
+				if (node == at) { break; }
+			}
+			num_scc++;
 		}
 	}
 
@@ -322,30 +338,14 @@ class TarjanSolver {
 	const vector<vector<int>> &adj;
 
 	TarjanSolver(const vector<vector<int>> &adj)
-	    : adj(adj), rev_adj(adj.size()), post(adj.size()), comp(adj.size()),
-	      visited(adj.size()) {
-		vector<int> nodes(adj.size());
+	    : adj(adj), ids(adj.size(), -1), low(adj.size()), comp(adj.size()),
+	      on_stack(adj.size(), false) {
 		for (int n = 0; n < adj.size(); n++) {
-			nodes[n] = n;
-			for (int next : adj[n]) { rev_adj[next].push_back(n); }
-		}
-
-		for (int n = 0; n < adj.size(); n++) {
-			if (!visited[n]) { fill_post(n); }
-		}
-		std::sort(nodes.begin(), nodes.end(),
-		          [&](int n1, int n2) { return post[n1] > post[n2]; });
-
-		visited.assign(adj.size(), false);
-		for (int n : nodes) {
-			if (!visited[n]) {
-				find_comp(n);
-				id++;
-			}
+			if (ids[n] == -1) { dfs(n); }
 		}
 	}
 
-	int comp_num() const { return id; }
+	int comp_num() const { return num_scc; }
 
 	int get_comp(int n) const { return comp[n]; }
 };
