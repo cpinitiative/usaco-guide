@@ -1,0 +1,26 @@
+name: Solutions
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - 'solutions/**'
+      - 'py/check_solutions.py'
+      - 'py/solutions_missing_complexity.txt'
+      - 'src/components/markdown/ProblemsList/DivisionList/*.json'
+      - '.github/workflows/solutions.yml'
+
+jobs:
+  check-solutions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      # Unlike the code-snippets check, this runs over every solution, not just
+      # the changed ones -- the rules hold repo-wide today and should stay that way.
+      - name: Check internal solutions
+        run: python py/check_solutions.py --all
