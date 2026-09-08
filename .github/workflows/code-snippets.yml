@@ -12,6 +12,7 @@ on:
       - 'content/**/*.mdx'
       - 'solutions/**/*.mdx'
       - 'scripts/check-code-snippets.ts'
+      - '.github/workflows/code-snippets.yml'
 
 # A new push supersedes whatever the previous one was still checking. Cancelling
 # is scoped to pull requests: a run on master is validating what actually ships,
@@ -25,9 +26,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      # Somewhere cacheable -- but outside the repo, or yarn.js inherits
-      # "type": "module" from our package.json and fails to load as CommonJS.
-      COREPACK_HOME: ${{ runner.temp }}/corepack
       CPLUS_INCLUDE_PATH: ${{ github.workspace }}/.ac-library
     steps:
       - uses: actions/checkout@v7
@@ -39,10 +37,13 @@ jobs:
           node-version: 20.x
       # package.json pins yarn@4.9.2, which only Corepack can provide -- and
       # which it otherwise re-downloads on every run, node_modules cache or not.
+      # Cache it where Corepack already puts it: pointing COREPACK_HOME into the
+      # workspace instead makes Node read yarn.js under our "type": "module"
+      # package.json and fail to load that CommonJS bundle.
       - name: Cache Corepack
         uses: actions/cache@v6
         with:
-          path: ${{ runner.temp }}/corepack
+          path: ~/.cache/node/corepack
           key: corepack-${{ hashFiles('package.json') }}
       - name: Enable Corepack
         run: corepack enable
