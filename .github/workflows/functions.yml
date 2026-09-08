@@ -18,6 +18,13 @@ on:
       - 'src/functions/**'
       - 'src/models/**'
       - '.github/workflows/functions.yml'
+# A new push supersedes whatever the previous one was still checking. Cancelling
+# is scoped to pull requests: a run on master is validating what actually ships,
+# so let it finish.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   functions:
     runs-on: ubuntu-latest
