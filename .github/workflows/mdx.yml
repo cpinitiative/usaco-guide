@@ -1,0 +1,38 @@
+# Two rules over the prose and snippets that neither the compiler nor Prettier
+# can express: links into the guide stay relative, and cout.tie(...) -- banned
+# by Adding_Solution.mdx as a call that does nothing -- stays out of C++
+# snippets. Both are scoped by fenced code block; see py/check_mdx.py for why
+# each rule is noise without that.
+name: MDX
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - 'content/**/*.mdx'
+      - 'solutions/**/*.mdx'
+      - 'py/check_mdx.py'
+      - '.github/workflows/mdx.yml'
+
+# A new push supersedes whatever the previous one was still checking. Cancelling
+# is scoped to pull requests: a run on master is validating what actually ships,
+# so let it finish.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check-mdx:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      # Both rules hold repo-wide today, so this sweeps everything rather than
+      # only the changed files.
+      - name: Check MDX
+        run: python py/check_mdx.py --all

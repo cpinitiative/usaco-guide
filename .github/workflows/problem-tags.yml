@@ -1,5 +1,10 @@
 name: Problem Tags
 
+# No `paths` filter, because this is a required status check: a required check
+# that does not report leaves a pull request waiting on a status that never
+# arrives. It is pure Python over the problem lists and takes a few seconds, so
+# running it on every pull request costs little. pre-commit.ci cannot cover it
+# -- it clones without the base branch this compares against.
 on:
   pull_request:
     # labeled/unlabeled so that applying `new-tag` re-runs and clears the check,
@@ -7,11 +12,6 @@ on:
     types: [opened, synchronize, reopened, labeled, unlabeled]
     branches:
       - master
-    paths:
-      - 'content/**/*.problems.json'
-      - 'content/extraProblems.json'
-      - 'py/check_problem_tags.py'
-      - '.github/workflows/problem-tags.yml'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
