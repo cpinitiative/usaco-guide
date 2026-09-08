@@ -75,6 +75,10 @@ CF_URL = re.compile(
 	r"/?$"
 )
 
+# solutions/orphaned holds solutions no module links to; a file there is
+# deliberately unreachable, which is the point of the directory.
+SKIP_DIRS = {"orphaned"}
+
 # Fields that mean the same thing wherever a problem is listed. See rule 3.
 SHARED_FIELDS = ("name", "url")
 
@@ -83,6 +87,16 @@ def internal_solutions() -> set[str]:
 	"""uniqueIds with a solution file. `orphaned/` counts: no module links to
 	those, but the loader still indexes them, so `internal` resolves."""
 	return {path.stem for path in (ROOT / "solutions").rglob("*.mdx")}
+
+
+def reachable_solutions() -> dict[str, Path]:
+	"""Solution files that something is expected to link to, so `orphaned/` is
+	excluded -- that directory is how a solution is declared dead."""
+	return {
+		path.stem: path
+		for path in (ROOT / "solutions").rglob("*.mdx")
+		if path.parent.name not in SKIP_DIRS
+	}
 
 
 def problem_files() -> list[Path]:
@@ -243,6 +257,31 @@ def main() -> int:
 					# renamed until the Firebase progress keyed on them moves.
 					if unique_id not in id_backlog:
 						findings.append((path, unique_id, url_error))
+
+	# A written solution that no entry points at is invisible: the reader is sent
+	# to the official link, or to the module, and never sees it. Moving the file
+	# to solutions/orphaned/ is how to say that is intended.
+	for unique_id, path in sorted(reachable_solutions().items()):
+		listed = copies.get(unique_id, [])
+		if listed and not any(
+			(problem.get("solutionMetadata") or {}).get("kind") == "internal"
+			for _, problem in listed
+		):
+			kinds = sorted(
+				{
+					str((problem.get("solutionMetadata") or {}).get("kind"))
+					for _, problem in listed
+				}
+			)
+			findings.append(
+				(
+					listed[0][0],
+					unique_id,
+					f"{path.relative_to(ROOT)} exists but no entry has kind "
+					f"\"internal\" (found {', '.join(kinds)}), so no reader can "
+					"reach it; mark it internal or move it to solutions/orphaned/",
+				)
+			)
 
 	stale_backlog = sorted(id_backlog - mismatched_ids)
 	for stale in stale_backlog:
