@@ -26,6 +26,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -37,6 +38,14 @@ DIVISION_LIST = ROOT / "src/components/markdown/ProblemsList/DivisionList"
 SKIP_DIRS = {"orphaned"}
 
 REQUIRED_FRONTMATTER = ("id", "source", "title", "author")
+
+# Actions renders an ::error on the line it names, or against the file when it
+# names none. Findings that quote existing text get the line; a missing
+# frontmatter key gets the line it would be inserted on, since that is genuinely
+# where it goes. The rest -- no editorial link, no complexity -- have no place to
+# point at, and inventing one would put the message where nobody is looking, so
+# they are reported against the file.
+ANNOTATE = bool(os.environ.get("GITHUB_ACTIONS"))
 
 # Per-source wording for the link to the official editorial. USACO says "Official
 # Analysis"; Codeforces and AtCoder both call it an editorial, so they say
@@ -93,6 +102,18 @@ def parse_frontmatter(text: str) -> dict | None:
 	return fields
 
 
+def line_of(text: str, pattern: str) -> int | None:
+	"""1-indexed line where `pattern` first matches, for an annotation."""
+	match = re.search(pattern, text, re.M)
+	return text.count("\n", 0, match.start()) + 1 if match else None
+
+
+def annotate(path: str, line: int | None, message: str) -> None:
+	where = f"file={path}" + (f",line={line}" if line is not None else "")
+	# A newline would end the workflow command, so keep the message on one line.
+	print(f"::error {where},title=Solution check::{message}")
+
+
 def source_prefix(stem: str) -> str:
 	return stem.split("-")[0] if "-" in stem else stem
 
@@ -104,21 +125,26 @@ def cf_is_gym(stem: str) -> bool:
 
 def check_file(
 	path: Path, id_to_sol: dict, cpid_to_contest: dict, complexity_backlog: set[str]
-) -> list[str]:
-	errors: list[str] = []
+) -> list[tuple[str, int | None]]:
+	errors: list[tuple[str, int | None]] = []
 	text = path.read_text()
 	stem = path.stem
 	prefix = source_prefix(stem)
 
 	fields = parse_frontmatter(text)
 	if fields is None:
-		return ["missing frontmatter"]
+		return [("missing frontmatter", None)]
+	# A missing key belongs in the frontmatter, so point at its closing ---.
+	frontmatter_end = text.count("\n", 0, text.index("\n---\n", 3)) + 2
 	for key in REQUIRED_FRONTMATTER:
 		if not fields.get(key):
-			errors.append(f"frontmatter is missing `{key}`")
+			errors.append((f"frontmatter is missing `{key}`", frontmatter_end))
 	if fields.get("id") and fields["id"] != stem:
 		errors.append(
-			f"frontmatter `id: {fields['id']}` does not match the filename `{stem}`"
+			(
+				f"frontmatter `id: {fields['id']}` does not match the filename `{stem}`",
+				line_of(text, r"^id:"),
+			)
 		)
 
 	links = MD_LINK.findall(text)
@@ -130,7 +156,10 @@ def check_file(
 			match = OFFICIAL_LABEL.match(label)
 			if match and f"{match.group(1)} {match.group(2)}" != canonical:
 				errors.append(
-					f'link labeled "{label}" should say "{canonical}{(" " + match.group(3)) if match.group(3) else ""}"'
+					(
+						f'link labeled "{label}" should say "{canonical}{(" " + match.group(3)) if match.group(3) else ""}"',
+						line_of(text, re.escape(f"[{label}]")),
+					)
 				)
 
 	exempt = fields.get("noOfficialEditorial", "").lower() == "true"
@@ -140,14 +169,17 @@ def check_file(
 		expected_sol = id_to_sol.get(cpid)
 		if expected_sol is None:
 			errors.append(
-				f"cpid {cpid} is not in id_to_sol.json; is the filename right?"
+				(f"cpid {cpid} is not in id_to_sol.json; is the filename right?", None)
 			)
 		elif not any(
 			(m := USACO_SOL_URL.match(url)) and m.group(1) == expected_sol
 			for _label, url in links
 		):
 			errors.append(
-				f"must link the official analysis https://usaco.org/current/data/{expected_sol}"
+				(
+					f"must link the official analysis https://usaco.org/current/data/{expected_sol}",
+					None,
+				)
 			)
 		if (
 			cpid in cpid_to_contest
@@ -156,7 +188,10 @@ def check_file(
 			expected_source = f"USACO {division} {contest}"
 			if fields.get("source") and fields["source"] != expected_source:
 				errors.append(
-					f"frontmatter `source: {fields['source']}` should be `{expected_source}`"
+					(
+						f"frontmatter `source: {fields['source']}` should be `{expected_source}`",
+						line_of(text, r"^source:"),
+					)
 				)
 	elif prefix in REQUIRE_EDITORIAL and not exempt:
 		if prefix == "cf" and cf_is_gym(stem):
@@ -166,7 +201,10 @@ def check_file(
 			for label, url in links
 		):
 			errors.append(
-				f'must link the official editorial as "[{canonical} (C++)](...)", or set `noOfficialEditorial: true` if none exists'
+				(
+					f'must link the official editorial as "[{canonical} (C++)](...)", or set `noOfficialEditorial: true` if none exists',
+					None,
+				)
 			)
 
 	rel = path.relative_to(ROOT).as_posix() if path.is_absolute() else path.as_posix()
@@ -174,11 +212,17 @@ def check_file(
 	if rel in complexity_backlog:
 		if has_complexity:
 			errors.append(
-				f"now states its complexity; remove it from {MISSING_COMPLEXITY_LIST.name}"
+				(
+					f"now states its complexity; remove it from {MISSING_COMPLEXITY_LIST.name}",
+					line_of(text, re.escape("**Time Complexity:**")),
+				)
 			)
 	elif not has_complexity:
 		errors.append(
-			"must state its complexity as `**Time Complexity:** $\\mathcal{O}(...)$`"
+			(
+				"must state its complexity as `**Time Complexity:** $\\mathcal{O}(...)$`",
+				None,
+			)
 		)
 
 	return errors
@@ -218,8 +262,10 @@ def main() -> int:
 		if errors:
 			failed += 1
 			rel = path.relative_to(ROOT) if path.is_absolute() else path
-			for error in errors:
-				print(f"{rel}: {error}")
+			for message, line in errors:
+				print(f"{rel}: {message}")
+				if ANNOTATE:
+					annotate(str(rel), line, message)
 	if failed:
 		print(f"\n{failed} solution(s) need fixing.", file=sys.stderr)
 	return 1 if failed else 0
