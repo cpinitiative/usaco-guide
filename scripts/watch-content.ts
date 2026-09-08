@@ -47,10 +47,16 @@ async function watchContent() {
     await main();
   } else {
     console.log('[watch] Using cached content.db. Watching for changes...');
+    const { ensureUsacoDivisionsJson } = await import('./index-content');
+    if (await ensureUsacoDivisionsJson()) {
+      console.log('[watch] Regenerated public/usaco-divisions.json.');
+    }
   }
 
-  // Start Next.js dev server as a child process
-  const nextProc = spawn('npx', ['next', 'dev'], {
+  // Start Next.js dev server as a child process. `--webpack` must match the
+  // `dev` script: Next 16 defaults to Turbopack, which errors out on the
+  // webpack config in next.config.ts.
+  const nextProc = spawn('npx', ['next', 'dev', '--webpack'], {
     stdio: 'inherit',
     env: { ...process.env, NEXT_PUBLIC_WATCH_RELOAD: '1' },
     shell: process.platform === 'win32',
@@ -68,37 +74,47 @@ async function watchContent() {
   let debounceTimer: ReturnType<typeof setTimeout> | null = null;
   const pending = new Map<string, 'change' | 'add' | 'unlink'>();
 
+  const runRebuild = async (
+    changes: Map<string, 'change' | 'add' | 'unlink'>
+  ) => {
+    const labels = [...changes.keys()].map(f =>
+      path.relative(process.cwd(), f)
+    );
+    console.log(`\n[watch] Content changed: ${labels.join(', ')}`);
+
+    try {
+      const { updateFiles, main } = await import('./index-content');
+      try {
+        await updateFiles(changes);
+        console.log('[watch] Content updated.');
+      } catch (incrementalErr) {
+        console.error('[watch] Incremental update failed:', incrementalErr);
+        console.log('[watch] Falling back to full rebuild...');
+        await main();
+        console.log('[watch] Full rebuild complete.');
+      }
+      broadcastReload();
+    } catch (err) {
+      console.error('[watch] Rebuild failed:', err);
+    }
+  };
+
+  // Rebuilds run one at a time. `main()` drops and recreates every table, so
+  // two overlapping runs insert the same rows into one freshly created table
+  // and the second fails with `UNIQUE constraint failed: mdx_content.id`.
+  let rebuildQueue: Promise<void> = Promise.resolve();
+
   const scheduleRebuild = (
     event: 'change' | 'add' | 'unlink',
     filePath: string
   ) => {
     pending.set(filePath, event);
     if (debounceTimer) clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(async () => {
+    debounceTimer = setTimeout(() => {
       debounceTimer = null;
       const changes = new Map(pending);
       pending.clear();
-
-      const labels = [...changes.keys()].map(f =>
-        path.relative(process.cwd(), f)
-      );
-      console.log(`\n[watch] Content changed: ${labels.join(', ')}`);
-
-      try {
-        const { updateFiles, main } = await import('./index-content');
-        try {
-          await updateFiles(changes);
-          console.log('[watch] Content updated.');
-        } catch (incrementalErr) {
-          console.error('[watch] Incremental update failed:', incrementalErr);
-          console.log('[watch] Falling back to full rebuild...');
-          await main();
-          console.log('[watch] Full rebuild complete.');
-        }
-        broadcastReload();
-      } catch (err) {
-        console.error('[watch] Rebuild failed:', err);
-      }
+      rebuildQueue = rebuildQueue.then(() => runRebuild(changes));
     }, 500);
   };
 

@@ -2,18 +2,124 @@
 id: usaco-711
 source: USACO Bronze 2017 February
 title: Why Did the Cow Cross the Road
-author: Ananth Kashyap
+author: Ananth Kashyap, Rameez Parwez
 ---
 
-## Solution
-
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_crossroad_bronze_feb17.html)
+
+## Explanation
+
+We can say that a cow crossed the road if its current side is
+different from its previous side. For which, we maintain
+an array of size $10$ (since there are $10$ cows) to store the
+last seen side of each cow, and initialize it to $−1$ to indicate that
+a cow has not been seen yet. Based on this, we will check
+each of Farmer John's cows' current side and previous side (if any),
+and if there is any difference we will increment our number of
+confirmed crossings.
+
+<Spoiler title = "Animation of Sample Input">
+
+```
+8
+3 1
+3 0
+6 0
+2 1
+4 1
+3 0
+4 0
+3 1
+```
+
+<video width="960" height="720" controls>
+	<source src="/animations/cow_crossing.mp4" type="video/mp4"/>
+</video>
+
+</Spoiler>
 
 ## Implementation
 
 **Time Complexity:** $\mathcal{O}(N)$
 
 <LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+void set_up(std::string name) {
+	freopen((name + ".in").c_str(), "r", stdin);
+	freopen((name + ".out").c_str(), "w", stdout);
+}
+
+int main() {
+	set_up("crossroad");
+	int n;
+	std::cin >> n;
+	std::vector<int> cows(10, -1);
+
+	int crossings = 0;
+
+	for (int i = 1; i <= n; i++) {
+		int cow_id, side;
+		std::cin >> cow_id >> side;
+		cow_id--;
+
+		if (cows[cow_id] == -1) {
+			cows[cow_id] = side;
+		} else if (cows[cow_id] != side) {
+			crossings++;
+			cows[cow_id] = side;
+		}
+	}
+
+	std::cout << crossings << '\n';
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class USACO711 {
+
+	public static void main(String[] args) throws Exception {
+
+		Kattio io = new Kattio("crossroad");
+		int n = io.nextInt();
+
+		int[] cows = new int[10];
+		for (int i = 0; i < 10; i++) { cows[i] = -1; }
+
+		int crossings = 0;
+
+		for (int i = 1; i <= n; i++) {
+			int cow_idx = io.nextInt() - 1;
+			int side = io.nextInt();
+
+			if (cows[cow_idx] == -1) {
+				cows[cow_idx] = side;
+			} else if (cows[cow_idx] != side) {
+				crossings++;
+				cows[cow_idx] = side;
+			}
+		}
+
+		io.println(crossings);
+		io.close();
+	}
+
+	// BeginCodeSnip{Kattio}
+}
+```
+
+</JavaSection>
 <PySection>
 
 ```py
@@ -37,5 +143,4 @@ print(crossings, file=open("crossroad.out", "w"))
 ```
 
 </PySection>
-
 </LanguageSection>

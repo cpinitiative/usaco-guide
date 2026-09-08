@@ -9,9 +9,11 @@ The following is written for individuals without front-end development
 experience.
 
 1. Set up your development environment.
-   - Install [node.js](https://nodejs.org/en/)
-   - Install [yarn 1](https://classic.yarnpkg.com/en/)
-     - `npm install -g yarn`? might work
+   - Install [node.js](https://nodejs.org/en/) (Next.js requires 20.9 or newer)
+   - Enable [Yarn](https://yarnpkg.com/) via Corepack: `corepack enable`
+     - The repo pins its Yarn version with the `packageManager` field in
+       `package.json`, so you don't need to install a specific Yarn release
+       yourself.
 2. Clone repo
    - `git clone https://github.com/cpinitiative/usaco-guide.git`
 3. Install Dependencies
@@ -21,25 +23,57 @@ experience.
 5. Test UI Components
    - `yarn storybook`
 
+## Editing Content
+
+Content isn't read from `content/` at request time: it is compiled into a SQLite
+database at `data/content.db`, and the site is served from that.
+
+`yarn dev` watches `content/` and `solutions/`, re-indexes just the files you
+touch, and pushes a reload to the browser over SSE (port 3001), so content edits
+show up the same way `src/` edits do.
+
+`yarn dev:no-watch` skips the watcher and only builds the database when it is
+missing. It starts marginally faster, but **editing an MDX file while it is
+running has no effect on the page you see**, so only use it when you aren't
+touching content. (`yarn dev:watch` remains as an alias for `yarn dev`.)
+
+The watcher only re-indexes files that change while it is running, and it reuses
+an existing `data/content.db` on startup. If you edited content while no dev
+server was running -- or you changed how content is parsed -- delete
+`data/content.db` and restart, or run `yarn tsx scripts/index-content.ts`.
+
+`public/usaco-divisions.json` is generated the same way and is gitignored, since
+every build regenerates it. Both dev servers rewrite it on startup if it is
+missing, so a fresh clone or a `rm` of `public/` needs no extra step.
+
 ## Link Checker
 
-Update 2/3/24: I'm not certain whether this actually works anymore...
-
-By default, Github CI will check for broken _internal_ links. We can also
-manually check for broken external links by:
-
-1. `yarn build && yarn start` -- keep this terminal alive!
-2. `yarn check-links`
-
-If this command crashes due to some `bhttp` error, it's probably a timeout. To
-fix temporarily, run:
+`build-tests` CI checks every _internal_ link on every push and PR, and fails
+the build if one is broken. It serves the built site with `next start` and
+crawls it with [linkcheck](https://pub.dev/packages/linkcheck):
 
 ```
-blc http://localhost:9000 -rof --exclude train.usaco.org
+linkcheck --no-nice --no-check-anchors --skip-file .github/linkcheck-skip.txt :3000
 ```
 
-And find where it crashes, then check the broken link manually and add to
-exclusion list. As `train.usaco.org` sometimes crashes, it's added already.
+Anchors are off on purpose: headings inside `<CPPSection>`/`<JavaSection>`/
+`<PySection>` only render once the reader picks a language, so a crawler reading
+the server HTML cannot resolve links into the other languages.
+
+_External_ links are **not** checked automatically. To check them manually,
+build and serve the site, then add `-e`:
+
+```
+yarn build && yarn start    # keep this terminal alive
+linkcheck --no-nice --no-check-anchors -e --skip-file .github/linkcheck-skip.txt :3000
+```
+
+Expect false positives. Several hosts reject requests from anything that isn't a
+real browser and answer 403 regardless of request method or headers --
+codeforces.com, dmoj.ca, www.spoj.com and stackoverflow.com among them, which is
+roughly a quarter of our external links. `.github/linkcheck-skip.txt` lists
+those hosts, commented out, along with ones that rate-limit CI runners.
+Verifying them needs a real browser, not a link checker.
 
 ## MDX Configuration
 

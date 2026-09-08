@@ -6,12 +6,19 @@ on:
   pull_request:
     branches:
       - master
+# A new push supersedes whatever the previous one was still checking. Cancelling
+# is scoped to pull requests: a run on master is validating what actually ships,
+# so let it finish.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   prettier:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           corepack: true
       - name: Enable Corepack

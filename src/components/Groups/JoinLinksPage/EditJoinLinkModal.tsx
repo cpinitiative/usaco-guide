@@ -216,6 +216,57 @@ export default function EditJoinLinkModal({
                         </div>
                       )}
                     </div>
+                    <div>
+                      <li className="flex items-center justify-between py-2">
+                        <div className="flex flex-col">
+                          <p className="font-medium text-gray-700 dark:text-gray-200">
+                            Restrict to specific email addresses
+                          </p>
+                        </div>
+                        <Switch
+                          checked={link.allowedEmails != null}
+                          onChange={b =>
+                            editLink({ allowedEmails: b ? [] : null })
+                          }
+                        />
+                      </li>
+                      {link.allowedEmails != null && (
+                        <div className="mb-4">
+                          <label
+                            htmlFor="allowed_emails"
+                            className="block text-sm font-medium text-gray-500 dark:text-gray-300"
+                          >
+                            Allowed Emails
+                          </label>
+                          <div className="mt-1">
+                            <textarea
+                              name="allowed_emails"
+                              id="allowed_emails"
+                              value={link.allowedEmails.join('\n')}
+                              onChange={e =>
+                                editLink({
+                                  allowedEmails: Array.from(
+                                    new Set(
+                                      e.target.value
+                                        .split(/[\n,]+/)
+                                        .map(email =>
+                                          email.trim().toLowerCase()
+                                        )
+                                        .filter(Boolean)
+                                    )
+                                  ),
+                                })
+                              }
+                              className="input min-h-32"
+                              placeholder={
+                                'student1@example.com\nstudent2@example.com'
+                              }
+                              required
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

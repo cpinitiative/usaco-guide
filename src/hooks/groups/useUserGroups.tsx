@@ -12,7 +12,7 @@ import { useFirebaseUser } from '../../context/UserDataContext/UserDataContext';
 import { GroupData } from '../../models/groups/groups';
 import { useFirebaseApp } from '../useFirebase';
 
-const UserGroupsContext = React.createContext<{
+export const UserGroupsContext = React.createContext<{
   isLoading: boolean;
   isSuccess: boolean;
   data: null | (GroupData | null)[];

@@ -1,4 +1,4 @@
-import { ExternalLinkIcon } from '@heroicons/react/solid';
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/solid';
 import { Filter } from 'bad-words';
 import * as React from 'react';
 import { useState } from 'react';
@@ -123,7 +123,7 @@ export default function ProblemSolutions({
                 className="group my-0 inline-flex items-center space-x-1.5 text-sm font-medium text-gray-800 hover:text-gray-900 dark:text-gray-200 dark:hover:text-gray-100"
               >
                 <span>View Problem Statement</span>
-                <ExternalLinkIcon className="h-5 w-5 text-gray-400 group-hover:text-gray-600 dark:text-gray-400 dark:group-hover:text-gray-300" />
+                <ArrowTopRightOnSquareIcon className="h-5 w-5 text-gray-400 group-hover:text-gray-600 dark:text-gray-400 dark:group-hover:text-gray-300" />
               </a>
             </div>
           )}

@@ -1,40 +1,438 @@
 ---
 id: matroid-isect
 title: 'Matroid Intersection'
-author: Benjamin Qi
-description: '?'
+author: 'Robert Chung, Andrew Tam, Evan Simanovskis, Benjamin Qi'
+description: 'Finding the largest set satisfying two independence constraints.'
 prerequisites:
+- matroid
+- max-flow
 frequency: 0
 ---
 
-- Tutorial
-  - [Matroid & Matroid Intersection Notes (18.453)](https://web.archive.org/web/20211006084053/https://math.mit.edu/~franks/18453/18453.html)
-  - [Matroid Union Notes (18.438)](https://math.mit.edu/~goemans/18438F09/lec13.pdf)
-    - Special case of Matroid Intersection
-  - [CF Tutorial](https://codeforces.com/blog/entry/69287)
-  - [KACTL - Matroid Intersection Code](https://github.com/kth-competitive-programming/kactl/pull/172/files)
-  - [Parametrized Algorithms Ch 12](http://parameterized-algorithms.mimuw.edu.pl/parameterized-algorithms.pdf)
-  - [Illinois Lecture Notes](https://courses.engr.illinois.edu/cs598csc/sp2010/Lectures/Lecture17.pdf)
-- Problems
-  - [Honesty](https://judge.beecrowd.com/en/problems/view/2128)
-    - Max Size Graphic + Colorful
-  - [Coins](https://www.spoj.com/problems/COIN/)
-    - Max Size Graphic + Colorful
-  - [SERVERS](https://www.codechef.com/problems/SERVERS)
-    - Max Size Graphic + Colorful
-  - [Seollal](https://codeforces.com/contest/1284/problem/G)
-    - Max Size Graphic + Colorful
-  - [Pick Your Own Nim](https://codeforces.com/gym/102156/problem/D)
-    - Max Size Linear + Colorful
-  - [CCNCT2](https://www.codechef.com/problems/CNNCT2)
-    - Max Size Graphic + Graphic
-  - [Ambiguous Forest](https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=3080)
-    - Max Size Graphic + Graphic
-  - [Rainbow Graph](https://open.kattis.com/problems/rainbowgraph)
-    - Min Weight Graphic + Colorful
-    - [NAIPC 2018 Sols](http://serjudging.vanb.org/?p=1165)
-    - [Arup Guha Sol](http://www.cs.ucf.edu/~dmarino/progcontests/mysols/northamerica/2018/g.java)
-  - [HAMEL](https://www.codechef.com/problems/HAMEL)
-    - Partition into 2 MST's, then construct
-  - [TST](https://dmoj.ca/problem/dmopc19c3p6)
-    - Partition into 3 MST's
+<Resources>
+    <Resource
+        source="MT"
+        title="Matroid Theory"
+        starred
+    />
+	<Resource
+		source="MIT"
+		title="Lecture notes on matroid intersection"
+		url="https://web.archive.org/web/20211005021447/http://math.mit.edu/~franks/18453/lecturenotes/6-matroid-intersect-notes.pdf"
+	/>
+	<Resource
+		source="MIT"
+		title="Matroid Union Notes (18.438)"
+		url="https://math.mit.edu/~goemans/18438F09/lec13.pdf"
+	/>
+    <Resource
+		source="KACTL"
+		title="Matroid Intersection Implementation"
+		url="https://github.com/kth-competitive-programming/kactl/pull/172/changes"
+	/>
+</Resources>
+
+## Matroid Intersection
+
+Given two matroids $M_1, M_2$ over common ground set $E$, the matroid intersection
+algorithm finds a set $X \subseteq E$ of maximum size such that
+$X \in \mathcal{I}(M_1) \cap \mathcal{I}(M_2)$.
+The algorithm works by starting with the set $S = \emptyset$, and repeatedly
+augmenting $S$ using the corresponding exchange graph $\mathcal{G}_{M_1, M_2}(S)$.
+The vertices of $\mathcal{G}_{M_1, M_2}(S)$ are the elements of $E$, and for $y \in S$ and $x \in E \setminus S$:
+
+1. There is a directed edge $(y, x)$ if $S - y + x \in \mathcal{I}(M_1)$.
+2. There is a directed edge $(x, y)$ if $S - y + x \in \mathcal{I}(M_2)$.
+
+Note that $\mathcal{G}_{M_1, M_2}(S)$ is bipartite. We also label certain vertices $x \in E \setminus S$:
+1. $x$ is a source if $S + x \in \mathcal{I}(M_1)$.
+2. $x$ is a sink if $S + x \in \mathcal{I}(M_2)$.
+
+To augment $S$, the algorithm finds the shortest path $x_0, y_1, x_1, \dots, y_n, x_n$ from a source to a sink. Then, it redefines $S$ to
+
+$$
+\begin{equation*}
+S = S \setminus \{y_1, y_2, \dots, y_n\} \cup \{x_0, x_1, \dots, x_n\}.
+\end{equation*}
+$$
+
+There are two facts that together explain the correctness of this algorithm:
+
+1. Augmenting by the **shortest** source-sink path preserves $S$'s independence in both matroids.
+2. If there are no augmenting paths, then $S$ has maximum size among all $X \subseteq E$ such that $X$ is independent in both matroids.
+
+<Optional title="Proof of the above facts">
+- [Proof (Section 4. Matroid Intersection)](/matroid-theory.pdf)
+</Optional>
+
+
+## Example - SERVERS
+
+<FocusProblem problem='focus' />
+
+### Explanation
+
+Let $E$ be the set of all provided edges. The problem asks us to find the
+size of a largest subset $S \subseteq E$ where:
+
+1. $S$ is acyclic.
+2. For each frequency $f$, there are at most $c(f)$ edges in $S$ with frequency $f$.
+
+We can directly apply matroid intersection. Let $E$ be the ground set. Then, condition 1 is asking for $S$ to be independent
+in the **graphic matroid**, and condition 2 is asking for $S$ to be independent
+in the **partition matroid** where the categories are frequencies and $c(f)$ is the capacity of category $f$.
+
+### Implementing the Matroid Intersection Algorithm
+
+We'll implement the algorithm with a general interface so that it can be used
+for any matroids $M_1, M_2$ we want. Then, in the next section, we'll give the specific operations
+needed for our matroids.
+
+Let $N=|E|$ be the size of the ground set and $R$ be the size of a maximum
+common independent set. Then, our algorithm does $R$ iterations of the following:
+1. Construct the exchange graph between $S$ and $E \setminus S$.
+3. Update $S$ using a shortest augmenting path from a source to a sink.
+
+Step 2 can be done in $\mathcal O(RN)$ time using BFS. The hard part is step 1,
+where we need to maintain a matroid structure that allows us to efficiently
+check when a set is independent.
+
+It turns out that supporting the following operations (for both matroids) is enough:
+- `clear()`: set $S := \emptyset$.
+- `check(x)`: return true if $S + x$ is independent and false otherwise.
+- `add(x)`: set $S := S + x$, assuming $S + x$ is independent.
+- `precomp()`: (optional) precomputation to speed up a batch of `check(x)` queries.
+
+Recall that we need to know for each $y \in S$ and $x \in E \setminus S$ if
+$S - y + x \in \mathcal I(M_1)$ and $S - y + x \in \mathcal I(M_2)$.
+The trick is to batch queries by $y$. For a fixed $y$, we use `clear()` and
+`add(x)` to obtain $S - y$, then use `check(x)` to find all $x$ where
+$S - y + x$ is independent. Before making the `check(x)` calls, we also make
+a call to `precomp()` to potentially speed up the batch of $\mathcal O(N)$
+`check(x)` calls. In case precomputation is unnecessary, `precomp()` can be
+defined as an empty function.
+
+This builds the graph with $\mathcal O(R)$ calls to `clear()` and `precomp()`,
+$\mathcal O(R^2)$ calls to `add(x)`, and $\mathcal O(RN)$ calls to `add(x)`.
+Observe that we sidestepped the need to efficiently remove arbitrary elements
+from $S$, which would have been a big problem for matroids like the graphic matroid.
+
+Also see KACTL's implementation, which only checks edges as needed rather than building the entire graph upfront.
+
+**Time Complexity:** $\mathcal O(R^2)$ calls to `clear()` and `precomp()`,
+$\mathcal O(R^3)$ to `add(x)`, and $\mathcal O(R^2N)$ calls to `check(x)`.
+Note that in our implementation, the complexity is always dominated by these oracle calls.
+In KACTL's implementation, `backE` loops over all $N$ elements
+instead of just those in $S$, which adds an extra $O(RN^2)$ (though the number of oracle calls stays the same).
+
+<LanguageSection>
+<CPPSection>
+```cpp
+template <class M1, class M2> vector<bool> MatroidIsect(M1 m1, M2 m2, int n) {
+	vector<bool> in_S(n);
+	auto augment = [&] {
+		vector<int> S, E_S;  // E_S has indices of all edges not in S
+		for (int i = 0; i < n; i++) {
+			if (in_S[i]) S.push_back(i);
+			else E_S.push_back(i);
+		}
+		// build exchange graph
+		vector<vector<int>> adj(n);
+		for (int y : S) {
+			m1.clear(), m2.clear();
+			for (int i : S) {
+				if (i != y) m1.add(i), m2.add(i);
+			}
+			// optional precomputation, can be an empty function
+			m1.precomp(), m2.precomp();
+			for (int x : E_S) {
+				if (m1.check(x)) adj[y].push_back(x);
+				if (m2.check(x)) adj[x].push_back(y);
+			}
+		}
+		// identify sources and sinks for BFS
+		vector<bool> is_sink(n);
+		queue<int> q;
+		vector<bool> vis(n);
+
+		m1.clear(), m2.clear();
+		for (int y : S) m1.add(y), m2.add(y);
+		m1.precomp(), m2.precomp();  // optional precomp
+		for (int x : E_S) {
+			if (m1.check(x)) vis[x] = 1, q.push(x);  // x is a source
+			is_sink[x] = m2.check(x);
+		}
+		// BFS to find augmenting path from source to sink
+		vector<int> prev(n, -1);
+		while (!q.empty()) {
+			int u = q.front();
+			q.pop();
+			if (is_sink[u]) {
+				// augmenting path found
+				for (int v = u; v != -1; v = prev[v]) { in_S[v] = !in_S[v]; }
+				return true;
+			}
+			for (int v : adj[u]) {
+				if (vis[v]) continue;
+				q.push(v);
+				vis[v] = 1;
+				prev[v] = u;
+			}
+		}
+		return false;
+	};
+	while (augment());
+	return in_S;
+}
+```
+</CPPSection>
+</LanguageSection>
+
+<Optional title="Theoretically faster matroid intersection">
+
+[Section 4 of this paper](https://doi.org/10.1137/0215066) achieves $\mathcal O(r^{1.5}n)$ independence
+queries by extending the ideas used in the Hopcroft-Karp algorithm for bipartite matching.
+In particular, the algorithm augments on a maximal set of shortest paths in one phase with $\mathcal O(rn)$ queries
+and bounds the number of phases by $\mathcal O(\sqrt r)$.
+
+Unfortunately, since each phase modifies $S$ and revisits vertices multiple times,
+the trick of batching queries no longer works and we need to support fast removals
+to see benefits. Because the constraints for matroid intersection problems are small,
+we believe the extra effort is not worth it (in all problems below, the original algorithm is fast enough).
+</Optional>
+
+
+### Implementing the Matroid Structure
+
+We implement the graphic matroid with union-find and the partition matroid
+by maintaining a count of the number of used elements of each frequency.
+
+In our case, the maximum size of a common independent set is $n-1$ and the
+size of the ground set is $m$. We get an extra $\mathcal O(\alpha(n))$ factor from union-find,
+but this is still well within the time limit.
+
+**Time complexity:** $\mathcal O(n^2m \cdot \alpha(n))$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+// BeginCodeSnip{Union-find Data Structure}
+struct DSU {
+	vector<int> dsu, sz;
+	DSU(int n) : dsu(n), sz(n) { iota(begin(dsu), end(dsu), 0); }
+	int find(int x) {
+		if (x == dsu[x]) return x;
+		return dsu[x] = find(dsu[x]);
+	}
+	void merge(int x, int y) {
+		x = find(x), y = find(y);
+		if (x == y) return;
+		if (sz[x] < sz[y]) swap(x, y);
+		dsu[y] = x;
+		sz[x] += sz[y];
+	}
+};
+// EndCodeSnip
+
+struct GraphicMatroid {
+	int n;  // nodes of the graph must be in [0..n-1]
+	DSU dsu;
+	vector<pair<int, int>> edges;
+	GraphicMatroid(int n, const vector<pair<int, int>> &edges)
+	    : n(n), dsu(n), edges(edges) {
+		clear();
+	}
+	void clear() { dsu = DSU(n); }
+	bool check(int x) { return dsu.find(edges[x].first) != dsu.find(edges[x].second); }
+	void add(int x) { dsu.merge(edges[x].first, edges[x].second); }
+	void precomp() {}
+};
+
+struct PartitionMatroid {
+	vector<int> cap, cat, used;
+	PartitionMatroid(const vector<int> &cap, const vector<int> &cat)
+	    : cap(cap), cat(cat), used(size(cap)) {}
+	void clear() { fill(begin(used), end(used), 0); }
+	bool check(int x) { return used[cat[x]] < cap[cat[x]]; }
+	void add(int x) { used[cat[x]]++; }
+	void precomp() {}
+};
+
+// BeginCodeSnip{Matroid Intersection Algorithm}
+template <class M1, class M2> vector<bool> MatroidIsect(M1 m1, M2 m2, int n) {
+	vector<bool> in_S(n);
+	auto augment = [&] {
+		vector<int> S, E_S;  // E_S has indices of all edges not in S
+		for (int i = 0; i < n; i++) {
+			if (in_S[i]) S.push_back(i);
+			else E_S.push_back(i);
+		}
+		// build exchange graph
+		vector<vector<int>> adj(n);
+		for (int y : S) {
+			m1.clear(), m2.clear();
+			for (int i : S) {
+				if (i != y) m1.add(i), m2.add(i);
+			}
+			// optional precomputation, can be an empty function
+			m1.precomp(), m2.precomp();
+			for (int x : E_S) {
+				if (m1.check(x)) adj[y].push_back(x);
+				if (m2.check(x)) adj[x].push_back(y);
+			}
+		}
+		// identify sources and sinks for BFS
+		vector<bool> is_sink(n);
+		queue<int> q;
+		vector<bool> vis(n);
+
+		m1.clear(), m2.clear();
+		for (int y : S) m1.add(y), m2.add(y);
+		m1.precomp(), m2.precomp();  // optional precomp
+		for (int x : E_S) {
+			if (m1.check(x)) vis[x] = 1, q.push(x);  // x is a source
+			is_sink[x] = m2.check(x);
+		}
+		// BFS to find augmenting path from source to sink
+		vector<int> prev(n, -1);
+		while (!q.empty()) {
+			int u = q.front();
+			q.pop();
+			if (is_sink[u]) {
+				// augmenting path found
+				for (int v = u; v != -1; v = prev[v]) { in_S[v] = !in_S[v]; }
+				return true;
+			}
+			for (int v : adj[u]) {
+				if (vis[v]) continue;
+				q.push(v);
+				vis[v] = 1;
+				prev[v] = u;
+			}
+		}
+		return false;
+	};
+	while (augment());
+	return in_S;
+}
+// EndCodeSnip
+
+void solve() {
+	int n, m, k;
+	cin >> n >> m >> k;
+	vector<int> cap(k);
+	for (auto &amt : cap) cin >> amt;
+
+	vector<pair<int, int>> edges(m);
+	vector<int> cat(m);
+	for (int i = 0; i < m; i++) {
+		cin >> edges[i].first >> edges[i].second >> cat[i];
+		edges[i].first--, edges[i].second--, cat[i]--;
+	}
+
+	auto result = MatroidIsect(GraphicMatroid(n, edges), PartitionMatroid(cap, cat), m);
+	cout << count(begin(result), end(result), true) << '\n';
+}
+
+int main() {
+	cin.tie(0)->sync_with_stdio(0);
+	int t;
+	cin >> t;
+	while (t--) solve();
+	return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+## Modifying Existing Matroids
+
+We now consider some ways of making new matroids from existing ones. This
+expands the kinds of conditions we can handle.
+
+### Matroid Dual
+
+In many problems, it is useful to consider the dual of some well-known matroid. The dual $M^\star$ of a matroid $M$ is defined on the same ground set $E(M)$ with the independent sets defined as follows:
+
+$$
+\mathcal{I}(M^\star) = \{X \subseteq E : E \setminus X \text{ contains a basis of } M\}.
+$$
+
+As an example, consider the graphic matroid $M$ corresponding to a connected graph $G = (V, E)$. Then, the bases of $M$ are spanning trees, and a set of edges $X \subseteq E$ is independent in $M^\star$ if and only if $G$ remains connected after removing all of the edges in $X$.
+
+**Claim:** The dual $M^\star$ of a matroid $M$ is itself a matroid.
+
+**Proof:** Clearly, the non-emptiness and heredity axioms hold, so it remains to show that the exchange axiom also holds. Let $X, Y \in I(M^\star)$ such that $|X| < |Y|$. For convenience, we will reframe the exchange axiom in terms of $X^c = E \setminus X$ and $Y^c = E \setminus Y$. Our goal is to show that there exists $e \in X^c$ such that $e \notin Y^c$ and $X^c - e$ contains a basis of $M$.
+
+Partition $X^c$ into $\mathcal{C}$ and $\mathcal{A}$ where
+
+$$
+\begin{equation*}
+\mathcal{C} = \{e \in X^c : e \text{ is in some circuit } C \subseteq X^c\}
+\end{equation*}
+$$
+
+and $\mathcal{A} = X^c \setminus \mathcal{C}$. If there exists $e \in \mathcal{C}$ such that $e \notin Y^c$, then we are immediately done. Suppose that $\mathcal{C} \subseteq Y^c$. It follows that
+
+$$
+\begin{equation*}
+|Y^c \setminus \mathcal{C}| = |Y^c| - |\mathcal{C}| < |X^c| - |\mathcal{C}| = |\mathcal{A}|
+\end{equation*}
+$$
+
+so we get
+
+$$
+\begin{equation*}
+r(Y^c) \leq r(\mathcal{C}) + r(Y^c \setminus \mathcal{C}) < r(\mathcal{C}) + |\mathcal{A}|
+\end{equation*}
+$$
+
+Furthermore, it can be shown that
+
+$$
+\begin{equation*}
+r(X^c) = r(\mathcal{C}) + |\mathcal{A}|
+\end{equation*}
+$$
+
+by taking any maximum independent set $S \subseteq \mathcal{C}$ and noting that $S \cup \mathcal{A}$ is independent by choice of $\mathcal{A}$. Therefore, $r(X^c) \neq r(Y^c)$, which is a contradiction because $X^c$ and $Y^c$ both contain bases of $M$.
+
+### Contraction of a Matroid
+
+Suppose we have an existing matroid $M=\langle E, \mathcal I\rangle$, but there are some
+elements $A \subseteq E$ we are forced to include. If $A \in \mathcal I$, we can effectively
+mod out by $A$ with **matroid contraction**: the contraction of $M$ by $A$, written $M / A$, is
+the matroid on the ground set $E \setminus A$ where $B$ is independent in $M / A$
+if $A \cup B \in \mathcal I$.
+
+<Warning title="Independence of the empty set">
+If $A$ is not independent in $M$, then $M / A$ fails the non-emptiness axiom.
+Some problems don't guarantee $A \in \mathcal I$, so this is always a condition
+that should be checked.
+</Warning>
+
+## Problems
+
+<Problems problems="general" />
+
+**Additional Problems**
+- [Honesty](https://judge.beecrowd.com/en/problems/view/2128)
+  - Max Size Graphic + Colorful
+- [Ambiguous Forest](https://onlinejudge.org/index.php?option=com_onlinejudge&Itemid=8&page=show_problem&problem=3080)
+  - Max Size Graphic + Graphic
+- [Rainbow Graph](https://open.kattis.com/problems/rainbowgraph)
+  - Min Weight Graphic + Colorful
+  - [NAIPC 2018 Sols](http://serjudging.vanb.org/?p=1165)
+  - [Arup Guha Sol](http://www.cs.ucf.edu/~dmarino/progcontests/mysols/northamerica/2018/g.java)
+- [TST](https://dmoj.ca/problem/dmopc19c3p6)
+  - Partition into 3 MST's
+- [Almost Rainbow Tree (Easy)](https://repovive.com/contests/10000/problems/D6A)
+  - Can be solved exactly using Matroid Intersection, or via a $1/2$-approximation using greedy.
+- [Almost Rainbow Tree (Hard)](https://repovive.com/contests/10000/problems/D6B):
+  - Can be solved exactly using Matroid Intersection, or via a $2/3$-approximation using local search.

@@ -1,4 +1,4 @@
-import { SearchIcon } from '@heroicons/react/solid';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
 import React from 'react';
 import {
@@ -32,7 +32,7 @@ const ModuleSearch = () => {
           autoFocus
         />
         <span className="p-2">
-          <SearchIcon className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+          <MagnifyingGlassIcon className="h-5 w-5 text-gray-400 dark:text-gray-500" />
         </span>
       </div>
       {query !== '' && (

@@ -1,0 +1,65 @@
+# src/functions has its own npm lockfile and is not covered by any other
+# workflow. Without this, breakage there is invisible until someone tries to
+# deploy: firebase-functions sat at v3 while the source moved to v2 APIs, and
+# an ESLint bump silently disabled the lint script, for months.
+name: Cloud Functions
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'src/functions/**'
+      - 'src/models/**'
+      - '.github/workflows/functions.yml'
+  pull_request:
+    branches:
+      - master
+    paths:
+      - 'src/functions/**'
+      - 'src/models/**'
+      - '.github/workflows/functions.yml'
+# A new push supersedes whatever the previous one was still checking. Cancelling
+# is scoped to pull requests: a run on master is validating what actually ships,
+# so let it finish.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  functions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      # Must match the runtime in src/functions/package.json "engines".
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22.x
+          corepack: true
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Cache node modules
+        uses: actions/cache@v6
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('**/yarn.lock') }}
+
+      # The functions import across the repo (src/models and what it pulls in),
+      # and those files resolve their own imports -- firebase, github-slugger --
+      # from the *root* node_modules. src/functions/node_modules is not on their
+      # resolution path, since it is not one of their ancestor directories. So
+      # tsc below needs both installs, not just the functions one.
+      - name: Install root dependencies
+        run: yarn
+
+      - name: Install functions dependencies
+        run: npm ci
+        working-directory: src/functions
+
+      - run: npm run lint
+        working-directory: src/functions
+
+      - run: npm run build
+        working-directory: src/functions
