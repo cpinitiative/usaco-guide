@@ -1,3 +1,9 @@
+# pre-commit.ci clones without the base branch, and check-problem-tags compares
+# against it -- the Problem Tags workflow runs that one instead, checking out with
+# fetch-depth: 0 so the comparison is possible at all.
+ci:
+  skip: [check-problem-tags]
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
@@ -30,3 +36,8 @@ repos:
         entry: python py/check_solutions.py
         language: python
         files: ^solutions/.*\.mdx$
+      - id: check-problem-tags
+        name: Check problem tags
+        entry: python py/check_problem_tags.py
+        language: python
+        files: (\.problems\.json|^content/extraProblems\.json)$
