@@ -1,6 +1,10 @@
 name: Code Snippets
 
 on:
+  # Sweeps every snippet in the guide, not just the ones a pull request touches.
+  # Reach for this after changing the checker, or to find breakage that landed
+  # while nothing in its file was being edited.
+  workflow_dispatch:
   pull_request:
     branches:
       - master
@@ -12,7 +16,7 @@ on:
 jobs:
   code-snippets:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
         with:
@@ -30,6 +34,11 @@ jobs:
       # Only the snippets in files this PR touches, so existing breakage
       # elsewhere doesn't block unrelated work.
       - name: Check code snippets in changed files
+        if: github.event_name == 'pull_request'
         env:
           BASE_REF: origin/${{ github.base_ref }}
         run: yarn check-code-snippets
+
+      - name: Check every code snippet
+        if: github.event_name == 'workflow_dispatch'
+        run: yarn check-code-snippets --all

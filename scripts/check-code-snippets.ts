@@ -1,4 +1,4 @@
-import { execFileSync, spawnSync } from 'child_process';
+import { execFile, execFileSync, spawnSync } from 'child_process';
 import {
   copyFileSync,
   mkdirSync,
@@ -7,9 +7,10 @@ import {
   writeFileSync,
 } from 'fs';
 import { readFile } from 'fs/promises';
-import { tmpdir } from 'os';
+import { availableParallelism, tmpdir } from 'os';
 import path, { join, relative } from 'path';
 import { fileURLToPath } from 'url';
+import { promisify } from 'util';
 
 /**
  * Checks the code snippets in .mdx files: C++ is compiled with g++
@@ -22,11 +23,18 @@ import { fileURLToPath } from 'url';
  * parsed rather than run, so fragments are fine as long as they stand on their
  * own, and blocks that open mid-indentation are skipped.
  *
- * Pass the files to check, or nothing to check the ones this branch changed
- * (against origin/master, or BASE_REF when set).
+ * Pass the files to check, --all to sweep every .mdx under content/ and
+ * solutions/, or nothing to check the ones this branch changed (against
+ * origin/master, or BASE_REF when set).
+ *
+ * Snippets are checked JOBS at a time, defaulting to one per core.
  */
 
+const execFileAsync = promisify(execFile);
+
 const STANDARD = process.env.CXX_STANDARD ?? 'c++20';
+/** Each check is its own process, so the pool can be as wide as the machine. */
+const JOBS = Number(process.env.JOBS) || availableParallelism();
 const PYTHON = process.env.PYTHON ?? 'python3';
 
 /** Reports a syntax error as `file:line:col: message`, without a traceback. */
@@ -83,9 +91,12 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 }
 
 async function main() {
-  const files = process.argv.slice(2).length
-    ? process.argv.slice(2)
-    : changedMdxFiles();
+  const args = process.argv.slice(2);
+  const files = args.includes('--all')
+    ? allMdxFiles()
+    : args.length
+      ? args
+      : changedMdxFiles();
 
   const mdx = files.filter(f => f.endsWith('.mdx'));
   if (mdx.length === 0) {
@@ -141,28 +152,46 @@ async function main() {
     console.log(
       `Checking ${cpp} C++ snippet${cpp === 1 ? '' : 's'} with ${cxx} -std=${STANDARD} ` +
         `and ${py} Python snippet${py === 1 ? '' : 's'} with ${PYTHON}, ` +
-        `in ${mdx.length} file${mdx.length === 1 ? '' : 's'}...`
+        `in ${mdx.length} file${mdx.length === 1 ? '' : 's'}, ` +
+        `${Math.min(JOBS, snippets.length)} at a time...`
     );
 
     const include = precompileStdcxx(cxx, dir, snippets);
 
-    for (const [i, snippet] of snippets.entries()) {
+    const jobs = snippets.map((snippet, i) => {
       const source = join(dir, `snippet${i}.${snippet.lang}`);
       writeFileSync(source, snippet.code);
-      const [command, args] =
-        snippet.lang === 'cpp'
-          ? [cxx, [`-std=${STANDARD}`, ...include, '-fsyntax-only', source]]
-          : [PYTHON, ['-c', PARSE_PYTHON, source]];
-      try {
-        execFileSync(command, args, { stdio: 'pipe' });
-      } catch (err) {
-        const { stderr } = err as { stderr?: Buffer };
-        failures.push({
-          snippet,
-          error: rewritePaths(String(stderr ?? err), source, snippet),
-        });
-      }
-    }
+      return { snippet, source };
+    });
+
+    // Compiling is what costs, and each snippet is independent, so run a pool
+    // of them. Failures come back out of order, so they carry their index and
+    // are sorted afterwards to keep the report stable across runs.
+    const found: { at: number; snippet: Snippet; error: string }[] = [];
+    let next = 0;
+    await Promise.all(
+      Array.from({ length: Math.min(JOBS, jobs.length) }, async () => {
+        for (let at = next++; at < jobs.length; at = next++) {
+          const { snippet, source } = jobs[at];
+          const [command, args] =
+            snippet.lang === 'cpp'
+              ? [cxx, [`-std=${STANDARD}`, ...include, '-fsyntax-only', source]]
+              : [PYTHON, ['-c', PARSE_PYTHON, source]];
+          try {
+            await execFileAsync(command, args, { maxBuffer: 32 << 20 });
+          } catch (err) {
+            const { stderr } = err as { stderr?: string | Buffer };
+            found.push({
+              at,
+              snippet,
+              error: rewritePaths(String(stderr ?? err), source, snippet),
+            });
+          }
+        }
+      })
+    );
+    found.sort((a, b) => a.at - b.at);
+    failures.push(...found.map(({ snippet, error }) => ({ snippet, error })));
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
@@ -180,6 +209,16 @@ async function main() {
   }
   console.error(`\n${failures.length} of ${snippets.length} snippets failed.`);
   process.exit(1);
+}
+
+/** Every .mdx under content/ and solutions/, tracked by git. */
+function allMdxFiles(): string[] {
+  const out = execFileSync(
+    'git',
+    ['ls-files', '-z', 'content/**/*.mdx', 'solutions/**/*.mdx'],
+    { encoding: 'utf8', maxBuffer: 32 << 20 }
+  );
+  return out.split('\0').filter(Boolean);
 }
 
 /** .mdx files under content/ and solutions/ that differ from the base branch. */
