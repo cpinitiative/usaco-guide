@@ -5,11 +5,11 @@ if (admin.apps.length === 0) {
   admin.initializeApp();
 }
 
-export default functions.https.onCall(async request => {
-  const { users } = request.data as {
+export default functions.https.onCall(async (data, context) => {
+  const { users } = data as {
     users: ({ uid: string } | { email: string })[];
   };
-  const callerUid = request.auth?.uid;
+  const callerUid = context.auth?.uid;
   const caller = await admin.auth().getUser(callerUid);
 
   if (!callerUid || !users || users.length === 0) {

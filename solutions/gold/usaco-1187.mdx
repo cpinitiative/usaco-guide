@@ -18,14 +18,14 @@ author: Qi Wang
 #include <bits/stdc++.h>
 using namespace std;
 
-int N, time;
+int N, timer;
 vector<int> add;
 vector<int> edge[100005];
 long long ans[100005];
 
 void dfs(int ss, int a) {
 	ans[ss] += a;
-	add[ss] = time--;
+	add[ss] = timer--;
 
 	for (int i = (int)edge[ss].size() - 1; i >= 0; i--) { dfs(edge[ss][i], a - 1); }
 }
@@ -33,7 +33,7 @@ void dfs(int ss, int a) {
 int main() {
 	cin >> N;
 	int K = N + 1;
-	time = K;
+	timer = K;
 	add.resize(K);
 
 	for (int i = 0; i < N; i++) {
