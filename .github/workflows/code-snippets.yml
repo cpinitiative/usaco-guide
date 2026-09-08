@@ -24,9 +24,10 @@ jobs:
   code-snippets:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    # Somewhere cacheable, rather than Corepack's default under ~/.cache.
     env:
+      # Somewhere cacheable, rather than Corepack's default under ~/.cache.
       COREPACK_HOME: ${{ github.workspace }}/.corepack
+      CPLUS_INCLUDE_PATH: ${{ github.workspace }}/.ac-library
     steps:
       - uses: actions/checkout@v7
         with:
@@ -44,6 +45,14 @@ jobs:
           key: corepack-${{ hashFiles('package.json') }}
       - name: Enable Corepack
         run: corepack enable
+
+      # Several Gold and Advanced snippets teach the AtCoder Library. It is
+      # header-only, so a shallow clone on the include path is enough -- 180K
+      # and under a second. Without it those snippets are only ever compiled by
+      # people who happen to have ACL checked out, which is how eight of them
+      # sat broken here unnoticed.
+      - name: Fetch the AtCoder Library
+        run: git clone --depth 1 -q https://github.com/atcoder/ac-library.git .ac-library
 
       # The checker itself imports nothing outside Node's standard library; the
       # install is only here to provide tsx, so a cache hit skips almost all of it.
