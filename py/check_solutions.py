@@ -39,10 +39,12 @@ SKIP_DIRS = {"orphaned"}
 
 REQUIRED_FRONTMATTER = ("id", "source", "title", "author")
 
-# Actions renders an ::error with a file and line on that line of the diff. Only
-# findings that quote text which exists get one -- for "must link the official
-# editorial" there is, by definition, no line to point at, and guessing where the
-# link ought to go would put the message somewhere the reader did not expect.
+# Actions renders an ::error on the line it names, or against the file when it
+# names none. Findings that quote existing text get the line; a missing
+# frontmatter key gets the line it would be inserted on, since that is genuinely
+# where it goes. The rest -- no editorial link, no complexity -- have no place to
+# point at, and inventing one would put the message where nobody is looking, so
+# they are reported against the file.
 ANNOTATE = bool(os.environ.get("GITHUB_ACTIONS"))
 
 # Per-source wording for the link to the official editorial. USACO says "Official
@@ -106,9 +108,10 @@ def line_of(text: str, pattern: str) -> int | None:
 	return text.count("\n", 0, match.start()) + 1 if match else None
 
 
-def annotate(path: str, line: int, message: str) -> None:
+def annotate(path: str, line: int | None, message: str) -> None:
+	where = f"file={path}" + (f",line={line}" if line is not None else "")
 	# A newline would end the workflow command, so keep the message on one line.
-	print(f"::error file={path},line={line},title=Solution check::{message}")
+	print(f"::error {where},title=Solution check::{message}")
 
 
 def source_prefix(stem: str) -> str:
@@ -131,9 +134,11 @@ def check_file(
 	fields = parse_frontmatter(text)
 	if fields is None:
 		return [("missing frontmatter", None)]
+	# A missing key belongs in the frontmatter, so point at its closing ---.
+	frontmatter_end = text.count("\n", 0, text.index("\n---\n", 3)) + 2
 	for key in REQUIRED_FRONTMATTER:
 		if not fields.get(key):
-			errors.append((f"frontmatter is missing `{key}`", None))
+			errors.append((f"frontmatter is missing `{key}`", frontmatter_end))
 	if fields.get("id") and fields["id"] != stem:
 		errors.append(
 			(
@@ -259,7 +264,7 @@ def main() -> int:
 			rel = path.relative_to(ROOT) if path.is_absolute() else path
 			for message, line in errors:
 				print(f"{rel}: {message}")
-				if ANNOTATE and line is not None:
+				if ANNOTATE:
 					annotate(str(rel), line, message)
 	if failed:
 		print(f"\n{failed} solution(s) need fixing.", file=sys.stderr)
