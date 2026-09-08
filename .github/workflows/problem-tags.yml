@@ -1,0 +1,35 @@
+name: Problem Tags
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - 'content/**/*.problems.json'
+      - 'content/extraProblems.json'
+      - 'py/check_problem_tags.py'
+      - '.github/workflows/problem-tags.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check-problem-tags:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # the base branch is the tag vocabulary
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      # Skipping the step passes the check, which is the point: a maintainer who
+      # has looked and decided the tag is genuinely new labels the pull request
+      # and moves on. Reading a label needs no write permission, so this stays a
+      # plain `pull_request` workflow.
+      - name: Check problem tags
+        if: ${{ !contains(github.event.pull_request.labels.*.name, 'new-tag') }}
+        run: python py/check_problem_tags.py --all --base-ref "origin/${{ github.base_ref }}"
