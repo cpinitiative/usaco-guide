@@ -119,7 +119,7 @@ vector<int> ord;  // visited nodes in dfs
 
 void dfs(int u) {
 	int l = ord.size();
-	if (sa.states[u].pos != -1) { ord.PB(sa.states[u].pos); }
+	if (sa.states[u].pos != -1) { ord.push_back(sa.states[u].pos); }
 
 	for (int v : suffix_link_tree[u]) { dfs(v); }
 
@@ -152,7 +152,7 @@ int main() {
 		if (s == -1) {
 			ans[i] = -1;
 		} else {
-			queries[s].EB(i, K);
+			queries[s].emplace_back(i, K);
 			ans[i] = P.size();
 		}
 	}
