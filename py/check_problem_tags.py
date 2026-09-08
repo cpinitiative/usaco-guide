@@ -16,12 +16,18 @@ from __future__ import annotations
 import argparse
 import difflib
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DISMISS_LABEL = "new-tag"
+# On Actions an ::error carrying a file and line is rendered on that line of the
+# diff. That is what lets this stay a plain pull_request workflow: the reader
+# gets the message where the tag is, and nothing needed permission to write a
+# comment to put it there.
+ANNOTATE = bool(os.environ.get("GITHUB_ACTIONS"))
 
 
 def tags_in(node: object, found: dict[str, str], where: str) -> None:
@@ -35,6 +41,36 @@ def tags_in(node: object, found: dict[str, str], where: str) -> None:
 	elif isinstance(node, list):
 		for value in node:
 			tags_in(value, found, where)
+
+
+def line_of(text: str, tag: str) -> int | None:
+	"""Which line of a problems file carries this tag, for the annotation."""
+	needle = f'"{tag}"'
+	for number, line in enumerate(text.split("\n"), start=1):
+		if needle in line and '"tags"' in line:
+			return number
+	return None
+
+
+def annotate(path: str, line: int | None, message: str) -> None:
+	where = f"file={path}" + (f",line={line}" if line else "")
+	# A newline would end the workflow command, so keep the message on one line.
+	print(f"::error {where},title=Unknown problem tag::{message}")
+
+
+def resolve_ref(preferred: str) -> str | None:
+	"""The base branch under whichever name this checkout knows it by."""
+	for ref in (preferred, preferred.removeprefix("origin/"), "origin/HEAD"):
+		if (
+			subprocess.run(
+				["git", "rev-parse", "--verify", "--quiet", f"{ref}^{{commit}}"],
+				capture_output=True,
+				cwd=ROOT,
+			).returncode
+			== 0
+		):
+			return ref
+	return None
 
 
 def problems_files_at(ref: str) -> list[str]:
@@ -82,10 +118,19 @@ def main() -> int:
 	else:
 		paths = [p for p in args.paths if p.name.endswith(".json")]
 
-	known = vocabulary_at(args.base_ref)
+	base = resolve_ref(args.base_ref)
+	if base is None:
+		print(
+			f"Cannot find {args.base_ref}, so there is nothing to compare tags against. "
+			"Fetch the base branch, or pass --base-ref.",
+			file=sys.stderr,
+		)
+		return 1
+
+	known = vocabulary_at(base)
 	if not known:
 		print(
-			f"Found no tags on {args.base_ref}; is the base branch fetched?",
+			f"Found no tags on {base}; is the base branch fetched?",
 			file=sys.stderr,
 		)
 		return 1
@@ -104,13 +149,18 @@ def main() -> int:
 		found: dict[str, str] = {}
 		tags_in(data, found, path.name)
 		rel = path.relative_to(ROOT) if path.is_absolute() else path
+		raw = path.read_text()
 		for tag in sorted(set(found) - known):
 			failed += 1
 			near = difflib.get_close_matches(tag, ordered, n=3, cutoff=0.7)
 			hint = f" Did you mean {', '.join(repr(n) for n in near)}?" if near else ""
-			print(
-				f"{rel}: new tag {tag!r} on {found[tag]}, not used anywhere on {args.base_ref}.{hint}"
+			message = (
+				f"new tag {tag!r} on {found[tag]}, not used anywhere on {base}.{hint}"
+				f" If it really is new, label the pull request `{DISMISS_LABEL}`."
 			)
+			print(f"{rel}: {message}")
+			if ANNOTATE:
+				annotate(str(rel), line_of(raw, tag), message)
 
 	if failed:
 		print(
