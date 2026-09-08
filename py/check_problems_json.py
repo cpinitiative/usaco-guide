@@ -79,6 +79,12 @@ CF_URL = re.compile(
 SHARED_FIELDS = ("name", "url")
 
 
+def internal_solutions() -> set[str]:
+	"""uniqueIds with a solution file. `orphaned/` counts: no module links to
+	those, but the loader still indexes them, so `internal` resolves."""
+	return {path.stem for path in (ROOT / "solutions").rglob("*.mdx")}
+
+
 def problem_files() -> list[Path]:
 	return sorted((ROOT / "content").rglob("*.problems.json")) + [
 		ROOT / "content/extraProblems.json"
@@ -143,6 +149,19 @@ def check_url(problem: dict) -> str | None:
 	return None
 
 
+def check_internal(problem: dict, solutions: set[str]) -> str | None:
+	"""An entry promising an internal solution must have one to show."""
+	metadata = problem.get("solutionMetadata") or {}
+	if metadata.get("kind") != "internal":
+		return None
+	if problem["uniqueId"] in solutions:
+		return None
+	return (
+		'solutionMetadata says kind "internal", but there is no '
+		f'solutions/*/{problem["uniqueId"]}.mdx'
+	)
+
+
 def hints_flag(problem: dict) -> bool | None:
 	"""Whether an internally-solved problem declares hints. None if not internal."""
 	metadata = problem.get("solutionMetadata") or {}
@@ -190,6 +209,7 @@ def main() -> int:
 	parser.parse_args()
 
 	official = load_official_names()
+	solutions = internal_solutions()
 	id_backlog = {
 		line.strip()
 		for line in MISMATCHED_ID_LIST.read_text().splitlines()
@@ -209,9 +229,12 @@ def main() -> int:
 				unique_id = problem["uniqueId"]
 				copies[unique_id].append((path, problem))
 
-				name_error = check_name(problem, official)
-				if name_error:
-					findings.append((path, unique_id, name_error))
+				for message in (
+					check_name(problem, official),
+					check_internal(problem, solutions),
+				):
+					if message:
+						findings.append((path, unique_id, message))
 
 				url_error = check_url(problem)
 				if url_error:
