@@ -42,9 +42,12 @@ REQUIRED_FRONTMATTER = ("id", "source", "title", "author")
 # Actions renders an ::error on the line it names, or against the file when it
 # names none. Findings that quote existing text get the line; a missing
 # frontmatter key gets the line it would be inserted on, since that is genuinely
-# where it goes. The rest -- no editorial link, no complexity -- have no place to
-# point at, and inventing one would put the message where nobody is looking, so
-# they are reported against the file.
+# where it goes -- as does a missing editorial link, which by convention sits
+# immediately below the frontmatter. What is left has no conventional home: a
+# complexity line belongs beside whichever implementation it describes, and
+# inventing a line for it would put the message where nobody is looking, so those
+# are annotated against the file. GitHub stores those at line 0 and draws them
+# only in the check summary, never on the diff.
 ANNOTATE = bool(os.environ.get("GITHUB_ACTIONS"))
 
 # Per-source wording for the link to the official editorial. USACO says "Official
@@ -178,7 +181,7 @@ def check_file(
 			errors.append(
 				(
 					f"must link the official analysis https://usaco.org/current/data/{expected_sol}",
-					None,
+					frontmatter_end,
 				)
 			)
 		if (
@@ -203,7 +206,7 @@ def check_file(
 			errors.append(
 				(
 					f'must link the official editorial as "[{canonical} (C++)](...)", or set `noOfficialEditorial: true` if none exists',
-					None,
+					frontmatter_end,
 				)
 			)
 
