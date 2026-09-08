@@ -11,7 +11,7 @@ author: Raagav Bala
 
 We can view each region as a node and a fence segment as an edge whose weight is the length of that fence segment. We want to remove the minimum total length of fence while making all regions reachable from each other, which is the MST of this graph.
 
-A naive approach would be to create all $(n+1) \times (m+1)$ regions as graph nodes and run [Kruskal's algorithm](https://usaco.guide/gold/mst?lang=cpp#kruskals) on all possible fence removals. But this isn't feasible because the number of regions can be up to roughly $25000^2$ vertical and horizontal fences.
+A naive approach would be to create all $(n+1) \times (m+1)$ regions as graph nodes and run [Kruskal's algorithm](gold/mst?lang=cpp#kruskals) on all possible fence removals. But this isn't feasible because the number of regions can be up to roughly $25000^2$ vertical and horizontal fences.
 
 The key observation is that many edges in this grid graph have the same weight. After taking differences between consecutive fence coordinates, we get the widths of the $(n+1)$ columns and the heights of the $(m+1)$ rows. Every horizontal fence segment inside a particular column has length equal to that column's width, while every vertical fence segment inside a particular row has length equal to that row's height. Thus, instead of processing every edge individually, we can process these groups of equal-weight edges together.
 
