@@ -2,7 +2,11 @@
 # against it -- the Problem Tags workflow runs that one instead, checking out with
 # fetch-depth: 0 so the comparison is possible at all.
 ci:
-  skip: [check-problem-tags]
+  # Prettier runs from the repo's own node_modules, which pre-commit.ci has no
+  # way to install. It is also already covered there by the autofix.ci workflow,
+  # and two bots pushing format commits to the same branch would race, so this
+  # hook is for local commits only.
+  skip: [check-problem-tags, prettier]
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -41,3 +45,28 @@ repos:
         entry: python py/check_problem_tags.py
         language: python
         files: (\.problems\.json|^content/extraProblems\.json)$
+      # Prettier otherwise runs only in CI, via autofix.ci, so a formatting slip
+      # is invisible locally until the pull request goes red. Uses the version
+      # and plugins pinned in package.json rather than a copy pre-commit
+      # installs, since prettier-plugin-organize-imports needs the project's own
+      # TypeScript to resolve imports.
+      #
+      # .prettierignore excludes *.mdx; the format-mdx hook above covers the code
+      # blocks inside those.
+      - id: check-mdx
+        name: Check MDX
+        entry: python py/check_mdx.py
+        language: python
+        files: ^(content|solutions)/.*\.mdx$
+      - id: prettier
+        name: Format with Prettier
+        entry: yarn prettier --write --ignore-unknown
+        language: system
+        files: \.(json|ya?ml|[jt]sx?|css|scss|html|md)$
+        require_serial: true
+      - id: check-problems-json
+        name: Check problem data
+        entry: python py/check_problems_json.py
+        language: python
+        files: (\.problems\.json|^content/extraProblems\.json|^src/components/markdown/ProblemsList/DivisionList/div_to_probs\.json)$
+        pass_filenames: false
