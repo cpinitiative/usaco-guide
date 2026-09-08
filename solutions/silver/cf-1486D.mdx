@@ -11,17 +11,17 @@ author: Aakash Gokhale
 
 We can binary search over the largest possible median that is possible to achieve.
 
-To check whether the median $x$ is achievable on an interval, we need to count the number of elements that are $\ge x$ and the number of elements that are $< x$.
+To check whether a median at least $x$ is achievable on an interval, we need to count the number of elements that are $\ge x$ and the number of elements that are $< x$.
 
 If the number of elements $\ge x$ is greater than the number of elements $< x$, we can say that this median is achievable.
 Note that there must be strictly more elements greater than or equal to $x$ than less than $x$ because of how the problem defines the median for subarrays even sizes.
 
-Let $f(i)$ be the number of elements in the prefix that are$\ge x$ - the number of elements in the prefix that are $< x$.
+Let $f(i)$ be the number of elements in the prefix that are $\ge x$ - the number of elements in the prefix that are $< x$.
 
-We can prove that if $f(i) - f(j) > 0$ and $i >= j + k$, it is possible to have a median of $x$.
+We can prove that if $f(i) - f(j) > 0$ and $i \ge j + k$, it is possible to have a median of $x$.
 This is because on the range from $i$ to $j$ there will be more elements greater than or equal to $x$ than less than $x$ which means that the median will also be greater than or equal to $x$.
 
-From here we can perform a linear search for the max difference keeping track of the minimum element in the prefix from $0$ to $f[i - k]$ which ensures that the size is always at least $k$. If it greater than $0$, then this median is possible to achieve.
+From here we can perform a linear search for the max difference keeping track of the minimum element in the prefix $f(0\dots i-k)$ which ensures that the size is always at least $k$. If it greater than $0$, then this median is possible to achieve.
 
 ## Implementation
 
@@ -63,7 +63,7 @@ int main() {
 		// Iterate over the ending pointer of a subarray.
 		for (int i = k - 1; i < n; i++) {
 			// Update the minimum element in the prefix.
-			mn = min(mn, f[i - k]);
+			if (i >= k) mn = min(mn, f[i - k]);
 			// Update the maximum possible difference.
 			diff = max(diff, f[i] - mn);
 		}

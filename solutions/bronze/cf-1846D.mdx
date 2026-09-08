@@ -30,7 +30,6 @@ For each branch, there are two cases:
 <CPPSection>
 
 ```cpp
-#include <algorithm>
 #include <iomanip>
 #include <iostream>
 #include <vector>
@@ -54,9 +53,9 @@ int main() {
 		int height;
 		std::cin >> branch_num >> base >> height;
 
+		// the branch offsets are given in increasing order
 		vector<int> offsets(branch_num);
 		for (int &o : offsets) { std::cin >> o; }
-		std::sort(offsets.begin(), offsets.end());
 
 		double total_area = 0;
 		double slope = (double)base / height;
@@ -87,7 +86,8 @@ def trap_area(base1: float, base2: float, height: float) -> float:
 
 for _ in range(int(input())):
 	branch_num, base, height = [int(i) for i in input().split()]
-	offsets = sorted(int(i) for i in input().split())
+	# the branch offsets are given in increasing order
+	offsets = [int(i) for i in input().split()]
 	assert branch_num == len(offsets)
 
 	total_area = 0

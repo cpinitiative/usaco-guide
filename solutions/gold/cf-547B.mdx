@@ -4,7 +4,7 @@ source: CF
 title: Mike and Feet
 author: Raagav Bala
 ---
-[Official Analysis (C++)](https://codeforces.com/blog/entry/18126)
+[Official Editorial (C++)](https://codeforces.com/blog/entry/18126)
 
 ## Explanation
 
@@ -16,7 +16,7 @@ This means that for each bear, we want to find:
 
 Say these are at indices $\texttt{L}[i]$ and $\texttt{R}[i]$, respectively. We know that bear $i$ is the shortest bear for any group that lies in between them, so the largest possible group where bear $i$ is the shortest has size $\texttt{R}[i] - \texttt{L}[i] - 1$.
 
-Now, suppose that bear $i$ can determine the strength of a group of size $s$. Then its height is potentially the maximum strength among all groups of size $s$. However, even though we store the *largest group* that bear $i$ can be in, any smaller group nested in this larger group would also have bear $i$ as its shortest bear. Thus, if a bear works for a group of size $s$, it can also work for all smaller group sizes. To account for this, we can iterate from largest group size to the smallest one, where $\texttt{strengths}[i] = \texttt{max}(\texttt{strengths}[i],~\texttt{strengths}[i+1])$.
+Now, suppose that bear $i$ can determine the strength of a group of size $s$. Then its height is potentially the maximum strength among all groups of size $s$. However, even though we store the *largest group* that bear $i$ can be in, any smaller group nested in this larger group would also have bear $i$ as its shortest bear. Thus, if a bear works for a group of size $s$, it can also work for all smaller group sizes. To account for this, we can iterate from largest group size to the smallest one, where $\texttt{strengths}[i] = \max(\texttt{strengths}[i],~\texttt{strengths}[i+1])$.
 
 To find the nearest shorter bears $\texttt{L}[i]$ and $\texttt{R}[i]$, we use a monotonic stack. As we iterate through bears, while the height of the bear at the top of the stack is greater than or equal to the height of the current bear $i$, we pop the top bear from the stack. After popping all such bears, the bear now at the top is the closest shorter bear, so we store its index in $\texttt{L}[i]$ or $\texttt{R}[i]$. Then we push bear $i$ onto the stack.
 
