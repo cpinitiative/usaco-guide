@@ -17,7 +17,7 @@ import { promisify } from 'util';
  * -fsyntax-only, Python is parsed.
  *
  * Only C++ snippets that look like a whole program are compiled — the block
- * has to contain both an #include and an int main(. Fragments illustrating one
+ * has to contain both an #include and a main (see MAIN). Fragments illustrating one
  * function, and snippets including a header that ships with the problem such
  * as grader.h, are skipped; neither is meant to compile alone. Python is
  * parsed rather than run, so fragments are fine as long as they stand on their
@@ -52,9 +52,8 @@ const STANDARD = process.env.CXX_STANDARD ?? 'c++20';
  *
  * Both were clean at zero remaining occurrences when this was introduced, so a
  * new hit is a new defect. The checker only compiles snippets that contain both
- * an #include and an int main(, which is why the deliberate VLA in
- * Intro_DS.mdx -- a bare fragment, shown precisely to say not to write one --
- * needs no opt-out.
+ * an #include and a main, which is why the deliberate VLA in Intro_DS.mdx -- a
+ * bare fragment, shown precisely to say not to write one -- needs no opt-out.
  */
 const ERRORS = ['-Werror=vla', '-Werror=return-type'];
 /** Each check is its own process, so the pool can be as wide as the machine. */
@@ -94,8 +93,17 @@ const PCH_WORTH_IT_ABOVE = 8;
 /** Snippets that only build on x86, for the intrinsics or the target pragma. */
 const X86_ONLY = /immintrin\.h|target\s*\(\s*"[^"]*(avx|sse|bmi|popcnt)/i;
 
-/** How a C++ snippet's entry point may be spelled. */
-const MAIN = /^\s*(?:int|signed|int32_t|auto)\s+main\s*\(/m;
+/**
+ * How a C++ snippet's entry point may be spelled. The return type is optional
+ * and may run to several words, so this takes any run of type keywords: plain
+ * `int main()`, the `signed main()` that `#define int long long` forces,
+ * `long long main()`, a fixed-width `int32_t main()`, and a bare `main()`.
+ *
+ * A bare `main()` is not valid C++ -- implicit int is long gone -- which is a
+ * reason to compile the snippet and say so, not to quietly skip it.
+ */
+const MAIN =
+  /^\s*(?:(?:signed|unsigned|int|long|short|void|auto|int32_t|int64_t)\s+)+main\s*\(|^\s*main\s*\([^;)]*\)\s*\{/m;
 
 type Lang = 'cpp' | 'py';
 
@@ -283,8 +291,8 @@ export function extractSnippets(file: string, source: string): Snippet[] {
     i = end;
 
     if (lang === 'cpp') {
-      // A whole program, not a fragment illustrating one function. Solutions
-      // spell the entry point `int main`, `signed main` or `int32_t main`.
+      // A whole program, not a fragment illustrating one function. See MAIN
+      // for the entry-point spellings that count.
       if (!code.includes('#include') || !MAIN.test(code)) continue;
       // Needs a header that ships with the problem, e.g. grader.h. Quoting
       // the GCC catch-all is just a style, not a missing header -- seven whole
