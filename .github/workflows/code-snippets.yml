@@ -83,8 +83,8 @@ jobs:
           if [ '${{ github.event_name }}' = 'workflow_dispatch' ]; then
             echo 'Manual run; sweeping every snippet.'
             yarn check-code-snippets --all
-          elif git diff --name-only "$BASE_REF...HEAD" |
-              grep -qx 'scripts/check-code-snippets.ts'; then
+          elif git diff --name-only "$BASE_REF...HEAD" | grep -qxE \
+              'scripts/check-code-snippets\.ts|\.github/workflows/code-snippets\.yml'; then
             echo 'The checker changed; sweeping every snippet.'
             yarn check-code-snippets --all
           else
