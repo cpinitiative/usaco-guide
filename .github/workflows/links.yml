@@ -16,6 +16,10 @@ on:
   schedule:
     - cron: '17 8 * * 1' # Mondays, 08:17 UTC
   workflow_dispatch:
+  # TEMPORARY: proves the workflow runs on a runner before it merges.
+  # Revert this and the dry-run below before merging.
+  pull_request:
+    branches: [master]
 
 concurrency:
   group: ${{ github.workflow }}
@@ -83,8 +87,8 @@ jobs:
             --json number,title \
             --jq "map(select(.title == \"$title\")) | .[0].number // empty")
 
-          if [ -n "$existing" ]; then
-            gh issue comment "$existing" --body-file body.md
-          else
-            gh issue create --title "$title" --body-file body.md --label content
-          fi
+          # TEMPORARY dry run: everything above still executes (the gh issue
+          # list query, the jq filter, the heredoc), only the write is stubbed.
+          echo "existing issue: ${existing:-<none>}"
+          echo "--- body that would be posted ---"
+          cat body.md
