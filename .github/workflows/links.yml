@@ -1,0 +1,90 @@
+name: Links
+
+# Weekly, not per-pull-request, and deliberately not a required check.
+#
+# Link rot is not caused by pull requests -- the motivating case (#6625) was a
+# module nobody had touched in years, whose resource domain lapsed and got
+# re-registered as a gambling site. Gating a diff on it would therefore catch
+# nothing it is meant to catch, while making every contributor's check depend on
+# a few hundred third-party hosts being up and willing to answer a datacenter
+# IP.
+#
+# So it runs on a schedule and files an issue instead. `py/check_links.py`
+# reports only what is unambiguous (dead domain, 404/410, or spam content) and
+# stays silent on 403/429/5xx, which keeps that issue worth opening.
+on:
+  schedule:
+    - cron: '17 8 * * 1' # Mondays, 08:17 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  check-links:
+    runs-on: ubuntu-latest
+    # ~5 minutes locally for 965 requests. The ceiling is generous because the
+    # runtime floor is set by whichever host has the most links, and a slow one
+    # cannot be worked around by adding concurrency -- requests to a single host
+    # are deliberately serialised.
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      # `continue-on-error` rather than `||: ` so the step still shows red in
+      # the run summary; the report step below reads the outcome.
+      #
+      # `shell: bash` is load-bearing: it runs with `-o pipefail`, which the
+      # default shell does not. Without it the pipeline reports tee's exit code
+      # instead of the script's, the step always looks green, and the issue
+      # below is never filed no matter how many links are broken.
+      - name: Check links
+        id: check
+        continue-on-error: true
+        shell: bash
+        run: python py/check_links.py --json findings.json | tee report.txt
+
+      - name: Open or update the tracking issue
+        if: steps.check.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          title='Broken links found by the weekly scan'
+          {
+            echo 'The weekly link scan found links that no longer reach what they'
+            echo 'were written to point at. `HIJACKED` first: those domains lapsed'
+            echo 'and were re-registered by someone else, so they are actively'
+            echo 'harmful rather than merely dead.'
+            echo
+            echo 'Fix by pointing the link at a current equivalent, or at a'
+            echo '`https://web.archive.org/web/<timestamp>/<original url>`'
+            echo 'snapshot from before the page died. Check the snapshot actually'
+            echo 'shows the original content -- for a hijacked domain you must'
+            echo 'pick a timestamp predating the takeover.'
+            echo
+            echo '```'
+            cat report.txt
+            echo '```'
+            echo
+            echo "[Workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+          } > body.md
+
+          # Reuse the open issue if there is one, so a link that stays broken for
+          # months does not open a new issue every Monday.
+          existing=$(gh issue list --state open --search "$title in:title" \
+            --json number,title \
+            --jq "map(select(.title == \"$title\")) | .[0].number // empty")
+
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body-file body.md
+          else
+            gh issue create --title "$title" --body-file body.md --label content
+          fi
