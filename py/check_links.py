@@ -9,24 +9,38 @@ the page it pointed at died years later. Issue #6625 is the motivating case --
 went on sending readers to an Indonesian gambling site. Nothing in the repo
 changed, so nothing in the repo could have flagged it.
 
-Unlike the other checks in this directory, this one is *not* deterministic and
-must not gate a pull request. It talks to a few hundred third-party hosts that
-rate-limit, block datacenter IPs, and go down for reasons of their own. So the
-rule here is to only report what is unambiguous, and to stay quiet otherwise:
+Run this by hand, not from CI. That is not a style preference -- it was tried,
+and the result is the single most important thing to know about this script:
+
+    From a GitHub Actions runner, 7 of its 8 findings were false. TopCoder
+    served 404 to the runner for six pages that are healthy from a normal
+    connection, and cs.baylor.edu "did not resolve" there while resolving
+    fine everywhere else. Worse, it *missed* blog.anudeep2011.com, the
+    hijacked domain in #6625 that it exists to catch and that it flags
+    reliably from a residential IP.
+
+Datacenter IPs get served a different internet: bot defenses answer them with
+404s, DNS behaves differently, and cloaked spam hides from them. Every
+classification below assumes the network is answering honestly, and from a
+runner it is not. Retrying does not help, because the next attempt comes from
+the same place. So this is a tool a maintainer runs (about five minutes), and
+its output is trustworthy in proportion to how ordinary the connection is.
+
+Run from a normal connection it reports only what is unambiguous, and stays
+quiet otherwise:
 
 - ``DEAD``     -- the hostname does not resolve. The domain lapsed or its DNS
                   was pulled; either way the link cannot work for anyone.
 - ``GONE``     -- 404 or 410. The host is healthy and says the page is not there.
 - ``HIJACKED`` -- the page is serving SEO spam. This is the #6625 shape and the
-                  one worth waking someone up for, because a dead link is merely
+                  one worth acting on quickly, because a dead link is merely
                   useless while a hijacked one is actively harmful.
 
 Everything else is deliberately *not* a finding. 403 and 429 mean the site
-dislikes CI, not that the page is gone -- DMOJ, SPOJ, Stack Overflow, LeetCode
-and Quora all refuse this script while serving humans fine, and that was 8% of
-the corpus from a residential IP, so expect more from a CI runner. 5xx and
-timeouts are transient by definition. Reporting any of it would produce a weekly
-issue that is mostly noise, which is the same as producing nothing.
+dislikes scripts, not that the page is gone -- DMOJ, SPOJ, Stack Overflow,
+LeetCode and Quora all refuse this one while serving humans fine, which was 8%
+of the corpus. 5xx and timeouts are transient by definition. Reporting any of it
+would bury the real findings, which is the same as having none.
 
 
 Two passes, because wall-clock is bounded by the busiest single host
