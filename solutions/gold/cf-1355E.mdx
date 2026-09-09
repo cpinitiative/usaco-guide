@@ -21,51 +21,46 @@ author: Rameez Parwez
 #include <vector>
 
 int main() {
-    int n, add, remove, move;
-    std::cin >> n >> add >> remove >> move;
-    std::vector<int> pillars(n);
-    for (int &x : pillars) {
-        std::cin >> x;
-    }
+	int n, add, remove, move;
+	std::cin >> n >> add >> remove >> move;
+	std::vector<int> pillars(n);
+	for (int &x : pillars) { std::cin >> x; }
 
-    auto get_cost = [&] (int mid) -> long long {
-        long long to_add = 0, to_remove = 0;
-        for (int p : pillars) {
-            if (p < mid) {
-                to_add += mid - p;
-            } else {
-                to_remove += p - mid;
-            }
-        }
+	auto get_cost = [&](int mid) -> long long {
+		long long to_add = 0, to_remove = 0;
+		for (int p : pillars) {
+			if (p < mid) {
+				to_add += mid - p;
+			} else {
+				to_remove += p - mid;
+			}
+		}
 
-        long long res = 1LL * add * (to_add - std::min(to_add, to_remove)) +
-                    1LL * remove * (to_remove - std::min(to_add, to_remove)) +
-                    1LL * move * std::min(to_add, to_remove);
+		long long res = 1LL * add * (to_add - std::min(to_add, to_remove)) +
+		                1LL * remove * (to_remove - std::min(to_add, to_remove)) +
+		                1LL * move * std::min(to_add, to_remove);
 
-        res = std::min(res, 1LL * add * to_add + 1LL * remove * to_remove);
+		res = std::min(res, 1LL * add * to_add + 1LL * remove * to_remove);
 
-        return res;
+		return res;
+	};
 
-    }; 
+	int lo = 0, hi = 1e9;
+	while (hi - lo > 3) {
+		int mid1 = lo + (hi - lo) / 3;
+		int mid2 = hi - (hi - lo) / 3;
+		if (get_cost(mid1) > get_cost(mid2)) {
+			lo = mid1;
+		} else {
+			hi = mid2;
+		}
+	}
 
-    int lo = 0, hi = 1e9;
-    while (hi - lo > 3) {
-        int mid1 = lo + (hi - lo) / 3;
-        int mid2 = hi - (hi - lo) / 3;
-        if (get_cost(mid1) > get_cost(mid2)) {
-            lo = mid1;
-        } else {
-            hi = mid2;
-        }
-    }
+	long long min_cost = get_cost(lo);
+	for (int i = lo + 1; i <= hi; i++) { min_cost = std::min(min_cost, get_cost(i)); }
 
-    long long min_cost = get_cost(lo);
-    for (int i = lo + 1; i <= hi; i++) {
-        min_cost = std::min(min_cost, get_cost(i));
-    }
-
-    std::cout << min_cost << '\n';
-}   
+	std::cout << min_cost << '\n';
+}
 ```
 
 </CPPSection>
