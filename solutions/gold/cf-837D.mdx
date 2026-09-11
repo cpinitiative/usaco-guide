@@ -57,10 +57,10 @@ int main() {
 		}
 	}
 
-	vector<vector<int>> dp(n + 1, vector<int>(MAX_FIVES + 1, -INF));
+	vector<vector<int>> dp(k + 1, vector<int>(MAX_FIVES + 1, -INF));
 	dp[0][0] = 0;
 	for (int i = 1; i <= n; ++i) {
-		for (int j = i; j > 0; --j) {
+		for (int j = min(k, i); j > 0; --j) {
 			for (int z = fives[i - 1]; z <= MAX_FIVES; ++z) {
 				dp[j][z] = max(dp[j][z], twos[i - 1] + dp[j - 1][z - fives[i - 1]]);
 			}
@@ -79,12 +79,12 @@ int main() {
 <PySection>
 
 ```py
-N, K = map(int, input().split())
+n, k = map(int, input().split())
 a = [int(x) for x in input().split()]
 
 twos = []
 fives = []
-for i in range(N):
+for i in range(n):
 	x = a[i]
 	two_count = 0
 	five_count = 0
@@ -97,16 +97,16 @@ for i in range(N):
 	twos.append(two_count)
 	fives.append(five_count)
 
-dp = [[float("-inf")] * 5001 for j in range(N + 1)]
+dp = [[float("-inf")] * 5001 for j in range(k + 1)]
 dp[0][0] = 0
-for i in range(1, N + 1):
-	for j in range(i, 0, -1):
+for i in range(1, n + 1):
+	for j in range(min(k, i), 0, -1):
 		for z in range(fives[i - 1], 5001):
 			dp[j][z] = max(dp[j][z], twos[i - 1] + dp[j - 1][z - fives[i - 1]])
 
 ans = 0
 for z in range(5001):
-	ans = max(ans, min(z, dp[K][z]))
+	ans = max(ans, min(z, dp[k][z]))
 print(ans)
 ```
 
