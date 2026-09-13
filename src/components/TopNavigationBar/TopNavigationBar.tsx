@@ -42,7 +42,7 @@ export default function TopNavigationBar({
   linkLogoToIndex = false,
   currentSection = null,
   hidePromoBar = false,
-  redirectToDashboard = false,
+  redirectToDashboard: _redirectToDashboard = false,
 }) {
   const router = useRouter();
   const firebaseUser = useFirebaseUser();
