@@ -92,6 +92,7 @@ export async function compileMdxForEditor({
 }): Promise<{
   compiledResult: string;
   problemsList: ProblemsListEntry[];
+  katexWarnings: string[];
 }> {
   const deps = await loadCompilerDeps();
 
@@ -123,7 +124,10 @@ export async function compileMdxForEditor({
             ],
           },
         ],
-        deps.customRehypeKatex,
+        // The build fails on these (see parseMdxFile). Without throwOnError
+        // they become messages and the math still renders, so the preview
+        // stays usable while the author sees what CI will reject.
+        [deps.customRehypeKatex, { strict: 'error' }],
         deps.rehypeSnippets,
         [deps.rehypeExternalLinks, { target: '_blank', rel: ['nofollow'] }],
         [
@@ -150,5 +154,8 @@ export async function compileMdxForEditor({
   return {
     compiledResult: String(compiled),
     problemsList,
+    katexWarnings: compiled.messages
+      .filter(m => m.source === 'rehype-katex')
+      .map(m => m.reason),
   };
 }
