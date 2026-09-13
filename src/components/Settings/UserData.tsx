@@ -41,7 +41,7 @@ export default function UserData() {
     };
   };
 
-  const handleImportUserData = e => {
+  const handleImportUserData = _e => {
     if (file === '') return;
     try {
       const data = JSON.parse(file);
