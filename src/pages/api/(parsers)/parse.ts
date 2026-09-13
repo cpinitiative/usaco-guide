@@ -203,7 +203,7 @@ export default async function parse(url: string) {
     if (url.includes('codeforces.com')) {
       try {
         html = await tryCodeforcesAPI(url);
-      } catch (error) {
+      } catch (_error) {
         console.log(
           'Codeforces API failed, trying Direct scraping fallback...'
         );
