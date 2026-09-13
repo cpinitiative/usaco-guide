@@ -7,7 +7,7 @@ export default onSchedule(
   {
     schedule: 'every 24 hours',
   },
-  event => {
+  _event => {
     const bucket = 'gs://backups.usaco.guide';
     const projectId = process.env.GCP_PROJECT || process.env.GCLOUD_PROJECT;
     const databaseName = backupsClient.databasePath(projectId, '(default)');
