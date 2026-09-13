@@ -28,8 +28,6 @@ jobs:
         run: corepack enable
       - uses: dart-lang/setup-dart@v1
 
-      - run: yarn add bundlewatch@0.4.0
-
       - name: Cache node modules
         uses: actions/cache@v6
         id: cache-node-modules
@@ -56,8 +54,11 @@ jobs:
           $HOME/.pub-cache/bin/linkcheck --no-nice --no-check-anchors \
             --skip-file .github/linkcheck-skip.txt :3000
 
+      # dlx installs just bundlewatch, where `yarn add` re-resolved the whole
+      # project ahead of the node_modules cache (~20s). It also keeps
+      # bundlewatch's pinned axios 0.28 out of yarn.lock.
       - name: Bundle Watch
-        run: yarn bundlewatch .next/static/chunks/*.js
+        run: yarn dlx bundlewatch@0.4.0 .next/static/chunks/*.js
         env:
           BUNDLEWATCH_GITHUB_TOKEN: ${{ secrets.BUNDLEWATCH_GITHUB_TOKEN }}
           CI_COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
