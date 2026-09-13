@@ -1,0 +1,169 @@
+---
+id: ac-freefall
+source: AC
+title: Freefall
+author: Rameez Parwez
+---
+
+[Official Editorial (C++)](https://atcoder.jp/contests/abc279/editorial/5362)
+
+## Explanation
+
+Let $x$ denote the number of times Takahashi uses his superpower
+before jumping. We know that with every use of the superpower, the
+strength of gravity increases by $1$. Therefore, if Takahashi uses
+his superpower $x$ times, the gravity becomes $g = x + 1$.
+
+It is also mentioned in the problem that each use of the superpower
+takes a time of $B$. So if he uses his superpower $x$ times, the
+total time spent on operations will be $x \cdot B$.
+
+After substituting these values, the total time required to reach
+the ground becomes:
+
+$$
+f(x) = xB + \frac{A}{\sqrt{x + 1}}
+$$
+
+Our goal is to find the value $x$ that minimizes $f(x)$.
+
+Here, observe that the first term $xB$ is a linear function and
+therefore convex. The second term is also convex for $x \geq 0$,
+as its second derivative is positive. Since the sum of convex
+functions is also convex, $f(x)$ is also convex.
+
+<Info>
+We can prove that the second term $\frac{A}{\sqrt{x+1}}$ is
+convex. To compute its seocnd derivative we will apply the power
+rule to the function. We can rewrite the function as
+$A(x+1)^{-1/2}$, the second derivatve is then
+$\frac{3A}{4}(x+1)^{-5/2}$, which is positive for all $x \geq 0$,
+confirming its convexity. Alternatively, we can use
+[Desmos](https://www.desmos.com/calculator), a graphiing tool to
+verify it vissually.
+</Info>
+
+A convex function is also unimodal; hence, $f(x)$ is unimodal
+(i.e., it decreases, reaches a minimum, then increases). This
+allows us to apply ternary search over the range of possible
+values of $x$ to find the minimum time.
+
+Below is the convex plot of $f(x)$ for test case 1: $A = 10$, $B = 1$.
+![Freefall Convex Plot](/content/4_Gold/assets/freefall_convex_plot.png)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(\log(10^{18}))$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <cmath>
+#include <iomanip>
+#include <iostream>
+
+int main() {
+	long long a, b;
+	std::cin >> a >> b;
+
+	auto get_time = [&](long long mid) -> long double {
+		long double res = (long double)mid * b + (a / sqrtl(mid + 1));
+		return res;
+	};
+
+	long long lo = 0, hi = 1e18;
+	while (hi - lo > 3) {
+		long long mid1 = lo + (hi - lo) / 3;
+		long long mid2 = hi - (hi - lo) / 3;
+
+		if (get_time(mid1) > get_time(mid2)) {
+			lo = mid1;
+		} else {
+			hi = mid2;
+		}
+	}
+
+	long double min_time = get_time(lo);
+	for (long long i = lo + 1; i <= hi; i++) {
+		min_time = std::min(min_time, get_time(i));
+	}
+
+	std::cout << std::fixed << std::setprecision(8) << min_time << '\n';
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	static long a, b;
+
+	public static void main(String[] args) throws Exception {
+		Kattio io = new Kattio();
+
+		a = io.nextLong();
+		b = io.nextLong();
+
+		long lo = 0, hi = (long)1e18;
+		while (hi - lo > 3) {
+			long mid1 = lo + (hi - lo) / 3;
+			long mid2 = hi - (hi - lo) / 3;
+			if (getTime(mid1) > getTime(mid2)) {
+				lo = mid1;
+			} else {
+				hi = mid2;
+			}
+		}
+
+		double minTime = getTime(lo);
+		for (long i = lo + 1; i <= hi; i++) { minTime = Math.min(minTime, getTime(i)); }
+
+		io.printf("%.8f%n", minTime);
+		io.close();
+	}
+
+	static double getTime(long mid) {
+		return (double)mid * b + (double)a / Math.sqrt(mid + 1);
+	}
+
+	// BeginCodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+import math
+
+a, b = map(int, input().split())
+
+
+def get_time(mid):
+	return mid * b + a / math.sqrt(mid + 1)
+
+
+lo, hi = 0, 10**18
+
+while hi - lo > 3:
+	mid1 = lo + (hi - lo) // 3
+	mid2 = hi - (hi - lo) // 3
+	if get_time(mid1) > get_time(mid2):
+		lo = mid1
+	else:
+		hi = mid2
+
+min_time = get_time(lo)
+for i in range(lo + 1, hi + 1):
+	min_time = min(min_time, get_time(i))
+
+print(f"{min_time:.8f}")
+```
+
+</PySection>
+</LanguageSection>
