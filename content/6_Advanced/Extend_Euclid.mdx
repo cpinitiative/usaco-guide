@@ -577,3 +577,90 @@ $x - x_0$ must be some whole multiple of $\frac{b}{gcd(a, b)}$;
 we call that multiple $k$. Once we have fixed the value of $k$,
 the equation above tells us $y - y_0$ has to equal
 $-k \frac{a}{gcd(a, b)}$, proving the theorem.
+
+### Solution: F - S = 1
+
+The three points of the traingle given are $(0, 0), (X, Y), \& (A, B)$.
+Their area is already provided as $1$ thus, if we substitute the values we have we get:
+
+$$
+\begin{aligned}
+Area = \frac{1}{2}|AY - BX| = 1 \\
+|AY - BX| = 2
+\end{aligned}
+$$
+
+Our final equation $|AY - BX| = \pm 2$ is similar to $ax + by = c$, 
+where the unknows are $A$ and $B$ and known constants are $Y$ and $-X$. 
+
+Here the solution is possible if $gcd(A, B) | 2$ (i.e., Bézout's Identity).
+
+We will run our extended euclidean algorithm on the pair $(Y, -X)$
+providing us with integers $c$ and $d$ satisfying
+
+$$
+cY - dX = \pm g
+$$
+
+multiplying this will $2 / g$, we get:
+
+$$
+\left(\frac{2}{g} c\right)Y - \left(\frac{2}{g} d\right)X = \pm 2
+$$
+
+Therefore,
+
+$$
+A = \frac{2}{g}c, \ B = \frac{2}{g}d
+$$
+
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(\log min(X, Y))$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp 
+#include <iostream>
+
+long long extended_gcd(long long a, long long b, long long &c, long long &d) {
+    if (b == 0) {
+        c = 1;
+        d = 0;
+        return a;
+    }
+    long long c1, d1;
+    long long res = extended_gcd(b, a % b, c1, d1);
+    c = d1;
+    d = c1 - d1 * (a / b);
+    return res;
+}
+
+int main() {
+    long long X, Y;
+    std::cin >> X >> Y;
+
+    long long c, d;
+    long long g = extended_gcd(X, Y, c, d);
+
+    if (std::abs(g) > 2) {
+        std::cout << -1 << '\n';
+        return 0;
+    }
+
+    extended_gcd(Y, -X, c, d);
+    if (std::abs(g) == 1) {
+        c *= 2;
+        d *= 2;
+    }
+
+    std::cout << c << " " << d << '\n';
+    
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
