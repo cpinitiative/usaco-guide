@@ -590,8 +590,8 @@ Area = \frac{1}{2}|AY - BX| = 1 \\
 \end{aligned}
 $$
 
-Our final equation $|AY - BX| = \pm 2$ is similar to $ax + by = c$, 
-where the unknows are $A$ and $B$ and known constants are $Y$ and $-X$. 
+Our final equation $|AY - BX| = \pm 2$ is similar to $ax + by = c$,
+where the unknows are $A$ and $B$ and known constants are $Y$ and $-X$.
 
 Here the solution is possible if $gcd(A, B) | 2$ (i.e., Bézout's Identity).
 
@@ -622,45 +622,43 @@ $$
 <LanguageSection>
 <CPPSection>
 
-```cpp 
+```cpp
 #include <iostream>
 
 long long extended_gcd(long long a, long long b, long long &c, long long &d) {
-    if (b == 0) {
-        c = 1;
-        d = 0;
-        return a;
-    }
-    long long c1, d1;
-    long long res = extended_gcd(b, a % b, c1, d1);
-    c = d1;
-    d = c1 - d1 * (a / b);
-    return res;
+	if (b == 0) {
+		c = 1;
+		d = 0;
+		return a;
+	}
+	long long c1, d1;
+	long long res = extended_gcd(b, a % b, c1, d1);
+	c = d1;
+	d = c1 - d1 * (a / b);
+	return res;
 }
 
 int main() {
-    long long X, Y;
-    std::cin >> X >> Y;
+	long long X, Y;
+	std::cin >> X >> Y;
 
-    long long c, d;
-    long long g = extended_gcd(X, Y, c, d);
+	long long c, d;
+	long long g = extended_gcd(X, Y, c, d);
 
-    if (std::abs(g) > 2) {
-        std::cout << -1 << '\n';
-        return 0;
-    }
+	if (std::abs(g) > 2) {
+		std::cout << -1 << '\n';
+		return 0;
+	}
 
-    extended_gcd(Y, -X, c, d);
-    if (std::abs(g) == 1) {
-        c *= 2;
-        d *= 2;
-    }
+	extended_gcd(Y, -X, c, d);
+	if (std::abs(g) == 1) {
+		c *= 2;
+		d *= 2;
+	}
 
-    std::cout << c << " " << d << '\n';
-    
+	std::cout << c << " " << d << '\n';
 }
 ```
 
 </CPPSection>
 </LanguageSection>
-
