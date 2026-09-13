@@ -31,6 +31,49 @@ directing up or down with the right hand rule). The process is also how the
 shoelace formula is proved.
 
 <LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+
+int cross_product(std::pair<int, int> p1, std::pair<int, int> p2) {
+	return p1.first * p2.second - p2.first * p1.second;
+}
+
+int main() {
+	int test_num;
+	std::cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		std::pair<int, int> p0 = {0, 0};
+		int sum = 0;
+		std::string direction;
+		std::cin >> direction;
+
+		for (char d : direction) {
+			std::pair<int, int> p1;
+			if (d == 'N') {
+				p1 = {p0.first, p0.second + 1};
+			} else if (d == 'E') {
+				p1 = {p0.first + 1, p0.second};
+			} else if (d == 'S') {
+				p1 = {p0.first, p0.second - 1};
+			} else {
+				p1 = {p0.first - 1, p0.second};
+			}
+			sum += cross_product(p1, p0);
+			p0 = p1;
+		}
+
+		if (sum > 0) {
+			std::cout << "CW" << '\n';
+		} else {
+			std::cout << "CCW" << '\n';
+		}
+	}
+}
+```
+
+</CPPSection>
 <PySection>
 
 ## Implementation
