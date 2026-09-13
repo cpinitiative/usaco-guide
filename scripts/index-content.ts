@@ -491,7 +491,7 @@ async function indexProblems(db: Database.Database): Promise<void> {
       let parsedContent;
       try {
         parsedContent = JSON.parse(content);
-      } catch (error) {
+      } catch (_error) {
         throw new Error(`Unable to parse JSON file: ${filePath}`);
       }
 
@@ -722,7 +722,6 @@ async function generateUsacoDivisionsJson(
   db: Database.Database
 ): Promise<void> {
   const { writeFile } = await import('fs/promises');
-  const { join } = await import('path');
 
   // Query all problems and filter for USACO divisions
   const rows = db
