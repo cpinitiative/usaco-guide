@@ -30,7 +30,7 @@ const submitProblemSuggestion = functions.https.onCall(async request => {
       'You must be logged in to suggest a problem!'
     );
   }
-  const submitterName = await admin
+  const _submitterName = await admin
     .auth()
     .getUser(request.auth.uid)
     .then(userRecord => userRecord.displayName);
