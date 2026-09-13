@@ -1,7 +1,7 @@
 ---
 id: extend-euclid
 title: 'Extended Euclidean Algorithm'
-author: Benjamin Qi
+author: Benjamin Qi, Rameez Parwez
 prerequisites:
   - divisibility
 description: '?'
@@ -89,11 +89,6 @@ def euclid(a: int, b: int) -> int:
 		source="Wikipedia"
 		url="https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm"
 		title="Extended Euclidean"
-	/>
-	<Resource
-		source="cp-algo"
-		url="algebra/linear-diophantine-equation.html"
-		title="Linear Diophantine Equation"
 	/>
 </Resources>
 
@@ -360,11 +355,13 @@ solution to a system of simultaneous modular congruences with pairwise coprime m
 when divided by the given divisors leaves the given remainders. Mathematically, it solves the following system of modular congruences:
 
 $$
+\begin{gathered}
 x \equiv a_1 \pmod{m_1} \\
 x \equiv a_2 \pmod{m_2} \\
 x \equiv a_3 \pmod{m_3} \\
-\vdots\\
-x \equiv a_k \pmod{m_k} \\
+\vdots \\
+x \equiv a_k \pmod{m_k}
+\end{gathered}
 \tag{1}
 $$
 <center>$M=m_1\cdot m_2 \cdot m_3 \cdots m_k$</center>
@@ -374,8 +371,10 @@ The above system has exactly one solution modulo $M$.
 We'll focus on the particular case for $k=2$; for two coprime moduli:
 
 $$
+\begin{gathered}
 x \equiv a_1 \pmod{m_1} \\
-x \equiv a_2 \pmod{m_2} \\
+x \equiv a_2 \pmod{m_2}
+\end{gathered}
 \tag{2}
 $$
 <center>$M=m_1 \cdot m_2$</center>
@@ -468,3 +467,111 @@ By similar arguments as before, the unique solution mod $M$ is:
 $$
 x = \sum_{i=1}^{n}{a_i \cdot n_i \cdot n_i'} \pmod{M}
 $$
+
+
+## Application - Linear Diophantine Equation
+
+<Resources>
+	<Resource
+		  source="Brilliant"
+		  title="Linear Diophantine Equations"
+		  url="https://brilliant.org/wiki/linear-diophantine-equations-one-equation/"
+		  starred
+	>
+		In-depth explanation
+	</Resource>
+	<Resource
+		source="cp-algo"
+		url="algebra/linear-diophantine-equation.html"
+		title="Linear Diophantine Equation"
+	/>
+</Resources>
+
+A Linear Diophantine Equation is an equation of the form
+
+$$
+ax + by = c
+$$
+
+where $a$, $b$ and $c$ are known constants, and we want to find 
+integer values of $x$ and $y$ satisfying the equation. Each 
+number in the equation has to be an integer.
+
+We can solve a Linear Diophantine Equation using the Extended 
+Euclidean algorithm, which calculates values $x_g$ and $y_g$ that 
+satisfy the equation:
+
+$$
+ax_g + by_g = gcd(a, b)
+$$
+
+A Linear Diophantine Equation can be solved if $c$ is divisible by
+$gcd(a, b)$, and otherwise it cannot be solved. This observation
+is derived from [Bézout's Identity](https://en.wikipedia.org/wiki/B%C3%A9zout's_identity).
+
+Let's calculate the value of $x$ and $y$ considering 
+$g = gcd(a, b)$ divides $c$. Since $g | c$ we can multiply the 
+Bézout equation through by $c / g$, resulting in:
+
+$$
+a \left(x_g \cdot \frac{c}{g}\right) + b \left(y_g \cdot \frac{c}{g}\right) = g \cdot \frac{c}{g} = c
+$$
+
+So one solution to $ax + by = c$ is 
+
+$$
+x_0 = x_g \cdot \frac{c}{g}, \ y_0 = y_g \cdot \frac{c}{g}
+$$
+
+
+A solution to the Diophantine equation is never unique, because 
+we can form an infinite number of solutions if we know one 
+solution.
+
+**Theorem:** If $(x_0, y_0)$ is an integer solution of the 
+Diophantine Equation $ax + by = c$, then all integer solutions to 
+the equation are of the form
+
+$$
+\left(x_0 + k \frac{b}{gcd(a, b)}, y_0 - k \frac{a}{gcd(a, b)}\right)
+$$
+
+where $k$ is any integer.
+
+**Proof:** We have
+
+$$
+\begin{aligned}
+a\left(x_0 + k \frac{b}{gcd(a, b)}\right) + b\left(y_0 - k \frac{a}{gcd(a, b)}\right)
+&= ax_0 + by_0 + \frac{abk}{gcd(a, b)} - \frac{abk}{gcd(a, b)} \\
+&= ax_0 + by_0 \\
+&= c,
+\end{aligned}
+$$
+
+here note that the two $k$-terms cancel each other out, so no 
+matter what integer $k$ we choose, our equation results back in 
+$c$.
+
+ 
+But we still need to check that we haven't missed any other 
+solutions. So suppose $(x, y)$ is some solution to the 
+equation — any solution at all. Since it agrees with $(x_0, y_0)$ 
+on the right-hand side, we can subtract one from the other:
+
+$$
+\begin{aligned}
+ax + by &= ax_0 + by_0 \\
+a(x - x_0) &= -b(y - y_0) \\
+\frac{a}{gcd(a, b)}(x - x_0) &= -\frac{b}{gcd(a, b)}(y - y_0).
+\end{aligned}
+$$
+
+Here, note that the numbers $\frac{a}{gcd(a, b)}$ and 
+$\frac{b}{gcd(a, b)}$ are coprime (i.e., they have no factors 
+left in common except $1$). That means $\frac{b}{gcd(a, b)}$ has 
+no choice but to divide evenly into $x - x_0$. In other words, 
+$x - x_0$ must be some whole multiple of $\frac{b}{gcd(a, b)}$; 
+we call that multiple $k$. Once we have fixed the value of $k$, 
+the equation above tells us $y - y_0$ has to equal 
+$-k \frac{a}{gcd(a, b)}$, proving the theorem.
