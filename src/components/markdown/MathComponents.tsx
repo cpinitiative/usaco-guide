@@ -18,7 +18,9 @@ export const MATHSPAN = props => {
   );
 };
 
-export default {
+const meta = {
   MATHDIV,
   MATHSPAN,
 };
+
+export default meta;
