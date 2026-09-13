@@ -17,7 +17,7 @@ class ErrorBoundary extends React.Component<{ children?: React.ReactNode }> {
     this.state = { error: null };
   }
 
-  componentDidCatch(error, info) {
+  componentDidCatch(error, _info) {
     // Display fallback UI
     this.setState({ error });
   }
