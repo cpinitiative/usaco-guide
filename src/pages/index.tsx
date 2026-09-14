@@ -70,7 +70,7 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
         to the landing page, location.state.redirect will be undefined, causing a typeerror, this try catch statements accounts for that */
         router.push('/dashboard');
       }
-    } catch (e) {
+    } catch (_e) {
       if (firebaseUser) {
         router.push('/dashboard');
       }
