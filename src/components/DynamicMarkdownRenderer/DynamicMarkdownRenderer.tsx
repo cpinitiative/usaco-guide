@@ -57,6 +57,7 @@ export default function DynamicMarkdownRenderer({
     setMarkdownProblemListsProviderValue,
   ] = useState([]);
   const [error, setError] = useState<Error | null>(null);
+  const [katexWarnings, setKatexWarnings] = useState<string[]>([]);
   const compileSeqRef = useRef(0);
 
   useEffect(() => {
@@ -66,10 +67,11 @@ export default function DynamicMarkdownRenderer({
 
     (async () => {
       try {
-        const { compiledResult, problemsList } = await compileMdxForEditor({
-          markdown: nextMarkdown,
-          problems: nextProblems,
-        });
+        const { compiledResult, problemsList, katexWarnings } =
+          await compileMdxForEditor({
+            markdown: nextMarkdown,
+            problems: nextProblems,
+          });
 
         const content = new Function(compiledResult)({
           Fragment,
@@ -79,6 +81,7 @@ export default function DynamicMarkdownRenderer({
 
         if (compileSeqRef.current !== seq) return;
         setError(null);
+        setKatexWarnings(katexWarnings);
         setMdxContent(content);
         setMarkdownProblemListsProviderValue(problemsList);
       } catch (e) {
@@ -113,10 +116,24 @@ export default function DynamicMarkdownRenderer({
   }
 
   return (
-    <ErrorBoundary>
-      <MarkdownProblemListsProvider value={markdownProblemListsProviderValue}>
-        {mdxContent}
-      </MarkdownProblemListsProvider>
-    </ErrorBoundary>
+    <>
+      {katexWarnings.length > 0 && (
+        <div className="mb-4 rounded-md border border-yellow-400 bg-yellow-50 p-3 text-sm text-yellow-800 dark:border-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-200">
+          <p className="font-medium">
+            This math will fail the build. Fix it before submitting:
+          </p>
+          <ul className="mt-2 list-disc space-y-1 pl-5 font-mono text-xs">
+            {katexWarnings.map((warning, i) => (
+              <li key={i}>{warning}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+      <ErrorBoundary>
+        <MarkdownProblemListsProvider value={markdownProblemListsProviderValue}>
+          {mdxContent}
+        </MarkdownProblemListsProvider>
+      </ErrorBoundary>
+    </>
   );
 }
