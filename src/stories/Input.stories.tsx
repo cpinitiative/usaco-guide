@@ -1,8 +1,10 @@
 import { StoryFn } from '@storybook/react';
 
-export default {
+const meta = {
   title: 'Input',
 };
+
+export default meta;
 
 const Template: StoryFn = args => <input type="text" {...args} />;
 
