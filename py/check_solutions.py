@@ -64,6 +64,12 @@ CANONICAL_LABEL = {
 REQUIRE_EDITORIAL = ("cf", "ac")
 CF_GYM_MIN_CONTEST_ID = 100000
 
+# usaco.org disambiguates a name it reuses across divisions by appending the
+# division ("High Card Low Card (Gold)"). `source` already records the division,
+# so the suffix is stripped before comparing -- the same treatment
+# check_problems_json.py gives a problem's `name`.
+DIVISION_SUFFIX = re.compile(r"\s*\((Bronze|Silver|Gold|Platinum)\)$")
+
 COMPLEXITY = re.compile(r"^\*\*Time Complexity:\*\*", re.M)
 MISSING_COMPLEXITY_LIST = (
 	Path(__file__).resolve().parent / "solutions_missing_complexity.txt"
@@ -85,11 +91,11 @@ USACO_SOL_URL = re.compile(
 def load_usaco_data() -> tuple[dict, dict]:
 	id_to_sol = json.loads((DIVISION_LIST / "id_to_sol.json").read_text())
 	div_to_probs = json.loads((DIVISION_LIST / "div_to_probs.json").read_text())
-	cpid_to_contest = {}
+	cpid_to_problem = {}
 	for division, problems in div_to_probs.items():
-		for cpid, contest, _name in problems:
-			cpid_to_contest[cpid] = (division, contest)
-	return id_to_sol, cpid_to_contest
+		for cpid, contest, name in problems:
+			cpid_to_problem[cpid] = (division, contest, name)
+	return id_to_sol, cpid_to_problem
 
 
 def parse_frontmatter(text: str) -> dict | None:
@@ -127,7 +133,7 @@ def cf_is_gym(stem: str) -> bool:
 
 
 def check_file(
-	path: Path, id_to_sol: dict, cpid_to_contest: dict, complexity_backlog: set[str]
+	path: Path, id_to_sol: dict, cpid_to_problem: dict, complexity_backlog: set[str]
 ) -> list[tuple[str, int | None]]:
 	errors: list[tuple[str, int | None]] = []
 	text = path.read_text()
@@ -185,15 +191,28 @@ def check_file(
 				)
 			)
 		if (
-			cpid in cpid_to_contest
+			cpid in cpid_to_problem
 		):  # only contests DivisionList knows about (Dec 2015 onward)
-			division, contest = cpid_to_contest[cpid]
+			division, contest, official_name = cpid_to_problem[cpid]
 			expected_source = f"USACO {division} {contest}"
 			if fields.get("source") and fields["source"] != expected_source:
 				errors.append(
 					(
 						f"frontmatter `source: {fields['source']}` should be `{expected_source}`",
 						line_of(text, r"^source:"),
+					)
+				)
+			# `title` heads the solution page and its SEO title, in both cases
+			# prefixed by `source`. So a name usaco.org reuses across divisions
+			# ("MooTube", "Cow at Large", "Exercise") needs no disambiguating
+			# rename here, and an abbreviation ("UCFJ") only leaves the reader
+			# unable to match the page against the problem list.
+			expected_title = DIVISION_SUFFIX.sub("", official_name)
+			if fields.get("title") and fields["title"] != expected_title:
+				errors.append(
+					(
+						f"frontmatter `title: {fields['title']}` should be `{expected_title}`; usaco.org is the authority on a problem's name",
+						line_of(text, r"^title:"),
 					)
 				)
 	elif prefix in REQUIRE_EDITORIAL and not exempt:
@@ -242,7 +261,7 @@ def main() -> int:
 	else:
 		paths = [p for p in args.paths if p.suffix == ".mdx" and "solutions" in p.parts]
 
-	id_to_sol, cpid_to_contest = load_usaco_data()
+	id_to_sol, cpid_to_problem = load_usaco_data()
 	complexity_backlog = {
 		line.strip()
 		for line in MISSING_COMPLEXITY_LIST.read_text().splitlines()
@@ -261,7 +280,7 @@ def main() -> int:
 	for path in paths:
 		if path.parent.name in SKIP_DIRS:
 			continue
-		errors = check_file(path, id_to_sol, cpid_to_contest, complexity_backlog)
+		errors = check_file(path, id_to_sol, cpid_to_problem, complexity_backlog)
 		if errors:
 			failed += 1
 			rel = path.relative_to(ROOT) if path.is_absolute() else path
