@@ -7,6 +7,8 @@ author: Kevin Sheng
 
 [Official Analysis](https://archive.org/download/oi-ted-ceoi-archive/CEOI/2018/)
 
+## Explanation
+
 It might be tempting at first to do a 2-dimensional DP with the number of computer purchases and the number of customer orders, but that would result in a nasty and inefficient transition.
 
 Instead, let's try grouping the two into a single array of "transactions". Each transation has three attributes: the change in the number of cores, the associated clock rate of the cores, and the change in the total profits.
@@ -112,6 +114,11 @@ Notice that in this order, as long as a customer order comes after a computer pu
 
 This drastically simplifies the problem. Now we can simply define $\texttt{max\_profits}[t][c]$ as the maximum profit we can gain from the first $t$ transactions given that we have $c$ cores left.
 Given this, the rest of the problem is simple knapsack.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(T \log T + T \cdot C)$ where $T$ is the total
+number of transactions and $C$ is `max_computers`
 
 <LanguageSection>
 <CPPSection>
