@@ -143,7 +143,7 @@ export default function TopNavigationBar({
       {!hidePromoBar && (
         <>
           <Banner
-            text="Our next semester of Bronze/Silver live classes starts this month. Register here!"
+            text="Our fall semester of Bronze/Silver live classes starts soon. Register here!"
             action="Register here"
             link="https://joincpi.org/classes"
           />

@@ -6,7 +6,7 @@ import 'katex/dist/katex.min.css';
 import type { AppProps } from 'next/app';
 import { Inter } from 'next/font/google';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import 'react-calendar-heatmap/dist/styles.css';
 import { Toaster } from 'react-hot-toast';
 import 'tippy.js/animations/scale-subtle.css';
@@ -33,11 +33,33 @@ const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? '';
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
+  // `useRouter()` returns a fresh object each render with `asPath` copied onto
+  // it, so capturing it in a mount-only effect freezes the path at first load
+  // and every hot reload would navigate back there. Read it at fire time
+  // instead. `router.replace` is proxied to the live router, so it is safe to
+  // close over.
+  const asPathRef = useRef(router.asPath);
+  asPathRef.current = router.asPath;
   useEffect(() => {
     if (process.env.NEXT_PUBLIC_WATCH_RELOAD !== '1') return;
     const es = new EventSource('http://localhost:3001');
-    es.onmessage = () =>
-      router.replace(router.asPath, undefined, { scroll: false });
+    es.onmessage = async () => {
+      const asPath = asPathRef.current;
+      const [path, hash] = asPath.split('#', 2);
+      if (hash === undefined) {
+        await router.replace(asPath, undefined, { scroll: false });
+        return;
+      }
+      // Next treats a replace that keeps or drops the current hash as a
+      // hash-only change and skips refetching props, so on a URL like
+      // `#solution` the reload would do nothing. Drop the hash first, then
+      // replace with the identical hash-free URL (a real reload), then put
+      // the hash back. The first and last steps are hash-only and fetch
+      // nothing.
+      await router.replace(path, undefined, { scroll: false });
+      await router.replace(path, undefined, { scroll: false });
+      await router.replace(asPath, undefined, { scroll: false });
+    };
     es.onerror = () => {};
     return () => es.close();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps

@@ -19,15 +19,15 @@ We use $\texttt{bc}[x][y]$ below to denote $\texttt{bit\_count}(x \hspace{3pt} \
 </Info>
 Consider the first sample case: $n = 4$, $a = \{1, 2, 3, 4\}$, and $k = \{10, 0, 1, 0\}$.
 - **Base case:** $\texttt{dp}[i] = 1$ for all $i$ (any single number forms an LBS) and $\texttt{prv}[i] = i$.
-- $\texttt{dp}[1]$: we try extending the longest LBS that ends at $a_0 = 1$. Because $\texttt{bc}[a_0][a_1] == k_1$, our new LBS is valid, and we update $\texttt{dp}[1] = \texttt{dp}[0] + 1 = 2$ and $\texttt{prv}[1] = 0$.
+- $\texttt{dp}[1]$: we try extending the longest LBS that ends at $a_0 = 1$. Because $\texttt{bc}[a_0][a_1] = k_1$, our new LBS is valid, and we update $\texttt{dp}[1] = \texttt{dp}[0] + 1 = 2$ and $\texttt{prv}[1] = 0$.
 - $\texttt{dp}[2]$: we try to extend the LBS from both $a_0$ and $a_1$.
-	- $a_0$: $\texttt{bc}[a_0][a_2] == k_2 \rightarrow \texttt{dp}[2] = \texttt{dp}[0] + 1 = 2$ and $\texttt{prv}[2] = 0$
-	- $a_1$: $\texttt{bc}[a_1][a_2] == k_2 \rightarrow \texttt{dp}[2] = \texttt{dp}[1] + 1 = 3$ and $\texttt{prv}[2] = 1$
+	- $a_0$: $\texttt{bc}[a_0][a_2] = k_2 \rightarrow \texttt{dp}[2] = \texttt{dp}[0] + 1 = 2$ and $\texttt{prv}[2] = 0$
+	- $a_1$: $\texttt{bc}[a_1][a_2] = k_2 \rightarrow \texttt{dp}[2] = \texttt{dp}[1] + 1 = 3$ and $\texttt{prv}[2] = 1$
 	- We take the larger of the two DP values, so $\texttt{dp}[2] = 3$ and $\texttt{prv}[2] = 1$.
 - $\texttt{dp}[3]$: we try to extend from $a_0$, $a_1$, and $a_2$.
 	- $a_0$: $\texttt{bc}[a_0][a_3] \neq k_3 \rightarrow$ no transition
-	- $a_1$: $\texttt{bc}[a_1][a_3] == k_3 \rightarrow \texttt{dp}[3] = \texttt{dp}[1] + 1 = 3$ and $\texttt{prv}[3] = 1$
-	- $a_2$: $\texttt{bc}[a_2][a_3] == k_3 \rightarrow \texttt{dp}[3] = \texttt{dp}[2] + 1 = 4$ and $\texttt{prv}[3] = 2$
+	- $a_1$: $\texttt{bc}[a_1][a_3] = k_3 \rightarrow \texttt{dp}[3] = \texttt{dp}[1] + 1 = 3$ and $\texttt{prv}[3] = 1$
+	- $a_2$: $\texttt{bc}[a_2][a_3] = k_3 \rightarrow \texttt{dp}[3] = \texttt{dp}[2] + 1 = 4$ and $\texttt{prv}[3] = 2$
 	- Taking the larger of the two options, $\texttt{dp}[3] = 4$ and $\texttt{prv}[3] = 2$.
 - **Final answer:** $\texttt{len} = \max(\texttt{dp}[i]_{i \in [0, n)}) = \texttt{dp}[3] = \boxed{4}$
 - **Reconstructing a solution:**
@@ -43,7 +43,7 @@ Consider the first sample case: $n = 4$, $a = \{1, 2, 3, 4\}$, and $k = \{10, 0,
 
 ### Implementation
 
-**Time Complexity**: $\mathcal{O}(N^2)$
+**Time Complexity:** $\mathcal{O}(N^2)$
 
 <Spoiler title="Code">
 
@@ -118,7 +118,7 @@ More specifically, we define $\texttt{dp1}[i][x]$ to be the length of the longes
 In order to reconstruct a solution, we need to store the ending index of the optimal LBS in $\texttt{dp1}[i][x]$ in addition to its length. In our implementation, our `State` object holds an `end` property in addition to a `len` property. In our example below, we represent each state as `{len, end}`.
 </Info>
 
-This improves our time complexity to $\mathcal{O}(NM)$. Notice that, because $\texttt{dp1}[i][x]$ only depends on $\texttt{dp1}[i - 1][...]$, we can drop the first dimension.
+This improves our time complexity to $\mathcal{O}(NM)$. Notice that, because $\texttt{dp1}[i][x]$ only depends on $\texttt{dp1}[i - 1][\dots]$, we can drop the first dimension.
 
 Consider the first sample case again: $n = 4$, $a = \{1, 2, 3, 4\}$, and $k = \{10, 0, 1, 0\}$. The maximum value is $M = 4$.
 - **Base case:** $\texttt{dp1}[a_0 = 1] = \{1, 0\}$.
@@ -144,7 +144,7 @@ Consider the first sample case again: $n = 4$, $a = \{1, 2, 3, 4\}$, and $k = \{
 
 ### Implementation
 
-**Time Complexity**: $\mathcal{O}(NM)$
+**Time Complexity:** $\mathcal{O}(NM)$
 
 <Spoiler title="Code">
 
@@ -218,7 +218,7 @@ int main() {
 
 ### Subtask 3 (Alternate Solution)
 
-In our previous solution for this Subtask 3, the loop from $0...M$ seems repetitive and motivates somehow restricting the search space of DP states. **How can we quickly process all $x$ in $\texttt{trans}_{k_i}(a_i)$?**
+In our previous solution for this Subtask 3, the loop from $0\dots M$ seems repetitive and motivates somehow restricting the search space of DP states. **How can we quickly process all $x$ in $\texttt{trans}_{k_i}(a_i)$?**
 
 The most extreme way to optimize transitions is to embed the restrictions of $x$ directly in the DP state.
 

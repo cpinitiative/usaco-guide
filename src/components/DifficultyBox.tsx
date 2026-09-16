@@ -5,7 +5,7 @@ export const difficultyClasses = {
   'N/A': 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100',
   'Very Easy': 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100',
   Easy: 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100',
-  Normal: 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100',
+  Medium: 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100',
   Hard: 'bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100',
   'Very Hard':
     'bg-orange-100 text-orange-800 dark:bg-orange-800 dark:text-orange-100',

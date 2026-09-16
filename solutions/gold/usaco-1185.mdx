@@ -103,7 +103,7 @@ ll ways_offset(int shift, vector<int> &h, vector<ll> &dp, vector<ll> &diff) {
 
 int main() {
 	cin >> n;
-	h.reserve(n);
+	vector<int> h(n);
 
 	int mn = MX_HUNGER;
 	for (int i = 0; i < n; i++) {
@@ -112,7 +112,6 @@ int main() {
 	}
 
 	ll ans = 0;
-	vector<int> h;
 	vector<ll> dp(MX_HUNGER + 1);
 	vector<ll> diff(MX_HUNGER + 2);
 
@@ -122,9 +121,11 @@ int main() {
 		 * instead, we have to compute the answer for all possible hunger
 		 * values.
 		 */
-		for (int i = 0; i <= mn; i++) { ans = (ans + ways_offset(i) + MOD) % MOD; }
+		for (int i = 0; i <= mn; i++) {
+			ans = (ans + ways_offset(i, h, dp, diff) + MOD) % MOD;
+		}
 	} else {
-		ans = (ans + ways_offset(0) + MOD) % MOD;
+		ans = (ans + ways_offset(0, h, dp, diff) + MOD) % MOD;
 	}
 
 	cout << ans << endl;

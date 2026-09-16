@@ -1,9 +1,8 @@
 import { spawn } from 'child_process';
 import chokidar from 'chokidar';
-import { existsSync } from 'fs';
 import http from 'http';
 import path from 'path';
-import { CONTENT_DIR, DB_FILE, SOLUTIONS_DIR } from '../src/lib/constants';
+import { CONTENT_DIR, SOLUTIONS_DIR } from '../src/lib/constants';
 
 const SSE_PORT = 3001;
 const sseClients = new Set<http.ServerResponse>();
@@ -41,17 +40,12 @@ function broadcastReload() {
 async function watchContent() {
   startSseServer();
 
-  if (!existsSync(DB_FILE) || process.env.NODE_ENV === 'production') {
-    console.log('[watch] Building content.db...');
-    const { main } = await import('./index-content');
-    await main();
-  } else {
-    console.log('[watch] Using cached content.db. Watching for changes...');
-    const { ensureUsacoDivisionsJson } = await import('./index-content');
-    if (await ensureUsacoDivisionsJson()) {
-      console.log('[watch] Regenerated public/usaco-divisions.json.');
-    }
-  }
+  // Always rebuild: the watcher below only sees edits made while it runs, so
+  // a content.db left over from another branch or an older checkout would
+  // otherwise be served as-is (e.g. a FocusProblem whose list it lacks).
+  console.log('[watch] Building content.db...');
+  const { main } = await import('./index-content');
+  await main();
 
   // Start Next.js dev server as a child process. `--webpack` must match the
   // `dev` script: Next 16 defaults to Turbopack, which errors out on the
@@ -74,37 +68,47 @@ async function watchContent() {
   let debounceTimer: ReturnType<typeof setTimeout> | null = null;
   const pending = new Map<string, 'change' | 'add' | 'unlink'>();
 
+  const runRebuild = async (
+    changes: Map<string, 'change' | 'add' | 'unlink'>
+  ) => {
+    const labels = [...changes.keys()].map(f =>
+      path.relative(process.cwd(), f)
+    );
+    console.log(`\n[watch] Content changed: ${labels.join(', ')}`);
+
+    try {
+      const { updateFiles, main } = await import('./index-content');
+      try {
+        await updateFiles(changes);
+        console.log('[watch] Content updated.');
+      } catch (incrementalErr) {
+        console.error('[watch] Incremental update failed:', incrementalErr);
+        console.log('[watch] Falling back to full rebuild...');
+        await main();
+        console.log('[watch] Full rebuild complete.');
+      }
+      broadcastReload();
+    } catch (err) {
+      console.error('[watch] Rebuild failed:', err);
+    }
+  };
+
+  // Rebuilds run one at a time. `main()` drops and recreates every table, so
+  // two overlapping runs insert the same rows into one freshly created table
+  // and the second fails with `UNIQUE constraint failed: mdx_content.id`.
+  let rebuildQueue: Promise<void> = Promise.resolve();
+
   const scheduleRebuild = (
     event: 'change' | 'add' | 'unlink',
     filePath: string
   ) => {
     pending.set(filePath, event);
     if (debounceTimer) clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(async () => {
+    debounceTimer = setTimeout(() => {
       debounceTimer = null;
       const changes = new Map(pending);
       pending.clear();
-
-      const labels = [...changes.keys()].map(f =>
-        path.relative(process.cwd(), f)
-      );
-      console.log(`\n[watch] Content changed: ${labels.join(', ')}`);
-
-      try {
-        const { updateFiles, main } = await import('./index-content');
-        try {
-          await updateFiles(changes);
-          console.log('[watch] Content updated.');
-        } catch (incrementalErr) {
-          console.error('[watch] Incremental update failed:', incrementalErr);
-          console.log('[watch] Falling back to full rebuild...');
-          await main();
-          console.log('[watch] Full rebuild complete.');
-        }
-        broadcastReload();
-      } catch (err) {
-        console.error('[watch] Rebuild failed:', err);
-      }
+      rebuildQueue = rebuildQueue.then(() => runRebuild(changes));
     }, 500);
   };
 

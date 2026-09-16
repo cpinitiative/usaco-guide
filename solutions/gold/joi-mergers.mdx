@@ -34,7 +34,7 @@ We now wish to prove that when the tree is rooted at the leaf centroid, we can s
 > I have leaves of $n$ different types. If I have $c_i$ leaves of the $i$th type, and I want to split these leaves into pairs such that no pair contains two leaves of the same type, this is possible iff $2 \cdot \max c_i \leq \sum c_i$.
 
 This can be proved by induction. WLOG, let $c_1 = \max c_i$.
-- If the inequality holds with equality, i.e. $c_1 = c_2 + c_3 + ... + c_n$, we can form pairs such that each pair contains exactly one leaf of type 1.
+- If the inequality holds with equality, i.e. $c_1 = c_2 + c_3 + \dots + c_n$, we can form pairs such that each pair contains exactly one leaf of type 1.
 - Otherwise, we can pair a leaf of type 1 with a leaf of any other type, and the inequality will still hold.
 </Spoiler>
 
@@ -95,16 +95,17 @@ int main() {
 	int leaves = 0;
 	// implementation of merge(tree, root)
 	// returns [degree of C, XOR of C] where C is potentially incomplete root component
-	[&](this auto dfs, int x, int p) -> array<int, 2> {
+	auto dfs = [&](auto &&self, int x, int p) -> array<int, 2> {
 		int deg = 0, cur = val[x];
 		for (int y : g[x])
 			if (y != p) {
-				auto [d, sm] = dfs(y, x);
+				auto [d, sm] = self(self, y, x);
 				deg += d, cur ^= sm;
 			}
 		if (!cur && deg + (p > 0) == 1) ++leaves;
 		return {cur ? deg : 1, cur};
-	}(1, 0);
+	};
+	dfs(dfs, 1, 0);
 	cout << (leaves + 1) / 2 << "\n";
 }
 ```

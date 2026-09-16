@@ -33,7 +33,7 @@ interface ProblemHitProps {
 const difficultySortOrder = {
   'Very Easy': 1,
   Easy: 2,
-  Normal: 3,
+  Medium: 3,
   Hard: 4,
   'Very Hard': 5,
   Insane: 6,

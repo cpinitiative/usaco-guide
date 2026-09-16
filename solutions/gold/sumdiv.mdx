@@ -11,7 +11,7 @@ For an integer $A$, the sum of all divisors of the $A$ can be efficiently
 computed using the
 [divisor function](https://en.wikipedia.org/wiki/Divisor_function).
 
-The formula states that if $d_1^{p_1} \cdot d_2^{p_2} \cdot ... \cdot d_k^{p_k}$
+The formula states that if $d_1^{p_1} \cdot d_2^{p_2} \cdot \dots \cdot d_k^{p_k}$
 is the prime factorization of $A$, then the divisors' sum is:
 
 $$
@@ -19,13 +19,13 @@ S = \prod_{i=1}^{k}\frac{d_i^{p_i+1} - 1}{d_i -1}.
 $$
 
 For this problem we need to compute sum of divisors of $A^B$. If the prime
-factorization of $A$ is $d_1^{p_1} \cdot d_2^{p_2} \cdot ... \cdot d_k^{p_k}$
+factorization of $A$ is $d_1^{p_1} \cdot d_2^{p_2} \cdot \dots \cdot d_k^{p_k}$
 then the prime factorization of $A^B$ will be
-$d_1^{B\cdot p_1} \cdot d_2^{B\cdot p_2} \cdot ... \cdot d_k^{B\cdot p_k}$ and we can compute
+$d_1^{B\cdot p_1} \cdot d_2^{B\cdot p_2} \cdot \dots \cdot d_k^{B\cdot p_k}$ and we can compute
 the sum of divisors using the above formula,
 $S = \prod_{i=1}^{k}\frac{d_i^{B\cdot p_i+1} - 1}{d_i -1}$.
 
-If $d_i\not \equiv 1 \pmod{10^9+7}$, then we can compute the value of the expression $\frac{d_i^{B\cdot p_i+1} - 1}{d_i -1}\pmod{10^9+7}$ using modular exponentiation and modular inverse. Otherwise, the expression equals $1+d_i + d_i^2 + ... + d_i^{B\cdot p_i}\equiv B\cdot p_i+1\pmod{10^9+7}$.
+If $d_i\not \equiv 1 \pmod{10^9+7}$, then we can compute the value of the expression $\frac{d_i^{B\cdot p_i+1} - 1}{d_i -1}\pmod{10^9+7}$ using modular exponentiation and modular inverse. Otherwise, the expression equals $1+d_i + d_i^2 + \dots + d_i^{B\cdot p_i}\equiv B\cdot p_i+1\pmod{10^9+7}$.
 
 We do need to compute the prime factors of $A$, but thankfully this can be done
 in $\mathcal{O}(\sqrt{A})$ time.

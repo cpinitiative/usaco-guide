@@ -1,0 +1,39 @@
+# The problem lists carry three things a reviewer cannot check by reading a
+# diff: whether a USACO name matches usaco.org, whether a url points at the
+# problem its uniqueId names, and whether copies of one problem in different
+# modules still agree. See py/check_problems_json.py for what each rule covers
+# and, just as importantly, which fields are deliberately left alone.
+name: Problem Data
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - 'content/**/*.problems.json'
+      - 'content/extraProblems.json'
+      - 'src/components/markdown/ProblemsList/DivisionList/div_to_probs.json'
+      - 'py/check_problems_json.py'
+      - '.github/workflows/problem-data.yml'
+
+# A new push supersedes whatever the previous one was still checking. Cancelling
+# is scoped to pull requests: a run on master is validating what actually ships,
+# so let it finish.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check-problem-data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      # The third rule compares a problem against its copies in other modules,
+      # so this always sweeps every list rather than only the changed ones.
+      - name: Check problem data
+        run: python py/check_problems_json.py

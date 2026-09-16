@@ -17,7 +17,7 @@ export type ActiveItem = {
 };
 
 const statusClasses: { [key in ActiveItemStatus]: string } = {
-  Skipped: difficultyClasses.Normal,
+  Skipped: difficultyClasses.Medium,
   Ignored: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-100',
   Reading:
     'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100',

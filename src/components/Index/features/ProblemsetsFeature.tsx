@@ -99,7 +99,7 @@ export const ProblemsetsFeature = (): JSX.Element => {
                     <TableRow
                       source="USACO Gold"
                       title="Mootube"
-                      difficulty="Normal"
+                      difficulty="Medium"
                       starred
                     />
                     <TableRow

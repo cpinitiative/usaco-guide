@@ -9,8 +9,8 @@ if (admin.apps.length === 0) {
   admin.initializeApp();
 }
 
-export default functions.https.onCall(async request => {
-  const { key } = request.data as submitToProblemArgs;
+export default functions.https.onCall(async data => {
+  const { key } = data as submitToProblemArgs;
   let keyData;
   try {
     keyData = await getJoinKeyData(key);

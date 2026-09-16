@@ -12,9 +12,9 @@ if (admin.apps.length === 0) {
   admin.initializeApp();
 }
 
-export default functions.https.onCall(async request => {
-  const { groupId, targetUid } = request.data as RemoveFromGroupArgs;
-  const callerUid = request.auth?.uid;
+export default functions.https.onCall(async (data, context) => {
+  const { groupId, targetUid } = data as RemoveFromGroupArgs;
+  const callerUid = context.auth?.uid;
 
   if (targetUid === callerUid) {
     return {
