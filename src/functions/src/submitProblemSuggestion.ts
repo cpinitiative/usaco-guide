@@ -47,7 +47,7 @@ const submitProblemSuggestion = functions.https.onCall(async request => {
     problemListName,
     source,
     filePath,
-  } = data as {
+  } = request.data as {
     name: string;
     moduleName: string;
     link: string;
@@ -100,7 +100,7 @@ const submitProblemSuggestion = functions.https.onCall(async request => {
   };
 
   const body =
-    `User \`${context.auth?.uid}\` suggested adding the problem [${name}](${link}) ` +
+    `User \`${request.auth?.uid}\` suggested adding the problem [${name}](${link}) ` +
     `to the \`${problemListName}\` table of the module [${moduleName}](${problemTableLink}).\n\n` +
     `**Automatically Generated JSON:**\n` +
     '```json\n' +
