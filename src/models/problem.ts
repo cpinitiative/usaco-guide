@@ -470,7 +470,7 @@ export function generateProblemUniqueId(
       // remove whitespace
       x = x.replace(/[^\w\s]/g, '');
       // camel case everything (first word uppercase)
-      const str = x.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
+      const str = x.replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, _index) {
         return word.toUpperCase();
       });
       if (str.split(' ').length === 1) {

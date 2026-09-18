@@ -6,11 +6,13 @@ import {
   ResourcesList,
 } from '../../components/markdown/ResourcesList';
 
-export default {
+const meta = {
   title: 'Markdown/ResourcesList',
   component: ResourcesList,
   decorators: [markdownDecorator],
 };
+
+export default meta;
 
 const Template: StoryFn<ComponentProps<typeof ResourcesList>> = args => (
   <ResourcesList {...args} />

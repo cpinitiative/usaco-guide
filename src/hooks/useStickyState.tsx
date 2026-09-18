@@ -42,7 +42,7 @@ export default function useStickyState<S>(
       if (stickyValue !== null) {
         try {
           setValue(JSON.parse(stickyValue));
-        } catch (e) {
+        } catch (_e) {
           console.error("Couldn't parse key", key);
         }
       } else {

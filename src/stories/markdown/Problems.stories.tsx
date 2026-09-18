@@ -5,11 +5,13 @@ import markdownDecorator from '../../components/markdown/markdownDecoratorForSto
 import ProblemsListHeader from '../../components/markdown/ProblemsList/ProblemsListHeader';
 import ProblemsListItem from '../../components/markdown/ProblemsList/ProblemsListItem';
 
-export default {
+const meta = {
   title: 'Markdown/ProblemsList',
   component: ListTable,
   decorators: [markdownDecorator],
 };
+
+export default meta;
 
 const Template: StoryFn<ComponentProps<typeof ListTable>> = args => (
   <ListTable {...args} />
