@@ -67,7 +67,7 @@ const int N = 18;
 const int M = 998244353;
 int a[N];
 bool indepset[1 << N];
-int popcount[1 << N];
+int bit_count[1 << N];
 int arg[1 << N];
 int nodeid[1 << N];
 long long f[1 << N];
@@ -84,8 +84,8 @@ int main() {
 	}
 	for (int i = 0; i < n; i++) { nodeid[1 << i] = i; }
 	for (int i = 0; i < (1 << n); i++) {
-		popcount[i] = popcount[i >> 1] + (i & 1);
-		arg[i] = (popcount[i] % 2) * 2 - 1;
+		bit_count[i] = bit_count[i >> 1] + (i & 1);
+		arg[i] = (bit_count[i] % 2) * 2 - 1;
 	}
 	indepset[0] = 1;
 	for (int i = 1; i < (1 << n); i++) {

@@ -10,13 +10,13 @@ author: Sofia Yang, Ryan Chou, George Pong
 
 Let's rule a simple case first. When can you not construct a valid solution?
 
-Since the two sets have to have an equal sum, it's evident that both of them have to have half of  $1, 2, \ldots, N$. So, if $\frac{N(N+1)}{2}$, or the sum of the first $N$ positive integers isn't even, then a solution isn't possible. For each subset, we want its sum to be half of this sum, or $\frac{N(N+1)}{4}$
+Since the two sets have to have an equal sum, it's evident that both of them have to have half of  $1, 2, \dots, N$. So, if $\frac{N(N+1)}{2}$, or the sum of the first $N$ positive integers isn't even, then a solution isn't possible. For each subset, we want its sum to be half of this sum, or $\frac{N(N+1)}{4}$
 
 This, combined with the low bounds on $N$, hints at a [0-1 Knapsack DP](/gold/knapsack).
 
 Instead of trying to make a combination of two subsets, let's try to make a combination of one, since the other set has to have all of the other elements.
 
-If $\texttt{dp}[i][j]$ = the number of ways to make sum $j$ with the numbers from $1...i$, then our transitions will be $\texttt{dp}[i][j] = \texttt{dp}[i - 1][j] + \texttt{dp}[i - 1][j - i]$, if we don't include the current element, or we do.
+If $\texttt{dp}[i][j]$ = the number of ways to make sum $j$ with the numbers from $1\dots i$, then our transitions will be $\texttt{dp}[i][j] = \texttt{dp}[i - 1][j] + \texttt{dp}[i - 1][j - i]$, if we don't include the current element, or we do.
 
 Additionally, we could double count every single set. So, instead of counting up to $N$, we'll count up until $N - 1$, ensuring that the $N$th element is always placed in the second set.
 

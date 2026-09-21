@@ -133,7 +133,7 @@ class Confetti extends Component<ConfettiProps, ConfettiState> {
   }
 
   generateParticles = () => {
-    const newParticles = range(this.props.numParticles).map(i => {
+    const newParticles = range(this.props.numParticles).map(_i => {
       // Particles can be spread over a duration.
       // Each particle should be "born" at a random time during the emit
       // duration (if this value is 0, they'll all share the same birthdate).

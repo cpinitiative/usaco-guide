@@ -5,11 +5,13 @@ import markdownDecorator from '../../components/markdown/markdownDecoratorForSto
 import Warning from '../../components/markdown/Warning';
 import MiscMarkdownContent from './MiscMarkdownContent';
 
-export default {
+const meta = {
   title: 'Markdown/Warning',
   component: Warning,
   decorators: [markdownDecorator],
 };
+
+export default meta;
 
 const Template: StoryFn<ComponentProps<typeof Warning>> = args => (
   <Warning {...args} />

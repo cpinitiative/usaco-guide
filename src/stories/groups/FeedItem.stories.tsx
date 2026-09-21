@@ -53,9 +53,6 @@ const assignment: PostData = {
   type: 'assignment',
 };
 
-const updatePost = async () => {};
-const deletePost = async () => {};
-
 type StoryArgs = {
   group: GroupData;
   post: PostData;

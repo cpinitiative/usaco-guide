@@ -4,7 +4,7 @@ export default function MarkdownImage({
   src,
   alt,
   title,
-  style,
+  style: _style,
   width: customWidth,
   centered,
 }: {

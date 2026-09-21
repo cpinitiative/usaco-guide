@@ -1,6 +1,6 @@
 ---
 id: usaco-647
-source: USACO Gold 2016 Open
+source: USACO Gold 2016 US Open
 title: '248'
 author: Melody Yu, Qi Wang, Rohak Debnath
 ---
@@ -14,12 +14,12 @@ Note: The video solution might not be the same as other solutions. Code in C++.
 
 ## Explanation
 
-Consider a range $A[i..j]$. Since elements need to be adjacent to be merged and each new element will originate from a series of merges on a subarray, we can think about the subarrays of $A[i..j]$.
+Consider a range $A[i\dots j]$. Since elements need to be adjacent to be merged and each new element will originate from a series of merges on a subarray, we can think about the subarrays of $A[i\dots j]$.
 
 Let us define $dp[i][j]$ as the subarray of $A$ (with $i$ and $j$ inclusive and 0-based) such that $dp[i][j]$ is the element that can be merged into as a single element. If it cannot be merged into a single element, let it be \(-1\). For $k$ from $i$ to $j-1$ inclusive, we can check for the following transitions:
 
-1. If $i == j$, $dp[i][j] = a[i]$ (base case).
-2. Otherwise, if $dp[i][k] \neq -1$ and $dp[i][k] == dp[k+1][j]$, then $dp[i][j] = dp[i][k] + 1$.
+1. If $i = j$, $dp[i][j] = a[i]$ (base case).
+2. Otherwise, if $dp[i][k] \neq -1$ and $dp[i][k] = dp[k+1][j]$, then $dp[i][j] = dp[i][k] + 1$.
 
 If we find two equal and adjacent ranges, we can merge them for a value of $1$ plus the value of either of the two ranges. It can also be helpful to notice that a range can only merge into a unique number. Hence, it is not necessary to write the transitions as $dp[i][j] = \max(dp[i][j], dp[i][k] + 1)$.
 

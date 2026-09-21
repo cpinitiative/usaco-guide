@@ -84,6 +84,7 @@ export const probSources = {
     'Polish Olympiad in Informatics',
   ],
   QOJ: ['https://qoj.ac/', 'QOJ.ac', 'Check the "Editorial" tab.'],
+  RoboContest: ['https://robocontest.uz/', 'RoboContest (Uzbekistan)'],
   SPOJ: ['https://www.spoj.com/problems/', 'Sphere Online Judge'],
   TLX: [
     'https://tlx.toki.id/',
@@ -545,14 +546,14 @@ export type ProblemDifficulty =
   | 'N/A'
   | 'Very Easy'
   | 'Easy'
-  | 'Normal'
+  | 'Medium'
   | 'Hard'
   | 'Very Hard'
   | 'Insane';
 export const PROBLEM_DIFFICULTY_OPTIONS: ProblemDifficulty[] = [
   'Very Easy',
   'Easy',
-  'Normal',
+  'Medium',
   'Hard',
   'Very Hard',
   'Insane',

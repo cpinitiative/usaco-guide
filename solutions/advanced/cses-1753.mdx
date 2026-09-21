@@ -145,7 +145,7 @@ int main() {
 
 ## Solution - Rabin-Karp Algorithm
 
-Precompute the [rolling hash](https://usaco.guide/gold/string-hashing?lang=cpp) of both $P$ and $T$. Each substring of length $|P|$ can be compared for equality in $\mathcal{O}(1)$ time. Since there is a relatively small number of comparisons, using a single set of hash values is fine (although it doesn't hurt to add more!). Using hash base $9973$ and modulo $10^9 + 7$ suffices (see the string hashing module for more details on this choice).
+Precompute the [rolling hash](/gold/string-hashing?lang=cpp) of both $P$ and $T$. Each substring of length $|P|$ can be compared for equality in $\mathcal{O}(1)$ time. Since there is a relatively small number of comparisons, using a single set of hash values is fine (although it doesn't hurt to add more!). Using hash base $9973$ and modulo $10^9 + 7$ suffices (see the string hashing module for more details on this choice).
 
 <LanguageSection>
 
@@ -175,8 +175,8 @@ const long long hashPow = 9973, hashMod = 1e9 + 7;
 int main() {
 	string P, T;
 	cin >> T >> P;
-	vector<int> Phash = str::rhash(P, hashPow, hashMod),
-	            Thash = str::rhash(T, hashPow, hashMod);
+	vector<long long> Phash = str::rhash(P, hashPow, hashMod),
+	                  Thash = str::rhash(T, hashPow, hashMod);
 
 	long long ppow = 1;  // hashPow to the power of |P| modulo hashMod
 	for (int i = 0; i < P.size(); i++) { ppow = (ppow * hashPow) % hashMod; }

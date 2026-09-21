@@ -6,7 +6,7 @@ const ContactUsSlideoverContext = createContext<{
   setIsContactUsSlideoverOpen: (boolean) => void;
 }>({
   isContactUsSlideoverOpen: false,
-  setIsContactUsSlideoverOpen: x => {},
+  setIsContactUsSlideoverOpen: _x => {},
 });
 
 export default ContactUsSlideoverContext;

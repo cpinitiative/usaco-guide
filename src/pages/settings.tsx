@@ -35,7 +35,7 @@ import { useUserPermissions } from '../context/UserDataContext/UserPermissionsCo
 - Import / Export
  */
 
-export default function SettingsPage(props) {
+export default function SettingsPage() {
   const router = useRouter();
   const { isAdmin } = useUserPermissions();
   const tabs = [

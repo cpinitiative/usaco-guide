@@ -12,9 +12,9 @@ if (admin.apps.length === 0) {
   admin.initializeApp();
 }
 
-export default functions.https.onCall(async request => {
-  const { groupId } = request.data as LeaveGroupArgs;
-  const callerUid = request.auth?.uid;
+export default functions.https.onCall(async (data, context) => {
+  const { groupId } = data as LeaveGroupArgs;
+  const callerUid = context.auth?.uid;
   const groupDataSnapshot = await admin
     .firestore()
     .collection('groups')

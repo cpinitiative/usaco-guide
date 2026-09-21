@@ -12,7 +12,7 @@ async function needsRebuild(): Promise<boolean> {
         'or delete data/content.db to force a rebuild.'
     );
     return false;
-  } catch (error) {
+  } catch (_error) {
     // If any cache file is missing, rebuild everything
     return true;
   }
