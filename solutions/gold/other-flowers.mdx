@@ -108,10 +108,9 @@ int main() {
 
 		// Each road costs its length times the tons on its lighter side.
 		u128 answer = 0;
-		for (int i = n - 1; i >= 1; i--) { // children before parents
+		for (int i = n - 1; i >= 1; i--) {  // children before parents
 			int node = bfs_order[i];
-			ll lighter_side =
-			    min(subtree_tons[node], total_tons - subtree_tons[node]);
+			ll lighter_side = min(subtree_tons[node], total_tons - subtree_tons[node]);
 			answer += (u128)((ll)parent_edge_len[node] * lighter_side);
 			subtree_tons[parent[node]] += subtree_tons[node];
 		}
