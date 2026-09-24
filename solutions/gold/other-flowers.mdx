@@ -1,0 +1,127 @@
+---
+id: other-flowers
+source: IIOT 2017-18 International Round
+title: Flowers
+author: Moulik Jain
+---
+
+## Explanation
+
+The flower types do not affect each other, so we solve each of the 26 letters separately. Fix a letter and let $S$ be the total tons of that letter.
+
+Suppose we gather everything at plantation $m$. Each road is used by exactly the tons on the side of it that does not contain $m$. If removing a road of length $w$ splits the tons into $x$ and $S-x$, then the road costs at least $w\cdot\min(x, S-x)$, no matter where $m$ is. Summing over all roads gives a lower bound on the cost of every $m$.
+
+Some plantation reaches this bound: a plantation $m$ such that every component of the tree after removing $m$ has at most $S/2$ tons. To find one, start anywhere, and while some neighbor's side has more than $S/2$ tons, move to that neighbor. At most one side can have more than $S/2$ tons. After moving from $u$ to $v$, everything on $u$'s side has less than $S/2$ tons, so we never move back and the walk ends. For this $m$, the side of any road that does not contain $m$ lies inside one component, so it has at most $S/2$ tons and is the lighter side. Therefore the answer for a letter is the sum of $w\cdot\min(x, S-x)$ over all roads.
+
+To compute this, root the tree at $1$ and let $\texttt{subtree\_tons}[v]$ be the tons in the subtree of $v$. The road from $v$ to its parent splits the tons into $\texttt{subtree\_tons}[v]$ and $S-\texttt{subtree\_tons}[v]$. We compute the subtree sums from the leaves up using a BFS order, which avoids recursion on deep trees.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(26N)$
+
+The answer can be as large as about $4\cdot 10^{20}$ (a path of $2\cdot 10^5$ plantations of one type, with all lengths and tons equal to $2\cdot 10^5$), which does not fit in 64 bits, so we use a 128-bit integer.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+using u128 = unsigned __int128;
+
+// Converts a 128-bit integer to a string.
+string to_string_u128(u128 value) {
+	if (value == 0) return "0";
+	string digits;
+	while (value > 0) {
+		digits += char('0' + (int)(value % 10));
+		value /= 10;
+	}
+	reverse(digits.begin(), digits.end());
+	return digits;
+}
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int n;
+	cin >> n;
+	vector<int> flower_type(n + 1), tons(n + 1);
+	for (int i = 1; i <= n; i++) {
+		char letter;
+		cin >> letter;
+		flower_type[i] = letter - 'a';
+	}
+	for (int i = 1; i <= n; i++) { cin >> tons[i]; }
+
+	// Store the tree in flat arrays (compressed adjacency lists).
+	vector<int> edge_u(n - 1), edge_v(n - 1), edge_len(n - 1);
+	vector<int> adj_start(n + 2, 0);
+	for (int i = 0; i < n - 1; i++) {
+		cin >> edge_u[i] >> edge_v[i] >> edge_len[i];
+		adj_start[edge_u[i]]++;
+		adj_start[edge_v[i]]++;
+	}
+	// After the prefix sums, adj_start[v] is one past the end of v's block.
+	// Filling each block backwards moves it to the start, so the neighbors
+	// of v end up in [adj_start[v], adj_start[v + 1]).
+	for (int i = 1; i <= n + 1; i++) { adj_start[i] += adj_start[i - 1]; }
+	vector<int> adj_to(2 * (n - 1)), adj_len(2 * (n - 1));
+	for (int i = 0; i < n - 1; i++) {
+		int pos = --adj_start[edge_u[i]];
+		adj_to[pos] = edge_v[i];
+		adj_len[pos] = edge_len[i];
+		pos = --adj_start[edge_v[i]];
+		adj_to[pos] = edge_u[i];
+		adj_len[pos] = edge_len[i];
+	}
+
+	// One BFS from node 1, reused for all 26 letters.
+	vector<int> bfs_order, parent(n + 1, 0), parent_edge_len(n + 1, 0);
+	vector<bool> visited(n + 1, false);
+	bfs_order.reserve(n);
+	bfs_order.push_back(1);
+	visited[1] = true;
+	for (int i = 0; i < (int)bfs_order.size(); i++) {
+		int node = bfs_order[i];
+		for (int e = adj_start[node]; e < adj_start[node + 1]; e++) {
+			int next = adj_to[e];
+			if (visited[next]) continue;
+			visited[next] = true;
+			parent[next] = node;
+			parent_edge_len[next] = adj_len[e];
+			bfs_order.push_back(next);
+		}
+	}
+
+	vector<ll> subtree_tons(n + 1);
+	for (int letter = 0; letter < 26; letter++) {
+		ll total_tons = 0;
+		for (int i = 1; i <= n; i++) {
+			subtree_tons[i] = (flower_type[i] == letter) ? tons[i] : 0;
+			total_tons += subtree_tons[i];
+		}
+
+		// Each road costs its length times the tons on its lighter side.
+		u128 answer = 0;
+		for (int i = n - 1; i >= 1; i--) { // children before parents
+			int node = bfs_order[i];
+			ll lighter_side =
+			    min(subtree_tons[node], total_tons - subtree_tons[node]);
+			answer += (u128)((ll)parent_edge_len[node] * lighter_side);
+			subtree_tons[parent[node]] += subtree_tons[node];
+		}
+		if (letter > 0) cout << ' ';
+		cout << to_string_u128(answer);
+	}
+	cout << '\n';
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
