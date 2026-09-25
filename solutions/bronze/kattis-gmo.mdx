@@ -115,11 +115,16 @@ int main() {
 
 	auto cost_of_char = [&](char ch) -> long long {
 		switch (ch) {
-			case 'A': return cost_a;
-			case 'C': return cost_c;
-			case 'G': return cost_g;
-			case 'T': return cost_t;
-			default: return (long long)1e18;
+		case 'A':
+			return cost_a;
+		case 'C':
+			return cost_c;
+		case 'G':
+			return cost_g;
+		case 'T':
+			return cost_t;
+		default:
+			return (long long)1e18;
 		}
 	};
 
@@ -133,12 +138,10 @@ int main() {
 	}
 	// suf[j] = cost of inserting gene characters gene[j..m-1]
 	vector<long long> suf(m + 1, 0);
-	for (int j = m - 1; j >= 0; j--) {
-		suf[j] = suf[j + 1] + cost_of_char(gene[j]);
-	}
+	for (int j = m - 1; j >= 0; j--) { suf[j] = suf[j + 1] + cost_of_char(gene[j]); }
 
 	const long long INF = (long long)1e18;
-	long long ans = suf[0]; // insert the entire gene
+	long long ans = suf[0];  // insert the entire gene
 
 	// prevE[p] = f(i-1, p) - pre[p-1], for p = 1..m
 	vector<long long> prevE(m + 1, INF);
@@ -183,13 +186,19 @@ import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class GMO {
-	private static long costOf(char ch, long costA, long costC, long costG, long costT) {
+	private static long costOf(char ch, long costA, long costC, long costG,
+	                           long costT) {
 		switch (ch) {
-			case 'A': return costA;
-			case 'C': return costC;
-			case 'G': return costG;
-			case 'T': return costT;
-			default: return (long) 1e18;
+		case 'A':
+			return costA;
+		case 'C':
+			return costC;
+		case 'G':
+			return costG;
+		case 'T':
+			return costT;
+		default:
+			return (long)1e18;
 		}
 	}
 
@@ -206,12 +215,13 @@ public class GMO {
 
 		int n = dna.length();
 		int m = gene.length();
-		final long INF = (long) 1e18;
+		final long INF = (long)1e18;
 
 		// pre[j] = cost of inserting the first j gene characters
 		long[] pre = new long[m];
 		for (int j = 0; j < m; j++) {
-			pre[j] = (j > 0 ? pre[j - 1] : 0) + costOf(gene.charAt(j), costA, costC, costG, costT);
+			pre[j] = (j > 0 ? pre[j - 1] : 0) +
+			         costOf(gene.charAt(j), costA, costC, costG, costT);
 		}
 		// suf[j] = cost of inserting gene characters gene[j..m-1]
 		long[] suf = new long[m + 1];
@@ -219,7 +229,7 @@ public class GMO {
 			suf[j] = suf[j + 1] + costOf(gene.charAt(j), costA, costC, costG, costT);
 		}
 
-		long ans = suf[0]; // insert the entire gene
+		long ans = suf[0];  // insert the entire gene
 
 		// prevE[p] = f(i-1, p) - pre[p-1], for p = 1..m
 		long[] prevE = new long[m + 1];
