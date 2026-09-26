@@ -1,0 +1,208 @@
+---
+id: cses-1742
+source: CSES
+title: Robot Path
+author: Moulik Jain
+---
+
+## Explanation
+
+The robot starts at $(0,0)$ and performs $N$ commands. Let $\texttt{seg}[0]$ be
+the origin, and let $\texttt{seg}[i]$ be the cells command $i$ moves *into*.
+Its starting cell is excluded, because an earlier command (or the origin) already
+covers it. With this convention, consecutive moves never share a cell, so the
+corners where the path turns need no special handling.
+
+The robot stops the first time some $\texttt{seg}[i]$ touches an earlier
+$\texttt{seg}[j]$, $j<i$. A single straight move can never touch itself, so every
+collision involves two different moves. The robot is on the *later* of the two
+when the collision happens, so a touching pair $(i,j)$ "costs" $\max(i,j)$, and
+the robot stops during move
+
+$$
+J = \min_{(i,j)\text{ touching}} \max(i,j).
+$$
+
+Every $\texttt{seg}[i]$ is a single axis-aligned segment, so two segments can
+touch in only two ways. Either they lie on the same line and overlap
+(**collinear**), or one is horizontal, the other is vertical, and they cross
+(**perpendicular**).
+
+**Finding collinear overlaps.** Process moves in order $0,1,\dots,N$, keeping an
+ordered set of $(\text{orientation}, \text{line}, \text{lo}, \text{hi})$ for
+every move added so far. Until the first overlap, all intervals in the set are
+disjoint on each line. So a new interval overlaps something on its line if and
+only if it overlaps the interval just before it or just after it in the set, and
+checking those two neighbors is enough. The first move that overlaps gives
+$J_1$. All moves before $J_1$ are pairwise disjoint on each line.
+
+**Finding perpendicular crossings.** It is enough to look among moves
+$0,\dots,J_1-1$. Any pair that includes an index $\ge J_1$ costs at least $J_1$,
+so it can never beat $J_1$. This restriction is also what keeps the sweep
+simple. These moves are disjoint on each line, so at any point during a sweep
+over $x$, at most one horizontal segment is active at a given $y$. A
+point-assign, range-min segment tree over compressed $y$-coordinates is
+therefore enough. Assign a horizontal's index at its $y$ when the sweep reaches
+its left end, and reset that position to "none" after its right end. When the
+sweep reaches a vertical segment with index $v$, query the minimum active index
+$h$ over its $y$-range; that pair costs $\max(h,v)$. Segments that meet only at
+an endpoint still count as touching, so events at the same $x$ are processed in
+the order add, query, remove. The smallest cost found is $J_2$, and
+$J=\min(J_1,J_2)$.
+
+**Computing the distance.** The robot completes moves $1,\dots,J-1$ in full,
+then goes partway into move $J$, stopping at the first point it has visited
+before. That point is always a grid cell, and we find it by clipping move $J$'s
+ray against every earlier segment and taking the fewest steps that land inside
+one of them.
+
+One exception: the robot moves *continuously*. If move $J$ immediately reverses
+move $J-1$ (a U-turn), it is back on points it just visited as soon as it starts
+moving. It stops at once and adds $0$ distance, not $1$. In every other case, a
+repeated point first appears at a grid cell, so the cell-based model is exact.
+
+**Example.** Consider the path R5, U2, L2, D3, U1. Move 5 overlaps move 4 on
+the line $x=3$, so $J_1=5$. Sweeping moves $0$ to $4$ shows that move 4
+(vertical, $x=3$) crosses move 1 (horizontal, $y=0$), so $J_2=4$ and $J=4$. The
+robot finishes moves 1 to 3 and then goes 2 units down in move 4 before reaching
+$(3,0)$, for a total of $5+2+2+2=11$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+using ll = long long;
+
+const int DX[] = {0, 1, 0, -1}, DY[] = {1, 0, -1, 0};  // U R D L
+const int NONE = INT_MAX;
+
+struct Seg {
+	ll x1, y1, x2, y2;
+	bool vertical() const { return x1 == x2; }
+};
+
+// Point assign, range min segment tree over compressed y-coordinates.
+struct MinTree {
+	int n;
+	vector<int> t;
+	MinTree(int n) : n(n), t(2 * n, NONE) {}
+	void set(int i, int v) {
+		for (t[i += n] = v; i > 1; i >>= 1) t[i >> 1] = min(t[i], t[i ^ 1]);
+	}
+	int query(int l, int r) {  // min on [l, r)
+		int res = NONE;
+		for (l += n, r += n; l < r; l >>= 1, r >>= 1) {
+			if (l & 1) res = min(res, t[l++]);
+			if (r & 1) res = min(res, t[--r]);
+		}
+		return res;
+	}
+};
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+	int n;
+	cin >> n;
+
+	// seg[0] = origin, seg[i] = cells entered by move i (its start cell excluded)
+	vector<Seg> seg(n + 1, {0, 0, 0, 0});
+	vector<int> dir(n + 1, -1);
+	vector<ll> len(n + 1, 0), sx(n + 1), sy(n + 1);
+	ll x = 0, y = 0;
+	for (int i = 1; i <= n; i++) {
+		char c;
+		cin >> c >> len[i];
+		int d = dir[i] = string("URDL").find(c);
+		sx[i] = x, sy[i] = y;
+		ll ax = x + DX[d], ay = y + DY[d];
+		x += DX[d] * len[i], y += DY[d] * len[i];
+		seg[i] = {min(ax, x), min(ay, y), max(ax, x), max(ay, y)};
+	}
+
+	// Phase 1: J = J1, the first move overlapping an earlier move on its line.
+	int J = n + 1;
+	set<array<ll, 4>> lines;  // {orientation, line, lo, hi}, disjoint per line
+	for (int i = 0; i <= n; i++) {
+		auto [x1, y1, x2, y2] = seg[i];
+		array<ll, 4> k = seg[i].vertical() ? array<ll, 4>{0, x1, y1, y2}
+		                                   : array<ll, 4>{1, y1, x1, x2};
+		auto same = [&](const array<ll, 4> &o) { return o[0] == k[0] && o[1] == k[1]; };
+		auto it = lines.lower_bound(k);
+		if ((it != lines.end() && same(*it) && (*it)[2] <= k[3]) ||
+		    (it != lines.begin() && same(*prev(it)) && (*prev(it))[3] >= k[2])) {
+			J = i;
+			break;
+		}
+		lines.insert(k);
+	}
+
+	// Phase 2: sweep over x among moves 0..J1-1; J becomes min(J1, J2).
+	// Moves are disjoint per line, so at most one horizontal is active per y.
+	vector<ll> ys;
+	vector<array<ll, 3>> ev;  // {x, type, id}: 0 add < 1 query < 2 remove
+	for (int i = 0; i < J; i++) {
+		const Seg &s = seg[i];
+		if (s.vertical()) {
+			ev.push_back({s.x1, 1, i});
+		} else {
+			ys.push_back(s.y1);
+			ev.push_back({s.x1, 0, i});
+			ev.push_back({s.x2, 2, i});
+		}
+	}
+	sort(ys.begin(), ys.end());
+	ys.erase(unique(ys.begin(), ys.end()), ys.end());
+	sort(ev.begin(), ev.end());
+	auto pos = [&](ll v) {
+		return int(lower_bound(ys.begin(), ys.end(), v) - ys.begin());
+	};
+
+	MinTree tree(ys.size());
+	for (auto [ex, type, id] : ev) {
+		const Seg &s = seg[id];
+		if (type == 1) {
+			int h = tree.query(pos(s.y1), pos(s.y2 + 1));
+			if (h != NONE) J = min(J, max(h, int(id)));
+		} else {
+			tree.set(pos(s.y1), type == 0 ? int(id) : NONE);
+		}
+	}
+
+	// Distance = all full moves before J, plus how far into move J the robot gets.
+	ll total = 0;
+	for (int i = 1; i < J; i++) total += len[i];
+
+	if (J <= n && (dir[J] + 2) % 4 != dir[J - 1]) {  // a U-turn stops instantly (+0)
+		ll best = len[J];
+		int dx = DX[dir[J]], dy = DY[dir[J]];
+		for (int i = 0; i < J; i++) {
+			ll lo = 1, hi = len[J];  // step k in [lo, hi] lands inside seg[i]
+			auto clip = [&](ll s, int d, ll a, ll b) {
+				if (d == 0) {
+					if (s < a || b < s) hi = 0;
+				} else {
+					ll p = (a - s) * d, q = (b - s) * d;
+					lo = max(lo, min(p, q));
+					hi = min(hi, max(p, q));
+				}
+			};
+			clip(sx[J], dx, seg[i].x1, seg[i].x2);
+			clip(sy[J], dy, seg[i].y1, seg[i].y2);
+			if (lo <= hi) best = min(best, lo);
+		}
+		total += best;
+	}
+
+	cout << total << '\n';
+}
+```
+
+</CPPSection>
+</LanguageSection>
