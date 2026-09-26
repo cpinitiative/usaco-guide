@@ -22,10 +22,10 @@ In this module, we will introduce the concept of a *Wavelet Tree* to answer thes
 
 | Solution | Query Time Complexity | Memory Complexity |
 | ----- | ---- | ---- |
-| Module Solution 1 | $O(\log \sigma\log N)$| $O(N\log \sigma)$ |
-| Module Solutions 2a / 2b | $O(\log \sigma)$ | $O(N\log \sigma)$ |
-| Module Solution 3 | $O(\log \sigma)$ | $O(N)$ |
-| Persistent Segment Tree | $O(\log \sigma)$ | $O(N\log \sigma)$ |
+| Module Solution 1 | $\mathcal{O}(\log \sigma\log N)$| $\mathcal{O}(N\log \sigma)$ |
+| Module Solutions 2a / 2b | $\mathcal{O}(\log \sigma)$ | $\mathcal{O}(N\log \sigma)$ |
+| Module Solution 3 | $\mathcal{O}(\log \sigma)$ | $\mathcal{O}(N)$ |
+| Persistent Segment Tree | $\mathcal{O}(\log \sigma)$ | $\mathcal{O}(N\log \sigma)$ |
 
 <Optional>
 
@@ -79,7 +79,7 @@ A tree where each node stores a list of everything under it in sorted order is c
 
 To build this data structure, we start at the root node corresponding to the range $[0,\sigma)$,
 partition the indices $[0,N)$ among its two children, and recursively build each child.
-This takes $O(N\log \sigma)$ time and memory.
+This takes $\mathcal{O}(N\log \sigma)$ time and memory.
 
 To answer a query, we again start at the root node, then recursively [walk](/plat/segtree-ext?lang=cpp#walking-on-a-segment-tree) down the tree until we reach the leaf node corresponding to the answer value. To determine whether to walk down into the left
 child or the right child of the current node, we first query the number of indices in the index vector of the left child in the range $[l,r)$ and store it into a variable $\texttt{num\_left}$.
@@ -87,7 +87,7 @@ child or the right child of the current node, we first query the number of indic
 - If $k<\texttt{num\_left}$, then the answer is the $k$th-smallest value in the left child.
 - Otherwise, the answer is the $(k-\texttt{num\_left})$-th smallest value in the right child.
 
-Querying the count in a single node takes $O(\log N)$ time using binary search, and the tree has depth $O(\log \sigma)$, so in a total a query takes $O(\log \sigma\log N)$ time.
+Querying the count in a single node takes $\mathcal{O}(\log N)$ time using binary search, and the tree has depth $\mathcal{O}(\log \sigma)$, so in a total a query takes $\mathcal{O}(\log \sigma\log N)$ time.
 
 ### Implementation
 
@@ -346,14 +346,14 @@ This entire section can be considered optional since the memory usage of solutio
 </Optional>
 
 The memory bottleneck in solution 2 is storing the prefix sums of $\log \sigma$ length-$N$ bitvectors,
-which takes $O(N\log \sigma)$ integers using the most straightforward approach. However, if we can reduce this to $O(N\log \sigma)$
-*bits* of information, we can pack these bits into $O(N\log \sigma / W)$ words where
-$W$ is the [word](https://en.wikipedia.org/wiki/Word_(computer_architecture)) size ($W=64$ on a 64-bit architecture). This is $O(N)$ words assuming $2^W>\sigma$ (that is, all the integers we're working with fit into a single word).
+which takes $\mathcal{O}(N\log \sigma)$ integers using the most straightforward approach. However, if we can reduce this to $\mathcal{O}(N\log \sigma)$
+*bits* of information, we can pack these bits into $\mathcal{O}(N\log \sigma / W)$ words where
+$W$ is the [word](https://en.wikipedia.org/wiki/Word_(computer_architecture)) size ($W=64$ on a 64-bit architecture). This is $\mathcal{O}(N)$ words assuming $2^W>\sigma$ (that is, all the integers we're working with fit into a single word).
 
 It remains to describe how to store a single length-$N$ bitvector in
-$O(N)$ bits while still allowing constant time prefix sum queries. Specifically,
+$\mathcal{O}(N)$ bits while still allowing constant time prefix sum queries. Specifically,
 we can store the original bitvector in $N$ bits and only the sums of prefixes
-with length divisible by $W$, taking $O(N\log N/W)$ bits, which is $O(N)$ bits assuming $2^W>N$. To answer a query for the
+with length divisible by $W$, taking $\mathcal{O}(N\log N/W)$ bits, which is $\mathcal{O}(N)$ bits assuming $2^W>N$. To answer a query for the
 $r$th prefix sum in constant time, we start with the $\lfloor r/W\rfloor\cdot W$th prefix sum and then use
 built-in operations that run in constant time to add the contribution of the
 remaining $r\%W$ bits (like $\texttt{\_\_builtin\_popcountll}$ to count the number of bits set in a 64-bit word).
