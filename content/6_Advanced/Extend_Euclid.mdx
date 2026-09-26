@@ -1,10 +1,10 @@
 ---
 id: extend-euclid
 title: 'Extended Euclidean Algorithm'
-author: Benjamin Qi
+author: Benjamin Qi, Rameez Parwez
 prerequisites:
   - divisibility
-description: '?'
+description: 'How to generalize and apply the Euclidean Algorithm.'
 frequency: 1
 ---
 
@@ -14,17 +14,26 @@ frequency: 1
 	<Resource
 		source="cp-algo"
 		url="algebra/euclid-algorithm.html"
-		title="Euclidean"
+		title="Euclidean Algorithm"
 	/>
 </Resources>
 
-The original Euclidean Algorithm computes $\gcd(a,b)$ and looks like this:
+Suppose we have non-negative integers $a$ and $b$. The original Euclidean Algorithm computes $\gcd(a,b)$ and looks like this:
 
 <LanguageSection>
 
 <CPPSection>
 
 ```cpp
+// BeginCodeSnip{Prefix}
+#include <array>
+#include <iostream>
+
+using namespace std;
+
+using ll = long long;
+// EndCodeSnip
+
 ll euclid(ll a, ll b) {
 	while (b > 0) {
 		ll k = a / b;
@@ -33,6 +42,14 @@ ll euclid(ll a, ll b) {
 	}
 	return a;
 }
+
+// BeginCodeSnip{Suffix}
+int main() {
+	ll a, b;
+	cin >> a >> b;
+	cout << euclid(a, b) << "\n";
+}  // 15 72 -> 3
+// EndCodeSnip
 ```
 
 </CPPSection>
@@ -90,17 +107,12 @@ def euclid(a: int, b: int) -> int:
 		url="https://en.wikipedia.org/wiki/Extended_Euclidean_algorithm"
 		title="Extended Euclidean"
 	/>
-	<Resource
-		source="cp-algo"
-		url="algebra/linear-diophantine-equation.html"
-		title="Linear Diophantine Equation"
-	/>
 </Resources>
 
 The extended Euclidean algorithm computes integers $x$ and $y$ such that
 
 $$
-ax+by=\gcd(a,b)
+ax+by=\gcd(a,b).
 $$
 
 We can slightly modify the version of the Euclidean algorithm given above to
@@ -111,6 +123,15 @@ return more information!
 <CPPSection>
 
 ```cpp
+// BeginCodeSnip{Prefix}
+#include <array>
+#include <iostream>
+
+using namespace std;
+
+using ll = long long;
+// EndCodeSnip
+
 array<ll, 3> extend_euclid(ll a, ll b) {
 	// we know that (1 * a) + (0 * b) = a and (0 * a) + (1 * b) = b
 	array<ll, 3> x = {1, 0, a};
@@ -120,11 +141,20 @@ array<ll, 3> extend_euclid(ll a, ll b) {
 	while (y[2] > 0) {
 		// keep subtracting multiple of one equation from the other
 		ll k = x[2] / y[2];
-		for (int i = 0; i < 3; i++) { x[i] -= k * y[i]; }
+		for (int i = 0; i < 3; i++) x[i] -= k * y[i];
 		swap(x, y);
 	}
 	return x;  // x[0] * a + x[1] * b = x[2], x[2] = gcd(a, b)
 }
+
+// BeginCodeSnip{Suffix}
+int main() {
+	ll a, b;
+	cin >> a >> b;
+	auto res = extend_euclid(a, b);
+	cout << res[0] << " " << res[1] << " " << res[2] << "\n";
+}  // 15 72 -> 5 -1 3
+// EndCodeSnip
 ```
 
 </CPPSection>
@@ -141,7 +171,7 @@ static long[] extendEuclid(long a, long b) {
 	while (y[2] > 0) {
 		// keep subtracting multiple of one equation from the other
 		long k = x[2] / y[2];
-		for (int i = 0; i < 3; i++) { x[i] -= k * y[i]; }
+		for (int i = 0; i < 3; i++) x[i] -= k * y[i];
 
 		long[] temp = x;
 		x = y;
@@ -187,10 +217,27 @@ def extend_euclid(a: int, b: int) -> list[int]:
 <CPPSection>
 
 ```cpp
+// BeginCodeSnip{Prefix}
+#include <array>
+#include <iostream>
+
+using namespace std;
+
+using ll = long long;
+// EndCodeSnip
+
 ll euclid(ll a, ll b) {
-	if (b == 0) { return a; }
+	if (b == 0) return a;
 	return euclid(b, a % b);
 }
+
+// BeginCodeSnip{Suffix}
+int main() {
+	ll a, b;
+	cin >> a >> b;
+	cout << euclid(a, b) << "\n";
+}  // 15 72 -> 3
+// EndCodeSnip
 ```
 
 </CPPSection>
@@ -199,7 +246,7 @@ ll euclid(ll a, ll b) {
 
 ```java
 static long euclid(long a, long b) {
-	if (b == 0) { return a; }
+	if (b == 0) return a;
 	return euclid(b, a % b);
 }
 ```
@@ -225,11 +272,33 @@ becomes
 <CPPSection>
 
 ```cpp
-pl extend_euclid(ll a, ll b) {  // returns {x,y}
-	if (b == 0) { return {1, 0}; }
+// BeginCodeSnip{Prefix}
+#include <array>
+#include <iostream>
+
+using namespace std;
+
+using ll = long long;
+using pl = pair<ll, ll>;
+
+#define f first
+#define s second
+// EndCodeSnip
+
+pl extend_euclid(ll a, ll b) {  // returns {x, y}
+	if (b == 0) return {1, 0};
 	pl p = extend_euclid(b, a % b);
 	return {p.s, p.f - a / b * p.s};
 }
+
+// BeginCodeSnip{Suffix}
+int main() {
+	ll a, b;
+	cin >> a >> b;
+	auto res = extend_euclid(a, b);
+	cout << res.f << " " << res.s << "\n";
+}  // 15 72 -> 5 -1
+// EndCodeSnip
 ```
 
 </CPPSection>
@@ -237,7 +306,7 @@ pl extend_euclid(ll a, ll b) {  // returns {x,y}
 <JavaSection>
 
 ```java
-static long[] extendEuclid(long a, long b) {  // returns {x,y}
+static long[] extendEuclid(long a, long b) {  // returns {x, y}
 	if (b == 0) { return new long[] {1, 0}; }
 	long[] p = extendEuclid(b, a % b);
 	return new long[] {p[1], p[0] - a / b * p[1]};
@@ -260,14 +329,14 @@ def extend_euclid(a: int, b: int) -> list[int]:
 
 </LanguageSection>
 
-The pair will equal to the first two returned elements of the array in the
+The pair will equal the first two returned elements of the array in the
 iterative version. Looking at this version, we can prove by induction that when
-$a$ and $b$ are distinct positive integers, the returned pair $(x,y)$ will
+$a$ and $b$ are *distinct* positive integers, the returned pair $(x,y)$ will
 satisfy $|x|\le \frac{b}{2\gcd(a,b)}$ and $|y|\le \frac{a}{2\gcd(a,b)}$.
 Furthermore, there can only exist one pair that satisfies these conditions!
 
-Note that this works when $a,b$ are quite large (say, $\approx 2^{60}$) and we
-won't wind up with overflow issues.
+Note that if we do all calculations in 64-bit integers, we
+won't wind up with overflow issues even when $a,b$ are quite large (say, $\approx 2^{60}$).
 
 ## Application - Modular Inverse
 
@@ -279,21 +348,98 @@ won't wind up with overflow issues.
 	/>
 </Resources>
 
-<Problems problems="kat" />
+<FocusProblem problem="kat" />
 
-It seems that when multiplication / division is involved in this problem,
+Additionally, it seems that when multiplication / division is involved in this problem,
 $n^2 < \texttt{LLONG\_MAX}$.
+
+### Solution
+
+<Spoiler title="Hint">
+
+To calculate $y^{-1}\pmod n$, run the extended Euclidean algorithm on $y$ and $n$.
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+The only nontrivial part is calculating $y^{-1}\pmod n$ or reporting that it doesn't
+exist. We can first use the extended Euclidean algorithm to find $c_1,c_2$ such that $c_1y+c_2n=\gcd(y,n)$. If $\gcd(y,n)\neq 1$, then the modular inverse doesn't exist.
+Otherwise, the modular inverse is $c_1\pmod n$. Note that $c_1\in (-n,n)$ returned
+by our code above may be negative, in which case we make sure to add $n$ before
+returning it.
 
 <LanguageSection>
 
 <CPPSection>
 
 ```cpp
-ll inv_general(ll a, ll b) {
-	array<ll, 3> x = extend_euclid(a, b);
-	assert(x[2] == 1);  // gcd must be 1
-	return x[0] + (x[0] < 0) * b;
+// BeginCodeSnip{Prefix}
+#include <array>
+#include <cassert>
+#include <iostream>
+
+using namespace std;
+
+using ll = long long;
+using pl = pair<ll, ll>;
+
+#define f first
+#define s second
+
+array<ll, 3> extend_euclid(ll a, ll b) {
+	// we know that (1 * a) + (0 * b) = a and (0 * a) + (1 * b) = b
+	array<ll, 3> x = {1, 0, a};
+	array<ll, 3> y = {0, 1, b};
+
+	// run extended Euclidean algo
+	while (y[2] > 0) {
+		// keep subtracting multiple of one equation from the other
+		ll k = x[2] / y[2];
+		for (int i = 0; i < 3; i++) x[i] -= k * y[i];
+		swap(x, y);
+	}
+	return x;  // x[0] * a + x[1] * b = x[2], x[2] = gcd(a, b)
 }
+// EndCodeSnip
+
+ll mod_inv(ll x, ll n) {
+	// returns: inverse of x in [0, n), or -1 if gcd(x, n) > 1
+	auto p = extend_euclid(x, n);
+	if (p[2] != 1) return -1;
+	ll res = p[0] + (p[0] < 0) * n;
+	assert(0 <= res && res < n);
+	return res;
+}
+
+ll eval(char op, ll n, ll x, ll y) {
+	if (op == '+') return (x + y) % n;
+	if (op == '-') return (x - y + n) % n;
+	if (op == '*') return x * y % n;
+	if (op == '/') {
+		y = mod_inv(y, n);
+		if (y == -1) return y;
+		return x * y % n;
+	}
+	assert(false);
+}
+
+// BeginCodeSnip{Suffix}
+int main() {
+	while (true) {
+		ll n;
+		int t;
+		cin >> n >> t;
+		if (n == 0) break;
+		while (t--) {
+			ll x, y;
+			char op;
+			cin >> x >> op >> y;
+			cout << eval(op, n, x, y) << "\n";
+		}
+	}
+}
+// EndCodeSnip
 ```
 
 </CPPSection>
@@ -324,6 +470,8 @@ def inv_general(a: int, b: int) -> int:
 
 </LanguageSection>
 
+</Spoiler>
+
 ## Application - Chinese Remainder Theorem
 
 <Resources>
@@ -349,15 +497,8 @@ def inv_general(a: int, b: int) -> int:
 	</Resource>
 </Resources>
 
-<FocusProblem problem="CRT" />
-
-### For Two Congruences
-
-#### Explanation
-
-The [Chinese Remainder Theorem](https://en.wikipedia.org/wiki/Chinese_remainder_theorem) - also referred to as CRT - yields a unique
-solution to a system of simultaneous modular congruences with pairwise coprime moduli. More specifically, CRT determines a number $x$ that
-when divided by the given divisors leaves the given remainders. Mathematically, it solves the following system of modular congruences:
+The [Chinese Remainder Theorem](https://en.wikipedia.org/wiki/Chinese_remainder_theorem) (CRT) states that there is a unique
+solution to a system of simultaneous modular congruences with pairwise coprime moduli. Mathematically, suppose we are given pairwise coprime positive integers $m_1,m_2,\cdots,m_k$, $a_i\in [0, m_i)$, and the system
 
 $$
 \begin{gathered}
@@ -369,11 +510,14 @@ x \equiv a_k \pmod{m_k}
 \end{gathered}
 \tag{1}
 $$
-<center>$M=m_1\cdot m_2 \cdot m_3 \cdots m_k$</center>
+If we let
+$$
+M=m_1\cdot m_2 \cdot m_3 \cdots m_k
+$$
+then there is exactly one solution for $x$ modulo $M$.
 
-The above system has exactly one solution modulo $M$.
-
-We'll focus on the particular case for $k=2$; for two coprime moduli:
+It suffices to solve only the case $k=2$, because for greater $k$ we can just
+combine pairs of modular congruences until only one remains.
 
 $$
 \begin{gathered}
@@ -382,81 +526,89 @@ x \equiv a_2 \pmod{m_2}
 \end{gathered}
 \tag{2}
 $$
-<center>$M=m_1 \cdot m_2$</center>
-- Let $n_1$ and $n_2$ be the modular inverse of $m_1$ modulo $m_2$ and the modular inverse of $m_2$
-modulo $m_1$, respectively, thus the properties hold: $n_1 \cdot m_1 \equiv 1 \pmod{m_2}$ and $n_2 \cdot m_2 \equiv 1 \pmod{m_1}$.
-It's worth mentioning that $n_1$ and $n_2$ always exists because $\gcd(m_1,m_2)=1$. We can define a solution $x$ as:
-
 $$
-x = a_1 \cdot m_2 \cdot n_2 + a_2 \cdot m_1 \cdot n_1 \pmod{m_1\cdot m_2}
+M=m_1 \cdot m_2
 $$
 
-It satisfies both equations:
-- Modulo $m_1$ we have $x \equiv a_1 \cdot m_2 \cdot n_2 \pmod{m_1} \iff x \equiv a_1 \pmod{m_1}$ since $m_2 \cdot n_2 \equiv 1 \pmod{m_1}$
-- Modulo $m_2$ we have $x \equiv a_2 \cdot m_1 \cdot n_1 \pmod{m_2} \iff x \equiv a_2 \pmod{m_2}$ since $m_1 \cdot n_1 \equiv 1 \pmod{m_2}$
+<FocusProblem problem="CRT" />
 
-Now that we have a solution $x \pmod{M}$ it only remains to show that it is indeed the only valid
-solution modulo $m_1 \cdot m_2$. Assuming that there is a different valid solution $y$ we have: $m_1 | y-x$, $m_2 | y-x$,
-$m_3 | y-x$, $\dots$, $m_k | y-x$, then it follows that $m_1 \cdot m_2 \cdots m_k$ divides $y-x$, since $m_1, m_2, \dots, m_k$ are relatively
-prime. This means that: $y \equiv x \pmod{m_1 \cdot m_2 \cdots m_k}$.
+### Solution
 
-#### Implementation
+<Spoiler title="Hint">
 
-**Time Complexity:** $\mathcal{O}(T \cdot \log{MN})$
+Calculate the modular inverse of $m_1$ modulo $m_2$.
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+Let $n_1\in [0,m_2)$ be the modular inverse of $m_1$ modulo $m_2$, which exists because $\gcd(m_1,m_2)=1$. Then $n_1 \cdot m_1 \equiv 1 \pmod{m_2}$. Let $r=(a_2-a_1)n_1\pmod {m_2}\in [0,m_2)$. Then it may be shown that $x=rm_1+a_1\in [0,M)$ simultaneously satisfies both linear congruences:
+- Modulo $m_1$ the $rm_1$ term drops and $x\equiv a_1\pmod{m_1}$.
+- Modulo $m_2$ we have $x \equiv (a_2-a_1)m_1n_1+a_1\equiv (a_2-a_1)+a_1\equiv a_2\pmod{m_2}$.
+
+Now that we have a solution $x \pmod{M}$, it only remains to show that it is indeed the only valid
+solution modulo $m_1\cdot m_2$. Assume that there is a different valid solution $y$. Then $m_1 | y-x$ and $m_2 | y-x$, and it follows that $m_1 \cdot m_2$ divides $y-x$, since $m_1, m_2$ are relatively prime. This means that $y \equiv x \pmod{m_1 \cdot m_2}$.
+
+**Time Complexity:** $\mathcal{O}(\log{mn})$ per test
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
-#include <algorithm>
+// BeginCodeSnip{Prefix}
 #include <array>
+#include <cassert>
 #include <iostream>
-#include <numeric>
-#include <vector>
 
 using namespace std;
 
-typedef long long ll;
+using ll = long long;
+using pl = pair<ll, ll>;
 
-// Extended Euclidean Algorithm
+#define f first
+#define s second
+
 array<ll, 3> extend_euclid(ll a, ll b) {
 	// we know that (1 * a) + (0 * b) = a and (0 * a) + (1 * b) = b
 	array<ll, 3> x = {1, 0, a};
 	array<ll, 3> y = {0, 1, b};
 
+	// run extended Euclidean algo
 	while (y[2] > 0) {
-		// keep subtracting the multiple of one equation from the other
+		// keep subtracting multiple of one equation from the other
 		ll k = x[2] / y[2];
-		for (int i = 0; i < 3; i++) { x[i] -= k * y[i]; }
+		for (int i = 0; i < 3; i++) x[i] -= k * y[i];
 		swap(x, y);
 	}
 	return x;  // x[0] * a + x[1] * b = x[2], x[2] = gcd(a, b)
 }
 
-// The Modular Inverse
-ll inv(ll x, ll y) {
-	ll m = extend_euclid(x, y)[0] % y;
-	return (m < 0 ? m + y : m);
+ll mod_inv(ll x, ll n) {
+	// returns: inverse of x in [0, n), or -1 if gcd(x, n) > 1
+	auto p = extend_euclid(x, n);
+	if (p[2] != 1) return -1;
+	ll res = p[0] + (p[0] < 0) * n;
+	assert(0 <= res && res < n);
+	return res;
 }
+// EndCodeSnip
 
-// General code for multiple congruences in a system
-ll crt(const vector<ll> &remainders, const vector<ll> &moduli) {
-	ll MOD = accumulate(moduli.begin(), moduli.end(), 1LL, multiplies<ll>());
-	ll x = 0;
-	for (int i = 0; i < (int)moduli.size(); i++) {
-		ll a = remainders[i] * inv(MOD / moduli[i], moduli[i]) % moduli[i];
-		x = (x + a * (MOD / moduli[i])) % MOD;
-	}
-	return x;
+pl crt_combine(pl a, pl b) {  // combine a.f mod a.s with b.f mod b.s
+	auto inv_n = mod_inv(a.s, b.s);
+	assert(inv_n != -1);
+	ll r = (b.f - a.f) * inv_n % b.s;
+	r += (r < 0) * b.s;
+	return {r * a.s + a.f, a.s * b.s};
 }
 
 int main() {
-	int tests;
-	cin >> tests;
-	for (int t = 0; t < tests; t++) {
-		vector<ll> r(2), m(2);
-		cin >> r[0] >> m[0] >> r[1] >> m[1];
-		cout << crt(r, m) << ' ' << m[0] * m[1] << '\n';
+	int T;
+	cin >> T;
+	while (T--) {
+		pl a, b;
+		cin >> a.f >> a.s >> b.f >> b.s;
+		auto res = crt_combine(a, b);
+		cout << res.f << " " << res.s << "\n";
 	}
 }
 ```
@@ -464,11 +616,116 @@ int main() {
 </CPPSection>
 </LanguageSection>
 
-### For Several Congruences
+</Spoiler>
 
-Using the same notations as in $(1)$, consider $n_i = \frac{M}{m_i}$ - the product of all moduli excluding $m_i$ - and $n_i' \equiv n_i^{-1} \pmod{m_i}$.
-By similar arguments as before, the unique solution mod $M$ is:
+## Application - Linear Diophantine Equation
+
+<Resources>
+	<Resource
+		  source="Brilliant"
+		  title="Linear Diophantine Equations"
+		  url="https://brilliant.org/wiki/linear-diophantine-equations-one-equation/"
+		  starred
+	>
+		In-depth explanation
+	</Resource>
+	<Resource
+		source="cp-algo"
+		url="algebra/linear-diophantine-equation.html"
+		title="Linear Diophantine Equation"
+	/>
+</Resources>
+
+A Linear Diophantine Equation is an equation of the form
 
 $$
-x = \sum_{i=1}^{n}{a_i \cdot n_i \cdot n_i'} \pmod{M}
+ax + by = c
 $$
+
+where $a$, $b$ and $c$ are known constants, and we want to find
+integer values of $x$ and $y$ satisfying the equation. Each
+number in the equation has to be an integer.
+
+We can solve a Linear Diophantine Equation using the extended
+Euclidean algorithm, which calculates values $x_g$ and $y_g$ that
+satisfy the equation:
+
+$$
+ax_g + by_g = \gcd(a, b).
+$$
+
+A Linear Diophantine Equation can be solved if $c$ is divisible by
+$\gcd(a, b)$, and otherwise it cannot be solved. This observation is derived from [Bézout's Identity](https://en.wikipedia.org/wiki/B%C3%A9zout's_identity).
+
+Let's calculate the value of $x$ and $y$ assuming
+$g = \gcd(a, b)$ divides $c$. Since $g | c$ we can multiply the
+Bézout equation through by $c / g$, resulting in:
+
+$$
+a \left(x_g \cdot \frac{c}{g}\right) + b \left(y_g \cdot \frac{c}{g}\right) = g \cdot \frac{c}{g} = c.
+$$
+
+So one solution to $ax + by = c$ is $x_0 = x_g \cdot \frac{c}{g}, \ y_0 = y_g \cdot \frac{c}{g}$.
+
+
+A solution to the Diophantine equation is never unique, because
+we can form an infinite number of solutions if we know one
+solution.
+
+**Theorem:** If $(x_0, y_0)$ is an integer solution of the
+Diophantine Equation $ax + by = c$, then all integer solutions to
+the equation are of the form
+
+$$
+\left(x_0 + k \frac{b}{\gcd(a, b)}, y_0 - k \frac{a}{\gcd(a, b)}\right)
+$$
+
+where $k$ is any integer.
+
+**Proof:** We have
+
+$$
+\begin{aligned}
+a\left(x_0 + k \frac{b}{\gcd(a, b)}\right) + b\left(y_0 - k \frac{a}{\gcd(a, b)}\right)
+&= ax_0 + by_0 + \frac{abk}{\gcd(a, b)} - \frac{abk}{\gcd(a, b)} \\
+&= ax_0 + by_0 \\
+&= c,
+\end{aligned}
+$$
+
+here note that the two $k$-terms cancel each other out, so no
+matter what integer $k$ we choose, our equation results back in
+$c$.
+
+
+But we still need to check that we haven't missed any other
+solutions. So suppose $(x, y)$ is some solution to the
+equation — any solution at all. Since it agrees with $(x_0, y_0)$
+on the right-hand side, we can subtract one from the other:
+
+$$
+\begin{aligned}
+ax + by &= ax_0 + by_0 \\
+a(x - x_0) &= -b(y - y_0) \\
+\frac{a}{\gcd(a, b)}(x - x_0) &= -\frac{b}{\gcd(a, b)}(y - y_0).
+\end{aligned}
+$$
+
+Here, note that the numbers $\frac{a}{\gcd(a, b)}$ and
+$\frac{b}{\gcd(a, b)}$ are coprime (i.e., they have no factors
+left in common except $1$). That means $\frac{b}{\gcd(a, b)}$ has
+no choice but to divide evenly into $x - x_0$. In other words,
+$x - x_0$ must be some whole multiple of $\frac{b}{\gcd(a, b)}$;
+we call that multiple $k$. Once we have fixed the value of $k$,
+the equation above tells us $y - y_0$ has to equal
+$-k \frac{a}{\gcd(a, b)}$, proving the theorem.
+
+## Problems
+
+<IncompleteSection>
+
+TODO: more problems
+
+</IncompleteSection>
+
+<Problems problems="general" />

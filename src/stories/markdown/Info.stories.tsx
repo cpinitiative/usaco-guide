@@ -4,11 +4,13 @@ import Info from '../../components/markdown/Info';
 import markdownDecorator from '../../components/markdown/markdownDecoratorForStorybook';
 import MiscMarkdownContent from './MiscMarkdownContent';
 
-export default {
+const meta = {
   title: 'Markdown/Info',
   component: Info,
   decorators: [markdownDecorator],
 };
+
+export default meta;
 
 const Template: StoryFn<ComponentProps<typeof Info>> = args => (
   <Info {...args} />

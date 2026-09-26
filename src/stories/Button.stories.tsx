@@ -1,8 +1,9 @@
 import { StoryFn } from '@storybook/react';
 
-export default {
+const meta = {
   title: 'Button',
 };
+export default meta;
 
 const Template: StoryFn = args => <button {...args}>My button</button>;
 
