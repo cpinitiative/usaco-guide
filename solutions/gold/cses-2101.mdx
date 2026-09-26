@@ -158,15 +158,15 @@ int main() {
 
 ## Explanation
 
-The solution above uses [binary jumping](/plat/binary-jump), which is a Platinum topic. Here is a simpler approach that only needs a disjoint set union.
+The solution above uses [binary jumping](/plat/binary-jump), which is a Platinum topic. Here is a simpler approach that only needs a [disjoint set union](/gold/dsu).
 
-We add the roads to a DSU in order, but without path compression, so the parent pointers keep the history of the merges. Whenever a root $v$ is attached under another root, we record $\texttt{joined\_on}[v]$, the day this happened (it stays $\infty$ while $v$ is a root). With union by size, a vertex only gets deeper when its component at least doubles in size, so every tree has height at most $\log_2 n$.
+We add the roads to a DSU in order of day, using union by size but no path compression. This way, the parent pointers form a forest that keeps the full history of the merges, and every tree has height at most $\log_2 n$, since a vertex only gets deeper when the size of its component at least doubles.
 
-We label the link from $v$ to its parent with $\texttt{joined\_on}[v]$. The parent $p$ of $v$ was still a root when $v$ was attached, so $p$ is attached later (or never). This means the labels strictly increase as we go up from any vertex to the root of its tree. Two cities are connected on day $d$ exactly when they can both climb to the same vertex using only links with label at most $d$. So the answer to a query is the largest label on the path between the two cities in the forest, or $-1$ if they are in different trees.
+Cities $a$ and $b$ first become connected on the day of the road that unites their components, so that day is the answer. Whenever a root is attached under another root, we store the current day on the attached root. The road that unites $a$ and $b$ stores its day on the path between them, and every other day on this path comes from an earlier merge, so the answer is the largest day stored on the path. If $a$ and $b$ are in different trees, the answer is $-1$.
 
-To find it, we keep two pointers at $a$ and $b$ and always move up the one whose link has the smaller label. This merges two increasing sequences of labels, so the last label we pass is the largest. The climb stops exactly at the lowest common ancestor: if one pointer reaches it first, the other pointer is still below it, and its label is smaller than the label of the lowest common ancestor's own link, so the other pointer is the one that moves. If both pointers stop at different roots, the answer is $-1$, and if $a=b$ the answer is $0$.
+To find it, we walk up from $a$ and $b$ until they meet, similar to finding their lowest common ancestor. A vertex is always attached before its parent is, so the stored days increase as we go up. This means we can always move up the vertex with the smaller stored day, and the last day we pass before the two meet is the answer.
 
-For example, in the sample, the roads on days $1$, $2$, and $4$ attach vertices $2$, $3$, and $5$ under vertex $1$, with labels $1$, $2$, and $4$ (the road on day $3$ joins vertices that are already connected, so it changes nothing). For the query $(3,5)$, we climb from $3$ (label $2$) and from $5$ (label $4$) up to vertex $1$, so the answer is $4$.
+For example, in the sample, the roads on days $1$, $2$, and $4$ attach vertices $2$, $3$, and $5$ under vertex $1$ (the road on day $3$ connects cities that are already connected). For the query $(3, 5)$, we move up from $3$ (day $2$) and then from $5$ (day $4$), and both reach vertex $1$, so the answer is $4$.
 
 ## Implementation
 
