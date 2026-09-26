@@ -1,0 +1,462 @@
+---
+id: kattis-gmo
+source: Kattis
+title: GMO
+author: Shanmuka Gottimukkala
+---
+
+## Explanation
+
+We start with the apple's DNA $S$ (length $N$) and the swine gene $G$ (length
+$M$), both made of the characters $A, C, G, T$. We may insert any characters
+into $S$, paying $\operatorname{cost}(c)$ for each character $c$ we insert, and
+we want $G$ to appear as a contiguous substring of the resulting string $S'$,
+minimizing the total insertion cost.
+
+Remember that the input gives the four insertion costs in the order
+$A, C, G, T$.
+
+### The key observation — the matched DNA is a contiguous block
+
+Insertions never rearrange the original DNA, so the characters of $S$ keep
+their order inside $S'$: $S'$ is just $S$ with extra characters dropped in
+between. Look at the window of $S'$ that equals $G$. The original DNA
+characters that fall inside this window come from a contiguous block
+$S[l] \dots S[r]$ of $S$, in order, with inserted characters filling the gaps.
+Any DNA character that sat between two of these characters would also have to
+appear between them inside $S'$, which is exactly why the block must be
+contiguous.
+
+So we may match a contiguous block of the DNA against an increasing sequence of
+gene positions. Every gene character that is not matched by a DNA character
+must be inserted at cost $\operatorname{cost}(c)$.
+
+It is convenient to think in terms of **saved** cost. Inserting every character
+of $G$ would cost $\operatorname{total} = \sum \operatorname{cost}(c)$ over all
+$c \in G$. A gene character that is matched by a DNA character $d$ of the block
+avoids being inserted, saving exactly $\operatorname{cost}(d)$; DNA characters
+outside the block are never inserted and save nothing. Therefore the answer is
+
+$$
+\operatorname{total} - \max(\text{saved cost over a contiguous block of } S
+\text{ that is a subsequence of } G).
+$$
+
+Both solutions below find this maximum.
+
+## Solution 1: Greedy (Two Pointers)
+
+For a fixed first DNA position $l$, the optimal block is the **longest** prefix
+$S[l..r]$ that is still a subsequence of $G$: every character we add to the
+block saves an extra $\operatorname{cost}(c) \ge 0$, so extending the block
+never makes it worse. For each $l$, we greedily extend the block character by
+character, advancing a pointer through $G$, and we stop once the next DNA
+character does not occur at or after the current gene position.
+
+To advance the pointer through $G$ in $\mathcal O(1)$ per DNA character, we
+precompute a table $\text{nxt}[c][p]$: the first gene position $\ge p$ that
+contains character $c$, or $M$ if there is none. Since there are only four
+characters, the table has $4 \cdot (M + 1)$ entries and is built with one
+backwards pass over the gene.
+
+The algorithm is:
+
+1. compute $\operatorname{nxt}$;
+2. for each start $l$, walk $r = l, l + 1, \dots$ using $\operatorname{nxt}$ to
+   match each DNA character to a gene position, accumulating
+   $\operatorname{cost}(S[r])$;
+3. stop once the next DNA character cannot be matched, and update the best
+   saved cost;
+4. output $\operatorname{total} - \text{best}$.
+
+This is correct because every optimal matching uses some contiguous block that
+starts at some position $l$, and for that $l$ the longest embeddable block is
+optimal. Note that no DNA character inside the window may be skipped: the block
+is contiguous, so every character strictly between $l$ and $r$ must be matched.
+
+**Time Complexity:** $\mathcal O(NM)$ — each of the $N$ starting positions
+matches at most $M$ characters in the worst case, though typical inputs are
+much faster.
+
+**Memory:** $\mathcal O(M)$ — the $4 \times (M + 1)$ next-occurrence table.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	string dna, gene;
+	cin >> dna >> gene;
+
+	// the insertion costs in the order A, C, G, T
+	long long cost[4];
+	for (int i = 0; i < 4; i++) { cin >> cost[i]; }
+
+	auto id = [](char ch) -> int {
+		switch (ch) {
+		case 'A':
+			return 0;
+		case 'C':
+			return 1;
+		case 'G':
+			return 2;
+		case 'T':
+			return 3;
+		default:
+			return -1;
+		}
+	};
+
+	int n = (int)dna.size();
+	int m = (int)gene.size();
+
+	// total = cost of inserting every character of the gene
+	long long total = 0;
+	for (char ch : gene) { total += cost[id(ch)]; }
+
+	// nxt[c][p] = first gene position >= p containing character c, or m if none
+	vector<vector<int>> nxt(4, vector<int>(m + 1, m));
+	for (int c = 0; c < 4; c++) {
+		for (int p = m - 1; p >= 0; p--) {
+			nxt[c][p] = nxt[c][p + 1];
+			if (id(gene[p]) == c) { nxt[c][p] = p; }
+		}
+	}
+
+	// best = the most insertion cost we can save by matching DNA to the gene
+	long long best = 0;
+	for (int l = 0; l < n; l++) {
+		// greedily extend the block dna[l..r] while it stays a subsequence
+		int pos = 0;  // the next gene position we are allowed to match
+		long long saved = 0;
+		for (int r = l; r < n; r++) {
+			int q = nxt[id(dna[r])][pos];
+			if (q == m) { break; }
+			pos = q + 1;
+			saved += cost[id(dna[r])];
+		}
+		best = max(best, saved);
+	}
+
+	cout << total - best << '\n';
+
+	return 0;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class GMO {
+	private static int id(char ch) {
+		switch (ch) {
+		case 'A':
+			return 0;
+		case 'C':
+			return 1;
+		case 'G':
+			return 2;
+		case 'T':
+			return 3;
+		default:
+			return -1;
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		String dna = br.readLine().trim();
+		String gene = br.readLine().trim();
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		long[] cost = new long[4];
+		for (int i = 0; i < 4; i++) { cost[i] = Long.parseLong(st.nextToken()); }
+
+		int n = dna.length();
+		int m = gene.length();
+
+		// total = cost of inserting every character of the gene
+		long total = 0;
+		for (int j = 0; j < m; j++) { total += cost[id(gene.charAt(j))]; }
+
+		// nxt[c][p] = first gene position >= p containing character c, or m
+		int[][] nxt = new int[4][m + 1];
+		for (int c = 0; c < 4; c++) {
+			nxt[c][m] = m;
+			for (int p = m - 1; p >= 0; p--) {
+				nxt[c][p] = nxt[c][p + 1];
+				if (id(gene.charAt(p)) == c) { nxt[c][p] = p; }
+			}
+		}
+
+		// best = the most insertion cost we can save by matching DNA to the gene
+		long best = 0;
+		for (int l = 0; l < n; l++) {
+			// greedily extend the block dna[l..r] while it stays a subsequence
+			int pos = 0;  // the next gene position we are allowed to match
+			long saved = 0;
+			for (int r = l; r < n; r++) {
+				int q = nxt[id(dna.charAt(r))][pos];
+				if (q == m) { break; }
+				pos = q + 1;
+				saved += cost[id(dna.charAt(r))];
+			}
+			best = Math.max(best, saved);
+		}
+
+		System.out.println(total - best);
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
+
+## Solution 2: Dynamic Programming (Alternative)
+
+This is an alternative solution using dynamic programming. It is more advanced
+than Solution 1 and is **not required for Bronze** — Solution 1 is enough.
+
+Let $f(i, j)$ be the minimum insertion cost to match the first $j$ gene
+characters $G[0..j-1]$ using a contiguous DNA block that ends at $S[i]$,
+where the *last* block character $S[i]$ is matched to $G[j-1]$.
+
+Define $\operatorname{pre}[j]$ as the cost of inserting the first $j$ gene
+characters $G[0..j-1]$ (with $\operatorname{pre}[-1] = 0$), and
+$\operatorname{suf}[j]$ as the cost of inserting $G[j..M-1]$.
+
+To build a block ending at $S[i]$ (which requires $S[i] = G[j-1]$), either
+
+- the block is just $S[i]$, in which case $G[0..j-2]$ must all be inserted,
+  costing $\operatorname{pre}[j-2]$; or
+- the block also uses the previous DNA character $S[i-1]$, matched to some
+  earlier gene character $G[p-1]$ with $1 \le p < j$, and the gene characters
+  in between, $G[p..j-2]$, are inserted.
+
+The second option costs $f(i-1, p) + \operatorname{pre}[j-2] -
+\operatorname{pre}[p-1]$, so
+
+$$
+f(i, j) = \operatorname{pre}[j-2] +
+\min\left(0,\ \min_{\substack{1 \le p < j \\ S[i - 1] = G[p - 1]}}
+\left(f(i - 1, p) - \operatorname{pre}[p - 1]\right)\right).
+$$
+
+Naively, the inner minimum over $p$ costs $\mathcal O(M)$ for every $i, j$.
+Instead, notice that $S[i-1]$ is a fixed character: while we increase $j$ from
+$1$ to $M$, we can keep a running minimum $r$ of
+$f(i-1, p) - \operatorname{pre}[p-1]$ over all $p < j$ with
+$G[p-1] = S[i-1]$. Updating $r$ and then reading it take $\mathcal O(1)$ time
+per cell, keeping the whole algorithm $\mathcal O(NM)$.
+
+The answer is the smallest of inserting the whole gene with nothing matched, or
+ending the block in any valid way:
+
+$$
+\min\left(\operatorname{suf}[0],\ \min_{0 \le i < N,\ 1 \le j \le M}
+f(i, j) + \operatorname{suf}[j]\right).
+$$
+
+### Edge cases
+
+- If no character of $G$ can be matched, the answer is just
+  $\operatorname{suf}[0]$: the cost of inserting every character of $G$.
+- Insertion costs may be zero, so matching a character is never worse than
+  inserting it.
+- Empty matches are handled by the $\operatorname{suf}[0]$ term, so the block
+  may use zero DNA characters.
+
+Row $i$ only depends on row $i - 1$, so we only store two rows of $M + 1$
+values.
+
+**Time Complexity:** $\mathcal O(NM)$ — here $N \le 10^4$ and
+$M \le 5 \cdot 10^3$, so this is fast enough.
+
+**Memory:** $\mathcal O(M)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	string dna, gene;
+	cin >> dna >> gene;
+
+	long long cost_a, cost_c, cost_g, cost_t;
+	cin >> cost_a >> cost_c >> cost_g >> cost_t;
+
+	auto cost_of_char = [&](char ch) -> long long {
+		switch (ch) {
+		case 'A':
+			return cost_a;
+		case 'C':
+			return cost_c;
+		case 'G':
+			return cost_g;
+		case 'T':
+			return cost_t;
+		default:
+			return (long long)1e18;
+		}
+	};
+
+	int n = (int)dna.size();
+	int m = (int)gene.size();
+
+	// pre[j] = cost of inserting the first j gene characters
+	vector<long long> pre(m);
+	for (int j = 0; j < m; j++) {
+		pre[j] = (j ? pre[j - 1] : 0) + cost_of_char(gene[j]);
+	}
+	// suf[j] = cost of inserting gene characters gene[j..m-1]
+	vector<long long> suf(m + 1, 0);
+	for (int j = m - 1; j >= 0; j--) { suf[j] = suf[j + 1] + cost_of_char(gene[j]); }
+
+	const long long INF = (long long)1e18;
+	long long ans = suf[0];  // insert the entire gene
+
+	// prevE[p] = f(i-1, p) - pre[p-1], for p = 1..m
+	vector<long long> prevE(m + 1, INF);
+
+	for (int i = 0; i < n; i++) {
+		char prev_char = (i == 0 ? '\0' : dna[i - 1]);
+
+		// running min of prevE[p] over p < j with gene[p-1] == dna[i-1]
+		long long run = INF;
+		vector<long long> curE(m + 1, INF);
+
+		for (int j = 1; j <= m; j++) {
+			if (prev_char && j >= 2 && gene[j - 2] == prev_char) {
+				run = min(run, prevE[j - 1]);
+			}
+			if (dna[i] != gene[j - 1]) continue;
+
+			long long insert_prefix = (j >= 2 ? pre[j - 2] : 0);
+			long long f = insert_prefix + min(0LL, run);
+			curE[j] = f - pre[j - 1];
+			ans = min(ans, f + suf[j]);
+		}
+
+		prevE.swap(curE);
+	}
+
+	cout << ans << '\n';
+
+	return 0;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+public class GMO {
+	private static long costOf(char ch, long costA, long costC, long costG,
+	                           long costT) {
+		switch (ch) {
+		case 'A':
+			return costA;
+		case 'C':
+			return costC;
+		case 'G':
+			return costG;
+		case 'T':
+			return costT;
+		default:
+			return (long)1e18;
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		String dna = br.readLine().trim();
+		String gene = br.readLine().trim();
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		long costA = Long.parseLong(st.nextToken());
+		long costC = Long.parseLong(st.nextToken());
+		long costG = Long.parseLong(st.nextToken());
+		long costT = Long.parseLong(st.nextToken());
+
+		int n = dna.length();
+		int m = gene.length();
+		final long INF = (long)1e18;
+
+		// pre[j] = cost of inserting the first j gene characters
+		long[] pre = new long[m];
+		for (int j = 0; j < m; j++) {
+			pre[j] = (j > 0 ? pre[j - 1] : 0) +
+			         costOf(gene.charAt(j), costA, costC, costG, costT);
+		}
+		// suf[j] = cost of inserting gene characters gene[j..m-1]
+		long[] suf = new long[m + 1];
+		for (int j = m - 1; j >= 0; j--) {
+			suf[j] = suf[j + 1] + costOf(gene.charAt(j), costA, costC, costG, costT);
+		}
+
+		long ans = suf[0];  // insert the entire gene
+
+		// prevE[p] = f(i-1, p) - pre[p-1], for p = 1..m
+		long[] prevE = new long[m + 1];
+		Arrays.fill(prevE, INF);
+
+		for (int i = 0; i < n; i++) {
+			char prevChar = (i == 0 ? '\0' : dna.charAt(i - 1));
+
+			// running min of prevE[p] over p < j with gene[p-1] == dna[i-1]
+			long run = INF;
+			long[] curE = new long[m + 1];
+			Arrays.fill(curE, INF);
+
+			for (int j = 1; j <= m; j++) {
+				if (prevChar != '\0' && j >= 2 && gene.charAt(j - 2) == prevChar) {
+					run = Math.min(run, prevE[j - 1]);
+				}
+				if (dna.charAt(i) != gene.charAt(j - 1)) continue;
+
+				long insertPrefix = (j >= 2 ? pre[j - 2] : 0);
+				long f = insertPrefix + Math.min(0L, run);
+				curE[j] = f - pre[j - 1];
+				ans = Math.min(ans, f + suf[j]);
+			}
+
+			prevE = curE;
+		}
+
+		System.out.println(ans);
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
