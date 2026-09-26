@@ -28,7 +28,11 @@ Try to bound the values in our array after each application of $F$, with a separ
 
 </Spoiler>
 
-## Explanation
+<Spoiler title = "Solution">
+
+[Official Editorial](https://codeforces.com/blog/entry/114644)
+
+### Explanation
 
 First sort the array, and fix a left endpoint $i$ of a pair. The sums $a_i + a_{i+1}, a_i + a_{i+2}, a_i + a_{i+3}, \ldots$
 are in increasing order, since the array is sorted. So now instead of one big set of $\mathcal{O}(n^2)$ sums,
@@ -40,8 +44,8 @@ for every $i$, push $(a_i + a_{i+1}, i, i+1)$ into the queue. We repeatedly pop 
 append it to the merged array, and push the next element of that same list, $(a_i + a_{j+1}, i, j+1)$, if it exists.
 
 Since each list is individually sorted, the priority queue will always hold the smallest unused sum
-from each list. Thereforce, each extraction is the smallest remaining pair **overall**, so the merged
-output will be globally sorted. Each push/pop is $\mathcal{O}(\log n)$ and we do $n - 1$ of them,
+from each list. Therefore, each extraction is the smallest remaining pair **overall**, so the merged
+output will be globally sorted. Each push/pop is $\mathcal{O}(\log n)$, and we do $n - 1$ of them,
 so one application of $F$ costs $\mathcal{O}(n \log n)$.
 
 
@@ -69,7 +73,7 @@ Meanwhile, after subtracting the minimum value in each round, $\text{cur}$ alway
 so its entries never overflow.The true final answer is $(\text{offset} + \text{cur}[0]) \bmod p$.
 
 
-## Implementation
+### Implementation
 
 **Time Complexity:** $\mathcal{O}(N^2 \log N)$
 
@@ -137,3 +141,4 @@ int main() {
 
 </CPPSection>
 </LanguageSection>
+</Spoiler>
