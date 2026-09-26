@@ -31,6 +31,12 @@ All are scoped by fenced code block, because all are noise without it.
    only counts on its own, so ``\\min``, ``\\argmin``, ``minCost`` and
    ``left\\_sum`` all pass. Names that double as variable names -- ``sum``,
    ``sec``, ``sh`` -- are not checked at all.
+
+4. Big O is written ``\\mathcal{O}`` (or ``\\mathcal O``), as the guide does in
+   all but a handful of its ~2000 uses; a bare ``O(n)`` sets a plain italic O.
+   So is ``\\mathcal{O(n)}``, which sets the whole argument in the calligraphic
+   font. Same scope as rule 3. The contributor guide's demo quiz, which shows
+   the bare form on purpose, is exempt.
 """
 
 from __future__ import annotations
@@ -80,6 +86,14 @@ BARE_NAME = re.compile(
 	+ "|".join(sorted(BARE_NAMES, key=len, reverse=True))
 	+ r")(?![A-Za-z0-9]|\\_)"
 )
+# Rule 4. \mathcal{O is blanked before looking for a bare O(, so the O of a
+# correct \mathcal O(n) is not reported, nor a \mathcal{O(n)} twice.
+MATHCAL_O = re.compile(r"\\mathcal\s*\{?\s*O")
+MATHCAL_O_WRAPPED = re.compile(r"\\mathcal\s*\{\s*O\s*\(")
+BARE_O = re.compile(r"(?<![\\\w])O\s*\(")
+# Working_MDX's demo quiz marks $O(\log n)$ wrong for this very reason, and
+# renders a quiz whose source it quotes verbatim.
+BIG_O_EXEMPT = {"content/1_General/Working_MDX.mdx"}
 
 
 def mdx_files() -> list[Path]:
@@ -98,14 +112,21 @@ def blank(match: re.Match[str]) -> str:
 	return " " * len(match.group())
 
 
-def bare_names(prose: str) -> list[tuple[int, str]]:
-	"""Rule 3, over ``prose``: the file with code blanked out, lines intact."""
-	errors: list[tuple[int, str]] = []
+def math_bodies(prose: str):
+	"""Each math span in ``prose`` (the file with code blanked out, lines intact),
+	as its offset and its contents with \text-like arguments blanked."""
 	for math in MATH.finditer(prose.replace("\\$", "  ")):
 		group = 1 if math.group(1) is not None else 2
-		for name in BARE_NAME.finditer(TEXT_ARG.sub(blank, math.group(group))):
+		yield math.start(group), TEXT_ARG.sub(blank, math.group(group))
+
+
+def bare_names(prose: str) -> list[tuple[int, str]]:
+	"""Rule 3."""
+	errors: list[tuple[int, str]] = []
+	for start, body in math_bodies(prose):
+		for name in BARE_NAME.finditer(body):
 			word = name.group(1)
-			line = prose.count("\n", 0, math.start(group) + name.start()) + 1
+			line = prose.count("\n", 0, start + name.start()) + 1
 			fix = BARE_NAMES[word] or "\\" + word
 			errors.append(
 				(line, f"{word} in math renders as italic letters; write {fix}")
@@ -113,10 +134,30 @@ def bare_names(prose: str) -> list[tuple[int, str]]:
 	return errors
 
 
+def bare_big_o(prose: str) -> list[tuple[int, str]]:
+	"""Rule 4."""
+	errors: list[tuple[int, str]] = []
+	for start, body in math_bodies(prose):
+		for match in MATHCAL_O_WRAPPED.finditer(body):
+			line = prose.count("\n", 0, start + match.start()) + 1
+			errors.append(
+				(
+					line,
+					r"\mathcal{O(...)} sets the argument in calligraphic too; write \mathcal{O}(...)",
+				)
+			)
+		for match in BARE_O.finditer(MATHCAL_O.sub(blank, body)):
+			line = prose.count("\n", 0, start + match.start()) + 1
+			errors.append(
+				(line, r"a bare O( sets a plain italic O; write \mathcal{O}(")
+			)
+	return errors
+
+
 def check_file(path: Path) -> list[tuple[int, str]]:
 	errors: list[tuple[int, str]] = []
 	language: str | None = None  # the open fence's language, None outside a fence
-	prose: list[str] = []  # the file with fences blanked, for rule 3
+	prose: list[str] = []  # the file with fences blanked, for rules 3 and 4
 
 	for number, line in enumerate(path.read_text().splitlines(), 1):
 		fence = FENCE.match(line)
@@ -143,6 +184,8 @@ def check_file(path: Path) -> list[tuple[int, str]]:
 			)
 
 	errors += bare_names("\n".join(prose))
+	if path.resolve().relative_to(ROOT).as_posix() not in BIG_O_EXEMPT:
+		errors += bare_big_o("\n".join(prose))
 	return sorted(errors, key=lambda error: error[0])
 
 
