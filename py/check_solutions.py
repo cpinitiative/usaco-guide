@@ -172,6 +172,17 @@ def check_file(
 				)
 
 	exempt = fields.get("noOfficialEditorial", "").lower() == "true"
+	# The flag only waives the editorial requirement, so anywhere that requirement
+	# does not apply it is dead frontmatter that misleads the next reader.
+	if "noOfficialEditorial" in fields and (
+		prefix not in REQUIRE_EDITORIAL or (prefix == "cf" and cf_is_gym(stem))
+	):
+		errors.append(
+			(
+				f"`noOfficialEditorial` has no effect on {'Codeforces gym' if prefix == 'cf' else fields.get('source') or prefix} solutions; remove it",
+				line_of(text, r"^noOfficialEditorial:"),
+			)
+		)
 
 	if prefix == "usaco":
 		cpid = stem[len("usaco-") :]
