@@ -1,84 +1,43 @@
 ---
+
 id: kattis-gmo
 source: Kattis
 title: GMO
 author: Shanmuka Gottimukkala
----
+-----------------------------
 
 ## Explanation
 
-We start with the apple's DNA $S$ (length $N$) and the swine gene $G$ (length
-$M$), both made of the characters $A, C, G, T$. We may insert any characters
-into $S$, paying $\operatorname{cost}(c)$ for each character $c$ we insert, and
-we want $G$ to appear as a contiguous substring of the resulting string $S'$,
-minimizing the total insertion cost.
+We want to insert characters into the DNA string $S$ so that the gene $G$ appears as a contiguous substring. Each inserted character costs $\operatorname{cost}(c)$.
 
-Remember that the input gives the four insertion costs in the order
-$A, C, G, T$.
+The key observation is that the original DNA characters inside the matching window form one **contiguous block** $S[l..r]$. Since their order cannot change, this block must be a **subsequence** of $G$.
 
-### The key observation — the matched DNA is a contiguous block
-
-Insertions never rearrange the original DNA, so the characters of $S$ keep
-their order inside $S'$: $S'$ is just $S$ with extra characters dropped in
-between. Look at the window of $S'$ that equals $G$. The original DNA
-characters that fall inside this window come from a contiguous block
-$S[l] \dots S[r]$ of $S$, in order, with inserted characters filling the gaps.
-Any DNA character that sat between two of these characters would also have to
-appear between them inside $S'$, which is exactly why the block must be
-contiguous.
-
-So we may match a contiguous block of the DNA against an increasing sequence of
-gene positions. Every gene character that is not matched by a DNA character
-must be inserted at cost $\operatorname{cost}(c)$.
-
-It is convenient to think in terms of **saved** cost. Inserting every character
-of $G$ would cost $\operatorname{total} = \sum \operatorname{cost}(c)$ over all
-$c \in G$. A gene character that is matched by a DNA character $d$ of the block
-avoids being inserted, saving exactly $\operatorname{cost}(d)$; DNA characters
-outside the block are never inserted and save nothing. Therefore the answer is
+Instead of minimizing the insertion cost directly, start by inserting all of $G$. Every DNA character we match saves its insertion cost. Thus,
 
 $$
-\operatorname{total} - \max(\text{saved cost over a contiguous block of } S
-\text{ that is a subsequence of } G).
+\text{answer}=\text{total cost of }G-\text{maximum saved cost}.
 $$
 
-Both solutions below find this maximum.
+The input gives the four insertion costs in the order $A,C,G,T$.
 
 ## Solution 1: Greedy (Two Pointers)
 
-For a fixed first DNA position $l$, the optimal block is the **longest** prefix
-$S[l..r]$ that is still a subsequence of $G$: every character we add to the
-block saves an extra $\operatorname{cost}(c) \ge 0$, so extending the block
-never makes it worse. For each $l$, we greedily extend the block character by
-character, advancing a pointer through $G$, and we stop once the next DNA
-character does not occur at or after the current gene position.
+Fix the starting position $l$. Because all costs are nonnegative, extending $S[l..r]$ can only increase the saved cost. Therefore, for each $l$, we only need the **longest prefix** $S[l..r]$ that is a subsequence of $G$.
 
-To advance the pointer through $G$ in $\mathcal O(1)$ per DNA character, we
-precompute a table $\text{nxt}[c][p]$: the first gene position $\ge p$ that
-contains character $c$, or $M$ if there is none. Since there are only four
-characters, the table has $4 \cdot (M + 1)$ entries and is built with one
-backwards pass over the gene.
+We greedily match each DNA character to the earliest possible position in $G$. To find that position quickly, precompute $\text{nxt}[c][p]$, the first position at or after $p$ containing character $c$.
 
-The algorithm is:
+For every starting position $l$:
 
-1. compute $\operatorname{nxt}$;
-2. for each start $l$, walk $r = l, l + 1, \dots$ using $\operatorname{nxt}$ to
-   match each DNA character to a gene position, accumulating
-   $\operatorname{cost}(S[r])$;
-3. stop once the next DNA character cannot be matched, and update the best
-   saved cost;
-4. output $\operatorname{total} - \text{best}$.
+1. Start at the beginning of $G$.
+2. Extend the DNA block while its characters can be matched as a subsequence of $G$.
+3. Add each matched character's cost to the saved cost.
+4. Keep the maximum saved cost over all $l$.
 
-This is correct because every optimal matching uses some contiguous block that
-starts at some position $l$, and for that $l$ the longest embeddable block is
-optimal. Note that no DNA character inside the window may be skipped: the block
-is contiguous, so every character strictly between $l$ and $r$ must be matched.
+Every valid matching window corresponds to some contiguous DNA block, and for a fixed start the longest valid block saves at least as much as any shorter one.
 
-**Time Complexity:** $\mathcal O(NM)$ — each of the $N$ starting positions
-matches at most $M$ characters in the worst case, though typical inputs are
-much faster.
+**Time Complexity:** $\mathcal O(NM)$
 
-**Memory:** $\mathcal O(M)$ — the $4 \times (M + 1)$ next-occurrence table.
+**Memory:** $\mathcal O(M)$
 
 <LanguageSection>
 
@@ -229,63 +188,33 @@ public class GMO {
 
 ## Solution 2: Dynamic Programming (Alternative)
 
-This is an alternative solution using dynamic programming. It is more advanced
-than Solution 1 and is **not required for Bronze** — Solution 1 is enough.
+This is an alternative solution using dynamic programming. It is more advanced and is not needed for Bronze.
 
-Let $f(i, j)$ be the minimum insertion cost to match the first $j$ gene
-characters $G[0..j-1]$ using a contiguous DNA block that ends at $S[i]$,
-where the *last* block character $S[i]$ is matched to $G[j-1]$.
+Let $f(i,j)$ be the minimum insertion cost when a contiguous DNA block ends at $S[i]$ and $S[i]$ is matched to $G[j-1]$.
 
-Define $\operatorname{pre}[j]$ as the cost of inserting the first $j$ gene
-characters $G[0..j-1]$ (with $\operatorname{pre}[-1] = 0$), and
-$\operatorname{suf}[j]$ as the cost of inserting $G[j..M-1]$.
+Let $\operatorname{pre}[j]$ be the cost of inserting the first $j$ characters of $G$, and let $\operatorname{suf}[j]$ be the cost of inserting $G[j..M-1]$.
 
-To build a block ending at $S[i]$ (which requires $S[i] = G[j-1]$), either
-
-- the block is just $S[i]$, in which case $G[0..j-2]$ must all be inserted,
-  costing $\operatorname{pre}[j-2]$; or
-- the block also uses the previous DNA character $S[i-1]$, matched to some
-  earlier gene character $G[p-1]$ with $1 \le p < j$, and the gene characters
-  in between, $G[p..j-2]$, are inserted.
-
-The second option costs $f(i-1, p) + \operatorname{pre}[j-2] -
-\operatorname{pre}[p-1]$, so
+If $S[i]=G[j-1]$, the block either starts at $S[i]$ or extends the block ending at $S[i-1]$. This gives
 
 $$
-f(i, j) = \operatorname{pre}[j-2] +
-\min\left(0,\ \min_{\substack{1 \le p < j \\ S[i - 1] = G[p - 1]}}
-\left(f(i - 1, p) - \operatorname{pre}[p - 1]\right)\right).
+f(i,j)=\operatorname{pre}[j-2]
++\min\left(0,
+\min_{\substack{1\le p<j\\S[i-1]=G[p-1]}}
+\left(f(i-1,p)-\operatorname{pre}[p-1]\right)\right).
 $$
 
-Naively, the inner minimum over $p$ costs $\mathcal O(M)$ for every $i, j$.
-Instead, notice that $S[i-1]$ is a fixed character: while we increase $j$ from
-$1$ to $M$, we can keep a running minimum $r$ of
-$f(i-1, p) - \operatorname{pre}[p-1]$ over all $p < j$ with
-$G[p-1] = S[i-1]$. Updating $r$ and then reading it take $\mathcal O(1)$ time
-per cell, keeping the whole algorithm $\mathcal O(NM)$.
+The inner minimum can be maintained with a running minimum as $j$ increases, so each state takes $\mathcal O(1)$ time.
 
-The answer is the smallest of inserting the whole gene with nothing matched, or
-ending the block in any valid way:
+The answer is
 
 $$
-\min\left(\operatorname{suf}[0],\ \min_{0 \le i < N,\ 1 \le j \le M}
-f(i, j) + \operatorname{suf}[j]\right).
+\min\left(\operatorname{suf}[0],
+\min_{i,j}\left(f(i,j)+\operatorname{suf}[j]\right)\right).
 $$
 
-### Edge cases
+Only the previous DP row is needed.
 
-- If no character of $G$ can be matched, the answer is just
-  $\operatorname{suf}[0]$: the cost of inserting every character of $G$.
-- Insertion costs may be zero, so matching a character is never worse than
-  inserting it.
-- Empty matches are handled by the $\operatorname{suf}[0]$ term, so the block
-  may use zero DNA characters.
-
-Row $i$ only depends on row $i - 1$, so we only store two rows of $M + 1$
-values.
-
-**Time Complexity:** $\mathcal O(NM)$ — here $N \le 10^4$ and
-$M \le 5 \cdot 10^3$, so this is fast enough.
+**Time Complexity:** $\mathcal O(NM)$
 
 **Memory:** $\mathcal O(M)$
 
