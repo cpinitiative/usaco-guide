@@ -1,10 +1,9 @@
 ---
-
 id: kattis-gmo
 source: Kattis
 title: GMO
 author: Shanmuka Gottimukkala
------------------------------
+---
 
 ## Explanation
 
@@ -20,9 +19,9 @@ $$
 
 The input gives the four insertion costs in the order $A,C,G,T$.
 
-## Solution 1: Greedy (Two Pointers)
+### Solution 1: Greedy (Two Pointers)
 
-Fix the starting position $l$. Because all costs are nonnegative, extending $S[l..r]$ can only increase the saved cost. Therefore, for each $l$, we only need the **longest prefix** $S[l..r]$ that is a subsequence of $G$.
+Fix the starting position $l$. Because all costs are non-negative, extending $S[l..r]$ can only increase the saved cost. Therefore, for each $l$, we only need the **longest prefix** $S[l..r]$ that is a subsequence of $G$.
 
 We greedily match each DNA character to the earliest possible position in $G$. To find that position quickly, precompute $\text{nxt}[c][p]$, the first position at or after $p$ containing character $c$.
 
@@ -35,12 +34,11 @@ For every starting position $l$:
 
 Every valid matching window corresponds to some contiguous DNA block, and for a fixed start the longest valid block saves at least as much as any shorter one.
 
+### Implementation
+
 **Time Complexity:** $\mathcal O(NM)$
 
-**Memory:** $\mathcal O(M)$
-
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -111,7 +109,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -183,12 +180,13 @@ public class GMO {
 ```
 
 </JavaSection>
-
 </LanguageSection>
 
-## Solution 2: Dynamic Programming (Alternative)
+### Solution 2: Dynamic Programming
 
-This is an alternative solution using dynamic programming. It is more advanced and is not needed for Bronze.
+<Info >
+Note: Dynamic Programming is not in the Bronze Module.
+</Info>
 
 Let $f(i,j)$ be the minimum insertion cost when a contiguous DNA block ends at $S[i]$ and $S[i]$ is matched to $G[j-1]$.
 
@@ -214,12 +212,11 @@ $$
 
 Only the previous DP row is needed.
 
+### Implementation
+
 **Time Complexity:** $\mathcal O(NM)$
 
-**Memory:** $\mathcal O(M)$
-
 <LanguageSection>
-
 <CPPSection>
 
 ```cpp
@@ -298,7 +295,6 @@ int main() {
 ```
 
 </CPPSection>
-
 <JavaSection>
 
 ```java
@@ -387,5 +383,4 @@ public class GMO {
 ```
 
 </JavaSection>
-
 </LanguageSection>
