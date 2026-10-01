@@ -7,27 +7,37 @@ author: Shanmuka Gottimukkala
 
 ## Explanation
 
-We insert characters into the DNA string $S$ so that the gene $G$ appears as a contiguous substring of the resulting string, minimizing the total insertion cost.
+We want to insert characters into the DNA string $S$ so that the gene $G$ appears as a contiguous substring. Each inserted character costs $\operatorname{cost}(c)$.
 
-Since we never delete or reorder characters, the characters of $S$ that land inside the gene form one **contiguous block** $S[l..r]$. The gene contains these characters in the same order, so this block must be a **subsequence** of $G$.
+The key observation is that the original DNA characters inside the matching window form one **contiguous block** $S[l..r]$. Since their order cannot change, this block must be a **subsequence** of $G$.
 
-Now imagine inserting the whole gene, which costs the sum of the insertion costs of its characters. Every character of $S$ that we reuse inside the gene saves its insertion cost, so all we need is the block of $S$ that saves the most cost.
+Instead of minimizing the insertion cost directly, start by inserting all of $G$. Every DNA character we match saves its insertion cost. Thus,
 
-The input gives the four insertion costs in the order $A, C, G, T$.
+$$
+\text{answer}=\text{total cost of }G-\text{maximum saved cost}.
+$$
 
-### Solution
+The input gives the four insertion costs in the order $A,C,G,T$.
 
-Try every starting position $l$ in $S$. From there, greedily match $S[l], S[l+1], \dots$ against the gene, always taking the earliest position in $G$ holding the needed character. A single pointer into $G$ does this while we walk forward through $S$.
+## Solution
 
-Greedy is enough here: using the earliest available position in $G$ never blocks a later character, so this finds the longest block starting at $l$ that is a subsequence of $G$. Since all costs are non-negative, a longer block saves at least as much cost as any shorter one, so this is the best choice for that $l$.
+Fix the starting position $l$. Because all costs are nonnegative, extending $S[l..r]$ can only increase the saved cost. Therefore, for each $l$, we only need the **longest prefix** $S[l..r]$ that is a subsequence of $G$.
 
-For each $l$, subtract the saved cost from the cost of inserting the whole gene, and take the minimum.
+We greedily match each DNA character to the earliest possible position in $G$.
 
-### Implementation
+For every starting position $l$:
+
+1. Start at the beginning of $G$.
+2. Extend the DNA block while its characters can be matched as a subsequence of $G$.
+3. Add each matched character's cost to the saved cost.
+4. Keep the maximum saved cost over all $l$.
+
+Every valid matching window corresponds to some contiguous DNA block, and for a fixed start the longest valid block saves at least as much as any shorter one.
 
 **Time Complexity:** $\mathcal O(N^2 + NM)$
 
 <LanguageSection>
+
 <CPPSection>
 
 ```cpp
@@ -46,47 +56,50 @@ int main() {
 	for (int i = 0; i < 4; i++) { cin >> cost[i]; }
 
 	auto id = [](char ch) -> int {
-		if (ch == 'A') { return 0; }
-		if (ch == 'C') { return 1; }
-		if (ch == 'G') { return 2; }
-		return 3;  // T
+		switch (ch) {
+		case 'A':
+			return 0;
+		case 'C':
+			return 1;
+		case 'G':
+			return 2;
+		case 'T':
+			return 3;
+		default:
+			return -1;
+		}
 	};
 
 	int n = (int)dna.size();
 	int m = (int)gene.size();
 
-	// base = the cost of inserting every character of the gene
-	long long base = 0;
-	for (char ch : gene) { base += cost[id(ch)]; }
+	// total = cost of inserting every character of the gene
+	long long total = 0;
+	for (char ch : gene) { total += cost[id(ch)]; }
 
-	long long best = base;
-
+	// best = the most insertion cost we can save by matching DNA to the gene
+	long long best = 0;
 	for (int l = 0; l < n; l++) {
-		// cur starts as the cost of inserting the whole gene
-		long long cur = base;
-		int pos = 0;  // the next gene position we may use
-
+		// greedily extend the block dna[l..r] while it stays a subsequence
+		int pos = 0;  // the next gene position we are allowed to match
+		long long saved = 0;
 		for (int r = l; r < n; r++) {
-			// greedily take the earliest matching position in the gene
 			while (pos < m && dna[r] != gene[pos]) { pos++; }
-
-			if (pos < m) {
-				// this DNA character is reused, so we do not pay for it
-				cur -= cost[id(gene[pos])];
-				pos++;
-			}
+			if (pos == m) { break; }
+			saved += cost[id(dna[r])];
+			pos++;
 		}
-
-		best = min(best, cur);
+		best = max(best, saved);
 	}
 
-	cout << best << '\n';
+	cout << total - best << '\n';
 
 	return 0;
 }
 ```
 
 </CPPSection>
+
 <JavaSection>
 
 ```java
@@ -97,10 +110,18 @@ import java.util.StringTokenizer;
 
 public class GMO {
 	private static int id(char ch) {
-		if (ch == 'A') { return 0; }
-		if (ch == 'C') { return 1; }
-		if (ch == 'G') { return 2; }
-		return 3;  // T
+		switch (ch) {
+		case 'A':
+			return 0;
+		case 'C':
+			return 1;
+		case 'G':
+			return 2;
+		case 'T':
+			return 3;
+		default:
+			return -1;
+		}
 	}
 
 	public static void main(String[] args) throws IOException {
@@ -109,43 +130,36 @@ public class GMO {
 		String gene = br.readLine().trim();
 
 		StringTokenizer st = new StringTokenizer(br.readLine());
-
-		// the insertion costs in the order A, C, G, T
 		long[] cost = new long[4];
 		for (int i = 0; i < 4; i++) { cost[i] = Long.parseLong(st.nextToken()); }
 
 		int n = dna.length();
 		int m = gene.length();
 
-		// base = the cost of inserting every character of the gene
-		long base = 0;
-		for (int j = 0; j < m; j++) { base += cost[id(gene.charAt(j))]; }
+		// total = cost of inserting every character of the gene
+		long total = 0;
+		for (int j = 0; j < m; j++) { total += cost[id(gene.charAt(j))]; }
 
-		long best = base;
-
+		// best = the most insertion cost we can save by matching DNA to the gene
+		long best = 0;
 		for (int l = 0; l < n; l++) {
-			// cur starts as the cost of inserting the whole gene
-			long cur = base;
-			int pos = 0;  // the next gene position we may use
-
+			// greedily extend the block dna[l..r] while it stays a subsequence
+			int pos = 0;  // the next gene position we are allowed to match
+			long saved = 0;
 			for (int r = l; r < n; r++) {
-				// greedily take the earliest matching position in the gene
 				while (pos < m && dna.charAt(r) != gene.charAt(pos)) { pos++; }
-
-				if (pos < m) {
-					// this DNA character is reused, so we do not pay for it
-					cur -= cost[id(gene.charAt(pos))];
-					pos++;
-				}
+				if (pos == m) { break; }
+				saved += cost[id(dna.charAt(r))];
+				pos++;
 			}
-
-			best = Math.min(best, cur);
+			best = Math.max(best, saved);
 		}
 
-		System.out.println(best);
+		System.out.println(total - best);
 	}
 }
 ```
 
 </JavaSection>
+
 </LanguageSection>
