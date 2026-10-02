@@ -1,0 +1,163 @@
+---
+id: kattis-gmo
+source: Kattis
+title: GMO
+author: Shanmuka Gottimukkala
+---
+
+## Solution
+
+We want to insert characters into the DNA string $S$ so that the gene $G$ appears as a contiguous substring. Each inserted character costs $\operatorname{cost}(c)$.
+
+The key observation is that the original DNA characters inside the matching window form one **contiguous block** $S[l..r]$. Since their order cannot change, this block must be a **subsequence** of $G$.
+
+Instead of minimizing the insertion cost directly, start by inserting all of $G$. Every DNA character we match saves its insertion cost. Thus,
+
+$$
+\text{answer}=\text{total cost of }G-\text{maximum saved cost}.
+$$
+
+The input gives the four insertion costs in the order $A,C,G,T$.
+
+Fix the starting position $l$. Because all costs are nonnegative, extending $S[l..r]$ can only increase the saved cost. Therefore, for each $l$, we only need the **longest prefix** $S[l..r]$ that is a subsequence of $G$.
+
+We greedily match each DNA character to the earliest possible position in $G$.
+
+For every starting position $l$:
+
+1. Start at the beginning of $G$.
+2. Extend the DNA block while its characters can be matched as a subsequence of $G$.
+3. Add each matched character's cost to the saved cost.
+4. Keep the maximum saved cost over all $l$.
+
+Every valid matching window corresponds to some contiguous DNA block, and for a fixed start the longest valid block saves at least as much as any shorter one.
+
+**Time Complexity:** $\mathcal O(N^2 + NM)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	string dna, gene;
+	cin >> dna >> gene;
+
+	// the insertion costs in the order A, C, G, T
+	long long cost[4];
+	for (int i = 0; i < 4; i++) { cin >> cost[i]; }
+
+	auto id = [](char ch) -> int {
+		switch (ch) {
+		case 'A':
+			return 0;
+		case 'C':
+			return 1;
+		case 'G':
+			return 2;
+		case 'T':
+			return 3;
+		default:
+			return -1;
+		}
+	};
+
+	int n = (int)dna.size();
+	int m = (int)gene.size();
+
+	// total = cost of inserting every character of the gene
+	long long total = 0;
+	for (char ch : gene) { total += cost[id(ch)]; }
+
+	// best = the most insertion cost we can save by matching DNA to the gene
+	long long best = 0;
+	for (int l = 0; l < n; l++) {
+		// greedily extend the block dna[l..r] while it stays a subsequence
+		int pos = 0;  // the next gene position we are allowed to match
+		long long saved = 0;
+		for (int r = l; r < n; r++) {
+			while (pos < m && dna[r] != gene[pos]) { pos++; }
+			if (pos == m) { break; }
+			saved += cost[id(dna[r])];
+			pos++;
+		}
+		best = max(best, saved);
+	}
+
+	cout << total - best << '\n';
+
+	return 0;
+}
+```
+
+</CPPSection>
+
+<JavaSection>
+
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
+
+public class GMO {
+	private static int id(char ch) {
+		switch (ch) {
+		case 'A':
+			return 0;
+		case 'C':
+			return 1;
+		case 'G':
+			return 2;
+		case 'T':
+			return 3;
+		default:
+			return -1;
+		}
+	}
+
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		String dna = br.readLine().trim();
+		String gene = br.readLine().trim();
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		long[] cost = new long[4];
+		for (int i = 0; i < 4; i++) { cost[i] = Long.parseLong(st.nextToken()); }
+
+		int n = dna.length();
+		int m = gene.length();
+
+		// total = cost of inserting every character of the gene
+		long total = 0;
+		for (int j = 0; j < m; j++) { total += cost[id(gene.charAt(j))]; }
+
+		// best = the most insertion cost we can save by matching DNA to the gene
+		long best = 0;
+		for (int l = 0; l < n; l++) {
+			// greedily extend the block dna[l..r] while it stays a subsequence
+			int pos = 0;  // the next gene position we are allowed to match
+			long saved = 0;
+			for (int r = l; r < n; r++) {
+				while (pos < m && dna.charAt(r) != gene.charAt(pos)) { pos++; }
+				if (pos == m) { break; }
+				saved += cost[id(dna.charAt(r))];
+				pos++;
+			}
+			best = Math.max(best, saved);
+		}
+
+		System.out.println(total - best);
+	}
+}
+```
+
+</JavaSection>
+
+</LanguageSection>
