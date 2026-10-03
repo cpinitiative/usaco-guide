@@ -1,9 +1,11 @@
 import Logo from '../components/Logo';
 import LogoSquare from '../components/LogoSquare';
 
-export default {
+const meta = {
   title: 'Logo',
 };
+
+export default meta;
 
 export const Default = (): JSX.Element => (
   <div className="h-9">

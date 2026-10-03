@@ -55,7 +55,7 @@ class Canvas extends Component<CanvasProps> {
   };
 
   render() {
-    const { width, height, draw, ...delegatedProps } = this.props;
+    const { width, height, draw: _draw, ...delegatedProps } = this.props;
 
     return (
       <canvas

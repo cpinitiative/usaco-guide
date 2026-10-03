@@ -1,4 +1,4 @@
-export default {
+const meta = {
   CPP: {
     '1': 7,
     '1.1': 7,
@@ -741,3 +741,5 @@ export default {
     '8.5': 227,
   },
 };
+
+export default meta;

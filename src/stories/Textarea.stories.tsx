@@ -1,8 +1,10 @@
 import { StoryFn } from '@storybook/react';
 
-export default {
+const meta = {
   title: 'Textarea',
 };
+
+export default meta;
 
 const Template: StoryFn = args => <textarea rows={4} {...args} />;
 

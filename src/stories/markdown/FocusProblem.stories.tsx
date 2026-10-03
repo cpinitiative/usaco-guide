@@ -5,11 +5,13 @@ import markdownDecorator from '../../components/markdown/markdownDecoratorForSto
 import { MarkdownProblemListsProvider } from '../../context/MarkdownProblemListsContext';
 import { ProblemInfo } from '../../models/problem';
 
-export default {
+const meta = {
   title: 'Markdown/FocusProblem',
   component: FocusProblem,
   decorators: [markdownDecorator],
 };
+
+export default meta;
 
 const problemLists: {
   listId: string;

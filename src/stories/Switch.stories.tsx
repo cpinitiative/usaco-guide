@@ -2,10 +2,12 @@ import { StoryFn } from '@storybook/react';
 import { ComponentProps } from 'react';
 import Switch from '../components/elements/Switch';
 
-export default {
+const meta = {
   title: 'Switch',
   component: Switch,
 };
+
+export default meta;
 
 const Template: StoryFn<ComponentProps<typeof Switch>> = args => (
   <Switch {...args} />

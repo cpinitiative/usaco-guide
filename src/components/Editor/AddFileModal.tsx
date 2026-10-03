@@ -4,17 +4,17 @@ import { useState } from 'react';
 import { createNewInternalSolutionFileAtom } from '../../atoms/editor';
 import { AlgoliaEditorSolutionFile } from '../../models/algoliaEditorFile';
 import Select from '../Select';
-const divisions = [
+const _divisions = [
   'General',
   'Bronze',
   'Silver',
   'Gold',
   'Platinum',
   'Advanced',
-] as const; // hack to allow typeof divisions[number] by marking array as readonly
+] as const; // hack to allow typeof _divisions[number] by marking array as readonly
 export default function AddFileModal(props) {
   const [division, setDivision] =
-    useState<(typeof divisions)[number]>('General');
+    useState<(typeof _divisions)[number]>('General');
   const [fileStatus, setFileStatus] = useState<
     'Create File' | 'Creating File...'
   >('Create File');

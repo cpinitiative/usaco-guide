@@ -3,10 +3,12 @@ import { ComponentProps } from 'react';
 import RadioList from '../components/elements/RadioList';
 import { LANGUAGE_LABELS } from '../context/UserDataContext/properties/simpleProperties';
 
-export default {
+const meta = {
   title: 'RadioList',
   component: RadioList,
 };
+
+export default meta;
 
 const Template: StoryFn<ComponentProps<typeof RadioList>> = args => (
   <RadioList {...args} />

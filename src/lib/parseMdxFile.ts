@@ -54,7 +54,11 @@ export async function parseMdxFile(filePath: string): Promise<MdxContent> {
             ],
           },
         ],
-        customRehypeKatex,
+        // Strict here only: KaTeX's default 'warn' just prints to the console,
+        // where nobody reads it, so input KaTeX merely tolerates -- a stray `%`
+        // silently comments out the rest of the math -- fails the build instead.
+        // The editor preview and group posts share the plugin and stay lenient.
+        [customRehypeKatex, { strict: 'error', throwOnError: true }],
         rehypeSnippets,
         [rehypeExternalLinks, { target: '_blank', rel: ['nofollow'] }],
         [

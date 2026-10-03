@@ -2,10 +2,12 @@ import { StoryFn } from '@storybook/react';
 import { ComponentProps } from 'react';
 import { LoadingSpinner } from '../components/elements/LoadingSpinner';
 
-export default {
+const meta = {
   title: 'LoadingSpinner',
   component: LoadingSpinner,
 };
+
+export default meta;
 
 const Template: StoryFn<ComponentProps<typeof LoadingSpinner>> = args => (
   <LoadingSpinner {...args} />

@@ -1,8 +1,10 @@
 import Quiz from '../../components/markdown/Quiz';
 
-export default {
+const meta = {
   title: 'Markdown/Quiz',
 };
+
+export default meta;
 
 export const Default = (): JSX.Element => (
   <Quiz>

@@ -19,7 +19,7 @@ interface PostLeaderboardPageProps {
   postId: string;
 }
 export default function PostLeaderboardPage(props: PostLeaderboardPageProps) {
-  const { groupId, postId } = props;
+  const { groupId: _groupId, postId } = props;
   const activeGroup = useActiveGroup();
   const post = usePost(postId);
   if (!post) throw new Error('Post not found');

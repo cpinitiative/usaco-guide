@@ -29,10 +29,6 @@ export default function QuizGeneratorModal(): JSX.Element {
   const [quiz, setQuiz] = React.useState<Question[]>([
     { question: '', answers: [] },
   ]);
-  const closeModal = () => {
-    setOpen(false);
-    setQuiz([{ question: '', answers: [] }]);
-  };
 
   const editQuiz = (func: (q: Question[]) => Question[]) => {
     let prev = quiz;

@@ -49,7 +49,7 @@ const Spoiler = ({
     >
       <p
         className="flex items-start p-4"
-        onClick={e => {
+        onClick={_e => {
           setShow(!show);
         }}
         style={{ marginBottom: 0 }}

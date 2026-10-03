@@ -22,7 +22,7 @@ export function useGroupActions() {
     groupId: string,
     updatedData: Partial<GroupData>
   ) => {
-    const { id, ...data } = updatedData;
+    const { id: _id, ...data } = updatedData;
     await updateDoc(doc(getFirestore(firebaseApp), 'groups', groupId), {
       ...data,
     });
@@ -114,7 +114,7 @@ export function useGroupActions() {
       invalidateData();
     },
     updateGroup,
-    leaveGroup: async (groupId: string, userId: string) => {
+    leaveGroup: async (groupId: string, _userId: string) => {
       const leaveResult = (
         await httpsCallable(
           getFunctions(firebaseApp),

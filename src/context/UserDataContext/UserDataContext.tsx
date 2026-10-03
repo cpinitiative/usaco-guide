@@ -258,7 +258,7 @@ export const UserDataProvider = ({
       localStorageData = JSON.parse(
         localStorage.getItem(LOCAL_STORAGE_KEY) ?? '{}'
       );
-    } catch (e) {
+    } catch (_e) {
       localStorageData = {};
     }
 

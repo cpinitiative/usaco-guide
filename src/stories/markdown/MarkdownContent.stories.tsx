@@ -5,11 +5,13 @@ import markdownDecorator from '../../components/markdown/markdownDecoratorForSto
 
 const MarkdownComponent: React.FC = props => <div {...props} />;
 
-export default {
+const meta = {
   title: 'Markdown/Content',
   component: MarkdownComponent,
   decorators: [markdownDecorator],
 };
+
+export default meta;
 
 const Template: StoryFn<ComponentProps<typeof MarkdownComponent>> = args => (
   <MarkdownComponent {...args} />

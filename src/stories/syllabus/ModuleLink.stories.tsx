@@ -2,9 +2,11 @@ import { StoryFn } from '@storybook/react';
 import ModuleLink from '../../components/syllabus/ModuleLink';
 import { ModuleLinkInfo } from '../../models/module';
 
-export default {
+const meta = {
   title: 'Syllabus/ModuleLink',
 };
+
+export default meta;
 
 const Template: StoryFn = ({
   moduleId,
