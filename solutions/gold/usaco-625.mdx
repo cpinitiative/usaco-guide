@@ -14,23 +14,22 @@ two adjacent regions as an edge whose weight is the length of that
 fence. We want to remove the minimum total length of fence while
 making all regions reachable from each other, and since making all
 regions reachable requires a spanning tree, we want the minimum
-weight one — i.e., the MST of this graph.
+spanning tree.
 
 A naive approach would be to create all $(n+1) \times (m+1)$
-regions as graph nodes and run [Kruskal's algorithm](gold/mst?lang=cpp#kruskals)
-on all possible fence removals. But this isn't feasible because
+regions as graph nodes and run [Kruskal's algorithm](/gold/mst#kruskals)
+on all possible fence removals. However, this isn't feasible because
 the number of regions can be up to $(n+1)(m+1) \approx 25000^2$,
 and the number of edges can be similarly large.
 
 The key observation is that many edges in this grid graph have the
-same weight. After taking differences between consecutive fence
-coordinates, we get the widths of the $(n+1)$ columns and the
-heights of the $(m+1)$ rows. Every horizontal fence segment inside
+same weight and can be processed together. After taking differences between consecutive fence
+coordinates, we get the widths of the $n+1$ columns and the
+heights of the $m+1$ rows. Every horizontal fence segment inside
 a particular column has length equal to that column's width, while
 every vertical fence segment inside a particular row has length
-equal to that row's height. Thus, instead of processing every edge
-individually, we can process these groups of equal-weight edges
-together.
+equal to that row's height. Thus, instead of explicitly processing every edge using Kruskal's,
+we simulate Kruskal's algorithm for each group of equal-weight edges.
 
 To do this, we first convert the fence coordinates into the
 lengths of the strips by taking differences between consecutive
@@ -45,19 +44,20 @@ contribution is the $\texttt{column width} \cdot \texttt{cntB}$, a
 counter for the number of remaining row connections. Afterward,
 $\texttt{cntA}$, a counter for the number of remaining column
 connections, decreases by one. Likewise, processing a row height
-contributes the $\texttt{row height} \cdot \texttt{cntA}$, after
+contributes $\texttt{row height} \cdot \texttt{cntA}$, after
 which $\texttt{cntB}$ decreases by one. Any additional edges
 corresponding to that column or row would only connect regions
 that are already connected, so Kruskal would skip them.
 
-So, we only need the sorted column widths and row heights instead
-of the entire grid graph. The two sorted lists are merged in
-increasing order, adding each width or height's contribution using
-[Kruskal's algorithm](/gold/mst#kruskals).
+Hence, we only need the sorted column widths and row heights of 
+our grid graph and can batch process these edge lengths. 
+At each stage, we process the smallest available group of edges
+(i.e., the smallest row or column edge), which is equivalent 
+to Kruskal's algorithm.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(n \log n + m \log m)$
+**Time Complexity:** $\mathcal{O}(N \log N + M \log M)$
 
 <LanguageSection>
 <CPPSection>
@@ -106,7 +106,7 @@ int main() {
 		}
 	}
 
-	cout << min_length;
+	cout << min_length << '\n';
 }
 ```
 
