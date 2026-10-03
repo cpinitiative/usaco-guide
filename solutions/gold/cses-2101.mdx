@@ -2,8 +2,9 @@
 id: cses-2101
 source: CSES
 title: New Roads Queries
-author: Dustin Miao
+author: Dustin Miao, Moulik Jain
 ---
+# Solution 1 (Binary Jumping)
 
 ## Explanation
 
@@ -150,5 +151,95 @@ int main() {
 	}
 }
 ```
+</CPPSection>
+</LanguageSection>
+
+# Solution 2 (DSU)
+
+## Explanation
+
+The solution above uses [binary jumping](/plat/binary-jump), which is a Platinum topic. Here is a simpler approach that only needs a [disjoint set union](/gold/dsu).
+
+We add the roads to a DSU in order of day, using union by size but no path compression. This way, the parent pointers form a forest that keeps the full history of the merges, and every tree has height at most $\log_2 n$, since a vertex only gets deeper when the size of its component at least doubles.
+
+Cities $a$ and $b$ first become connected on the day of the road that unites their components, so that day is the answer. Whenever a root is attached under another root, we store the current day on the attached root. The road that unites $a$ and $b$ stores its day on the path between them, and every other day on this path comes from an earlier merge, so the answer is the largest day stored on the path. If $a$ and $b$ are in different trees, the answer is $-1$.
+
+To find it, we walk up from $a$ and $b$ until they meet, similar to finding their lowest common ancestor. A vertex is always attached before its parent is, so the stored days increase as we go up. This means we can always move up the vertex with the smaller stored day, and the last day we pass before the two meet is the answer.
+
+For example, in the sample, the roads on days $1$, $2$, and $4$ attach vertices $2$, $3$, and $5$ under vertex $1$ (the road on day $3$ connects cities that are already connected). For the query $(3, 5)$, we move up from $3$ (day $2$) and then from $5$ (day $4$), and both reach vertex $1$, so the answer is $4$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}((m+q)\log n)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int NEVER = INT_MAX;
+
+// DSU without path compression, so the forest keeps the merge history.
+// Union by size alone keeps every tree's height at most log2(n).
+struct DSU {
+	// parent[v]:    parent in the forest (v itself if v is a root)
+	// joined_on[v]: day v stopped being a root (NEVER if it is still a root)
+	vector<int> parent, comp_size, joined_on;
+
+	DSU(int n) : parent(n + 1), comp_size(n + 1, 1), joined_on(n + 1, NEVER) {
+		iota(parent.begin(), parent.end(), 0);
+	}
+
+	int find(int v) {
+		while (parent[v] != v) v = parent[v];
+		return v;
+	}
+
+	void unite(int a, int b, int day) {
+		a = find(a);
+		b = find(b);
+		if (a == b) return;
+		if (comp_size[a] < comp_size[b]) swap(a, b);
+		parent[b] = a;
+		comp_size[a] += comp_size[b];
+		joined_on[b] = day;
+	}
+
+	// Returns the first day a and b are connected, or -1 if never.
+	int query(int a, int b) {
+		int answer = 0;
+		while (a != b) {
+			// Always move up the vertex that was attached earlier.
+			if (joined_on[a] > joined_on[b]) swap(a, b);
+			if (joined_on[a] == NEVER) return -1;  // both are roots
+			answer = joined_on[a];
+			a = parent[a];
+		}
+		return answer;
+	}
+};
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int n, m, q;
+	cin >> n >> m >> q;
+	DSU dsu(n);
+	for (int day = 1; day <= m; day++) {
+		int a, b;
+		cin >> a >> b;
+		dsu.unite(a, b, day);
+	}
+	while (q--) {
+		int a, b;
+		cin >> a >> b;
+		cout << dsu.query(a, b) << '\n';
+	}
+}
+```
+
 </CPPSection>
 </LanguageSection>
