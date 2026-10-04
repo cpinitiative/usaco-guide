@@ -1,7 +1,7 @@
 ---
 id: dp-more
 title: Additional DP Optimizations and Techniques
-author: Andi Qu
+author: Andi Qu, Dustin Miao, Mikaela Tereshkov
 description: Additional dynamic programming techniques and optimizations like Knuth's optimization.
 prerequisites:
   - convex-hull-trick
@@ -58,11 +58,89 @@ The structure of the code is identical to that of [Range DP](/gold/dp-ranges), w
 
 ## Connected-Component DP
 
+<FocusProblem problem="sample" />
+
+<br />
+
+### Tutorials
 <Resources>
 	<Resource source="CF" title="zscoder - Nontrivial DP Techniques" url="47764">
 		Miscellaneous techniques
 	</Resource>
+	<Resource source="CF" title="humbertoyusta - Dp with connected components, a simple way to understand it" url="47764">
+	</Resource>
 </Resources>
+
+Let's define a "connected component" as an array of elements with a specific order. We will surround these with brackets. For example, $[1, 6]$ and $[2, 3, 5]$ are connected components.
+
+Let's define a "collection" of connected components as several non-adjacent connected components without any order. We will surround these with braces. For example, $\{[1,6],[2,3,5],[7],[4,8,9]\}$ is a collection of 4 connected components. $\{[7],[1,6],[4,8,9],[2,3,5]\}$ is another representation of the same collection.
+
+In connected component DP, we can use these components to create a structure given some requirements. This often appears with permutation-related problems.
+
+Connected component DP involves the state $\texttt{dp}[i][j]$ as some quantity with the first $i$ elements arranged in $j$ connected components. There are three main transitions when adding a new element to the collection.
+
+1. Add it as a new component. Number of components increases. $\texttt{dp}[i][j] \gets \texttt{dp}[i-1][j-1]$
+1. Add it onto the end of an existing component. Number of components remains same. $\texttt{dp}[i][j] \gets \texttt{dp}[i-1][j]$
+1. Add it in between two components to merge them. Number of components decreases. $\texttt{dp}[i][j] \gets \texttt{dp}[i-1][j+1]$
+
+### Solution - Counting Permutations II
+
+**Time Complexity:** $\mathcal{O}(n^2)$
+
+This problem requires us to store additional information. Define $\texttt{dp}[i][j][k]$ as the number of valid configurations of the numbers from $1$ to $i$ into $j$ connected components, where value $i$ has $k$ borders where a border is a side lacking a neighbor. For instance, the collection $\{[1,6],[2,3,5],[7],[4,8,9]\}$ would be counted in the state $\texttt{dp}[9][4][1]$.
+
+1. If $i$ has no borders, then $i$ must point two existing connected components.
+2. If $i$ has one border, then $i$ must be appended on to an existing connected component.
+3. If $i$ has two borders, it must be inserted as its own connected component.
+
+This corresponds to the following transitions:
+
+$$
+\begin{align*}
+\texttt{dp}[i][j][0]&=j(j+1)\texttt{dp}[i-1][j+1][0]+j^2\cdot\texttt{dp}[i-1][j+1][1]+j(j-1)\cdot\texttt{dp}[i-1][j+1][2]\\
+\texttt{dp}[i][j][1]&=2j\cdot\texttt{dp}[i-1][j][0]+(2j-1)\cdot\texttt{dp}[i-1][j][1]+(2j-2)\cdot\texttt{dp}[i-1][j][2]\\
+\texttt{dp}[i][j][2]&=\texttt{dp}[i-1][j-1][0]+\texttt{dp}[i-1][j-1][1]+\texttt{dp}[i-1][j-1][2]\\
+\end{align*}
+$$
+
+The base case is $\texttt{dp}[0][0][0]=1$, and the final answer is $\sum_k \texttt{dp}[n][1][k]$.
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+const int MOD = 1000000007;
+
+int main() {
+	int N;
+	std::cin >> N;
+	std::vector dp(N + 1, std::vector<std::array<long long, 3>>(N + 2));
+	for (auto &a : dp)
+		for (auto &b : a) b.fill(0);
+	dp[0][0][0] = 1;
+	for (int i = 1; i <= N; i++) {
+		for (int j = 1; j <= i; j++) {
+			dp[i][j][0] =
+			    (j * (j + 1) * dp[i - 1][j + 1][0] + j * j * dp[i - 1][j + 1][1] +
+			     j * (j - 1) * dp[i - 1][j + 1][2]) %
+			    MOD;
+			dp[i][j][1] = (2 * j * dp[i - 1][j][0] + (2 * j - 1) * dp[i - 1][j][1] +
+			               (2 * j - 2) * dp[i - 1][j][2]) %
+			              MOD;
+			dp[i][j][2] =
+			    (dp[i - 1][j - 1][0] + dp[i - 1][j - 1][1] + dp[i - 1][j - 1][2]) % MOD;
+		}
+	}
+	std::cout << (dp[N][1][0] + dp[N][1][1] + dp[N][1][2]) % MOD << '\n';
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
 
 <!-- <Optional title="Application">
 
@@ -70,12 +148,7 @@ Queue with 2 stacks is used to remove a factor of $\mathcal{O}(\log N)$ in [USAC
 
 </Optional> -->
 
+
 ### Connected-Component DP Problems
-
-<IncompleteSection>
-
-Make Permutations II a focus problem, move analysis to module.
-
-</IncompleteSection>
 
 <Problems problems="connected_component" />
