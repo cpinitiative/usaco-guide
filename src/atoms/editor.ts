@@ -1,10 +1,10 @@
 import { atom } from 'jotai';
 import { atomFamily, atomWithStorage } from 'jotai/utils';
+import { type editor } from 'monaco-editor';
 import { Octokit } from 'octokit';
 import { fetchFileContent } from '../components/Editor/editorUtils';
 import { AlgoliaEditorSolutionFile } from '../models/algoliaEditorFile';
 import { formatProblems } from '../utils/prettierFormatter';
-import { type editor } from 'monaco-editor';
 
 export type EditorFile = {
   path: string;
@@ -262,11 +262,11 @@ export const closeFileAtom = atom(null, (get, set, filePath: string) => {
 });
 
 const baseMonacoEditorInstanceAtom = atom({
-  monaco: null as editor.IStandaloneCodeEditor | null
+  monaco: null as editor.IStandaloneCodeEditor | null,
 });
 
 export const monacoEditorInstanceAtom = atom(
-  (get) => get(baseMonacoEditorInstanceAtom),
+  get => get(baseMonacoEditorInstanceAtom),
   (_get, set, val: editor.IStandaloneCodeEditor | null) => {
     set(baseMonacoEditorInstanceAtom, { monaco: val });
   }

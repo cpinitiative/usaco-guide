@@ -20,12 +20,12 @@ const Template: StoryFn<ActivityHeatmapProps> = args => (
   <ActivityHeatmap endDate={endDate} {...args} />
 );
 
-const dummyProblem : ProblemActivity = {
+const dummyProblem: ProblemActivity = {
   timestamp: 0,
   problemID: 'dummy',
   problemProgress: 'Solved',
 };
-const dummyModule : ModuleActivity = {
+const dummyModule: ModuleActivity = {
   timestamp: 0,
   moduleID: 'dummy',
   moduleProgress: 'Complete',

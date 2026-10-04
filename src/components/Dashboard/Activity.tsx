@@ -6,8 +6,12 @@ import {
 } from '../../context/UserDataContext/properties/userProgress';
 import { useActivity } from '../../hooks/useActivity';
 
-export type ModuleActivity = ReturnType<typeof useUserProgressOnModulesActivity>[0];
-export type ProblemActivity = ReturnType<typeof useUserProgressOnProblemsActivity>[0];
+export type ModuleActivity = ReturnType<
+  typeof useUserProgressOnModulesActivity
+>[0];
+export type ProblemActivity = ReturnType<
+  typeof useUserProgressOnProblemsActivity
+>[0];
 
 export type ActivityHeatmapProps = {
   moduleActivities: { [key: number]: ModuleActivity[] };

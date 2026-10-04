@@ -8,7 +8,10 @@ interface AnalyticsWindow extends Window {
 
 export const useAnalyticsEffect = () => {
   React.useEffect(() => {
-    if ((window as AnalyticsWindow).ga && (window as AnalyticsWindow).ga.create) {
+    if (
+      (window as AnalyticsWindow).ga &&
+      (window as AnalyticsWindow).ga.create
+    ) {
       // google analytics loaded
     } else {
       // google analytics got blocked
