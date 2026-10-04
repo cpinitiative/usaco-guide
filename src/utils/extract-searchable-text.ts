@@ -10,7 +10,7 @@ export default function extractSearchableText(node: Node): string {
     node.type === 'import' ||
     node.type === 'export' ||
     node.type === 'inlineMath' ||
-    ('name' in node && node.name === 'Resources')
+    (typeof node === 'object' && 'name' in node && node.name === 'Resources')
   ) {
     return '';
   }
