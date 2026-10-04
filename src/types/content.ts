@@ -1,6 +1,7 @@
 import { SectionID } from '../../content/ordering';
 import { ModuleFrequency } from '../models/module';
 import { ProblemDifficulty, ProblemSolutionInfo } from '../models/problem';
+import { Root } from 'mdast';
 
 export interface Heading {
   depth: number;
@@ -43,6 +44,30 @@ export interface MdxFrontmatter {
   solution?: ProblemSolutionInfo;
 }
 
+// from docs/MIGRATION.md
+export interface MdxContentDbRow {
+  /** frontmatter.id */
+  id: string;
+  type: "module" | "solution";
+  /** Relative file path */
+  file_path: string;
+  /** JSON string of MdxFrontmatter */
+  frontmatter_json: string;
+  /** Compiled MDX body (string) */
+  body: string;
+  /** JSON string of TableOfContents */
+  toc_json: string;
+  /** JSON string of mdast */
+  mdast_json: string | null;
+  cpp_oc: number;
+  java_oc: number;
+  py_oc: number;
+  division: SectionID | null;
+  /** ISO timestamp or NULL */
+  git_author_time: string | null;
+  created_at: number;
+}
+
 export interface MdxContent {
   body: string;
 
@@ -60,7 +85,7 @@ export interface MdxContent {
 
   pyOc: number;
 
-  mdast?: string;
+  mdast?: Root;
 
   fields?: Fields;
 }

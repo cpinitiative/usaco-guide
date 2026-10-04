@@ -1,9 +1,11 @@
+import { SectionID } from '../../content/ordering';
 import { ProblemDifficulty, ProblemSolutionInfo } from '../models/problem';
 import {
   MdxContent,
   MdxFrontmatter,
   ModuleProblemLists,
   ProblemInfo,
+  MdxContentDbRow,
 } from '../types/content';
 import { getDatabase } from './database';
 
@@ -134,7 +136,7 @@ export async function queryModulesByDivision(
       WHERE division = ? AND type = ?
     `
     )
-    .all(division, 'module') as any[];
+    .all(division, 'module') as MdxContentDbRow[];
 
   const result: { [key: string]: MdxContent } = {};
   for (const row of rows) {
@@ -216,7 +218,7 @@ export async function querySolutionByProblemSlug(
   // Get the solution using the unique_id
   const solutionRow = db
     .prepare('SELECT * FROM mdx_content WHERE id = ? AND type = ?')
-    .get(uniqueId, 'solution') as any;
+    .get(uniqueId, 'solution') as (MdxContentDbRow | undefined);
 
   if (!solutionRow) {
     return null;
@@ -425,7 +427,7 @@ export async function queryUsacoDivisionProblems(): Promise<ProblemInfo[]> {
 /**
  * Deserialize MdxContent from database row
  */
-function deserializeMdxContent(row: any): MdxContent {
+function deserializeMdxContent(row: MdxContentDbRow): MdxContent {
   return {
     body: row.body,
     fileAbsolutePath: row.file_path, // Note: may need to resolve to absolute
@@ -446,7 +448,7 @@ function deserializeMdxContent(row: any): MdxContent {
  * Deserialize lightweight MdxContent from database row (without body, toc, mdast)
  * Used for listing pages where full content is not needed
  */
-function deserializeMdxContentLight(row: any): MdxContent {
+function deserializeMdxContentLight(row: MdxContentDbRow): MdxContent {
   return {
     body: '', // Empty body for listing pages
     fileAbsolutePath: row.file_path,

@@ -1,13 +1,16 @@
 /* eslint @typescript-eslint/no-use-before-define: off */
 
+import { type Node } from 'unist';
+import { type Parent } from 'mdast';
+
 // based on mdast-util-to-string
-export default function extractSearchableText(node: any) {
+export default function extractSearchableText(node: Node): string {
   if (
     node.type === 'code' ||
     node.type === 'import' ||
     node.type === 'export' ||
     node.type === 'inlineMath' ||
-    node.name === 'Resources'
+    'name' in node && node.name === 'Resources'
   ) {
     return '';
   }
@@ -16,16 +19,16 @@ export default function extractSearchableText(node: any) {
     ((node &&
       node &&
       typeof node === 'object' &&
-      (node.value ||
-        node.alt ||
-        node.title ||
-        ('children' in node && all(node.children)) ||
-        ('length' in node && all(node)))) ||
+      ('value' in node && node.value ||
+        ('alt' in node && node.alt) ||
+        ('title' in node && node.title) ||
+        // All node types from mdast that have children are of type Parent.
+        ('children' in node && all((node as Parent).children)))) ||
       '')
   );
 }
 
-function all(values) {
+function all(values: Node[]): string {
   const result: string[] = [];
   const length = values.length;
   let index = -1;

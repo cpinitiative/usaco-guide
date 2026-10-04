@@ -15,12 +15,13 @@ import rehypeSnippets from '../mdx-plugins/rehype-snippets';
 import remarkExtractImages from '../mdx-plugins/remark-extract-images';
 import remarkToC from '../mdx-plugins/remark-toc';
 import { MdxContent, MdxFrontmatter } from '../types/content';
+import { Root } from 'mdast';
 
 export async function parseMdxFile(filePath: string): Promise<MdxContent> {
   const { readFile } = await import('fs/promises');
   const fileContent = await readFile(filePath, 'utf-8');
   const { content, data: frontmatter } = matter(fileContent);
-  const mdast: any = { data: null };
+  const mdast: {data: Root} = { data: null };
   const tableOfContents: any = {};
 
   let compiledResult;
