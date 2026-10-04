@@ -1,11 +1,10 @@
-import { SectionID } from '../../content/ordering';
 import { ProblemDifficulty, ProblemSolutionInfo } from '../models/problem';
 import {
   MdxContent,
+  MdxContentDbRow,
   MdxFrontmatter,
   ModuleProblemLists,
   ProblemInfo,
-  MdxContentDbRow,
 } from '../types/content';
 import { getDatabase } from './database';
 
@@ -218,7 +217,7 @@ export async function querySolutionByProblemSlug(
   // Get the solution using the unique_id
   const solutionRow = db
     .prepare('SELECT * FROM mdx_content WHERE id = ? AND type = ?')
-    .get(uniqueId, 'solution') as (MdxContentDbRow | undefined);
+    .get(uniqueId, 'solution') as MdxContentDbRow | undefined;
 
   if (!solutionRow) {
     return null;

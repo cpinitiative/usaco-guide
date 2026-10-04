@@ -1,7 +1,7 @@
+import { Root } from 'mdast';
 import { SectionID } from '../../content/ordering';
 import { ModuleFrequency } from '../models/module';
 import { ProblemDifficulty, ProblemSolutionInfo } from '../models/problem';
-import { Root } from 'mdast';
 
 export interface Heading {
   depth: number;
@@ -48,7 +48,7 @@ export interface MdxFrontmatter {
 export interface MdxContentDbRow {
   /** frontmatter.id */
   id: string;
-  type: "module" | "solution";
+  type: 'module' | 'solution';
   /** Relative file path */
   file_path: string;
   /** JSON string of MdxFrontmatter */
