@@ -261,8 +261,8 @@ export const closeFileAtom = atom(null, (get, set, filePath: string) => {
   filesFamily.remove(filePath);
 });
 
-const baseMonacoEditorInstanceAtom = atom({ 
-  monaco: null as editor.IStandaloneCodeEditor | null 
+const baseMonacoEditorInstanceAtom = atom({
+  monaco: null as editor.IStandaloneCodeEditor | null
 });
 
 export const monacoEditorInstanceAtom = atom(
