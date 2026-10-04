@@ -1,6 +1,6 @@
 import { Meta, StoryFn } from '@storybook/react';
-import { Timestamp } from 'firebase/firestore';
 import { User } from 'firebase/auth';
+import { Timestamp } from 'firebase/firestore';
 
 import FeedItem from '../../components/Groups/GroupPage/FeedItem';
 import {

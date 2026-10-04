@@ -1,4 +1,3 @@
-
 // https://codeforces.com/apiHelp/objects#Problem
 export interface CFProblem {
   contestId?: number;

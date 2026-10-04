@@ -1,6 +1,9 @@
-import axios from 'axios';
-import { type AxiosResponse } from 'axios';
-import type { CFProblemsetResponse, CFContestStandingsResponse, CFProblem } from '../../../types/codeforces';
+import axios, { type AxiosResponse } from 'axios';
+import type {
+  CFContestStandingsResponse,
+  CFProblem,
+  CFProblemsetResponse,
+} from '../../../types/codeforces';
 import parseAc from './ac';
 import parseCC from './cc';
 import parseCf from './cf';
@@ -87,8 +90,6 @@ async function fetchWithRetry(url: string, maxRetries = 3): Promise<string> {
   throw new Error('All retry attempts failed');
 }
 
-
-
 // Fallback function to try Codeforces API if direct scraping fails
 async function tryCodeforcesAPI(url: string): Promise<string | null> {
   try {
@@ -109,7 +110,9 @@ async function tryCodeforcesAPI(url: string): Promise<string | null> {
     const contestId = parseInt(contestIdStr, 10);
     console.log(`Contest ID: ${contestId}, Problem Index: ${problemIndex}`);
 
-    let response: AxiosResponse<CFProblemsetResponse> | AxiosResponse<CFContestStandingsResponse>;
+    let response:
+      | AxiosResponse<CFProblemsetResponse>
+      | AxiosResponse<CFContestStandingsResponse>;
     let problem: CFProblem | null = null;
 
     if (isProblemsetFormat) {

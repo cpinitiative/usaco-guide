@@ -1,18 +1,28 @@
 import { ProblemDifficulty, ProblemSolutionInfo } from '../models/problem';
 import {
   MdxContent,
-  MdxFrontmatter,
-  ModuleProblemLists,
-  ProblemInfo,
   MdxContentDbRow,
+  MdxFrontmatter,
   ModuleFrontMatterDbRow,
-  USACOIdDbRow,
   ModuleProblemListDbRow,
+  ModuleProblemLists,
   ProblemDbRow,
+  ProblemInfo,
+  USACOIdDbRow,
 } from '../types/content';
 import { getDatabase } from './database';
 
-type LightMdxContentDbRow = Pick<MdxContentDbRow, 'id' | 'file_path' | 'frontmatter_json' | 'cpp_oc' | 'java_oc' | 'py_oc' | 'division' | 'git_author_time'>;
+type LightMdxContentDbRow = Pick<
+  MdxContentDbRow,
+  | 'id'
+  | 'file_path'
+  | 'frontmatter_json'
+  | 'cpp_oc'
+  | 'java_oc'
+  | 'py_oc'
+  | 'division'
+  | 'git_author_time'
+>;
 
 /**
  * Query solution by ID
@@ -72,7 +82,9 @@ export async function queryAllModuleFrontmatter(): Promise<
   Array<{ filePath: string; frontmatter: MdxFrontmatter; division: string }>
 > {
   const db = await getDatabase();
-  const rows = db.prepare('SELECT * FROM module_frontmatter').all() as ModuleFrontMatterDbRow[];
+  const rows = db
+    .prepare('SELECT * FROM module_frontmatter')
+    .all() as ModuleFrontMatterDbRow[];
 
   return rows.map(row => ({
     filePath: row.file_path,
@@ -110,7 +122,10 @@ export async function queryProblem(
  */
 export async function queryAllProblemIds(): Promise<string[]> {
   const db = await getDatabase();
-  const rows = db.prepare('SELECT unique_id FROM problems').all() as Pick<ProblemDbRow, 'unique_id'>[];
+  const rows = db.prepare('SELECT unique_id FROM problems').all() as Pick<
+    ProblemDbRow,
+    'unique_id'
+  >[];
 
   return rows.map(row => row.unique_id);
 }
@@ -252,7 +267,10 @@ export async function queryModuleIdAndTitleFromProblemBySolutionId(
       FROM module_problem_lists
     `
     )
-    .all() as Pick<ModuleProblemListDbRow, 'module_id' | 'list_id' | 'problems_json'>[];
+    .all() as Pick<
+    ModuleProblemListDbRow,
+    'module_id' | 'list_id' | 'problems_json'
+  >[];
 
   const moduleIds = new Set<string>();
 
@@ -323,7 +341,9 @@ export async function queryAllModuleIdsAndTitles(): Promise<
 
 export async function queryUsacoId(id: string): Promise<boolean> {
   const db = await getDatabase();
-  const row = db.prepare('SELECT * FROM usaco_ids WHERE id = ?').get(id) as USACOIdDbRow | undefined;
+  const row = db.prepare('SELECT * FROM usaco_ids WHERE id = ?').get(id) as
+    | USACOIdDbRow
+    | undefined;
   return !!row;
 }
 
@@ -353,7 +373,10 @@ export async function queryAllProblemDashboardInfo(): Promise<
       FROM problems
     `
     )
-    .all() as Pick<ProblemDbRow, 'in_module' | 'unique_id' | 'source' | 'name' | 'module_id'>[];
+    .all() as Pick<
+    ProblemDbRow,
+    'in_module' | 'unique_id' | 'source' | 'name' | 'module_id'
+  >[];
 
   return rows.map(row => ({
     inModule: Boolean(row.in_module),
@@ -389,7 +412,20 @@ export async function queryAllProblems(): Promise<ProblemInfo[]> {
       ORDER BY source, name
     `
     )
-    .all() as Pick<ProblemDbRow, 'unique_id' | 'name' | 'url' | 'source' | 'source_description' | 'is_starred' | 'difficulty' | 'tags_json' | 'solution_json' | 'in_module' | 'module_id'>[];
+    .all() as Pick<
+    ProblemDbRow,
+    | 'unique_id'
+    | 'name'
+    | 'url'
+    | 'source'
+    | 'source_description'
+    | 'is_starred'
+    | 'difficulty'
+    | 'tags_json'
+    | 'solution_json'
+    | 'in_module'
+    | 'module_id'
+  >[];
 
   const problems: ProblemInfo[] = [];
 

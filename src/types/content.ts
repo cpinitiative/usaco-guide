@@ -75,7 +75,6 @@ export interface MdxContentDbRow {
   created_at: number;
 }
 
-
 export interface MdxContent {
   body: string;
 
