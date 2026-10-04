@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { type AxiosResponse } from 'axios';
+import type { CFProblemsetResponse, CFContestStandingsResponse, CFProblem } from '../../../types/codeforces';
 import parseAc from './ac';
 import parseCC from './cc';
 import parseCf from './cf';
@@ -85,6 +87,8 @@ async function fetchWithRetry(url: string, maxRetries = 3): Promise<string> {
   throw new Error('All retry attempts failed');
 }
 
+
+
 // Fallback function to try Codeforces API if direct scraping fails
 async function tryCodeforcesAPI(url: string): Promise<string | null> {
   try {
@@ -105,15 +109,15 @@ async function tryCodeforcesAPI(url: string): Promise<string | null> {
     const contestId = parseInt(contestIdStr, 10);
     console.log(`Contest ID: ${contestId}, Problem Index: ${problemIndex}`);
 
-    let response;
-    let problem: any = null;
+    let response: AxiosResponse<CFProblemsetResponse> | AxiosResponse<CFContestStandingsResponse>;
+    let problem: CFProblem | null = null;
 
     if (isProblemsetFormat) {
       // Try Codeforces API - fetch all problems and search for the specific one
       const apiUrl = 'https://codeforces.com/api/problemset.problems';
       console.log(`Trying Codeforces problemset API: ${apiUrl}`);
 
-      response = await axios.get(apiUrl, {
+      response = await axios.get<CFProblemsetResponse>(apiUrl, {
         timeout: 10000,
         headers: {
           'User-Agent': 'Mozilla/5.0 (compatible; USACO-Guide/1.0)',
@@ -123,7 +127,7 @@ async function tryCodeforcesAPI(url: string): Promise<string | null> {
       if (response.data.status === 'OK' && response.data.result.problems) {
         // Search for the specific problem in the problems array
         problem = response.data.result.problems.find(
-          (p: any) => p.contestId === contestId && p.index === problemIndex
+          p => p.contestId === contestId && p.index === problemIndex
         );
 
         if (problem) {
@@ -139,7 +143,7 @@ async function tryCodeforcesAPI(url: string): Promise<string | null> {
       const apiUrl = `https://codeforces.com/api/contest.standings?contestId=${contestId}`;
       console.log(`Trying Codeforces contest standings API: ${apiUrl}`);
 
-      response = await axios.get(apiUrl, {
+      response = await axios.get<CFContestStandingsResponse>(apiUrl, {
         timeout: 10000,
         headers: {
           'User-Agent': 'Mozilla/5.0 (compatible; USACO-Guide/1.0)',
@@ -149,7 +153,7 @@ async function tryCodeforcesAPI(url: string): Promise<string | null> {
       if (response.data.status === 'OK' && response.data.result.problems) {
         // Search for the specific problem in the problems array
         problem = response.data.result.problems.find(
-          (p: any) => p.index === problemIndex
+          p => p.index === problemIndex
         );
 
         if (problem) {
@@ -173,8 +177,8 @@ async function tryCodeforcesAPI(url: string): Promise<string | null> {
             <div class="problem-statement">
               <div class="header">
                 <div class="title">${problem.index}. ${problem.name}</div>
-                <div class="time-limit">Time limit: ${problem.timeLimit || 'Unknown'}</div>
-                <div class="memory-limit">Memory limit: ${problem.memoryLimit || 'Unknown'}</div>
+                <div class="time-limit">Time limit: 'Unknown'</div>
+                <div class="memory-limit">Memory limit: 'Unknown'</div>
                 ${problem.points ? `<div class="points">Points: ${problem.points}</div>` : ''}
                 ${problem.rating ? `<div class="rating">Rating: ${problem.rating}</div>` : ''}
               </div>

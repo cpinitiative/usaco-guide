@@ -1,5 +1,6 @@
 import { Meta, StoryFn } from '@storybook/react';
 import { Timestamp } from 'firebase/firestore';
+import { User } from 'firebase/auth';
 
 import FeedItem from '../../components/Groups/GroupPage/FeedItem';
 import {
@@ -69,9 +70,11 @@ const Template: StoryFn<StoryArgs> = args => {
         userData: assignDefaultsToUserData({}),
         updateUserData: () => {},
         signOut: () => Promise.resolve(),
+        // coerce to User type, as we don't need most of the properties, only uid
+        // is sufficient.
         firebaseUser: {
           uid: 'storybook-user',
-        } as any,
+        } as User,
         forceFirebaseUserRerender: () => {},
         importUserData: () => false,
         deleteAllUserData: () => Promise.resolve(false),

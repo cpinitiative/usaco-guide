@@ -1,12 +1,18 @@
 import { ProblemDifficulty, ProblemSolutionInfo } from '../models/problem';
 import {
   MdxContent,
-  MdxContentDbRow,
   MdxFrontmatter,
   ModuleProblemLists,
   ProblemInfo,
+  MdxContentDbRow,
+  ModuleFrontMatterDbRow,
+  USACOIdDbRow,
+  ModuleProblemListDbRow,
+  ProblemDbRow,
 } from '../types/content';
 import { getDatabase } from './database';
+
+type LightMdxContentDbRow = Pick<MdxContentDbRow, 'id' | 'file_path' | 'frontmatter_json' | 'cpp_oc' | 'java_oc' | 'py_oc' | 'division' | 'git_author_time'>;
 
 /**
  * Query solution by ID
@@ -15,7 +21,7 @@ export async function querySolution(id: string): Promise<MdxContent | null> {
   const db = await getDatabase();
   const row = db
     .prepare('SELECT * FROM mdx_content WHERE id = ? AND type = ?')
-    .get(id, 'solution') as any;
+    .get(id, 'solution') as MdxContentDbRow | undefined;
 
   if (!row) return null;
 
@@ -29,7 +35,7 @@ export async function queryModule(id: string): Promise<MdxContent | null> {
   const db = await getDatabase();
   const row = db
     .prepare('SELECT * FROM mdx_content WHERE id = ? AND type = ?')
-    .get(id, 'module') as any;
+    .get(id, 'module') as MdxContentDbRow | undefined;
 
   if (!row) return null;
 
@@ -44,7 +50,7 @@ export async function queryModuleProblemsLists(
     .prepare(
       'SELECT list_id, problems_json FROM module_problem_lists WHERE module_id = ?'
     )
-    .all(id) as any[];
+    .all(id) as Pick<ModuleProblemListDbRow, 'list_id' | 'problems_json'>[];
 
   if (rows.length === 0) return null;
 
@@ -66,7 +72,7 @@ export async function queryAllModuleFrontmatter(): Promise<
   Array<{ filePath: string; frontmatter: MdxFrontmatter; division: string }>
 > {
   const db = await getDatabase();
-  const rows = db.prepare('SELECT * FROM module_frontmatter').all() as any[];
+  const rows = db.prepare('SELECT * FROM module_frontmatter').all() as ModuleFrontMatterDbRow[];
 
   return rows.map(row => ({
     filePath: row.file_path,
@@ -84,7 +90,7 @@ export async function queryProblem(
   const db = await getDatabase();
   const row = db
     .prepare('SELECT problem_data_json FROM problems WHERE unique_id = ?')
-    .get(uniqueId) as any;
+    .get(uniqueId) as Pick<ProblemDbRow, 'problem_data_json'> | undefined;
 
   if (!row) return null;
 
@@ -104,7 +110,7 @@ export async function queryProblem(
  */
 export async function queryAllProblemIds(): Promise<string[]> {
   const db = await getDatabase();
-  const rows = db.prepare('SELECT unique_id FROM problems').all() as any[];
+  const rows = db.prepare('SELECT unique_id FROM problems').all() as Pick<ProblemDbRow, 'unique_id'>[];
 
   return rows.map(row => row.unique_id);
 }
@@ -135,7 +141,7 @@ export async function queryModulesByDivision(
       WHERE division = ? AND type = ?
     `
     )
-    .all(division, 'module') as MdxContentDbRow[];
+    .all(division, 'module') as LightMdxContentDbRow[];
 
   const result: { [key: string]: MdxContent } = {};
   for (const row of rows) {
@@ -206,7 +212,7 @@ export async function querySolutionByProblemSlug(
   // Get the unique_id from the slug
   const slugRow = db
     .prepare('SELECT unique_id FROM problem_slugs WHERE slug = ?')
-    .get(slug) as { unique_id: string } | null;
+    .get(slug) as { unique_id: string } | undefined;
 
   if (!slugRow) {
     return null;
@@ -246,7 +252,7 @@ export async function queryModuleIdAndTitleFromProblemBySolutionId(
       FROM module_problem_lists
     `
     )
-    .all() as any[];
+    .all() as Pick<ModuleProblemListDbRow, 'module_id' | 'list_id' | 'problems_json'>[];
 
   const moduleIds = new Set<string>();
 
@@ -266,7 +272,7 @@ export async function queryModuleIdAndTitleFromProblemBySolutionId(
       .prepare(
         'SELECT module_id FROM problems WHERE unique_id = ? AND module_id IS NOT NULL'
       )
-      .get(uniqueId) as { module_id: string } | null;
+      .get(uniqueId) as Pick<ProblemDbRow, 'module_id'> | null;
 
     if (problemRow?.module_id) {
       moduleIds.add(problemRow.module_id);
@@ -317,7 +323,7 @@ export async function queryAllModuleIdsAndTitles(): Promise<
 
 export async function queryUsacoId(id: string): Promise<boolean> {
   const db = await getDatabase();
-  const row = db.prepare('SELECT * FROM usaco_ids WHERE id = ?').get(id) as any;
+  const row = db.prepare('SELECT * FROM usaco_ids WHERE id = ?').get(id) as USACOIdDbRow | undefined;
   return !!row;
 }
 
@@ -347,7 +353,7 @@ export async function queryAllProblemDashboardInfo(): Promise<
       FROM problems
     `
     )
-    .all() as any[];
+    .all() as Pick<ProblemDbRow, 'in_module' | 'unique_id' | 'source' | 'name' | 'module_id'>[];
 
   return rows.map(row => ({
     inModule: Boolean(row.in_module),
@@ -383,7 +389,7 @@ export async function queryAllProblems(): Promise<ProblemInfo[]> {
       ORDER BY source, name
     `
     )
-    .all() as any[];
+    .all() as Pick<ProblemDbRow, 'unique_id' | 'name' | 'url' | 'source' | 'source_description' | 'is_starred' | 'difficulty' | 'tags_json' | 'solution_json' | 'in_module' | 'module_id'>[];
 
   const problems: ProblemInfo[] = [];
 
@@ -447,7 +453,7 @@ function deserializeMdxContent(row: MdxContentDbRow): MdxContent {
  * Deserialize lightweight MdxContent from database row (without body, toc, mdast)
  * Used for listing pages where full content is not needed
  */
-function deserializeMdxContentLight(row: MdxContentDbRow): MdxContent {
+function deserializeMdxContentLight(row: LightMdxContentDbRow): MdxContent {
   return {
     body: '', // Empty body for listing pages
     fileAbsolutePath: row.file_path,

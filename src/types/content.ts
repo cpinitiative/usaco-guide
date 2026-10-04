@@ -19,6 +19,13 @@ export interface TableOfContents {
   py: Heading[];
 }
 
+export interface ModuleFrontMatterDbRow {
+  file_path: string;
+  module_id: string;
+  frontmatter_json: string;
+  division: SectionID;
+}
+
 export interface MdxFrontmatter {
   id: string;
   title: string;
@@ -68,6 +75,7 @@ export interface MdxContentDbRow {
   created_at: number;
 }
 
+
 export interface MdxContent {
   body: string;
 
@@ -112,6 +120,21 @@ export interface ProblemSolutionInfo {
 }
 */
 
+export interface ProblemDbRow {
+  unique_id: string;
+  name: string;
+  url: string;
+  source: string;
+  source_description: string | null;
+  is_starred: number; // SQLite boolean as INTEGER
+  difficulty: ProblemDifficulty;
+  tags_json: string; // JSON array of strings
+  solution_json: string; // JSON string of ProblemSolutionInfo
+  in_module: number; // SQLite boolean as INTEGER
+  module_id: string | null; // Foreign key to mdx_content.id
+  problem_data_json: string; // Full ProblemInfo as JSON for quick retrieval
+}
+
 export interface ProblemInfo {
   uniqueId: string;
 
@@ -138,6 +161,13 @@ export interface ProblemInfo {
   module?: MdxContent;
 }
 
+export interface ModuleProblemListDbRow {
+  id: number;
+  module_id: string;
+  list_id: string;
+  problems_json: string;
+}
+
 export interface ModuleProblemList {
   listId: string;
 
@@ -148,4 +178,8 @@ export interface ModuleProblemLists {
   moduleId: string;
 
   problemLists: ModuleProblemList[];
+}
+
+export interface USACOIdDbRow {
+  id: string;
 }
