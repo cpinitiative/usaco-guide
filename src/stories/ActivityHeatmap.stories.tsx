@@ -3,6 +3,8 @@ import seedrandom from 'seedrandom';
 import {
   ActivityHeatmap,
   ActivityHeatmapProps,
+  type ModuleActivity,
+  type ProblemActivity,
 } from '../components/Dashboard/Activity';
 
 export default {
@@ -18,21 +20,21 @@ const Template: StoryFn<ActivityHeatmapProps> = args => (
   <ActivityHeatmap endDate={endDate} {...args} />
 );
 
-const dummyProblem = {
+const dummyProblem : ProblemActivity = {
   timestamp: 0,
   problemID: 'dummy',
   problemProgress: 'Solved',
 };
-const dummyModule = {
+const dummyModule : ModuleActivity = {
   timestamp: 0,
   moduleID: 'dummy',
   moduleProgress: 'Complete',
 };
 
-const orderedModuleActivities: { [key: number]: any[] } = {};
-const orderedProblemActivities: { [key: number]: any[] } = {};
-const randomModuleActivities: { [key: number]: any[] } = {};
-const randomProblemActivities: { [key: number]: any[] } = {};
+const orderedModuleActivities: { [key: number]: ModuleActivity[] } = {};
+const orderedProblemActivities: { [key: number]: ProblemActivity[] } = {};
+const randomModuleActivities: { [key: number]: ModuleActivity[] } = {};
+const randomProblemActivities: { [key: number]: ProblemActivity[] } = {};
 const gen = seedrandom('42');
 const rng = () => Math.floor(gen() * 5);
 const squeeze = (i: number) =>
@@ -59,8 +61,8 @@ for (
 console.log(startDate.getTime(), endDate.getTime());
 // Helper to generate activityCount from activities
 const getActivityCount = (
-  moduleActivities: { [key: number]: any[] },
-  problemActivities: { [key: number]: any[] }
+  moduleActivities: { [key: number]: ModuleActivity[] },
+  problemActivities: { [key: number]: ProblemActivity[] }
 ) => {
   const activityCount: { [key: number]: number } = {};
   const allKeys = new Set([

@@ -162,9 +162,13 @@ export default function ContactUsSlideover({
       setMessage('');
       setShowSuccess(true);
       setIssueLink(response.data as string);
-    } catch (e: any) {
+    } catch (e: unknown) {
       setSubmitEnabled(true);
-      alert('Form submission failed: ' + e.message);
+      if (e && typeof e === 'object' && 'message' in e) {
+        alert('Form submission failed: ' + e.message);
+      } else {
+        alert('Form submission failed: ' + String(e));
+      }
     } finally {
       setShowErrors(false);
     }

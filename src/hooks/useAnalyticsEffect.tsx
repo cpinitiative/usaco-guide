@@ -1,8 +1,14 @@
 import React from 'react';
 
+interface AnalyticsWindow extends Window {
+  ga?: {
+    create?: unknown;
+  };
+}
+
 export const useAnalyticsEffect = () => {
   React.useEffect(() => {
-    if ((window as any).ga && (window as any).ga.create) {
+    if ((window as AnalyticsWindow).ga && (window as AnalyticsWindow).ga.create) {
       // google analytics loaded
     } else {
       // google analytics got blocked
