@@ -9,6 +9,7 @@ import {
   ProblemDifficulty,
   ProblemMetadata,
 } from '../../models/problem';
+import { githubIssueToken } from './secrets';
 
 const problemSuggestionReviewers = {
   general: [],
@@ -23,8 +24,9 @@ if (admin.apps.length === 0) {
   admin.initializeApp();
 }
 
-const submitProblemSuggestion = functions.https.onCall(
-  async (data, context) => {
+const submitProblemSuggestion = functions
+  .runWith({ secrets: [githubIssueToken] })
+  .https.onCall(async (data, context) => {
     if (!context.auth?.uid) {
       throw new functions.https.HttpsError(
         'permission-denied',
@@ -114,7 +116,7 @@ const submitProblemSuggestion = functions.https.onCall(
         ? `**Warning: The source of this problem is currently set to \`other\`. You must correct the problem source and the solution before merging.**\n`
         : '') +
       `*This PR was automatically generated from a user-submitted problem suggestion on the USACO guide.*`;
-    const key = functions.config().problemsuggestion.issueapikey;
+    const key = githubIssueToken.value();
     const githubAPI = axios.create({
       baseURL: 'https://api.github.com',
       auth: {
@@ -273,6 +275,5 @@ const submitProblemSuggestion = functions.https.onCall(
     );
 
     return createdPullRequestReq.data.html_url;
-  }
-);
+  });
 export default submitProblemSuggestion;

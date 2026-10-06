@@ -122,8 +122,8 @@ Firestore.
 
 - Validates `name`, `email`, `topic`, and `message`.
 - Builds a GitHub issue title and body.
-- Uses GitHub API authentication via
-  `functions.config().contactform.issueapikey`.
+- Uses GitHub API authentication via the `GITHUB_ISSUE_TOKEN` secret (see
+  `src/functions/src/secrets.ts`).
 - Creates a GitHub issue in `cpinitiative/usaco-guide`.
 - Writes the submission into Firestore collection `contactFormSubmissions` with
   the created issue number.
@@ -133,7 +133,8 @@ Firestore.
 
 - No authenticated user check is enforced.
 - The function is likely exposed to the public client.
-- The GitHub token is stored in Firebase functions config, not in client code.
+- The GitHub token is stored in Secret Manager as `GITHUB_ISSUE_TOKEN`, not in
+  client code.
 
 ### Notes
 
@@ -194,8 +195,8 @@ GitHub PR with updated JSON content.
 ### Security
 
 - Must be called by an authenticated user.
-- It uses the GitHub token from
-  `functions.config().problemsuggestion.issueapikey`.
+- It uses the `GITHUB_ISSUE_TOKEN` secret from Secret Manager (see
+  `src/functions/src/secrets.ts`).
 
 ### Notes
 
@@ -407,8 +408,8 @@ This section covers group-related functions used by group features in the app.
 - The functions code is under `src/functions/src`; deploy from the project’s
   Firebase functions config.
 - Ensure `firebase-admin` initialization uses a single app instance.
-- Confirm `functions.config().contactform.issueapikey` and
-  `functions.config().problemsuggestion.issueapikey` are configured in Firebase.
+- Confirm the `GITHUB_ISSUE_TOKEN` secret is set in Secret Manager:
+  `firebase functions:secrets:set GITHUB_ISSUE_TOKEN`.
 
 ### Security review
 
