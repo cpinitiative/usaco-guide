@@ -122,8 +122,8 @@ Firestore.
 
 - Validates `name`, `email`, `topic`, and `message`.
 - Builds a GitHub issue title and body.
-- Uses GitHub API authentication via the `GITHUB_ISSUE_TOKEN` secret
-  (see `src/functions/src/secrets.ts`).
+- Uses GitHub API authentication via the `GITHUB_ISSUE_TOKEN` secret (see
+  `src/functions/src/secrets.ts`).
 - Creates a GitHub issue in `cpinitiative/usaco-guide`.
 - Writes the submission into Firestore collection `contactFormSubmissions` with
   the created issue number.
@@ -133,8 +133,8 @@ Firestore.
 
 - No authenticated user check is enforced.
 - The function is likely exposed to the public client.
-- The GitHub token is stored in Secret Manager as `GITHUB_ISSUE_TOKEN`,
-  not in client code.
+- The GitHub token is stored in Secret Manager as `GITHUB_ISSUE_TOKEN`, not in
+  client code.
 
 ### Notes
 
