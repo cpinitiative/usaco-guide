@@ -51,4 +51,99 @@ class Solution {
 
 </CPPSection>
 
+
+<JavaSection>
+
+```java
+class Solution {
+    public int[][] matrixBlockSum(int[][] mat, int K) {
+        
+        int m = mat.length, n = mat[0].length;
+        int[][] ans = new int[m][n];
+
+        // sum[i][j] is the sum of all elements from the rectangle (0, 0, i, j)
+        int[][] sum = new int[m + 1][n + 1];
+
+		// build the 2d prefix sum matrix
+        for(int r = 1; r <= m; r++) {
+            for(int c = 1; c <= n; c++) {
+                sum[r][c] = mat[r - 1][c - 1] + sum[r - 1][c] + sum[r][c - 1] - sum[r - 1][c - 1];
+            }
+        }
+		// find the block sum for every cell of the matrix 
+        for(int r = 0; r < m; r++) {
+            for(int c = 0; c < n; c++) {
+
+				// finding the block boundaries
+                int r1 = Math.max(0, r - K), c1 = Math.max(0, c - K);
+                int r2 = Math.min(m - 1, r + K), c2 = Math.min(n - 1, c + K);
+                
+				// convert matrix indices to prefix sum indices
+				r1++; c1++; r2++; c2++;
+
+				// calculating rectangle sum using the prefix sums
+                ans[r][c] = sum[r2][c2] + sum[r1 - 1][c1 - 1] - sum[r2][c1 - 1] - sum[r1 - 1][c2];
+            }
+        }
+
+        return ans;
+
+    }
+}
+
+```
+
+</JavaSection>
+
+<PySection>
+
+```py
+
+class Solution:
+    def matrixBlockSum(self, mat, K):
+
+        m, n = len(mat), len(mat[0])
+        ans = [[0] * n for _ in range(m)]
+
+        # sum[i][j] is the sum of all elements from the rectangle (0, 0, i, j)
+        prefix = [[0] * (n + 1) for _ in range(m + 1)]
+
+        # build the 2D prefix sum matrix
+        for r in range(1, m + 1):
+            for c in range(1, n + 1):
+                prefix[r][c] = (
+                    mat[r - 1][c - 1]
+                    + prefix[r - 1][c]
+                    + prefix[r][c - 1]
+                    - prefix[r - 1][c - 1]
+                )
+
+        # find the block sum for every cell
+        for r in range(m):
+            for c in range(n):
+
+                # find block boundaries
+                r1 = max(0, r - K)
+                c1 = max(0, c - K)
+                r2 = min(m - 1, r + K)
+                c2 = min(n - 1, c + K)
+
+                # convert matrix indices to prefix sum indices
+                r1 += 1
+                c1 += 1
+                r2 += 1
+                c2 += 1
+
+                # calculating rectangle sum using prefix sums
+                ans[r][c] = (
+                    prefix[r2][c2]
+                    + prefix[r1 - 1][c1 - 1]
+                    - prefix[r2][c1 - 1]
+                    - prefix[r1 - 1][c2]
+                )
+        return ans
+
+```
+
+</PySection>
 </LanguageSection>
