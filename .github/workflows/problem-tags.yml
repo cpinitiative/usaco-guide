@@ -13,8 +13,14 @@ on:
     branches:
       - master
 
+# A pull request opened with labels already on it (the problem-suggestion bot,
+# Dependabot) fires one `labeled` event per label alongside `opened`, and in a
+# shared group all but one get cancelled, which shows as a red cross on the pull
+# request. Only `new-tag` changes the outcome, so any other label event runs in
+# a group of its own. It still runs rather than skipping: a skipped run counts
+# as passing and could stand in for a real failure.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}${{ (github.event.action == 'labeled' || github.event.action == 'unlabeled') && github.event.label.name != 'new-tag' && format('-{0}', github.run_id) || '' }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
@@ -25,7 +31,7 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0 # the base branch is the tag vocabulary
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
 
