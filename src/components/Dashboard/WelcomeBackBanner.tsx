@@ -24,7 +24,7 @@ export default function WelcomeBackBanner({
             </p>
           </div>
         </div>
-        <div className="mt-5 sm:mt-0 sm:ml-6 sm:flex sm:shrink-0 sm:items-center lg:mr-2">
+        <div className="mt-5 sm:mt-4 sm:flex sm:shrink-0 sm:items-center">
           <span className="inline-flex rounded-md shadow-sm">
             <span className="focus:shadow-outline-blue inline-flex items-center rounded-md border border-transparent bg-blue-800 px-4 py-2 text-sm font-medium text-white transition duration-150 ease-in-out hover:bg-blue-600 focus:border-blue-700 focus:outline-hidden active:bg-blue-700 sm:text-base lg:px-8 lg:py-3 lg:text-lg dark:hover:bg-blue-700">
               {lastViewedModuleURL
