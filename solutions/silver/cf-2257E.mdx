@@ -1,0 +1,118 @@
+---
+id: cf-2257E
+source: CF
+title: Busy Beaver
+author: John Zhou
+---
+
+[Official Editorial (C++)](https://codeforces.com/blog/entry/156058)
+
+## Explanation
+
+TODO
+
+## Implementation
+
+TODO
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <utility>
+#include <queue>
+// TODO: Get rid of this
+#define int long long
+using namespace std;
+
+// TODO: Convert into struct
+typedef pair<pair<int, int>, pair<int, int>> fourlet;
+
+signed main() {
+    int t;
+    cin >> t;
+    // TODO: Convert pair into struct
+    vector<vector<pair<int, int>>> contracts;
+    vector<int> heights;
+    for (int test_num = 0; test_num < t; test_num++) {
+        contracts.clear();
+        heights.clear();
+        int n, x;
+        cin >> n >> x;
+        for (int i = 0; i < n; i++) {
+            contracts.push_back(vector<pair<int, int>>(0));
+            int m;
+            cin >> m;
+            for (int j = 0; j < m; j++) {
+                int a;
+                cin >> a;
+                contracts[i].push_back(make_pair(a, -1));
+            }
+            for (int j = 0; j < m; j++) {
+                int b;
+                cin >> b;
+                contracts[i][j].second = b;
+            }
+            heights.push_back(0);
+        }
+
+        // TODO: Document
+        priority_queue<fourlet, vector<fourlet>, greater<fourlet>> q;
+        for (int i = 0; i < n; i++) {
+            int current_delta = 0, require = 0;
+            int j = 0;
+            for (j = 0; j < contracts[i].size() && current_delta <= 0; j++) {
+                require = min(require, current_delta - contracts[i][j].first);
+                current_delta += contracts[i][j].second - contracts[i][j].first;
+            }
+            if (current_delta <= 0) continue;
+            q.push(make_pair(make_pair(-require, current_delta), make_pair(i, j)));
+        }
+
+        
+
+        int current_money = x;
+        while (!q.empty()) {
+            auto front = q.top();
+            q.pop();
+            int i = front.second.first, orig_j = front.second.second, cost = front.first.first, benefit = front.first.second;
+            if (cost > current_money) {q.push(front); break;}
+            current_money += benefit;
+            heights[i] = orig_j;
+            int current_delta = 0, require = 0;
+            int j;
+            for (j = orig_j; j < contracts[i].size() && current_delta <= 0; j++) {
+                require = min(require, current_delta - contracts[i][j].first);
+                current_delta += contracts[i][j].second - contracts[i][j].first;
+            }
+            if (current_delta <= 0) continue;
+            q.push(make_pair(make_pair(-require, current_delta), make_pair(i, j)));
+        }
+
+        int ans = -1;
+        int ians = -1;
+        for (int i = 0; i < n; i++) {
+            int sim_current_money = current_money;
+            int j = heights[i];
+            while (j < contracts[i].size()) {
+                if (contracts[i][j].first > sim_current_money) break;
+                sim_current_money += contracts[i][j].second - contracts[i][j].first;
+                j++;
+            }
+            if (j > ans) {
+                ans = j;
+                ians = i;
+            }
+        }
+        if (ans == 0) cout << "0 1\n";
+        else cout << ans << " " << ians + 1 << endl;
+
+    }
+    return 0;
+}
+```
+
+</CPPSection>
+</LanguageSection>
