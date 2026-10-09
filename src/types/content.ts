@@ -1,3 +1,4 @@
+import { Root } from 'mdast';
 import { SectionID } from '../../content/ordering';
 import { ModuleFrequency } from '../models/module';
 import { ProblemDifficulty, ProblemSolutionInfo } from '../models/problem';
@@ -16,6 +17,13 @@ export interface TableOfContents {
   java: Heading[];
 
   py: Heading[];
+}
+
+export interface ModuleFrontMatterDbRow {
+  file_path: string;
+  module_id: string;
+  frontmatter_json: string;
+  division: SectionID;
 }
 
 export interface MdxFrontmatter {
@@ -43,6 +51,30 @@ export interface MdxFrontmatter {
   solution?: ProblemSolutionInfo;
 }
 
+// from docs/MIGRATION.md
+export interface MdxContentDbRow {
+  /** frontmatter.id */
+  id: string;
+  type: 'module' | 'solution';
+  /** Relative file path */
+  file_path: string;
+  /** JSON string of MdxFrontmatter */
+  frontmatter_json: string;
+  /** Compiled MDX body (string) */
+  body: string;
+  /** JSON string of TableOfContents */
+  toc_json: string;
+  /** JSON string of mdast */
+  mdast_json: string | null;
+  cpp_oc: number;
+  java_oc: number;
+  py_oc: number;
+  division: SectionID | null;
+  /** ISO timestamp or NULL */
+  git_author_time: string | null;
+  created_at: number;
+}
+
 export interface MdxContent {
   body: string;
 
@@ -60,7 +92,7 @@ export interface MdxContent {
 
   pyOc: number;
 
-  mdast?: string;
+  mdast?: Root;
 
   fields?: Fields;
 }
@@ -86,6 +118,21 @@ export interface ProblemSolutionInfo {
   hasHints?: boolean;
 }
 */
+
+export interface ProblemDbRow {
+  unique_id: string;
+  name: string;
+  url: string;
+  source: string;
+  source_description: string | null;
+  is_starred: number; // SQLite boolean as INTEGER
+  difficulty: ProblemDifficulty;
+  tags_json: string; // JSON array of strings
+  solution_json: string; // JSON string of ProblemSolutionInfo
+  in_module: number; // SQLite boolean as INTEGER
+  module_id: string | null; // Foreign key to mdx_content.id
+  problem_data_json: string; // Full ProblemInfo as JSON for quick retrieval
+}
 
 export interface ProblemInfo {
   uniqueId: string;
@@ -113,6 +160,13 @@ export interface ProblemInfo {
   module?: MdxContent;
 }
 
+export interface ModuleProblemListDbRow {
+  id: number;
+  module_id: string;
+  list_id: string;
+  problems_json: string;
+}
+
 export interface ModuleProblemList {
   listId: string;
 
@@ -123,4 +177,8 @@ export interface ModuleProblemLists {
   moduleId: string;
 
   problemLists: ModuleProblemList[];
+}
+
+export interface USACOIdDbRow {
+  id: string;
 }
