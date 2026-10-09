@@ -33,9 +33,9 @@ Adding the two parts gives our final expression for the expected value:
 
 $$E_x = E_{x -1} \cdot \sum_{i=0}^{\lfloor E_{x - 1} \rfloor} p_i + \sum_{i=\lfloor E_{x - 1} + 1 \rfloor}^{T} i p_i$$
 
-We can solve the problem by simulating each test case and recalculating the summations for each test case in $O(TK)$. However, this can easily be sped up to $O(T^2 + K)$ by pre-calculating $p_i$ using Pascal's identity and by precalculating the prefix sums of both $p_i$ and $p_i i$ so we can get the values of the summations in $O(1)$ instead of $O(T)$. This gives us the first $9$ test cases but is not good enough.
+We can solve the problem by simulating each test case and recalculating the summations for each test case in $\mathcal{O}(TK)$. However, this can easily be sped up to $\mathcal{O}(T^2 + K)$ by pre-calculating $p_i$ using Pascal's identity and by precalculating the prefix sums of both $p_i$ and $p_i i$ so we can get the values of the summations in $\mathcal{O}(1)$ instead of $\mathcal{O}(T)$. This gives us the first $9$ test cases but is not good enough.
 
-In order to fully solve the question, we need to remove the $O(K)$ factor. We can do this if we are able to process multiple values of $E_x$ in a single step.
+In order to fully solve the question, we need to remove the $\mathcal{O}(K)$ factor. We can do this if we are able to process multiple values of $E_x$ in a single step.
 
 Claim: We can process multiple queries if the values of ${\sum_{i=0}}^{\lfloor E_{x - 1} \rfloor} p_i$ and ${\sum_{i=\lfloor E_{x - 1} + 1 \rfloor}}^{T} i p_i$ don't change between queries.
 
@@ -60,7 +60,7 @@ Here is more information about [geometric series](https://artofproblemsolving.co
 
 However, the values of $a$ and $b$ won't always remain the same. We can binary search on the max number of submissions Bessie can make before the values of $a$ and $b$ change. $a$ and $b$ will change when the value of ${\lfloor E_x \rfloor}$ changes. The conditions for binary search are fulfilled because $E_x$ is a non-decreasing function.
 
-Since there are at most $T$ values of $E_x$, $a$ and $b$ can change at most $T$ times so the resulting time complexity will be $O(T^2 + T \log K)$.
+Since there are at most $T$ values of $E_x$, $a$ and $b$ can change at most $T$ times so the resulting time complexity will be $\mathcal{O}(T^2 + T \log K)$.
 
 ## Implementation
 **Time Complexity:** $\mathcal{O}(T^2 + T \log K)$
