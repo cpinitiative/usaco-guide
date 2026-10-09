@@ -9,7 +9,24 @@ author: John Zhou
 
 ## Explanation
 
-TODO
+Initially, we see that it is helpful to focus on making only one project the highest, and only using the rest of the projects to get additional carrots.
+Note that to get carrots from working on project $i$, one must build a range of floors $j_1\dots j_2$ such that the sum of $b_{i,j_1\dots j_2}$ is greater than the sum of $b_{i,j_1\dots j_2}$.
+Since this operation can be done on the project we're making highest (and will make that tower easier), we might as well just do it on all projects.
+Building this range is only possible when floors $1\dots j_1-1$ are built in project $i$, and when we will not run out of carrots at any point during this building process.
+The latter is characterized by the fact that for all $x=j_1+1\dots j_2$, if we start with $k$ carrots, we require
+\[k+\sum_{j=j_1}^{x-1} (b_i-a_i)-a_x\geq 0.\]
+It is possible to solve this equation for $k$ on each $x$ to compute the number of carrots required before we start building this range.
+
+But since we have a limited number of carrots to start with, we cannot simply build all ranges on a project;
+in fact, we may need to switch projects to get carrots from another one.
+Thus, we must be as granular as possible in making our decision to build ranges of projects.
+In particular, declare the current *special range* of floors on a project as [TODO: one that will be possible to build now based on start floor and that is the smallest to increase our carrots] and compute the number of carrots required to build that range.
+Since our goal is to get as much carrot as needed, and that building ranges will only increase that number, we should focus on building every possible range that we could with our current number of carrots.
+[Detail how to maintain with priority queue]
+[Detail end condition]
+
+When we have exhausted the possibility to build any more special ranges, we now use all of the carrots we have gained on a singular project.
+It suffices to enumerate through every project to find the total highest tower we could build after our initial carrot-acquiring step by [detail simulation, time constraint].
 
 ## Implementation
 
