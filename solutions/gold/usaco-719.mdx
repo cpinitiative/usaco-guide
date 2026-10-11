@@ -202,71 +202,63 @@ using namespace std;
 using ll = long long;
 
 struct BIT {
-    int n;
-    vector<ll> bit;
+	int n;
+	vector<ll> bit;
 
-    BIT(int n) : n(n), bit(n + 1, 0) {}
+	BIT(int n) : n(n), bit(n + 1, 0) {}
 
-    void add(int x, int v) {
-        for (; x <= n; x += x & -x) {
-            bit[x] += v;
-        }
-    }
+	void add(int x, int v) {
+		for (; x <= n; x += x & -x) { bit[x] += v; }
+	}
 
-    ll sum(int x) {
-        ll res = 0;
-        for (; x > 0; x -= x & -x) {
-            res += bit[x];
-        }
-        return res;
-    }
+	ll sum(int x) {
+		ll res = 0;
+		for (; x > 0; x -= x & -x) { res += bit[x]; }
+		return res;
+	}
 };
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    freopen("circlecross.in", "r", stdin);
-    freopen("circlecross.out", "w", stdout);
+	freopen("circlecross.in", "r", stdin);
+	freopen("circlecross.out", "w", stdout);
 
-    int n;
-    cin >> n;
+	int n;
+	cin >> n;
 
-    vector<int> tin(n + 1, -1);
-    vector<int> tout(n + 1, -1);
+	vector<int> tin(n + 1, -1);
+	vector<int> tout(n + 1, -1);
 
-    for (int i = 1; i <= 2 * n; i++) {
-        int x;
-        cin >> x;
+	for (int i = 1; i <= 2 * n; i++) {
+		int x;
+		cin >> x;
 
-        if (tin[x] == -1) {
-            tin[x] = i;
-        } else {
-            tout[x] = i;
-        }
-    }
+		if (tin[x] == -1) {
+			tin[x] = i;
+		} else {
+			tout[x] = i;
+		}
+	}
 
-    vector<pair<int, int>> cows;
+	vector<pair<int, int>> cows;
 
-    for (int i = 1; i <= n; i++) {
-        cows.push_back({tin[i], tout[i]});
-    }
+	for (int i = 1; i <= n; i++) { cows.push_back({tin[i], tout[i]}); }
 
-    sort(cows.begin(), cows.end());
+	sort(cows.begin(), cows.end());
 
-    ll ans = 0;
-    BIT bit(2 * n);
+	ll ans = 0;
+	BIT bit(2 * n);
 
-    for (auto [tin, tout] : cows) {
+	for (auto [tin, tout] : cows) {
 		// We count the cows whose second occurence is in between (tin,tout)
-        ans += bit.sum(tout - 1) - bit.sum(tin);
-        bit.add(tout, 1);
-    }
+		ans += bit.sum(tout - 1) - bit.sum(tin);
+		bit.add(tout, 1);
+	}
 
-    cout << ans << '\n';
-    return 0;
+	cout << ans << '\n';
+	return 0;
 }
 ```
 </CPPSection>
-
-
