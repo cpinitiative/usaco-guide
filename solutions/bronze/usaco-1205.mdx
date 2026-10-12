@@ -65,6 +65,7 @@ int main() {
 
 ```java
 
+
 import java.io.*;
 import java.util.*;
 
@@ -72,27 +73,35 @@ public class Main {
     // cnt[i][j] = number of times letter j appears on block i
     static int[][] cnt = new int[4][26];
 
+    // Checks whether the given word can be formed using the four blocks
     static boolean isPossible(String word) {
-        // Try every possible ordering of the 4 blocks
+        // Start with the original ordering of the blocks
         int[] perm = {0, 1, 2, 3};
 
+        // Try every possible ordering of the four blocks
         do {
-            int j = 0;
+            int j = 0; // Index of the next character to match
 
-            // Try to form the word using this block ordering
             for (int i = 0; i < 4; i++) {
-                if (cnt[perm[i]][word.charAt(j) - 'A'] > 0) {
-                    j++;
-                }
-
-                // All characters of the word were matched
+                // If all characters have been matched, the word is possible
                 if (j == word.length()) {
                     return true;
                 }
+
+                // Check whether the current block contains the required letter
+                if (cnt[perm[i]][word.charAt(j) - 'A'] > 0) {
+                    j++; // Move to the next character
+                }
             }
+
+            // Check whether the entire word was matched
+            if (j == word.length()) {
+                return true;
+            }
+
         } while (nextPermutation(perm));
 
-        // No ordering of the blocks can form the word
+        // No ordering of the blocks could form the word
         return false;
     }
 
@@ -105,12 +114,12 @@ public class Main {
             i--;
         }
 
-        // No more permutations
+        // If no such position exists, all permutations have been tried
         if (i < 0) {
             return false;
         }
 
-        // Find the smallest element greater than a[i]
+        // Find the rightmost element greater than a[i]
         int j = a.length - 1;
         while (a[j] <= a[i]) {
             j--;
@@ -121,7 +130,7 @@ public class Main {
         a[i] = a[j];
         a[j] = temp;
 
-        // Reverse the suffix to get the next permutation
+        // Reverse the suffix to obtain the next permutation
         for (int l = i + 1, r = a.length - 1; l < r; l++, r--) {
             temp = a[l];
             a[l] = a[r];
@@ -131,26 +140,30 @@ public class Main {
         return true;
     }
 
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    public static void main(String[] args) throws IOException {
+        Scanner sc = new Scanner(System.in);
 
-        int n = Integer.parseInt(br.readLine());
+        // Read the number of words to check
+        int n = sc.nextInt();
 
-        // Read the 4 blocks and count the letters on each block
+        // Read the letters on each of the four blocks
         for (int i = 0; i < 4; i++) {
-            String block = br.readLine();
+            String block = sc.next();
 
+            // Count the occurrences of each letter on this block
             for (char c : block.toCharArray()) {
                 cnt[i][c - 'A']++;
             }
         }
 
-        // Check each word
+        // Check each word and print the result
         for (int i = 0; i < n; i++) {
-            String word = br.readLine();
+            String word = sc.next();
 
             System.out.println(isPossible(word) ? "YES" : "NO");
         }
+
+        sc.close();
     }
 }
 
@@ -162,6 +175,7 @@ public class Main {
 
 ```py
 
+
 from itertools import permutations
 
 # cnt[i][j] = number of times letter j appears on block i
@@ -169,9 +183,9 @@ cnt = [[0] * 26 for _ in range(4)]
 
 n = int(input())
 
-# Read the 4 blocks and count the letters on each block
+# Read the 4 blocks and count their letters
 for i in range(4):
-    block = input()
+    block = input().strip()
 
     for c in block:
         cnt[i][ord(c) - ord('A')] += 1
@@ -184,7 +198,8 @@ def is_possible(word):
 
         # Try to form the word using this block ordering
         for i in range(4):
-            if cnt[perm[i]][ord(word[j]) - ord('A')]:
+            # Check whether the current block has the required letter
+            if cnt[perm[i]][ord(word[j]) - ord('A')] > 0:
                 j += 1
 
             # All characters of the word were matched
@@ -197,9 +212,9 @@ def is_possible(word):
 
 # Check each word
 for _ in range(n):
-    word = input()
+    word = input().strip()
     print("YES" if is_possible(word) else "NO")
-	
+
 ```
 </PySection>
 </LanguageSection>
