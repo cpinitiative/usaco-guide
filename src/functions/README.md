@@ -1,3 +1,16 @@
+# Secrets
+
+`submitContactForm` and `submitProblemSuggestion` read a GitHub token from
+Secret Manager via `defineSecret('GITHUB_ISSUE_TOKEN')` (see `src/secrets.ts`).
+
+```
+firebase functions:secrets:set GITHUB_ISSUE_TOKEN
+```
+
+For local emulation, create a `.secret.local` file in `src/functions` with
+`GITHUB_ISSUE_TOKEN=<token>` (or grant the emulator access to the production
+secret via application default credentials).
+
 # Deploying a Function
 
 Make sure `firebase --version` outputs `13.0.3` or higher. You may need to
