@@ -2,7 +2,7 @@
 id: ad-hoc
 title: Ad Hoc Problems
 author: Michael Cao
-contributors: Ryan Chou, Rameez Parwez
+contributors: Ryan Chou, Rameez Parwez, Moulik Jain
 description:
   'Problems that do not fall into standard categories with well-studied
   solutions.'
@@ -46,19 +46,18 @@ problem) is to do a lot of them.
 
 ### Explanation
 
-<IncompleteSection>
+Relabel every cow by its position in $b$, so the target order is $1, 2, \dots, N$ and we must sort $a$ using moves that slide one cow to the left. In the second sample, $a$ becomes $[2, 4, 5, 3, 1]$. The answer is the number of cows that have a larger cow somewhere to their left, which is $N$ minus the number of prefix maxima. Here those are relabeled cows $3$ and $1$, which are original cows $2$ and $4$, exactly the two cows moved in the sample, giving $2$.
 
-- missing the observation the matching loop rests on: relabel the cows so that
-  the target order is $1 \dots N$, and then cow $a_j$ must be moved exactly when
-  some earlier $a_i$ has $a_i > a_j$, so the answer counts the elements that are
-  not a prefix maximum
-- missing a proof that no cow outside that count needs to be moved
+Every such cow must move. Suppose $y > x$ and $y$ starts to the left of $x$. Moving any other cow never changes the relative order of $x$ and $y$, and moving $y$ left only takes it further ahead. So the only way to get $y$ behind $x$ is to move $x$. Each modification moves one cow, so we need at least this many modifications.
 
-</IncompleteSection>
+Moving only those cows is enough. We place cows $1, 2, \dots, N$ at the front in order. Before placing cow $i$, the front holds $1, \dots, i-1$, and every other cow is still in its original relative order, since only placed cows have moved.
 
-If the element is at the target position, we simply move forward to the next one.
-Otherwise, if it's not currently available at the target position, we handle it by
-marking the element as moved and incrementing our answer.
+- If some larger cow started to the left of $i$, it is still sitting between the front block and $i$. So we slide $i$ left to the end of the front block, which takes one move.
+- If no larger cow started to its left, every cow before $i$ was smaller and is already in the front block. So $i$ is directly behind the block and stays where it is.
+
+So cow $i$ moves exactly when a larger cow started to its left, which matches the lower bound.
+
+The code keeps the original labels, so `b[i]` plays the role of cow $i$. `j` scans $a$ and skips cows marked in `moved`, so `a[j]` is always the first cow right after the front block. If `a[j] == b[i]`, the cow is already in place and we advance `j`. Otherwise, a larger cow is blocking it, so we count one move and mark $b_i$ so `j` skips it later. Since `j` only moves forward, the whole algorithm runs in $\mathcal{O}(N)$.
 
 ### Implementation
 
