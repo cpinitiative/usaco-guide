@@ -27,8 +27,26 @@ type ConfettiProps = {
   onClick?: (event: MouseEvent<HTMLCanvasElement>) => void;
 };
 
+interface Particle {
+  birth: number;
+  initialPosition: { x: number; y: number };
+  currentPosition: { x: number; y: number };
+  spinForce: number;
+  twistForce: number;
+  currentSpin: number;
+  currentTwist: number;
+  angle: number;
+  scale: number;
+  vx: number;
+  vy: number;
+  front: HTMLImageElement;
+  back: HTMLImageElement;
+  width: number;
+  height: number;
+}
+
 type ConfettiState = {
-  particles: any[];
+  particles: Particle[];
 };
 
 class Confetti extends Component<ConfettiProps, ConfettiState> {
