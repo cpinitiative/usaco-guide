@@ -14,8 +14,10 @@ a brick can always be achieved by adding and removing the brick.
 So, it is never a good approach to add and remove bricks in the same solution.
 
 As we move on, let's say we want to achieve some target height $x$, where $P$ is the total number
-of missing bricks across all pillars shorter than $x$, and $Q$ is the total number of extra bricks across all pillars
-taller than $x$. For a solution, we can move $\min(P, Q)$ bricks, and the leftover bricks must be added or removed. Here, the total cost to make the height of all pillars $x$ will be:
+of missing bricks across all pillars shorter than $x$, and $Q$ is the total 
+number of extra bricks across all pillars taller than $x$. For a solution, 
+we can move $\min(P, Q)$ bricks, and the leftover bricks must be added or removed. 
+Here, the total cost to make the height of all pillars $x$ will be:
 
 $$
 f(x) = \begin{cases} A(P - Q) + MQ & \text{if } P \geq Q \\ R(Q - P) + MP & \text{if } Q \geq P \end{cases}
@@ -23,13 +25,19 @@ $$
 
 and our objective is to find the value $x$ that minimizes $f(x)$.
 
-We know that $P$ and $Q$ are both piecewise linear functions of $x$, so $f(x)$ is also piecewise linear. Now, observe that when we increase $x$ by $1$, more pillars fall below the target height, so the slope of $f(x)$ can only increase and never decrease. This means $f(x)$ is convex, i.e., it decreases to a minimum and then increases.
+We know that $P$ and $Q$ are both piecewise linear functions of $x$, so $f(x)$ 
+is also piecewise linear. Now, observe that when we increase $x$ by $1$, 
+more pillars fall below the target height, so the slope of $f(x)$ 
+can only increase and never decrease. This means $f(x)$ is convex, i.e., 
+it decreases to a minimum and then increases.
 
-This allows us to apply ternary search over the range of possible target heights to find the minimum cost.
+This allows us to apply ternary search over the range of possible 
+target heights to find the minimum cost.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}()$
+**Time Complexity:** $\mathcal{O}(N \log H)$ here $H$ is the upper bound 
+on target height $(i.e., 10^9)$.
 
 <LanguageSection>
 <CPPSection>
