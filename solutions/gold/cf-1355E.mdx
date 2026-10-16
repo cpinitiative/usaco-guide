@@ -1,0 +1,93 @@
+---
+id: cf-1355E
+source: CF
+title: Restorer Distance
+author: Rameez Parwez
+---
+
+[Official Editorial (C++)](https://codeforces.com/blog/entry/77491)
+
+## Explanation
+
+Firstly, we can agree that $M$ can be $\min(M, A + R)$ since moving
+a brick can always be achieved by adding and removing the brick.
+So, it is never a good approach to add and remove bricks in the same solution.
+
+As we move on, let's say we want to achieve some target height $x$, where $P$ is the total number
+of missing bricks across all pillars shorter than $x$, and $Q$ is the total
+number of extra bricks across all pillars taller than $x$. For a solution,
+we can move $\min(P, Q)$ bricks, and the leftover bricks must be added or removed.
+Here, the total cost to make the height of all pillars $x$ will be:
+
+$$
+f(x) = \begin{cases} A(P - Q) + MQ & \text{if } P \geq Q \\ R(Q - P) + MP & \text{if } Q \geq P \end{cases}
+$$
+
+and our objective is to find the value $x$ that minimizes $f(x)$.
+
+We know that $P$ and $Q$ are both piecewise linear functions of $x$, so $f(x)$
+is also piecewise linear. Now, observe that when we increase $x$ by $1$,
+more pillars fall below the target height, so the slope of $f(x)$
+can only increase and never decrease. This means $f(x)$ is convex, i.e.,
+it decreases to a minimum and then increases.
+
+This allows us to apply ternary search over the range of possible
+target heights to find the minimum cost.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log H)$ here $H$ is the upper bound
+on target height $(i.e., 10^9)$.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int main() {
+	int n, add, remove, move;
+	std::cin >> n >> add >> remove >> move;
+	std::vector<int> pillars(n);
+	for (int &x : pillars) { std::cin >> x; }
+
+	auto get_cost = [&](int mid) -> long long {
+		long long to_add = 0, to_remove = 0;
+		for (int p : pillars) {
+			if (p < mid) {
+				to_add += mid - p;
+			} else {
+				to_remove += p - mid;
+			}
+		}
+
+		long long res = 1LL * add * (to_add - std::min(to_add, to_remove)) +
+		                1LL * remove * (to_remove - std::min(to_add, to_remove)) +
+		                1LL * move * std::min(to_add, to_remove);
+
+		res = std::min(res, 1LL * add * to_add + 1LL * remove * to_remove);
+
+		return res;
+	};
+
+	int lo = 0, hi = 1e9;
+	while (hi - lo > 3) {
+		int mid1 = lo + (hi - lo) / 3;
+		int mid2 = hi - (hi - lo) / 3;
+		if (get_cost(mid1) > get_cost(mid2)) {
+			lo = mid1;
+		} else {
+			hi = mid2;
+		}
+	}
+
+	long long min_cost = get_cost(lo);
+	for (int i = lo + 1; i <= hi; i++) { min_cost = std::min(min_cost, get_cost(i)); }
+
+	std::cout << min_cost << '\n';
+}
+```
+
+</CPPSection>
+</LanguageSection>
