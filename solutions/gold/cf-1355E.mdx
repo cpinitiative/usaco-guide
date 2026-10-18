@@ -9,15 +9,21 @@ author: Rameez Parwez
 
 ## Explanation
 
-Firstly, we can agree that $M$ can be $\min(M, A + R)$ since moving
-a brick can always be achieved by adding and removing the brick.
-So, it is never a good approach to add and remove bricks in the same solution.
+Firstly, we can agree that $M$ can be $\min(M, A + R)$ since moving a brick 
+from pillar $a$ to pillar $b$ can never cost more than adding and removing 
+a brick separately. So whenever one pillar is missing a brick and another 
+one has some extra bricks, we can always move a brick between them. At the 
+end, we can either only add bricks or only remove bricks (never both), and 
+these are just the remainning bricks that could not be paired up with a move.
 
-As we move on, let's say we want to achieve some target height $x$, where $P$ is the total number
-of missing bricks across all pillars shorter than $x$, and $Q$ is the total
-number of extra bricks across all pillars taller than $x$. For a solution,
-we can move $\min(P, Q)$ bricks, and the leftover bricks must be added or removed.
-Here, the total cost to make the height of all pillars $x$ will be:
+Now, as we get back to our objective of finding the minimal cost of restoration, 
+let's say we want to achieve some target height $x$.
+Let $P$ be the totl number of missing bricks across all pillars
+shorter than $x$, and $Q$ be the total number of extra bricks across
+all pillars taller than $x$. We move $\min(P, Q)$ bricks, and the
+leftover $|P - Q|$ bricks must be added (if $P \geq Q$) or removed
+(if $Q \geq P$). Here, the total cost to make the height of all
+pillars $x$ will be:
 
 $$
 f(x) = \begin{cases} A(P - Q) + MQ & \text{if } P \geq Q \\ R(Q - P) + MP & \text{if } Q \geq P \end{cases}
@@ -25,14 +31,67 @@ $$
 
 and our objective is to find the value $x$ that minimizes $f(x)$.
 
-We know that $P$ and $Q$ are both piecewise linear functions of $x$, so $f(x)$
-is also piecewise linear. Now, observe that when we increase $x$ by $1$,
-more pillars fall below the target height, so the slope of $f(x)$
-can only increase and never decrease. This means $f(x)$ is convex, i.e.,
-it decreases to a minimum and then increases.
 
-This allows us to apply ternary search over the range of possible
-target heights to find the minimum cost.
+Let $S = \sum_{i=1}^{N} h_i$, and for a target height $x$ defne
+
+$$
+P(x) = \sum_{i=1}^{N} \max(0,\, x - h_i), \qquad
+Q(x) = \sum_{i=1}^{N} \max(0,\, h_i - x).
+$$
+
+Then $P(x) - Q(x) = \sum_{i=1}^{N} (x - h_i) = Nx - S$, so
+$P(x) \geq Q(x)$ exactly when $x \geq \frac{S}{N}$. Therefore,
+
+$$
+f(x) =
+\begin{cases}
+A\,(Nx - S) + M\,Q(x) & \text{if } x \geq \frac{S}{N}, \\
+R\,(S - Nx) + M\,P(x) & \text{if } x \leq \frac{S}{N}.
+\end{cases}
+$$
+
+To show that $f(x)$ is convex, we show that its slope
+$\Delta f(x) = f(x+1) - f(x)$ never decreases as $x$ grows.
+
+<Info>
+
+Let $L(x)$ be the number of pillara with height at most $x$, and $G(x)$
+be the number of pillars taller than $x$. Then:
+
+$$
+\Delta f(x) =
+\begin{cases}
+AN - M \cdot G(x) & \text{if } x \geq \frac{S}{N}, \\
+-RN + M \cdot L(x) & \text{if } x + 1 \leq \frac{S}{N}.
+\end{cases}
+$$
+
+As $x$ grows, $G(x)$ only decreases and $L(x)$ only increases, so in
+both cases the slope never decreases. The slope also does not decrease 
+at the step where we switch between the two cases. The two expressions 
+in $f(x)$ differ by $(A + R - M)(Nx - S)$, which is non-negative exactly 
+when $x \geq \frac{S}{N}$ (since $M \leq A + R$). So $f(x)$ is always the
+larger of the two expresions, and a maxmum of convex functions is
+convex.
+
+Therefore $\Delta f(x)$ is non-decreasing for every $x$, so $f(x)$ is
+convex. You can also verify this visually using
+[Desmos](https://www.desmos.com/calculator).
+
+For example, for the sample below, the slope of $f(x)$ only moves
+upwards as $x$ increases, and the cases switch at $x = \frac{S}{N} = 5$.
+
+**Sample:** $N = 5$, $A = 3$, $R = 2$, $M = 4$, pillars $= [1, 2, 5, 7, 10]$.
+
+![Restorer Distance](/solutions/gold/cf-1355E/restorer_distance.png)
+
+</Info>
+
+Since $f(x)$ is convex, it is also unimodal, i.e., it decreases,
+reaches a minimum, then increases. This allows us to apply ternary
+search over the range of possible target heights to find the minimum
+cost.
+
 
 ## Implementation
 
