@@ -47,60 +47,60 @@ problem) is to do a lot of them.
 ### Explanation
 
 Let's imagine the initial order of Farmer John's cows as a queue,
-and from that try to build the final lineup $b$ one cow at a 
-time, from left to right. At step $i$ we want cow $b_i$ to come 
+and from that try to build the final lineup $b$ one cow at a
+time, from left to right. At step $i$ we want cow $b_i$ to come
 next, so we look at the cow standing at the front of the queue:
 
 - If the front cow is $b_i$, we simply take it, and it costs us nothing.
-- Otherwise, $b_i$ is somewhere back in the queue. Now we have to bring 
-$b_i$ out to the front, which is just a move to the left, costing 
+- Otherwise, $b_i$ is somewhere back in the queue. Now we have to bring
+$b_i$ out to the front, which is just a move to the left, costing
 us $1$ modification.
 
 Let's understand this by an example: $a = [5, 1, 3, 2, 4]$ and $b = [4, 5, 2, 1, 3]$
 
-Here we want $4$ first but $5$ is blocking it, so we pull $4$ 
-out, costing us $1$ modification. Now $5$ is at the front, so we 
-simply take it. Then we want $2$ but $1$ is at the front, so we 
-pull $2$ out, costing us another modification. Finally, $1$ and 
-$3$ are at the front in the order we require, so we take them as 
+Here we want $4$ first but $5$ is blocking it, so we pull $4$
+out, costing us $1$ modification. Now $5$ is at the front, so we
+simply take it. Then we want $2$ but $1$ is at the front, so we
+pull $2$ out, costing us another modification. Finally, $1$ and
+$3$ are at the front in the order we require, so we take them as
 they are. Here the total cost becomes $2$.
 
-We can prove that this approach always works, since pulling a cow 
+We can prove that this approach always works, since pulling a cow
 to the front only slides it to the left.
 
-Suppose that at some step the front cow $x$ is not $b_i$. Every 
-cow that is still in the queue has not been moved, keeping the 
-original order of the cows in $a$ undisturbed. This means that 
-$x$ is to the left of $b_i$ in $a$, but in the final lineup $b_i$ 
-must be to the left of $x$. There are only two ways to change the 
-order of two cows: we move $b_i$ to the left of $x$, or we move 
-$x$ to the right of $b_i$. The second move is not allowed by the 
-problem statement, and moving any other cow doesn't change the 
-order of these two cows. So Farmer John must choose cow $b_i$ at 
+Suppose that at some step the front cow $x$ is not $b_i$. Every
+cow that is still in the queue has not been moved, keeping the
+original order of the cows in $a$ undisturbed. This means that
+$x$ is to the left of $b_i$ in $a$, but in the final lineup $b_i$
+must be to the left of $x$. There are only two ways to change the
+order of two cows: we move $b_i$ to the left of $x$, or we move
+$x$ to the right of $b_i$. The second move is not allowed by the
+problem statement, and moving any other cow doesn't change the
+order of these two cows. So Farmer John must choose cow $b_i$ at
 least once.
 
-Each cow that gets pulled out is a different cow, and each of 
-them is forced to be chosen at least once, so no other solution 
-can use fewer modifications than our approach, making our 
+Each cow that gets pulled out is a different cow, and each of
+them is forced to be chosen at least once, so no other solution
+can use fewer modifications than our approach, making our
 approach optimal.
 
 <Info>
-There is another neat way to find the answer. If we relabel every 
-cow by its position in $b$, the target becomes $1, 2, 3, \dots, N$, 
-and cow $x$ must be moved exactly when some larger cow is to 
-its left in $a$. So the answer here will be $N$ minus the number 
-of prefix maxima of the relabeled $a$. In the second example, $a$ 
-becomes $[2, 4, 5, 3, 1]$, and the cows that are not prefix 
-maxima are $3$ and $1$, which are original cows $2$ and $4$, 
+There is another neat way to find the answer. If we relabel every
+cow by its position in $b$, the target becomes $1, 2, 3, \dots, N$,
+and cow $x$ must be moved exactly when some larger cow is to
+its left in $a$. So the answer here will be $N$ minus the number
+of prefix maxima of the relabeled $a$. In the second example, $a$
+becomes $[2, 4, 5, 3, 1]$, and the cows that are not prefix
+maxima are $3$ and $1$, which are original cows $2$ and $4$,
 again giving $2$.
 </Info>
 
 For our implementation, we don't exactly need a queue. We can use
-a pointer $j$ that points to the front of the queue in $a$, and an 
-array `moved` to mark the already visited cows. For each $b_i$, 
-we will first move our pointer $j$ past all the marked cows. Then 
-if `a[j] == b[i]`, then $b_i$ is at the front, so we move $j$ 
-forward. Otherwise, we add $1$ to our final answer and mark $b_i$ 
+a pointer $j$ that points to the front of the queue in $a$, and an
+array `moved` to mark the already visited cows. For each $b_i$,
+we will first move our pointer $j$ past all the marked cows. Then
+if `a[j] == b[i]`, then $b_i$ is at the front, so we move $j$
+forward. Otherwise, we add $1$ to our final answer and mark $b_i$
 as moved.
 
 ### Implementation
