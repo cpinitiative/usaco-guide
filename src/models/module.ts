@@ -22,7 +22,7 @@ export class ModuleLinkInfo {
     public javaOc: number | null = 0,
     public pyOc: number | null = 0,
     public probs?: any,
-    public gitAuthorTime?: any
+    public gitAuthorTime?: string | null
   ) {
     if (this.id === 'using-this-guide' || this.id === 'working-mdx') {
       // The "Using This Guide" and "Working With MDX" modules are complete already, but
@@ -52,7 +52,7 @@ export class ModuleInfo extends ModuleLinkInfo {
     public id: string,
     public section: SectionID,
     public title: string,
-    public body: any,
+    public body: string,
     public author: string,
     public contributors: string,
     public prerequisites: string[],
@@ -60,7 +60,7 @@ export class ModuleInfo extends ModuleLinkInfo {
     public frequency: ModuleFrequency,
     public toc: TableOfContents,
     public fileRelativePath: string,
-    public gitAuthorTime: any,
+    public gitAuthorTime: string | null,
     public wide: boolean = false
   ) {
     super(id, section, title);
