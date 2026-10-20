@@ -180,8 +180,8 @@ async function tryCodeforcesAPI(url: string): Promise<string | null> {
             <div class="problem-statement">
               <div class="header">
                 <div class="title">${problem.index}. ${problem.name}</div>
-                <div class="time-limit">Time limit: 'Unknown'</div>
-                <div class="memory-limit">Memory limit: 'Unknown'</div>
+                <div class="time-limit">Time limit: Unknown</div>
+                <div class="memory-limit">Memory limit: Unknown</div>
                 ${problem.points ? `<div class="points">Points: ${problem.points}</div>` : ''}
                 ${problem.rating ? `<div class="rating">Rating: ${problem.rating}</div>` : ''}
               </div>
