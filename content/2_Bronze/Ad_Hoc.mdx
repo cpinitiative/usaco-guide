@@ -63,24 +63,19 @@ pull $2$ out, costing us another modification. Finally, $1$ and
 $3$ are at the front in the order we require, so we take them as
 they are. Thus, the total cost becomes $2$.
 
-We can prove that this approach always works, since pulling a cow
-to the front only slides it to the left.
-
-Suppose that at some step the front cow $x$ is not $b_i$. Every
-cow that is still in the queue has not been moved, keeping the
-original order of the cows in $a$ undisturbed. This means that
-$x$ is to the left of $b_i$ in $a$, but in the final lineup $b_i$
-must be to the left of $x$. There are only two ways to change the
-order of two cows: we move $b_i$ to the left of $x$, or we move
-$x$ to the right of $b_i$. The second move is not allowed by the
-problem statement, and moving any other cow doesn't change the
-order of these two cows. So Farmer John must choose cow $b_i$ at
-least once.
-
-Each cow that gets pulled out is a different cow, and each of
-them is forced to be chosen at least once, so no other solution
-can use fewer modifications than our approach, making our
-approach optimal.
+We can prove that this approach always works. Note that
+at all times, the relative locations of the cows in the queue
+is preserved compared to the original array. Thus, when a
+front cow $x$ is not $b_i$, $x$ is always to the left of $b_i$
+in $a$, but in the final lineup $b_i$ must be to the left of $x$.
+The only way to change relative positions of cows allowed by
+the problem is by moving $b_i$ to the left of $x$, as moving
+any other cow doesn't change the order of these two cows.
+Thus, Farmer John must choose to move cow $b_i$ at least
+once.  Since each cow that is pulled out is different, and they
+all must be moved at least once, no other approach can use
+fewer modifications than our approach, and thus, our strategy
+is optimal.
 
 <Info>
 There is another neat way to find the answer. If we relabel every
