@@ -4,8 +4,9 @@ import MODULE_ORDERING, {
   SECTION_LABELS,
   SectionID,
 } from '../../../content/ordering';
+import { algoliaIndexName } from '../../utils/algoliaIndex';
 
-export const indexName = `${process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME ?? 'dev'}_problems`;
+export const indexName = algoliaIndexName('problems');
 
 type RouteState = Record<string, string | string[] | undefined>;
 

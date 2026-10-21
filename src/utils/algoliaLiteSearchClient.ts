@@ -1,8 +1,13 @@
 import { liteClient } from 'algoliasearch/lite';
 
+// Search-only key. Production sets NEXT_PUBLIC_ALGOLIA_SEARCH_KEY to a key
+// restricted to the prod_* indices and usaco.guide referers; the fallback is
+// for every other build and should be a key limited to the dev_* indices with
+// a per-IP rate limit, since it ships in every clone and fork of this repo.
 const liteSearchClient = liteClient(
   '3CFULMFIDW',
-  'cdfadff49930ec4dc3327807edd10b8c'
+  process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY ||
+    'cdfadff49930ec4dc3327807edd10b8c'
 );
 
 // Headless browsers (navigator.webdriver === true) have been scraping the

@@ -15,6 +15,7 @@ import {
   AlgoliaEditorSolutionFile,
 } from '../models/algoliaEditorFile';
 import { AlgoliaProblemInfo, ProblemSolutionInfo } from '../models/problem';
+import { algoliaIndexName } from './algoliaIndex';
 import extractSearchableText from './extract-searchable-text';
 
 function stableStringify(obj: unknown): string {
@@ -186,8 +187,6 @@ export async function getEditorFileRecords() {
 }
 
 export async function getAlgoliaRecords() {
-  const indexPrefix = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME ?? 'dev';
-
   const [moduleRecords, problemRecords, fileRecords] = await Promise.all([
     getModuleRecords(),
     getProblemRecords(),
@@ -197,15 +196,15 @@ export async function getAlgoliaRecords() {
   const groups = [
     {
       records: moduleRecords,
-      indexName: indexPrefix + '_modules',
+      indexName: algoliaIndexName('modules'),
     },
     {
       records: problemRecords,
-      indexName: indexPrefix + '_problems',
+      indexName: algoliaIndexName('problems'),
     },
     {
       records: fileRecords,
-      indexName: indexPrefix + '_editorFiles',
+      indexName: algoliaIndexName('editorFiles'),
     },
   ];
 
