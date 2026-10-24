@@ -126,44 +126,44 @@ public class Main {
 		long left = -1;
 		long right = n;
 
-		long[] total_score = new long[n];
-		long[] min_score = new long[n];
-		ArrayList<Integer> max_score_values = new ArrayList<>();
+		long[] totalScore = new long[n];
+		long[] minScore = new long[n];
+		ArrayList<Integer> maxScoreValues = new ArrayList<>();
 
-		total_score[n - 1] = questions[n - 1];
-		min_score[n - 1] = questions[n - 1];
+		totalScore[n - 1] = questions[n - 1];
+		minScore[n - 1] = questions[n - 1];
 
-		long curr_question, curr_score, idx;
+		long currQuestion, currScore, idx;
 
 		for (int i = n - 2; i > 0; i--) {
-			curr_question = questions[i];
+			currQuestion = questions[i];
 
 			// calculating sum of scores from index i to N
-			total_score[i] = curr_question + total_score[i + 1];
+			totalScore[i] = currQuestion + totalScore[i + 1];
 
 			// minimum score from scores in indexes i to N
-			min_score[i] = Math.min(min_score[i + 1], curr_question);
+			minScore[i] = Math.min(minScore[i + 1], currQuestion);
 
 			// excluding the least score question to calculate average
-			curr_score = total_score[i] - min_score[i];
+			currScore = totalScore[i] - minScore[i];
 			idx = n - (i + 1);
 
-			if (curr_score * right > left * idx) {
-				left = curr_score;
+			if (currScore * right > left * idx) {
+				left = currScore;
 				right = idx;
-				max_score_values.clear();
-				max_score_values.add(i);
-			} else if (curr_score * right == left * idx) {
-				max_score_values.add(i);
+				maxScoreValues.clear();
+				maxScoreValues.add(i);
+			} else if (currScore * right == left * idx) {
+				maxScoreValues.add(i);
 			}
 		}
 
-		Collections.sort(max_score_values);
+		Collections.sort(maxScoreValues);
 
 		PrintWriter out =
 		    new PrintWriter(new BufferedWriter(new FileWriter("homework.out")));
 
-		for (int k : max_score_values) { out.println(k); }
+		for (int k : maxScoreValues) { out.println(k); }
 
 		out.close();
 	}
