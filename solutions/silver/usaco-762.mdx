@@ -105,4 +105,71 @@ with open("homework.out", "w") as out:
 
 </PySection>
 
+<JavaSection>
+
+```java
+
+import java.io.*;
+import java.util.*;
+
+public class Main {
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("homework.in"));
+
+		int n = Integer.parseInt(br.readLine().trim());
+		long[] questions = new long[n];
+
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		for (int i = 0; i < n; i++) { questions[i] = Long.parseLong(st.nextToken()); }
+		br.close();
+
+		long left = -1;
+		long right = n;
+
+		long[] totalScore = new long[n];
+		long[] minScore = new long[n];
+		ArrayList<Integer> maxScoreValues = new ArrayList<>();
+
+		totalScore[n - 1] = questions[n - 1];
+		minScore[n - 1] = questions[n - 1];
+
+		long currQuestion, currScore, idx;
+
+		for (int i = n - 2; i > 0; i--) {
+			currQuestion = questions[i];
+
+			// calculating sum of scores from index i to N
+			totalScore[i] = currQuestion + totalScore[i + 1];
+
+			// minimum score from scores in indexes i to N
+			minScore[i] = Math.min(minScore[i + 1], currQuestion);
+
+			// excluding the least score question to calculate average
+			currScore = totalScore[i] - minScore[i];
+			idx = n - (i + 1);
+
+			if (currScore * right > left * idx) {
+				left = currScore;
+				right = idx;
+				maxScoreValues.clear();
+				maxScoreValues.add(i);
+			} else if (currScore * right == left * idx) {
+				maxScoreValues.add(i);
+			}
+		}
+
+		Collections.sort(maxScoreValues);
+
+		PrintWriter out =
+		    new PrintWriter(new BufferedWriter(new FileWriter("homework.out")));
+
+		for (int k : maxScoreValues) { out.println(k); }
+
+		out.close();
+	}
+}
+```
+
+</JavaSection>
+
 </LanguageSection>
