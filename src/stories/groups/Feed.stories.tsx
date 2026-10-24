@@ -8,6 +8,9 @@ import { UserGroupsContext } from '../../hooks/groups/useUserGroups';
 import { GroupData } from '../../models/groups/groups';
 import { PostData } from '../../models/groups/posts';
 
+import { User } from 'firebase/auth';
+import { UserData } from '../../context/UserDataContext/UserDataContext';
+
 const group: GroupData = {
   id: 'storybook-group',
   name: 'Storybook Algorithms Group',
@@ -55,10 +58,12 @@ const Template: StoryFn<{
   return (
     <UserDataContext.Provider
       value={{
-        userData: {} as any,
+        // does not satisfy all properties, but we don't need them in testing
+        userData: {} as UserData,
         updateUserData: () => {},
         signOut: () => Promise.resolve(),
-        firebaseUser: { uid: 'storybook-user' } as any,
+        // does not satisfy all properties, but we don't need them in testing, so coerce
+        firebaseUser: { uid: 'storybook-user' } as User,
         forceFirebaseUserRerender: () => {},
         importUserData: () => false,
         deleteAllUserData: () => Promise.resolve(false),
