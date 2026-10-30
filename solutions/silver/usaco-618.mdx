@@ -1,0 +1,82 @@
+---
+id: usaco-618
+source: USACO Silver 2016 February
+title: Circular Barn
+author: hippi345
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_cbarn_gold_feb16.html)
+
+The silver version of this problem is the same as the [gold version](/problems/usaco-621); the official silver write-up points to the gold analysis.
+
+## Explanation
+
+Each cow enters through the door where she lined up, then walks clockwise until she stops in an empty room. Walking through $d$ doors costs $d^2$ energy, and we want one cow in each of the $n$ rooms with minimum total energy.
+
+A natural greedy simulation processes cows in clockwise order: every cow keeps walking until the next door that still needs a cow. When several cows could stop at the same door, it is always safe to stop the cow that **started walking earliest** — if a later-starting cow passes an earlier cow's starting door, the earlier cow can still take a door before the later cow's destination without increasing the answer.
+
+So we pick a starting door on the circle and imagine all cows there begin walking together. We keep a counter of how many cows are currently walking. Whenever we reach a door, we assign one of those cows to that room (decreasing the counter by one). Cows that line up at doors along the way join the group and increase the counter.
+
+We need a starting position where the counter never drops below zero — otherwise we would reach a door with no cow to place. Scanning the circle once and taking the rotation where the counter is largest guarantees such a starting point exists in an optimal assignment.
+
+Once the array is rotated to that starting point, a second pass computes the answer. If $c$ cows are already walking and $a$ new cows join at the current door, the new cows walk $c, c+1, \ldots, c+a-1$ doors, so the energy added at this step is
+
+$$
+\sum_{j=0}^{a-1} (c+j)^2.
+$$
+
+Let $\texttt{sumsq}(v)=\sum_{k=1}^{v} k^2 = \frac{v(v+1)(2v+1)}{6}$ (with $\texttt{sumsq}(0)=0$). Then the increment equals $\texttt{sumsq}(c+a-1)-\texttt{sumsq}(c-1)$, which is what the implementation below accumulates.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <algorithm>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+long long sumsq(long long v) { return v * (v + 1) * (2 * v + 1) / 6; }
+
+int main() {
+	freopen("cbarn.in", "r", stdin);
+	freopen("cbarn.out", "w", stdout);
+
+	int n;
+	cin >> n;
+	vector<long long> a(n);
+
+	long long active = 0;
+	for (int i = 0; i < n; i++) {
+		cin >> a[i];
+		active = max(0LL, active + a[i] - 1);
+	}
+
+	for (int i = 0;; i++) {
+		if (active == 0) {
+			rotate(a.begin(), a.begin() + i, a.end());
+			break;
+		}
+		active = max(0LL, active + a[i] - 1);
+	}
+
+	long long ans = 0;
+	active = 0;
+	for (int i = 0; i < n; i++) {
+		ans += sumsq(active + a[i] - 1) - sumsq(active - 1);
+		active = max(0LL, active + a[i] - 1);
+	}
+
+	cout << ans << '\n';
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
