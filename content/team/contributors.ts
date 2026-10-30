@@ -233,6 +233,11 @@ export const RestOfMembers: Member[] = [
     name: 'Arnav Gokhale',
     titles: [roles.contentAuthor],
   },
+  {
+    photo: 'yujia_gong',
+    name: 'Yujia (Guoguo) Gong',
+    titles: [roles.liveInstructor, roles.clubCurriculum],
+  },
 ];
 
 export const FormerMembers: Member[] = [
