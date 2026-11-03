@@ -32,66 +32,46 @@ $$
 and our objective is to find the value $x$ that minimizes $f(x)$.
 
 
-Let $S = \sum_{i=1}^{N} h_i$, and for a target height $x$ defne
+Let $S = \sum_{i=1}^{N} h_i$, and for a target height $x$ define
 
 $$
 P(x) = \sum_{i=1}^{N} \max(0,\, x - h_i), \qquad
 Q(x) = \sum_{i=1}^{N} \max(0,\, h_i - x).
 $$
 
-Then $P(x) - Q(x) = \sum_{i=1}^{N} (x - h_i) = Nx - S$, so
-$P(x) \geq Q(x)$ exactly when $x \geq \frac{S}{N}$. Therefore,
+Then $P(x) - Q(x) = Nx - S$, so $P(x) \geq Q(x)$ exactly when
+$x \geq \frac{S}{N}$. We can write the two expressions of 
+$f(x)$ as
 
 $$
-f(x) =
-\begin{cases}
-A\,(Nx - S) + M\,Q(x) & \text{if } x \geq \frac{S}{N}, \\
-R\,(S - Nx) + M\,P(x) & \text{if } x \leq \frac{S}{N}.
-\end{cases}
+f_1(x) = A\,(Nx - S) + M\,Q(x), \qquad
+f_2(x) = R\,(S - Nx) + M\,P(x),
 $$
 
-To show that $f(x)$ is convex, we show that its slope
-$\Delta f(x) = f(x+1) - f(x)$ never decreases as $x$ grows.
+so that $f(x) = f_1(x)$ for $x \geq \frac{S}{N}$ and $f(x) = f_2(x)$ for
+$x \leq \frac{S}{N}$.
 
-<Info>
+<Info title="Why f(x) is convex?">
 
-Let $L(x)$ be the number of pillara with height at most $x$, and $G(x)$
-be the number of pillars taller than $x$. Then:
+Both $P(x)$ and $Q(x)$ are sums of terms like $\max(0, x - h_i)$ terms, which are
+convex, and adding a linear term keeps a function convex. So $f_1$ and
+$f_2$ are both convex.
+
+Now, using $M \leq A + R$, we get
 
 $$
-\Delta f(x) =
-\begin{cases}
-AN - M \cdot G(x) & \text{if } x \geq \frac{S}{N}, \\
--RN + M \cdot L(x) & \text{if } x + 1 \leq \frac{S}{N}.
-\end{cases}
+f_1(x) - f_2(x) = (A + R - M)(P(x) - Q(x)) = (A + R - M)(Nx - S),
 $$
 
-As $x$ grows, $G(x)$ only decreases and $L(x)$ only increases, so in
-both cases the slope never decreases. The slope also does not decrease
-at the step where we switch between the two cases. The two expressions
-in $f(x)$ differ by $(A + R - M)(Nx - S)$, which is non-negative exactly
-when $x \geq \frac{S}{N}$ (since $M \leq A + R$). So $f(x)$ is always the
-larger of the two expresions, and a maxmum of convex functions is
-convex.
-
-Therefore $\Delta f(x)$ is non-decreasing for every $x$, so $f(x)$ is
-convex. You can also verify this visually using
-[Desmos](https://www.desmos.com/calculator).
-
-For example, for the sample below, the slope of $f(x)$ only moves
-upwards as $x$ increases.
-
-**Sample:** $N = 5$, $A = 3$, $R = 2$, $M = 4$, pillars $= [1, 2, 5, 7, 10]$.
-
-![Restorer Distance](/solutions/gold/cf-1355E/restorer_distance.png)
+which is non-negative exactly when $x \geq \frac{S}{N}$. This means
+$f(x) = \max(f_1(x), f_2(x))$ everywhere, and the maximum of two convex
+functions is convex. So $f(x)$ is convex.
 
 </Info>
 
-Since $f(x)$ is convex, it is also unimodal, i.e., it decreases,
-reaches a minimum, then increases. This allows us to apply ternary
-search over the range of possible target heights to find the minimum
-cost.
-
+Since $f(x)$ is convex, it is also unimodal, i.e., it decreases, reaches
+a minimum, then increases. This allows us to apply ternary search over
+the range of possible target heights to find the minimum cost.
 
 ## Implementation
 
