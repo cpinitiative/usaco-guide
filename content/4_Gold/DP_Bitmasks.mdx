@@ -207,6 +207,17 @@ for (int mask = 0; mask < (1 << n); mask++) {
 ```
 
 </CPPSection>
+
+<PySection>
+```py
+for mask in range(1 << n):
+    submask = mask
+    while submask != 0:
+        subset = mask ^ submask
+        # do whatever you need to do here
+        submask = (submask - 1) & mask
+```
+</PySection>
 </LanguageSection>
 
 When we subtract $1$ from $\texttt{submask}$, the rightmost bit flips to a $0$ and all bits to the right of it will become $1$.
@@ -285,6 +296,45 @@ int main() {
 ```
 
 </CPPSection>
+
+<PySection>
+```py
+n, m = map(int, input().split())
+adj = [0] * n
+for _ in range(m):
+    u, v = map(int, input().split())
+    u -= 1
+    v -= 1
+    # adjacency list represented as a bitmask
+    adj[u] |= 1 << v
+    adj[v] |= 1 << u
+
+INF = float("inf")
+dp = [INF] * (1 << n)
+for mask in range(1 << n):
+    connected = True
+    for u in range(n):
+        if (mask >> u) & 1:
+            # check if u is connected to all other nodes in mask
+            if ((adj[u] | (1 << u)) & mask) != mask:
+                connected = False
+                break
+    if connected:
+        dp[mask] = 1
+
+for mask in range(1 << n):
+    submask = mask
+    while submask != 0:
+        subset = mask ^ submask
+        # submask has everything in mask but not in subset
+        if dp[subset] != INF and dp[submask] != INF:
+            dp[mask] = min(dp[mask], dp[subset] + dp[submask])
+        submask = (submask - 1) & mask
+
+print(dp[(1 << n) - 1])
+
+```
+</PySection>
 </LanguageSection>
 
 ### Problems
