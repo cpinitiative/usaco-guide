@@ -205,6 +205,53 @@ public class TreeMatching {
 
 </JavaSection>
 
+<PySection>
+```py
+import sys
+
+input = sys.stdin.readline
+
+n = int(input())
+adj = [[] for _ in range(n)]
+for _ in range(n - 1):
+    u, v = map(int, input().split())
+    u -= 1
+    v -= 1
+    adj[u].append(v)
+    adj[v].append(u)
+
+# find a parent for every node with a BFS from the root (node 0)
+# (an iterative traversal avoids Python's recursion limit)
+parent = [-1] * n
+order = [0]
+for v in order:
+    for to in adj[v]:
+        if to != parent[v]:
+            parent[to] = v
+            order.append(to)
+
+# dp[v][0]: max matching in the subtree of v where no edge from v to a child is taken
+# dp[v][1]: max matching in the subtree of v where one edge from v to a child is taken
+dp = [[0, 0] for _ in range(n)]
+
+# processing the nodes in reverse BFS order handles all children before their parent
+for v in reversed(order):
+    # first loop: dp[v][0] must be known before dp[v][1] can be computed
+    for to in adj[v]:
+        if to != parent[v]:
+            dp[v][0] += max(dp[to][0], dp[to][1])
+    for to in adj[v]:
+        if to != parent[v]:
+            dp[v][1] = max(
+                dp[v][1],
+                dp[to][0] + 1 + dp[v][0] - max(dp[to][0], dp[to][1]),
+            )
+
+print(max(dp[0][0], dp[0][1]))
+
+```
+</PySection>
+
 </LanguageSection>
 
 ### Solution 2 - Greedy
@@ -289,6 +336,46 @@ public class TreeMatching {
 
 </JavaSection>
 
+<PySection>
+```py
+
+import sys
+
+input = sys.stdin.readline
+
+n = int(input())
+adj = [[] for _ in range(n)]
+for _ in range(n - 1):
+    a, b = map(int, input().split())
+    a -= 1
+    b -= 1
+    adj[a].append(b)
+    adj[b].append(a)
+
+# find a parent for every node with a BFS from the root (node 0)
+parent = [-1] * n
+order = [0]
+for v in order:
+    for to in adj[v]:
+        if to != parent[v]:
+            parent[to] = v
+            order.append(to)
+
+# Going from the deepest nodes upwards, match each node with its parent
+# if neither of them has been matched yet. This is the same as repeatedly
+# matching a leaf with the only vertex adjacent to it.
+done = [False] * n
+ans = 0
+for v in reversed(order):
+    p = parent[v]
+    if p != -1 and not done[v] and not done[p]:
+        done[v] = done[p] = True
+        ans += 1
+
+print(ans)
+
+```
+</PySection>
 </LanguageSection>
 
 ## Problems
