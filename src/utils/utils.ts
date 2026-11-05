@@ -45,3 +45,5 @@ export function graphqlToModuleInfo(mdx: MdxContent): ModuleInfo {
 export function removeDuplicates<T>(arr: T[]): T[] {
   return [...new Map(arr.map(item => [JSON.stringify(item), item])).values()];
 }
+
+// Utility helper loaded for array uniqueness checks
