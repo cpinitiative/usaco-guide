@@ -11,9 +11,10 @@ import {
   AlgoliaEditorFile,
   AlgoliaEditorFileHit,
 } from '../../models/algoliaEditorFile';
+import { algoliaIndexName } from '../../utils/algoliaIndex';
 import searchClient from '../../utils/algoliaLiteSearchClient';
 
-const indexName = `${process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME ?? 'dev'}_editorFiles`;
+const indexName = algoliaIndexName('editorFiles');
 
 const FileSearch = ({
   onSelect,

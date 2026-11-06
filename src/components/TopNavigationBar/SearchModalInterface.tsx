@@ -12,9 +12,10 @@ import {
 } from 'react-instantsearch';
 import { moduleIDToURLMap, SECTION_LABELS } from '../../../content/ordering';
 import { AlgoliaModuleInfoHit } from '../../models/module';
+import { algoliaIndexName } from '../../utils/algoliaIndex';
 import searchClient from '../../utils/algoliaLiteSearchClient';
 
-const indexName = `${process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME ?? 'dev'}_modules`;
+const indexName = algoliaIndexName('modules');
 
 const ModuleSearch = () => {
   const { query, refine: setQuery } = useSearchBox();
