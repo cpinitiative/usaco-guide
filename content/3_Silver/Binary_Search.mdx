@@ -149,8 +149,8 @@ int main() {
 }
 ```
 
-See [Lambda Expressions](/general/lambda) if you're not familiar with the syntax
-used in the main function.
+See [Lambda Expressions](/general/lambda-funcs?lang=cpp#introduction) if you're
+not familiar with the syntax used in the main function.
 
 </CPPSection>
 <JavaSection>
@@ -416,12 +416,13 @@ $1 \leq \texttt{arr}_i \leq 10^9$, and $n$ is odd.
 
 To get the current median, we first sort the array in ascending order.
 
-Now, to make the median at least $x$, every element from the median position to
-the end of the sorted array must be at least $x$. Elements before the median
-position don't matter.
+Now, notice that to increase the current value to a value, say $x$.
+All values currently greater than or equal to the median, must remain greater than or equal to the median.
 
 For example, say we have the sorted array
 $[1,1,2,3,4,4,5,5,6,8,8]$. The current median is $4$, so to increase the median to $6$, we have to increase the current median by $2$ and we also have to increase the $5$'s to $6$.
+
+Following this idea, to increase the median to $x$, we need to increase all values in the second half of the array to some value greater than or equal to $x$.
 
 Then, we binary search for the maximum possible median. We know that the number of operations required to raise
 the median to $x$ increases monotonically as $x$ increases, so we can use binary
@@ -484,7 +485,7 @@ int main() {
 ```
 
 Here we write the check function as a
-[lambda expression](/general/lambda).
+[lambda expression](/general/lambda-funcs?lang=cpp#introduction).
 
 </CPPSection>
 <JavaSection>
@@ -608,7 +609,7 @@ int sqrt(int x) {
 ```java
 public static long f(int x) { return (long)x * x; }
 
-public static int isqrt(int x) {
+public static int sqrt(int x) {
 	int lo = 0;
 	int hi = x;
 	while (lo < hi) {
@@ -631,7 +632,7 @@ def f(x: int) -> int:
 	return x * x
 
 
-def isqrt(x: int) -> int:
+def sqrt(x: int) -> int:
 	lo = 0
 	hi = x
 	while lo < hi:
@@ -655,18 +656,18 @@ changes nothing. To fix this, round the midpoint **up** by setting
 <CPPSection>
 
 ```cpp
-int isqrt(int x) {
-	int lo = 0;
-	int hi = x;
+int sqrt(int x) {
+	long long lo = 0;
+	long long hi = x;  // long long so lo + hi + 1 cannot overflow
 	while (lo < hi) {
-		int mid = (lo + hi + 1) / 2;  // round up
-		if (f(mid) <= x) {
+		long long mid = (lo + hi + 1) / 2;  // round up
+		if (f((int)mid) <= x) {
 			lo = mid;
 		} else {
 			hi = mid - 1;
 		}
 	}
-	return lo;
+	return (int)lo;
 }
 ```
 
@@ -674,18 +675,18 @@ int isqrt(int x) {
 <JavaSection>
 
 ```java
-public static int isqrt(int x) {
-	int lo = 0;
-	int hi = x;
+public static int sqrt(int x) {
+	long lo = 0;
+	long hi = x;  // long so lo + hi + 1 cannot overflow
 	while (lo < hi) {
-		int mid = (lo + hi + 1) / 2;  // round up
-		if (f(mid) <= x) {
+		long mid = (lo + hi + 1) / 2;  // round up
+		if (f((int) mid) <= x) {
 			lo = mid;
 		} else {
 			hi = mid - 1;
 		}
 	}
-	return lo;
+	return (int) lo;
 }
 ```
 
@@ -693,7 +694,7 @@ public static int isqrt(int x) {
 <PySection>
 
 ```py
-def isqrt(x: int) -> int:
+def sqrt(x: int) -> int:
 	lo = 0
 	hi = x
 	while lo < hi:
