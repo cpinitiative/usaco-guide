@@ -1,0 +1,142 @@
+---
+id: cf-2039C2
+source: CF
+title: Shohag Loves XOR (Hard Version)
+author: LeadingTheAbyss
+---
+
+[Official Editorial (C++)](https://codeforces.com/blog/entry/136523)
+
+## Explanation
+
+We need to count the integers $1 \le y \le m$ such that $x \oplus y$ is divisible
+by $x$ or by $y$ (or both).
+
+Let $B$ be the smallest power of two that is strictly greater than $x$. Write
+$y = qB + r$ with $0 \le r < B$. Since $x < B$, we have
+$x \oplus y = qB + (x \oplus r)$. XOR with $x$ only changes the low bits of
+$y$, so the part $qB$ is left untouched.
+
+### Small $y$ ($y < B$)
+
+Here $B \le 2x$, so we can simply try every $y$ and check both conditions
+directly.
+
+### Large $y$ ($y \ge B$)
+
+Now $y \ge B > x$, so $x \oplus y$ has the same highest set bit as $y$. If that
+bit is $2^k$, then both $y$ and $x \oplus y$ lie in $[2^k, 2^{k+1})$. So
+$x \oplus y$ is nonzero and less than $2y$, which means the only multiple of $y$
+it could equal is $y$ itself. But $x \oplus y \neq y$ because $x \neq 0$. So
+$x \oplus y$ is never a multiple of $y$, and it remains to count the $y$ for
+which $x \mid (x \oplus y)$.
+
+For each remainder $r \in [0, B)$, let $z = x \oplus r$. We need
+
+$$
+qB + z \equiv 0 \pmod{x} \iff qB \equiv -z \pmod{x}.
+$$
+
+Let $g = \gcd(B, x)$. By Bézout's identity, this congruence has a solution if
+and only if $g \mid z$. If it does, run the
+[extended Euclidean algorithm](/adv/extend-euclid) on $(B, x)$ to find $u$ and
+$v$ with $uB + vx = g$. Multiplying by $-z/g$ gives
+
+$$
+q \equiv u \cdot \left(-\frac{z}{g}\right) \pmod{\frac{x}{g}}.
+$$
+
+So the valid $q$ form one residue class modulo $x/g$. We only need to count
+how many of them satisfy $1 \le q$ and $qB + r \le m$, which is a simple
+arithmetic computation.
+
+Note that $u$ is bounded by $x/g$ and $z < B \le 2x$, so the product above is at
+most about $2 \cdot 10^{12}$ and fits easily in a `long long`.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(x)$ per test case, which is $\mathcal{O}\left(\sum x\right)$ in total.
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+// BeginCodeSnip{Prefix}
+#include <algorithm>
+#include <array>
+#include <iostream>
+
+using namespace std;
+
+using ll = long long;
+
+array<ll, 3> extend_euclid(ll a, ll b) {
+	// we know that (1 * a) + (0 * b) = a and (0 * a) + (1 * b) = b
+	array<ll, 3> x = {1, 0, a};
+	array<ll, 3> y = {0, 1, b};
+
+	// run extended Euclidean algo
+	while (y[2] > 0) {
+		// keep subtracting multiple of one equation from the other
+		ll k = x[2] / y[2];
+		for (int i = 0; i < 3; i++) x[i] -= k * y[i];
+		swap(x, y);
+	}
+	return x;  // x[0] * a + x[1] * b = x[2], x[2] = gcd(a, b)
+}
+// EndCodeSnip
+
+// Based on code by jiangly on Codeforces:
+// https://codeforces.com/contest/2039/submission/292921831
+ll count_valid(ll x, ll max_y) {
+	// smallest power of two that is strictly greater than x
+	ll block = 1;
+	while (block <= x) { block *= 2; }
+
+	ll valid_num = 0;
+
+	// y < block: check every value directly
+	for (ll y = 1; y <= min(block - 1, max_y); y++) {
+		ll xor_value = x ^ y;
+		if (xor_value % x == 0 || xor_value % y == 0) { valid_num++; }
+	}
+
+	// y = q * block + low_bits with q >= 1: only "x divides x ^ y" can hold
+	auto bezout = extend_euclid(block, x);
+	ll common_divisor = bezout[2];
+	ll mod = x / common_divisor;
+	for (ll low_bits = 0; low_bits < block; low_bits++) {
+		// largest q such that q * block + low_bits <= max_y
+		ll max_q = (max_y - low_bits) / block;
+		if (max_q <= 0) { continue; }
+
+		// we need q * block = -xor_value (mod x), which has a solution
+		// if and only if common_divisor divides xor_value
+		ll xor_value = x ^ low_bits;
+		if (xor_value % common_divisor != 0) { continue; }
+
+		// smallest non-negative q satisfying the congruence, modulo mod
+		ll first_q = bezout[0] * (-xor_value / common_divisor) % mod;
+		if (first_q < 0) { first_q += mod; }
+		if (first_q == 0) { first_q = mod; }  // q = 0 was handled above
+
+		// count q in [first_q, max_q] that are congruent to first_q mod mod
+		if (first_q <= max_q) { valid_num += (max_q - first_q) / mod + 1; }
+	}
+
+	return valid_num;
+}
+
+int main() {
+	int test_num;
+	cin >> test_num;
+	for (int i = 0; i < test_num; i++) {
+		ll x, m;
+		cin >> x >> m;
+		cout << count_valid(x, m) << "\n";
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
