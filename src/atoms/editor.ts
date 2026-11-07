@@ -1,5 +1,6 @@
 import { atom } from 'jotai';
 import { atomFamily, atomWithStorage } from 'jotai/utils';
+import { type editor } from 'monaco-editor';
 import { Octokit } from 'octokit';
 import { fetchFileContent } from '../components/Editor/editorUtils';
 import { AlgoliaEditorSolutionFile } from '../models/algoliaEditorFile';
@@ -260,10 +261,13 @@ export const closeFileAtom = atom(null, (get, set, filePath: string) => {
   filesFamily.remove(filePath);
 });
 
-const baseMonacoEditorInstanceAtom = atom({ monaco: null as any });
+const baseMonacoEditorInstanceAtom = atom({
+  monaco: null as editor.IStandaloneCodeEditor | null,
+});
+
 export const monacoEditorInstanceAtom = atom(
   get => get(baseMonacoEditorInstanceAtom),
-  (get, _set, val: any) => {
-    get(baseMonacoEditorInstanceAtom).monaco = val;
+  (_get, set, val: editor.IStandaloneCodeEditor | null) => {
+    set(baseMonacoEditorInstanceAtom, { monaco: val });
   }
 );

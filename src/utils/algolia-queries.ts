@@ -14,7 +14,7 @@ import {
   AlgoliaEditorModuleFile,
   AlgoliaEditorSolutionFile,
 } from '../models/algoliaEditorFile';
-import { AlgoliaProblemInfo } from '../models/problem';
+import { AlgoliaProblemInfo, ProblemSolutionInfo } from '../models/problem';
 import extractSearchableText from './extract-searchable-text';
 
 function stableStringify(obj: unknown): string {
@@ -101,7 +101,7 @@ export async function getProblemRecords() {
         solution: fullProblem.solution
           ? (Object.fromEntries(
               Object.entries(fullProblem.solution).filter(([_, v]) => v != null)
-            ) as any)
+            ) as ProblemSolutionInfo)
           : null,
         problemModules: problemModulesWithPath,
       });

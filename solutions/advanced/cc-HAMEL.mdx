@@ -5,6 +5,8 @@ title: HAMEL
 author: Andrew Tam
 ---
 
+## Explanation
+
 Let $G = (V, E)$ be the input graph. The problem essentially asks us to find a subset $E' \subseteq E$ such that $(V, E')$ is a connected Eulerian graph. Observe that if we remove the edges along a path from $u$ to $v$ in the graph, the parities of $\deg(u)$ and $\deg(v)$ flip, while all others are maintained. Therefore, if we can find a way to pair all odd degree vertices and choose paths between them so that
 1. For distinct pairs $(s, t)$ and $(u, v)$, the chosen paths from $s$ to $t$ and $u$ to $v$ are edge-wise disjoint
 2. The graph remains connected after removing the edges from all chosen paths
@@ -44,6 +46,11 @@ $$
 $$
 
 as desired. To actually compute the two edge disjoint spanning trees, we use matroid intersection on the graphic matroid corresponding to $G$ and its dual. The independence check in the dual can be implemented via [bridge finding](/adv/BCC-2CC?lang=cpp#resource-https%3A%2F%2Fcodeforces.com%2Fblog%2Fentry%2F68138).
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2 M)$ per test case
+
 <LanguageSection>
 <CPPSection>
 

@@ -46,19 +46,55 @@ problem) is to do a lot of them.
 
 ### Explanation
 
-<IncompleteSection>
+Let's imagine the initial order of Farmer John's cows as a queue,
+and from that try to build the final lineup $b$ one cow at a
+time, from left to right. At step $i$ we want cow $b_i$ to come
+next, so we look at the cow standing at the front of the queue:
 
-- missing the observation the matching loop rests on: relabel the cows so that
-  the target order is $1 \dots N$, and then cow $a_j$ must be moved exactly when
-  some earlier $a_i$ has $a_i > a_j$, so the answer counts the elements that are
-  not a prefix maximum
-- missing a proof that no cow outside that count needs to be moved
+- If the front cow is $b_i$, we simply take it, which costs nothing.
+- Otherwise, we have to bring $b_i$ out to the front, which is just
+a move to the left, costing $1$ modification.
 
-</IncompleteSection>
+For example, let $a = [5, 1, 3, 2, 4]$ and $b = [4, 5, 2, 1, 3]$.
+Here, we want $4$ first, but $5$ is at the front, so we pull $4$
+out, costing $1$ modification. Now, $5$ is at the front, so we
+simply take it. Then, we want $2$ but $1$ is at the front, so we
+pull $2$ out, costing us another modification. Finally, $1$ and
+$3$ are at the front in the order we require, so we take them as
+they are. Thus, the total cost becomes $2$.
 
-If the element is at the target position, we simply move forward to the next one.
-Otherwise, if it's not currently available at the target position, we handle it by
-marking the element as moved and incrementing our answer.
+We can prove that this approach always works. Note that
+at all times, the relative locations of the cows in the queue
+are preserved compared to the original array. Thus, when a
+front cow $x$ is not $b_i$, $x$ is always to the left of $b_i$
+in $a$, but in the final lineup $b_i$ must be to the left of $x$.
+The only way to change relative positions of cows allowed by
+the problem is by moving $b_i$ to the left of $x$, as moving
+any other cow doesn't change the order of these two cows.
+Thus, Farmer John must choose to move cow $b_i$ at least
+once.  Since each cow that is pulled out is different, and they
+all must be moved at least once, no other approach can use
+fewer modifications than our approach, and thus, our strategy
+is optimal.
+
+<Info title = "Relabeling the Cows">
+There is another neat way to find the answer. If we relabel every
+cow by its position in $b$, the target becomes $1, 2, 3, \dots, N$,
+and cow $x$ must be moved exactly when some larger cow is to
+its left in $a$. So the answer here will be $N$ minus the number
+of prefix maxima of the relabeled $a$. In the second example, $a$
+becomes $[2, 4, 5, 3, 1]$, and the cows that are not prefix
+maxima are $3$ and $1$, which are original cows $2$ and $4$,
+again giving $2$.
+</Info>
+
+For our implementation, we don't exactly need a queue. We can use
+an `index` $j$ that points to the front of the queue in $a$, and an
+array `moved` to mark the already visited cows. For each $b_i$,
+we will first move our `index` $j$ past any marked cows. Then
+if `a[j] == b[i]`, then $b_i$ is at the front, so we move $j$
+forward. Otherwise, we add $1$ to our final answer and mark $b_i$
+as moved.
 
 ### Implementation
 

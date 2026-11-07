@@ -9,7 +9,7 @@ import { components } from '../markdown/MDXComponents';
 
 class ErrorBoundary extends React.Component<{ children?: React.ReactNode }> {
   state: {
-    error: null | any;
+    error: null | unknown;
   };
 
   constructor(props) {
@@ -29,13 +29,13 @@ class ErrorBoundary extends React.Component<{ children?: React.ReactNode }> {
   }
 
   render() {
-    if (this.state.error) {
+    if (this.state.error !== null) {
       // You can render any custom fallback UI
       return (
         <div>
           An error occurred:
           <p className="mt-2 font-mono text-sm text-red-700">
-            {this.state.error.toString()}
+            {String(this.state.error)}
           </p>
         </div>
       );
