@@ -742,7 +742,43 @@ int main() {
 }
 ```
 
-</CPPSection> </LanguageSection>
+</CPPSection>
+
+<PySection>
+
+```py
+import sys
+
+MAX_N = 10**6
+
+# phi[i] = number of integers in [1, i] that are coprime to i
+phi = list(range(MAX_N + 1))
+for i in range(2, MAX_N + 1):
+	# if i is prime
+	if phi[i] == i:
+		for j in range(i, MAX_N + 1, i):
+			phi[j] -= phi[j] // i
+
+# gcd_sum[j] = sum of gcd(i, j) for 1 <= i <= j
+gcd_sum = [0] * (MAX_N + 1)
+for i in range(1, MAX_N + 1):
+	for j in range(i, MAX_N + 1, i):
+		gcd_sum[j] += i * phi[j // i]
+
+# prefix sums of the answers (remove the diagonal i = j)
+pair_sum = [0] * (MAX_N + 1)
+for i in range(1, MAX_N + 1):
+	pair_sum[i] = pair_sum[i - 1] + gcd_sum[i] - i
+
+for line in sys.stdin:
+	n = int(line)
+	if n == 0:
+		break
+	print(pair_sum[n])
+```
+
+</PySection>
+</LanguageSection>
 
 ## Problems
 
