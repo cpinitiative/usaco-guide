@@ -1,0 +1,223 @@
+---
+id: usaco-765
+source: USACO Gold 2017 December
+title: A Pie for a Pie
+author: Shanmuka Gottimukkala
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_piepie_gold_dec17.html)
+
+## Explanation
+
+Each pie is described by two values: how tasty Bessie finds it, and how tasty
+Elsie finds it. Let `bessieValue[i]` be Bessie's tastiness value for pie $i$, and
+let `elsieValue[i]` be Elsie's tastiness value for pie $i$. Pies $0$ through
+$N-1$ belong to Bessie, while pies $N$ through $2N-1$ belong to Elsie.
+
+### Modeling the exchange as a graph
+
+Suppose Bessie gives one of her pies $p$ to Elsie.
+
+- If `elsieValue[p]` is $0$, the exchange ends immediately.
+- Otherwise Elsie must give Bessie one of her pies $q$ satisfying
+
+  $$
+  \texttt{elsieValue}[p]\le \texttt{elsieValue}[q]\le \texttt{elsieValue}[p]+D.
+  $$
+
+  This is a directed edge $p\to q$.
+
+After Bessie receives $q$, the situation is symmetric.
+
+- If `bessieValue[q]` is $0$, the exchange ends immediately.
+- Otherwise Bessie must give Elsie one of her pies $r$ satisfying
+
+  $$
+  \texttt{bessieValue}[q]\le \texttt{bessieValue}[r]\le \texttt{bessieValue}[q]+D.
+  $$
+
+  This is a directed edge $q\to r$.
+
+Thus, a happy exchange is exactly a directed path that starts at a Bessie pie
+and ends at a pie whose recipient-valuation is $0$. The number of pies gifted is
+the number of vertices on this path. Because a pie may not be gifted twice, the
+path must be simple. Conversely, every simple directed path is a legal exchange,
+and a shortest path is always simple, so we do not need to track used pies
+explicitly during the search.
+
+### Reverse BFS
+
+We want the shortest happy exchange for every Bessie pie, so we run a
+multi-source BFS on the reversed graph. Every pie with recipient-valuation $0$
+is a source with distance $1$, since gifting that pie already ends the exchange.
+
+It remains to find, for a pie $u$ currently being processed, all pies $v$ with
+an edge $v\to u$.
+
+- If $u$ is a Bessie pie, then $v$ is an Elsie pie and
+
+  $$
+  \texttt{bessieValue}[u]-D\le \texttt{bessieValue}[v]\le \texttt{bessieValue}[u].
+  $$
+
+- If $u$ is an Elsie pie, then $v$ is a Bessie pie and
+
+  $$
+  \texttt{elsieValue}[u]-D\le \texttt{elsieValue}[v]\le \texttt{elsieValue}[u].
+  $$
+
+We maintain two ordered sets of pies that have not been reached yet:
+
+- Bessie's pies, ordered by `elsieValue`.
+- Elsie's pies, ordered by `bessieValue`.
+
+When processing $u$, we repeatedly extract the first not-yet-reached pie in the
+appropriate interval, assign it distance $\texttt{dist}[u]+1$, and erase it from
+the set. Every pie is inserted once and erased at most once, so the total time
+spent on range extraction is $\mathcal{O}(N\log N)$.
+
+## Correctness Proof
+
+We call $u$ the **parent** of $v$ if $v$ is discovered while the BFS is processing
+$u$. Then $\texttt{dist}[v]=\texttt{dist}[u]+1$, and $v\to u$ is an edge.
+Following parents from a discovered pie must eventually reach a source, since
+the distance decreases by exactly $1$ at each step.
+
+**Lemma 1.** If the BFS assigns distance $d$ to a pie $v$, then there is a happy
+exchange of exactly $d$ pies starting with $v$.
+
+**Proof.** We use induction on the BFS discovery order. A source is discovered
+with distance $1$, and its parent chain consists only of itself. Since its
+recipient-valuation is $0$, this is a happy exchange of one pie.
+
+Now suppose $v$ is discovered while processing $u$, so $u$ is the parent of $v$
+and $\texttt{dist}[u]=d-1$. By induction, the parent chain of $u$ is a happy
+exchange of $d-1$ pies. Every pie on this chain had already been discovered when
+processing of $u$ began. In contrast, $v$ was still in its ordered set at that
+moment, so $v$ does not appear on $u$'s chain. Prepending $v$ to that chain is valid
+because $v\to u$ is an edge, and it produces a happy exchange of $d$ distinct
+pies starting with $v$. $\square$
+
+**Lemma 2.** If there is a happy exchange of $L$ pies starting with a pie $v$,
+then the BFS assigns $v$ a distance at most $L$.
+
+**Proof.** First observe that when a pie $u$ is processed, every pie that has
+already been discovered has distance at most $\texttt{dist}[u]+1$. The BFS queue
+is processed in nondecreasing order of distance, and every newly discovered pie
+receives its parent's distance plus $1$. Thus all previously discovered pies are
+either sources or children of pies with distance at most $\texttt{dist}[u]$, so
+their distances are at most $\texttt{dist}[u]+1$.
+
+We now use induction on $L$. If $L=1$, then $v$ is a source and receives
+distance $1$.
+
+For $L>1$, let $u$ be the next pie in the exchange, so $v\to u$ is an edge and
+there is a happy exchange of $L-1$ pies starting with $u$. By induction,
+$\texttt{dist}[u]\le L-1$. When $u$ is processed, either $v$ has already been
+discovered, in which case the observation above gives
+$\texttt{dist}[v]\le\texttt{dist}[u]+1\le L$, or $v$ is still in its ordered
+set. In the latter case, $v$ lies in the required interval for a predecessor of
+$u$, so it is extracted and assigned distance
+$\texttt{dist}[u]+1\le L$. In both cases, $\texttt{dist}[v]\le L$. $\square$
+
+By Lemma 1 the BFS distance is achievable, and by Lemma 2 it is no larger than
+the length of any happy exchange. Therefore it is exactly the minimum number of
+pies gifted.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N\log N)$
+
+**Space Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+int main() {
+	freopen("piepie.in", "r", stdin);
+	freopen("piepie.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int N;
+	ll D;
+	cin >> N >> D;
+
+	vector<ll> bessieValue(2 * N), elsieValue(2 * N);
+	for (int i = 0; i < 2 * N; i++) { cin >> bessieValue[i] >> elsieValue[i]; }
+
+	// Bessie's unreached pies, ordered by how tasty Elsie finds them.
+	set<pair<ll, int>> bessiePies;
+	// Elsie's unreached pies, ordered by how tasty Bessie finds them.
+	set<pair<ll, int>> elsiePies;
+
+	vector<int> dist(2 * N, -1);
+	queue<int> bfs;
+
+	// A pie valued 0 by its recipient ends the exchange immediately.
+	for (int i = 0; i < N; i++) {
+		if (elsieValue[i] == 0) {
+			dist[i] = 1;
+			bfs.push(i);
+		} else {
+			bessiePies.insert({elsieValue[i], i});
+		}
+	}
+	for (int i = N; i < 2 * N; i++) {
+		if (bessieValue[i] == 0) {
+			dist[i] = 1;
+			bfs.push(i);
+		} else {
+			elsiePies.insert({bessieValue[i], i});
+		}
+	}
+
+	const int MIN_INDEX = numeric_limits<int>::min();
+
+	while (!bfs.empty()) {
+		int current = bfs.front();
+		bfs.pop();
+
+		if (current < N) {
+			// Current is one of Bessie's pies. An Elsie pie q can lead to it
+			// exactly when bessieValue[q] is in
+			// [bessieValue[current] - D, bessieValue[current]].
+			ll low = bessieValue[current] - D;
+			ll high = bessieValue[current];
+			auto it = elsiePies.lower_bound({low, MIN_INDEX});
+			while (it != elsiePies.end() && it->first <= high) {
+				int previous = it->second;
+				dist[previous] = dist[current] + 1;
+				bfs.push(previous);
+				it = elsiePies.erase(it);
+			}
+		} else {
+			// Current is one of Elsie's pies. A Bessie pie p can lead to it
+			// exactly when elsieValue[p] is in
+			// [elsieValue[current] - D, elsieValue[current]].
+			ll low = elsieValue[current] - D;
+			ll high = elsieValue[current];
+			auto it = bessiePies.lower_bound({low, MIN_INDEX});
+			while (it != bessiePies.end() && it->first <= high) {
+				int previous = it->second;
+				dist[previous] = dist[current] + 1;
+				bfs.push(previous);
+				it = bessiePies.erase(it);
+			}
+		}
+	}
+
+	for (int i = 0; i < N; i++) { cout << dist[i] << '\n'; }
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
