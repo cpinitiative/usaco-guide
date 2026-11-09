@@ -88,78 +88,78 @@ using namespace std;
 using ll = long long;
 
 int main() {
-    freopen("piepie.in", "r", stdin);
-    freopen("piepie.out", "w", stdout);
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+	freopen("piepie.in", "r", stdin);
+	freopen("piepie.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
 
-    int N;
-    ll D;
-    cin >> N >> D;
+	int N;
+	ll D;
+	cin >> N >> D;
 
-    vector<ll> bessieValue(2 * N), elsieValue(2 * N);
-    for (int i = 0; i < 2 * N; i++) { cin >> bessieValue[i] >> elsieValue[i]; }
+	vector<ll> bessieValue(2 * N), elsieValue(2 * N);
+	for (int i = 0; i < 2 * N; i++) { cin >> bessieValue[i] >> elsieValue[i]; }
 
-    // Bessie's unreached pies, ordered by how tasty Elsie finds them.
-    set<pair<ll, int>> bessiePies;
-    // Elsie's unreached pies, ordered by how tasty Bessie finds them.
-    set<pair<ll, int>> elsiePies;
+	// Bessie's unreached pies, ordered by how tasty Elsie finds them.
+	set<pair<ll, int>> bessiePies;
+	// Elsie's unreached pies, ordered by how tasty Bessie finds them.
+	set<pair<ll, int>> elsiePies;
 
-    vector<int> dist(2 * N, -1);
-    queue<int> bfs;
+	vector<int> dist(2 * N, -1);
+	queue<int> bfs;
 
-    // A pie valued 0 by its recipient ends the exchange immediately.
-    for (int i = 0; i < N; i++) {
-        if (elsieValue[i] == 0) {
-            dist[i] = 1;
-            bfs.push(i);
-        } else {
-            bessiePies.insert({elsieValue[i], i});
-        }
-    }
-    for (int i = N; i < 2 * N; i++) {
-        if (bessieValue[i] == 0) {
-            dist[i] = 1;
-            bfs.push(i);
-        } else {
-            elsiePies.insert({bessieValue[i], i});
-        }
-    }
+	// A pie valued 0 by its recipient ends the exchange immediately.
+	for (int i = 0; i < N; i++) {
+		if (elsieValue[i] == 0) {
+			dist[i] = 1;
+			bfs.push(i);
+		} else {
+			bessiePies.insert({elsieValue[i], i});
+		}
+	}
+	for (int i = N; i < 2 * N; i++) {
+		if (bessieValue[i] == 0) {
+			dist[i] = 1;
+			bfs.push(i);
+		} else {
+			elsiePies.insert({bessieValue[i], i});
+		}
+	}
 
-    const int MIN_INDEX = numeric_limits<int>::min();
+	const int MIN_INDEX = numeric_limits<int>::min();
 
-    while (!bfs.empty()) {
-        int current = bfs.front();
-        bfs.pop();
+	while (!bfs.empty()) {
+		int current = bfs.front();
+		bfs.pop();
 
-        if (current < N) {
-            // Current is Bessie's pie. Predecessors are Elsie pies with
-            // B in [B[current]-D, B[current]].
-            ll low = bessieValue[current] - D;
-            ll high = bessieValue[current];
-            auto it = elsiePies.lower_bound({low, MIN_INDEX});
-            while (it != elsiePies.end() && it->first <= high) {
-                int previous = it->second;
-                dist[previous] = dist[current] + 1;
-                bfs.push(previous);
-                it = elsiePies.erase(it);
-            }
-        } else {
-            // Current is Elsie's pie. Predecessors are Bessie pies with
-            // E in [E[current]-D, E[current]].
-            ll low = elsieValue[current] - D;
-            ll high = elsieValue[current];
-            auto it = bessiePies.lower_bound({low, MIN_INDEX});
-            while (it != bessiePies.end() && it->first <= high) {
-                int previous = it->second;
-                dist[previous] = dist[current] + 1;
-                bfs.push(previous);
-                it = bessiePies.erase(it);
-            }
-        }
-    }
+		if (current < N) {
+			// Current is Bessie's pie. Predecessors are Elsie pies with
+			// B in [B[current]-D, B[current]].
+			ll low = bessieValue[current] - D;
+			ll high = bessieValue[current];
+			auto it = elsiePies.lower_bound({low, MIN_INDEX});
+			while (it != elsiePies.end() && it->first <= high) {
+				int previous = it->second;
+				dist[previous] = dist[current] + 1;
+				bfs.push(previous);
+				it = elsiePies.erase(it);
+			}
+		} else {
+			// Current is Elsie's pie. Predecessors are Bessie pies with
+			// E in [E[current]-D, E[current]].
+			ll low = elsieValue[current] - D;
+			ll high = elsieValue[current];
+			auto it = bessiePies.lower_bound({low, MIN_INDEX});
+			while (it != bessiePies.end() && it->first <= high) {
+				int previous = it->second;
+				dist[previous] = dist[current] + 1;
+				bfs.push(previous);
+				it = bessiePies.erase(it);
+			}
+		}
+	}
 
-    for (int i = 0; i < N; i++) { cout << dist[i] << '\n'; }
+	for (int i = 0; i < N; i++) { cout << dist[i] << '\n'; }
 }
 ```
 
