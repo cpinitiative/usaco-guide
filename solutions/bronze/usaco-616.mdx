@@ -2,7 +2,7 @@
 id: usaco-616
 source: USACO Bronze 2016 February
 title: Circular Barn
-author: Óscar Garries, Varun Ragunath
+author: Óscar Garries, Varun Ragunath, Rameez Parwez
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_cbarn_bronze_feb16.html)
@@ -107,12 +107,41 @@ public class cbarn {
 </LanguageSection>
 </Spoiler>
 
-<LanguageSection>
-<CPPSection>
+## Solution
+
+Let's first think from the perspective of a single cow. Once a cow
+enters through the unlocked door, she can only go clockwise, so she
+keeps going through every room until she reaches a room that still
+requires a cow. The total distance covered by the cows will be just
+the total number of doors they pass through.
+
+Say we unlock some room and number the rooms in clockwise order
+starting from it. Consider the door between the $j$-th room and the
+$(j + 1)$-th room. Every cow that needs to end up in one of the first
+$j$ rooms has already stopped by then, so the cows that pass through
+this door are exactly the ones destined for the rooms after it. This
+means that the number of cows crossing this door will be:
+
+$$
+\text{cows\_left}(j) = \text{total cows} - \sum_{k=1}^{j} r_k
+$$
+
+where $r_k$ is the number of cows needed in the $k$-th room (in order
+from the unlocked room). Summing this over all doors will give us the
+total distance for this choice of the unlocked room. For $j = n$, the
+contribution is $0$ since every cow has already stopped.
+
+Since our constraints are small ($n \leq 1000$), we can simply try
+every room as the unlocked one, calculate the total distance with the
+help of the above formula, and take the minimum.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(\text{room\_num}^2)$
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+<CPPSection>
+
 
 ```cpp
 #include <bits/stdc++.h>
@@ -132,11 +161,15 @@ int main() {
 	}
 
 	int min_dist = INT32_MAX;
+	// unlock -> room we open
 	for (int unlock = 0; unlock < room_num; unlock++) {
 		int dist = 0;
 		int cows_left = total_cows;
 		for (int r = 0; r < room_num; r++) {
+			// subtract the cows that stay in it
 			cows_left -= rooms[(unlock + r) % room_num];
+
+			// add the remaining to the distance
 			dist += cows_left;
 		}
 		min_dist = min(min_dist, dist);
@@ -166,11 +199,15 @@ public class CBarn {
 		}
 
 		int minDist = Integer.MAX_VALUE;
+		// unlock -> room we open
 		for (int unlock = 0; unlock < roomNum; unlock++) {
 			int dist = 0;
 			int cowsLeft = totalCows;
 			for (int r = 0; r < roomNum; r++) {
+				// subtract the cows that stay in it
 				cowsLeft -= rooms[(unlock + r) % roomNum];
+
+				// add the remaining to the distance
 				dist += cowsLeft;
 			}
 			minDist = Math.min(minDist, dist);
@@ -194,11 +231,15 @@ with open("cbarn.in") as read:
 total_cows = sum(rooms)
 
 min_dist = float("inf")
+# unlock -> room we open
 for unlock in range(room_num):
 	dist = 0
 	cows_left = total_cows
 	for r in range(room_num):
+		# subtract the cows that stay in it
 		cows_left -= rooms[(unlock + r) % room_num]
+
+		# add the remaining to the distance
 		dist += cows_left
 	min_dist = min(min_dist, dist)
 
