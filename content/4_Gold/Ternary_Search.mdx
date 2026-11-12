@@ -110,6 +110,27 @@ template <typename F> double find_min(double l, double r, double eps, const F &f
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.util.function.DoubleUnaryOperator;
+
+/** @return the x in [l, r] minimizing f, up to error eps */
+public static double findMin(double l, double r, double eps, DoubleUnaryOperator f) {
+	while (r - l > eps) {
+		double m1 = l + (r - l) / 3;
+		double m2 = r - (r - l) / 3;
+		if (f.applyAsDouble(m1) > f.applyAsDouble(m2)) {
+			l = m1;
+		} else {
+			r = m2;
+		}
+	}
+
+	return l;
+}
+```
+</JavaSection>
 <PySection>
 
 ```py
@@ -151,6 +172,32 @@ template <typename F> int find_min(int l, int r, const F &f) {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.util.function.IntUnaryOperator;
+
+/** @return the x in [l, r] minimizing f */
+public static int findMin(int l, int r, IntUnaryOperator f) {
+	while (r - l > 3) {
+		int m1 = l + (r - l) / 3;
+		int m2 = r - (r - l) / 3;
+		if (f.applyAsInt(m1) > f.applyAsInt(m2)) {
+			l = m1;
+		} else {
+			r = m2;
+		}
+	}
+
+	int res = l;
+	for (int i = l + 1; i <= r; i++) {
+		if (f.applyAsInt(i) < f.applyAsInt(res)) { res = i; }
+	}
+
+	return res;
+}
+```
+</JavaSection>
 <PySection>
 
 ```py
@@ -193,6 +240,26 @@ template <typename F> int find_min(int l, int r, const F &f) {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.util.function.IntUnaryOperator;
+
+/** @return the x in [l, r] minimizing f */
+public static int findMin(int l, int r, IntUnaryOperator f) {
+	while (l < r) {
+		int m = (l + r) / 2;
+		if (f.applyAsInt(m) < f.applyAsInt(m + 1)) {
+			r = m;
+		} else {
+			l = m + 1;
+		}
+	}
+
+	return l;
+}
+```
+</JavaSection>
 <PySection>
 
 ```py
@@ -326,6 +393,76 @@ lead to our ternary search producing an incorrect answer.
 </Warning>
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class HaybaleDistribution {
+	private static int n;
+	private static int[] x;
+	private static long[] pref;
+	// only keep track of distinct x[i]
+	private static ArrayList<Integer> uniqueX = new ArrayList<>();
+
+	/** @return sum of x[i] on range [l, r] */
+	private static long prefSum(int l, int r) { return pref[r + 1] - pref[l]; }
+
+	/** @return cost of delivering hay at x[uniqueX[idx]] */
+	private static long cost(int idx, int a, int b) {
+		int loc = uniqueX.get(idx);
+		long leftDists = 1L * x[loc] * loc - prefSum(0, loc - 1);
+		long rightDists = prefSum(loc, n - 1) - 1L * x[loc] * (n - loc);
+		return leftDists * a + rightDists * b;
+	}
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		n = sc.nextInt();
+		x = new int[n];
+		for (int i = 0; i < n; i++) { x[i] = sc.nextInt(); }
+
+		Arrays.sort(x);
+
+		// compute prefix sums on x[i] values
+		pref = new long[n + 1];
+		for (int i = 1; i <= n; i++) { pref[i] = pref[i - 1] + x[i - 1]; }
+
+		uniqueX.add(0);
+		for (int i = 1; i < n; i++) {
+			if (x[i] != x[i - 1]) { uniqueX.add(i); }
+		}
+
+		int queryNum = sc.nextInt();
+		for (int q = 0; q < queryNum; q++) {
+			int a = sc.nextInt();
+			int b = sc.nextInt();
+
+			/*
+			 * We use binary search to find the minimum (instead of ternary).
+			 * In this case, we find the first point where the function becomes increasing.
+			 *
+			 * To optimize each query to O(log n), we choose to only consider
+			 * unique x[i] values to deliver our haybales at.
+			 */
+			int l = 0, r = uniqueX.size() - 1;
+			while (l < r) {
+				int m = (l + r) / 2;
+				if (cost(m, a, b) < cost(m + 1, a, b)) {
+					r = m;
+				} else {
+					l = m + 1;
+				}
+			}
+
+			System.out.println(cost(l, a, b));
+		}
+	}
+}
+```
+</JavaSection>
 
 </LanguageSection>
 

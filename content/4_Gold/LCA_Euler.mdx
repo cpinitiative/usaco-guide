@@ -268,6 +268,103 @@ class LCA {
 ```
 
 </CPPSection>
+
+<JavaSection>
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class SparseTable<T extends Comparable<T>> {
+	private int n;
+	private int log2dist;
+	private ArrayList<ArrayList<T>> st;
+
+	public SparseTable(List<T> v) {
+		n = v.size();
+		log2dist = 1 + (31 - Integer.numberOfLeadingZeros(n));
+		st = new ArrayList<>();
+		for (int i = 0; i < log2dist; i++) { st.add(new ArrayList<>()); }
+		st.set(0, new ArrayList<>(v));
+		for (int i = 1; i < log2dist; i++) {
+			for (int j = 0; j + (1 << i) <= n; j++) {
+				st.get(i).add(min(st.get(i - 1).get(j),
+				                  st.get(i - 1).get(j + (1 << (i - 1)))));
+			}
+		}
+	}
+
+	private T min(T a, T b) { return a.compareTo(b) <= 0 ? a : b; }
+
+	/** @return minimum on the range [l, r] */
+	public T query(int l, int r) {
+		int i = 31 - Integer.numberOfLeadingZeros(r - l + 1);
+		return min(st.get(i).get(l), st.get(i).get(r - (1 << i) + 1));
+	}
+}
+
+class LCA {
+	private static class Pair implements Comparable<Pair> {
+		int first;
+		int second;
+
+		Pair(int first, int second) {
+			this.first = first;
+			this.second = second;
+		}
+
+		public int compareTo(Pair other) {
+			if (first != other.first) { return Integer.compare(first, other.first); }
+			return Integer.compare(second, other.second);
+		}
+	}
+
+	private final int n;
+	private final List<List<Integer>> adj;
+	private SparseTable<Pair> rmq;
+	private int[] tin;
+	private int[] et;
+	private int[] dep;
+	private int timer = 0;
+
+	/** prepares tin, et, dep arrays */
+	private void dfs(int u, int p) {
+		tin[u] = timer;
+		et[timer++] = u;
+		for (int v : adj.get(u)) {
+			if (v == p) { continue; }
+			dep[v] = dep[u] + 1;
+			dfs(v, u);
+			et[timer++] = u;
+		}
+	}
+
+	// make sure the adjacency list is 0 indexed
+	public LCA(List<List<Integer>> adj) {
+		this.adj = adj;
+		n = adj.size();
+		tin = new int[n];
+		et = new int[2 * n];
+		dep = new int[n];
+		dfs(0, -1);
+		ArrayList<Pair> arr = new ArrayList<>();
+		for (int i = 0; i < 2 * n; i++) { arr.add(new Pair(dep[et[i]], et[i])); }
+		rmq = new SparseTable<>(arr);
+	}
+
+	/** @return LCA of nodes a and b */
+	public int query(int a, int b) {
+		if (tin[a] > tin[b]) {
+			int tmp = a;
+			a = b;
+			b = tmp;
+		}
+		return rmq.query(tin[a], tin[b]).second;
+	}
+}
+```
+
+</JavaSection>
 </LanguageSection>
 
 ### Resources
