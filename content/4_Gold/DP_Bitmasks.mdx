@@ -125,6 +125,57 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Main {
+	private static final int MAX_N = 20;
+	private static final long MOD = (long)1e9 + 7;
+
+	private static long[][] dp = new long[1 << MAX_N][MAX_N];
+	// comeFrom[i] contains the cities that can fly to i
+	private static ArrayList<Integer>[] comeFrom = new ArrayList[MAX_N];
+
+	public static void main(String[] args) {
+		for (int i = 0; i < MAX_N; i++) { comeFrom[i] = new ArrayList<>(); }
+
+		Scanner sc = new Scanner(System.in);
+		int cityNum = sc.nextInt();
+		int flightNum = sc.nextInt();
+		for (int f = 0; f < flightNum; f++) {
+			int start = sc.nextInt() - 1;
+			int end = sc.nextInt() - 1;
+			comeFrom[end].add(start);
+		}
+
+		dp[1][0] = 1;
+		for (int s = 2; s < 1 << cityNum; s++) {
+			// only consider subsets that have the first city
+			if ((s & (1 << 0)) == 0) continue;
+			// also only consider subsets with the last city if it's the full subset
+			if ((s & (1 << (cityNum - 1))) != 0 && s != ((1 << cityNum) - 1)) continue;
+
+			for (int end = 0; end < cityNum; end++) {
+				if ((s & (1 << end)) == 0) continue;
+
+				// the subset that doesn't include the current end
+				int prev = s - (1 << end);
+				for (int j : comeFrom[end]) {
+					if ((s & (1 << j)) != 0) {
+						dp[s][end] += dp[prev][j];
+						dp[s][end] %= MOD;
+					}
+				}
+			}
+		}
+		System.out.println(dp[(1 << cityNum) - 1][cityNum - 1]);
+	}
+}
+```
+</JavaSection>
 <PySection>
 
 <Warning>
@@ -207,6 +258,17 @@ for (int mask = 0; mask < (1 << n); mask++) {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+for (int mask = 0; mask < (1 << n); mask++) {
+	for (int submask = mask; submask != 0; submask = (submask - 1) & mask) {
+		int subset = mask ^ submask;
+		// do whatever you need to do here
+	}
+}
+```
+</JavaSection>
 
 <PySection>
 ```py
@@ -296,6 +358,58 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class Main {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int n = sc.nextInt();
+		int m = sc.nextInt();
+		int[] adj = new int[n];
+		for (int i = 0; i < m; i++) {
+			int u = sc.nextInt() - 1;
+			int v = sc.nextInt() - 1;
+			// adjacency list represented as a bitmask
+			adj[u] |= (1 << v);
+			adj[v] |= (1 << u);
+		}
+
+		int[] dp = new int[1 << n];
+		Arrays.fill(dp, Integer.MAX_VALUE);
+		for (int mask = 0; mask < (1 << n); mask++) {
+			boolean connected = true;
+			for (int u = 0; u < n; u++) {
+				if (((mask >> u) & 1) != 0) {
+					// check if u is connected to all other nodes in mask
+					if (((adj[u] | (1 << u)) & mask) != mask) {
+						connected = false;
+						break;
+					}
+				}
+			}
+
+			if (connected) { dp[mask] = 1; }
+		}
+
+		for (int mask = 0; mask < (1 << n); mask++) {
+			for (int submask = mask; submask != 0; submask = (submask - 1) & mask) {
+				int subset = mask ^ submask;
+				// submask has everything in mask but not in subset
+				if (dp[subset] != Integer.MAX_VALUE && dp[submask] != Integer.MAX_VALUE) {
+					dp[mask] = Math.min(dp[mask], dp[subset] + dp[submask]);
+				}
+			}
+		}
+
+		System.out.println(dp[(1 << n) - 1]);
+	}
+}
+```
+</JavaSection>
 
 <PySection>
 ```py
