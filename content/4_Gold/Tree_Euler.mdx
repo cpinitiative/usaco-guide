@@ -530,6 +530,109 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class SubtreeQueries {
+	// BeginCodeSnip{BIT (from PURS module)}
+	/**
+	 * Short for "binary indexed tree",
+	 * this data structure supports point update and range sum
+	 * queries like a segment tree.
+	 */
+	static class BIT {
+		private final long[] bit;
+		private final long[] arr;
+		private final int len;
+
+		public BIT(int len) {
+			bit = new long[len + 1];
+			arr = new long[len];
+			this.len = len;
+		}
+
+		/** Sets the value of index ind at the actual array to val. */
+		public void set(int ind, long val) { add(ind, val - arr[ind]); }
+
+		/** Adds val to the element at index ind. */
+		public void add(int ind, long val) {
+			arr[ind] += val;
+			ind++;
+			for (; ind <= len; ind += ind & -ind) { bit[ind] += val; }
+		}
+
+		/** @return The sum of all values in [0, ind]. */
+		public long prefSum(int ind) {
+			ind++;
+			long sum = 0;
+			for (; ind > 0; ind -= ind & -ind) { sum += bit[ind]; }
+			return sum;
+		}
+	}
+	// EndCodeSnip
+
+	private static ArrayList<Integer>[] neighbors;
+	private static int[] start;
+	private static int[] end;
+	private static int timer = 0;
+
+	static void eulerTour(int at, int prev) {
+		start[at] = timer++;
+		for (int n : neighbors[at]) {
+			if (n != prev) { eulerTour(n, at); }
+		}
+		end[at] = timer;
+	}
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int nodeNum = sc.nextInt();
+		int queryNum = sc.nextInt();
+
+		int[] vals = new int[nodeNum];
+		for (int i = 0; i < nodeNum; i++) { vals[i] = sc.nextInt(); }
+
+		neighbors = new ArrayList[nodeNum];
+		for (int i = 0; i < nodeNum; i++) { neighbors[i] = new ArrayList<>(); }
+		for (int e = 0; e < nodeNum - 1; e++) {
+			int n1 = sc.nextInt() - 1;
+			int n2 = sc.nextInt() - 1;
+			neighbors[n1].add(n2);
+			neighbors[n2].add(n1);
+		}
+
+		start = new int[nodeNum];
+		end = new int[nodeNum];
+		eulerTour(0, -1);
+
+		BIT bit = new BIT(nodeNum);
+		for (int i = 0; i < nodeNum; i++) { bit.set(start[i], vals[i]); }
+		for (int q = 0; q < queryNum; q++) {
+			int type = sc.nextInt();
+			if (type == 1) {
+				int node = sc.nextInt() - 1;
+				int val = sc.nextInt();
+				bit.set(start[node], val);
+			} else if (type == 2) {
+				int node = sc.nextInt() - 1;
+				long endSum = bit.prefSum(end[node] - 1);
+				long startSum;
+				if (start[node] == 0) {
+					startSum = 0;
+				} else {
+					startSum = bit.prefSum(start[node] - 1);
+				}
+				System.out.println(endSum - startSum);
+			}
+		}
+	}
+}
+```
+
+</JavaSection>
 </LanguageSection>
 
 ## Problems

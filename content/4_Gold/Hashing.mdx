@@ -192,6 +192,19 @@ const ll B = uniform_int_distribution<ll>(0, M - 1)(rng);
 ```
 
 </CPPSection>
+<JavaSection>
+
+In Java, the equivalent uses `ThreadLocalRandom`:
+
+```java
+import java.util.concurrent.ThreadLocalRandom;
+
+// ThreadLocalRandom is seeded automatically,
+// so nextLong(M) gives a uniform base in [0, M)
+final long B = ThreadLocalRandom.current().nextLong(M);
+```
+
+</JavaSection>
 
 </LanguageSection>
 
@@ -307,6 +320,92 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.TreeSet;
+import java.util.concurrent.ThreadLocalRandom;
+
+public class Main {
+	// BeginCodeSnip{HashedString}
+	static class HashedString {
+		// Change M and B if you want
+		static final long M = (1L << 61) - 1;
+		static final long B = ThreadLocalRandom.current().nextLong(M);
+
+		// pow[i] contains B^i % M
+		private static ArrayList<Long> pow = new ArrayList<>();
+
+		// pHash[i] is the hash of the first i characters of the given string
+		private long[] pHash;
+
+		// Java has no __int128, so multiply mod M with BigInteger
+		static long modMul(long a, long b) {
+			return BigInteger.valueOf(a)
+			    .multiply(BigInteger.valueOf(b))
+			    .mod(BigInteger.valueOf(M))
+			    .longValue();
+		}
+
+		public HashedString(String s) {
+			if (pow.isEmpty()) { pow.add(1L); }
+			while (pow.size() <= s.length()) {
+				pow.add(modMul(pow.get(pow.size() - 1), B));
+			}
+
+			pHash = new long[s.length() + 1];
+			pHash[0] = 0;
+			for (int i = 0; i < s.length(); i++) {
+				pHash[i + 1] = (modMul(pHash[i], B) + s.charAt(i)) % M;
+			}
+		}
+
+		public long getHash(int start, int end) {
+			long rawVal =
+			    pHash[end + 1] - modMul(pHash[start], pow.get(end - start + 1));
+			return (rawVal + M) % M;
+		}
+	}
+	// EndCodeSnip
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		String n = sc.next();
+		String h = sc.next();
+		if (n.length() > h.length()) {
+			System.out.println(0);
+			return;
+		}
+		HashedString hs = new HashedString(h);
+
+		int[] freqTarget = new int[26];
+		int[] freqCurr = new int[26];
+		TreeSet<Long> good = new TreeSet<>();
+		for (int i = 0; i < n.length(); i++) {
+			// Update frequency table
+			freqTarget[n.charAt(i) - 'a']++;
+			freqCurr[h.charAt(i) - 'a']++;
+		}
+		for (int i = n.length() - 1; i < h.length(); i++) {
+			if (i >= n.length()) {
+				// Update frequency table
+				freqCurr[h.charAt(i) - 'a']++;
+				freqCurr[h.charAt(i - n.length()) - 'a']--;
+			}
+			boolean match = true;
+			for (int j = 0; j < 26; j++) { match &= freqCurr[j] == freqTarget[j]; }
+			if (match) { good.add(hs.getHash(i + 1 - n.length(), i)); }
+		}
+
+		System.out.println(good.size());
+	}
+}
+```
+
+</JavaSection>
 </LanguageSection>
 
 ### Explanation - Two Hashes
@@ -419,6 +518,103 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.TreeSet;
+import java.util.concurrent.ThreadLocalRandom;
+
+public class Main {
+	// BeginCodeSnip{HashedString}
+	static class HashedString {
+		// Change M and B if you want
+		static final long M = (1L << 61) - 1;
+		static final long B = ThreadLocalRandom.current().nextLong(M);
+
+		// pow[i] contains B^i % M
+		private static ArrayList<Long> pow = new ArrayList<>();
+
+		// pHash[i] is the hash of the first i characters of the given string
+		private long[] pHash;
+
+		// Java has no __int128, so multiply mod M with BigInteger
+		static long modMul(long a, long b) {
+			return BigInteger.valueOf(a)
+			    .multiply(BigInteger.valueOf(b))
+			    .mod(BigInteger.valueOf(M))
+			    .longValue();
+		}
+
+		public HashedString(String s) {
+			if (pow.isEmpty()) { pow.add(1L); }
+			while (pow.size() <= s.length()) {
+				pow.add(modMul(pow.get(pow.size() - 1), B));
+			}
+
+			pHash = new long[s.length() + 1];
+			pHash[0] = 0;
+			for (int i = 0; i < s.length(); i++) {
+				pHash[i + 1] = (modMul(pHash[i], B) + s.charAt(i)) % M;
+			}
+		}
+
+		public long getHash(int start, int end) {
+			long rawVal =
+			    pHash[end + 1] - modMul(pHash[start], pow.get(end - start + 1));
+			return (rawVal + M) % M;
+		}
+	}
+	// EndCodeSnip
+
+	static long inv(long base, long mod) {
+		long ans = 1;
+		long expo = mod - 2;
+		while (expo != 0) {
+			if ((expo & 1) == 1) { ans = HashedString.modMul(ans, base); }
+			expo >>= 1;
+			base = HashedString.modMul(base, base);
+		}
+		return ans;
+	}
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		String n = sc.next();
+		String h = sc.next();
+		if (n.length() > h.length()) {
+			System.out.println(0);
+			return;
+		}
+		HashedString hs = new HashedString(h);
+
+		TreeSet<Long> good = new TreeSet<>();
+		long hHsh = 1, nHsh = 1;
+		for (int i = 0; i < n.length(); i++) {
+			// Compute product hashes
+			hHsh = HashedString.modMul(hHsh, HashedString.B + h.charAt(i) - 'a');
+			nHsh = HashedString.modMul(nHsh, HashedString.B + n.charAt(i) - 'a');
+		}
+
+		for (int i = n.length() - 1; i < h.length(); i++) {
+			if (i >= n.length()) {
+				// Update product hashes using modular inverse
+				hHsh = HashedString.modMul(
+				    hHsh, inv(HashedString.B + h.charAt(i - n.length()) - 'a',
+				              HashedString.M));
+				hHsh = HashedString.modMul(hHsh, HashedString.B + h.charAt(i) - 'a');
+			}
+			if (nHsh == hHsh) { good.add(hs.getHash(i + 1 - n.length(), i)); }
+		}
+
+		System.out.println(good.size());
+	}
+}
+```
+
+</JavaSection>
 </LanguageSection>
 
 ## Problems
@@ -544,6 +740,71 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Scanner;
+import java.util.concurrent.ThreadLocalRandom;
+
+public class Main {
+	private static final long MAX_VAL = (long)1e18;
+
+	/** @return a random integer between 0 and MAX_VAL */
+	static long rng() { return ThreadLocalRandom.current().nextLong(0, MAX_VAL + 1); }
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int len = sc.nextInt();
+
+		HashMap<Integer, Long> hashVals = new HashMap<>();
+		int[] a = new int[len];
+		for (int i = 0; i < len; i++) {
+			a[i] = sc.nextInt();
+			// assign a hash value to each unique number in the array
+			if (!hashVals.containsKey(a[i])) { hashVals.put(a[i], rng()); }
+		}
+		int[] b = new int[len];
+		for (int i = 0; i < len; i++) {
+			b[i] = sc.nextInt();
+			if (!hashVals.containsKey(b[i])) { hashVals.put(b[i], rng()); }
+		}
+
+		HashSet<Integer> seen = new HashSet<>();
+		long[] aXor = new long[len];
+		for (int i = 0; i < len; i++) {
+			// only add to prefix xor if not encountered before
+			if (!seen.contains(a[i])) {
+				aXor[i] = hashVals.get(a[i]);
+				seen.add(a[i]);
+			}
+			if (i > 0) { aXor[i] ^= aXor[i - 1]; }
+		}
+
+		seen.clear();
+		// do the same thing for b
+		long[] bXor = new long[len];
+		for (int i = 0; i < len; i++) {
+			if (!seen.contains(b[i])) {
+				bXor[i] = hashVals.get(b[i]);
+				seen.add(b[i]);
+			}
+			if (i > 0) { bXor[i] ^= bXor[i - 1]; }
+		}
+
+		int queryNum = sc.nextInt();
+		for (int q = 0; q < queryNum; q++) {
+			int aSet = sc.nextInt() - 1;
+			int bSet = sc.nextInt() - 1;
+			// check if the prefix xors are equal
+			System.out.println(aXor[aSet] == bXor[bSet] ? "Yes" : "No");
+		}
+	}
+}
+```
+
+</JavaSection>
 </LanguageSection>
 
 ## Problems

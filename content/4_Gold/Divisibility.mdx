@@ -743,6 +743,47 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.util.Scanner;
+
+public class Main {
+	private static final int MAX_N = (int)1e6;
+
+	private static long[] phi = new long[MAX_N + 1];
+	private static long[] f = new long[MAX_N + 1];
+	private static long[] sum = new long[MAX_N + 1];
+
+	public static void main(String[] args) {
+		// compute phi using sieve
+		for (int i = 1; i <= MAX_N; i++) { phi[i] = i; }
+
+		for (int i = 2; i <= MAX_N; i++) {
+			if (phi[i] == i) {
+				for (int j = i; j <= MAX_N; j += i) { phi[j] -= phi[j] / i; }
+			}
+		}
+
+		// compute f[j]
+		for (int i = 1; i <= MAX_N; i++) {
+			for (int j = i; j <= MAX_N; j += i) { f[j] += 1L * i * phi[j / i]; }
+		}
+
+		// prefix sums for answers (remove diagonal a=b)
+		for (int i = 1; i <= MAX_N; i++) { sum[i] = sum[i - 1] + f[i] - i; }
+
+		Scanner sc = new Scanner(System.in);
+		while (sc.hasNextInt()) {
+			int n = sc.nextInt();
+			if (n == 0) break;
+			System.out.println(sum[n]);
+		}
+	}
+}
+```
+
+</JavaSection>
 
 <PySection>
 
