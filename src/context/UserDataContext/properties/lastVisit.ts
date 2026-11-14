@@ -10,6 +10,21 @@ export const useLastVisitInfo = createUserDataGetter(userData => {
     pageviewsPerDay: userData.pageviewsPerDay,
   };
 });
+/**
+ * Whether the user has a recorded pageview on the calendar day (in local time)
+ * before the given timestamp. pageviewsPerDay is keyed by the timestamp of
+ * local midnight, matching how it's written below.
+ */
+const visitedOnPreviousDay = (
+  pageviewsPerDay: UserData['pageviewsPerDay'],
+  timestamp: number
+): boolean => {
+  const previousDay = new Date(timestamp);
+  previousDay.setDate(previousDay.getDate() - 1);
+  previousDay.setHours(0, 0, 0, 0);
+  return (pageviewsPerDay?.[previousDay.getTime()] ?? 0) > 0;
+};
+
 export const useSetLastVisitDate = createUserDataMutation(
   (
     userData,
@@ -31,6 +46,20 @@ export const useSetLastVisitDate = createUserDataMutation(
     };
 
     if (timeSinceLastVisit >= oneDay && timeSinceLastVisit <= twoDays) {
+      changes.localStorageUpdate['lastVisitDate'] = lastVisitDate;
+      changes.firebaseUpdate['lastVisitDate'] = lastVisitDate;
+      changes.localStorageUpdate['consecutiveVisits'] =
+        userData.consecutiveVisits + 1;
+      changes.firebaseUpdate[`consecutiveVisits`] = increment(1);
+    } else if (
+      timeSinceLastVisit > twoDays &&
+      visitedOnPreviousDay(userData.pageviewsPerDay, lastVisitDate)
+    ) {
+      // lastVisitDate is only updated when the streak is incremented, so
+      // visits that happen less than `oneDay` after it aren't recorded there.
+      // If the user visited on the previous calendar day, they haven't missed
+      // a day, so continue the streak instead of resetting it.
+      // See https://github.com/cpinitiative/usaco-guide/issues/6268
       changes.localStorageUpdate['lastVisitDate'] = lastVisitDate;
       changes.firebaseUpdate['lastVisitDate'] = lastVisitDate;
       changes.localStorageUpdate['consecutiveVisits'] =
