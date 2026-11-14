@@ -1,0 +1,168 @@
+---
+id: usaco-765
+source: USACO Gold 2017 December
+title: A Pie for a Pie
+author: Shanmuka Gottimukkala
+---
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_piepie_gold_dec17.html)
+
+## Explanation
+
+For convenience, let pies $0 \dots N-1$ belong to Bessie and pies $N \dots 2N-1$ belong to Elsie. Let $\texttt{B}[i]$ be how tasty Bessie finds pie $i$, and let $\texttt{E}[i]$ be how tasty Elsie finds it.
+
+If Elsie receives a pie $p$, she must give a pie $q$ of her own satisfying
+
+$$
+\texttt{E}[p] \leq \texttt{E}[q] \leq \texttt{E}[p] + D.
+$$
+
+Similarly, if Bessie receives pie $q$, she must give a pie $r$ satisfying
+
+$$
+\texttt{B}[q] \leq \texttt{B}[r] \leq \texttt{B}[q] + D.
+$$
+
+If a cow receives a pie she values at $0$, the exchange ends.
+
+We can represent this process as a directed graph, where each pie is a vertex and an edge from $p$ to $q$ exists whenever $q$ is a valid response after receiving $p$. We want the shortest path from each Bessie pie to any pie that ends the exchange.
+
+If we try to go forward, one pie can lead to many others, and building all edges takes $\mathcal{O}(N^2)$. Instead, consider the process backwards: if we already know the answer for $\texttt{cur}$, which pies could have come immediately before $\texttt{cur}$?
+
+### Reverse BFS
+
+In the reversed graph, every pie that ends the exchange immediately is a BFS source. These are Bessie's pies where $\texttt{E}[i]=0$ and Elsie's pies where $\texttt{B}[i]=0$. We initialize each source with $\texttt{dist}=1$, since gifting that pie completes the exchange. This is a multi-source BFS.
+
+Rather than following edges forward, we go in reverse. When we process $u$:
+
+- If $u$ is a Bessie pie, its predecessors are Elsie pies $v$ satisfying $\texttt{B}[v] \leq \texttt{B}[u] \leq \texttt{B}[v]+D$. Rearranging gives
+
+  $$
+  \texttt{B}[u]-D \leq \texttt{B}[v] \leq \texttt{B}[u].
+  $$
+
+- If $u$ is an Elsie pie, its predecessors are Bessie pies $v$ satisfying
+
+  $$
+  \texttt{E}[u]-D \leq \texttt{E}[v] \leq \texttt{E}[u].
+  $$
+
+Thus, each step is to find all undiscovered pies whose corresponding value lies in an interval and assign them $\texttt{dist}[u]+1$.
+
+Because BFS processes vertices in nondecreasing order of distance, the first time we discover a pie, its distance is already minimal. The predecessor relationships established during discovery form a parent chain representing a valid happy exchange, so we never need to track used pies explicitly.
+
+### Finding predecessors efficiently
+
+Naively, we would scan all unvisited pies each time:
+
+```
+for each unvisited pie v:
+  if value in [low, high]: push v
+```
+
+This takes $\mathcal{O}(N^2)$ time.
+
+Notice that the condition is a contiguous interval. We can maintain two ordered sets:
+
+- $\texttt{bessiePies}$: unvisited Bessie pies ordered by $\texttt{E}$.
+- $\texttt{elsiePies}$: unvisited Elsie pies ordered by $\texttt{B}$.
+
+When processing $u$, we use `lower_bound` to find the start of the interval in the opposite set and walk forward while the value is at most `high`. Each pie we find is discovered and erased immediately.
+
+Each pie is inserted into an ordered set at most once and erased at most once. Each pie is also discovered and processed by BFS at most once, so there are $\mathcal{O}(N)$ insertions, erasures, and `lower_bound` operations. Each ordered-set operation takes $\mathcal{O}(\log N)$ time, giving a total time complexity of $\mathcal{O}(N \log N)$. Any Bessie pie that is never reached gets $-1$.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N \log N)$
+
+**Space Complexity:** $\mathcal{O}(N)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+
+int main() {
+	freopen("piepie.in", "r", stdin);
+	freopen("piepie.out", "w", stdout);
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+
+	int N;
+	ll D;
+	cin >> N >> D;
+
+	vector<ll> bessieValue(2 * N), elsieValue(2 * N);
+	for (int i = 0; i < 2 * N; i++) { cin >> bessieValue[i] >> elsieValue[i]; }
+
+	// Bessie's unreached pies, ordered by how tasty Elsie finds them.
+	set<pair<ll, int>> bessiePies;
+	// Elsie's unreached pies, ordered by how tasty Bessie finds them.
+	set<pair<ll, int>> elsiePies;
+
+	vector<int> dist(2 * N, -1);
+	queue<int> bfs;
+
+	// A pie valued 0 by its recipient ends the exchange immediately.
+	for (int i = 0; i < N; i++) {
+		if (elsieValue[i] == 0) {
+			dist[i] = 1;
+			bfs.push(i);
+		} else {
+			bessiePies.insert({elsieValue[i], i});
+		}
+	}
+	for (int i = N; i < 2 * N; i++) {
+		if (bessieValue[i] == 0) {
+			dist[i] = 1;
+			bfs.push(i);
+		} else {
+			elsiePies.insert({bessieValue[i], i});
+		}
+	}
+
+	const int MIN_INDEX = numeric_limits<int>::min();
+
+	while (!bfs.empty()) {
+		int current = bfs.front();
+		bfs.pop();
+
+		if (current < N) {
+			// Current is Bessie's pie. Predecessors are Elsie pies with
+			// B in [B[current]-D, B[current]].
+			ll low = bessieValue[current] - D;
+			ll high = bessieValue[current];
+			auto it = elsiePies.lower_bound({low, MIN_INDEX});
+			while (it != elsiePies.end() && it->first <= high) {
+				int previous = it->second;
+				dist[previous] = dist[current] + 1;
+				bfs.push(previous);
+				it = elsiePies.erase(it);
+			}
+		} else {
+			// Current is Elsie's pie. Predecessors are Bessie pies with
+			// E in [E[current]-D, E[current]].
+			ll low = elsieValue[current] - D;
+			ll high = elsieValue[current];
+			auto it = bessiePies.lower_bound({low, MIN_INDEX});
+			while (it != bessiePies.end() && it->first <= high) {
+				int previous = it->second;
+				dist[previous] = dist[current] + 1;
+				bfs.push(previous);
+				it = bessiePies.erase(it);
+			}
+		}
+	}
+
+	for (int i = 0; i < N; i++) { cout << dist[i] << '\n'; }
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
