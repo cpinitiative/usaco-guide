@@ -2,6 +2,7 @@ import { getAuth, onAuthStateChanged, signOut, User } from 'firebase/auth';
 import {
   collection,
   doc,
+  getDoc,
   getDocs,
   getFirestore,
   onSnapshot,
@@ -292,6 +293,29 @@ export const UserDataProvider = ({
     []
   );
 
+  /**
+   * CREATING_ACCOUNT_FOR_FIRST_TIME should never change once the user doc
+   * exists (see https://github.com/cpinitiative/usaco-guide/issues/534), so
+   * when overwriting the user doc with setDoc() we need to carry it over.
+   *
+   * Read it from the existing Firestore doc rather than from local userData:
+   * local userData may not have it (e.g. if it was loaded from localStorage or
+   * replaced by imported data), and passing `undefined` to setDoc() throws
+   * "Unsupported field value: undefined" (#6280). Older accounts may not have
+   * the field at all, in which case it's omitted.
+   */
+  const getCreatingAccountForFirstTimeField = async (
+    user: User
+  ): Promise<{ CREATING_ACCOUNT_FOR_FIRST_TIME?: unknown }> => {
+    const snapshot = await getDoc(
+      doc(getFirestore(firebaseApp), 'users', user.uid)
+    );
+    const value = snapshot.data()?.CREATING_ACCOUNT_FOR_FIRST_TIME;
+    return value === undefined
+      ? {}
+      : { CREATING_ACCOUNT_FOR_FIRST_TIME: value };
+  };
+
   const userDataAPI: UserDataContextAPI = {
     userData,
 
@@ -398,20 +422,29 @@ export const UserDataProvider = ({
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedData));
       debouncedSetUserData(updatedData); // Use debounced version here
       if (firebaseUser) {
-        // Stupid hack: if firebase user is set, userData will actually have
-        // the CREATING_ACCOUNT_FOR_FIRST_TIME property, since userData will
-        // be set from the Firebase doc.
-        const CREATING_ACCOUNT_FOR_FIRST_TIME = (userData as any)
-          .CREATING_ACCOUNT_FOR_FIRST_TIME;
-        setDoc(doc(getFirestore(firebaseApp), 'users', firebaseUser.uid), {
-          ...data,
-          CREATING_ACCOUNT_FOR_FIRST_TIME,
-        }).catch(err => {
-          console.error(err);
-          alert(
-            `importUserData: Error setting firebase doc. Check console for details.`
-          );
-        });
+        // Never take CREATING_ACCOUNT_FOR_FIRST_TIME from the imported file;
+        // it's copied over from the existing Firebase doc instead.
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { CREATING_ACCOUNT_FOR_FIRST_TIME: _, ...importedData } =
+          data as any;
+        const userDoc = doc(
+          getFirestore(firebaseApp),
+          'users',
+          firebaseUser.uid
+        );
+        getCreatingAccountForFirstTimeField(firebaseUser)
+          .then(creatingAccountField =>
+            setDoc(userDoc, {
+              ...importedData,
+              ...creatingAccountField,
+            })
+          )
+          .catch(err => {
+            console.error(err);
+            alert(
+              `importUserData: Error setting firebase doc. Check console for details.`
+            );
+          });
       }
       return true;
     },
@@ -542,8 +575,7 @@ export const UserDataProvider = ({
 
           await setDoc(doc(db, 'users', firebaseUser.uid), {
             ...emptyUserData,
-            CREATING_ACCOUNT_FOR_FIRST_TIME: (userData as any)
-              .CREATING_ACCOUNT_FOR_FIRST_TIME, // hack because this field shouldn't be changed no matter what
+            ...(await getCreatingAccountForFirstTimeField(firebaseUser)),
           });
         }
 
