@@ -33,6 +33,10 @@ export default onDocumentWritten(
               "The post, group, or problem being submitted to couldn't be found."
             );
           }
+          // Don't award points for problems that have since been deleted;
+          // their points were already removed from the leaderboard
+          // (see cleanUpLeaderboard.ts)
+          if (problemDoc.data()?.isDeleted) return;
           if (!userDoc.exists) transaction.set(userRef, {});
 
           const oldProblemScore = userDoc.data()?.[postId]?.[problemId] || 0;
