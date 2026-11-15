@@ -25,7 +25,8 @@ export default function DesktopSidebar() {
           strokeLinejoin="round"
           strokeWidth={2}
         >
-          <path d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+          <rect x="3" y="3" width="18" height="18" rx="2" />
+          <path d="M9 3v18" />
         </svg>
       </button>
     );
@@ -60,7 +61,8 @@ export default function DesktopSidebar() {
                 strokeLinejoin="round"
                 strokeWidth={2}
               >
-                <path d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <path d="M9 3v18" />
               </svg>
             </button>
           </div>
