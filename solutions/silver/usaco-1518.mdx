@@ -38,23 +38,26 @@ The $2^{2^i} - 1$ is derived by the following:
 - That number is simply $2^i$ consecutive $1$s, nothing else
 - In decimal, that number is $2^0 + 2^1 + ... + 2^{2^{i} - 1} = 2^{2^{i}} - 1$
 
-Now, we have a sequence of numbers $2^{2^i} - 1$
+Now, we have a sequence of numbers $2^{2^i} - 1$ that satisfy the $K$ condition. What remains
+is to satisfy the $M$ (sum) condition. Note that because $K \leq 31$ or $K \leq 11111_2$, the
+only possible numbers in this sequence will be $\left\{1, 3, 15, 255, 65535 \right\}$
 
 There are a couple cases to consider after constructing this lowest-sum sequence. Let's
 denote the sum of this sequence as $S$.
 1. $S > M$: this means the sequence is not able to be constructed, for $S$ is the least possible
     sum satisfying the $K$ constraint
 2. $S = M$: the sequence is valid as is
-3. $S < M, M - S \% 2 = 0$ (where the sum is less than $M$ and the remaining to add is even):
-    we add $\frac{M - S}{2}$ two times to our list to avoid changing $K$ while satisfying the $M$ condition
-4. $S < M, M - S = 1$ (the sum is less than $M$, remaining is equal to $1$): this case is a bit tricky.
-    Adding one by itself will change $K$. However, if our current sequence does have a $1$ in it, then
-    we can change this $1$ ($=1_2$) to $2$ ($=10_2$). Effectively, we add one to the sum while not changing $K$.
-    Without a $1$ in our sequence, it is impossible.
-5. $S < M, M - S \% 2 = 1, M - S \neq 1$ (the sum is less than $M$, remaining is odd but not equal to one):
+3. $S < M, M - S = 1$ (the sum is less than $M$, remaining is equal to $1$): this case is a bit tricky.
+    Adding one by itself will change $K$. The only elements possible in our sequence are 
+	$\left\{1, 3, 15, 255, 65535 \right\}$. Increasing any of those elements by $1$ except $1$ results in
+	a changed `popcount`. Thus, we change a $1$ to a $2$ if the sequence has a $1$ to satisfy the
+	$M$ and $K$ conditions; otherwise, it is impossible to construct a sequence.
+4. $S < M, (M - S) \% 2 = 1, M - S \neq 1$ (the sum is less than $M$, remaining is odd but not equal to one):
     As stated previously, we need to add in multiples of two to not change $K$. However, because we know
     $M - S >= 3$, we can add a one and two to our sequence. This makes our remaining sum even while
     keeping $K$ the same. Then, we add $\frac{M - S - 3}{2}$ two times to account for the rest of the sum.
+5. $S < M, (M - S) \% 2 = 0$ (where the sum is less than $M$ and the remaining to add is even):
+    we add $\frac{M - S}{2}$ two times to our list to avoid changing $K$ while satisfying the $M$ condition
 
 The problem's difficulty comes from the many layers of abstraction. We need to consider the number
 in binary, then count (in binary) the ones, then XOR all ours counts. I highly recommend drawing
