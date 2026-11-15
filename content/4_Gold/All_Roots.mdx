@@ -173,6 +173,65 @@ public class Main {
 
 </JavaSection>
 
+
+<PySection>
+```py
+import sys
+
+input = sys.stdin.readline
+
+n = int(input())
+adj = [[] for _ in range(n)]
+for _ in range(n - 1):
+	u, v = map(int, input().split())
+	u -= 1
+	v -= 1
+	adj[u].append(v)
+	adj[v].append(u)
+
+# find a parent for every node with a BFS from the root (node 0)
+# (an iterative traversal avoids Python's recursion limit)
+parent = [-1] * n
+order = [0]
+for v in order:
+	for to in adj[v]:
+		if to != parent[v]:
+			parent[to] = v
+			order.append(to)
+
+# longest[v]: the longest distance from v to a node in its own subtree (f)
+# second_longest[v]: the same, but excluding the child branch used by longest[v] (h)
+longest = [0] * n
+second_longest = [0] * n
+
+# first pass: children are handled before their parent (reverse BFS order)
+for v in reversed(order):
+	p = parent[v]
+	if p != -1:
+		if longest[v] + 1 > longest[p]:
+			second_longest[p] = longest[p]
+			longest[p] = longest[v] + 1
+		elif longest[v] + 1 > second_longest[p]:
+			second_longest[p] = longest[v] + 1
+
+# to_parent[v]: the longest distance from v to a node outside of its subtree (g)
+to_parent = [0] * n
+ans = [0] * n
+
+# second pass: parents are handled before their children (BFS order)
+for v in order:
+	ans[v] = max(to_parent[v], longest[v])
+	for to in adj[v]:
+		if to != parent[v]:
+			if longest[to] + 1 == longest[v]:
+				# the longest path of v goes through to, so use the second longest
+				to_parent[to] = max(to_parent[v], second_longest[v]) + 1
+			else:
+				to_parent[to] = ans[v] + 1
+
+print(*ans)
+```
+</PySection>
 </LanguageSection>
 
 ## Problems

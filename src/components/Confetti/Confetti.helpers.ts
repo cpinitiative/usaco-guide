@@ -11,7 +11,7 @@ type RGBColor = {
 export const random = (low: number, high: number) =>
   Math.random() * (high - low) + low;
 
-export const sample = (array: Array<any>): any =>
+export const sample = <T>(array: Array<T>): T =>
   array[Math.floor(random(0, array.length))];
 
 export const range = (n: number) => Array.from(Array(n).keys());
