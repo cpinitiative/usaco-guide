@@ -467,6 +467,9 @@ using namespace std;
 using ll = long long;
 
 const int MAX_N = 150;
+// With negative cycles, distances can double at every step of Floyd-Warshall,
+// so we don't let them go below this value to avoid overflow.
+const ll NEG_INF = -1e18;
 ll dist[MAX_N][MAX_N], bad[MAX_N][MAX_N];
 
 int main() {
@@ -490,6 +493,7 @@ int main() {
 				for (int j = 0; j < n; j++) {
 					if (dist[i][k] != INT_MAX && dist[k][j] != INT_MAX) {
 						dist[i][j] = std::min(dist[i][j], dist[i][k] + dist[k][j]);
+						dist[i][j] = std::max(dist[i][j], NEG_INF);
 					}
 				}
 			}
