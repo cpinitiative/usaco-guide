@@ -282,11 +282,9 @@ export function checkInvalidUsacoMetadata(metadata: ProblemMetadata) {
   }
 }
 
-export function getProblemURL(
-  problem: Pick<ProblemInfo, 'source' | 'name' | 'uniqueId'> & {
-    [x: string]: any;
-  }
-): string {
+export function getProblemURL<
+  T extends Pick<ProblemInfo, 'source' | 'name' | 'uniqueId'>,
+>(problem: T): string {
   // USACO and CSES sometimes have duplicate problem names
   // so we should add the ID to the URL
   return `/problems/${

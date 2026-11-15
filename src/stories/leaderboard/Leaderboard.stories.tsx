@@ -21,6 +21,8 @@ import { UserGroupsContext } from '../../hooks/groups/useUserGroups';
 import { GroupData } from '../../models/groups/groups';
 import { PostData } from '../../models/groups/posts';
 
+import { User } from 'firebase/auth';
+
 const userId = 'storybook-user';
 const groupId = 'storybook-group';
 const postId = 'dynamic-programming';
@@ -112,7 +114,9 @@ function GroupProviders({ children }: { children: React.ReactNode }) {
             userData: assignDefaultsToUserData({}),
             updateUserData: () => {},
             signOut: async () => {},
-            firebaseUser: { uid: userId } as any,
+            // coerce to User type, as we don't need most of the properties, only uid
+            // is sufficient.
+            firebaseUser: { uid: userId } as User,
             forceFirebaseUserRerender: () => {},
             importUserData: () => false,
             deleteAllUserData: async () => false,

@@ -143,9 +143,9 @@ export default function TopNavigationBar({
       {!hidePromoBar && (
         <>
           <Banner
-            text="Our fall semester of Bronze/Silver live classes starts soon. Register here!"
+            text="2026 IOI Team Workshop on Nov 15th. Register here!"
             action="Register here"
-            link="https://joincpi.org/classes"
+            link="https://joincpi.org/workshops/ioi26"
           />
         </>
       )}

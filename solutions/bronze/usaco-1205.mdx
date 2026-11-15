@@ -60,4 +60,81 @@ int main() {
 ```
 
 </CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Blocks {
+	// cnt[i][j] = number of times letter j appears on block i
+	static int[][] cnt = new int[4][26];
+
+	// checks whether the given word can be formed using the four blocks
+	static boolean isPossible(String word) {
+		int[] perm = {0, 1, 2, 3};
+
+		do {
+			int j = 0;
+
+			for (int i = 0; i < 4; i++) {
+				if (j == word.length()) { return true; }
+
+				if (cnt[perm[i]][word.charAt(j) - 'A'] > 0) { j++; }
+			}
+
+			if (j == word.length()) { return true; }
+
+		} while (nextPermutation(perm));
+
+		return false;
+	}
+
+	// generate the next lexicographical permutation of a
+	static boolean nextPermutation(int[] a) {
+		int i = a.length - 2;
+
+		while (i >= 0 && a[i] >= a[i + 1]) { i--; }
+
+		if (i < 0) { return false; }
+
+		int j = a.length - 1;
+		while (a[j] <= a[i]) { j--; }
+
+		int temp = a[i];
+		a[i] = a[j];
+		a[j] = temp;
+
+		for (int l = i + 1, r = a.length - 1; l < r; l++, r--) {
+			temp = a[l];
+			a[l] = a[r];
+			a[r] = temp;
+		}
+
+		return true;
+	}
+
+	public static void main(String[] args) throws IOException {
+		Scanner sc = new Scanner(System.in);
+
+		int n = sc.nextInt();
+
+		for (int i = 0; i < 4; i++) {
+			String block = sc.next();
+
+			for (char c : block.toCharArray()) { cnt[i][c - 'A']++; }
+		}
+
+		for (int i = 0; i < n; i++) {
+			String word = sc.next();
+
+			System.out.println(isPossible(word) ? "YES" : "NO");
+		}
+
+		sc.close();
+	}
+}
+```
+
+</JavaSection>
 </LanguageSection>

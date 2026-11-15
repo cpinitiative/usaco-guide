@@ -105,4 +105,67 @@ for _ in range(int(input())):
 ```
 
 </PySection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+	static double trapArea(double base1, double base2, double height) {
+		return height * (base1 + base2) / 2;
+	}
+
+	public static void main(String[] args) throws Exception {
+
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		int testNum = Integer.parseInt(br.readLine());
+
+		while (testNum-- > 0) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			int branchNum = Integer.parseInt(st.nextToken());
+			int base = Integer.parseInt(st.nextToken());
+			int height = Integer.parseInt(st.nextToken());
+
+			int[] offsets = new int[branchNum];
+			st = new StringTokenizer(br.readLine());
+
+			for (int i = 0; i < branchNum; i++) {
+				offsets[i] = Integer.parseInt(st.nextToken());
+			}
+
+			double totalArea = 0;
+
+			// Finding how much the triangle gets smaller as we go up
+			double slope = (double)base / height;
+
+			for (int b = 0; b < branchNum; b++) {
+
+				// If there is no overlap, add the full triangle
+				if (b == branchNum - 1 || offsets[b] + height <= offsets[b + 1]) {
+					totalArea += (double)base * height / 2;
+					continue;
+				}
+
+				// Find the height of the overlapping part
+				int heightDiff = offsets[b + 1] - offsets[b];
+
+				// Find the base at the point where the triangles overlap
+				double newBase = base - slope * heightDiff;
+
+				// Add the area of the overlapping part
+				totalArea += trapArea(base, newBase, heightDiff);
+			}
+
+			System.out.println(totalArea);
+		}
+	}
+}
+```
+
+</JavaSection>
+
 </LanguageSection>
