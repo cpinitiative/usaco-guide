@@ -28,9 +28,9 @@ number of $1$s yields $0$ (Hint 2). Thus, adding two of the same number to a
 sequence does not affect the computed $K$. We start our sequence with numbers that,
 when undergoing `popcount()`, yield $K$. With $K$ set, we add additional
 numbers to our sequence in multiples of two in order to not change $K$. Additionally,
-we set $K$ with the lowest-sum sequence possible. This can be achieved by adding 
+we set $K$ with the lowest-sum sequence possible. This can be achieved by adding
 $2^{2^i} - 1$ for each $i$ where the $i$th digit from the right of $K$ in binary
-is one. 
+is one.
 
 The $2^{2^i} - 1$ is derived by the following:
 - We need $2^i$ 1s in a number (i.e. `popcount(num) = 2^i`), because $2^i$ gives $1$ at position $i$ and $0$ elsewhere
@@ -42,23 +42,23 @@ Now, we have a sequence of numbers $2^{2^i} - 1$
 
 There are a couple cases to consider after constructing this lowest-sum sequence. Lets
 denote the sum of this sequence as $S$.
-1. $S > M$: this means the sequence is not able to be constructed, for $S$ is the least possible 
+1. $S > M$: this means the sequence is not able to be constructed, for $S$ is the least possible
     sum satisfying the $K$ constraint
 2. $S = M$: the sequence is valid as is
-3. $S < M, M - S % 2 = 0$ (where the sum is less than $M$ and the remaining to add is even): 
+3. $S < M, M - S % 2 = 0$ (where the sum is less than $M$ and the remaining to add is even):
     we add $\frac{M - S}{2}$ two times to our list to avoid changing $K$ while satisfying the $M$ condition
 4. $S < M, M - S = 1$ (the sum is less than $M$, remaining is equal to $1$): this case is a bit tricky.
     Adding one by itself will change $K$. However, if our current sequence does have a $1$ in it, then
     we can change this $1$ ($=1_2$) to $2$ ($=10_2$). Effectively, we add one to the sum while not changing $K$.
     Without a $1$ in our sequence, it is impossible.
 5. $S < M, M - S % 2 = 1, M - S \neq 1$ (the sum is less than $M$, remaining is odd but not equal to one):
-    As stated previously, we need to add in multiples of two to not change $K$. However, because we know 
+    As stated previously, we need to add in multiples of two to not change $K$. However, because we know
     $M - S >= 3$, we can add a one and two to our sequence. This makes our remaining sum even while
     keeping $K$ the same. Then, we add $\frac{M - S - 3}{2}$ two times to account for the rest of the sum.
 
 The problem's difficulty comes from the many layers of abstraction. We need to consider the number
-in binary, then count (in binary) the ones, then XOR all ours counts. I highly recommend drawing 
-out the different cases on paper following the algorithm provided above to understand the solution 
+in binary, then count (in binary) the ones, then XOR all ours counts. I highly recommend drawing
+out the different cases on paper following the algorithm provided above to understand the solution
 fully. Using the sample input and some variants, possible cases to consider are:
 ```
 K = 5, M = 33
@@ -68,7 +68,7 @@ K = 5, M = 17
 K = 5, M = 32
 ```
 
-## Implementation 
+## Implementation
 
 **Time Complexity:** $\mathcal{O}(T \log K)$
 
@@ -80,69 +80,75 @@ K = 5, M = 32
 
 using namespace std;
 
-void solve () {
-    int m, k; cin >> m >> k;
-    vector<int> res;
+void solve() {
+	int m, k;
+	cin >> m >> k;
+	vector<int> res;
 
-    // mask for last digit
-    int last = 1;
-    int pos = 0;
+	// mask for last digit
+	int last = 1;
+	int pos = 0;
 
-    int tot = 0;
+	int tot = 0;
 
-    while (k > 0) {
-        if ((k & last) == 1) {
-            int to_add = pow(2, pow(2, pos)) - 1;
+	while (k > 0) {
+		if ((k & last) == 1) {
+			int to_add = pow(2, pow(2, pos)) - 1;
 
-            res.push_back(to_add);
-            tot += to_add; 
-        }
+			res.push_back(to_add);
+			tot += to_add;
+		}
 
-        k >>= 1;
-        pos++;
-    }
+		k >>= 1;
+		pos++;
+	}
 
-    // we work with the remaining sum
-    m -= tot;
+	// we work with the remaining sum
+	m -= tot;
 
-    if (m % 2 == 1) {
-        if (m == 1) {
-            // adding one changes parity. we either make a one into
-            // two or don't do anything
-            for (int i = 0; i < res.size(); i++) {
-                if (res[i] == 1) { res[i] = 2; break; }
+	if (m % 2 == 1) {
+		if (m == 1) {
+			// adding one changes parity. we either make a one into
+			// two or don't do anything
+			for (int i = 0; i < res.size(); i++) {
+				if (res[i] == 1) {
+					res[i] = 2;
+					break;
+				}
 
-                // later we check if m < 0 and break if so. rather
-                // than breaking here, I set m < 0 
-                if (i == res.size() - 1) { m = -1; } //guarantee to break
-            }
+				// later we check if m < 0 and break if so. rather
+				// than breaking here, I set m < 0
+				if (i == res.size() - 1) { m = -1; }  // guarantee to break
+			}
 
-        } else {
-            // make remaining sum odd 
-            res.push_back(1);
-            res.push_back(2);
+		} else {
+			// make remaining sum odd
+			res.push_back(1);
+			res.push_back(2);
 
-            m -= 3;
-        }
-    }
+			m -= 3;
+		}
+	}
 
-    if (m < 0) {
-        printf("-1\n"); return;
-    }
+	if (m < 0) {
+		printf("-1\n");
+		return;
+	}
 
-    res.push_back(m / 2);
-    res.push_back(m / 2);
+	res.push_back(m / 2);
+	res.push_back(m / 2);
 
-    printf("%zu\n", res.size());
-    for (int &e :res) printf("%d ", e);
+	printf("%zu\n", res.size());
+	for (int &e : res) printf("%d ", e);
 
-    printf("\n");
+	printf("\n");
 }
 
-int main () {
-    int t; cin >> t;
+int main() {
+	int t;
+	cin >> t;
 
-    while (t--) solve();
+	while (t--) solve();
 }
 ```
 
