@@ -9,8 +9,8 @@ author: Rameez Parwez
 
 ## Explanation
 
-First, we have $M$ equal to $\min(M, A + R)$, since moving a brick
-from pillar $a$ to pillar $b$ should never cost more than adding and removing
+First, we can set $M$ equal to $\min(M, A + R)$, since moving a brick
+from pillar $a$ to pillar $b$ can never cost more than adding and removing
 a brick separately. So whenever one pillar is missing a brick and another
 one has extra bricks, we can always move a brick to the shorter pillar.
 Hence, we either only add or only remove bricks (never both), and any extra bricks
@@ -26,10 +26,14 @@ leftover $|P - Q|$ bricks must be added (if $P \geq Q$) or removed
 pillars $x$ will be:
 
 $$
-f(x) = \begin{cases} A(P - Q) + MQ & \text{if } P \geq Q \\ R(Q - P) + MP & \text{if } Q \geq P \end{cases}
+f(x) = M \cdot \min(P, Q) + A \cdot \max(0,\, P - Q) + R \cdot \max(0,\, Q - P)
 $$
 
-and our objective is to find the value $x$ that minimizes $f(x)$.
+and our objective is to find the value $x$ that minimizes $f(x)$. 
+
+We need $f(x)$ to be convex to use ternary search, and we prove this below:
+
+### Proof:
 
 Let $S = \sum_{i=1}^{N} h_i$, and for a target height $x$ define
 
@@ -50,9 +54,9 @@ $$
 so that $f(x) = f_1(x)$ for $x \geq \frac{S}{N}$ and $f(x) = f_2(x)$ for
 $x \leq \frac{S}{N}$.
 
-<Info title="Why f(x) is convex?">
+<Info title="Why is f(x) convex?">
 
-Both $P(x)$ and $Q(x)$ are sums of terms like $\max(0, x - h_i)$ terms, which are
+Both $P(x)$ and $Q(x)$ are sums of terms like $\max(0, x - h_i)$ and $\max(0, h_i - x)$, which are
 convex, and adding a linear term keeps a function convex. So $f_1$ and
 $f_2$ are both convex.
 
@@ -104,6 +108,7 @@ int main() {
 		                1LL * remove * (to_remove - std::min(to_add, to_remove)) +
 		                1LL * move * std::min(to_add, to_remove);
 
+		// covers the case M > A + R (moving is no better than add + remove)
 		res = std::min(res, 1LL * add * to_add + 1LL * remove * to_remove);
 
 		return res;
