@@ -110,8 +110,7 @@ then `lastTrue(1, 8, f) = 5` and `lastTrue(7, 8, f) = 6`.
 
 #### Implementation 1
 
-Verify that this implementation doesn't call `f` on any values outside of the
-range `[lo, hi]`.
+As an exercise for the reader, verify that this implementation only calls f on values in the range `[lo, hi]`.
 
 <LanguageSection>
 <CPPSection>
@@ -245,7 +244,7 @@ This approach is based on interval jumping. We start at `lo-1` and try jumps of
 decreasing size, starting from `hi - lo + 1` and halving the jump length each
 time. For each jump length, we keep jumping forward as long as `f` stays true
 at the landing point. As we get closer to the answer, the jumps get shorter.
-This is very similar to [Binary Jumping](/plat/bin-jump).
+This is conceptually similar to [Binary Jumping](/plat/bin-jump).
 
 <LanguageSection>
 <CPPSection>
@@ -433,9 +432,6 @@ $$
 \sum_{i=(n+1)/2}^{n} \max(0, x - \texttt{arr}[i]).
 $$
 
-(This formula is 1-indexed; the code below uses 0-indexing, hence the
-`(size - 1) / 2` starting index.)
-
 If this value is less than or equal to $k$, then $x$ can be the median, so our
 check function returns `true`. Otherwise, $x$ cannot be the median, so our check
 function returns `false`.
@@ -474,6 +470,9 @@ int main() {
 	cout << last_true(1, (int)2e9, [&](int x) {
 		// Returns true if the median can be raised to x
 		long long ops_needed = 0;
+
+		// note that formula in explanation is 1 indexed, so 
+		// we use (size - 1) / 2 instead because we 0 index here
 		for (int i = (size - 1) / 2; i < size; i++) {
 			ops_needed += max(0, x - arr[i]);
 		}
@@ -889,9 +888,10 @@ There are two ways to compute the midpoint, and each has its own overflow risk:
 - `mid = (lo + hi) / 2` fails if `lo + hi` exceeds `INT_MAX` at any point during
   execution.
 
-Also note that `hi++` (and `lo--`) can themselves overflow if the bounds are
-`INT_MAX` (or `INT_MIN`). If this is an issue, use `long long`s instead of
-`int`s.
+Also note that in our `first_true` and `last_true` code, we increment or decrement
+the bounds, which if using `INT_MAX` or `INT_MIN`, may overflow. In general,
+if concerned about overflow, consider using `long long` instead of `int` for the 
+bounds.
 
 ## Problems
 
@@ -1239,6 +1239,7 @@ def find_max_true(l: int, r: int, f: Callable[[int], bool]) -> int:
 
 </PySection>
 </LanguageSection>
+
 <Quiz.Explanation>
 Incorrect. While this will no longer cause an infinite loop, it will now output the wrong answer (instead of the maximum number that evaluates to true, it will return the minimum number that evaluates to false).
 </Quiz.Explanation>
