@@ -83,12 +83,13 @@ int main() {
 			adj[u].emplace_back(v, w);
 		}
 
-		vector<int> dist(n, INT32_MAX);
+		// long long because a negative cycle can push distances below INT32_MIN
+		vector<long long> dist(n, INT64_MAX);
 		dist[s] = 0;
 
 		for (int i = 0; i < n - 1; i++) {
 			for (int u = 0; u < n; u++) {
-				if (dist[u] == INT32_MAX) { continue; }
+				if (dist[u] == INT64_MAX) { continue; }
 				for (auto &[v, w] : adj[u]) { dist[v] = min(dist[v], dist[u] + w); }
 			}
 		}
@@ -97,7 +98,7 @@ int main() {
 
 		// one more iteration to detect negative cycles on graph
 		for (int u = 0; u < n; u++) {
-			if (dist[u] == INT32_MAX) { continue; }
+			if (dist[u] == INT64_MAX) { continue; }
 			for (auto &[v, w] : adj[u]) {
 				// the relaxed vertices belong to a negative cycle
 				if (dist[u] + w < dist[v]) { bfs_queue.push(v); }
@@ -109,6 +110,8 @@ int main() {
 		while (!bfs_queue.empty()) {
 			int u = bfs_queue.front();
 			bfs_queue.pop();
+			// a vertex can be in the queue many times, only process it once
+			if (is_negative_inf[u]) { continue; }
 			is_negative_inf[u] = true;
 			for (auto &[v, w] : adj[u]) {
 				if (is_negative_inf[v]) { continue; }
@@ -121,7 +124,7 @@ int main() {
 			cin >> target;
 			if (is_negative_inf[target]) {
 				cout << "-Infinity" << '\n';
-			} else if (dist[target] == INT32_MAX) {
+			} else if (dist[target] == INT64_MAX) {
 				cout << "Impossible" << '\n';
 			} else {
 				cout << dist[target] << '\n';
@@ -173,6 +176,9 @@ while True:
 	is_negative_inf = [False] * n
 	while not bfs_queue.empty():
 		u = bfs_queue.get()
+		# a vertex can be in the queue many times, only process it once
+		if is_negative_inf[u]:
+			continue
 		is_negative_inf[u] = True
 		for v, w in adj[u]:
 			if is_negative_inf[v]:
