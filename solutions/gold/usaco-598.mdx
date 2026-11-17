@@ -132,12 +132,15 @@ int main() {
 
 	dp[0][0] = 0;
 
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < M; j++) {
-			dp[i + 1][j] = min(dp[i + 1][j], dp[i][j] + dist(jl[i + 1], bl[j]));
-			dp[i][j + 1] = min(dp[i][j + 1], dp[i][j] + dist(jl[i], bl[j + 1]));
-			dp[i + 1][j + 1] =
-			    min(dp[i + 1][j + 1], dp[i][j] + dist(jl[i + 1], bl[j + 1]));
+	for (int i = 0; i <= N; i++) {
+		for (int j = 0; j <= M; j++) {
+			if (i + 1 <= N)
+				dp[i + 1][j] = min(dp[i + 1][j], dp[i][j] + dist(jl[i + 1], bl[j]));
+			if (j + 1 <= M)
+				dp[i][j + 1] = min(dp[i][j + 1], dp[i][j] + dist(jl[i], bl[j + 1]));
+			if (i + 1 <= N && j + 1 <= M)
+				dp[i + 1][j + 1] =
+				    min(dp[i + 1][j + 1], dp[i][j] + dist(jl[i + 1], bl[j + 1]));
 		}
 	}
 
