@@ -196,35 +196,35 @@ rooms = list(map(int, input().split()))
 # the size is padded to a power of two so that all leaves are on the same level
 size = 1
 while size < n:
-    size *= 2
+	size *= 2
 segtree = [0] * (2 * size)
 segtree[size : size + n] = rooms
 for node in range(size - 1, 0, -1):
-    segtree[node] = max(segtree[2 * node], segtree[2 * node + 1])
+	segtree[node] = max(segtree[2 * node], segtree[2 * node + 1])
 
 ans = []
 for x in map(int, input().split()):
-    if segtree[1] < x:
-        ans.append(0)
-        continue
+	if segtree[1] < x:
+		ans.append(0)
+		continue
 
-    # walk down from the root: go left if the left child has a large enough room
-    node = 1
-    while node < size:
-        if segtree[2 * node] >= x:
-            node = 2 * node
-        else:
-            node = 2 * node + 1
+	# walk down from the root: go left if the left child has a large enough room
+	node = 1
+	while node < size:
+		if segtree[2 * node] >= x:
+			node = 2 * node
+		else:
+			node = 2 * node + 1
 
-    # node is now a leaf, so the hotel is node - size (0-indexed)
-    ans.append(node - size + 1)
+	# node is now a leaf, so the hotel is node - size (0-indexed)
+	ans.append(node - size + 1)
 
-    # reserve the rooms and update the maximum on the path to the root
-    segtree[node] -= x
-    node //= 2
-    while node >= 1:
-        segtree[node] = max(segtree[2 * node], segtree[2 * node + 1])
-        node //= 2
+	# reserve the rooms and update the maximum on the path to the root
+	segtree[node] -= x
+	node //= 2
+	while node >= 1:
+		segtree[node] = max(segtree[2 * node], segtree[2 * node + 1])
+		node //= 2
 
 print(*ans)
 ```
@@ -489,7 +489,6 @@ public class Main {
 
 <PySection>
 ```py
-
 import sys
 from bisect import bisect_left
 
@@ -498,8 +497,8 @@ input = sys.stdin.readline
 query_num = int(input())
 updates = []
 for _ in range(query_num):
-    query_type, val = input().split()
-    updates.append((query_type, int(val)))
+	query_type, val = input().split()
+	updates.append((query_type, int(val)))
 
 # coordinate compress all the values
 indices = sorted(set(val for _, val in updates))
@@ -508,67 +507,67 @@ indices = sorted(set(val for _, val in updates))
 # 2 * node and 2 * node + 1 (the size is padded to a power of two)
 size = 1
 while size < len(indices):
-    size *= 2
+	size *= 2
 segtree = [0] * (2 * size)
 
 
 def add(loc: int, delta: int) -> None:
-    """Add delta to the leaf at loc and update the sums above it"""
-    node = size + loc
-    while node >= 1:
-        segtree[node] += delta
-        node //= 2
+	"""Add delta to the leaf at loc and update the sums above it"""
+	node = size + loc
+	while node >= 1:
+		segtree[node] += delta
+		node //= 2
 
 
 def prefix_sum(end: int) -> int:
-    """@return the sum of the leaves in [0, end)"""
-    total = 0
-    left, right = size, size + end
-    while left < right:
-        if left % 2 == 1:
-            total += segtree[left]
-            left += 1
-        if right % 2 == 1:
-            right -= 1
-            total += segtree[right]
-        left //= 2
-        right //= 2
-    return total
+	"""@return the sum of the leaves in [0, end)"""
+	total = 0
+	left, right = size, size + end
+	while left < right:
+		if left % 2 == 1:
+			total += segtree[left]
+			left += 1
+		if right % 2 == 1:
+			right -= 1
+			total += segtree[right]
+		left //= 2
+		right //= 2
+	return total
 
 
 def walk(val: int) -> int:
-    """@return first i such that the prefix sum up to i >= val"""
-    node = 1
-    pref_res = 0
-    while node < size:
-        sum_left = pref_res + segtree[2 * node]
-        if sum_left >= val:
-            node = 2 * node
-        else:
-            # we walk right, so the left child is part of the prefix
-            pref_res = sum_left
-            node = 2 * node + 1
-    return node - size
+	"""@return first i such that the prefix sum up to i >= val"""
+	node = 1
+	pref_res = 0
+	while node < size:
+		sum_left = pref_res + segtree[2 * node]
+		if sum_left >= val:
+			node = 2 * node
+		else:
+			# we walk right, so the left child is part of the prefix
+			pref_res = sum_left
+			node = 2 * node + 1
+	return node - size
 
 
 ans = []
 for query_type, val in updates:
-    loc = bisect_left(indices, val)
-    if query_type == "I":
-        if segtree[size + loc] == 0:
-            add(loc, 1)
-    elif query_type == "D":
-        if segtree[size + loc] == 1:
-            add(loc, -1)
-    elif query_type == "K":
-        if segtree[1] < val:
-            ans.append("invalid")
-        else:
-            # walk returns the compressed location, so map it back to the value
-            ans.append(indices[walk(val)])
-    else:
-        # the number of elements strictly smaller than val
-        ans.append(prefix_sum(loc))
+	loc = bisect_left(indices, val)
+	if query_type == "I":
+		if segtree[size + loc] == 0:
+			add(loc, 1)
+	elif query_type == "D":
+		if segtree[size + loc] == 1:
+			add(loc, -1)
+	elif query_type == "K":
+		if segtree[1] < val:
+			ans.append("invalid")
+		else:
+			# walk returns the compressed location, so map it back to the value
+			ans.append(indices[walk(val)])
+	else:
+		# the number of elements strictly smaller than val
+		ans.append(prefix_sum(loc))
 
 print("\n".join(map(str, ans)))
 ```
