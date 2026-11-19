@@ -1,3 +1,4 @@
+import { onPostDeleted, onProblemDeleted } from './cleanUpLeaderboard';
 import getJoinKeyInfo from './getJoinKeyInfo';
 import getMembers from './getMembers';
 import join from './join';
@@ -11,6 +12,8 @@ export {
   getMembers,
   join,
   leave,
+  onPostDeleted,
+  onProblemDeleted,
   removeMember,
   submitToProblem,
   updateMemberPermissions,
