@@ -113,9 +113,11 @@ Let $x = b_n 2^n + b_{n - 1} 2^{n - 1} \dots + b_0 2^0$.
 
 Left shift these bits by $i$ (add $i$ to the power of $2$ they're associated with, then add $i$ zeros to the end):
 $$
+\begin{align*}
 x \ll i= b_{n} 2^{n + i} + b_{n - 1} 2^{n + i - 1} \dots + b_0 2^i + 0\cdot 2^{i - 1}+ \dots + 0\cdot 2^0 \\
 x \ll i= 2^i \left(b_n 2^n + b_{n - 1} 2^{n - 1} \dots + b_0 2^0\right) \\
 \therefore x \ll i = 2^ix
+\end{align*}
 $$
 </Spoiler>
 
@@ -164,17 +166,19 @@ We'll use summation notation because there are some nuances with divisions that 
 Right shift these bits by $i$ (subtract $i$ to the power of $2$ they're associated with). Note that
 the $i$ LSBs are now gone!
 $$
-x \gg i= b_{n} 2^{n - i} + b_{n - 1} 2^{n - i - 1} \dots + b_i 2^0 = \sum_{k=i}^n b_k2^{k - i} \\
+x \gg i= b_{n} 2^{n - i} + b_{n - 1} 2^{n - i - 1} \dots + b_i 2^0 = \sum_{k=i}^n b_k2^{k - i}
 $$
 Rewrite the original equation as two termsand factor out $2^i$ from the first term:
 $$
+\begin{align*}
 x = \left(\sum_{k=i}^n b_k2^{k} + \sum_{k=0}^{i-1} b_k 2^{k}\right) \\
-x = 2^i\left(\sum_{k=i}^n b_k2^{k - i}\right) + \sum_{k=0}^{i-1} b_k 2^{k}
+x = 2^i\left(\sum_{k=i}^n b_k2^{k - i}\right) + \sum_{k=0}^{i-1} b_k 2^{k} \\
 x = 2^i (x \gg i) + \sum_{k=0}^{i-1} b_k 2^{k}
+\end{align*}
 $$
 However, note that $\sum_{k=0}^{i-1} b_k 2^{k}$, when divided by $2^i$, is less than one! Divide $2^i$ on both sides:
 $$
-\frac{x}{2^i} = (x \gg i) + \frac{\sum_{k=0}^{i-1} b_k 2^{k}}{2^i} \\
+\frac{x}{2^i} = (x \gg i) + \frac{\sum_{k=0}^{i-1} b_k 2^{k}}{2^i}
 $$
 Because the sum term is less than one, we can take the floor on both sides to eliminate that term:
 $$
