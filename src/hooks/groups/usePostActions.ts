@@ -12,23 +12,16 @@ import {
 } from 'firebase/firestore';
 import { useFirebaseUser } from '../../context/UserDataContext/UserDataContext';
 import { PostData } from '../../models/groups/posts';
-import { GroupProblemData } from '../../models/groups/problem';
+import {
+  GroupProblemData,
+  ProblemSubmissionResult,
+} from '../../models/groups/problem';
+import {
+  getSubmissionScore,
+  judgeSubmission,
+  OnlineJudgeLanguage,
+} from '../../utils/onlineJudge';
 import { useFirebaseApp } from '../useFirebase';
-
-// Duplicated from online-judge... online-judge should be the only version of this
-export interface ProblemSubmissionRequestData {
-  problemID: string;
-  language: 'cpp' | 'java' | 'py';
-  filename: string;
-  sourceCode: string;
-  submissionID?: string; // if given, uses this as the submission ID. must be uuidv4
-  wait?: boolean; // if true, request will wait until the submission finishes grading.
-  firebase?: {
-    idToken: string; // used to authenticate REST api
-    collectionPath: string;
-    userID: string;
-  };
-}
 
 export function usePostActions(groupId: string) {
   const firebaseApp = useFirebaseApp();
@@ -187,41 +180,58 @@ export function usePostActions(groupId: string) {
         problemOrdering: ordering,
       });
     },
+    /**
+     * Grades a submission with the online judge, calling onUpdate as test
+     * cases finish, then records the result as a submission in Firestore
+     * (which updates the leaderboard via the groups-submitToProblem function).
+     */
     submitSolution: async (
-      submission: Omit<
-        ProblemSubmissionRequestData,
-        'submissionID' | 'wait' | 'firebase'
-      >,
+      submission: {
+        problemID: string; // USACO Guide problem ID, e.g. usaco-1251
+        language: OnlineJudgeLanguage;
+        sourceCode: string;
+      },
       postId: string,
-      problemId: string
-    ) => {
-      const idToken = await firebaseUser!.getIdToken();
-      const reqData: ProblemSubmissionRequestData = {
+      problemId: string,
+      onUpdate: (result: ProblemSubmissionResult) => void
+    ): Promise<ProblemSubmissionResult> => {
+      const submissionID = crypto.randomUUID();
+      const result = await judgeSubmission({
+        submissionID,
         problemID: submission.problemID,
         language: submission.language,
-        filename: submission.filename,
         sourceCode: submission.sourceCode,
-        firebase: {
-          collectionPath: `usaco-guide/databases/(default)/documents/groups/${groupId}/posts/${postId}/problems/${problemId}/submissions`,
-          idToken,
-          userID: firebaseUser!.uid,
-        },
-      };
-      const resp = await fetch(
-        `https://ggzk2rm2ad.execute-api.us-west-1.amazonaws.com/Prod/submissions`,
+        onUpdate,
+      });
+      // Don't record a submission if the judge itself failed
+      if (result.verdict === 'IE') return result;
+
+      await addDoc(
+        collection(
+          getFirestore(firebaseApp),
+          'groups',
+          groupId,
+          'posts',
+          postId,
+          'problems',
+          problemId,
+          'submissions'
+        ),
         {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(reqData),
+          type: 'Online Judge',
+          userID: firebaseUser!.uid,
+          timestamp: Date.now(),
+          verdict: result.verdict,
+          submissionID,
+          problemID: submission.problemID,
+          language: submission.language,
+          score: getSubmissionScore(result),
+          // Results aren't stored by the judge, so keep the source code here
+          // so it can be viewed later (see ProblemSubmissionPopup)
+          sourceCode: submission.sourceCode,
         }
       );
-      const respData = await resp.json();
-      if (!resp.ok) {
-        throw new Error(respData.message);
-      }
-      return respData.submissionID;
+      return result;
     },
     submitSubmissionLink: async (
       submissionLink: string,

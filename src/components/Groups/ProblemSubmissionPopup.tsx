@@ -21,8 +21,12 @@ function ProblemSubmissionPopup() {
   const popupContext = useContext(ProblemSubmissionPopupContext);
   if (!popupContext) throw new Error('No ProblemSubmissionPopupContext');
   const submission = popupContext.submission;
+  // Submissions graded by the new online judge store their source code in
+  // Firestore; older ones need to be fetched from the old judge.
   const submissionResult = useProblemSubmissionResult(
-    submission && 'submissionID' in submission ? submission?.submissionID : null
+    submission && 'submissionID' in submission && !submission.sourceCode
+      ? submission.submissionID
+      : null
   );
   const isDarkMode = useDarkMode();
 
@@ -120,7 +124,9 @@ function ProblemSubmissionPopup() {
                           className={`language-${submission.language}`}
                           isDarkMode={isDarkMode}
                         >
-                          {submissionResult?.sourceCode ?? 'Loading...'}
+                          {submission.sourceCode ??
+                            submissionResult?.sourceCode ??
+                            'Loading...'}
                         </CodeBlock>
                       )}
                     </div>

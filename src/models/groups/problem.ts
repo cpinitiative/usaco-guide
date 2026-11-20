@@ -92,6 +92,9 @@ export type FirebaseSubmission =
       type: string;
       verdict: string;
       timestamp: any; // milliseconds
+      // Only set for submissions graded by the new online judge. Older
+      // submissions are fetched from the old judge by submissionID.
+      sourceCode?: string;
     }
   | {
       id?: string;
