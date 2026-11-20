@@ -31,10 +31,10 @@ frequency: 3
 
 ## Overview
 
-Below, we'll introduce a couple concepts necessary for understanding problems with bitwise operators.
+Below, we'll introduce a couple of concepts necessary for understanding problems with bitwise operators.
 
 ### Numbers in Base Two
-Whereas we are accustomed to base ten (decimal), in computers, numbers are stored in base two (binary): the only digits are zero and one. Each digit in binary is known as a bit. The rightmost bit is called the least significant bit while the leftmost bit is referred to as the most significant bit. When we refer to bits, we usually refer to LSBs. The $i$th bit is typically the $i$th LSB, zero-indexed. You may have heard of bytes: a byte is eight bits. Bits form the foundation of computers.
+Whereas we are accustomed to base ten (decimal), in computers, numbers are stored in base two (binary): the only digits are zero and one. Each digit in binary is known as a bit. The rightmost bit is called the least significant bit, while the leftmost bit is referred to as the most significant bit. When we refer to bits, we usually refer to LSBs. The $i$th bit is typically the $i$th LSB, zero-indexed. You may have heard of bytes: a byte is eight bits. Bits form the foundation of computers.
 
 For some problems, you will need to convert numbers between decimal and binary.
 
@@ -49,7 +49,7 @@ d = 5, 2^2 = 4
 d = 5 - 4 = 1, 2^0 = 1
 ```
 
-Now, note the powers of two in this example: `2` and `0`. Thus, the $0$th and $2$nd position from the right are set to $1$.
+Now, note the powers of two in this example: `2` and `0`. Thus, the $0$th and $2$nd positions from the right are set to $1$.
 This gives us $101_2$.
 
 To convert from binary to decimal, the $i$th position from the right is given a weight $2^{i}$. We add the weight multiplied by the bit to our result.
@@ -99,7 +99,7 @@ The truth table below is useful to understand the binary bitwise operators. Bitw
 ### Bitshifts
 Using the bitshift operators `>>` and `<<`, we can "shift" our binary representation's
 bits to the left or to the right. These are binary operators! The first input is
-the binary number to shift and the second input is how much to shift that number's
+the binary number to shift, and the second input is how much to shift that number's
 bits by.
 
 A left shift `<<` adds a `0` bit to be the LSB. Example:
@@ -148,16 +148,16 @@ Whereas you need to worry about 32 and 64 bit integers in other languages, you d
 
 A right shift is the opposite of a left shift. A right shift by $i$ gets rid of the $i$ LSBs.
 
-There two kinds of right shifts determining which digit gets added to be the MSBs.
-An arithmetic right shift is used for signed numbers while a logical right shift
+There are two kinds of right shifts, determining which digit gets added to be the MSBs.
+An arithmetic right shift is used for signed numbers, while a logical right shift
 is used for unsigned numbers. Arithmetic right shifts add a copy of the MSB when right shifting, and thus
-preserves sign. Logical right shifts add zero. This is due to how signed binary
+preserve the sign. Logical right shifts add zero. This is due to how signed binary
 integers are typically encoded in two's complement.
 
-However, these little details usually won't be tested on . The key idea to remember is what
+However, these little details usually won't be tested on. The key idea to remember is what
 happens to the digits that are in the number you're shifting.
 
-A right shift by $i$ is equivalent to the floor of the nubmer divided by $2^i$.
+A right shift by $i$ is equivalent to the floor of the number divided by $2^i$.
 <Spoiler title="Proof">
 Let $x = b_n 2^n + b_{n - 1} 2^{n - 1} \dots + b_0 2^0$.
 
@@ -168,7 +168,7 @@ the $i$ LSBs are now gone!
 $$
 x \gg i= b_{n} 2^{n - i} + b_{n - 1} 2^{n - i - 1} \dots + b_i 2^0 = \sum_{k=i}^n b_k2^{k - i}
 $$
-Rewrite the original equation as two termsand factor out $2^i$ from the first term:
+Rewrite the original equation as two terms and factor out $2^i$ from the first term:
 $$
 \begin{align*}
 x = \left(\sum_{k=i}^n b_k2^{k} + \sum_{k=0}^{i-1} b_k 2^{k}\right) \\
@@ -202,13 +202,13 @@ is active while all other flags are inactive
 - Consider a number $1011$. When we do $1011 \& 0001$, the result is $1$, which is the LSB!
 
 ### Example: Shifts and Masks
-Now, consider this question: how can we extract the $i$th least significant bit?
+Now, consider this question: how can we extract the $i$-th least significant bit?
 
 <Spoiler title="Hint 1">
 How can we extract the LSB of a number $b$?
 </Spoiler>
 <Spoiler title="Hint 2">
-How can we shift something - either the mask or the number - to have the $i$th LSB bit as the LSB?
+How can we shift something - either the mask or the number - to have the $i$-th LSB bit as the LSB?
 </Spoiler>
 <Spoiler title="Solution">
 Consider our initial mask $1$. This only gets the last bit of a number. We can right shift the number by $i$ to get the $i$th bit
@@ -216,7 +216,7 @@ to be the last bit:
 $$
 (b\gg i)\&1
 $$
-This helps us extract the $i$th bit from the right combining bitmasks and bitshifts.
+This helps us extract the $i$th bit from the right by combining bitmasks and bitshifts.
 
 Note that we $\&$ing with a left shift of our bitmask cannot get a bit. While this is able to check if the $i$th LSB is set or not, it is not able to extract it. Instead, it'l either extract $0$ or $2^i$.
 
@@ -307,7 +307,7 @@ Recall a bit in $a \oplus b$ is $1$ only if the bit in $a$ is different from the
 
 Now this looks pretty great, but we need to get rid of the third case. By taking the bitwise AND with $a | b$, the ones that are left on is only if there is a $1$ in either $a$ or $b$. Obviously, the third case isn't included in $a | b$ since both bits are off, and we successfully eliminate that case.
 
-Now that we can acquire the sum of any two numbers in two queries, we can easily solve the problem now. We can find the values of the first three numbers of the array using a system of equations involving their sum (note $n \geq 3$). Once we have acquired their independent values, we can loop through the rest of the array.
+Now that we can acquire the sum of any two numbers in two queries, we can easily solve the problem. We can find the values of the first three numbers of the array using a system of equations involving their sum (note $n \geq 3$). Once we have acquired their independent values, we can loop through the rest of the array.
 
 <LanguageSection>
 <CPPSection>
