@@ -755,6 +755,10 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
             <Link href="/license" className="underline">
               Learn More.
             </Link>
+            <br />
+            <Link href="/privacy" className="underline">
+              Privacy Policy
+            </Link>
           </p>
         </div>
       </div>
