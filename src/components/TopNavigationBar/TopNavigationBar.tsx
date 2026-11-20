@@ -143,9 +143,9 @@ export default function TopNavigationBar({
       {!hidePromoBar && (
         <>
           <Banner
-            text="2026 IOI Team Workshop on Nov 15th. Register here!"
-            action="Register here"
-            link="https://joincpi.org/workshops/ioi26"
+            text="Looking for Problem Writers for the 2027 USACO.guide Informatics Tournament. Apply here!"
+            action="Apply here"
+            link="https://docs.google.com/forms/d/e/1FAIpQLSciGQZEblhUR_TY243UvPLez0LsnXb6pasIglAzFIx2Z_lBWQ/viewform"
           />
         </>
       )}
