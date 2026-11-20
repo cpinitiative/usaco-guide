@@ -211,6 +211,72 @@ public class IntersectionPoints {
 ```
 
 </JavaSection>
+
+<PySection>
+```py
+import sys
+
+input = sys.stdin.readline
+
+MAX_POS = 10**6
+
+# Binary Indexed Tree (1-indexed internally) over the x coordinates [0, 2 * MAX_POS]
+bit_size = 2 * MAX_POS + 1
+bit = [0] * (bit_size + 1)
+
+
+def add(pos: int, delta: int) -> None:
+	pos += 1
+	while pos <= bit_size:
+		bit[pos] += delta
+		pos += pos & -pos
+
+
+def pref_sum(pos: int) -> int:
+	"""@return the sum of the positions in [0, pos]"""
+	pos += 1
+	total = 0
+	while pos > 0:
+		total += bit[pos]
+		pos -= pos & -pos
+	return total
+
+
+n = int(input())
+
+# types of events (order for if some y values are equal):
+# 1 -> start of vertical segment
+# 2 -> horizontal segment
+# 3 -> end of vertical segment
+events = []
+for _ in range(n):
+	x1, y1, x2, y2 = map(int, input().split())
+	# make sure that x1 <= x2 and y1 <= y2
+	if x1 > x2:
+		x1, x2 = x2, x1
+	if y1 > y2:
+		y1, y2 = y2, y1
+	if y1 == y2:
+		events.append((y1, 2, x1, x2))
+	else:
+		events.append((y1, 1, x1, 1))
+		events.append((y2, 3, x1, 1))
+events.sort()
+
+ans = 0
+for y, event_type, x1, x2 in events:
+	x1 += MAX_POS
+	x2 += MAX_POS
+	if event_type == 1:
+		add(x1, 1)
+	elif event_type == 2:
+		ans += pref_sum(x2) - pref_sum(x1 - 1)
+	else:
+		add(x1, -1)
+
+print(ans)
+```
+</PySection>
 </LanguageSection>
 
 <FocusProblem problem="sample2" />
