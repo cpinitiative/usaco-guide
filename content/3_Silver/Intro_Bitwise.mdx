@@ -64,8 +64,8 @@ In two's complement, the MSB has a weight of $-2^i$ instead of $2^i$. Every othe
 In most problems, you just need to be familiar with the unsigned representation, not two's complement.
 
 ### Bitwise Operators
-Each digit in a binary number, either zero or one, is known as a bit. 
-Bitwise operators act bit by bit. Most bitwise operators are binary, 
+Each digit in a binary number, either zero or one, is known as a bit.
+Bitwise operators act bit by bit. Most bitwise operators are binary,
 meaning they take two inputs: AND `&`, OR `|`, XOR `^`, and shifts.
 The only unary bitwise operator is NOT `~`.
 
@@ -75,7 +75,7 @@ The only unary bitwise operator is NOT `~`.
 
 - XOR (`^`) - exclusive or, returns `1` when only one bit is `1`. `1 ^ 0 = 1` but `1 ^ 1 = 0`.
 
-- NOT (`~`) - effectively flips the bit: `~1 = 0` and `~0 = 1`. 
+- NOT (`~`) - effectively flips the bit: `~1 = 0` and `~0 = 1`.
 
 Bitwise operations are able to be applied to larger strings of bits as well. Binary bitwise operations
 compare each bit. For example, `1111 & 1010 = 1010`. Unary bitwise operators are applied to
@@ -84,7 +84,7 @@ listed above has nice visualizations for these bitwise operations.
 
 <Warning title="Not">
 In actual programming, the bits $111$ aren't just the bits $111$. Instead, there are many leading zeros (depending
-on whether your language has integers as $32$ or $64$ bits, or perhaps another representation). Thus, `~111` might 
+on whether your language has integers as $32$ or $64$ bits, or perhaps another representation). Thus, `~111` might
 return $1 \dots 11000$.
 </Warning>
 
@@ -98,7 +98,7 @@ The truth table below is useful to understand the binary bitwise operators. Bitw
 
 ### Bitshifts
 Using the bitshift operators `>>` and `<<`, we can "shift" our binary representation's
-bits to the left or to the right. These are binary operators! The first input is 
+bits to the left or to the right. These are binary operators! The first input is
 the binary number to shift and the second input is how much to shift that number's
 bits by.
 
@@ -125,7 +125,7 @@ zeros).
 
 <LanguageSection>
 <CPPSection>
-Because `long long`s are typically 64-bit representations, we can do 
+Because `long long`s are typically 64-bit representations, we can do
 ```cpp
 1LL << i
 ```
@@ -133,7 +133,7 @@ to help with overflow.
 </CPPSection>
 
 <JavaSection>
-Because `long`s are typically 64-bit representations, we can do 
+Because `long`s are typically 64-bit representations, we can do
 ```java
 1L << i
 ```
@@ -187,11 +187,11 @@ We can create a bitmask to manipulate/read certain bits from a number. Each digi
 as a "flag" where $1$ indicates an active flag and $0$ indicates an inactive flag.
 
 Recall how most bitwise operators are binary, meaning they take two inputs.
-Our first input to our operator is $n$, while the second input is a bitmask. 
+Our first input to our operator is $n$, while the second input is a bitmask.
 
 Like previous concepts, bitmasks are best explained with examples.
 
-Let's say we want to extract the LSB of a number. Then, we can 
+Let's say we want to extract the LSB of a number. Then, we can
 have our bitmask be $1$ and use the $\&$ operator.
 - If we include some of the leading zeros of $1$, we get $0001$. This means that only the LSB
 is active while all other flags are inactive
@@ -210,7 +210,7 @@ How can we shift something - either the mask or the number - to have the $i$th L
 Consider our initial mask $1$. This only gets the last bit of a number. We can right shift the number by $i$ to get the $i$th bit
 to be the last bit:
 $$
-(b\gg i)\&1 
+(b\gg i)\&1
 $$
 This helps us extract the $i$th bit from the right combining bitmasks and bitshifts.
 
@@ -228,8 +228,9 @@ It is best to understand how to derive these, but remembering these may be helpf
 // extract the ith bit
 (b >> i) & 1
 
-// set the ith bit
-b |= (1 << i);
+    // set the ith bit
+    b
+    |= (1 << i);
 
 // clear the ith bit
 b &= ~(1 << i);
@@ -244,8 +245,9 @@ b ^= (1 << i);
 // extract the ith bit
 (b >> i) & 1
 
-// set the ith bit
-b |= (1 << i);
+    // set the ith bit
+    b
+    |= (1 << i);
 
 // clear the ith bit
 b &= ~(1 << i);
@@ -261,13 +263,13 @@ b ^= (1 << i);
 (b >> i) & 1
 
 # set the ith bit
-b |= (1 << i);
+b |= 1 << i
 
 # clear the ith bit
-b &= ~(1 << i);
+b &= ~(1 << i)
 
 # toggle the ith bit
-b ^= (1 << i);
+b ^= 1 << i
 ```
 </PySection>
 </LanguageSection>
