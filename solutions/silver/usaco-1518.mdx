@@ -5,6 +5,8 @@ title: Sequence Construction
 author: Ruben Jing
 ---
 
+[Official Analysis (C++)](https://usaco.org/current/data/sol_prob1_silver_open25.html)
+
 <Spoiler title="Hint 1">
 
 Given $K$, what sequence has the smallest sum?
@@ -18,8 +20,6 @@ What is the result of $1 \oplus 1 \oplus 1$? What about $1 \oplus 1$?
 </Spoiler>
 
 <Spoiler title="Solution">
-
-[Official Analysis (C++)](https://usaco.org/current/data/sol_prob1_silver_open25.html)
 
 ## Explanation
 
@@ -52,11 +52,11 @@ denote the sum of this sequence as $S$.
 	$\left\{1, 3, 15, 255, 65535 \right\}$. Increasing any of those elements by $1$ except $1$ results in
 	a changed `popcount`. Thus, we change a $1$ to a $2$ if the sequence has a $1$ to satisfy the
 	$M$ and $K$ conditions; otherwise, it is impossible to construct a sequence.
-4. $S < M, (M - S) \% 2 = 1, M - S \neq 1$ (the sum is less than $M$, remaining is odd but not equal to one):
+4. $S < M, (M - S) \mod 2 = 1, M - S \neq 1$ (the sum is less than $M$, remaining is odd but not equal to one):
     As stated previously, we need to add in multiples of two to not change $K$. However, because we know
     $M - S >= 3$, we can add a one and two to our sequence. This makes our remaining sum even while
     keeping $K$ the same. Then, we add $\frac{M - S - 3}{2}$ two times to account for the rest of the sum.
-5. $S < M, (M - S) \% 2 = 0$ (where the sum is less than $M$ and the remaining to add is even):
+5. $S < M, (M - S) \mod 2 = 0$ (where the sum is less than $M$ and the remaining to add is even):
     we add $\frac{M - S}{2}$ two times to our list to avoid changing $K$ while satisfying the $M$ condition
 
 The problem's difficulty comes from the many layers of abstraction. We need to consider the number
