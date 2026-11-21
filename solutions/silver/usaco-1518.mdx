@@ -1,0 +1,161 @@
+---
+id: usaco-1518
+source: USACO Silver 2025 US Open
+title: Sequence Construction
+author: Ruben Jing
+---
+
+<Spoiler title="Hint 1">
+
+Given $K$, what sequence has the smallest sum?
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+What is the result of $1 \oplus 1 \oplus 1$? What about $1 \oplus 1$?
+
+</Spoiler>
+
+[Official Analysis (C++)](https://usaco.org/current/data/sol_prob1_silver_open25.html)
+
+<Spoiler title="Solution">
+
+## Explanation
+
+Notice that XOR with an odd number of $1$s yields $1$, while XOR with an even
+number of $1$s yields $0$ (Hint 2). Thus, adding two of the same number to a
+sequence does not affect the computed $K$. We start our sequence with numbers that,
+when undergoing `popcount()`, yield $K$. With $K$ set, we add additional
+numbers to our sequence in multiples of two in order to not change $K$. Additionally,
+we set $K$ with the lowest-sum sequence possible. This can be achieved by adding
+$2^{2^i} - 1$ for each $i$ where the corresponding bit in the binary representation
+of $K$ is set ($=1$), zero-indexed from right to left.
+
+The $2^{2^i} - 1$ is derived by the following:
+- We need $2^i$ 1s in a number (i.e. `popcount(num) = 2^i`), because $2^i$ gives $1$ at position $i$ and $0$ elsewhere
+- We want to find the smallest number with $2^i$ $1$s in its binary representation
+- That number is simply $2^i$ consecutive $1$s, nothing else
+- In decimal, that number is $2^0 + 2^1 + ... + 2^{2^{i} - 1} = 2^{2^{i}} - 1$
+
+Now, we have a sequence of numbers $2^{2^i} - 1$ that satisfy the $K$ condition. What remains
+is to satisfy the $M$ (sum) condition. Note that because $K \leq 31$ or $K \leq 11111_2$, the
+only possible numbers in this sequence will be $\left\{1, 3, 15, 255, 65535 \right\}$
+
+There are a couple cases to consider after constructing this lowest-sum sequence. Let's
+denote the sum of this sequence as $S$.
+1. $S > M$: this means the sequence is not able to be constructed, for $S$ is the least possible
+    sum satisfying the $K$ constraint
+2. $S = M$: the sequence is valid as is
+3. $S < M, M - S = 1$ (the sum is less than $M$, remaining is equal to $1$): this case is a bit tricky.
+    Adding one by itself will change $K$. The only elements possible in our sequence are
+	$\left\{1, 3, 15, 255, 65535 \right\}$. Increasing any of those elements by $1$ except $1$ results in
+	a changed `popcount`. Thus, we change a $1$ to a $2$ if the sequence has a $1$ to satisfy the
+	$M$ and $K$ conditions; otherwise, it is impossible to construct a sequence.
+4. $S < M, (M - S) \mod 2 = 1, M - S \neq 1$ (the sum is less than $M$, remaining is odd but not equal to one):
+    As stated previously, we need to add in multiples of two to not change $K$. However, because we know
+    $M - S >= 3$, we can add a one and two to our sequence. This makes our remaining sum even while
+    keeping $K$ the same. Then, we add $\frac{M - S - 3}{2}$ two times to account for the rest of the sum.
+5. $S < M, (M - S) \mod 2 = 0$ (where the sum is less than $M$ and the remaining to add is even):
+    we add $\frac{M - S}{2}$ two times to our list to avoid changing $K$ while satisfying the $M$ condition
+
+The problem's difficulty comes from the many layers of abstraction. We need to consider the number
+in binary, then count (in binary) the ones, then XOR all ours counts. I highly recommend drawing
+out the different cases on paper following the algorithm provided above to understand the solution
+fully. Using the sample input and some variants, possible cases to consider are:
+```
+K = 5, M = 33
+K = 5, M = 15
+K = 5, M = 16
+K = 5, M = 17
+K = 5, M = 32
+```
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(T \log K)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+
+using namespace std;
+
+void solve() {
+	int m, k;
+	cin >> m >> k;
+	vector<int> res;
+
+	// mask for last digit
+	int last = 1;
+	int pos = 0;
+
+	int tot = 0;
+
+	while (k > 0) {
+		if ((k & last) == 1) {
+			int to_add = pow(2, pow(2, pos)) - 1;
+
+			res.push_back(to_add);
+			tot += to_add;
+		}
+
+		k >>= 1;
+		pos++;
+	}
+
+	// we work with the remaining sum
+	m -= tot;
+
+	if (m % 2 == 1) {
+		if (m == 1) {
+			// adding one changes parity. we either make a one into
+			// two or don't do anything
+			for (int i = 0; i < res.size(); i++) {
+				if (res[i] == 1) {
+					res[i] = 2;
+					break;
+				}
+
+				// later we check if m < 0 and break if so. rather
+				// than breaking here, I set m < 0
+				if (i == res.size() - 1) { m = -1; }  // guarantee to break
+			}
+
+		} else {
+			// make remaining sum odd
+			res.push_back(1);
+			res.push_back(2);
+
+			m -= 3;
+		}
+	}
+
+	if (m < 0) {
+		cout << -1 << "\n";
+		return;
+	}
+
+	res.push_back(m / 2);
+	res.push_back(m / 2);
+
+	cout << res.size() << "\n";
+	for (int &e : res) cout << e << " ";
+
+	cout << "\n";
+}
+
+int main() {
+	int t;
+	cin >> t;
+
+	while (t--) solve();
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>
