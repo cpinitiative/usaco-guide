@@ -34,7 +34,7 @@ frequency: 3
 Below, we'll introduce a couple of concepts necessary for understanding problems with bitwise operators.
 
 ### Numbers in Base Two
-Whereas we are accustomed to base ten (decimal), in computers, numbers are stored in base two (binary): the only digits are zero and one. Each digit in binary is known as a bit. The rightmost bit is called the least significant bit, while the leftmost bit is referred to as the most significant bit. When we refer to bits, we usually refer to LSBs. The $i$th bit is typically the $i$th LSB (zero-indexed). You may have heard of bytes: a byte is eight bits. Bits form the foundation of computers.
+Whereas we are accustomed to base ten (decimal), in computers, numbers are stored in base two (binary): the only digits are zero and one. Each digit in binary is known as a bit. The rightmost bit is called the least significant bit, while the leftmost bit is referred to as the most significant bit. When we refer to bits, we usually refer to LSBs. The $i$th bit is typically the $i$th LSB, zero-indexed. You may have heard of bytes: a byte is eight bits. Bits form the foundation of computers.
 
 For some problems, you will need to convert numbers between decimal and binary.
 
@@ -79,7 +79,7 @@ The only unary bitwise operator is NOT `~`.
 
 Bitwise operations are able to be applied to larger strings of bits as well. Binary bitwise operations
 compare each bit. For example, `1111 & 1010 = 1010`. Unary bitwise operators are applied to
-each bit: `~111 = 000`. The [CPH reading](/CPH.pdf#page=106)
+each bit: `~111 = 000`. The [relevant CPH section](!https://usaco.guide/CPH.pdf#page=106)
 listed above has nice visualizations for these bitwise operations.
 
 <Warning title="Not">
@@ -141,7 +141,7 @@ zeros).
 
 <LanguageSection>
 <CPPSection>
-Because `long long`s are 64-bit representations, we can do
+Because `long long`s are typically 64-bit representations, we can do
 ```cpp
 1LL << i
 ```
@@ -149,7 +149,7 @@ to help with overflow.
 </CPPSection>
 
 <JavaSection>
-Because `long`s are 64-bit representations, we can do
+Because `long`s are 64-bit typically representations, we can do
 ```java
 1L << i
 ```
@@ -244,11 +244,10 @@ It is best to understand how to derive these, but remembering these may be helpf
 <CPPSection>
 ```cpp
 // extract the ith bit
-(b >> i) & 1
+(b >> i) & 1;
 
-    // set the ith bit
-    b
-    |= (1 << i);
+// set the ith bit
+b |= (1 << i);
 
 // clear the ith bit
 b &= ~(1 << i);
@@ -261,11 +260,10 @@ b ^= (1 << i);
 <JavaSection>
 ```java
 // extract the ith bit
-(b >> i) & 1
+(b >> i) & 1;
 
-    // set the ith bit
-    b
-    |= (1 << i);
+// set the ith bit
+b |= (1 << i);
 
 // clear the ith bit
 b &= ~(1 << i);
