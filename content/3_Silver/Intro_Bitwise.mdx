@@ -52,7 +52,7 @@ d = 5 - 4 = 1, 2^0 = 1
 Now, note the powers of two in this example: `2` and `0`. Thus, the $0$th and $2$nd positions from the right are set to $1$.
 This gives us $5$ = $101_2$.
 
-To convert from binary to decimal, the $i$th position from the right is given a weight $2^{i}$. We add the weight multiplied by the bit to our result.
+To convert from binary to decimal, the $i$th bit is given a weight $2^{i}$. We add the weight multiplied by the bit to our result.
 
 From the previous example, $101_2 = 1\times2^{2} + 0\times2^{1} + 1\times2^{0} = 5$.
 
@@ -64,10 +64,10 @@ In two's complement, the MSB has a weight of $-2^i$ instead of $2^i$. Every othe
 In most problems, you just need to be familiar with the unsigned representation, not two's complement.
 
 ### Bitwise Operators
-Each digit in a binary number, either zero or one, is known as a bit.
 Bitwise operators act bit by bit. Most bitwise operators are binary,
 meaning they take two inputs: AND `&`, OR `|`, XOR `^`, and shifts.
-The only unary bitwise operator is NOT `~`.
+The only unary bitwise operator (an operator that takes one input)
+is NOT `~`.
 
 - AND (`&`) - evaluates whether both bits are `1`. `1 & 1 = 1` but `1 & 0 = 0`.
 
@@ -78,9 +78,8 @@ The only unary bitwise operator is NOT `~`.
 - NOT (`~`) - effectively flips the bit: `~1 = 0` and `~0 = 1`.
 
 Bitwise operations are able to be applied to larger strings of bits as well. Binary bitwise operations
-compare each bit. For example, `1111 & 1010 = 1010`. Unary bitwise operators are applied to
-each bit: `~111 = 000`. The [relevant CPH section](!https://usaco.guide/CPH.pdf#page=106)
-listed above has nice visualizations for these bitwise operations.
+compare the strings bit by bit. For example, `1111 & 1010 = 1010`. Unary bitwise operators are applied
+bit by bit: `~111 = 000`. More information/examples can be found [here](/CPH.pdf#page=106).
 
 <Warning title="Not">
 In actual programming, the bits $111$ aren't just the bits $111$. Instead, there are many leading zeros (depending
@@ -88,7 +87,7 @@ on whether your language has integers as $32$ or $64$ bits, or perhaps another r
 return $1 \dots 11000$.
 </Warning>
 
-The truth table below is useful to understand the binary bitwise operators. Bitwise operators come in again with bitmasking.
+The truth table below is useful to understand the binary bitwise operators. 
 
 <div style={{ display: "flex", justifyContent: "center" }}>
 
