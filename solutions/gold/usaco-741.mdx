@@ -124,8 +124,92 @@ int main() {
 
 	cout << ans << "\n";
 }
+
 ```
 
 ## Solution 3
+
+First, compute prefix hashes for every spotted and plain cow so that the hash of any substring can be retrieved in $\mathcal{O}(1)$ time. Since any substring length greater than a valid distinguishing length is also valid, we can binary search on the minimum valid substring length $L$. For a fixed length $L$, we iterate over all possible starting positions $i$ ($0 \le i \le M - L$), store the substring hashes of all spotted cows in a map, and check if any plain cow shares a hash in that map. If at least one starting position has no collisions between the two groups, length $L$ is valid.
+**Time Complexity:** $\mathcal{O}(NM\log N\log M)$ solution:
+
+## Implementation
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <random>
+#include <chrono>
+#include <set>
+#include <algorithm>
+#include <map>
+
+using namespace std;
+
+#define int long long
+
+mt19937_64 rng((int)chrono::steady_clock::now().time_since_epoch().count());
+int M = ((int)1 << 61) -1;
+int b = uniform_int_distribution<int> (2, M-1)(rng);
+
+class hashedstring{
+    private:
+        vector<int> pow;
+        vector<int> p_hash;
+    public:
+        void setup(const string &s){
+            p_hash.resize(s.size()+1);
+            pow.resize(s.size()+1);
+            pow[0] = 1;
+            for (int i = 1; i < s.size()+1; i++){
+                pow[i] = ((__int128)pow[i-1]*b)%M;
+            }
+            p_hash[0] = 0;
+            for (int i = 0; i < s.size(); i++){
+                p_hash[i+1] = ((__int128)p_hash[i]*b+s[i])%M;
+            }
+        }
+        int gethash(int s, int e){
+            int ret = p_hash[e+1]-((__int128)p_hash[s]*pow[e-s+1])%M;
+            return (ret+M)%M;
+        }
+};
+
+signed main(){
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+    freopen("cownomics.in", "r", stdin);
+    freopen("cownomics.out", "w", stdout);
+    int n, m;
+    cin >> n >> m;
+    vector<hashedstring> s(n);
+    vector<hashedstring> p(n);
+    for (int i = 0; i < n; i++){string a; cin >> a; s[i].setup(a);}
+    for (int i = 0; i < n; i++){string a; cin >> a; p[i].setup(a);}
+    int lo = 1;
+    int hi = m;
+    while (lo < hi){
+        int mid = (lo+hi)/2;
+        bool finalworks = false;
+        for (int i = 0; i < m-mid+1; i++){
+            bool works = true;
+            map<int,bool> m;
+            for (int j = 0; j < n; j++){
+                m[s[j].gethash(i, i+mid-1)] = true;
+            }
+            for (int j = 0; j < n; j++){
+                if (m[p[j].gethash(i, i+mid-1)] == true) works = false;
+            }
+            if (works) finalworks = true;
+        }
+        if (finalworks) hi = mid;
+        else lo = mid+1;
+    }
+    cout << lo << endl;
+}
+
+```
+
+## Solution 4
+
 
 Probably possible to pass solutions with worse complexities ...
