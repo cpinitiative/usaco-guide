@@ -67,15 +67,14 @@ int main() {
 	while (Q--) {
 		cin >> k;
 		dp[1] = 0;
-		deque<pair<int, int> > q;
+		deque<pair<int, int>> q;
 		p.first = 1, p.second = 0;
 		q.push_back(p);
 		for (int i = 2; i <= n; i++) {
 			while (!q.empty() && q.front().first < i - k) q.pop_front();
 			dp[i] = q.front().second + (d[q.front().first] <= d[i]);
 			while (!q.empty() && q.back().second > dp[i]) q.pop_back();
-			while (!q.empty() && q.back().second == dp[i] &&
-			       d[q.back().first] <= d[i])
+			while (!q.empty() && q.back().second == dp[i] && d[q.back().first] <= d[i])
 				q.pop_back();
 			p.first = i, p.second = dp[i];
 			q.push_back(p);
