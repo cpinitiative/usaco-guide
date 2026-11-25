@@ -7,12 +7,12 @@ import {
 } from '../../../context/UserDataContext/properties/simpleProperties';
 import { useFirebaseUser } from '../../../context/UserDataContext/UserDataContext';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
+import { usePostActions } from '../../../hooks/groups/usePostActions';
 import {
-  ProblemSubmissionRequestData,
-  usePostActions,
-} from '../../../hooks/groups/usePostActions';
-import useProblemSubmissionResult from '../../../hooks/useProblemSubmissionResult';
-import { GroupProblemData } from '../../../models/groups/problem';
+  GroupProblemData,
+  ProblemSubmissionResult,
+} from '../../../models/groups/problem';
+import { OnlineJudgeLanguage } from '../../../utils/onlineJudge';
 import ButtonGroup from '../../ButtonGroup';
 import TabIndentableTextarea from '../../elements/TabIndentableTextarea';
 import OnlineJudgeSubmission from '../OnlineJudgeSubmission/OnlineJudgeSubmission';
@@ -37,17 +37,19 @@ export default function ProblemSubmissionInterface({
 }) {
   const firebaseUser = useFirebaseUser();
   const lang = useUserLangSetting();
-  const emptySubmission: ProblemSubmissionRequestData = {
-    filename: '',
-    problemID: problem.id,
+  type SubmissionInput = {
+    sourceCode: string;
+    language: OnlineJudgeLanguage;
+  };
+  const emptySubmission: SubmissionInput = {
     sourceCode: '',
     language: lang === 'showAll' ? 'cpp' : lang,
   };
   const [submission, editSubmission] = useReducer(
     (
-      oldSubmission: ProblemSubmissionRequestData,
-      updates: Partial<ProblemSubmissionRequestData>
-    ): ProblemSubmissionRequestData => ({
+      oldSubmission: SubmissionInput,
+      updates: Partial<SubmissionInput>
+    ): SubmissionInput => ({
       ...oldSubmission,
       ...updates,
     }),
@@ -76,8 +78,10 @@ export default function ProblemSubmissionInterface({
     },
   });
 
-  const [submissionID, setSubmissionID] = React.useState(null);
-  const submissionResult = useProblemSubmissionResult(submissionID);
+  const [submissionResult, setSubmissionResult] =
+    React.useState<ProblemSubmissionResult | null>(null);
+  const isGrading =
+    submissionResult !== null && submissionResult.status !== 'done';
 
   if (activeGroup.activeUserId !== firebaseUser?.uid) {
     // this suggests the parent is viewing the child's account
@@ -139,22 +143,18 @@ export default function ProblemSubmissionInterface({
 
   const handleSubmitSolution = async e => {
     e.preventDefault();
+    if (isGrading) return;
     try {
-      const submissionID = await submitSolution(
+      await submitSolution(
         {
           problemID: problem.usacoGuideId!,
-          language: submission.language!,
-          filename: {
-            cpp: 'main.cpp',
-            java: 'Main.java',
-            py: 'main.py',
-          }[submission.language!],
-          sourceCode: submission.sourceCode!,
+          language: submission.language,
+          sourceCode: submission.sourceCode,
         },
         problem.postId,
-        problem.id
+        problem.id,
+        setSubmissionResult
       );
-      setSubmissionID(submissionID);
     } catch (error: any) {
       alert('Failed to submit solution: ' + error.message);
     }
@@ -237,8 +237,8 @@ export default function ProblemSubmissionInterface({
         </button>{' '}
         to select a file.
       </div>
-      <button type="submit" className="btn mt-4">
-        Submit Code
+      <button type="submit" className="btn mt-4" disabled={isGrading}>
+        {isGrading ? 'Grading...' : 'Submit Code'}
       </button>
     </form>
   );
