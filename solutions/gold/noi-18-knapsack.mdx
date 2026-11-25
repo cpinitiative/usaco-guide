@@ -15,7 +15,7 @@ Fortunately, the constraint $S \le 2000$ (the maximum basket weight is very smal
 Consider all items that weigh $w$ kg. Even if there are a billion copies available, your basket can only hold $S$ kg in total. Therefore, you can **never** take more than $\lfloor S / w \rfloor$ items of weight $w$.
 
 ### Observation 2: Be greedy within the same weight
-Among items that have the exact same weight $w$, it is always optimal to pick the ones with the highest value first. 
+Among items that have the exact same weight $w$, it is always optimal to pick the ones with the highest value first.
 
 Because of Observations 1 and 2, we can group all item types by their weight $w$, sort each group by value in descending order, and keep only the **top $\lfloor S / w \rfloor$ individual items** for each weight. Every other item can be safely discarded.
 
@@ -65,7 +65,8 @@ int main() {
 		}
 	}
 
-	// Phase 2: For each weight w, keep only the top floor(max_weight / w) most valuable items
+	// Phase 2: For each weight w, keep only the top floor(max_weight / w) most valuable
+	// items
 	vector<pair<int, int>> filtered_items;  // {weight, value}
 	for (int weight = 1; weight <= max_weight; weight++) {
 		if (items_by_weight[weight].empty()) continue;
@@ -133,7 +134,8 @@ public class knapsack {
 			}
 		}
 
-		// Phase 2: For each weight w, keep only the top floor(maxWeight / w) most valuable items
+		// Phase 2: For each weight w, keep only the top floor(maxWeight / w) most
+		// valuable items
 		ArrayList<int[]> filteredItems = new ArrayList<>();  // {weight, value}
 		for (int weight = 1; weight <= maxWeight; weight++) {
 			if (itemsByWeight[weight].isEmpty()) continue;
@@ -164,7 +166,8 @@ public class knapsack {
 			int value = item[1];
 			// Iterate backwards so each item is used at most once
 			for (int currWeight = maxWeight; currWeight >= weight; currWeight--) {
-				dp[currWeight] = Math.max(dp[currWeight], dp[currWeight - weight] + value);
+				dp[currWeight] =
+				    Math.max(dp[currWeight], dp[currWeight - weight] + value);
 			}
 		}
 
