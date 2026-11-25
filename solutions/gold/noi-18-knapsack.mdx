@@ -2,100 +2,107 @@
 id: noi-18-knapsack
 source: Singapore NOI
 title: Knapsack
-author: Kevin Sheng
+author: Kevin Sheng, Dhruv Parsewar
 ---
 
 ## Explanation
 
-Note that the bound on $S$ is rather small and that $1 \leq W_i \leq S$, so we can group the items together by weight.
-After this, we can implement the knapsack problem on the grouped together items. We also sort items of the same weight by reverse value, as it is always optimal to select the item with greater value among two items of the same weight.
+In a standard Bounded Knapsack problem (where the $i$-th item type has $K_i$ copies), a naive approach is to treat every copy as a separate item and run standard 0/1 Knapsack. However, 0/1 Knapsack runs in $\mathcal{O}(\text{items} \times S)$ time. With $S \le 2000$ and a 1-second time limit (roughly $10^8$ operations), we can only afford to process around $5 \times 10^4$ individual items. Here, $N \le 10^5$ and $K_i \le 10^9$, which can produce up to $10^{14}$ items which is far too many to pass without getting TLE.
 
-Note that you only need to consider the most valuable $\lfloor\frac{S}{i}\rfloor$
-items for the set of all objects with weight $i$.
-So in total you will need to consider $\sum_{i=1}^S \lfloor\frac{S}{i}\rfloor$ items.
-This expression approximates to $\mathcal{O}(S \log S)$ as $\ln(1+S) < \sum_{i=1}^S \frac{1}{i} < 1 + \ln(S)$.
-Each item weight takes $\mathcal{O}(S)$ to process, making the total time
-complexity $\mathcal{O}(S^2 \log S)$.
+Fortunately, the constraint $S \le 2000$ (the maximum basket weight is very small) allows us to drastically reduce the number of items we need to consider.
+
+### Observation 1: Cap the items per weight
+Consider all items that weigh $w$ kg. Even if there are a billion copies available, your basket can only hold $S$ kg in total. Therefore, you can **never** take more than $\lfloor S / w \rfloor$ items of weight $w$.
+
+### Observation 2: Be greedy within the same weight
+Among items that have the exact same weight $w$, it is always optimal to pick the ones with the highest value first. 
+
+Because of Observations 1 and 2, we can group all item types by their weight $w$, sort each group by value in descending order, and keep only the **top $\lfloor S / w \rfloor$ individual items** for each weight. Every other item can be safely discarded.
+
+### Observation 3: Counting the remaining items
+Before running 0/1 Knapsack on our filtered items, we need to verify that the total number of remaining items is small enough to avoid TLE. To find the worst-case number of items kept, we sum the maximum possible items across every weight from $1$ to $S$:
+
+$$\sum_{w=1}^{S} \left\lfloor \frac{S}{w} \right\rfloor \le S \left(1 + \frac{1}{2} + \frac{1}{3} + \dots + \frac{1}{S}\right)$$
+
+The expression $1 + \frac{1}{2} + \frac{1}{3} + \dots + \frac{1}{S}$ is the **Harmonic Series**, which is bounded above by $1 + \ln(S)$ (so it grows at a rate of $\mathcal{O}(\log S)$).
+- For $S = 2000$, $1 + \ln(2000) \approx 8.6$.
+- Thus, the total number of items kept is at most $2000 \times 8.6 \approx 17,200$.
+
+### Putting It Together
+We have reduced up to $10^{14}$ items down to at most $\approx 17,200$ usable items. We can now solve the problem in three clean, separate phases:
+1. **Group:** Bucket all item types by their weight $w$.
+2. **Filter:** For each weight $w$, sort by value descending and extract at most $\lfloor S / w \rfloor$ individual items into a single list.
+3. **DP:** Run standard 1D 0/1 Knapsack DP on the filtered list (iterating weights backwards from $S$ down to $w$ so each item is used at most once).
+
+**Time Complexity:** $\mathcal{O}(N \log N + S^2 \log S)$
+* Sorting the items takes at most $\mathcal{O}(N \log N)$.
+* Running 0/1 Knapsack on $\mathcal{O}(S \log S)$ items with capacity $S$ takes $\mathcal{O}(S^2 \log S)$ time ($\approx 17,200 \times 2000 \approx 3.4 \times 10^7$ operations, which comfortably passes within 1 second).
 
 ## Implementation
-
-**Time Complexity:** $\mathcal{O}(S^2 \log S)$
 
 <LanguageSection>
 <CPPSection>
 
 ```cpp
 #include <algorithm>
-#include <cstdint>
 #include <iostream>
-#include <map>
 #include <vector>
 
-using std::cout;
-using std::endl;
-using std::pair;
-using std::vector;
+using namespace std;
 
 int main() {
-	int limit;
-	int type_num;
-	std::cin >> limit >> type_num;
+	int max_weight, num_types;
+	cin >> max_weight >> num_types;
 
-	std::map<int, vector<pair<int, int>>> by_weight;
-	for (int t = 0; t < type_num; t++) {
-		int value;
-		int weight;
-		int amt;
-		std::cin >> value >> weight >> amt;
-		if (weight <= limit && amt > 0) { by_weight[weight].push_back({value, amt}); }
-	}
-
-	/*
-	 * best[i][j] contains the most value we can
-	 * get using j weight and the first i weight types
-	 */
-	vector<vector<long long>> best(by_weight.size() + 1,
-	                               vector<long long>(limit + 1, INT32_MIN));
-	best[0][0] = 0;
-	int at = 1;
-	for (auto &[w, items] : by_weight) {
-		// sort items in reverse order by value
-		std::sort(items.begin(), items.end(), std::greater<pair<int, int>>());
-		for (int i = 0; i <= limit; i++) {
-			best[at][i] = best[at - 1][i];
-			int copies = 0;
-			int type_at = 0;
-			int curr_used = 0;
-			long long profit = 0;
-			// go through as many items until we run out of items or usable
-			// weight
-			while ((copies + 1) * w <= i && type_at < items.size()) {
-				copies++;
-				profit += items[type_at].first;
-				if (best[at - 1][i - copies * w] != INT32_MIN) {
-					best[at][i] =
-					    std::max(best[at][i], best[at - 1][i - copies * w] + profit);
-				}
-
-				curr_used++;
-				if (curr_used == items[type_at].second) {
-					curr_used = 0;
-					type_at++;
-				}
-			}
+	// Phase 1: Group item types by their weight
+	// items_by_weight[w] stores pairs of {value, copies} for items weighing w
+	vector<vector<pair<int, int>>> items_by_weight(max_weight + 1);
+	for (int i = 0; i < num_types; i++) {
+		int value, weight, copies;
+		cin >> value >> weight >> copies;
+		if (weight <= max_weight && copies > 0) {
+			items_by_weight[weight].push_back({value, copies});
 		}
-		at++;
 	}
-	cout << *std::max_element(best.back().begin(), best.back().end()) << endl;
+
+	// Phase 2: For each weight w, keep only the top floor(max_weight / w) most valuable items
+	vector<pair<int, int>> filtered_items;  // {weight, value}
+	for (int weight = 1; weight <= max_weight; weight++) {
+		if (items_by_weight[weight].empty()) continue;
+
+		// Sort by value in descending order
+		sort(items_by_weight[weight].begin(), items_by_weight[weight].end(),
+		     greater<pair<int, int>>());
+
+		int max_usable = max_weight / weight;
+		int taken = 0;
+
+		for (auto [value, copies] : items_by_weight[weight]) {
+			int take_now = min(copies, max_usable - taken);
+			for (int i = 0; i < take_now; i++) {
+				filtered_items.push_back({weight, value});
+			}
+			taken += take_now;
+			if (taken == max_usable) break;
+		}
+	}
+
+	// Phase 3: Standard 1D 0/1 Knapsack DP on the filtered items
+	// dp[w] = maximum value achievable with total weight at most w
+	vector<long long> dp(max_weight + 1, 0);
+	for (auto [weight, value] : filtered_items) {
+		// Iterate backwards so each item is used at most once
+		for (int curr_weight = max_weight; curr_weight >= weight; curr_weight--) {
+			dp[curr_weight] = max(dp[curr_weight], dp[curr_weight - weight] + value);
+		}
+	}
+
+	cout << dp[max_weight] << "\n";
 }
 ```
 
 </CPPSection>
 <JavaSection>
-
-<Warning>
-Due to Java's (relatively) slow speed, this solution will often TLE on the last subtask.
-</Warning>
 
 ```java
 import java.io.*;
@@ -105,65 +112,63 @@ public class knapsack {
 	public static void main(String[] args) throws IOException {
 		BufferedReader read = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer initial = new StringTokenizer(read.readLine());
-		int limit = Integer.parseInt(initial.nextToken());
-		int typeNum = Integer.parseInt(initial.nextToken());
-		HashMap<Integer, ArrayList<int[]>> byWeight = new HashMap<>();
-		for (int t = 0; t < typeNum; t++) {
+		int maxWeight = Integer.parseInt(initial.nextToken());
+		int numTypes = Integer.parseInt(initial.nextToken());
+
+		// Phase 1: Group item types by their weight
+		// itemsByWeight[w] stores pairs of {value, copies} for items weighing w
+		@SuppressWarnings("unchecked")
+		ArrayList<int[]>[] itemsByWeight = new ArrayList[maxWeight + 1];
+		for (int weight = 1; weight <= maxWeight; weight++) {
+			itemsByWeight[weight] = new ArrayList<>();
+		}
+
+		for (int i = 0; i < numTypes; i++) {
 			StringTokenizer item = new StringTokenizer(read.readLine());
 			int value = Integer.parseInt(item.nextToken());
 			int weight = Integer.parseInt(item.nextToken());
-			int amt = Integer.parseInt(item.nextToken());
-			if (weight <= limit && amt > 0) {
-				if (!byWeight.containsKey(weight)) {
-					byWeight.put(weight, new ArrayList<>());
-				}
-				byWeight.get(weight).add(new int[] {value, amt});
+			int copies = Integer.parseInt(item.nextToken());
+			if (weight <= maxWeight && copies > 0) {
+				itemsByWeight[weight].add(new int[] {value, copies});
 			}
 		}
 
-		/*
-		 * best[i][j] contains the most value we can
-		 * get using j weight and the first i weight types
-		 */
-		long[][] best = new long[byWeight.size() + 1][limit + 1];
-		for (long[] row : best) { Arrays.fill(row, Integer.MIN_VALUE); }
-		best[0][0] = 0;
-		int at = 1;
-		for (var pair : byWeight.entrySet()) {
-			int w = pair.getKey();
-			ArrayList<int[]> items = pair.getValue();
-			// sort items in reverse order by value
-			items.sort(Comparator.comparingInt(i -> - i[0]));
-			for (int i = 0; i <= limit; i++) {
-				best[at][i] = best[at - 1][i];
-				int copies = 0;
-				int typeAt = 0;
-				int currUsed = 0;
-				long profit = 0;
-				// go through as many items until we run out of items or usable
-				// weight
-				while ((copies + 1) * w <= i && typeAt < items.size()) {
-					copies++;
-					profit += items.get(typeAt)[0];
-					if (best[at - 1][i - copies * w] != Integer.MIN_VALUE) {
-						best[at][i] = Math.max(best[at][i],
-						                       best[at - 1][i - copies * w] + profit);
-					}
-					currUsed++;
-					if (currUsed == items.get(typeAt)[1]) {
-						currUsed = 0;
-						typeAt++;
-					}
+		// Phase 2: For each weight w, keep only the top floor(maxWeight / w) most valuable items
+		ArrayList<int[]> filteredItems = new ArrayList<>();  // {weight, value}
+		for (int weight = 1; weight <= maxWeight; weight++) {
+			if (itemsByWeight[weight].isEmpty()) continue;
+
+			// Sort by value in descending order
+			itemsByWeight[weight].sort((a, b) -> Integer.compare(b[0], a[0]));
+
+			int maxUsable = maxWeight / weight;
+			int taken = 0;
+
+			for (int[] item : itemsByWeight[weight]) {
+				int value = item[0];
+				int copies = item[1];
+				int takeNow = Math.min(copies, maxUsable - taken);
+				for (int i = 0; i < takeNow; i++) {
+					filteredItems.add(new int[] {weight, value});
 				}
+				taken += takeNow;
+				if (taken == maxUsable) break;
 			}
-			at++;
 		}
 
-		long mostValue = 0;
-		for (int i = 0; i <= limit; i++) {
-			mostValue = Math.max(mostValue, best[byWeight.size()][i]);
+		// Phase 3: Standard 1D 0/1 Knapsack DP on the filtered items
+		// dp[w] = maximum value achievable with total weight at most w
+		long[] dp = new long[maxWeight + 1];
+		for (int[] item : filteredItems) {
+			int weight = item[0];
+			int value = item[1];
+			// Iterate backwards so each item is used at most once
+			for (int currWeight = maxWeight; currWeight >= weight; currWeight--) {
+				dp[currWeight] = Math.max(dp[currWeight], dp[currWeight - weight] + value);
+			}
 		}
-		System.out.println(mostValue);
+
+		System.out.println(dp[maxWeight]);
 	}
 }
 ```
