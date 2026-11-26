@@ -20,14 +20,22 @@ where $[d_j \le d_i]$ is $1$ if the bird flies up (or stays at the same height) 
 However, this transition gives an overall complexity of $\mathcal{O}(QNK)$, which is too slow.
 The sliding window technique can be applied here, with a monotonic queue maintaining the candidates for $j$.
 
-Since a flight adds at most $1$ to the number of tiring flights, the height only serves as a tie-breaker.
-If $\texttt{dp}_{j_1} < \texttt{dp}_{j_2}$, then $\texttt{dp}_{j_2} - \texttt{dp}_{j_1} \ge 1$,
-while the flight from $j_1$ can cost at most $1$ more than the flight from $j_2$. Therefore, regardless of the heights,
+To decide which of two candidates $j_1$ and $j_2$ is better, compare their $\texttt{dp}$ values first.
+The height only serves as a tie-breaker, because it changes the cost of the next flight by at most $1$,
+which can never outweigh a difference in $\texttt{dp}$. Formally, suppose that
 
 $$
-\texttt{dp}_{j_1} + [d_{j_1} \le d_i] \le \texttt{dp}_{j_2} + [d_{j_2} \le d_i].
+\texttt{dp}_{j_1} < \texttt{dp}_{j_2}.
 $$
 
+Both values are integers, so ${\texttt{dp}_{j_1} + 1 \le \texttt{dp}_{j_2}}$.
+Each flight costs either $0$ or $1$, so regardless of the heights,
+
+$$
+\texttt{dp}_{j_1} + [d_{j_1} \le d_i] \le \texttt{dp}_{j_1} + 1 \le \texttt{dp}_{j_2} \le \texttt{dp}_{j_2} + [d_{j_2} \le d_i].
+$$
+
+This means $j_1$ is always at least as good as $j_2$, and the heights only matter when the $\texttt{dp}$ values are equal.
 This gives a neat way to order the indices in the queue:
 
 - If $\texttt{dp}_{j_1} < \texttt{dp}_{j_2}$, tree $j_1$ is considered better (smaller) than tree $j_2$.
@@ -58,8 +66,9 @@ Since each tree is pushed once and popped at most once, a query takes $\mathcal{
 ```cpp
 #include <bits/stdc++.h>
 using namespace std;
-int n, d[1000005], Q, k, dp[1000005];
-pair<int, int> p;
+const int MAXN = 1000005;
+int n, d[MAXN], Q, k, dp[MAXN];
+pair<int, int> p;  // {tree index, dp value}
 int main() {
 	cin >> n;
 	for (int i = 1; i <= n; i++) cin >> d[i];
@@ -71,11 +80,16 @@ int main() {
 		p.first = 1, p.second = 0;
 		q.push_back(p);
 		for (int i = 2; i <= n; i++) {
+			// remove trees that are too far back to reach tree i
 			while (!q.empty() && q.front().first < i - k) q.pop_front();
+			// the front is the best tree to fly from
 			dp[i] = q.front().second + (d[q.front().first] <= d[i]);
+			// remove trees with more tiring flights than tree i
 			while (!q.empty() && q.back().second > dp[i]) q.pop_back();
+			// on a tie, remove trees that are not higher than tree i
 			while (!q.empty() && q.back().second == dp[i] && d[q.back().first] <= d[i])
 				q.pop_back();
+			// tree i becomes a candidate for later trees
 			p.first = i, p.second = dp[i];
 			q.push_back(p);
 		}
