@@ -6,7 +6,7 @@ redirects:
   - /gold/intro-bitwise
   - /plat/intro-bitwise
 description: Six bitwise operators and the common ways they are used.
-author: Siyong Huang, Chongtian Ma, Mihnea Brebenel
+author: Siyong Huang, Chongtian Ma, Mihnea Brebenel, Ruben Jing
 frequency: 3
 ---
 
@@ -29,8 +29,265 @@ frequency: 3
 	</Resource>
 </Resources>
 
-At this point, you should already be familiar with the three main bitwise operators (AND, OR, and XOR).
-Let's take a look at some examples to better understand them.
+## Overview
+
+Below, we'll introduce a couple of concepts necessary for understanding problems with bitwise operators.
+
+### Numbers in Base Two
+Whereas we are accustomed to base ten (decimal), in computers, numbers are stored in base two (binary): the only digits are zero and one. Each digit in binary is known as a bit. The rightmost bit is called the least significant bit (LSB), while the leftmost bit is referred to as the most significant bit. When we refer to bits, we usually refer to LSBs. The $i$th bit is typically the $i$th LSB, zero-indexed. You may have heard of bytes: a byte is eight bits.
+
+For some problems, you will need to convert numbers between decimal and binary.
+
+To convert from decimal to binary, we find the largest power of two less than or equal to the initial decimal number, subtract that
+from our decimal, then repeat until our decimal is zero. We keep track of the exponent associated with the power of two.
+At those bits (counting from the right), we set the bit (i.e., make it one). All other bits are zeros, and we can omit
+the leading zeros.
+
+Example:
+```
+d = 5, 2^2 = 4
+d = 5 - 4 = 1, 2^0 = 1
+```
+
+Now, note the powers of two in this example: `2` and `0`. Thus, the $0$th and $2$nd positions from the right are set to $1$.
+This gives us $5$ = $101_2$.
+
+To convert from binary to decimal, the $i$th bit is given a weight $2^{i}$. We add the weight multiplied by the bit to our result.
+
+From the previous example, $101_2 = 1\times2^{2} + 0\times2^{1} + 1\times2^{0} = 5$.
+
+You may be wondering how we can represent negative numbers in binary. Although there are other ways, such as sign and magnitude,
+the most common way to do this is by using a technique called two's complement.
+
+In two's complement, the MSB has a weight of $-2^i$ instead of $2^i$. Every other bit is $2^i$. For example, $1101$ will be $-1\times2^{3} + 1\times2^{2}+0\times2^{1}+1\times2^{0} = -3$. This is also the reason a standard C++ `int`'s max is $2^{31} - 1$: a standard C++ `int` has 32 bits, and the MSB is a negative weight while the other 31 bits are positive weights.
+
+In most problems, you just need to be familiar with the unsigned representation, not two's complement.
+
+### Bitwise Operators
+Bitwise operators act bit by bit. Most bitwise operators are binary,
+meaning they take two inputs: AND `&`, OR `|`, XOR `^`, and shifts.
+The only unary bitwise operator (an operator that takes one input)
+is NOT `~`.
+
+- AND (`&`) - evaluates whether both bits are `1`. `1 & 1 = 1` but `1 & 0` or `0 & 0` equal `0`.
+
+- OR (`|`) - evaluates whether either bit is `1`. `1 | 1 = 1` and `1 | 0 = 1`, but `0 | 0 = 0`.
+
+- XOR (`^`) - exclusive or, returns `1` when only one bit is `1`. `1 ^ 0 = 1` but `1 ^ 1 = 0`.
+
+- NOT (`~`) - effectively flips the bit: `~1 = 0` and `~0 = 1`.
+
+Bitwise operations can be applied to larger strings of bits, with binary bitwise operations
+comparing the strings bit by bit. For example, `1111 & 1010 = 1010`. Unary bitwise operators are applied
+bit by bit: `~111 = 000`. More information/examples can be found [here](/CPH.pdf#page=106).
+
+<Warning title="Not Operator">
+In actual programming, the bits $111$ aren't just the bits $111$. Instead, there are many leading zeros (depending
+on whether your language has integers as $32$ or $64$ bits, or perhaps another representation). Thus, `~111` might
+return $1 \dots 11000$.
+</Warning>
+
+The truth table below is useful to understand the binary bitwise operators.
+
+<div style={{ display: "flex", justifyContent: "center" }}>
+
+| `A` | `B` | `A & B` | `A \| B` | `A ^ B` |
+| :-: | :-: | :-----: | :------: | :-----: |
+|  0  |  0  |    0    |    0     |    0    |
+|  0  |  1  |    0    |    1     |    1    |
+|  1  |  0  |    0    |    1     |    1    |
+|  1  |  1  |    1    |    1     |    0    |
+
+</div>
+
+<div style={{ display: "flex", justifyContent: "center" }}>
+
+| `A` | `~A` |
+| :-: | :--: |
+|  0  |  1   |
+|  1  |  0   |
+
+</div>
+
+### Bitshifts
+Using the bitshift operators `>>` and `<<`, we can "shift" our binary representation's
+bits to the left or to the right. These are binary operators! The first input is
+the binary number to shift, and the second input is how many places to shift that number's
+bits by.
+
+A left shift `<<` adds a `0` bit to the LSB. Example:
+- `10101 << 1` is `101010`
+- `10101 << 2` is `1010100`
+
+A left shift by $i$ is equivalent to multiplying the number by $2^i$.
+
+<Spoiler title="Proof">
+Let $x = b_n 2^n + b_{n - 1} 2^{n - 1} + \cdots + b_0 2^0$.
+
+Left shift these bits by $i$ (add $i$ to the power of $2$ they're associated with, then add $i$ zeros to the end):
+$$
+\begin{align*}
+x \ll i= b_{n} 2^{n + i} + b_{n - 1} 2^{n + i - 1} + \cdots + b_0 2^i + 0\cdot 2^{i - 1}+ \cdots + 0\cdot 2^0 \\
+x \ll i= 2^i \left(b_n 2^n + b_{n - 1} 2^{n - 1} + \cdots + b_0 2^0\right) \\
+\therefore x \ll i = 2^ix
+\end{align*}
+$$
+</Spoiler>
+
+Be careful not to overflow with a left shift! As an example, in C, integers typically only have $32$ bits, so left shifting
+too much (like `1 << 32`) may overflow! A left shift by $i$ adds $i$ more bits to the representation (ignoring leading
+zeros).
+
+<LanguageSection>
+<CPPSection>
+Because `long long`s are typically 64-bit representations, we can do
+```cpp
+1LL << i
+```
+to help with overflow.
+</CPPSection>
+
+<JavaSection>
+Because `long`s are 64-bit typically representations, we can do
+```java
+1L << i
+```
+</JavaSection>
+
+<PySection>
+Whereas you need to worry about 32 and 64 bit integers in other languages, you don't need to in Python! Just remember that a very large shift may cause an overflow.
+</PySection>
+</LanguageSection>
+
+A right shift is the opposite of a left shift. A right shift by $i$ removes the $0$th through $(i-1)$th LSBs.
+
+There are two kinds of right shifts, determining which digit gets added to be the MSBs.
+An arithmetic right shift is used for signed numbers, while a logical right shift
+is used for unsigned numbers. Arithmetic right shifts add a copy of the MSB when right shifting, and thus
+preserve the sign. Logical right shifts add zero. This is due to how signed binary
+integers are typically encoded in two's complement.
+
+However, these little details usually won't be tested on. The key idea to remember is what
+happens to the digits that are in the number you're shifting.
+
+A right shift by $i$ is equivalent to the floor of the number divided by $2^i$.
+<Spoiler title="Proof">
+Let $x = b_n 2^n + b_{n - 1} 2^{n - 1} \dots + b_0 2^0$.
+
+We'll use summation notation because there are some nuances with divisions that are better understood with sums.
+
+Right shift these bits by $i$ (subtract $i$ to the power of $2$ they're associated with). Note that
+the $i$ LSBs are now gone!
+$$
+x \gg i= b_{n} 2^{n - i} + b_{n - 1} 2^{n - i - 1} \dots + b_i 2^0 = \sum_{k=i}^n b_k2^{k - i}
+$$
+Rewrite the original equation as two terms and factor out $2^i$ from the first term:
+$$
+\begin{align*}
+x = \left(\sum_{k=i}^n b_k2^{k} + \sum_{k=0}^{i-1} b_k 2^{k}\right) \\
+x = 2^i\left(\sum_{k=i}^n b_k2^{k - i}\right) + \sum_{k=0}^{i-1} b_k 2^{k} \\
+x = 2^i (x \gg i) + \sum_{k=0}^{i-1} b_k 2^{k}
+\end{align*}
+$$
+However, note that $\sum_{k=0}^{i-1} b_k 2^{k}$, when divided by $2^i$, is less than one! Divide $2^i$ on both sides:
+$$
+\frac{x}{2^i} = (x \gg i) + \frac{\sum_{k=0}^{i-1} b_k 2^{k}}{2^i}
+$$
+Because the sum term is less than one, we can take the floor on both sides to eliminate that term:
+$$
+\therefore x \gg i = \left\lfloor\frac{x}{2^i}\right\rfloor
+$$
+</Spoiler>
+
+### Bitmasks
+We can create a bitmask to manipulate/read certain bits from a number. Each digit acts
+as a "flag" where $1$ indicates an active flag and $0$ indicates an inactive flag.
+
+Recall how most bitwise operators are binary, meaning they take two inputs.
+Our first input to our operator is $n$, while the second input is a bitmask.
+
+Like previous concepts, bitmasks are best explained with examples.
+
+Let's say we want to extract the LSB of a number. Then, we can
+have our bitmask be $1$ and use the $\&$ operator.
+- If we include some of the leading zeros of $1$, we get $0001$. This means that only the LSB
+is active while all other flags are inactive
+- Consider a number $1011$. When we do $1011 \& 0001$, the result is $1$, which is the LSB!
+
+### Example: Shifts and Masks
+Now, consider this question: how can we extract the $i$-th least significant bit?
+
+<Spoiler title="Hint 1">
+How can we extract the LSB of a number $b$?
+</Spoiler>
+<Spoiler title="Hint 2">
+How can we shift something - either the mask or the number - to have the $i$-th LSB bit as the LSB?
+</Spoiler>
+<Spoiler title="Solution">
+Consider our initial mask $1$. This only gets the last bit of a number. We can right shift the number by $i$ to get the $i$th bit
+to be the last bit:
+$$
+(b\gg i)\&1
+$$
+This helps us extract the $i$th bit from the right by combining bitmasks and bitshifts.
+
+Note that we $\&$ing with a left shift of our bitmask cannot get a bit. While this is able to check if the $i$th LSB is set or not, it is not able to extract it. Instead, it'll either extract $0$ or $2^i$.
+
+For example, $1111 \& 0100$ is $0100$, which is not equivalent to the bit but rather to $2^i$.
+</Spoiler>
+
+### Summary
+It is best to understand how to derive these, but remembering these may be helpful.
+
+<LanguageSection>
+<CPPSection>
+```cpp
+// extract the ith bit
+(b >> i) & 1;
+
+// set the ith bit
+b |= (1 << i);
+
+// clear the ith bit
+b &= ~(1 << i);
+
+// toggle the ith bit
+b ^= (1 << i);
+```
+</CPPSection>
+
+<JavaSection>
+```java
+// extract the ith bit
+(b >> i) & 1;
+
+// set the ith bit
+b |= (1 << i);
+
+// clear the ith bit
+b &= ~(1 << i);
+
+// toggle the ith bit
+b ^= (1 << i);
+```
+</JavaSection>
+
+<PySection>
+```py
+# extract the ith bit
+(b >> i) & 1
+
+# set the ith bit
+b |= 1 << i
+
+# clear the ith bit
+b &= ~(1 << i)
+
+# toggle the ith bit
+b ^= 1 << i
+```
+</PySection>
+</LanguageSection>
 
 <FocusProblem problem="sample" />
 
@@ -61,7 +318,7 @@ Recall a bit in $a \oplus b$ is $1$ only if the bit in $a$ is different from the
 
 Now this looks pretty great, but we need to get rid of the third case. By taking the bitwise AND with $a | b$, the ones that are left on is only if there is a $1$ in either $a$ or $b$. Obviously, the third case isn't included in $a | b$ since both bits are off, and we successfully eliminate that case.
 
-Now that we can acquire the sum of any two numbers in two queries, we can easily solve the problem now. We can find the values of the first three numbers of the array using a system of equations involving their sum (note $n \geq 3$). Once we have acquired their independent values, we can loop through the rest of the array.
+Now that we can acquire the sum of any two numbers in two queries, we can easily solve the problem. We can find the values of the first three numbers of the array using a system of equations involving their sum (note $n \geq 3$). Once we have acquired their independent values, we can loop through the rest of the array.
 
 <LanguageSection>
 <CPPSection>
