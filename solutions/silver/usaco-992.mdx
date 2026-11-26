@@ -2,7 +2,7 @@
 id: usaco-992
 source: USACO Silver 2020 January
 title: Wormhole Sort
-author: Óscar Garries, Neo Wang, Kevin Sheng, Ruben Jing
+author: Óscar Garries, Neo Wang, Kevin Sheng, Ruben Jing, Raagav Bala
 ---
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_wormsort_silver_jan20.html)
@@ -548,4 +548,65 @@ class DSU {
 ```
 
 </JavaSection>
+
+<PySection>
+
+```py
+import sys
+
+sys.stdin = open("wormsort.in")
+sys.stdout = open("wormsort.out", "w+")
+
+MAXN = 2 * 10**5
+parents = [0] * (MAXN + 1)
+sizes = [1] * (MAXN + 1)
+
+
+# BeginCodeSnip{DSU}
+def init(n):
+	for i in range(n + 1):
+		parents[i] = i
+
+
+def find(u):
+	if u == parents[u]:
+		return u
+	parents[u] = find(parents[u])
+	return parents[u]
+
+
+def unite(u, v):
+	u = find(u)
+	v = find(v)
+	if u == v:
+		return False
+	if sizes[u] < sizes[v]:
+		u, v = v, u
+	parents[v] = u
+	sizes[u] += sizes[v]
+	return True
+
+
+# EndCodeSnip
+
+N, M = map(int, input().split())
+init(N)
+order = list(map(int, input().split()))
+swaps = sorted(
+	[tuple(map(int, input().split())) for _ in range(M)],
+	key=lambda x: x[2],  # sort by width
+	reverse=True,  # descending order
+)
+
+count = -1  # index of the last wormhole used
+for i in range(1, N + 1):
+	while find(i) != find(
+		order[i - 1]
+	):  # connect each cow's current and target positions
+		count += 1
+		unite(swaps[count][0], swaps[count][1])
+
+print(-1 if count == -1 else swaps[count][2])
+```
+</PySection>
 </LanguageSection>
