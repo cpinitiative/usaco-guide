@@ -64,38 +64,52 @@ Since each tree is pushed once and popped at most once, a query takes $\mathcal{
 <CPPSection>
 
 ```cpp
-#include <bits/stdc++.h>
-using namespace std;
+#include <deque>
+#include <iostream>
+
 const int MAXN = 1000005;
-int n, d[MAXN], Q, k, dp[MAXN];
-pair<int, int> p;  // {tree index, dp value}
+
+int d[MAXN], dp[MAXN];
+
 int main() {
-	cin >> n;
-	for (int i = 1; i <= n; i++) cin >> d[i];
-	cin >> Q;
-	while (Q--) {
-		cin >> k;
+	
+	int n, q, k;
+	std::cin >> n;
+	for (int i = 1; i <= n; i++) { std::cin >> d[i]; }
+
+	std::cin >> q;
+	while (q--) {
+		std::cin >> k;
 		dp[1] = 0;
-		deque<pair<int, int>> q;
-		p.first = 1, p.second = 0;
-		q.push_back(p);
+		std::deque<std::pair<int, int>> candidates;  // {tree index, dp value}
+		candidates.push_back({1, 0});
+
 		for (int i = 2; i <= n; i++) {
 			// remove trees that are too far back to reach tree i
-			while (!q.empty() && q.front().first < i - k) q.pop_front();
+			while (!candidates.empty() && candidates.front().first < i - k) {
+				candidates.pop_front();
+			}
+
 			// the front is the best tree to fly from
-			dp[i] = q.front().second + (d[q.front().first] <= d[i]);
+			dp[i] = candidates.front().second + (d[candidates.front().first] <= d[i]);
+
 			// remove trees with more tiring flights than tree i
-			while (!q.empty() && q.back().second > dp[i]) q.pop_back();
+			while (!candidates.empty() && candidates.back().second > dp[i]) {
+				candidates.pop_back();
+			}
+
 			// on a tie, remove trees that are not higher than tree i
-			while (!q.empty() && q.back().second == dp[i] && d[q.back().first] <= d[i])
-				q.pop_back();
+			while (!candidates.empty() && candidates.back().second == dp[i] &&
+			       d[candidates.back().first] <= d[i]) {
+				candidates.pop_back();
+			}
+
 			// tree i becomes a candidate for later trees
-			p.first = i, p.second = dp[i];
-			q.push_back(p);
+			candidates.push_back({i, dp[i]});
 		}
-		cout << dp[n] << endl;
+
+		std::cout << dp[n] << '\n';
 	}
-	return 0;
 }
 ```
 
