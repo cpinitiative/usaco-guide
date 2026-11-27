@@ -1,0 +1,98 @@
+---
+id: usaco-618
+source: USACO Silver 2016 February
+title: Circular Barn
+author: Joel Shearon
+---
+
+[Official Analysis (C++)](http://www.usaco.org/current/data/sol_cbarn_silver_feb16.html)
+
+<Info>
+
+The silver version of this problem is the same as the [gold version](/problems/usaco-621); the official silver write-up points to the gold analysis.
+
+</Info>
+
+## Explanation
+
+Room $i$ has $a_i$ cows waiting at its door. After the barn opens, each cow travels clockwise until she occupies the next still-empty room. Crossing $d$ doors costs $d^2$ energy. We need one cow in every room with minimum total energy.
+
+Fix an opening door and walk clockwise once using a greedy rule: at each room, one currently walking cow stops there if possible, then the $a_i$ waiting cows join the pack heading onward. When several walking cows could fill the same room, always let the cow who **started walking earliest** stop — swapping stop positions between two cows that cross each other's entrances cannot increase total energy.
+
+Track how many cows are walking toward the next openings. When $a_i$ cows join while $c$ are already walking, those newcomers eventually walk $c, c+1, \ldots, c+a_i-1$ doors, adding
+
+$$
+\sum_{j=0}^{a_i-1}(c+j)^2
+$$
+
+to the answer. Let $\texttt{sumsq}(v)=\sum_{k=1}^{v} k^2 = \frac{v(v+1)(2v+1)}{6}$ (and $\texttt{sumsq}(v)=0$ for $v \le 0$). That increment is $\texttt{sumsq}(c+a_i-1)-\texttt{sumsq}(c-1)$.
+
+Not every first door makes the walk feasible: we might reach a room with no walking cow left to place. The exchange argument above implies some optimal plan uses an opening where the simulation **closes cleanly** — after assigning all $n$ rooms, no cows are still walking. Equivalently, if $c$ is the walking count before each room, the updates $c \leftarrow \max(0,\,c+a_i-1)$ end at $c=0$.
+
+With $n \le 1000$, we can try all $n$ opening doors. For each candidate, run the one-pass walk in $\mathcal{O}(n)$ and keep the opening whose surplus finishes at zero. From that door, run the walk once more to add up energies.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n^2)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+long long sumsq(long long v) {
+	if (v <= 0) return 0;
+	return v * (v + 1) * (2 * v + 1) / 6;
+}
+
+long long surplus_after_lap(const vector<long long> &a, int start) {
+	long long walking = 0;
+	int n = a.size();
+	for (int step = 0; step < n; step++) {
+		int i = (start + step) % n;
+		walking = max(0LL, walking + a[i] - 1);
+	}
+	return walking;
+}
+
+long long energy_from_opening(const vector<long long> &a, int start) {
+	long long walking = 0;
+	long long energy = 0;
+	int n = a.size();
+	for (int step = 0; step < n; step++) {
+		int i = (start + step) % n;
+		energy += sumsq(walking + a[i] - 1) - sumsq(walking - 1);
+		walking = max(0LL, walking + a[i] - 1);
+	}
+	return energy;
+}
+
+int main() {
+	freopen("cbarn.in", "r", stdin);
+	freopen("cbarn.out", "w", stdout);
+
+	int n;
+	cin >> n;
+	vector<long long> a(n);
+	for (int i = 0; i < n; i++) cin >> a[i];
+
+	int opening = 0;
+	for (int start = 0; start < n; start++) {
+		if (surplus_after_lap(a, start) == 0) {
+			opening = start;
+			break;
+		}
+	}
+
+	cout << energy_from_opening(a, opening) << '\n';
+}
+```
+
+</CPPSection>
+
+</LanguageSection>
