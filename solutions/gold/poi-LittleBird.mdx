@@ -1,0 +1,118 @@
+---
+id: poi-LittleBird
+source: POI 2014
+title: Little Bird
+author: Ellin You
+---
+
+## Explanation
+
+A DP approach comes to mind naturally. Let $\texttt{dp}[i]$ be the minimum number of tiring flights needed to reach tree $i$ from tree $1$.
+The initial value is $\texttt{dp}[1] = 0$, and the answer is $\texttt{dp}[n]$.
+For the transition, tree $i$ can be reached by a flight from any $j \in [i-k, i-1]$, so
+
+$$
+\texttt{dp}[i] = \min_{j \in [i-k,\, i-1]} (\texttt{dp}[j] + [d[j] \le d[i]]),
+$$
+
+where $[d[j] \le d[i]]$ is $1$ if the bird flies up (or stays at the same height) from $j$ to $i$, which makes the flight tiring, and $0$ otherwise.
+
+However, this transition gives an overall complexity of $\mathcal{O}(QNK)$, which is too slow.
+The sliding window technique can be applied here, with a [monotonic queue](/gold/sliding-window#monotonoic-queue) maintaining the candidates for $j$.
+
+To decide which of two candidates $j_1$ and $j_2$ is better, compare their $\texttt{dp}$ values first.
+The height only serves as a tie-breaker, because it changes the cost of the next flight by at most $1$,
+which can never outweigh a difference in $\texttt{dp}$. Formally, suppose that
+
+$$
+\texttt{dp}[j_1] < \texttt{dp}[j_2].
+$$
+
+Both values are integers, so ${\texttt{dp}[j_1] + 1 \le \texttt{dp}[j_2]}$.
+Each flight costs either $0$ or $1$, so regardless of the heights,
+
+$$
+\texttt{dp}[j_1] + [d[j_1] \le d[i]] \le \texttt{dp}[j_1] + 1 \le \texttt{dp}[j_2] \le \texttt{dp}[j_2] + [d[j_2] \le d[i]].
+$$
+
+This means $j_1$ is always at least as good as $j_2$, and the heights only matter when the $\texttt{dp}$ values are equal.
+This gives a neat way to order the indices in the queue:
+
+- If $\texttt{dp}[j_1] < \texttt{dp}[j_2]$, tree $j_1$ is considered better (smaller) than tree $j_2$.
+- If $\texttt{dp}[j_1] = \texttt{dp}[j_2]$, the tree with the greater height is considered better.
+  To see why, suppose that $d[j_1] \ge d[j_2]$. If the flight from $j_1$ to some later tree $i$ is tiring,
+  then $d[j_2] \le d[j_1] \le d[i]$, so the flight from $j_2$ is tiring as well.
+  Thus ${[d[j_1] \le d[i]] \le [d[j_2] \le d[i]]}$, and $j_1$ is never worse than $j_2$.
+
+The best index is at the front of the queue.
+There is one more restriction: the length of a flight.
+If the index at the front is more than $k$ away from $i$, it is invalid for tree $i$ and for every tree after it (since $i$ only increases), so it is popped from the queue.
+Now the front of the queue (let its index be $j$) is safe to use for the update:
+
+$$
+\texttt{dp}[i] = \texttt{dp}[j] + [d[j] \le d[i]].
+$$
+
+To push the new index $i$ into the queue, the trees that are no better than tree $i$
+(those with a greater $\texttt{dp}$ value, or an equal $\texttt{dp}$ value and a height not greater than $d[i]$)
+are removed from the back first, and then $i$ is pushed to the back. This keeps the queue monotonic.
+
+Removing these trees is safe because they will never be needed again. For any later flight, tree $i$ is at least
+as good as each of them, and since tree $i$ comes after them, it also stays within reach for longer.
+
+Since each tree is pushed once and popped at most once, a query takes $\mathcal{O}(N)$ queue operations.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(QN)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <deque>
+#include <iostream>
+#include <vector>
+
+int main() {
+	std::ios_base::sync_with_stdio(false);
+	std::cin.tie(nullptr);
+
+	int n;
+	std::cin >> n;
+	std::vector<int> d(n);
+	for (int &height : d) { std::cin >> height; }
+
+	int q;
+	std::cin >> q;
+	while (q--) {
+		int k;
+		std::cin >> k;
+
+		std::vector<int> dp(n);
+		std::deque<int> candidates{0};  // tree indices, best at the front
+		for (int i = 1; i < n; i++) {
+			// at most one tree goes out of reach at each step
+			if (candidates.front() < i - k) { candidates.pop_front(); }
+
+			// the front is the best tree to fly from
+			dp[i] = dp[candidates.front()] + (d[candidates.front()] <= d[i]);
+
+			// remove trees that are no better than tree i
+			while (!candidates.empty() &&
+			       (dp[candidates.back()] > dp[i] ||
+			        (dp[candidates.back()] == dp[i] && d[candidates.back()] <= d[i]))) {
+				candidates.pop_back();
+			}
+
+			// tree i becomes a candidate for later trees
+			candidates.push_back(i);
+		}
+
+		std::cout << dp[n - 1] << '\n';
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>
