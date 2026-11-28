@@ -43,6 +43,8 @@ const ItemLink = ({
     linkWithProgressColorClass = 'link-with-progress-container--skipped';
   } else if (progress === 'Ignored') {
     linkWithProgressColorClass = 'link-with-progress-container--ignored';
+  } else if (progress === 'Reviewing') {
+    linkWithProgressColorClass = 'link-with-progress-container--reviewing';
   }
 
   return (

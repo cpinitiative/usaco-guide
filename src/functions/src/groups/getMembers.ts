@@ -6,11 +6,11 @@ if (admin.apps.length === 0) {
   admin.initializeApp();
 }
 
-export default functions.https.onCall(async request => {
-  const { groupId } = request.data as {
+export default functions.https.onCall(async (data, context) => {
+  const { groupId } = data as {
     groupId: string;
   };
-  const callerUid = request.auth?.uid;
+  const callerUid = context.auth?.uid;
 
   if (!callerUid || !groupId) {
     throw new functions.https.HttpsError(

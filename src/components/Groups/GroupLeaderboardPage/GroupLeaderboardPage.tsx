@@ -5,6 +5,7 @@ import Layout from '../../layout';
 import SEO from '../../seo';
 import TopNavigationBar from '../../TopNavigationBar/TopNavigationBar';
 import Breadcrumbs from '../Breadcrumbs';
+import LeaderboardList from '../LeaderboardList/LeaderboardList';
 import { LeaderboardTable } from '../LeaderboardTable/LeaderboardTable';
 
 export default function GroupLeaderboardPage(): JSX.Element {
@@ -63,21 +64,26 @@ export default function GroupLeaderboardPage(): JSX.Element {
         <div className="h-6" />
 
         <div className="flex flex-col">
-          <LeaderboardTable
-            columns={assignments?.map(post => ({
-              id: post!.id!,
-              tooltip: post!.name!,
-            }))}
-            rows={leaderboard?.map(item => ({
-              id: item.userInfo.uid,
-              name: item.userInfo.displayName,
-              points: item.totalPoints,
-              items: assignments!.map(postData => ({
-                id: postData!.id!,
-                value: '' + (item[postData!.id!]?.totalPoints ?? 0),
-              })),
-            }))}
-          />
+          <div className="hidden sm:block">
+            <LeaderboardTable
+              columns={assignments?.map(post => ({
+                id: post!.id!,
+                tooltip: post!.name!,
+              }))}
+              rows={leaderboard?.map(item => ({
+                id: item.userInfo.uid,
+                name: item.userInfo.displayName,
+                points: item.totalPoints,
+                items: assignments!.map(postData => ({
+                  id: postData!.id!,
+                  value: '' + (item[postData!.id!]?.totalPoints ?? 0),
+                })),
+              }))}
+            />
+          </div>
+          <div className="sm:hidden">
+            <LeaderboardList />
+          </div>
         </div>
       </div>
     </Layout>

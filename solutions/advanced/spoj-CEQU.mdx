@@ -1,0 +1,53 @@
+---
+id: spoj-CEQU
+source: SPOJ
+title: Crucial Equation
+author: LeadingTheAbyss
+---
+
+## Explanation
+
+We are given positive integers $a$, $b$, and $c$, and we need to decide whether
+the equation $ax + by = c$ has a solution in integers $x$ and $y$ (which may be
+negative).
+
+By Bézout's identity, the values of $ax + by$ over all integers $x$ and $y$ are
+exactly the multiples of $g = \gcd(a, b)$. So a solution exists if and only if
+$g \mid c$.
+
+For example, $2x + 4y = 8$ is solvable because $\gcd(2, 4) = 2$ divides $8$,
+while $3x + 6y = 7$ is not because $\gcd(3, 6) = 3$ does not divide $7$.
+
+We only need to know whether a solution exists, not to find one, so it suffices
+to compute $\gcd(a, b)$ and check whether it divides $c$. The extended
+Euclidean algorithm would also give us a solution, but that isn't needed here.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(T \log \min(a, b))$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+// BeginCodeSnip{Prefix}
+#include <iostream>
+#include <numeric>
+using namespace std;
+// EndCodeSnip
+
+int main() {
+	int test_num;
+	cin >> test_num;
+	for (int i = 1; i <= test_num; i++) {
+		int a, b, c;
+		cin >> a >> b >> c;
+
+		bool possible = c % gcd(a, b) == 0;
+		cout << "Case " << i << ": " << (possible ? "Yes" : "No") << "\n";
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>

@@ -2,7 +2,7 @@ import { RadioGroup } from '@headlessui/react';
 import classNames from 'classnames';
 
 export default function RadioList({
-  name,
+  name: _name,
   options,
   value,
   onChange,

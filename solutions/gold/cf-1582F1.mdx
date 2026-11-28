@@ -20,7 +20,7 @@ sequence ending with a number less than or equal to $i$. There exists the
 following recurrence:
 
 $$
-dp[x \oplus a_i][i] = dp[x \oplus a_i][0..i] \lor dp[x][0..i-1]
+dp[x \oplus a_i][i] = dp[x \oplus a_i][0\dots i] \lor dp[x][0\dots i-1]
 $$
 
 with
@@ -34,7 +34,13 @@ zero element.
 
 ## Implementation
 
-**Time Complexity:** $\mathcal{O}(n \cdot 2^{\lceil \log_2(\text{MAXA}) \rceil})$
+**Time Complexity:** $\mathcal{O}((n + 2^{\lceil \log_2(\text{MAXA}) \rceil}) \cdot 2^{\lceil \log_2(\text{MAXA}) \rceil})$
+
+The two nested loops account for the first term. The inner `while` loop is
+amortized: it only ever writes cells that were still false, and each of the
+$2^{\lceil \log_2(\text{MAXA}) \rceil} \times 2^{\lceil \log_2(\text{MAXA})
+\rceil}$ cells of $dp$ is set at most once over the whole run, which accounts
+for the second.
 
 <LanguageSection>
 <CPPSection>

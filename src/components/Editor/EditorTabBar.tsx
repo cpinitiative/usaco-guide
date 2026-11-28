@@ -1,3 +1,4 @@
+import { Endpoints } from '@octokit/types';
 import { Buffer } from 'buffer';
 import classNames from 'classnames';
 import { useAtomValue, useSetAtom } from 'jotai';
@@ -13,6 +14,9 @@ import {
 } from '../../atoms/editor';
 import { useQuizOpen } from '../../context/QuizGeneratorContext';
 import AddProblemModal from './AddProblemModal';
+
+type GetContentResponse =
+  Endpoints['GET /repos/{owner}/{repo}/contents/{path}']['response'];
 
 export interface EditorTab {
   label: string;
@@ -52,8 +56,9 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
       setCommitState('Committing...');
       let fileSha = undefined;
       try {
-        fileSha = (
-          (await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+        const response = (await octokit.request(
+          'GET /repos/{owner}/{repo}/contents/{path}',
+          {
             owner: githubInfo.login,
             repo: 'usaco-guide',
             path: filePath,
@@ -61,8 +66,13 @@ const EditorTabBar: React.FC<EditorTabBarProps> = ({
             headers: {
               'X-GitHub-Api-Version': '2022-11-28',
             },
-          })) as any
-        ).data.sha;
+          }
+        )) as GetContentResponse;
+        if ('sha' in response.data) {
+          fileSha = response.data.sha;
+        } else {
+          throw new Error('No SHA found in response data for file');
+        }
       } catch {
         console.log("file doesn't exist yet");
       }

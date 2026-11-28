@@ -2,7 +2,7 @@
 id: usaco-1063
 source: USACO Silver 2020 December
 title: Rectangular Pasture
-author: Kevin Sheng
+author: Kevin Sheng, Ruben Jing
 ---
 
 [Official Analysis (C++)](http://www.usaco.org/current/data/sol_prob2_silver_dec20.html)
@@ -19,7 +19,7 @@ Note: The video solution might not be the same as other solutions. Code in C++ a
 
 <YouTube id="AH1wyxq8nPM" />
 
-# Solution
+# Solution 1
 
 ## Explanation
 
@@ -232,4 +232,92 @@ public class RPasture {
 ```
 
 </JavaSection>
+</LanguageSection>
+
+# Solution 2
+
+## Explanation
+
+The central idea behind this solution is identical to the previous solution, but differs
+in how we count the cows above and below a bounding box.
+
+Instead of keeping two prefix sums for the number of cows above and below a y-coordinate, we
+directly use 2D prefix sums on coordinate compressed locations. To count the number of cows
+above and below a bounding box, we use rectangular sums to directly sum the frequency of
+cows in the column above a box.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(N^2)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+bool sort_by_x(const pair<int, int> &a, const pair<int, int> &b) {
+	return a.first < b.first;
+}
+bool sort_by_y(const pair<int, int> &a, const pair<int, int> &b) {
+	return a.second < b.second;
+}
+
+int rect_sum(const vector<vector<int>> &grid, int r1, int r2, int c1, int c2) {
+	return (grid[r2][c2] - grid[r2][c1 - 1] - grid[r1 - 1][c2] + grid[r1 - 1][c1 - 1]);
+}
+
+int main() {
+	int n;
+	cin >> n;
+	vector<pair<int, int>> nums(n);
+	for (auto &[x, y] : nums) { cin >> x >> y; }
+
+	// coordinate compress X
+	sort(nums.begin(), nums.end(), sort_by_x);
+	for (int i = 0; i < nums.size(); i++) { nums[i].first = i + 1; }
+
+	// coordinate compress Y
+	sort(nums.begin(), nums.end(), sort_by_y);
+	for (int i = 0; i < nums.size(); i++) { nums[i].second = i + 1; }
+
+	// grid is n+1 by n+1 because locations are 1 indexed
+	vector<vector<int>> grid(n + 1, vector<int>(n + 1));
+
+	// add points to grid and compute 2D prefix sums
+	for (auto [x, y] : nums) { grid[x][y] = 1; }
+
+	for (int i = 1; i < grid.size(); i++) {
+		for (int j = 1; j < grid[i].size(); j++) {
+			grid[i][j] += grid[i - 1][j] + grid[i][j - 1] - grid[i - 1][j - 1];
+		}
+	}
+
+	// choose two points, count rectangles
+	sort(nums.begin(), nums.end(), sort_by_x);
+	long long res = 0;
+
+	for (int i = 0; i < n; i++) {
+		for (int j = i + 1; j < n; j++) {
+			int r1 = nums[i].first;
+			int r2 = nums[j].first;
+			int c1 = min(nums[i].second, nums[j].second);
+			int c2 = max(nums[i].second, nums[j].second);
+
+			int above = rect_sum(grid, 1, r1 - 1, c1, c2);
+			int below = rect_sum(grid, r2 + 1, n, c1, c2);
+
+			res += 1ll * (above + 1) * (below + 1);
+		}
+	}
+
+	// add results for single or no cow
+	res += n + 1;
+
+	cout << res << '\n';
+}
+```
+
+</CPPSection>
 </LanguageSection>

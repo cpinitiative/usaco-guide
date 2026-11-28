@@ -50,7 +50,30 @@ Either one of the following happens:
 <CPPSection>
 
 ```cpp
-// CodeSnip{CPP Short Template}
+// BeginCodeSnip{C++ Short Template}
+#include <bits/stdc++.h>  // see /general/running-code-locally
+using namespace std;
+
+using ll = long long;
+
+using vi = vector<int>;
+#define pb push_back
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+
+using pi = pair<int, int>;
+#define f first
+#define s second
+#define mp make_pair
+
+void setIO(string name = "") {
+	cin.tie(0)->sync_with_stdio(0);  // see /general/fast-io
+	if (sz(name)) {
+		freopen((name + ".in").c_str(), "r", stdin);  // see /general/input-output
+		freopen((name + ".out").c_str(), "w", stdout);
+	}
+}
+// EndCodeSnip
 
 int N, M;
 
@@ -109,12 +132,15 @@ int main() {
 
 	dp[0][0] = 0;
 
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < M; j++) {
-			dp[i + 1][j] = min(dp[i + 1][j], dp[i][j] + dist(jl[i + 1], bl[j]));
-			dp[i][j + 1] = min(dp[i][j + 1], dp[i][j] + dist(jl[i], bl[j + 1]));
-			dp[i + 1][j + 1] =
-			    min(dp[i + 1][j + 1], dp[i][j] + dist(jl[i + 1], bl[j + 1]));
+	for (int i = 0; i <= N; i++) {
+		for (int j = 0; j <= M; j++) {
+			if (i + 1 <= N)
+				dp[i + 1][j] = min(dp[i + 1][j], dp[i][j] + dist(jl[i + 1], bl[j]));
+			if (j + 1 <= M)
+				dp[i][j + 1] = min(dp[i][j + 1], dp[i][j] + dist(jl[i], bl[j + 1]));
+			if (i + 1 <= N && j + 1 <= M)
+				dp[i + 1][j + 1] =
+				    min(dp[i + 1][j + 1], dp[i][j] + dist(jl[i + 1], bl[j + 1]));
 		}
 	}
 

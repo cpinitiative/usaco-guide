@@ -628,7 +628,7 @@ _can_ be used as array indices.
 A good example of coordinate compression in action is in the solution of _USACO
 Rectangular Pasture._ Again, we won't delve into the full solution but instead
 discuss how coordinate compression is applied. Since the solution uses
-[2D-prefix](/silver/prefix-sums-2) sums (another Silver topic), it is helpful if
+[2D-prefix](/silver/more-prefix-sums#2d-prefix-sums) sums (another Silver topic), it is helpful if
 all point coordinates are coordinate-compressed to the range $0$ to $N-1$ so
 they can be used as array indices. Without coordinate compression, creating a
 large enough array would result in a `Memory Limit Exceeded` verdict.
@@ -657,7 +657,7 @@ int rsum(int x1, int y1, int x2, int y2) {
 	return pref[x2 + 1][y2 + 1] - pref[x2 + 1][y1] - pref[x1][y2 + 1] + pref[x1][y1];
 }
 
-int main(void) {
+int main() {
 	int n;
 	cin >> n;
 	for (int i = 0; i < n; i++) {
@@ -831,12 +831,12 @@ We also provide a more detailed explanation:
 
 First of all, let's figure out the value at each index in array $a$. It would be
 too slow to loop through every index in every update interval as well as every
-index in a query interval (The complexity would be $O(C(N+Q))$, where $C$ is the
+index in a query interval (The complexity would be $\mathcal{O}(C(N+Q))$, where $C$ is the
 maximum coordinate given in the input). At the same time, that approach would
-take $O(C)$ memory, which is also too much. Instead, we make an observation that
+take $\mathcal{O}(C)$ memory, which is also too much. Instead, we make an observation that
 will make prefix sums paired with coordinate compression a viable option.
 
-Not every index in the whole range from $1...10^9$ is used in updates. In fact,
+Not every index in the whole range from $1\dots10^9$ is used in updates. In fact,
 there can be large intervals of indices that all have the same value. Call every
 index that is named in the input is a "special index." Now, note that the value
 at each index in the interval between two consecutive special indices is the
@@ -856,7 +856,7 @@ change in value when we go from one index to the next. Taking the prefix sums of
 the difference array will result in the actual values of the array $a$ (Take
 some time to convince yourself of this before moving on).
 
-Since the indices that we have to mark range from $0...10^9$, it'd take too much
+Since the indices that we have to mark range from $0\dots10^9$, it'd take too much
 memory for us to use those indices directly. However, only special indices are
 ever actually used, so we're motivated to change the meaning of the difference
 array to save on memory (note that there are at most $2 \cdot (N+Q)$ special
@@ -1196,13 +1196,13 @@ Many of the problems below may use other Silver concepts, such as
 	  </Quiz.Explanation>
 	</Quiz.Answer>
 	<Quiz.Answer>
-	  $O(N^2)$
+	  $\mathcal{O}(N^2)$
 	  <Quiz.Explanation>
 		Incorrect. The fastest way to coordinate compress is explained in the module, try to recall and determine the time complexity of that algorithm.
 	  </Quiz.Explanation>
 	</Quiz.Answer>
 	<Quiz.Answer>
-	  $O(N)$
+	  $\mathcal{O}(N)$
 	  <Quiz.Explanation>
 		Incorrect. This would be the case only if the array of $N$ integers were sorted already.
 	  </Quiz.Explanation>

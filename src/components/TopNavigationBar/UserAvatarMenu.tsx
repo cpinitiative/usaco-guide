@@ -11,7 +11,7 @@ export interface UserAvatarMenuProps {
 export const UserAvatarMenu: React.FC<UserAvatarMenuProps> = props => {
   return (
     <Menu as="div" className="relative inline-block text-left">
-      {({ open }) => (
+      {({ open: _open }) => (
         <>
           <div>
             <MenuButton className="flex rounded-full border-2 border-transparent text-sm transition focus:border-blue-500 focus:outline-hidden dark:focus:border-white">

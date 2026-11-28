@@ -31,16 +31,16 @@ Therefore, apart from at most one bucket, all other buckets filled with berries 
 
 The optimal approach is to repeatedly fill buckets with exactly $b$ berries until either all $K$ buckets are filled
 or the tree no longer has at least $b$ berries remaining.
-If there are still buckets to fill after this, sort the remaining trees by the value $B_i$ $mod$ $b$,
+If there are still buckets to fill after this, sort the remaining trees by the value $B_i \bmod b$,
 where $B_i$ is the number of berries on tree $i$.
-hen, iterate through the trees in descending order of $B_i$ $mod$ $b$,
+hen, iterate through the trees in descending order of $B_i \bmod b$,
 filling the remaining buckets as efficiently as possible.
 
 This process can be repeated for each possible value of $b$ from $1$ to $\max(B_i)$.
 
 ## Implementation 1
 
-**Time Complexity:** $\mathcal{O}(max(B_i) \cdot N\log N)$
+**Time Complexity:** $\mathcal{O}(\max(B_i) \cdot N\log N)$
 
 <LanguageSection>
 <CPPSection>
@@ -277,7 +277,7 @@ print(ans, file=open("berries.out", "w"))
 We want the $\min(N, K - f)$ greatest elements of B (comparing values $\mod s$), where $f$ is the number of full baskets and $s$ is the size of a full basket.
 Since the order of these elements does not matter, we can use a [selection algorithm](https://en.wikipedia.org/wiki/Selection_algorithm) instead of sorting to reduce the time complexity by a factor of $\log N$.
 
-**Time Complexity:** $\mathcal{O}(max(B_i) \cdot N)$
+**Time Complexity:** $\mathcal{O}(\max(B_i) \cdot N)$
 
 <LanguageSection>
 <CPPSection>

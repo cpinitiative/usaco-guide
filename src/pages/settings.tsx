@@ -35,7 +35,7 @@ import { useUserPermissions } from '../context/UserDataContext/UserPermissionsCo
 - Import / Export
  */
 
-export default function SettingsPage(props) {
+export default function SettingsPage() {
   const router = useRouter();
   const { isAdmin } = useUserPermissions();
   const tabs = [
@@ -60,7 +60,7 @@ export default function SettingsPage(props) {
     };
     handleHashChange();
     window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashChange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
   return (

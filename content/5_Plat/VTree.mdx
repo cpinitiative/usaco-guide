@@ -216,7 +216,7 @@ For a rough proof of correctness, consider the following:
 ### Implementation
 
 Below is an implementation for the task, which also contains general code for
-constructing virtual trees. Because $\sum_c |S|$ is $\mathcal{O(n)}$, and we
+constructing virtual trees. Because $\sum_c |S|$ is $\mathcal{O}(n)$, and we
 sort by DFS order, our final time complexity is $\mathcal{O}(n\log n)$.
 
 ```cpp
@@ -270,7 +270,7 @@ vector<int> vtree(const vector<int> &key) {
 	sort(res.begin(), res.end(), sort_tin);
 
 	for (int i = 1; i < (int)key.size(); i++) {
-		res.push_back(lca(key[i - 1], key[i]));
+		res.push_back(lca(res[i - 1], res[i]));
 	}
 
 	sort(res.begin(), res.end(), sort_tin);
@@ -335,8 +335,8 @@ int main() {
 Note that
 [Bridges: The Final Battle](https://codeforces.com/problemset/gymProblem/100551/D)
 requires concepts from
-[Offline Deletion](https://usaco.guide/adv/offline-del?lang=cpp) and
-[BCCs and 2CCs](https://usaco.guide/adv/BCC-2CC?lang=cpp) to solve.
+[Offline Deletion](/adv/offline-del?lang=cpp) and
+[BCCs and 2CCs](/adv/BCC-2CC?lang=cpp) to solve.
 
 </Warning>
 

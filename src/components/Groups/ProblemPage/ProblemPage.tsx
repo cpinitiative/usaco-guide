@@ -24,7 +24,7 @@ interface ProblemPageProps {
 
 export default function ProblemPage(props: ProblemPageProps) {
   const router = useRouter();
-  const { groupId, postId, problemId } = props;
+  const { groupId: _groupId, postId, problemId } = props;
   const activeGroup = useActiveGroup();
   const post = usePost(postId);
   const problem = useProblem(problemId);

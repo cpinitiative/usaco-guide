@@ -1,0 +1,94 @@
+---
+id: ac-abc340_f
+source: AC
+title: S = 1
+author: Rameez Parwez, Benjamin Qi
+---
+
+[Official Editorial](https://atcoder.jp/contests/abc340/editorial/9257)
+
+## Explanation
+
+The three points of the triangle given are $(0, 0), (X, Y),$ and $(A, B)$.
+Their area is already provided as $1$. Thus, if we substitute the values we have, we get:
+
+$$
+\begin{aligned}
+\texttt{Area} = \frac{1}{2}|AY - BX| = 1 \\
+|AY - BX| = 2
+\end{aligned}
+$$
+
+Our final equation is $AY - BX = \pm 2$.
+
+Let's run the extended Euclidean algorithm on the pair $(|X|, |Y|)$,
+which gives us integers $c$ and $d$ satisfying
+
+$$
+cX + dY = g
+$$
+
+where $g = \gcd(X, Y)$. If $g \nmid 2$, then by Bézout's Identity no such $(A, B)$ exists. Otherwise, $g\mid 2$, and if we multiply the output of the extended Euclidean algorithm by $2 / g$,
+we get:
+
+$$
+\left(\frac{2}{g} c\right)X + \left(\frac{2}{g} d\right)Y = 2
+$$
+
+This means that $(A,B)=\left(\frac{2}{g}d,-\frac{2}{g}c\right)$ is a valid solution.
+Additionally, by a fact from the module we have $\max(|A|, |B|)\le 10^{17}$, so
+it is close enough to the origin to output.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(\log \min(|X|, |Y|))$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+// BeginCodeSnip{Prefix}
+#include <array>
+#include <cassert>
+#include <iostream>
+
+using namespace std;
+
+using ll = long long;
+using pl = pair<ll, ll>;
+
+#define f first
+#define s second
+
+array<ll, 3> extend_euclid(ll a, ll b) {
+	// we know that (1 * a) + (0 * b) = a and (0 * a) + (1 * b) = b
+	array<ll, 3> x = {1, 0, a};
+	array<ll, 3> y = {0, 1, b};
+
+	// run extended Euclidean algo
+	while (y[2] > 0) {
+		// keep subtracting multiple of one equation from the other
+		ll k = x[2] / y[2];
+		for (int i = 0; i < 3; i++) x[i] -= k * y[i];
+		swap(x, y);
+	}
+	return x;  // x[0] * a + x[1] * b = x[2], x[2] = gcd(a, b)
+}
+// EndCodeSnip
+
+int main() {
+	ll X, Y;
+	cin >> X >> Y;
+	auto p = extend_euclid(abs(X), abs(Y));
+	if (X < 0) p[0] *= -1;
+	if (Y < 0) p[1] *= -1;
+	if (p[2] > 2) cout << "-1\n";
+	else {
+		ll c = 2 / p[2];
+		cout << c * p[1] << " " << -c * p[0] << "\n";
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>

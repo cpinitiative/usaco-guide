@@ -2,7 +2,7 @@
 id: usaco-620
 source: USACO Silver 2016 February
 title: Milk Pails
-author: Óscar Garries, Neo Wang, Nathan Gong, Akshar Yeccherla, George Pong, David Zhou
+author: Óscar Garries, Neo Wang, Nathan Gong, Akshar Yeccherla, George Pong, David Zhou, John Zhou
 ---
 
 ## Video Solution
@@ -266,7 +266,9 @@ main()
 
 [Official Analysis (Java)](http://www.usaco.org/current/data/sol_pails_silver_feb16.html)
 
-## Explanation (DFS)
+## Solution 1 (DFS)
+
+### Explanation
 
 We can perform a DFS starting from the base state of $(0, 0)$, where both pails have $0$ units of milk.
 
@@ -276,7 +278,7 @@ To properly track visited cells, we need to make sure the visited grid has a rec
 
 Simulating all six operations every time is enough to pass the constraints.
 
-## Implementation
+### Implementation
 
 **Time Complexity:** $\mathcal O(XYK)$
 
@@ -471,7 +473,9 @@ print(sol, file=open("pails.out", "w"))
 
 </LanguageSection>
 
-## Alternate Solution: BFS
+## Solution 2 (BFS)
+
+### Explanation
 
 We can directly simulate all operations using BFS.
 
@@ -495,7 +499,7 @@ quantity to each pail appropriately.
 Now iterate over all states $(i, j)$ where $\texttt{dist}[i][j] \le K$ and
 compute the minimum $|i+j-M|$.
 
-## Implementation
+### Implementation
 
 **Time Complexity:** $\mathcal O(XY)$
 
@@ -689,5 +693,89 @@ print(min_diff)
 ```
 
 </PySection>
+
+</LanguageSection>
+
+## Solution 3 (DP)
+
+### Explanation
+
+The states in this problem are a combination of the milk amounts in each pail and the number of operations to reach such amounts.
+
+Let $\text{f}[i][j][l]$ represent if it is possible to reach $i$ and $j$ pail amounts in $l$ operations.
+Our base case is $\text{f}[0][0][0]$ as true, since there is no milk initially.
+Now, iterate through all $l$ such that $0\leq l<K$, and all possible $i$ and $j$. For any true state $\text{f}[i][j][l]$, mark $\text{f}[i'][j'][l+1]$ as true for all $(i', j')$'s that can result from a single operation based on $(i, j)$.
+The possible operations are explained in the previous solutions.
+
+The answer is the minimum of $|i+j-m|$ for all true $\texttt{f}[i][j][l]$.
+
+### Implementation
+
+**Time Complexity:** $\mathcal O(XYK)$
+
+<LanguageSection>
+
+<CPPSection>
+
+```cpp
+#include <climits>
+#include <fstream>
+#include <vector>
+using namespace std;
+
+int main() {
+	ifstream fin("pails.in");
+
+	int x, y, k, m;
+	fin >> x >> y >> k >> m;
+
+	// f[i][j][l] = if (i, j) cup amounts in l steps is possible
+	vector f(x + 1, vector(y + 1, vector<int>(k + 1)));
+
+	// base state: no milk in 0 steps
+	f[0][0][0] = 1;
+
+	// use each DP layer to calculate the next
+	for (int l = 0; l < k; l++) {
+		for (int i = 0; i <= x; i++) {
+			for (int j = 0; j <= y; j++) {
+				if (f[i][j][l]) {
+					f[i][0][l + 1] = 1;
+					f[0][j][l + 1] = 1;
+					f[i][y][l + 1] = 1;
+					f[x][j][l + 1] = 1;
+
+					// Pour from i into j
+					{
+						int amount_poured = min(y - j, i);
+						f[i - amount_poured][j + amount_poured][l + 1] = 1;
+					}
+
+					// Pour from j into i
+					{
+						int amount_poured = min(x - i, j);
+						f[i + amount_poured][j - amount_poured][l + 1] = 1;
+					}
+				}
+			}
+		}
+	}
+
+	// Go over all true states and compute answer.
+	int ans = INT_MAX;
+	for (int l = 0; l <= k; l++) {
+		for (int i = 0; i <= x; i++) {
+			for (int j = 0; j <= y; j++) {
+				if (f[i][j][l]) { ans = min(ans, abs(i + j - m)); }
+			}
+		}
+	}
+
+	ofstream fout("pails.out");
+	fout << ans << endl;
+}
+```
+
+</CPPSection>
 
 </LanguageSection>

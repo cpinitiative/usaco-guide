@@ -1,5 +1,6 @@
 import { compile } from '@mdx-js/mdx';
 import matter from 'gray-matter';
+import { Root } from 'mdast';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeExternalLinks from 'rehype-external-links';
 import rehypeRaw from 'rehype-raw';
@@ -20,7 +21,7 @@ export async function parseMdxFile(filePath: string): Promise<MdxContent> {
   const { readFile } = await import('fs/promises');
   const fileContent = await readFile(filePath, 'utf-8');
   const { content, data: frontmatter } = matter(fileContent);
-  const mdast: any = { data: null };
+  const mdast: { data: Root } = { data: null };
   const tableOfContents: any = {};
 
   let compiledResult;
@@ -54,7 +55,11 @@ export async function parseMdxFile(filePath: string): Promise<MdxContent> {
             ],
           },
         ],
-        customRehypeKatex,
+        // Strict here only: KaTeX's default 'warn' just prints to the console,
+        // where nobody reads it, so input KaTeX merely tolerates -- a stray `%`
+        // silently comments out the rest of the math -- fails the build instead.
+        // The editor preview and group posts share the plugin and stay lenient.
+        [customRehypeKatex, { strict: 'error', throwOnError: true }],
         rehypeSnippets,
         [rehypeExternalLinks, { target: '_blank', rel: ['nofollow'] }],
         [

@@ -16,6 +16,7 @@ export default function TagsRefinementList() {
         <div key={item.label}>
           <a
             href={createURL(item.value)}
+            rel="nofollow"
             className={`${
               item.isRefined
                 ? 'font-medium text-gray-700 dark:text-blue-500'

@@ -15,7 +15,7 @@ const LeaderboardListItem = ({
   return (
     <li className="py-3">
       <div className="flex items-center lg:space-x-4">
-        <div className="hidden shrink-0 lg:block">
+        <div className="shrink-0">
           <img className="h-8 w-8 rounded-full" src={member.photoURL} alt="" />
         </div>
         <div className="min-w-0 flex-1">

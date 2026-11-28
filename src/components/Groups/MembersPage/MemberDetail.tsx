@@ -363,12 +363,15 @@ export default function MemberDetail({ member }: { member: MemberInfo }) {
                   )
                 ) {
                   removeMemberFromGroup(activeGroup.activeGroupId!, member.uid)
-                    .then(() =>
+                    .then(() => {
+                      window.location.hash = ''; // deselect deleted user id in url
                       toast.success(
                         'This member has been successfully removed from the group.'
-                      )
-                    )
-                    .catch(e => toast.error(e));
+                      );
+                    })
+                    .catch(e =>
+                      toast.error(e instanceof Error ? e.message : String(e))
+                    );
                 }
               }}
             >

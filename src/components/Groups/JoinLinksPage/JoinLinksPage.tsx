@@ -1,4 +1,4 @@
-import { UserIcon } from '@heroicons/react/solid';
+import { UserIcon } from '@heroicons/react/24/solid';
 import * as React from 'react';
 import { useActiveGroup } from '../../../hooks/groups/useActiveGroup';
 import { useGroupActions } from '../../../hooks/groups/useGroupActions';

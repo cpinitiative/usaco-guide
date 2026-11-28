@@ -23,6 +23,7 @@ export type JoinGroupLink = {
   numUses: number;
   maxUses: number | null;
   expirationTime: Timestamp | null;
+  allowedEmails: string[] | null;
   usedBy: string[];
   author: string;
 };

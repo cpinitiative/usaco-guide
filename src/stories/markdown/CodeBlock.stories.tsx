@@ -4,11 +4,13 @@ import CodeBlock from '../../components/markdown/CodeBlock/CodeBlock';
 import markdownDecorator from '../../components/markdown/markdownDecoratorForStorybook';
 import { useDarkMode } from '../../context/DarkModeContext';
 
-export default {
+const meta = {
   title: 'Markdown/CodeBlock',
   component: CodeBlock,
   decorators: [markdownDecorator],
 };
+
+export default meta;
 
 const Template: StoryFn<ComponentProps<typeof CodeBlock>> = args => {
   const isDarkMode = useDarkMode();

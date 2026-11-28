@@ -5,11 +5,13 @@ import markdownDecorator from '../../components/markdown/markdownDecoratorForSto
 import Spoiler from '../../components/markdown/Spoiler';
 import MiscMarkdownContent from './MiscMarkdownContent';
 
-export default {
+const meta = {
   title: 'Markdown/Spoiler',
   component: Spoiler,
   decorators: [markdownDecorator],
 };
+
+export default meta;
 
 const Template: StoryFn<ComponentProps<typeof Spoiler>> = args => (
   <Spoiler {...args} />
