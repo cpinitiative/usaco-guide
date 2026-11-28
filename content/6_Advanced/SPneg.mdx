@@ -1,14 +1,14 @@
 ---
 id: sp-neg
 title: 'Shortest Paths with Negative Edge Weights'
-author: Benjamin Qi, Andi Qu, Dong Liu, F. Bruno D. R.
+author: Benjamin Qi, Andi Qu, Dong Liu, F. Bruno D. R., David Xiao
 prerequisites:
   - shortest-paths
-description: 'Returning to Bellman-Ford and Floyd-Warshall.'
+description: 'Finding the shortest path on graphs with negative weights and detecting negative cycles'
 frequency: 0
 ---
 
-## Bellman-Ford
+## Resources
 
 <Resources>
 	<Resource
@@ -16,50 +16,93 @@ frequency: 0
 		title="Bellman-Ford"
 		url="graph/bellman_ford.html"
 		starred
-	 />
+	>
+		Single Source Shortest Path (SSSP) and negative cycle detection
+	</Resource>
 	<Resource
 		source="cp-algo"
-		title="Finding Negative Cycle"
-		url="graph/finding-negative-cycle-in-graph.html"
+		title="Floyd-Warshall"
+		url="graph/all-pair-shortest-path-floyd-warshall.html"
 		starred
 	>
-		with Bellman-Ford
+		All Pairs Shortest Path (APSP) and negative cycle detection
 	</Resource>
 	<Resource
 		source="CP2"
 		title="4.4.4 - SSSP with Negative Weight Cycle"
-	 />
+	>
+		Bellman-Ford and negative cycle detection
+	</Resource>
+	<Resource
+		source="CP2"
+		title="4.5.3 - Other Applications"
+	>
+		Applications of Floyd-Warshall, including negative cycle detection
+
+	</Resource>
 </Resources>
 
-<!-- 	<Resource
-		source="TC"
-		title="Intro to Graphs Section 3"
-		url="introduction-to-graphs-and-their-data-structures-section-3/"
-	 /> -->
+## Introduction
 
-### Shortest Paths
+In [Shortest Paths](/gold/shortest-paths), we learned how to find
+the shortest path on a graph with nonnegative edge weights. Now, we return to
+this problem but extend our approach to graphs with negative weights.
+
+In the previous module, our go-to approach for solving shortest path problems was
+Dijkstra's algorithm. However, when we introduce negative weights, Dijkstra's algorithm
+can fail because it assumes the shortest path to the closest unvisited vertex is
+final once it is popped from the heap.
+
+Below is an example of Dijkstra failing, reporting the shortest distance from $a$ to $c$
+as $4$ instead of $2$.
+
+<video width="960" height="720" controls>
+	<source src="/animations/dijkstra_fail.mp4" type="video/mp4"/>
+</video>
+
+It is worthwhile to note that while the code for Dijkstra's algorithm presented
+[earlier](/gold/shortest-paths#mathcalomlog-n-implementation) will still give correct
+results given no reachable negative cycles, it will no longer be bounded by $\mathcal{O}(N+M\log{N})$ where $N$ is the
+number of vertices and $M$ is the number of edges.
+
+In order to find paths on graphs with negative edge weights, we can use the
+other algorithms mentioned in the Shortest Paths module, Bellman-Ford and
+Floyd-Warshall.
+
+## Example - Single-Source Shortest Path
 
 <FocusProblem problem="bellSam" />
 
-#### Solution
+### Explanation
 
-Although this is a Single Source Shortest Paths problem, we can not use the known
-Dijkstra's algorithm, because we have negative weights on edges. An alternative is
-to use the Bellman-Ford algorithm. The algorithm first considers all the paths
-which use 1 edge. Then it calculates all the paths with at most 2 edges, and so
-on. If the graph has no negative cycle, then the shortest path between the source
-and any other vertex should have at most $V-1$ edges, where $V$ stands for the number
-of vertices in the graph. Because of that, the algorithm iterates through at most
-all edges $V-1$ times. Hence, it runs in $\mathcal{O}(E \cdot V)$.
+#### Negative Cycles
 
-If the graph has a negative cycle, we can detect a vertex in this cycle by running
-another relaxation. In this problem, belonging to a negative cycle means the
-distance to that point is negative infinity. Notice that all points that are reachable
-from those will also have minus infinity cost. In the solution below, we detect
-all the negative cycles and save the point from which we detected the cycle. We then
-do a [BFS](/silver/graph-traversal) with those points as sources.
+Before we try to compute the shortest path, we need to determine if a shortest
+path even exists. A negative cycle is a cycle whose edge weights sum to a negative
+number. If a negative cycle exists in a graph, any path which can reach that cycle
+can traverse that cycle an arbitrarily large amount of times, making the path
+length arbitrarily small.
 
-#### Implementation
+Thus, for any path from $s$ to $v$, there are three possible answers:
+- Impossible: no path exists from $s$ to $v$.
+- $l$: a shortest path of finite length $l$ exists from $s$ to $v$.
+- $-$Infinity: there is a negative cycle reachable along the path from $s$ to $v$.
+
+#### Bellman-Ford
+
+Since the graph is sparse ($M \ll N^2$), Bellman-Ford, introduced
+[earlier](/gold/shortest-paths#Bellman-Ford), appears to be the natural choice.
+After $N-1$ iterations, all finite shortest distances are correct, since the shortest
+path with the most edges can have at most $N-1$ edges.
+
+To detect paths with negative cycles, we can check if any edge can still be relaxed
+after these $N-1$ iterations. If the distance between $s$ and any vertex changes,
+it must be reachable from a negative cycle, since its apparent shortest path includes
+more than $N-1$ edges. We can mark all vertices whose path length changed on the
+last relaxation, and use BFS starting from every marked vertex to find all vertices
+that are reachable from the negative cycles.
+
+### Implementation
 
 **Time Complexity:** $\mathcal{O}(N \cdot M)$
 
@@ -100,7 +143,7 @@ int main() {
 		for (int u = 0; u < n; u++) {
 			if (dist[u] == INT64_MAX) { continue; }
 			for (auto &[v, w] : adj[u]) {
-				// the relaxed vertices belong to a negative cycle
+				// the relaxed vertices are reachable from a negative cycle
 				if (dist[u] + w < dist[v]) { bfs_queue.push(v); }
 			}
 		}
@@ -169,7 +212,7 @@ while True:
 		if dist[u] == float("inf"):
 			continue
 		for v, w in adj[u]:
-			# the relaxed vertices belong to a negative cycle
+			# the relaxed vertices are reachable from a negative cycle
 			if dist[u] + w < dist[v]:
 				bfs_queue.put(v)
 
@@ -200,267 +243,30 @@ while True:
 </PySection>
 </LanguageSection>
 
-### Finding Negative Cycles
-
-<FocusProblem problem="bellSam2" />
-
-#### Solution
-
-As mentioned in
-[cp-algorithms](https://cp-algorithms.com/graph/finding-negative-cycle-in-graph.html),
-we relax the edges N times. If we perform an update on the $N$th iteration,
-there is an negative cycle.
-
-<LanguageSection>
-
-<CPPSection>
-
-```cpp
-#include <bits/stdc++.h>
-using namespace std;
-using ll = long long;
-
-struct Edge {
-	int from, to;
-	ll weight;
-};
-
-const int MAXN = 2505;
-
-int n, m, parent[MAXN];
-ll dist[MAXN];
-vector<Edge> graph;
-
-void bellman_ford(int source) {
-	fill(parent + 1, parent + n + 1, 0);
-	fill(dist + 1, dist + n + 1, 1e18);
-	dist[source] = 0;
-	int last_node_updated;
-	for (int i = 1; i <= n; i++) {
-		last_node_updated = -1;
-		for (Edge &e : graph) {
-			if (dist[e.from] + e.weight < dist[e.to]) {
-				dist[e.to] = dist[e.from] + e.weight;
-				parent[e.to] = e.from;
-				last_node_updated = e.to;
-			}
-		}
-	}
-	if (last_node_updated == -1) {
-		cout << "NO" << '\n';
-	} else {
-		cout << "YES" << '\n';
-		vector<int> cycle;
-		for (int i = 0; i < n - 1; i++) {
-			last_node_updated = parent[last_node_updated];
-		}
-		for (int x = last_node_updated;; x = parent[x]) {
-			cycle.push_back(x);
-			if (x == last_node_updated && cycle.size() > 1) break;
-		}
-		reverse(cycle.begin(), cycle.end());
-		for (int x : cycle) cout << x << ' ';
-		cout << '\n';
-	}
-}
-
-int main() {
-	cin.tie(0)->sync_with_stdio(0);
-
-	cin >> n >> m;
-	while (m--) {
-		int a, b;
-		ll c;
-		cin >> a >> b >> c;
-		graph.push_back({a, b, c});
-	}
-	bellman_ford(1);
-}
-```
-
-</CPPSection>
-<JavaSection>
-
-```java
-import java.io.*;
-import java.util.*;
-
-public class CyclesFinding {
-	static final int MAX_N = 2500;
-	static int[] parent = new int[MAX_N + 1];
-	static long[] dist = new long[MAX_N + 1];
-	static List<Edge> graph = new ArrayList<>();
-
-	// CodeSnip{Edge}
-	static class Edge {
-		int from;
-		int to;
-		long weight;
-
-		public Edge(int from, int to, long weight) {
-			this.from = from;
-			this.to = to;
-			this.weight = weight;
-		}
-	}
-	// EndCodeSnip
-
-	public static void main(String[] args) {
-		Kattio io = new Kattio();
-		int n = io.nextInt();
-		int m = io.nextInt();
-		for (int i = 1; i <= m; i++) {
-			int a = io.nextInt();
-			int b = io.nextInt();
-			long c = (long)io.nextInt();
-			graph.add(new Edge(a, b, c));
-		}
-
-		List<Integer> cycle = bellmanFord(1, n);
-		if (cycle.size() == 0) {
-			io.println("NO");
-		} else {
-			io.println("YES");
-			for (int x : cycle) { io.print(x + " "); }
-		}
-
-		io.close();
-	}
-
-	private static List<Integer> bellmanFord(int source, int n) {
-		List<Integer> cycle = new ArrayList<>();
-		for (int i = 1; i <= n; i++) {
-			parent[i] = 0;
-			dist[i] = Long.MAX_VALUE / 2;
-		}
-
-		dist[source] = 0;
-		int lastNodeUpdated = -1;
-		for (int i = 1; i <= n; i++) {
-			lastNodeUpdated = -1;
-			for (Edge e : graph) {
-				if (dist[e.from] + e.weight < dist[e.to]) {
-					dist[e.to] = dist[e.from] + e.weight;
-					parent[e.to] = e.from;
-					lastNodeUpdated = e.to;
-				}
-			}
-		}
-
-		if (lastNodeUpdated == -1) {
-			return cycle;
-		} else {
-			for (int i = 0; i < n - 1; i++) {
-				lastNodeUpdated = parent[lastNodeUpdated];
-			}
-			do {
-				cycle.add(lastNodeUpdated);
-				lastNodeUpdated = parent[lastNodeUpdated];
-			} while (lastNodeUpdated != cycle.get(0));
-			cycle.add(lastNodeUpdated);
-			Collections.reverse(cycle);
-			return cycle;
-		}
-	}
-
-	// CodeSnip{Kattio}
-}
-```
-
-</JavaSection>
-<PySection>
-
-```py
-INF = 10**18  # float('inf') will result in WA for some test cases
-
-
-def bellman_ford(source: int):
-	dist[source] = 0
-	last_node_update = 0
-	for i in range(1, n + 1):
-		last_node_update = -1
-		for u, v, w in graph:
-			if dist[u] + w < dist[v]:
-				dist[v] = dist[u] + w
-				parent[v] = u
-				last_node_update = v
-
-	if last_node_update == -1:
-		print("NO")
-		exit()
-	else:
-		print("YES")
-		cycle = []
-		for i in range(1, n - 1):
-			last_node_update = parent[last_node_update]
-
-		x = last_node_update
-		while True:
-			cycle.append(x)
-			if x == last_node_update and len(cycle) > 1:
-				break
-			x = parent[x]
-
-		cycle.reverse()
-		print(*cycle)
-
-
-n, m = map(int, input().split())
-
-graph = []
-parent = [0] * (n + 1)
-dist = [INF] * (n + 1)
-for _ in range(m):
-	u, v, w = map(int, input().split())
-	graph.append((u, v, w))
-
-bellman_ford(1)
-```
-
-</PySection>
-</LanguageSection>
-
-### Simple Linear Programming
-
-You can also use shortest path algorithms to solve the following problem (a very
-simple [linear program](https://en.wikipedia.org/wiki/Linear_programming)).
-
-> Given variables $x_1,x_2,\dots,x_N$ with constraints in the form
-> $x_i-x_j\ge c$, compute a feasible solution.
-
-#### Resources
-
-<Resources>
-	<Resource
-		source="MIT"
-		title="Slides from Intro to Algorithms"
-		url="https://www.cs.rit.edu/~spr/COURSES/ALG/MIT/lec18.pdf"
-	>
-		Linear Programming Trick
-	</Resource>
-</Resources>
-
-#### Problems
-
-Timeline (USACO Camp):
-
-- equivalent to
-  [Timeline (Gold)](http://www.usaco.org/index.php?page=viewproblem2&cpid=1017)
-  except $N,C\le 5000$ and negative values of $x$ are possible.
-
-<Problems problems="linear" />
-
-## Floyd-Warshall
-
+## Example - All-Pairs Shortest Paths
 <FocusProblem problem="floydSam" />
 
-<IncompleteSection>
+### Explanation
 
-(explanation)
+#### Floyd-Warshall
 
-</IncompleteSection>
+Since this problem asks for the shortest path between any arbitrary pair of vertices,
+and $N$ is relatively small, Floyd-Warshall, also introduced [earlier](/gold/shortest-paths#Floyd-Warshall),
+appears to be the natural choice. Similar to above, after $N$ iterations, all finite
+distances are correct, since every vertex has been considered as a possible intermediary
+vertex.
 
-### Implementation - APSP
+To detect paths with negative cycles, check all distances between a vertex and itself.
+If this distance is negative, then this means that that vertex is part of a negative cycle
+or can reach a negative cycle and vice versa. Thus, any path that can contain this vertex as an intermediary
+is also part of a negative cycle or can reach a negative cycle.
+
+For a path $(i, j)$, if path $(i,k)$ is finite and path $(k, j)$ is finite, and the distance between
+$k$ and itself is negative, then path $(i, j)$ must have an arbitrarily small length.
+
+### Implementation
+
+**Time Complexity:** $\mathcal{O}(N^3)$
 
 <LanguageSection>
 
@@ -508,19 +314,10 @@ int main() {
 		for (int k = 0; k < n; k++) {
 			for (int i = 0; i < n; i++) {
 				for (int j = 0; j < n; j++) {
-					if (dist[i][k] != INT_MAX && dist[k][j] != INT_MAX &&
-					    dist[i][j] > dist[i][k] + dist[k][j]) {
+					if (dist[i][k] != INT_MAX && dist[k][k] < 0 &&
+					    dist[k][j] != INT_MAX) {
 						bad[i][j] = 1;
 					}
-				}
-			}
-		}
-
-		for (int k = 0; k < n; k++) {
-			for (int i = 0; i < n; i++) {
-				for (int j = 0; j < n; j++) {
-					if (dist[i][k] < INT_MAX && bad[k][j]) { bad[i][j] = 1; }
-					if (dist[k][j] < INT_MAX && bad[i][k]) { bad[i][j] = 1; }
 				}
 			}
 		}
@@ -571,19 +368,7 @@ while True:
 	for k in range(n):
 		for i in range(n):
 			for j in range(n):
-				if (
-					dist[i][k] != INF
-					and dist[k][j] != INF
-					and dist[i][j] > dist[i][k] + dist[k][j]
-				):
-					bad[i][j] = 1
-
-	for k in range(n):
-		for i in range(n):
-			for j in range(n):
-				if dist[i][k] < INF and bad[k][j]:
-					bad[i][j] = 1
-				if dist[k][j] < INF and bad[i][k]:
+				if dist[i][k] != INF and dist[k][k] < 0 and dist[k][j] != INF:
 					bad[i][j] = 1
 
 	for _ in range(q):
@@ -601,21 +386,6 @@ while True:
 </PySection>
 </LanguageSection>
 
-### Problems
+## Problems
 
-<Problems problems="floydProbs" />
-
-## Modified Dijkstra
-
-<!-- Can also use [Shortest Path Faster Algorithm](https://en.wikipedia.org/wiki/Shortest_Path_Faster_Algorithm) or  -->
-
-The Dijkstra code presented [earlier](/gold/shortest-paths#mathcalomlog-n-implementation)
-will still give correct results if there are no negative cycles. However, the
-same running time bound no longer applies, as demonstrated by subtasks 1-6 of
-the following problem.
-
-<Problems problems="dijk" />
-
-This problem forces you to analyze the inner workings of the three shortest-path
-algorithms we presented here. It also teaches you about how problemsetters could
-create hack cases!
+<Problems problems="general"/>
