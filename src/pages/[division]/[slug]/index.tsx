@@ -20,7 +20,7 @@ import { graphqlToModuleInfo } from '../../../utils/utils';
 interface ModulePageProps {
   moduleData: MdxContent;
   moduleProblemLists?: ModuleProblemLists;
-  frontmatter: MdxFrontmatter[];
+  frontmatter: Pick<MdxFrontmatter, 'id' | 'title'>[];
 }
 
 export default function ModuleTemplate({
@@ -150,7 +150,10 @@ export const getStaticProps: GetStaticProps = async context => {
       props: {
         moduleData: mod,
         moduleProblemLists: moduleProblemLists ?? null,
-        frontmatter: frontmatterData.map(x => x.frontmatter),
+        frontmatter: frontmatterData.map(x => ({
+          id: x.frontmatter.id,
+          title: x.frontmatter.title,
+        })),
       },
     };
   } catch (error) {

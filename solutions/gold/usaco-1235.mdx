@@ -1,6 +1,6 @@
 ---
 id: usaco-1235
-source: USACO Gold 2022 Open
+source: USACO Gold 2022 US Open
 title: Balancing a Tree
 author: Daniel Zhu
 ---
@@ -43,10 +43,8 @@ vector<pair<int, int>> check(int k) {
 		if (lr[i].first > lr[i].second) { return {}; }
 		if (p[i] && (lr[i].first > R[p[i]] || lr[i].second < L[p[i]])) { return {}; }
 		// propagate restrictions to parent
-		lr[p[i]] = {
-			max(lr[p[i]].first, lr[i].first),
-			min(lr[p[i]].second, lr[i].second)
-		}
+		lr[p[i]] = {max(lr[p[i]].first, lr[i].first),
+		            min(lr[p[i]].second, lr[i].second)};
 	}
 
 	// return a vector of all restrictions
@@ -101,7 +99,7 @@ for (int i = 1; i <= n; i++) {
 </Spoiler>
 
 ## Implementation
-**Time Complexity**: $\mathcal{O}(N\log{K})$
+**Time Complexity:** $\mathcal{O}(N\log{K})$
 
 <LanguageSection>
 <CPPSection>
@@ -134,10 +132,8 @@ vector<pair<int, int>> check(int k) {
 		if (lr[i].first > lr[i].second) { return {}; }
 		if (p[i] && (lr[i].first > R[p[i]] || lr[i].second < L[p[i]])) { return {}; }
 		// propagate restrictions to parent
-		lr[p[i]] = {
-			max(lr[p[i]].first, lr[i].first),
-			min(lr[p[i]].second, lr[i].second)
-		}
+		lr[p[i]] = {max(lr[p[i]].first, lr[i].first),
+		            min(lr[p[i]].second, lr[i].second)};
 	}
 
 	// return a vector of all restrictions
@@ -164,7 +160,7 @@ int main() {
 
 		if (b) {
 			// call check to get restrictions
-			auto lr = check(k);
+			auto lr = check(x);
 			for (int i = 0; i <= n; i++) {
 				// propagate `check` restrictions to ancestors
 				L[p[i]] = max(L[p[i]], lr[i].first);
@@ -181,8 +177,8 @@ int main() {
 				// (intersection of [L_i, R_i] and [l_p[i], r_p[i]])
 				s[i] = max(L[i], l[p[i]]);
 				// restrict children of i to range [s_i - k, s_i + k]
-				l[i] = max(l[p[i]], s[i] - k);
-				r[i] = min(r[p[i]], s[i] + k);
+				l[i] = max(l[p[i]], s[i] - x);
+				r[i] = min(r[p[i]], s[i] + x);
 			}
 			// satisfy the whitespace checker
 			for (int i = 1; i <= n; i++) { cout << s[i] << " \n"[i == n]; }

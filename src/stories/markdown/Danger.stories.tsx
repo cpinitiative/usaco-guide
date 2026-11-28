@@ -5,11 +5,13 @@ import { IncompleteSection as MarkdownIncompleteSection } from '../../components
 import markdownDecorator from '../../components/markdown/markdownDecoratorForStorybook';
 import MiscMarkdownContent from './MiscMarkdownContent';
 
-export default {
+const meta = {
   title: 'Markdown/Danger',
   component: Danger,
   decorators: [markdownDecorator],
 };
+
+export default meta;
 
 const Template: StoryFn<ComponentProps<typeof Danger>> = args => (
   <Danger {...args} />

@@ -1,0 +1,106 @@
+---
+id: cf-1428E
+source: CF
+title: Carrots for Rabbits
+author: John Zhou
+---
+
+[Official Editorial (C++, Python)](https://codeforces.com/blog/entry/83771)
+
+<Spoiler title="Hint 1">
+
+If you have a carrot and know the number of pieces you want to cut it into, how would you cut it to minimize the time to eat for all the segments of that carrot?
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Calculate the time to eat when a carrot is cut into $1$, $2$, $3$, and more times.
+What do you notice about these times?
+
+</Spoiler>
+
+<Spoiler title="Hint 3">
+
+In hint $2$, what do you observe about the *change* in those times as the numbee of cuts increase?
+
+</Spoiler>
+
+<Spoiler title="Solution">
+
+## Explanation
+
+The sum of the squares of two numbers given a fixed sum is minimized when the two numbers are equal.
+If we extend that idea to each carrot, then they should be cut into pieces of lengths that are as close together as possible, without any pair of lengths differing by more than $1$.
+Specifically, if a carrot of length $l$ is cut into $t$ parts, there will be $t-l\bmod t$ pieces with length $\lfloor\frac lt\rfloor$, and $l\bmod t$ pieces with length $\lfloor\frac lt\rfloor+1$.
+Let the time taken to eat these pieces be $f(l,p)$, which can be calculated in $\mathcal O(1)$ time.
+
+Now, the problem reduces to deciding the number of cuts on each carrot.
+Intuitively, the more pieces we cut a carrot into, the smaller the total time gets.
+And if we manually calculate the time for each number of cuts, we see that the decrease in time after each cut gets smaller as well.
+
+To see why, assume that the cuts are perfectly even, allowing fractional lengths.
+In that case, $f(l, t)\approx t(\frac lt)^2=\frac{l^2}t$.
+Since the function is in the form of $g(x)=\frac ax$, $f$ decreases and does so more slowly as $t$ increases.
+This means that when incrementing the number of cuts on a carrot, each incrementation will save time, but the saving will decrease as we go further.
+
+This inspires a greedy solution, where we set carrots to be cut into $1$ segment initially (uncut), and precompute the decrease in time of that carrot if the number of cuts on it is increased by $1$.
+We maintain a priority queue of carrots sorted by the decrease in time described above;
+for $k-n$ times, we take the carrot with the largest change value and increase its number of cuts by $1$.
+We then recompute the time of eating that carrot, and the change to that time if the number of cuts is *further* increased by $1$ before placing the carrot back in the priority queue.
+
+As the returns are diminishing for each increase in the cuts, there cannot be a situation where picking a suboptimal cut first will result in better cuts later for a carrot.
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(k\log n)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <array>
+#include <iostream>
+#include <queue>
+using namespace std;
+
+int main() {
+	int n, k;
+	cin >> n >> k;
+
+	// The priority queue for tracking.
+	// The elements are in the form of {diff, length, cuts},
+	// where diff is the difference in time if cuts is increased by 1.
+	priority_queue<array<long long, 3>> carrots;
+
+	// Calculate the cost given length of carrot and number of cuts.
+	auto cost = [&](int length, int cuts) -> long long {
+		long long avg = length / cuts;
+		return 1ll * avg * avg * (cuts - length % cuts) +
+		       1ll * (avg + 1) * (avg + 1) * (length % cuts);
+	};
+
+	long long ans = 0;
+	for (int i = 0; i < n; i++) {
+		int a;
+		cin >> a;
+		ans += 1ll * a * a;
+		carrots.push({cost(a, 1) - cost(a, 2), a, 1});
+	}
+
+	for (int i = 0; i < k - n; i++) {
+		auto [diff, length, cuts] = carrots.top();
+		carrots.pop();
+		ans -= diff;
+		carrots.push(
+		    {cost(length, cuts + 1) - cost(length, cuts + 2), length, cuts + 1});
+	}
+
+	cout << ans << '\n';
+}
+```
+
+</CPPSection>
+</LanguageSection>
+
+</Spoiler>

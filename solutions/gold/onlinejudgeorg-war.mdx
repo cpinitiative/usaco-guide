@@ -67,12 +67,12 @@ of operations
 #include <algorithm>
 #include <iostream>
 using namespace std;
-int size[20000], parent[20000];
+int comp_size[20000], parent[20000];
 
 void init(int n) {
 	for (int i = 0; i < 2 * n; i++) {
 		parent[i] = i;
-		size[i] = 1;
+		comp_size[i] = 1;
 	}
 }
 
@@ -82,8 +82,8 @@ int find(int a) {
 }
 
 void uniteRoot(int a, int b) {
-	if (size[a] > size[b]) { swap(a, b); }
-	size[b] += size[a];
+	if (comp_size[a] > comp_size[b]) { swap(a, b); }
+	comp_size[b] += comp_size[a];
 	parent[a] = b;
 }
 

@@ -5,6 +5,8 @@ title: Two Sets
 author: Chongtian Ma
 ---
 
+[Official Editorial](https://codeforces.com/blog/entry/13896)
+
 <Spoiler title="Hint 1">
 
 We can model the two sets as a graph, with $p_i$ and $a - p_i$ connected in graph $A$, and $p_i$ connected to $b - p_i$ in graph B.
@@ -48,8 +50,8 @@ class DSU {
 	int get(int x) { return parents[x] == x ? x : (parents[x] = get(parents[x])); }
 
 	bool unite(int x, int y) {
-		int x_root = find(x);
-		int y_root = find(y);
+		int x_root = get(x);
+		int y_root = get(y);
 		if (x_root == y_root) { return false; }
 
 		if (sizes[x_root] < sizes[y_root]) { swap(x_root, y_root); }

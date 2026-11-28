@@ -104,7 +104,7 @@ export function usePostActions(groupId: string) {
         body: '',
         source: '',
         points: 100,
-        difficulty: 'Normal',
+        difficulty: 'Medium',
         hints: [],
         solution: null,
         isDeleted: false,

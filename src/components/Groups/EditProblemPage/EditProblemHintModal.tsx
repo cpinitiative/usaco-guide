@@ -17,7 +17,7 @@ export default function EditProblemHintModal({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (hint: ProblemHint | null) => any;
+  onSave: (hint: ProblemHint | null) => void;
   hint: ProblemHint | null;
 }) {
   const defaultHint: ProblemHint = {

@@ -30,7 +30,6 @@ For each branch, there are two cases:
 <CPPSection>
 
 ```cpp
-#include <algorithm>
 #include <iomanip>
 #include <iostream>
 #include <vector>
@@ -54,9 +53,9 @@ int main() {
 		int height;
 		std::cin >> branch_num >> base >> height;
 
+		// the branch offsets are given in increasing order
 		vector<int> offsets(branch_num);
 		for (int &o : offsets) { std::cin >> o; }
-		std::sort(offsets.begin(), offsets.end());
 
 		double total_area = 0;
 		double slope = (double)base / height;
@@ -87,7 +86,8 @@ def trap_area(base1: float, base2: float, height: float) -> float:
 
 for _ in range(int(input())):
 	branch_num, base, height = [int(i) for i in input().split()]
-	offsets = sorted(int(i) for i in input().split())
+	# the branch offsets are given in increasing order
+	offsets = [int(i) for i in input().split()]
 	assert branch_num == len(offsets)
 
 	total_area = 0
@@ -105,4 +105,67 @@ for _ in range(int(input())):
 ```
 
 </PySection>
+
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class Main {
+
+	static double trapArea(double base1, double base2, double height) {
+		return height * (base1 + base2) / 2;
+	}
+
+	public static void main(String[] args) throws Exception {
+
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		int testNum = Integer.parseInt(br.readLine());
+
+		while (testNum-- > 0) {
+			StringTokenizer st = new StringTokenizer(br.readLine());
+			int branchNum = Integer.parseInt(st.nextToken());
+			int base = Integer.parseInt(st.nextToken());
+			int height = Integer.parseInt(st.nextToken());
+
+			int[] offsets = new int[branchNum];
+			st = new StringTokenizer(br.readLine());
+
+			for (int i = 0; i < branchNum; i++) {
+				offsets[i] = Integer.parseInt(st.nextToken());
+			}
+
+			double totalArea = 0;
+
+			// Finding how much the triangle gets smaller as we go up
+			double slope = (double)base / height;
+
+			for (int b = 0; b < branchNum; b++) {
+
+				// If there is no overlap, add the full triangle
+				if (b == branchNum - 1 || offsets[b] + height <= offsets[b + 1]) {
+					totalArea += (double)base * height / 2;
+					continue;
+				}
+
+				// Find the height of the overlapping part
+				int heightDiff = offsets[b + 1] - offsets[b];
+
+				// Find the base at the point where the triangles overlap
+				double newBase = base - slope * heightDiff;
+
+				// Add the area of the overlapping part
+				totalArea += trapArea(base, newBase, heightDiff);
+			}
+
+			System.out.println(totalArea);
+		}
+	}
+}
+```
+
+</JavaSection>
+
 </LanguageSection>

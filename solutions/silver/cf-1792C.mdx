@@ -1,0 +1,138 @@
+---
+id: cf-1792C
+source: CF
+title: Min Max Sort
+author: Rameez Parwez
+---
+
+[Official Editorial (C++)](https://codeforces.com/blog/entry/111835)
+
+# Solution
+
+## Explanation
+
+If our array is sorted, then we don't need to perform any
+operations. Hence, our answer will be $0$. Otherwise, we have to
+think about what our last operation would look like to make the
+array sorted as: $1, 2, 3, \dots, n$. We can deduce one important hint from the operations
+mentioned in the problem statement: our last operation must move $1$ to the front of the array, and $n$ to the back of the
+array to make it sorted.
+
+So now we know what our last operation will be. Let's focus on the
+remaining elements: $2, 3, 4, \dots, n - 1$. We can apply the same
+analysis from above. Either the numbers are already sorted, or we need to move $2$ to the front and $n-1$ to the back. We
+keep repeating this until our remaining segment is sorted.
+
+At each step, we need to check if the numbers in the segment
+$[k, n - k + 1]$ are sorted or not. Here, the segment refers to
+the subset of values (i e. the numbers from $k, k + 1, k + 2, \dots, n - k + 1$),
+and we are checking if they appear in increasing order of
+their positions in the array. A key observation here is that
+if a segment $[k, n - k + 1]$ is sorted for some value $k$, then it
+will be sorted for larger values as well. So we can start with
+the maximum value of $k$ (i.e. $\lfloor \frac{n + 1}{2} \rfloor
+$) and expands outwards as long as the segment remains sorted.
+The point where we can no longer expand will give us the largest
+sorted middle segment, and the number of elements left outside divided
+by $2$ is our answer, since every operation fixes a pair of elements.
+
+For each $k$, we need to verify two boundary pairs:
+
+- Is the number $k$ located to the left of $k + 1$ in the array? (i.e. $\text{index}[k] < \text{index}[k + 1]$)
+- Is the number $n - k$ located to the left of $n - k + 1$ in the array? (i.e. $\text{index}[n - k] < \text{index}[n - k + 1]$)
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(n)$
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int main() {
+	int test_num;
+	std::cin >> test_num;
+	for (int t = 0; t < test_num; t++) {
+		int n;
+		std::cin >> n;
+		std::vector<int> index(n);
+		for (int i = 0; i < n; i++) {
+			int x;
+			std::cin >> x;
+			x--;
+			index[x] = i;
+		}
+
+		int lo = n / 2;
+		int hi = n - lo;
+		while (lo > 0 && index[lo - 1] < index[lo] && index[hi] > index[hi - 1]) {
+			lo--;
+			hi++;
+		}
+
+		std::cout << lo << '\n';
+	}
+}
+```
+
+</CPPSection>
+<JavaSection>
+
+```java
+import java.io.*;
+import java.util.*;
+
+public class MinMaxSort {
+	public static void main(String[] args) throws Exception {
+		Kattio io = new Kattio();
+		int testNum = io.nextInt();
+		for (int t = 0; t < testNum; t++) {
+			int n = io.nextInt();
+			int[] index = new int[n];
+			for (int i = 0; i < n; i++) {
+				int x = io.nextInt() - 1;
+				index[x] = i;
+			}
+
+			int lo = n / 2;
+			int hi = n - lo;
+			while (lo > 0 && index[lo - 1] < index[lo] && index[hi] > index[hi - 1]) {
+				lo--;
+				hi++;
+			}
+
+			io.println(lo);
+		}
+		io.close();
+	}
+
+	// BeginCodeSnip{Kattio}
+}
+```
+
+</JavaSection>
+<PySection>
+
+```py
+for _ in range(int(input())):
+	n = int(input())
+	arr = list(map(int, input().split()))
+
+	index = [0] * n
+	for i in range(n):
+		index[arr[i] - 1] = i
+
+	lo = n // 2
+	hi = n - lo
+	while lo > 0 and index[lo - 1] < index[lo] and index[hi] > index[hi - 1]:
+		lo -= 1
+		hi += 1
+
+	print(lo)
+```
+
+</PySection>
+</LanguageSection>

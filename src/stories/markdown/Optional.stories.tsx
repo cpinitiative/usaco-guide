@@ -5,11 +5,13 @@ import markdownDecorator from '../../components/markdown/markdownDecoratorForSto
 import Optional from '../../components/markdown/Optional';
 import MiscMarkdownContent from './MiscMarkdownContent';
 
-export default {
+const meta = {
   title: 'Markdown/Optional',
   component: Optional,
   decorators: [markdownDecorator],
 };
+
+export default meta;
 
 const Template: StoryFn<ComponentProps<typeof Optional>> = args => (
   <Optional {...args} />

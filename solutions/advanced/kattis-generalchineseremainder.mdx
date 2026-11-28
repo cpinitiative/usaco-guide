@@ -1,0 +1,85 @@
+---
+id: kattis-generalchineseremainder
+source: Kattis
+title: Chinese Remainder Theorem (non-relatively prime moduli)
+author: Benjamin Qi
+---
+
+<Spoiler title="Hint 1">
+
+The solution is very similar to that for the [in-module CRT problem](/adv/extend-euclid?lang=cpp#solution-1).
+We want to find $r$ such that $rm_1+a_1\equiv a_2\pmod {m_2}$, if it exists.
+
+</Spoiler>
+
+<Spoiler title="Hint 2">
+
+Start by running the extended Euclidean algorithm on $m_1$ and $m_2$.
+
+</Spoiler>
+
+## Explanation
+
+<IncompleteSection />
+
+## Implementation
+
+**Time Complexity:** $\mathcal{O}(\log \min(n,m))$ per test
+
+<LanguageSection>
+<CPPSection>
+
+```cpp
+// BeginCodeSnip{Prefix}
+#include <array>
+#include <cassert>
+#include <iostream>
+
+using namespace std;
+
+using ll = long long;
+using pl = pair<ll, ll>;
+
+#define f first
+#define s second
+
+array<ll, 3> extend_euclid(ll a, ll b) {
+	// we know that (1 * a) + (0 * b) = a and (0 * a) + (1 * b) = b
+	array<ll, 3> x = {1, 0, a};
+	array<ll, 3> y = {0, 1, b};
+
+	// run extended Euclidean algo
+	while (y[2] > 0) {
+		// keep subtracting multiple of one equation from the other
+		ll k = x[2] / y[2];
+		for (int i = 0; i < 3; i++) x[i] -= k * y[i];
+		swap(x, y);
+	}
+	return x;  // x[0] * a + x[1] * b = x[2], x[2] = gcd(a, b)
+}
+// EndCodeSnip
+
+pl crt_combine(pl a, pl b) {  // combine a.f mod a.s with b.f mod b.s
+	auto p = extend_euclid(a.s, b.s);
+	ll g = p[2];
+	if ((b.f - a.f) % g) return {-1, -1};
+	ll r = (b.f - a.f) / g * p[0] % (b.s / g);
+	r += (r < 0) * (b.s / g);
+	return {r * a.s + a.f, b.s / g * a.s};
+}
+
+int main() {
+	int T;
+	cin >> T;
+	while (T--) {
+		pl a, b;
+		cin >> a.f >> a.s >> b.f >> b.s;
+		auto res = crt_combine(a, b);
+		if (res.f == -1) cout << "no solution\n";
+		else cout << res.f << " " << res.s << "\n";
+	}
+}
+```
+
+</CPPSection>
+</LanguageSection>

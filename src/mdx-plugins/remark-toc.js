@@ -1,6 +1,7 @@
 /*eslint-disable */
 
 import GithubSlugger from 'github-slugger';
+import { toString as mdastToPlainString } from 'mdast-util-to-string';
 import mdastToStringWithKatex from './mdast-to-string.js';
 
 export default ({ tableOfContents }) => {
@@ -13,8 +14,13 @@ export default ({ tableOfContents }) => {
     if (node.type === 'heading') {
       const val = {
         depth: node.depth,
+        // The displayed label keeps rendered KaTeX and HTML-escaped text, but
+        // the slug must match the heading id, which rehype-slug derives from
+        // the plain text. Slugging the escaped/rendered form instead produced
+        // dead anchors for every heading containing ' & < > or math
+        // ("Knuth's Optimization" -> knuth39s-optimization, id knuths-optimization).
         value: mdastToStringWithKatex(node),
-        slug: slugger.slug(mdastToStringWithKatex(node), false),
+        slug: slugger.slug(mdastToPlainString(node), false),
       };
       if (curLang !== null) {
         tableOfContents[curLang].push(val);

@@ -5,14 +5,14 @@ if (admin.apps.length === 0) {
   admin.initializeApp();
 }
 
-export default functions.https.onCall(async request => {
-  const { target, claims, merge } = request.data as {
+export default functions.https.onCall(async (data, context) => {
+  const { target, claims, merge } = data as {
     target: string;
     // default true
     merge?: boolean;
     claims: Record<string, any>;
   };
-  const callerUid = request.auth?.uid;
+  const callerUid = context.auth?.uid;
 
   const caller = await admin.auth().getUser(callerUid);
   if (

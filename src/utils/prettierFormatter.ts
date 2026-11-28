@@ -13,7 +13,7 @@ export const formatProblems = (content: string): Promise<string> =>
     trailingComma: 'es5',
     arrowParens: 'avoid',
     parser: 'json',
-    plugins: [estreePlugin as any, babelPlugin],
+    plugins: [estreePlugin as prettier.Plugin, babelPlugin],
   });
 
 export const formatMarkdown = (content: string): Promise<string> =>
@@ -33,5 +33,5 @@ export const formatMarkdown = (content: string): Promise<string> =>
 export const formatMetadata = (content: string): Promise<string> =>
   prettier.format(content, {
     parser: 'json',
-    plugins: [estreePlugin as any, babelPlugin],
+    plugins: [estreePlugin as prettier.Plugin, babelPlugin],
   });

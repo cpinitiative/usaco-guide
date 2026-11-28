@@ -4,7 +4,7 @@ import AsteriskComponent from '../components/Tooltip/Asterisk';
 import TextTooltipComponent from '../components/Tooltip/TextTooltip';
 import Tooltip from '../components/Tooltip/Tooltip';
 
-export default {
+const meta = {
   title: 'Tooltip',
   component: Tooltip,
   // tooltips move around and cause false positive change detection :(
@@ -12,6 +12,8 @@ export default {
     chromatic: { disable: true },
   },
 };
+
+export default meta;
 
 const Template: StoryFn<ComponentProps<typeof Tooltip>> = args => {
   // We need to use a ref here because tippy by default appends to the end of the body element
@@ -28,7 +30,7 @@ const Template: StoryFn<ComponentProps<typeof Tooltip>> = args => {
     <div className="my-8" ref={ref}>
       {show && (
         <Tooltip {...args} appendTo={() => ref.current!} showOnCreate={true}>
-          <span className="bg-gray-100 p-2 dark:bg-gray-700">
+          <span className="bg-gray-100 p-2 dark:bg-gray-700 dark:text-gray-100">
             Hover over me!
           </span>
         </Tooltip>

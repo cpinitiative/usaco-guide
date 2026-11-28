@@ -1,3 +1,5 @@
+import crypto from 'crypto';
+
 import { moduleIDToSectionMap } from '../../content/ordering';
 import {
   queryAllModuleFrontmatter,
@@ -5,37 +7,56 @@ import {
   queryModule,
   queryModuleIdAndTitleFromProblemBySolutionId,
   queryProblem,
+  queryProblemTagUnions,
   querySolution,
 } from '../lib/queryContent';
 import {
   AlgoliaEditorModuleFile,
   AlgoliaEditorSolutionFile,
 } from '../models/algoliaEditorFile';
-import { AlgoliaProblemInfo } from '../models/problem';
+import { AlgoliaProblemInfo, ProblemSolutionInfo } from '../models/problem';
 import extractSearchableText from './extract-searchable-text';
+
+function stableStringify(obj: unknown): string {
+  if (obj === null || typeof obj !== 'object') return JSON.stringify(obj);
+  if (Array.isArray(obj)) return `[${obj.map(stableStringify).join(',')}]`;
+  const keys = Object.keys(obj).sort();
+  return `{${keys.map(k => `${JSON.stringify(k)}:${stableStringify((obj as Record<string, unknown>)[k])}`).join(',')}}`;
+}
+
+export function computeContentHash(record: Record<string, unknown>): string {
+  const { objectID: _objectID, _contentHash, ...rest } = record;
+  return crypto.createHash('sha1').update(stableStringify(rest)).digest('hex');
+}
 
 export async function getModuleRecords() {
   const modules = await queryAllModuleFrontmatter();
 
-  return modules
-    .filter(m => m.frontmatter.id in moduleIDToSectionMap)
-    .map(async m => {
-      const fullModule = await queryModule(m.frontmatter.id);
-      return {
-        objectID: m.frontmatter.id,
-        title: m.frontmatter.title,
-        description: m.frontmatter.description,
-        division: m.division,
-        content: fullModule?.mdast
-          ? extractSearchableText(fullModule.mdast)
-          : '',
-      };
-    });
+  return Promise.all(
+    modules
+      .filter(m => m.frontmatter.id in moduleIDToSectionMap)
+      .map(async m => {
+        const fullModule = await queryModule(m.frontmatter.id);
+        return {
+          objectID: m.frontmatter.id,
+          title: m.frontmatter.title,
+          description: m.frontmatter.description,
+          division: m.division,
+          content: fullModule?.mdast
+            ? extractSearchableText(fullModule.mdast)
+            : '',
+        };
+      })
+  );
 }
 
 export async function getProblemRecords() {
   const problems = await queryAllProblemDashboardInfo();
   const modules = await queryAllModuleFrontmatter();
+  // Tags are per module; search shows the union across every module a problem
+  // appears in. The `problems` table collapses those copies, so read them from
+  // module_problem_lists instead.
+  const tagUnions = await queryProblemTagUnions();
   const moduleFiles = modules.map(m => ({
     title: m.frontmatter.title,
     id: m.frontmatter.id,
@@ -63,10 +84,6 @@ export async function getProblemRecords() {
     });
 
     if (existingProblem) {
-      existingProblem.tags = [
-        ...new Set([...existingProblem.tags, ...(fullProblem.tags || [])]),
-      ];
-
       problemModulesWithPath.forEach(module => {
         if (!existingProblem.problemModules.find(m => m.id === module.id)) {
           existingProblem.problemModules.push(module);
@@ -77,14 +94,14 @@ export async function getProblemRecords() {
         objectID: fullProblem.uniqueId,
         name: fullProblem.name,
         source: fullProblem.source,
-        tags: fullProblem.tags || [],
+        tags: tagUnions.get(fullProblem.uniqueId) || fullProblem.tags || [],
         url: fullProblem.url,
         difficulty: fullProblem.difficulty,
         isStarred: fullProblem.isStarred || false,
         solution: fullProblem.solution
           ? (Object.fromEntries(
               Object.entries(fullProblem.solution).filter(([_, v]) => v != null)
-            ) as any)
+            ) as ProblemSolutionInfo)
           : null,
         problemModules: problemModulesWithPath,
       });
@@ -172,46 +189,34 @@ export async function getAlgoliaRecords() {
   const indexPrefix = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME ?? 'dev';
 
   const [moduleRecords, problemRecords, fileRecords] = await Promise.all([
-    Promise.all(await getModuleRecords()),
+    getModuleRecords(),
     getProblemRecords(),
     getEditorFileRecords(),
   ]);
 
-  return [
+  const groups = [
     {
       records: moduleRecords,
       indexName: indexPrefix + '_modules',
-      matchFields: ['title', 'description', 'content', 'id', 'division'],
     },
     {
       records: problemRecords,
       indexName: indexPrefix + '_problems',
-      matchFields: [
-        'source',
-        'name',
-        'tags',
-        'url',
-        'difficulty',
-        'isStarred',
-        'tags',
-        'problemModules',
-        'solution',
-      ],
     },
     {
       records: fileRecords,
       indexName: indexPrefix + '_editorFiles',
-      matchFields: [
-        'kind',
-        'title',
-        'id',
-        'source',
-        'solutions',
-        'path',
-        'problemModules',
-      ],
     },
   ];
+
+  for (const group of groups) {
+    group.records = group.records.map(r => ({
+      ...r,
+      _contentHash: computeContentHash(r as Record<string, unknown>),
+    }));
+  }
+
+  return groups;
 }
 
 export default getAlgoliaRecords;

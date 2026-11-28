@@ -1,4 +1,4 @@
-import { XIcon } from '@heroicons/react/solid';
+import { XMarkIcon } from '@heroicons/react/24/solid';
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { AlgoliaEditorFile } from '../../../models/algoliaEditorFile';
@@ -63,7 +63,7 @@ export const FileListSidebar: React.FC<{
             className="shrink-0 px-2 py-1 text-gray-400 transition hover:text-gray-700 focus:outline-hidden dark:text-gray-600 dark:hover:text-gray-300"
             onClick={() => onCloseFile(file)}
           >
-            <XIcon className="h-4 w-4" />
+            <XMarkIcon className="h-4 w-4" />
           </button>
         </div>
       ))}

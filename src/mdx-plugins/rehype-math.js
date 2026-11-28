@@ -13,8 +13,13 @@ const parseHtml = unified().use(parse, { fragment: true, position: false });
 const source = 'rehype-katex';
 
 const customRehypeKatex = options => {
-  const settings = options || {};
+  const { strict, ...settings } = options || {};
   const throwOnError = settings.throwOnError || false;
+  // KaTeX's own strict: 'error' only throws for some LaTeX-incompatible input;
+  // for others, like \\ in display mode, it quietly switches to LaTeX's
+  // behavior and drops the line break. So 'error' here collects every report,
+  // renders leniently as before, and then fails on what it collected.
+  const failOnNonstrict = strict === 'error';
 
   return transformMath;
 
@@ -35,13 +40,26 @@ const customRehypeKatex = options => {
       let result;
 
       try {
+        const nonstrict = [];
         result = renderToString(
           value,
           assign({}, settings, {
             displayMode: displayMode,
             throwOnError: true,
+            strict: failOnNonstrict
+              ? (code, message) => {
+                  nonstrict.push(`${message} [${code}]`);
+                  return 'ignore';
+                }
+              : strict,
           })
         );
+        if (nonstrict.length) {
+          throw new Error(
+            `LaTeX-incompatible input in ${JSON.stringify(value)}: ` +
+              nonstrict.join('; ')
+          );
+        }
       } catch (error) {
         const fn = throwOnError ? 'fail' : 'message';
         const origin = [source, error.name.toLowerCase()].join(':');

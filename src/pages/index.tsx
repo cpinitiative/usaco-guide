@@ -1,14 +1,14 @@
 import {
   AcademicCapIcon,
+  BoltIcon,
   ChartBarIcon,
-  ChatAlt2Icon,
-  ClipboardListIcon,
+  ChatBubbleLeftRightIcon,
+  CircleStackIcon,
+  ClipboardDocumentListIcon,
   CogIcon,
-  DatabaseIcon,
-  LightningBoltIcon,
-  TerminalIcon,
+  CommandLineIcon,
   UserGroupIcon,
-} from '@heroicons/react/outline';
+} from '@heroicons/react/24/outline';
 import classNames from 'classnames';
 import { GetStaticProps } from 'next';
 import Image from 'next/image';
@@ -70,7 +70,7 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
         to the landing page, location.state.redirect will be undefined, causing a typeerror, this try catch statements accounts for that */
         router.push('/dashboard');
       }
-    } catch (e) {
+    } catch (_e) {
       if (firebaseUser) {
         router.push('/dashboard');
       }
@@ -231,7 +231,7 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
           <div className="h-12 md:h-20 2xl:h-36"></div>
 
           <Feature
-            icon={DatabaseIcon}
+            icon={CircleStackIcon}
             iconClasses="from-cyan-400 to-sky-500"
             title="Curated Resources"
             blobClasses="bg-sky-200 dark:bg-sky-800 hidden xl:block"
@@ -245,7 +245,7 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
           <div className="h-12 md:h-20 2xl:h-36"></div>
 
           <Feature
-            icon={ClipboardListIcon}
+            icon={ClipboardDocumentListIcon}
             iconClasses="from-purple-400 to-indigo-500"
             title="Extensive Problemsets"
             blobClasses="bg-purple-300 dark:bg-purple-800"
@@ -259,7 +259,7 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
           <div className="h-12 md:h-20 2xl:h-36"></div>
 
           <Feature
-            icon={LightningBoltIcon}
+            icon={BoltIcon}
             iconClasses="from-yellow-400 to-orange-500"
             title="Progress Tracking"
             blobClasses="bg-orange-200 dark:bg-orange-800"
@@ -274,7 +274,7 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
           <div className="h-12 md:h-20 2xl:h-36"></div>
 
           <Feature
-            icon={ChatAlt2Icon}
+            icon={ChatBubbleLeftRightIcon}
             iconClasses="from-green-400 to-cyan-500"
             title="Help when you need it"
             blobClasses="bg-green-200 dark:bg-green-800"
@@ -381,7 +381,7 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
             </CPIProjectCard>
             <CPIProjectCard
               title="USACO IDE"
-              icon={TerminalIcon}
+              icon={CommandLineIcon}
               iconClasses="from-orange-400 to-pink-600"
               url="https://ide.usaco.guide/"
             >
@@ -754,6 +754,10 @@ export default function IndexPage({ teamImages }: IndexPageProps): JSX.Element {
             manner without prior written permission.{' '}
             <Link href="/license" className="underline">
               Learn More.
+            </Link>
+            <br />
+            <Link href="/privacy" className="underline">
+              Privacy Policy
             </Link>
           </p>
         </div>

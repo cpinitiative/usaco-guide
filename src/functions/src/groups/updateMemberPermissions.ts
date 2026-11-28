@@ -13,10 +13,10 @@ if (admin.apps.length === 0) {
   admin.initializeApp();
 }
 
-export default functions.https.onCall(async request => {
+export default functions.https.onCall(async (data, context) => {
   const { groupId, targetUid, newPermissionLevel } =
-    request.data as UpdateMemberPermissionsArgs;
-  const callerUid = request.auth?.uid;
+    data as UpdateMemberPermissionsArgs;
+  const callerUid = context.auth?.uid;
 
   if (targetUid === callerUid) {
     return {

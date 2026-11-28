@@ -1,5 +1,6 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
 import * as React from 'react';
+import { moduleIDToRankMap } from '../../../../../content/ordering';
 import MarkdownLayout from '../../../../components/MarkdownLayout/MarkdownLayout';
 import Layout from '../../../../components/layout';
 import Markdown from '../../../../components/markdown/Markdown';
@@ -20,7 +21,7 @@ interface SolutionTemplateProps {
     title: string;
   }[];
   problemInfo: ProblemInfo;
-  frontmatter: MdxFrontmatter[];
+  frontmatter: Pick<MdxFrontmatter, 'id' | 'title'>[];
 }
 
 export default function SolutionTemplate({
@@ -128,6 +129,11 @@ export const getStaticProps: GetStaticProps = async context => {
         notFound: true,
       };
     }
+    // Order the "Appears In" modules by where they sit in the guide: General
+    // through Advanced, then by module order within a section.
+    const rank = (moduleID: string) =>
+      moduleIDToRankMap[moduleID] ?? Number.MAX_SAFE_INTEGER;
+    modulesThatHaveProblem.sort((a, b) => rank(a.id) - rank(b.id));
 
     const problemInfo = await queryProblem(solutionForSlug.frontmatter.id);
     if (!problemInfo) {
@@ -150,7 +156,10 @@ export const getStaticProps: GetStaticProps = async context => {
         solutionForSlug,
         modulesThatHaveProblem,
         problemInfo,
-        frontmatter: loadedModuleFrontmatter.map(module => module.frontmatter),
+        frontmatter: loadedModuleFrontmatter.map(module => ({
+          id: module.frontmatter.id,
+          title: module.frontmatter.title,
+        })),
       },
     };
   } catch (error) {
