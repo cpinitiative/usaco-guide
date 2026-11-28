@@ -18,7 +18,7 @@ frequency: 0
 		starred
 	>
 		Single Source Shortest Path (SSSP) and negative cycle detection
-	</Resource>	
+	</Resource>
 	<Resource
 		source="cp-algo"
 		title="Floyd-Warshall"
@@ -38,35 +38,35 @@ frequency: 0
 		title="4.5.3 - Other Applications"
 	>
 		Applications of Floyd-Warshall, including negative cycle detection
-		
+
 	</Resource>
 </Resources>
 
 ## Introduction
 
-In [Shortest Paths](/gold/shortest-paths), we learned how to find 
+In [Shortest Paths](/gold/shortest-paths), we learned how to find
 the shortest path on a graph with nonnegative edge weights. Now, we return to
-this problem but extend our approach to graphs with negative weights. 
+this problem but extend our approach to graphs with negative weights.
 
 In the previous module, our go-to approach for solving shortest path problems was
 Dijkstra's algorithm. However, when we introduce negative weights, Dijkstra's algorithm
-can fail because it assumes the shortest path to the closest unvisited vertex is 
+can fail because it assumes the shortest path to the closest unvisited vertex is
 final once it is popped from the heap.
 
-Below is an example of Dijkstra failing, reporting the shortest distance from $a$ to $c$ 
+Below is an example of Dijkstra failing, reporting the shortest distance from $a$ to $c$
 as $4$ instead of $2$.
 
 <video width="960" height="720" controls>
 	<source src="/animations/Dijkstra_fail.mp4" type="video/mp4"/>
 </video>
 
-It is worthwhile to note that while the code for Dijkstra's algorithm presented 
-[earlier](/gold/shortest-paths#mathcalomlog-n-implementation) will still give correct 
-results given no reachable negative cycles, it will no longer be bounded by $\mathcal{O}(N+M\log{N})$ where $N$ is the 
+It is worthwhile to note that while the code for Dijkstra's algorithm presented
+[earlier](/gold/shortest-paths#mathcalomlog-n-implementation) will still give correct
+results given no reachable negative cycles, it will no longer be bounded by $\mathcal{O}(N+M\log{N})$ where $N$ is the
 number of vertices and $M$ is the number of edges.
 
-In order to find paths on graphs with negative edge weights, we can use the 
-other algorithms mentioned in the Shortest Paths module, Bellman-Ford and 
+In order to find paths on graphs with negative edge weights, we can use the
+other algorithms mentioned in the Shortest Paths module, Bellman-Ford and
 Floyd-Warshall.
 
 ## Example - Single-Source Shortest Path
@@ -77,9 +77,9 @@ Floyd-Warshall.
 
 #### Negative Cycles
 
-Before we try to compute the shortest path, we need to determine if a shortest 
-path even exists. A negative cycle is a cycle whose edge weights sum to a negative 
-number. If a negative cycle exists in a graph, any path which can reach that cycle 
+Before we try to compute the shortest path, we need to determine if a shortest
+path even exists. A negative cycle is a cycle whose edge weights sum to a negative
+number. If a negative cycle exists in a graph, any path which can reach that cycle
 can traverse that cycle an arbitrarily large amount of times, making the path
 length arbitrarily small.
 
@@ -90,17 +90,17 @@ Thus, for any path from $s$ to $v$, there are three possible answers:
 
 #### Bellman-Ford
 
-Since the graph is sparse ($M \ll N^2$), Bellman-Ford, introduced 
-[earlier](/gold/shortest-paths#Bellman-Ford), appears to be the natural choice. 
-After $N-1$ iterations, all finite shortest distances are correct, since the shortest 
-path with the most edges can have at most $N-1$ edges. 
+Since the graph is sparse ($M \ll N^2$), Bellman-Ford, introduced
+[earlier](/gold/shortest-paths#Bellman-Ford), appears to be the natural choice.
+After $N-1$ iterations, all finite shortest distances are correct, since the shortest
+path with the most edges can have at most $N-1$ edges.
 
-To detect paths with negative cycles, we can check if any edge can still be relaxed 
-after these $N-1$ iterations. If the distance between $s$ and any vertex changes, 
-it must be reachable from a negative cycle, since its apparent shortest path includes 
-more than $N-1$ edges. We can mark all vertices whose path length changed on the 
-last relaxation, and use BFS starting from every marked vertex to find all vertices 
-that are reachable from the negative cycles. 
+To detect paths with negative cycles, we can check if any edge can still be relaxed
+after these $N-1$ iterations. If the distance between $s$ and any vertex changes,
+it must be reachable from a negative cycle, since its apparent shortest path includes
+more than $N-1$ edges. We can mark all vertices whose path length changed on the
+last relaxation, and use BFS starting from every marked vertex to find all vertices
+that are reachable from the negative cycles.
 
 ### Implementation
 
@@ -250,18 +250,18 @@ while True:
 
 #### Floyd-Warshall
 
-Since this problem asks for the shortest path between any arbitrary pair of vertices, 
-and $N$ is relatively small, Floyd-Warshall, also introduced [earlier](/gold/shortest-paths#Floyd-Warshall), 
-appears to be the natural choice. Similar to above, after $N$ iterations, all finite 
+Since this problem asks for the shortest path between any arbitrary pair of vertices,
+and $N$ is relatively small, Floyd-Warshall, also introduced [earlier](/gold/shortest-paths#Floyd-Warshall),
+appears to be the natural choice. Similar to above, after $N$ iterations, all finite
 distances are correct, since every vertex has been considered as a possible intermediary
 vertex.
 
 To detect paths with negative cycles, check all distances between a vertex and itself.
 If this distance is negative, then this means that that vertex is part of a negative cycle
-or can reach a negative cycle and vice versa. Thus, any path that can contain this vertex as an intermediary 
+or can reach a negative cycle and vice versa. Thus, any path that can contain this vertex as an intermediary
 is also part of a negative cycle or can reach a negative cycle.
 
-For a path $(i, j)$, if path $(i,k)$ is finite and path $(k, j)$ is finite, and the distance between 
+For a path $(i, j)$, if path $(i,k)$ is finite and path $(k, j)$ is finite, and the distance between
 $k$ and itself is negative, then path $(i, j)$ must have an arbitrarily small length.
 
 ### Implementation
@@ -314,7 +314,8 @@ int main() {
 		for (int k = 0; k < n; k++) {
 			for (int i = 0; i < n; i++) {
 				for (int j = 0; j < n; j++) {
-					if (dist[i][k] != INT_MAX && dist[k][k] < 0 && dist[k][j] != INT_MAX) {
+					if (dist[i][k] != INT_MAX && dist[k][k] < 0 &&
+					    dist[k][j] != INT_MAX) {
 						bad[i][j] = 1;
 					}
 				}
@@ -367,7 +368,7 @@ while True:
 	for k in range(n):
 		for i in range(n):
 			for j in range(n):
-				if (dist[i][k] != INF and dist[k][k] < 0 and dist[k][j] != INF):
+				if dist[i][k] != INF and dist[k][k] < 0 and dist[k][j] != INF:
 					bad[i][j] = 1
 
 	for _ in range(q):
